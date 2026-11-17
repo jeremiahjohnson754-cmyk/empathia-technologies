@@ -19,6 +19,9 @@
  *         table's rows, forced row-level security and every tenant's audit chain are verified against the source; the API starts on
  *         the restored copy, and a sandbox opened before the export opens with its key and reads the same thread
  *   R-10  the verification is not a formality: one audit row changed and one row removed in the restored copy are both reported
+ *   R-11  rotating the three secrets (the session secret and the two runtime-role passwords) is a restart with new values: every
+ *         session issued before stops, the old database password no longer connects, and a sandbox still opens with its key
+ *   R-12  an expired sandbox: its key opens nothing, a session issued before stops, the visitor is told why, and its records are kept
  * The database is a PostgreSQL cluster of its own, created for the run and removed after it, and its owner is what the platform gives:
  * a role that is NOT a superuser and may create roles. That matters. The first rehearsal used the development cluster's superuser as
  * the owner and passed a restart that then failed on Render (17 Nov 2026: "permission denied to alter role" — a role that is not a
@@ -177,10 +180,26 @@ try {
   step('R-10', 'the verification is not a formality: one audit row changed and one row removed in the restored copy are both reported', harm.status === 0 && r('RV-02').result === 'FAIL' && /1 hashes differ/.test(r('RV-02').detail) && r('RV-04').result === 'FAIL' && /app\.field_mounting/.test(r('RV-04').detail) && r('RV-01').result === 'PASS',
     harm.status === 0 ? `RV-02 ${r('RV-02').result}: ${r('RV-02').detail.slice(0, 90)} | RV-04 ${r('RV-04').result}: ${r('RV-04').detail.slice(0, 120)}` : harm.stderr.trim().slice(0, 200));
   fs.rmSync(dump, { force: true });
+
+  // ---- secrets and expiry (docs/operations/DEMO_SECRETS_AND_SESSIONS.md)
+  { const fresh = { DEMO_SESSION_SECRET: crypto.randomBytes(32).toString('base64'), EMPATHIA_APP_PASSWORD: rnd(), EMPATHIA_WORKER_PASSWORD: rnd() };
+    const wentDown = await stop(); start(SUPER, fresh); const up2 = wentDown && await waitFor(`${base}/health`);
+    const oldSession = up2 ? await j('GET', '/v1/me', { token: o.body.session.accessToken }) : { status: 0 };
+    const viaKey = up2 ? await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'exec' } }) : { status: 0 };
+    const same = viaKey.status === 200 && JSON.stringify((await j('GET', `/v1/rooms/${o.body.scenario.room}/thread`, { token: viaKey.body.accessToken })).body.stages) === JSON.stringify(before.thread);
+    const oldPw = psql(DB, 'SELECT 1', creds.app, creds.appPassword); const newPw = psql(DB, 'SELECT 1', creds.app, fresh.EMPATHIA_APP_PASSWORD);
+    step('R-11', 'rotating the three secrets is a restart with new values: every session issued before stops, the old database password no longer connects, and a sandbox still opens with its key and reads the same thread',
+      up2 && oldSession.status === 401 && same && oldPw.status !== 0 && /password authentication failed/.test(oldPw.stderr) && newPw.status === 0, `earlier session ${oldSession.status} · session from the key ${viaKey.status}, same thread ${same} · old role password ${oldPw.status !== 0 ? 'refused' : 'STILL ACCEPTED'} · new one ${newPw.status === 0 ? 'accepted' : 'refused'}`);
+
+    const tid = psql(DB, `SELECT tenant_id FROM app.demo_sandbox WHERE id = '${o.body.sandbox.id}'`).stdout.trim(); const kept0 = count(`SELECT count(*) FROM app.audit_event WHERE tenant_id = '${tid}'`);
+    const aged = psql(DB, `UPDATE app.demo_sandbox SET expires_at = now() - interval '1 minute' WHERE id = '${o.body.sandbox.id}'`);
+    const afterExpiry = await j('GET', '/v1/me', { token: viaKey.body?.accessToken }); const keyNow = await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'exec' } });
+    step('R-12', 'an expired sandbox: its key opens nothing, a session issued before stops, the visitor is told why, and its records are kept', aged.status === 0 && afterExpiry.status === 401 && keyNow.status === 401 && /expired/.test(String(keyNow.body?.detail)) && count(`SELECT count(*) FROM app.audit_event WHERE tenant_id = '${tid}'`) >= kept0 && kept0 > 0 && count(`SELECT count(*) FROM app.room WHERE tenant_id = '${tid}'`) === 1,
+      aged.status === 0 ? `session ${afterExpiry.status} · key ${keyNow.status} “${String(keyNow.body?.detail).slice(0, 80)}” · ${kept0} audit rows and the room still in the database` : aged.stderr.trim().slice(0, 200)); }
 } catch (e) { step('R-XX', 'the rehearsal could not be completed', false, (e && e.message) || String(e)); }
 finally { await stop(); try { clusterDown(); } catch { /* reported by the next run, which removes it first */ } fs.rmSync(objects, { recursive: true, force: true }); }
 
-const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07', 'R-08', 'R-09', 'R-10']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
+const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07', 'R-08', 'R-09', 'R-10', 'R-11', 'R-12']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
 const pass = steps.filter((x) => x.result === 'PASS').length; const fail = steps.length - pass;
 let commit = ''; try { commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(); } catch { /* not a checkout */ }
 fs.mkdirSync(path.join(repo, 'tests/evidence'), { recursive: true });

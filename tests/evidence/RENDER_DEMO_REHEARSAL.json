@@ -1,9 +1,9 @@
 {
- "at": "2026-11-17T15:06:18.106Z",
- "commit": "75168782393311af1d11369caa169c16908003c5",
+ "at": "2026-11-17T15:47:38.380Z",
+ "commit": "e3c8e9f5abc6d4e30ac585338410f5d1cbb38454",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
- "passed": 10,
+ "passed": 12,
  "failed": 0,
  "steps": [
   {
@@ -65,6 +65,18 @@
    "name": "the verification is not a formality: one audit row changed and one row removed in the restored copy are both reported",
    "result": "PASS",
    "detail": "RV-02 FAIL: 147 sealed rows in 7 chains · 1 hashes differ · 0 broken links · 0 gaps · 0 rows not yet s | RV-04 FAIL: 2442 rows in 78 tables (source 2443) · tables that differ: app.field_mounting 3→2 · chain heads the same"
+  },
+  {
+   "id": "R-11",
+   "name": "rotating the three secrets is a restart with new values: every session issued before stops, the old database password no longer connects, and a sandbox still opens with its key and reads the same thread",
+   "result": "PASS",
+   "detail": "earlier session 401 · session from the key 200, same thread true · old role password refused · new one accepted"
+  },
+  {
+   "id": "R-12",
+   "name": "an expired sandbox: its key opens nothing, a session issued before stops, the visitor is told why, and its records are kept",
+   "result": "PASS",
+   "detail": "session 401 · key 401 “the sandbox is unknown, closed or expired, or the key is not right” · 19 audit rows and the room still in the database"
   }
  ],
  "smoke": [
@@ -90,7 +102,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-68a3d15cd1fc400a · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+   "detail": "sbx-858e3d42d0c44b2b · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
   },
   {
    "id": "SM-05",

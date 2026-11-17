@@ -58,6 +58,15 @@ are fixed and now rehearsed. What was read from the platform, what was not verif
 **The staging demo site is not connected to it yet.** Setting `DEMO_API_URL` on `empathia-demo-next` would put `#/connected` on
 staging. It has not been set because the connected build has been through one suite, not the full matrix.
 
+## Two things that are not to be confused (founder, 17 Nov 09:39)
+
+- The API's security tests are this project's own tests. **No independent security audit has been made.**
+- The hosted API serves one page of the demo, `#/connected`. **The rest of the demo site is not connected**: Lite, Engineering,
+  Commissioning, ServiceHands, Assurance and APEX still keep their records in the browser. Moving them is task 167, one page at a time.
+
+Secrets, session and sandbox expiry, and what is kept after a sandbox ends: `docs/operations/DEMO_SECRETS_AND_SESSIONS.md`
+(rotation and expiry are rehearsed every test run, R-11 and R-12; neither has been done on the hosted service).
+
 ## Backup and recovery
 
 Founder, 17 Nov 08:34: "automated database backup/export and recovery planning". `docs/operations/DEMO_BACKUP_AND_RECOVERY.md`.
