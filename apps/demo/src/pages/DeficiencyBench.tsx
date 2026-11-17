@@ -57,7 +57,7 @@ export function DeficiencyBench({ items, persona, initial = '' }: { items: Array
             : <><span className="ui-muted">A field deficiency can be handed to service as a work order; a design deficiency gets a design change.</span>
               <button type="button" className="ui-btn" data-testid="df-handoff" onClick={() => { setWhy(null); setDone(null); const res = apply((x) => handDeficiencyToService(x, persona, { deficiencyId: d.id, issueId: it.i.id, state: d.state, title: it.i.title, severity: it.i.severity, roomId: it.r.outline.id, roomName: it.r.outline.name, buildingKey: it.r.outline.building, lifecycle: it.r.lifecycle })); if ('why' in res) setWhy(res.why); else setDone(`Handed to ServiceHands as ${res.id}`); }}>Hand to ServiceHands</button>
               {!may ? <span className="ui-meta">needs {HANDOFF_AUTHORITIES.join(' or ')}</span> : null}</>}
-          {' '}<a href={`#/thread?room=${it.r.outline.id}`} data-testid="df-thread-link">The room’s whole thread</a>
+          {' '}<a className="ui-btn ui-btn--sm ui-btn--quiet" href={`#/thread?room=${it.r.outline.id}`} data-testid="df-thread-link">The room’s whole thread</a>
         </div>; })()}
       {why ? <div role="alert" data-testid="df-refused"><Notice tone="bad"><b>Refused.</b> {why.join(' · ')}</Notice></div> : null}
       {done ? <div role="status" data-testid="df-done"><Notice tone="ok">{done}. Written to the audit trail.</Notice></div> : null}

@@ -27,7 +27,7 @@ export function EngineerStartPage({ perspective }: { perspective: string }) {
         <p>{D.what}</p>
         <p className="build__row"><button type="button" className="ui-btn ui-btn--primary" data-testid={`eng-go-${D.key}`} onClick={() => openAs(D.role, D.href)}>{D.go}</button>
           {D.alt ? <button type="button" className="ui-btn ui-btn--sm" onClick={() => openAs(D.alt!.role, D.href)}>{D.alt.label}</button> : null}</p>
-        <p><a href={`#eng-sheet-${D.key}`} onClick={(e) => { e.preventDefault(); const el = document.getElementById(`eng-sheet-${D.key}`) as HTMLDetailsElement | null; if (el) { el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }}>Read the inspection sheet</a></p>
+        <p><a className="ui-btn ui-btn--sm ui-btn--quiet" href={`#eng-sheet-${D.key}`} onClick={(e) => { e.preventDefault(); const el = document.getElementById(`eng-sheet-${D.key}`) as HTMLDetailsElement | null; if (el) { el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }}>Read the inspection sheet</a></p>
       </Card>)}</div>
 
       <Card icon="shield" title="Failure handling" sub="Switch a fault on, then take the step it affects: the product refuses with the reason, records the refusal, and leaves nothing half-done" testId="eng-faults">

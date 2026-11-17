@@ -36,6 +36,8 @@ function Redline({ r, persona, focus }: { r: RoomRecord; persona: string; focus:
 
   // the plan: metres → SVG units (100 per metre), a margin for labels
   const S = 100, M = 40; const vw = w * S + 2 * M, vh = l * S + 2 * M; const X = (x: number) => M + x * S, Y = (y: number) => M + y * S;
+  // a device's hit area is at least 26 px across when the plan is drawn 320 px wide (WCAG 2.2 target size on a phone), whatever the room's size
+  const HIT = Math.max(22, Math.ceil((13.5 * vw) / 320));
   const onPlan = (e: { currentTarget: SVGSVGElement; clientX: number; clientY: number }) => {
     if (mode === 'select') return;
     const svg = e.currentTarget; const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const m = svg.getScreenCTM(); if (!m) return;
@@ -105,7 +107,7 @@ function Redline({ r, persona, focus }: { r: RoomRecord; persona: string; focus:
                   className={`fr__dev${on ? ' is-on' : ''}${mounted ? ' is-mounted' : ''}${b.moved ? ' is-moved' : ''}`}
                   onClick={(e) => { if (mode === 'select' || (mode === 'move' && !dev)) { e.stopPropagation(); setSel(p.code); setPin(null); setErr(null); } }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(p.code); } }}>
-                  <circle cx={X(b.x)} cy={Y(b.y)} r={22} className="fr__hit" /><circle cx={X(b.x)} cy={Y(b.y)} r={11} className="fr__dot" />
+                  <circle cx={X(b.x)} cy={Y(b.y)} r={HIT} className="fr__hit" /><circle cx={X(b.x)} cy={Y(b.y)} r={11} className="fr__dot" />
                   <text x={X(b.x) + 15} y={Y(b.y) + 4}>{p.code}</text>
                 </g>; })}
               {s.markups.map((m, i) => <g key={m.id} className={`fr__note fr__note--${m.state.toLowerCase()}`} data-note={m.id}>

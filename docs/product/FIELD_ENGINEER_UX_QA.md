@@ -41,3 +41,14 @@ The first run failed on all seven pages. The failures and the fixes:
 - **Gloves, glare and one-handed use.** These are judged in the field, not in a browser. This needs a field trial with installers. **NOT RUN.**
 - **Offline behaviour of these pages on site.** The demo has an offline shell. These pages' behaviour without a network is not tested here.
 - **Every page at 44 px.** 44 px is the comfortable size for gloved hands. Today it is reached by about two-thirds of the controls on these pages.
+
+## 17 Nov 2026: three more pages, and a regression the suite caught
+
+- **A regression caught.** The full regression of `1cde8b5` failed this suite on the deficiency workbench. The new "The room's whole
+  thread" link there was 23 px tall. It is now a small button, 24 px or more. That candidate was not staged.
+- **Three pages added to the suite:** the field record and redlines, one room end to end, and the Engineer start page. Their first
+  run found two more:
+  - The device markers on the redline plan were 19 px on a phone. The hit area now scales with the room, so it is at least 26 px
+    when the plan is drawn 320 px wide.
+  - The "Read the inspection sheet" links were 19 px. They are small buttons now.
+- **Result:** ten pages, each with no sideways scroll, every control at least 24 px, and every control named.

@@ -14,6 +14,10 @@ const PAGES = [
   ['#/v25/asset?a=AS-0112', 'service', 'an asset’s life'],
   ['#/v25/service', 'service', 'ServiceHands as the technician'],
   ['#/request', 'employee', 'the 45-second request'],
+  // 17 Nov 2026: the pages added since, held to the same bar
+  ['#/install/redline?room=R-ATL-4-218', 'installer', 'the field record and redlines'],
+  ['#/thread?room=R-ATL-7-112', 'service', 'one room end to end'],
+  ['#/engineer', 'cxeng', 'the engineer start page'],
 ];
 const evidence = [];
 for (const [hash, role, what] of PAGES) {
