@@ -23,7 +23,7 @@
  * has to be the platform's. docs/operations/DEMO_BACKUP_AND_RECOVERY.md.
  * No URL, password or row content is printed.
  */
-import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
+import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process'; import { fileURLToPath } from 'node:url';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -68,9 +68,20 @@ export function verify(url, source = null) {
 export function restore(dump, into) {
   const has = sql(into, "SELECT count(*) FROM information_schema.schemata WHERE schema_name = 'app'");
   if (has !== '0') throw new Error('the target database already has an app schema: restore only into an empty database');
-  const r = spawnSync(path.join(BIN, 'pg_restore'), ['--no-owner', '--exit-on-error', '--dbname', envOf(into).PGDATABASE, dump], { env: envOf(into), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-  if (r.status !== 0) throw new Error(`pg_restore stopped: ${(r.stderr || '').trim().split('\n').slice(-2).join(' | ').slice(0, 300)}`);
-  return true;
+  // the platform's export is a directory-format dump in a .dir.tar.gz: unpacked beside nothing else, restored from the directory that holds toc.dat
+  let from = dump; let tmp = '';
+  if (/\.(tar\.gz|tgz)$/.test(dump)) {
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'restore-verify-')); const x = spawnSync('tar', ['-xzf', dump, '-C', tmp, '--no-same-owner'], { encoding: 'utf8' });
+    if (x.status !== 0) { fs.rmSync(tmp, { recursive: true, force: true }); throw new Error(`the archive could not be unpacked: ${(x.stderr || '').trim().slice(0, 200)}`); }
+    const toc = fs.readdirSync(tmp, { recursive: true }).map(String).find((f) => path.basename(f) === 'toc.dat');
+    if (!toc) { fs.rmSync(tmp, { recursive: true, force: true }); throw new Error('the archive holds no directory-format dump (no toc.dat)'); }
+    from = path.join(tmp, path.dirname(toc));
+  }
+  try {
+    const r = spawnSync(path.join(BIN, 'pg_restore'), ['--no-owner', '--exit-on-error', '--dbname', envOf(into).PGDATABASE, from], { env: envOf(into), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    if (r.status !== 0) throw new Error(`pg_restore stopped: ${(r.stderr || '').trim().split('\n').slice(-2).join(' | ').slice(0, 300)}`);
+    return true;
+  } finally { if (tmp) fs.rmSync(tmp, { recursive: true, force: true }); }
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

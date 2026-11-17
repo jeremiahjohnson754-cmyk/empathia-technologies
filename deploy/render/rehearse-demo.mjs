@@ -91,7 +91,7 @@ const sessionSecret = crypto.randomBytes(32).toString('base64');   // what gener
 const envFor = (ownerUrl, extra = {}) => { const e = { PATH: process.env.PATH, PORT: String(port), OBJECT_STORE_DIR: objects };
   for (const [k, v] of Object.entries(declared)) e[k] = v === '<fromDatabase>' ? ownerUrl : k === 'DEMO_SESSION_SECRET' ? sessionSecret : k === 'EMPATHIA_APP_PASSWORD' ? creds.appPassword : k === 'EMPATHIA_WORKER_PASSWORD' ? creds.workerPassword : v;
   e.PGSSLMODE = 'disable'; return { ...e, ...extra }; };   // the one declared value the local cluster cannot honour (no TLS): stated in the header
-let api = null; let log = '';
+let api = null; let log = ''; let recovery = null;
 // The command is run as its words, with no shell around it, in a process group of its own. An earlier version wrapped it in `sh -c`;
 // stopping that stopped the wrapper and left the API running, so the "restart" was answered by the process that had never stopped.
 const argv = sh ? sh.split(/\s+/) : [];
@@ -155,24 +155,36 @@ try {
 
   // ---- recovery (scripts/ops/restore-verify.mjs; docs/operations/DEMO_BACKUP_AND_RECOVERY.md)
   const { manifest, verify, restore } = await import('../../scripts/ops/restore-verify.mjs');
-  const superUrl = (db) => url(creds.superuser, creds.superPassword, db); const ownerUrl = (db) => url(creds.owner, creds.ownerPassword, db); const dump = path.join(os.tmpdir(), `empathia-demo-rehearsal-${creds.port}.dump`);
-  const pgDump = (user, pass, out) => spawnSync(path.join(BIN, 'pg_dump'), ['-h', '127.0.0.1', '-p', String(creds.port), '-U', user, '-d', DB, '--format=custom', '-f', out], { env: { ...process.env, PGPASSWORD: pass }, encoding: 'utf8' });
+  const superUrl = (db) => url(creds.superuser, creds.superPassword, db); const ownerUrl = (db) => url(creds.owner, creds.ownerPassword, db); const dump = path.join(os.tmpdir(), `empathia-demo-rehearsal-${creds.port}.dir.tar.gz`);
+  const pgDump = (user, pass, out, format = 'custom') => spawnSync(path.join(BIN, 'pg_dump'), ['-h', '127.0.0.1', '-p', String(creds.port), '-U', user, '-d', DB, `--format=${format}`, '-f', out], { env: { ...process.env, PGPASSWORD: pass }, encoding: 'utf8' });
   const asOwner = pgDump(creds.owner, creds.ownerPassword, `${dump}.owner`); fs.rmSync(`${dump}.owner`, { force: true });
   step('R-08', 'a plain pg_dump with the owner’s URL is refused: row-level security is forced on the owner, so the export has to be the platform’s', asOwner.status !== 0 && /row-level security policy/.test(asOwner.stderr), asOwner.stderr.trim().split('\n')[0].slice(0, 160));
 
   await stop();   // nothing writes while the source is described and exported
   psql(DB, 'SELECT app.seal_audit_all()');   // what the worker does continuously: every committed row is in its tenant's chain
-  const source = manifest(superUrl(DB)); const exported = pgDump(creds.superuser, creds.superPassword, dump);   // the cluster's superuser stands in for the platform's export
+  // The export is made the way the platform's is: a directory-format dump in a .dir.tar.gz. The cluster's superuser stands in for the platform.
+  const source = manifest(superUrl(DB)); const exportDir = dump.replace(/\.dir\.tar\.gz$/, ''); fs.rmSync(exportDir, { recursive: true, force: true }); const tE = Date.now();
+  let exported = pgDump(creds.superuser, creds.superPassword, exportDir, 'directory');
+  if (exported.status === 0) exported = spawnSync('tar', ['-czf', dump, '-C', path.dirname(exportDir), path.basename(exportDir)], { encoding: 'utf8' });
+  fs.rmSync(exportDir, { recursive: true, force: true }); const exportSeconds = (Date.now() - tE) / 1000; const exportBytes = exported.status === 0 ? fs.statSync(dump).size : 0;
+  // what an export cannot hold: something recorded after it. The service runs again on the source and the installer records a second mounting
+  start(SUPER); const upAgain = await waitFor(`${base}/health`); const sx = upAgain ? await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'installer' } }) : { status: 0 };
+  const lateWrite = sx.status === 200 ? await j('PUT', `${fr}/mounting/${dev}`, { token: sx.body.accessToken, body: { method: 'wall-bracket', heightM: 1.4, fixing: 'bracket and four anchors (synthetic)', backing: 'plywood backing (synthetic)', note: 'after the export (synthetic)' } }) : { status: 0 };
+  const lateVersion = Number(lateWrite.body?.version || 0); const lateWhy = lateVersion ? '' : ` (up ${upAgain}, session ${sx.status}, write ${lateWrite.status} ${String(lateWrite.body?.detail || '').slice(0, 80)})`; await stop();
   psql('postgres', `CREATE DATABASE ${DB}_restored OWNER ${creds.owner}`);
-  let restored = false; let why = exported.status === 0 ? '' : exported.stderr.trim().slice(0, 200); if (exported.status === 0) { try { restored = restore(dump, ownerUrl(`${DB}_restored`)); } catch (e) { why = e.message; } }
-  const checks = restored ? verify(superUrl(`${DB}_restored`), source) : []; const owned = restored ? Number(psql(`${DB}_restored`, `SELECT count(*) FROM pg_tables WHERE schemaname = 'app' AND tableowner <> '${creds.owner}'`).stdout.trim()) : -1;
-  let served = false; let sameThread = false;
-  if (restored && checks.every((x) => x.result === 'PASS')) { start(ownerUrl(`${DB}_restored`)); served = await waitFor(`${base}/health`);
+  let restored = false; let why = exported.status === 0 ? '' : exported.stderr.trim().slice(0, 200); const tR = Date.now(); if (exported.status === 0) { try { restored = restore(dump, ownerUrl(`${DB}_restored`)); } catch (e) { why = e.message; } }
+  const restoreSeconds = (Date.now() - tR) / 1000; const tV = Date.now();
+  const checks = restored ? verify(superUrl(`${DB}_restored`), source) : []; const verifySeconds = (Date.now() - tV) / 1000; const owned = restored ? Number(psql(`${DB}_restored`, `SELECT count(*) FROM pg_tables WHERE schemaname = 'app' AND tableowner <> '${creds.owner}'`).stdout.trim()) : -1;
+  let served = false; let sameThread = false; let copyVersion = -1; const tS = Date.now(); let serveSeconds = 0;
+  if (restored && checks.every((x) => x.result === 'PASS')) { start(ownerUrl(`${DB}_restored`)); served = await waitFor(`${base}/health`); serveSeconds = (Date.now() - tS) / 1000;
     const s2 = served ? await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'exec' } }) : { status: 0 };
-    sameThread = s2.status === 200 && JSON.stringify((await j('GET', `/v1/rooms/${o.body.scenario.room}/thread`, { token: s2.body.accessToken })).body.stages) === JSON.stringify(before.thread); }
+    sameThread = s2.status === 200 && JSON.stringify((await j('GET', `/v1/rooms/${o.body.scenario.room}/thread`, { token: s2.body.accessToken })).body.stages) === JSON.stringify(before.thread);
+    copyVersion = s2.status === 200 ? Number((await j('GET', fr, { token: s2.body.accessToken })).body.devices.find((d) => d.asset === dev)?.mounting?.version || 0) : -1; }
+  recovery = { rows: source.rows, tables: Object.keys(source.tables).length, chains: source.auditHeads.length, exportBytes, exportSeconds, restoreSeconds, verifySeconds, serveSeconds, totalSeconds: restoreSeconds + verifySeconds + serveSeconds,
+    lost: 'whatever was recorded after the export was made: here one mounting (version ' + lateVersion + ' on the source, version ' + copyVersion + ' in the copy)', measuredOn: 'this workstation, a local PostgreSQL cluster; not the platform' };
   step('R-09', 'recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; the API starts on the restored copy and a sandbox opened before the export opens with its key and reads the same thread',
-    restored && checks.length === 4 && checks.every((x) => x.result === 'PASS') && owned === 0 && served && sameThread,
-    restored ? `${checks.map((x) => `${x.id} ${x.result}`).join(' · ')} · ${source.rows} rows, ${source.auditHeads.length} chains · objects not the owner’s: ${owned} · API on the copy ${served} · same thread ${sameThread}${checks.filter((x) => x.result === 'FAIL').map((x) => ` · ${x.id}: ${x.detail}`).join('')}` : `not restored: ${why}`);
+    restored && checks.length === 4 && checks.every((x) => x.result === 'PASS') && owned === 0 && served && sameThread && lateVersion === 2 && copyVersion === 1,
+    restored ? `${checks.map((x) => `${x.id} ${x.result}`).join(' · ')} · ${source.rows} rows, ${source.auditHeads.length} chains · objects not the owner’s: ${owned} · API on the copy ${served} · same thread ${sameThread} · recorded after the export: on the source v${lateVersion}${lateWhy}, in the copy v${copyVersion} (lost, as it must be) · export ${exportSeconds.toFixed(1)} s (${Math.round(exportBytes / 1024)} KiB), restore ${restoreSeconds.toFixed(1)} s, verify ${verifySeconds.toFixed(1)} s, serving again ${serveSeconds.toFixed(1)} s${checks.filter((x) => x.result === 'FAIL').map((x) => ` · ${x.id}: ${x.detail}`).join('')}` : `not restored: ${why}`);
 
   await stop();
   const harm = psql(`${DB}_restored`, "SET session_replication_role = replica; UPDATE app.audit_event SET detail = coalesce(detail, '{}'::jsonb) || '{\"changed\": true}'::jsonb WHERE id = (SELECT id FROM app.audit_event WHERE seq IS NOT NULL ORDER BY tenant_id, seq OFFSET 3 LIMIT 1); DELETE FROM app.field_mounting WHERE ctid = (SELECT ctid FROM app.field_mounting LIMIT 1)");
@@ -203,7 +215,7 @@ const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07', 'R-08', 'R
 const pass = steps.filter((x) => x.result === 'PASS').length; const fail = steps.length - pass;
 let commit = ''; try { commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(); } catch { /* not a checkout */ }
 fs.mkdirSync(path.join(repo, 'tests/evidence'), { recursive: true });
-fs.writeFileSync(path.join(repo, 'tests/evidence/RENDER_DEMO_REHEARSAL.json'), JSON.stringify({ at: new Date().toISOString(), commit, blueprint: 'deploy/render/demo.render.yaml', startCommand: sh, passed: pass, failed: fail, steps,
+fs.writeFileSync(path.join(repo, 'tests/evidence/RENDER_DEMO_REHEARSAL.json'), JSON.stringify({ at: new Date().toISOString(), commit, blueprint: 'deploy/render/demo.render.yaml', startCommand: sh, passed: pass, failed: fail, steps, recovery,
   smoke: fs.existsSync(path.join(repo, '.local/demo-rehearsal-smoke.json')) ? JSON.parse(fs.readFileSync(path.join(repo, '.local/demo-rehearsal-smoke.json'), 'utf8')).results : [],
   database: `a PostgreSQL ${pgVersion} cluster created for this run and removed after it; owner: not a superuser, may create roles`,
   limits: 'No TLS in the rehearsal cluster (PGSSLMODE rehearsed as disable); no Render proxy, container or free-plan sleep; the owner\'s attributes beyond "not a superuser, may create roles" are an assumption about the platform\'s user. The image build and the edge are seen only on Render.' }, null, 1) + '\n');

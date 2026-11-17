@@ -12,7 +12,7 @@ for what real records would need, and says plainly where today's deployment fall
 |---|---|
 | The staged database | Render paid plan `0.1c-256mb` since 17 Nov 2026, 18:27 UTC (in place; the sandboxes already in it were kept). Before that: the free plan, with no backup and a 30-day life |
 | A logical export made by us (`pg_dump`) | **Not possible with the service's own database user**, on any plan (below). Rehearsed: R-08 |
-| Restoring an export and proving what came back | **Built and rehearsed**: `scripts/ops/restore-verify.mjs`, rehearsal R-09 and R-10 |
+| Restoring an export and proving what came back | **Built and rehearsed, with times and the loss window measured locally**: `scripts/ops/restore-verify.mjs`, rehearsal R-09 and R-10. **Not yet done on the platform** (below) |
 | Continuous backup with point-in-time recovery | **On**, by the platform, since the database went onto the paid plan. Not exercised: no recovery has been triggered. Its window is 3 days on a Hobby workspace, 7 on Pro; which this workspace is has not been read |
 | A scheduled export and a scheduled restore drill | **Not built.** They need a platform API key that only the founder can create. No export has been made on the platform yet |
 
@@ -70,6 +70,54 @@ Verification has to read across tenants, so it needs a role that bypasses row-le
 The drill therefore restores into a scratch PostgreSQL where a superuser exists, as the rehearsal does. The manifest is taken the
 same way, or kept from the last verified drill; a chain head kept outside the database is also what makes a rewritten chain
 detectable (ADR-0010).
+
+## The controlled drill: what has been measured, and what has not
+
+Founder, 17 Nov 2026: "There's still an important difference between backup capability existing and recovery being proven…
+Perform a controlled recovery drill and document recovery time, data loss, and restore integrity."
+
+### Measured, in the rehearsal (this workstation, a local PostgreSQL 16 cluster; **not the platform**)
+
+Every test run, R-09, on a database with seven sandboxes (2,443 rows in 78 tables, 7 audit chains), with the export made the way the
+platform makes it (a directory-format dump in a `.dir.tar.gz`). Figures from the run of 17 Nov, in
+`tests/evidence/RENDER_DEMO_REHEARSAL.json` under `recovery`:
+
+| | |
+|---|---|
+| Restore integrity | RV-01…04 pass against the source's manifest: every migration with its content hash, the same rows in every table, row-level security forced on the same tables, every audit row's hash recomputed and every chain head equal. The API then serves the copy and a sandbox opened before the export reads the same thread |
+| Data loss | **everything recorded after the export was made.** Shown, not assumed: a mounting recorded after the export is version 2 on the source and version 1 in the copy |
+| Recovery time | export 0.2 s (139 KiB); restore 0.6 s; verification 1.6 s; the service answering on the copy 0.6 s: about 3 s after the export is in hand. These are for a database this small on a local disk. **They are not the platform's figures** |
+
+### Not yet done: the same drill on the platform
+
+No export has been made on the platform and no recovery triggered there. Neither can be done from this workstation: the database
+accepts no connection from outside its private network (by design: the platform's own query tool was refused too), and creating an
+export or a recovery needs the platform's dashboard or an API key, which are the founder's.
+
+What is in place for it:
+
+- **A marker is already in the hosted database.** `scripts/ops/recovery-drill.mjs mark` opened a sandbox there and recorded one
+  mounting at **19:02:41 UTC on 17 Nov 2026**. It lasts until 19:02 UTC on 20 Nov. Its id and key are in `.local/` on this
+  workstation, not in the repository.
+- `mark-after` records a second mounting after the export or recovery point; `check` says which markers a database holds.
+- `restore-verify.mjs` unpacks and restores the platform's archive format.
+
+**Drill A, a logical export (integrity, data loss, time off the platform).** The founder: in the dashboard, the database's Recovery
+page, *Create export*; when it is ready, download the `.dir.tar.gz` and attach it (it holds synthetic sandboxes only). Then, here:
+`mark-after`; restore the archive into an empty local database as a non-superuser owner; RV-01…03; start the API on the copy;
+`check` against it. Expected: the before marker present, the after marker absent. Recorded: the export's size and the time the
+platform took to make it (from its own timestamps), the restore, verification and serving times, and the loss window (the time
+between the export and the after marker).
+
+**Drill B, point-in-time recovery (the real recovery path).** The founder: *Restore Database* to a time between the two markers.
+The platform creates a **new** database instance, which is billed while it exists (the same $6.00 a month plan, by the second), so
+it needs the founder's word; then the service's `DATABASE_URL` is pointed at it in the dashboard and the service redeploys. Here:
+`check` and the deployment check through the public address, and the times read from the platform's events: from the trigger to the
+new instance being available, and to the first good answer from the service. Then the founder decides which instance is kept; the
+other is deleted by the founder.
+
+Until one of these has been run, the honest statement is: **backup exists on the platform; recovery has been proven only in the
+rehearsal.**
 
 ## Recovery, by what was lost
 
