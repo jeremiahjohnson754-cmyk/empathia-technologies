@@ -17,8 +17,8 @@ tasks, and what is not done without the founder's word. The audits themselves ar
 | Task | From the audits |
 |---|---|
 | #161 | The vertical slice (the founder's own bar). Built: `VERTICAL_SLICE.md`. |
-| #162 | V2.5.5 parity: the Engineer start page, inspection sheets, fault injection. |
-| #163 | SIGNAL must feel like SIGNAL: compare Learn with the standalone and close the gaps. |
+| #162 | V2.5.5 parity: the Engineer start page, inspection sheets, fault injection. Built: `ENGINEER_START.md`. |
+| #163 | SIGNAL must feel like SIGNAL: compare Learn with the standalone and close the gaps. Begun: the title page (`docs/restoration/SIGNAL_INVENTORY.md`). |
 | #164 | The corporate website on phones: length, hierarchy, a sticky call to action, product loops, measured Web Vitals, WCAG. |
 | #165 | The four worlds: one-click entry, the world kept across products, breadcrumbs, search in Lite, phone 3D performance. |
 | #166 | ServiceHands depth (problem, known error, change), a traceability matrix, Six Sigma analytics, AI controls. |

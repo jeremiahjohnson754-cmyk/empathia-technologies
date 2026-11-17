@@ -178,6 +178,12 @@ export const OPS_PAGES: readonly PageDef[] = [
     search: { keywords: 'scenario journey teams boardroom lecture broadcast ballroom divisible end to end request acceptance assurance', aliases: ['commissioning scenarios', 'reference journeys'] },
   },
   {
+    id: 'engineer.start', title: 'Engineer start', purpose: 'Three things an engineer inspects — room design, commissioning verification, issue handoff — each with its inspection sheet, and the faults that show how each step fails', product: 'commissioning',
+    path: '/engineer', alias: ['/v25/start'], authority: { roles: ['syseng', 'cxeng', 'architect', 'qa', 'steward', 'designer', 'svcmgr'], why: 'engineering inspection: the people who design, commission, review and hand off (V2.5.5 Engineer Edition)' },
+    load: adapt(() => import('./pages/EngineerStart.js'), (m, p) => h(m.EngineerStartPage, { perspective: p.role })),
+    search: { keywords: 'engineer start inspection sheet evidence states security boundary source references tests failure handling fault injection engineering edition', aliases: ['engineer start', 'inspection sheets', 'fault injection'] },
+  },
+  {
     id: 'thread.room', title: 'One room, end to end', purpose: 'One room’s record followed through every product: Lite, engineering, commissioning, ServiceHands, assurance and APEX, with the ids that carry it and what is recorded at each step', product: 'commissioning',
     path: '/thread', authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the record of a room across the products: everyone who works on a room or answers for it' },
     load: adapt(() => import('./pages/Thread.js'), (m, p) => h(m.ThreadPage, { perspective: p.role, hash: p.hash })),

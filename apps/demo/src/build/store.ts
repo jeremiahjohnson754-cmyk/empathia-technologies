@@ -64,10 +64,34 @@ const log = (d: Draft, by: string, type: string, detail: string, outcome: 'ALLOW
 export interface CreateInput { name: string; template: string; unit: 'm' | 'ft'; length?: string; width?: string; ceiling?: string; occupancy?: string; intendedUse?: string; shape: 'rect' | 'lshape' }
 
 /** Mirrors `rooms.createRoom` of the enterprise API: declared dimensions are parsed (feet and inches accepted), missing ones are MODELED from the template and say so; nothing is silently substituted for a typed value. */
+// ------------------------------------------------------------------------------------------------ failure handling (V2.5.5 Engineer Edition)
+/** Faults an engineering persona can inject to see how each step fails: every one makes a real refusal with its reason, and nothing is half-done. */
+export const FAULTS = [
+  ['missingGeometry', 'Missing geometry', 'a new room is refused with its reason; nothing is created'],
+  ['conflictingId', 'Conflicting asset id', 'a new device is refused and the conflicting id is named'],
+  ['rejectApproval', 'Approval rejected', 'the classification stays proposed and the design stays PLANNED'],
+  ['invalidEvidence', 'Invalid test evidence', 'the result is not recorded and the workbook is not generated'],
+  ['integrationDown', 'Drawing Intelligence unavailable', 'no drawing is approved and none is marked current'],
+] as const;
+export type FaultKey = typeof FAULTS[number][0];
+const FAULT_KEY = 'empathia.demo.faults.v1';
+export const FAULT_AUTHORITIES = ['room.classify.approve', 'tests.verify.all', 'provenance.review'];
+export function faultsOn(): Partial<Record<FaultKey, boolean>> { try { const d = JSON.parse(localStorage.getItem(FAULT_KEY) || '{}'); return d && typeof d === 'object' ? d : {}; } catch { return {}; } }
+export const faulted = (k: FaultKey) => !!faultsOn()[k];
+/** Switch a fault on or off: an engineering persona only (the systems engineer, the commissioning engineer or the data steward). */
+export function setFault(persona: string, k: FaultKey, on: boolean): Refusal | null {
+  if (!FAULT_AUTHORITIES.some((x) => holds(persona, x))) return refused([`${personaLabel(persona)} does not inject faults: an engineering persona does (${FAULT_AUTHORITIES.join(', ')})`]);
+  if (!FAULTS.some(([key]) => key === k)) return refused([`unknown fault ${k}`]);
+  try { const f = faultsOn(); if (on) f[k] = true; else delete f[k]; localStorage.setItem(FAULT_KEY, JSON.stringify(f)); } catch { return refused(['this browser could not keep the fault; nothing changed']); }
+  return null;
+}
+const faultWhy = (k: FaultKey) => { const f = FAULTS.find(([key]) => key === k)!; return `fault injected (${f[1].toLowerCase()}): ${f[2]}`; };
+
 export function createDraft(input: CreateInput, persona: string): Draft | Refusal {
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design: a designer or systems engineer creates a room`]);
   const T = C.templates[input.template]; if (!T) return refused([`unknown template ${input.template}`]);
   if (!input.name.trim()) return refused(['the room needs a name']);
+  if (faulted('missingGeometry')) return refused([faultWhy('missingGeometry')]);
   const prov: Record<string, string> = {};
   const val = (k: 'length' | 'width' | 'ceiling', i: 0 | 1 | 2) => { const v = input[k]; if (v != null && v.trim() !== '') { const m = parseLength(v, input.unit); if (!m) { prov[k] = 'UNREADABLE'; return null; } prov[k] = 'DECLARED'; return m; } prov[k] = 'MODELED'; return T.dims![i]; };
   const L = val('length', 0), W = val('width', 1), H = val('ceiling', 2);
@@ -112,6 +136,7 @@ export function addDevice(d: Draft, persona: string, cat: string, pos: { x: numb
   if (!holds(persona, 'room.design')) return refused([`${personaLabel(persona)} does not hold room.design`]);
   if (d.design.lifecycle !== 'PLANNED' && d.design.lifecycle !== 'COMMISSIONING') return refused([`devices are planned while the room is PLANNED, or changed during (re)commissioning (this one is ${d.design.lifecycle})`]);
   if (!C.categories[cat]) return refused([`unknown equipment category ${cat}`]);
+  if (faulted('conflictingId')) { const clash = (live(d.design.devices) as PlannedDevice[])[0]?.id || 'A-0001'; log(d, persona, 'device.added', `refused: ${faultWhy('conflictingId')} (${clash})`, 'DENIED'); return refused([`${faultWhy('conflictingId')}: ${clash} is already a device of this room`]); }
   const id = `PA-${String(++d.seq.pa).padStart(4, '0')}`;
   const dev = newDevice(id, cat, d.design.devices.filter((x) => !x.removed), { x: pos.x, y: pos.y }, '', C);
   d.design.devices.push(dev);
@@ -183,6 +208,7 @@ export function approveClassification(d: Draft, persona: string, override?: { ar
   if (!holds(persona, 'room.classify.approve')) return refused([`${personaLabel(persona)} does not hold room.classify.approve: a systems engineer approves the classification`]);
   const author = d.revisions.length ? d.revisions[d.revisions.length - 1]!.by : d.lastEditedBy;
   if (author === persona) { log(d, persona, 'room.classify.approve', `refused: ${personaLabel(persona)} authored the latest design change (separation of duties, ADR-0005)`, 'DENIED'); return refused([`${personaLabel(persona)} saved the latest design change and does not approve it: separation of duties — switch to another perspective, or have a designer save the revision`]); }
+  if (faulted('rejectApproval')) { log(d, persona, 'room.classify.approve', `refused: ${faultWhy('rejectApproval')}`, 'DENIED'); return refused([faultWhy('rejectApproval')]); }
   const s = analysis(d).classification;
   if (override) { if (!C.archetypes[override.archetype]) return refused([`unknown archetype ${override.archetype}`]); if ((override.reason || '').trim().length < 10) return refused(['an override needs a reason of at least 10 characters']); }
   d.design.classification.approved = { archetype: override ? override.archetype : s.archetype, override: !!override, reason: override ? override.reason : 'suggestion accepted', by: persona };
@@ -251,6 +277,7 @@ export function resolveRedline(d: Draft, persona: string, id: string, resolution
 export function approveDrawing(d: Draft, persona: string, kind: string): Draft | Refusal {
   if (!holds(persona, 'design.release') && !holds(persona, 'room.design.approve')) return refused([`${personaLabel(persona)} does not hold design.release`]);
   const dr = d.drawings[kind]; if (!dr) return refused([`no drawing ${kind}`]);
+  if (faulted('integrationDown')) { log(d, persona, 'drawing.approved', `${kind} refused: ${faultWhy('integrationDown')}`, 'DENIED'); return refused([faultWhy('integrationDown')]); }
   if (!d.design.classification.approved || d.design.classification.approved.stale) return refused(['drawings are approved after the classification is approved (and still current)']);
   const open = (d.redlines || []).filter((r) => r.drawing === kind && r.state === 'OPEN'); if (open.length) return refused([`${open.length} open redline${open.length === 1 ? '' : 's'} on ${DRAWING_KINDS[kind]}: resolve ${open.length === 1 ? 'it' : 'them'} first (${open.map((r) => r.id).join(', ')})`]);
   d.drawings[kind] = { ...dr, state: 'APPROVED', by: persona };
@@ -284,6 +311,7 @@ export function transition(d: Draft, persona: string, to: RoomLifecycle): Draft 
 export function record(d: Draft, persona: string, testId: string, input: { state: string; kind: string; ref: string; instrument?: string }): Draft | Refusal {
   const row = analysis(d).applicability.rows.find((r) => r.id === testId);
   const why = recordBlockers(d.design.lifecycle, row, persona, { state: input.state, evidence: { kind: input.kind, ref: input.ref, instrument: input.instrument || null } });
+  if (faulted('invalidEvidence')) why.push(faultWhy('invalidEvidence'));
   if (why.length) { log(d, persona, 'test.recorded', `${testId} refused: ${why.join('; ')}`, 'DENIED'); return refused(why); }
   d.design.results = d.design.results || {};
   d.design.results[testId] = buildResult(d.design.results[testId], persona, { state: input.state, evidence: { kind: input.kind, ref: input.ref, instrument: input.instrument || null } }, now());
@@ -320,6 +348,8 @@ export const live = (xs: Array<PlannedDevice | Connection>) => xs.filter((x) => 
 /** The commissioning workbook (V2.5.3 v25RoomWorkbook/v25RoomWorkbookSheets, restored 12 Nov 2026): Dashboard (its counts are
  *  formulas over the Testing sheet), Project, Equipment, Testing (a list of result values), Design checks, Redlines, About. Results
  *  typed into the file are not read back: a result counts only when it is recorded here with evidence and verified by someone else. */
+/** Why the workbook cannot be generated right now, if it cannot. */
+export const workbookRefusal = (): string[] | null => (faulted('invalidEvidence') ? [faultWhy('invalidEvidence')] : null);
 export function workbookSheets(d: Draft): import('./xlsx.js').Sheet[] {
   const a = analysis(d); const res = results(d); const devs = live(d.design.devices) as PlannedDevice[];
   const testing = a.applicability.rows.map((r) => { const R = res[r.id]; const lbl = r.applicable ? resultLabel(R) : 'N/A';

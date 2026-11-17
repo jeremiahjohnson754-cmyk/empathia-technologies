@@ -275,3 +275,8 @@ main details > summary { min-height: 24px; }
 .fr .build__row, .th .build__row { flex-wrap: wrap; max-width: 100%; }
 .fr .kit-field, .th .kit-field { max-width: 100%; min-width: 0; }
 .fr select, .th select { max-width: 100%; min-width: 0; }
+/* Engineer start (V2.5.5): three demonstrations side by side, their inspection sheets below */
+.eng__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+@media (max-width: 980px) { .eng__grid { grid-template-columns: minmax(0, 1fr); } }
+.eng__sheet { margin-top: 12px; } .eng__sheet summary { min-height: 32px; cursor: pointer; }
+.eng__sheet ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; } .eng__sheet code { overflow-wrap: anywhere; }
