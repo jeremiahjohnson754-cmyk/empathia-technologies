@@ -145,3 +145,32 @@ before any item is called working.
   carries a revision field the source does not, and the source carries fields the library does not.
 - The second variant of the standalone (one remembered-choice flag on one decision) still needs the founder's ruling
   (`docs/surpass/SIGNAL_CANON_DIFF_AND_PLAYABILITY_AUDIT.md`).
+
+## The title page (16 Nov 2026)
+
+The founder, 16 Nov 2026: "SIGNAL needs to feel like SIGNAL—not a cheap training dashboard wearing its name."
+
+- **What the reference build is.** Read statically again on 16 Nov: `signal-standalone.html` contains no video and no audio element.
+  It is an illustrated graphic novel: 1,640 panels, 1,700 speech bubbles and 387 decisions, drawn as SVG with 160 WebP images. An
+  audit received the same day describes "video segments" and "hero footage"; the build has none, so none is missing.
+- **What was wrong.** `#/story` opened on a page header with five counters. The reference build opens on its **cover**.
+- **What was done.** `#/story` now opens on the title page as the build draws it:
+  - the cover: the sanctuary before dawn, three stage beams, Maya and Ray at the booth, and the four coloured lines for signal,
+    power, control and network;
+  - the hour ("Sunday. 7:12 AM. Two hours before doors open."), the invitation and "Begin the story";
+  - the cast cards, the eleven prologue chapters by number, and the twelve seasons in their four level blocks with the build's colours.
+
+  The counters and the draft notice follow it.
+- **How.** `scripts/signal/extract-titlepage.py` reads the title page out of the private reference build as text and writes
+  `apps/demo/src/signal/titlepage.gen.ts`. Nothing is edited, and the canon package is untouched. The cover's figures resolve in the
+  canon's own sprite sheet.
+- **Verified by:**
+  - `tests/unit/signal-titlepage.test.mjs` (TP-01…03): it names its source, it carries nothing that runs or loads, every reference
+    resolves, and it agrees with the canon's chapters and seasons.
+  - `tests/browser/demo-story.test.mjs` ST-TP and ST-04.
+- **Not yet:**
+  - **The display face.** The build letters its titles in Bangers, loaded from a font service. The demonstration requests nothing
+    from outside the page and does not bundle that face yet, so the lettering falls back to Impact or the system's heavy sans. Bundling
+    it (an open-licence face) needs the font file; package and file downloads were off in this session.
+  - **The rest of the feel, still to compare one by one** (task #163): the reading toolbar (System View, Flags, Reflection, Still
+    art), the chapter pill and the progress bar, the panel wash and bubble styling, and the contents page.

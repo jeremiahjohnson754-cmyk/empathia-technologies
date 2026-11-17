@@ -66,6 +66,7 @@ suite('unit: ServiceHands import — the CSV parser, hostile rows, the commit ru
 suite('unit: reverberation instrument — known-answer decays, refusals on short range, octave filters, WAV/CSV readers', 'unit', node, ['--test', 'tests/unit/bench-reverb.test.mjs'], tap);
 suite('unit: Learn cases — separation of duties held in the store, with the DENIED ledger event', 'unit', node, ['--test', 'tests/unit/learn-separation.test.mjs'], tap);
 suite('unit: people and experience — who did each job, experience by complexity and kind, totals by layer and quarter', 'unit', node, ['--test', 'tests/unit/people-involvement.test.mjs'], tap);
+suite('unit: SIGNAL title page — extracted from the reference build, inert, resolves in the canon sprite sheet, agrees with the canon', 'unit', node, ['--test', 'tests/unit/signal-titlepage.test.mjs'], tap);
 suite('unit: one room end to end — handoff to service, the job does not close the deficiency, the verified retest does, APEX hypotheses, the ids that tie the stages', 'unit', node, ['--test', 'tests/unit/thread-slice.test.mjs'], tap);
 suite('unit: phase 1 field record — mounting, hookups against the design, field moves decided independently, notes', 'unit', node, ['--test', 'tests/unit/field-record.test.mjs'], tap);
 suite('unit: lifecycle refresh planning — refresh year per unit, annual plan and multi-year strategy agree, cost only when declared', 'unit', node, ['--test', 'tests/unit/refresh-plan.test.mjs'], tap);

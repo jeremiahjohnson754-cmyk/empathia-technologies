@@ -20,6 +20,7 @@ import { cinematicFor, sceneOf } from './cinematic.js';
 import { liteForChapter, liteForTerm, liteForText } from './lite.js';
 import { LiteTryCard } from './LiteTry.js';
 import { Flagship, flagshipAfter } from './Flagship.js';
+import { TITLE_PAGE, COVER_SVG } from './titlepage.gen.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, callbacksBefore, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
   PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, recordChalTry, skip, chapterLocks, lockedBehind, type BossRecord, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
@@ -113,21 +114,35 @@ export default function StoryPage({ params, role }: PageProps) {
 function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress; commit: (p: Progress) => void }) {
   const next = resume(ix, progress); const started = Object.keys(progress.chapters).length > 0; const done = (s: number) => ix.chapters.filter((c) => c.season === s && progress.chapters[c.id]?.done).length;
   const [open, setOpen] = useState<number>(next.season); const st = ix.stats;
+  useEffect(() => { void loadDefs(); }, []);
   const seasonChapters = ix.chapters.filter((c) => c.season === open); const locks = useMemo(() => chapterLocks(ix, progress), [ix, progress]);
   return (
     <div className="sg" data-testid="story-library">
       <Crumbs items={[{ label: 'Learn', href: '#/learn' }, { label: 'SIGNAL' }]} />
-      <p className="kicker">Empathia Learn · an interactive graphic novel <Draft /></p>
-      <h1 tabIndex={-1}>SIGNAL</h1>
-      <p className="lead">Maya starts as a volunteer at a sound desk and ends as the principal architect of an estate that no longer needs her. Twelve seasons that teach AV, IT, lighting and live-event systems by living through them.</p>
+      {/* The title page, exactly as the founder's reference build opens: the cover, the hour, the invitation, the cast (founder, 16 Nov
+          2026: "SIGNAL needs to feel like SIGNAL"). The art is his; titlepage.gen.ts is extracted from the build, never edited. */}
+      <section className="tp" aria-label="SIGNAL — title page" data-testid="story-title">
+        <figure className="tp-cover" role="img" aria-label={TITLE_PAGE.alt} data-testid="story-cover" dangerouslySetInnerHTML={{ __html: COVER_SVG }} />
+        <div className="tp-inner">
+          <h1 tabIndex={-1} className="ui-sr">SIGNAL</h1>
+          <p className="tp-kick">Empathia Learn · an interactive graphic novel <Draft /></p>
+          <p className="tp-time">{TITLE_PAGE.time}</p>
+          <p className="tp-intro">{TITLE_PAGE.intro}</p>
+          <p className="tp-cta sg-acts"><a className="tp-btn tp-btn--primary" href={`#/story/${next.id}`} data-testid="story-continue">{started ? `▶ Continue: ${next.title}` : '▶ Begin the story'}</a>
+            <a className="tp-btn tp-btn--ghost" href="#/story" onClick={(e) => { e.preventDefault(); document.getElementById('sg-contents')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>Contents</a>
+            {started && <button type="button" className="tp-btn" data-testid="story-reset" onClick={() => commit({ ...progress, chapters: {}, last: null })}>Forget my progress</button>}</p>
+          <div className="tp-cast" data-testid="story-cast">{TITLE_PAGE.cast.map((c) => <div className="tp-card" key={c.name}><span className="tp-por" aria-hidden="true" dangerouslySetInnerHTML={{ __html: c.svg }} /><div><p className="tp-name">{c.name}</p><p className="tp-role">{c.role}</p></div></div>)}</div>
+          <p className="tp-kicker">{TITLE_PAGE.kickers[0]}</p>
+          <nav className="tp-toc" aria-label="Prologue chapters" data-testid="story-toc">{TITLE_PAGE.toc.map((c) => <a key={c.id} href={`#/story/${c.id}`} data-read={progress.chapters[c.id]?.done ? 'yes' : 'no'}><b>{c.n}</b>{c.label}</a>)}</nav>
+          <p className="tp-kicker" id="sg-contents">{TITLE_PAGE.kickers[1]}</p>
+        </div>
+      </section>
       <ul className="sg-stats" data-testid="story-stats"><li><b>{st.chapters}</b> chapters</li><li><b>{st.seasons}</b> seasons</li><li><b>{st.panels!.toLocaleString('en-GB')}</b> panels</li><li><b>{st.decisions}</b> decisions</li><li><b>{st.quests}</b> quests</li></ul>
-      <p className="sg-acts"><a className="ui-btn ui-btn--primary" href={`#/story/${next.id}`} data-testid="story-continue">{started ? `Continue: ${next.title}` : 'Start at the Prologue'}</a>
-        {started && <button type="button" className="ui-btn ui-btn--quiet" data-testid="story-reset" onClick={() => commit({ ...progress, chapters: {}, last: null })}>Forget my progress</button>}</p>
       <p className="ui-meta">The author’s complete draft, shown unchanged. {st.review_flags} review points are still open and are marked where they apply; treat technical figures as illustrative until they close. Your progress stays in this browser and is practice, not a credential. In the product, SIGNAL is free through Season 2.</p>
 
       <nav className="sg-seasons" aria-label="Seasons">
         <button type="button" className="sg-season" aria-pressed={open === 0} onClick={() => setOpen(0)} data-season="0"><span className="sg-season__n">Prologue</span><span className="sg-season__t">Think like a systems engineer</span><span className="ui-meta">{done(0)} of {ix.chapters.filter((c) => c.season === 0).length} read</span></button>
-        {BANDS.map(([band, nums]) => (<div key={band} className="sg-band"><h2 className="sg-band__h">{band}</h2><div className="sg-band__row">
+        {BANDS.map(([band, nums], bi) => (<div key={band} className="sg-band" style={{ ['--c' as string]: TITLE_PAGE.arc[bi]?.color || 'var(--accent)' }}><h2 className="sg-band__h">{band}</h2><div className="sg-band__row">
           {nums.map((n) => { const all = ix.chapters.filter((c) => c.season === n).length; return <button key={n} type="button" className="sg-season" aria-pressed={open === n} onClick={() => setOpen(n)} data-season={n}><span className="sg-season__n">Season {n}</span><span className="sg-season__t">{ix.seasons[String(n)]}</span><span className="ui-meta">{done(n)} of {all} read</span></button>; })}</div></div>))}
       </nav>
 
