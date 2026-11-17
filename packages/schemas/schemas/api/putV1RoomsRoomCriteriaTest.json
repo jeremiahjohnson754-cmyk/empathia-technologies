@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/putV1RoomsRoomCriteriaTest/0.1.0.json",
+  "title": "PUT /v1/rooms/{room}/criteria/{test} request body",
+  "description": "Set what the room has to meet for one test: a metric and a lower and/or upper limit, with where the limit comes from. A new version; earlier versions stay. Before acceptance only",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metric",
+    "source"
+  ],
+  "properties": {
+    "metric": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{1,60}$"
+    },
+    "lower": {
+      "type": "number"
+    },
+    "upper": {
+      "type": "number"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 300
+    }
+  }
+}

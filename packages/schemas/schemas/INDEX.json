@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 88,
+    "api": 89,
     "entities": 4
   },
   "files": [
@@ -646,7 +646,7 @@
     {
       "file": "api/postV1RoomsRoomResults.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomResults/0.1.0.json",
-      "sha256": "adff7c03822cce0185fc5aae8e81cc96cd48c2877180229ca3f6f68cf299cff0"
+      "sha256": "3e8016b8f77520f3d5daeb49a0a90e6327d517c5c1c6a83b394fc1c6342fc3ca"
     },
     {
       "file": "api/postV1IssuesIssueAssign.json",
@@ -829,9 +829,14 @@
       "sha256": "826f8af547f8eb6a4e9eecdfb1a02bfbafc8c41799a374cd532a2d89b773a038"
     },
     {
+      "file": "api/putV1RoomsRoomCriteriaTest.json",
+      "$id": "https://schemas.empathia.invalid/api/putV1RoomsRoomCriteriaTest/0.1.0.json",
+      "sha256": "19d8fd39e1602cc93a95cc68b2c0d1ca9fc4dc9335bc9e42db5ba5d671fad95e"
+    },
+    {
       "file": "api/postV1RoomsRoomMeasurements.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomMeasurements/0.1.0.json",
-      "sha256": "b9ff305d82e1e5851162ae13d1cce7c268e1bb521c50bb9190409dc9c05c3331"
+      "sha256": "fa5da614d2ea61ca0a3a4dbf0f7cd3a130bd776dc3ed84cf5fafd5a335cdf965"
     },
     {
       "file": "api/postV1RoomsRoomMeasurementsImport.json",

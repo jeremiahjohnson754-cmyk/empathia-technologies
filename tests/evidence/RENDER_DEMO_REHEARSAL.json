@@ -1,6 +1,6 @@
 {
- "at": "2026-11-17T22:10:15.722Z",
- "commit": "62e89f4edce37388416aad65ef74e3d027e36389",
+ "at": "2026-11-17T22:42:43.145Z",
+ "commit": "5941aa9a5dfe3f9599b6d892220a8e7b28bd513e",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
  "passed": 13,
@@ -16,7 +16,7 @@
    "id": "R-01",
    "name": "the start command, as written in the Blueprint, prepares an empty database as an owner that is not a superuser — creating the two runtime roles — and brings the API up in production, demonstration mode",
    "result": "PASS",
-   "detail": "36 migrations · authMode demo · roles created ×2 · 18 variables from the Blueprint · PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)"
+   "detail": "37 migrations · authMode demo · roles created ×2 · 18 variables from the Blueprint · PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)"
   },
   {
    "id": "R-02",
@@ -28,7 +28,7 @@
    "id": "R-03",
    "name": "a restart: the same command runs again as the same owner — the role step finds the roles and sets their passwords — and changes nothing; a sandbox opened before it opens with its key after it and reads the same record; a session issued before it is still good",
    "result": "PASS",
-   "detail": "stopped, nothing answering, started again · roles: password set ×2 · session from the key 200 · same thread true · earlier session 200 · 36 migrations, 4 sandboxes, unchanged"
+   "detail": "stopped, nothing answering, started again · roles: password set ×2 · session from the key 200 · same thread true · earlier session 200 · 37 migrations, 4 sandboxes, unchanged"
   },
   {
    "id": "R-07",
@@ -52,25 +52,25 @@
    "id": "R-13",
    "name": "the privilege list in the image is exactly what the migrations produce on an empty database",
    "result": "PASS",
-   "detail": "{\"list\":\"current\",\"migration\":\"0036\",\"latestMigration\":\"0036\",\"inList\":374,\"fromMigrations\":374}"
+   "detail": "{\"list\":\"current\",\"migration\":\"0037\",\"latestMigration\":\"0037\",\"inList\":379,\"fromMigrations\":379}"
   },
   {
    "id": "R-08",
    "name": "a plain pg_dump with the owner’s URL is refused: row-level security is forced on the owner, so the export has to be the platform’s",
    "result": "PASS",
-   "detail": "pg_dump: error: query failed: ERROR:  query would be affected by row-level security policy for table \"ai_request\""
+   "detail": "pg_dump: error: query failed: ERROR:  query would be affected by row-level security policy for table \"acceptance_criterion\""
   },
   {
    "id": "R-09",
    "name": "recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; on the copy as restored the service is unhealthy and refuses, the runtime role cannot repair the privileges and the owner’s repair makes them equal to the source’s; the API then serves the restored copy and a sandbox opened before the export opens with its key and reads the same thread",
    "result": "PASS",
-   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 4810 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.2 s (195 KiB), restore 0.5 s, verify 1.4 s, serving again 16.4 s"
+   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 4825 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.4 s (197 KiB), restore 0.7 s, verify 2.3 s, serving again 16.4 s"
   },
   {
    "id": "R-10",
    "name": "the verification is not a formality: one audit row changed and one row removed in the restored copy are both reported",
    "result": "PASS",
-   "detail": "RV-02 FAIL: 231 sealed rows in 7 chains · 1 hashes differ · 0 broken links · 0 gaps · 0 rows not yet s | RV-04 FAIL: 4809 rows in 78 tables (source 4810) · tables that differ: app.field_mounting 3→2 · chain heads the same"
+   "detail": "RV-02 FAIL: 238 sealed rows in 7 chains · 1 hashes differ · 0 broken links · 0 gaps · 0 rows not yet s | RV-04 FAIL: 4824 rows in 79 tables (source 4825) · tables that differ: app.field_mounting 3→2 · chain heads the same"
   },
   {
    "id": "R-11",
@@ -82,19 +82,19 @@
    "id": "R-12",
    "name": "an expired sandbox: its key opens nothing, a session issued before stops, the visitor is told why, and its records are kept",
    "result": "PASS",
-   "detail": "session 401 · key 401 “the sandbox is unknown, closed or expired, or the key is not right” · 32 audit rows and the room still in the database"
+   "detail": "session 401 · key 401 “the sandbox is unknown, closed or expired, or the key is not right” · 33 audit rows and the room still in the database"
   }
  ],
  "recovery": {
-  "rows": 4810,
-  "tables": 78,
+  "rows": 4825,
+  "tables": 79,
   "chains": 7,
-  "exportBytes": 200005,
-  "exportSeconds": 0.202,
-  "restoreSeconds": 0.523,
-  "verifySeconds": 1.44,
-  "serveSeconds": 16.36,
-  "totalSeconds": 18.323,
+  "exportBytes": 201675,
+  "exportSeconds": 0.437,
+  "restoreSeconds": 0.72,
+  "verifySeconds": 2.275,
+  "serveSeconds": 16.371,
+  "totalSeconds": 19.366,
   "lost": "whatever was recorded after the export was made: here one mounting (version 2 on the source, version 1 in the copy)",
   "measuredOn": "this workstation, a local PostgreSQL cluster; not the platform"
  },
@@ -103,7 +103,7 @@
    "id": "SM-01",
    "title": "the service is up in demonstration mode, on a named release, with its database reachable",
    "result": "PASS",
-   "detail": "status ok · authMode demo · release 62e89f4edce3 (staging) · migrations 36"
+   "detail": "status ok · authMode demo · release 5941aa9a5dfe (staging) · migrations 37"
   },
   {
    "id": "SM-02",
@@ -121,7 +121,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, fifteen synthetic people and two installed rooms, one of them the flagship lecture theatre by its canonical identifier; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-a6326a37f74040b0 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED, R-PLN-0002 INSTALLED_UNVERIFIED · UNI-SCI-110 is R-PLN-0002"
+   "detail": "sbx-e12c1b2beeff4515 · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED, R-PLN-0002 INSTALLED_UNVERIFIED · UNI-SCI-110 is R-PLN-0002"
   },
   {
    "id": "SM-05",

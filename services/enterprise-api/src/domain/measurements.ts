@@ -6,19 +6,24 @@
  *   - a level derived from a digital file (dBFS) is never recorded as a sound pressure level (dB SPL / dB(A)): refused;
  *   - the verifier is not the recorder (database CHECK as well);
  *   - the room must be within the caller's site scope.
+ *
+ * 0037: a measurement may name the test it answers. Then it rests on an evidence file, is recorded by the test's responsible role on a
+ * room in COMMISSIONING, uses the metric and unit the test is measured in (criteria.ts), and the database works out whether it meets
+ * the room's criterion in force. A measurement that names no test is as before.
  */
 import type { RequestContext } from '../auth/context.js';
 import { ApiError, invalid, notFound } from '../http/errors.js';
 import { findRoom } from './rooms.js';
 import { evidenceContent } from './commissioning.js';
 import type { ObjectStore } from '../storage/objectStore.js';
+import { forTest, limitWords } from './criteria.js';
 
 export const PROVENANCE = ['DESIGN_SPECIFIED', 'SIMULATED', 'INFERRED', 'OBSERVED', 'FIELD_MEASURED'] as const;
 export const RECORD_AUTHORITIES = ['work.evidence', 'field.scan', 'test.verify', 'tests.verify.all', 'fi.plan', 'fi.monitor', 'fipv.operate', 'lite.edit'];
 export const VERIFY_AUTHORITIES = ['tests.verify.all', 'test.verify', 'customer.accept', 'test.verify.audio', 'test.verify.video', 'test.verify.control'];   // the result verifiers (commissioning.ts) plus the discipline verifiers
 const SPL_UNITS = /^db ?\(?[acz]?\)?$|^db ?spl$/i;
 
-export interface MeasurementInput { metric: string; value: number; unit: string; method: string; instrumentId?: string; calibrationStatus?: string; calibrationDue?: string; measuredAt: string; location: string; source: string; provenance: string; uncertainty?: number; uncertaintyUnit?: string; testResultId?: string }
+export interface MeasurementInput { metric: string; value: number; unit: string; method: string; instrumentId?: string; calibrationStatus?: string; calibrationDue?: string; measuredAt: string; location: string; source: string; provenance: string; uncertainty?: number; uncertaintyUnit?: string; testResultId?: string; testId?: string; evidenceId?: string; detail?: Record<string, unknown> }
 
 export async function record(ctx: RequestContext, ref: string, m: MeasurementInput) {
   await ctx.require(RECORD_AUTHORITIES, 'record a measurement', { type: 'Room', id: ref });
@@ -27,17 +32,37 @@ export async function record(ctx: RequestContext, ref: string, m: MeasurementInp
   if (m.provenance === 'FIELD_MEASURED' && !m.instrumentId) throw invalid('a field measurement names its instrument');
   if (/dbfs/i.test(m.method) || /dbfs/i.test(m.source) || /dbfs/i.test(m.unit)) { if (SPL_UNITS.test(m.unit.replace(/\s/g, '')) || /spl|laeq|lcpeak/i.test(m.metric)) throw new ApiError('rule_refused', 'a dBFS level from a digital file is not a sound pressure level: record it in dBFS, or measure with a calibrated meter'); }
   return ctx.tx(async (q) => {
-    const room = await findRoom(ctx, q, ref);
-    const r = await q.query<{ id: string }>(`INSERT INTO app.measurement (tenant_id, room_id, test_result_id, metric, value, unit, method, instrument_id, calibration_status, calibration_due, measured_at, location, source, provenance, uncertainty, uncertainty_unit, recorded_by, recorded_role)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18) RETURNING id`,
-      [ctx.p.tenantId, room.id, m.testResultId || null, m.metric, m.value, m.unit, m.method, m.instrumentId || null, m.calibrationStatus || (m.provenance === 'FIELD_MEASURED' ? 'UNKNOWN' : 'NOT_APPLICABLE'), m.calibrationDue || null, m.measuredAt, m.location, m.source, m.provenance, m.uncertainty ?? null, m.uncertaintyUnit || null, ctx.p.personId, ctx.p.role]);
-    await ctx.audit(q, 'measurement.record', 'ALLOWED', { type: 'Measurement', id: r.rows[0]!.id }, { room: room.code, metric: m.metric, provenance: m.provenance });
-    return { id: r.rows[0]!.id, provenance: m.provenance, approvalState: 'UNREVIEWED' };
+    const room = await findRoom(ctx, q, ref); let criterion: Awaited<ReturnType<typeof forTest>>['criterion'] = null;
+    const detail = m.detail && typeof m.detail === 'object' && !Array.isArray(m.detail) ? m.detail : null;
+    if (detail && JSON.stringify(detail).length > 60000) throw invalid('the detail is at most 60 kB: the full data belongs in the evidence file');
+    if (m.evidenceId && !(await q.query('SELECT 1 FROM app.evidence_object WHERE id = $1', [m.evidenceId])).rowCount) throw notFound(`evidence ${m.evidenceId}`);
+    if (m.testId) {   // 0037: a measurement that answers a test
+      const t = await forTest(ctx, q, room, { testId: m.testId, metric: m.metric, unit: m.unit, value: Number(m.value), evidenceId: m.evidenceId });
+      if (t.forbidden) { await ctx.audit(null, 'measurement.record', 'DENIED', { type: 'Room', id: room.code }, { testId: m.testId, why: [t.forbidden] }); throw new ApiError('forbidden', t.forbidden); }
+      if (t.why.length) await ctx.refuse('measurement.record', { type: 'Room', id: room.code }, t.why, { testId: m.testId });
+      criterion = t.criterion;
+    }
+    const r = await q.query<{ id: string; within: boolean | null }>(`INSERT INTO app.measurement (tenant_id, room_id, test_result_id, metric, value, unit, method, instrument_id, calibration_status, calibration_due, measured_at, location, source, provenance, uncertainty, uncertainty_unit, recorded_by, recorded_role, test_id, evidence_id, detail)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21) RETURNING id, within`,
+      [ctx.p.tenantId, room.id, m.testResultId || null, m.metric, m.value, m.unit, m.method, m.instrumentId || null, m.calibrationStatus || (m.provenance === 'FIELD_MEASURED' ? 'UNKNOWN' : 'NOT_APPLICABLE'), m.calibrationDue || null, m.measuredAt, m.location, m.source, m.provenance, m.uncertainty ?? null, m.uncertaintyUnit || null, ctx.p.personId, ctx.p.role,
+        m.testId || null, m.evidenceId || null, detail ? JSON.stringify(detail) : null]);
+    const within = r.rows[0]!.within;
+    await ctx.audit(q, 'measurement.record', 'ALLOWED', { type: 'Measurement', id: r.rows[0]!.id }, { room: room.code, metric: m.metric, provenance: m.provenance, ...(m.testId ? { testId: m.testId, value: Number(m.value), within, criterionVersion: criterion?.version ?? null } : {}) });
+    if (!m.testId) return { id: r.rows[0]!.id, provenance: m.provenance, approvalState: 'UNREVIEWED' };
+    const words = criterion ? limitWords(criterion) : null;
+    return { id: r.rows[0]!.id, provenance: m.provenance, approvalState: 'UNREVIEWED', test: m.testId, metric: m.metric, value: Number(m.value), unit: m.unit, within,
+      criterion: criterion ? { version: criterion.version, lower: criterion.lower, upper: criterion.upper, source: criterion.source, words } : null,
+      says: !criterion ? `${Number(m.value)} ${m.unit} recorded. This room has no criterion for ${m.testId}, so there is no verdict on it.`
+        : within ? `${Number(m.value)} ${m.unit} meets the criterion (${words}, version ${criterion.version}).`
+        : `${Number(m.value)} ${m.unit} does not meet the criterion (${words}, version ${criterion.version}). The result can be recorded as FAIL, not as PASS.` };
   });
 }
 
 export async function list(ctx: RequestContext, ref: string) {
-  return ctx.tx(async (q) => { const room = await findRoom(ctx, q, ref); return { room: room.code, items: (await q.query('SELECT id, metric, value, unit, method, instrument_id, import_id, import_row, calibration_status, calibration_due, measured_at, location, source, provenance, uncertainty, uncertainty_unit, approval_state, approved_by, approved_at, approval_note, recorded_by, recorded_role, test_result_id FROM app.measurement WHERE room_id = $1 ORDER BY measured_at DESC', [room.id])).rows }; });
+  return ctx.tx(async (q) => { const room = await findRoom(ctx, q, ref); return { room: room.code, items: (await q.query(`SELECT m.id, m.metric, m.value, m.unit, m.method, m.instrument_id, m.import_id, m.import_row, m.calibration_status, m.calibration_due, m.measured_at, m.location, m.source, m.provenance, m.uncertainty, m.uncertainty_unit, m.approval_state, m.approved_by, m.approved_at, m.approval_note, m.recorded_by, m.recorded_role, m.test_result_id,
+      m.test_id, m.evidence_id, m.detail, m.within, k.version AS criterion_version, k.lower AS criterion_lower, k.upper AS criterion_upper, p.display_name AS recorded_by_name, m.created_at,
+      (SELECT t.state FROM app.test_result t WHERE t.measurement_id = m.id ORDER BY t.recorded_at DESC LIMIT 1) AS cited_by_result
+      FROM app.measurement m JOIN app.person p ON p.id = m.recorded_by LEFT JOIN app.acceptance_criterion k ON k.id = m.criterion_id WHERE m.room_id = $1 ORDER BY m.measured_at DESC, m.created_at DESC`, [room.id])).rows }; });
 }
 
 export async function verify(ctx: RequestContext, id: string, body: { decision: 'VERIFIED' | 'REJECTED'; note?: string }) {

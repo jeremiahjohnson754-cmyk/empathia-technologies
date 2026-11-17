@@ -5328,7 +5328,7 @@
         "tags": [
           "commissioning"
         ],
-        "summary": "Record a field result (room in COMMISSIONING; responsible role; accepted evidence kind; stored evidence)",
+        "summary": "Record a field result (room in COMMISSIONING; responsible role; accepted evidence kind; stored evidence). Where the room has an acceptance criterion for the test, the result cites a measurement judged against it, and PASS needs that measurement to meet it",
         "operationId": "postV1RoomsRoomResults",
         "x-authority": "the test’s responsible personas, or cxeng",
         "x-authority-enforced": [],
@@ -5395,6 +5395,10 @@
                   "instrument": {
                     "type": "string",
                     "maxLength": 200
+                  },
+                  "measurementId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F-]{36}$"
                   }
                 }
               }
@@ -14159,6 +14163,220 @@
         }
       }
     },
+    "/v1/rooms/{room}/criteria": {
+      "get": {
+        "tags": [
+          "commissioning"
+        ],
+        "summary": "What a room has to meet: per instrument-measured test its acceptance criterion in force (or none), every version ever set, the metrics each test is measured in, and whether the caller may measure",
+        "operationId": "getV1RoomsRoomCriteria",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "criteria"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rooms/{room}/criteria/{test}": {
+      "put": {
+        "tags": [
+          "commissioning"
+        ],
+        "summary": "Set what the room has to meet for one test: a metric and a lower and/or upper limit, with where the limit comes from. A new version; earlier versions stay. Before acceptance only",
+        "operationId": "putV1RoomsRoomCriteriaTest",
+        "x-authority": [
+          "room.design.approve"
+        ],
+        "x-authority-enforced": [
+          "room.design.approve"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "test",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "metric",
+                  "source"
+                ],
+                "properties": {
+                  "metric": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{1,60}$"
+                  },
+                  "lower": {
+                    "type": "number"
+                  },
+                  "upper": {
+                    "type": "number"
+                  },
+                  "source": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 300
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "the criterion version"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/rooms/{room}/measurements": {
       "get": {
         "tags": [
@@ -14241,7 +14459,7 @@
         "tags": [
           "commissioning"
         ],
-        "summary": "Record a measurement (DESIGN_SPECIFIED / SIMULATED / INFERRED / OBSERVED / FIELD_MEASURED — never conflated; dBFS is never recorded as SPL)",
+        "summary": "Record a measurement (DESIGN_SPECIFIED / SIMULATED / INFERRED / OBSERVED / FIELD_MEASURED — never conflated; dBFS is never recorded as SPL). With testId it answers that test: it rests on an evidence file, and the database works out whether it meets the room’s criterion in force",
         "operationId": "postV1RoomsRoomMeasurements",
         "x-authority": [
           "work.evidence",
@@ -14375,6 +14593,19 @@
                   "testResultId": {
                     "type": "string",
                     "pattern": "^[0-9a-fA-F-]{36}$"
+                  },
+                  "testId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "evidenceId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F-]{36}$"
+                  },
+                  "detail": {
+                    "type": "object",
+                    "description": "positions, bands and whatever else explains the value; at most 60 kB"
                   }
                 }
               }

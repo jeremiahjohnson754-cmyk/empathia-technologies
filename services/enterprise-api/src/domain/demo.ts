@@ -93,7 +93,7 @@ export interface Scenario { room: string; flagship: { room: string; canonicalRef
  * as the canonical estate has it (apps/demo/src/estate/university.ts): its identifier, its campus and building, its seats and its
  * dimensions. Fictional, like the institution. Here it is a server room like any other, made through the same routes.
  */
-export const FLAGSHIP = { canonicalRef: 'UNI-SCI-110', name: 'Lecture Theatre SCI-110 (synthetic)', template: 'auditorium', site: { code: 'UNI-N', name: 'Kestrel Valley University, North Campus (synthetic)' }, building: { code: 'UNI-SCI', name: 'Science Hall (synthetic)', floors: 4 },
+export const FLAGSHIP = { criterion: { test: 'reverberation_rt60', metric: 't30_mid', upper: 1, source: 'Acoustic brief for SCI-110, speech use (synthetic)' }, canonicalRef: 'UNI-SCI-110', name: 'Lecture Theatre SCI-110 (synthetic)', template: 'auditorium', site: { code: 'UNI-N', name: 'Kestrel Valley University, North Campus (synthetic)' }, building: { code: 'UNI-SCI', name: 'Science Hall (synthetic)', floors: 4 },
   floor: 0, length: '20', width: '16', ceiling: '6.5', occupancy: 180, intendedUse: 'Lectures with capture and reinforcement: a raked theatre, 180 seats, six wheelchair positions at the rear cross-aisle' } as const;
 
 async function seedScenario(pool: PgPool, router: Router, tenantId: string, people: Persona[], correlationId: string): Promise<Scenario> {
@@ -127,6 +127,9 @@ async function seedScenario(pool: PgPool, router: Router, tenantId: string, peop
   await invoke(router, syseng, 'POST', `/v1/rooms/${hall}/drawings/plan/approve`);
   await invoke(router, syseng, 'POST', `/v1/rooms/${hall}/classification/approve`, {});
   for (const [to, who] of [['DESIGN_APPROVED', syseng], ['INSTALLATION_PENDING', opslead], ['INSTALLED_UNVERIFIED', installer]] as const) await invoke(router, who, 'POST', `/v1/rooms/${hall}/lifecycle`, { to });
+  // what the lecture theatre has to meet for reverberation, set by the design authority through the same route anyone would use (0037).
+  // It is the one criterion the scenario sets: the other measured tests have none until someone sets one.
+  await invoke(router, syseng, 'PUT', `/v1/rooms/${hall}/criteria/${FLAGSHIP.criterion.test}`, { metric: FLAGSHIP.criterion.metric, upper: FLAGSHIP.criterion.upper, source: FLAGSHIP.criterion.source });
   return { room, flagship: { room: hall, canonicalRef: FLAGSHIP.canonicalRef, name: FLAGSHIP.name } };
 }
 

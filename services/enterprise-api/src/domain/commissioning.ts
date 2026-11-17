@@ -13,6 +13,7 @@ import type { RequestContext } from '../auth/context.js';
 import type { ObjectStore } from '../storage/objectStore.js';
 import { analyze, findRoom, load, relate, reverificationNow } from './rooms.js';
 import { ApiError, invalid, notFound, refused } from '../http/errors.js';
+import { citeMeasurement } from './criteria.js';
 
 async function code(q: Queryable, kind: string, prefix: string): Promise<string> { return (await q.query<{ c: string }>('SELECT app.next_code($1, $2) AS c', [kind, prefix])).rows[0]!.c; }
 
@@ -75,7 +76,7 @@ export async function evidenceContent(ctx: RequestContext, store: ObjectStore, i
 }
 
 // ------------------------------------------------------------------------------------------------ results
-export async function recordResult(ctx: RequestContext, ref: string, body: { testId: string; state: string; evidenceId: string; evidenceKind: string; instrument?: string }) {
+export async function recordResult(ctx: RequestContext, ref: string, body: { testId: string; state: string; evidenceId: string; evidenceKind: string; instrument?: string; measurementId?: string }) {
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref, true);
     const { planId, row } = await currentPlanRow(q, room.id, body.testId);
@@ -93,28 +94,32 @@ export async function recordResult(ctx: RequestContext, ref: string, body: { tes
     if (reopened && ev.uploaded_ms <= Date.parse(reopened.substitutedAt)) {
       await ctx.refuse('commission.result.record', { type: 'Room', id: room.code }, [`evidence ${body.evidenceId} was uploaded at ${ev.uploaded_at}, before the change of unit at ${reopened.assets.join(', ')} (${reopened.substitutedAt}): ${body.testId} is re-run on the new unit, with evidence obtained after the change`], { testId: body.testId, evidenceId: body.evidenceId });
     }
+    // 0037: where the room has a criterion for this test, the result cites a measurement judged against the criterion in force, and
+    // PASS needs it to be within. The table has the same rule as a trigger; this is where the refusal gets its reason.
+    const cited = await citeMeasurement(q, ctx.p.tenantId, room, body.testId, body.state, body.measurementId);
+    if (cited.why.length) await ctx.refuse('commission.result.record', { type: 'Room', id: room.code }, cited.why, { testId: body.testId, measurement: body.measurementId ?? null });
     const prev = (await q.query<{ result_id: string }>('SELECT result_id FROM app.current_result WHERE room_id = $1 AND test_id = $2', [room.id, body.testId])).rows[0];
-    const r = (await q.query<{ id: string }>(`INSERT INTO app.test_result (tenant_id, room_id, test_id, state, evidence_id, evidence_kind, instrument, recorded_by, recorded_role, supersedes) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id`,
-      [ctx.p.tenantId, room.id, body.testId, body.state, body.evidenceId, body.evidenceKind, body.instrument ?? null, ctx.p.personId, ctx.p.role, prev?.result_id ?? null])).rows[0]!;
+    const r = (await q.query<{ id: string }>(`INSERT INTO app.test_result (tenant_id, room_id, test_id, state, evidence_id, evidence_kind, instrument, recorded_by, recorded_role, supersedes, measurement_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING id`,
+      [ctx.p.tenantId, room.id, body.testId, body.state, body.evidenceId, body.evidenceKind, body.instrument ?? null, ctx.p.personId, ctx.p.role, prev?.result_id ?? null, cited.id])).rows[0]!;
     const rr: RecordedResult = { state: body.state as RecordedResult['state'], evidence: { kind: body.evidenceKind, ref: body.evidenceId }, by: ctx.p.personId, verified: null };
     const label = resultLabel(rr);
     await ctx.emit(q, 'commission.test_result_submitted', { type: 'Room', id: room.code, rev: room.rev }, { planId, testId: body.testId, state: body.state, resultLabel: label, evidence: body.evidenceKind, designId: room.code, roomId: room.code });
-    if (body.state === 'FAIL') await openCxDeficiency(ctx, q, room.id, room.code, planId, row!, body.evidenceId);
+    if (body.state === 'FAIL') await openCxDeficiency(ctx, q, room.id, room.code, planId, row!, body.evidenceId, cited.measured);
     await ctx.audit(q, 'commission.result.record', 'ALLOWED', { type: 'Room', id: room.code }, { testId: body.testId, state: body.state, resultLabel: label, resultId: r.id });
     await analyze(ctx, q, room.id, `result ${body.testId}`);
     return { resultId: r.id, testId: body.testId, state: body.state, resultLabel: label };
   });
 }
 
-async function openCxDeficiency(ctx: RequestContext, q: Queryable, roomId: string, roomCode: string, planId: string, row: ApplicabilityRow, evidenceId: string) {
+async function openCxDeficiency(ctx: RequestContext, q: Queryable, roomId: string, roomCode: string, planId: string, row: ApplicabilityRow, evidenceId: string, measured: string | null = null) {
   const key = `test-failed:${row.id}`;
   const i = (await q.query<{ id: string; code: string; state: string }>('SELECT id, code, state FROM app.room_issue WHERE room_id = $1 AND key = $2', [roomId, key])).rows[0];
   const revNo = (await q.query<{ n: number }>('SELECT coalesce(max(rev_no), 0) AS n FROM app.room_revision WHERE room_id = $1', [roomId])).rows[0]!.n;
   if (!i) {
     const c = await code(q, 'issue', 'RISS-');
     const ins = (await q.query<{ id: string }>(`INSERT INTO app.room_issue (tenant_id, room_id, code, key, category, check_name, severity, title, rationale, assets, first_seen_rev, last_seen_rev) VALUES ($1,$2,$3,$4,'INSTALLATION_COMMISSIONING_DEFICIENCY','commissioning_test_failed',$5,$6,$7,$8,$9,$9) RETURNING id`,
-      [ctx.p.tenantId, roomId, c, key, row.tier === 1 ? 'High' : 'Medium', `${row.label} failed`, `the ${row.label} test failed on the installed room (evidence ${evidenceId})`, row.devices || [], revNo])).rows[0]!;
-    await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, ins.id, 'created', { source: 'commissioning: physical test result', evidenceId }, ctx.p.personId]);
+      [ctx.p.tenantId, roomId, c, key, row.tier === 1 ? 'High' : 'Medium', `${row.label} failed`, `the ${row.label} test failed on the installed room (evidence ${evidenceId})${measured ? `. Measured ${measured}` : ''}`, row.devices || [], revNo])).rows[0]!;
+    await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, ins.id, 'created', { source: 'commissioning: physical test result', evidenceId, ...(measured ? { measured } : {}) }, ctx.p.personId]);
     await relate(ctx, q, { type: 'RoomIssue', id: c }, 'AFFECTS', { type: 'Room', id: roomCode }, 'FIELD_OBSERVED');
     await ctx.emit(q, 'commission.test_failed', { type: 'Room', id: roomCode, rev: 1 }, { planId, testId: row.id, roomId: roomCode });
     await ctx.emit(q, 'commission.deficiency_opened', { type: 'RoomIssue', id: c, rev: 1 }, { planId, testId: row.id, issueId: c });
