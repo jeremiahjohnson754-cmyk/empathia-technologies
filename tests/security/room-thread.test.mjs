@@ -137,7 +137,11 @@ test('TH-08 tenancy: another tenant can neither read the thread nor act on the d
 
 test('TH-09 the audit history: the summary counts exactly the audit rows of the thread, allowed and refused; the chain verifies', async () => {
   const t = await thread(); const ids = [room, issue, wo, apx].map((x) => `'${x}'`).join(',');
-  const db = Number(h.asSuper(`SELECT count(*) FROM app.audit_event WHERE aggregate_id IN (${ids})`));
+  // 17 Nov 2026: a request refused by the central authority check is now recorded on the record its path names (http/server.ts aimedAt),
+  // in the caller's own tenant. The other tenant's refused attempt in TH-08 is therefore a row of THAT tenant's audit naming this issue's
+  // code, so the count here is this tenant's — which is what the thread, read under row-level security, has always counted.
+  const db = Number(h.asSuper(`SELECT count(*) FROM app.audit_event e JOIN app.tenant t ON t.id = e.tenant_id WHERE t.slug = 'empathia-demo' AND e.aggregate_id IN (${ids})`));
+  assert.equal(Number(h.asSuper(`SELECT count(*) FROM app.audit_event e JOIN app.tenant t ON t.id = e.tenant_id WHERE t.slug = 'second-tenant' AND e.aggregate_id IN (${ids}) AND e.outcome = 'ALLOWED'`)), 0, 'another tenant never acted on these records');
   assert.equal(t.audit.byAggregate.reduce((s, a) => s + a.events, 0), db); assert.ok(db >= 20, `${db} audit rows`);
   assert.ok(t.audit.byAggregate.some((a) => a.outcome === 'DENIED'), 'refusals are part of the history'); assert.ok(t.audit.byAggregate.some((a) => a.type === 'WorkOrder' && a.outcome === 'ALLOWED'));
   assert.equal(t.audit.latest.length, Math.min(12, db)); assert.ok(t.audit.latest.every((e) => e.action && e.at));

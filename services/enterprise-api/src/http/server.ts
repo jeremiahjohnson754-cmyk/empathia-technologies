@@ -12,7 +12,7 @@ import { RequestContext, IdempotencyKeyTaken, type Principal } from '../auth/con
 import { OidcVerifier, type OidcClaims } from '../auth/oidc.js';
 import { Hs256Tokens, unverifiedAudience, type TokenVerifier } from '../auth/jwt.js';
 import { resolvePrincipal, resolveOidcPrincipal } from '../domain/platform.js';
-import { sandboxLive, isSandboxTenant } from '../domain/demo.js';
+import { sandboxLive, isSandboxTenant, assertBudget } from '../domain/demo.js';
 import { asJson, type PgPool, type Queryable } from '../db/pg.js';
 import type { Config } from '../config.js';
 import { log } from '../log.js';
@@ -51,6 +51,17 @@ async function storedResponse(keyTx: <T>(fn: (q: Queryable) => Promise<T>) => Pr
   }
 }
 
+/**
+ * The record a request was aimed at, when its path names one by its code. A request refused by the central authority check is then a row
+ * of that record's audit history (the room's thread shows who tried what), not only of the tenant's. A code is only a string here: it is
+ * not looked up, and the row is written in the caller's own tenant like every audit row.
+ */
+const CODE = /^[A-Z]{1,4}-[A-Z0-9-]{1,32}$/;
+function aimedAt(params: Record<string, string>): { type: string; id: string } | undefined {
+  for (const [k, type] of [['workOrder', 'WorkOrder'], ['issue', 'RoomIssue'], ['room', 'Room']] as const) { const v = params[k]; if (v && CODE.test(v)) return { type, id: v }; }
+  return undefined;
+}
+
 class Bucket { tokens: number; at = Date.now(); constructor(public cap: number) { this.tokens = cap; } take(): boolean { const now = Date.now(); this.tokens = Math.min(this.cap, this.tokens + ((now - this.at) / 60000) * this.cap); this.at = now; if (this.tokens < 1) return false; this.tokens -= 1; return true; } }
 
 export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier, telemetry: Telemetry): http.Server {
@@ -63,7 +74,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
     const incoming = String(req.headers['x-correlation-id'] || '');
     const correlationId = /^[A-Za-z0-9._-]{8,80}$/.test(incoming) ? incoming : crypto.randomUUID();
     const origin = String(req.headers.origin || '');
-    const cors: Record<string, string> = cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin', 'access-control-allow-headers': 'authorization, content-type, idempotency-key, x-correlation-id, x-file-name', 'access-control-allow-methods': 'GET, POST, PATCH, DELETE', 'access-control-expose-headers': 'x-correlation-id' } : {};
+    const cors: Record<string, string> = cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin', 'access-control-allow-headers': 'authorization, content-type, idempotency-key, x-correlation-id, x-file-name', 'access-control-allow-methods': 'GET, POST, PUT, PATCH, DELETE', 'access-control-expose-headers': 'x-correlation-id' } : {};
     let status = 500; let ctxRole = '-'; let routePath = '(unmatched)'; let tenantId: string | undefined; const startedAt = Date.now();
     const send = (r: Res) => {
       status = r.status;
@@ -121,8 +132,11 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       const b = buckets.get(bucketKey) || buckets.set(bucketKey, new Bucket(cfg.rateLimitPerMinute)).get(bucketKey)!;
       if (!b.take()) throw new ApiError('rate_limited', 'slow down: the per-caller request budget is spent for this minute');
 
+      // a sandbox has a ceiling on what it may hold (0035): checked before anything is read or written for the request
+      if (ctx.principal?.demo) await assertBudget(pool, ctx.principal.tenantId, route.bodyKind === 'binary' ? 'upload' : req.method === 'GET' ? 'read' : 'write');
+
       // authority (central, before the body is read — red-team RT-03): a role without any of the route's authority keys is refused and audited
-      if (route.auth) { const keys = enforcedAuthorities(route); if (keys.length) await ctx.require(keys, route.action ?? route.summary.split(' (')[0]!.slice(0, 80)); }
+      if (route.auth) { const keys = enforcedAuthorities(route); if (keys.length) await ctx.require(keys, route.action ?? route.summary.split(' (')[0]!.slice(0, 80), aimedAt(params)); }
 
       // body
       let raw: Buffer | null = null; let body: unknown = null;

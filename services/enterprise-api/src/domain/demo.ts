@@ -33,6 +33,7 @@ interface Persona { person_id: string; role_key: string; display_name: string }
 
 const sha = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
 const off = () => new ApiError('not_found', 'demonstration sessions are not enabled on this deployment');
+const FULL = 'the demonstration has opened every sandbox its database allows; it is refreshed on a schedule, so try again later';
 const day = (d: number) => new Date(Date.now() + d * 864e5).toISOString().slice(0, 10);
 
 /** The tenant is a sandbox that is open and unexpired right now (asked on every request of a demonstration session). */
@@ -40,15 +41,29 @@ export const sandboxLive = async (pool: PgPool, tenantId: string): Promise<boole
 /** The tenant is, or was, a sandbox (asked for every other kind of token: none of them reaches one). */
 export const isSandboxTenant = async (pool: PgPool, tenantId: string): Promise<boolean> => (await pool.query<{ demo: boolean }>('SELECT app.is_demo_tenant($1) AS demo', [tenantId])).rows[0]?.demo === true;
 
+/**
+ * What a sandbox may still hold (0035): every write is an audit row, so a ceiling on audit rows bounds every table of the sandbox, and
+ * evidence files have their own. Writes stop at the ceiling; reads go on a little longer (refused requests are audit rows too) and stop
+ * at a quarter above it. A sandbox that reached its limit is reset by its visitor.
+ */
+export async function assertBudget(pool: PgPool, tenantId: string, kind: 'read' | 'write' | 'upload'): Promise<void> {
+  const b = (await pool.tx({ tenantId }, (q) => q.query<{ writes: number; max_writes: number; evidence: number; max_evidence: number }>('SELECT * FROM app.demo_budget()'))).rows[0];
+  if (!b) throw new ApiError('unauthenticated', 'the sandbox behind this demonstration session is closed or has expired: open a new one');
+  if (kind === 'upload' && b.evidence >= b.max_evidence) throw new ApiError('rate_limited', `this sandbox holds its ${b.max_evidence} evidence notes: reset it to continue`);
+  if (b.writes >= (kind === 'read' ? Math.ceil(b.max_writes * 1.25) : b.max_writes)) throw new ApiError('rate_limited', `this sandbox has recorded its ${b.max_writes} actions: reset it to continue`);
+}
+
 const personas = (pool: PgPool, tenantId: string): Promise<Persona[]> => pool.tx({ tenantId }, async (q) =>
   (await q.query<Persona>('SELECT m.person_id, m.role_key, p.display_name FROM app.membership m JOIN app.person p ON p.id = m.person_id WHERE m.revoked_at IS NULL AND NOT p.disabled ORDER BY m.role_key')).rows);
-const describe = (ps: Persona[]) => ps.map((p) => ({ role: p.role_key, name: p.display_name }));
+// the ids are the sandbox's own synthetic people: a session needs one to assign a job or lend an authority to a colleague
+const describe = (ps: Persona[]) => ps.map((p) => ({ role: p.role_key, name: p.display_name, id: p.person_id }));
 
 /** Whether a connected demonstration is on offer here, and how full it is. No sandbox data. */
 export async function status(d: DemoDeps) {
   if (!d.cfg || !d.tokens) return { enabled: false, reason: 'demonstration sessions are not enabled on this deployment' };
-  const s = (await d.pool.query<{ enabled: boolean; max_live: number; ttl_hours: number; live: number }>('SELECT * FROM app.demo_status()')).rows[0];
+  const s = (await d.pool.query<{ enabled: boolean; max_live: number; ttl_hours: number; live: number; opened: number; max_total: number }>('SELECT * FROM app.demo_status()')).rows[0];
   if (!s?.enabled) return { enabled: false, reason: 'demonstration sandboxes are not enabled for this database' };
+  if (s.opened >= s.max_total) return { enabled: false, reason: FULL };
   return { enabled: true, live: s.live, maxLive: s.max_live, ttlHours: s.ttl_hours, sessionSeconds: d.cfg.ttlSeconds, roles: SANDBOX_ROLES, notice: NOTICE };
 }
 
@@ -109,6 +124,7 @@ export async function open(d: DemoDeps, router: Router, remote: string, correlat
     const code = (e as { code?: string }).code;
     if (code === 'EM012') throw new ApiError('not_found', 'demonstration sandboxes are not enabled for this database');
     if (code === 'EM013') throw new ApiError('rate_limited', 'every demonstration sandbox is in use right now: try again in a little while');
+    if (code === 'EM017') throw new ApiError('rate_limited', FULL);
     if (code === 'EM015') throw new ApiError('unauthenticated', 'the sandbox is unknown, closed or expired, or the key is not right');
     if (code === 'EM014') throw new ApiError('rate_limited', 'this address has opened its share of sandboxes for the hour: continue in the one you have, or try again later');
     throw e;

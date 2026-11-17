@@ -82,10 +82,12 @@ whole chain.
 
 ## Limits, stated
 
-- **The demonstration and the server are two implementations of the same thread.** The public demonstration is a static site: its
-  records are synthetic and are kept in the visitor's browser. The server is the enterprise API with its database, and the
-  demonstration does not call it. Both follow the same rules, and each is tested on its own.
-- **No field record on the server yet.** Mounting, hookups and field moves (the Phase 1 redlines) are kept in the browser only.
+- **The public demonstration and the server are still two implementations of the same thread.** The public demonstration is a static
+  site: its records are synthetic and are kept in the visitor's browser, and it does not call the server. Since 17 Nov 2026 a demo
+  built with a server address has a page, `#/connected`, that takes one room through the same journey on the server in a sandbox of
+  the visitor's own — see `CONNECTED_DEMO.md`. That build is tested locally and is not deployed: hosting the API is a paid service.
+- **The field record is on the server** (17 Nov 2026: `0034_field_record.sql`, `FIELD_RECORD_AND_REDLINES.md`). The demo's own field
+  record page still uses the browser's copy.
 - APEX's hypotheses come from its symptom library. A symptom it has no branch for gets "insufficient evidence", not an invented cause.
 - Technicians are hard-gated by site: a room in a building nobody is approved for cannot be assigned. That is why the slice room is in
   Atlas.

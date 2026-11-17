@@ -103,7 +103,8 @@ sandboxes for the database (`node dist/src/db/demo.js enable`); otherwise every 
 
 A demonstration session is an ordinary principal: every other route applies to it with the authorities of its role, inside its sandbox.
 It reaches no other tenant, and no other kind of token reaches a sandbox. Uploads from a sandbox are `text/plain` or `text/csv` of at
-most 16 KiB; JSON bodies at most 64 KiB. Regression: `tests/security/demo-sandbox.test.mjs` DS-01..14.
+most 16 KiB; JSON bodies at most 64 KiB. A sandbox records at most 4,000 actions and 60 evidence notes (429 after that: reset it).
+Regression: `tests/security/demo-sandbox.test.mjs` DS-01..16.
 
 ## The field record (Phase 1 installation documentation)
 

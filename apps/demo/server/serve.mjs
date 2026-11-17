@@ -19,8 +19,10 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 // the policy both public sites share (scripts/security/policy.mjs; render.yaml declares the same). D7: Inter is self-hosted, so there is
 // no font kit and no third-party host; the demonstration runs entirely in the browser, so connect-src is the page's own origin only
 // (the configured API origin is still named in the page, for a deployment that adds one).
-const { cspHeader, COMMON_HEADERS } = await import(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../scripts/security/policy.mjs'));
-const CSP = cspHeader();
+const { cspHeader, COMMON_HEADERS, originOf } = await import(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../scripts/security/policy.mjs'));
+// a connected build (DEMO_API_URL, ADR-0013) may call that one origin; otherwise the page's own origin only
+const connectOrigin = originOf(process.env.DEMO_API_URL);
+const CSP = cspHeader(connectOrigin ? [connectOrigin] : []);
 const lower = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k.toLowerCase(), v]));
 export function serve() {
   const s = http.createServer((req, res) => {

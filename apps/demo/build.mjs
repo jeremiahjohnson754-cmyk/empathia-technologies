@@ -14,6 +14,11 @@ const dist = process.env.DEMO_DIST ? path.resolve(process.env.DEMO_DIST) : path.
 const dev = process.argv.includes('--dev');
 // the corporate website the demonstration links to (founder page, privacy notice): --website=<url>, DEMO_WEBSITE_URL, or the public site
 const website = ((process.argv.find((a) => a.startsWith('--website=')) || '').slice(10) || process.env.DEMO_WEBSITE_URL || 'https://empathia-website.onrender.com').replace(/\/$/, '');
+// the enterprise API the connected journey (#/connected, ADR-0013) talks to: DEMO_API_URL. Unset — the default, and every public build so far —
+// the bundle names no server, the page says it is not connected, and connect-src stays the page's own origin.
+const { originOf } = await import(path.join(repo, 'scripts/security/policy.mjs'));
+const apiOrigin = originOf(process.env.DEMO_API_URL);
+if (process.env.DEMO_API_URL && !apiOrigin) throw new Error(`DEMO_API_URL is not an http(s) URL: ${process.env.DEMO_API_URL}`);
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 if (!process.argv.includes('--generate-only')) { fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true }); }
 // the legacy area registry from the parity ledger (docs/legacy-parity.csv): generated, never edited
@@ -48,7 +53,7 @@ await esbuild.build({
   // ES modules with code splitting: every page registered with a lazy `load` is its own chunk, fetched only when the role may open it
   // (D44: a forbidden address never downloads its screen). The entry stays demo.js; pages land in chunks/.
   entryPoints: { demo: path.join(app, 'src/main.tsx'), ...Object.fromEntries(Object.entries(WORKSPACES).map(([k, f]) => [`ws/${k}`, path.join(app, 'src', f)])), ...Object.fromEntries(Object.entries(SHELL_PAGES).map(([k, f]) => [`shell/${k}`, path.join(app, 'src', f)])) }, bundle: true, minify: !dev, sourcemap: 'external', format: 'esm', splitting: true, target: ['es2022'], jsx: 'automatic',
-  outdir: dist, entryNames: '[dir]/[name]', chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website), 'process.env.DEMO_BUILD_ID': JSON.stringify(buildId) }, legalComments: 'linked', logLevel: 'warning',
+  outdir: dist, entryNames: '[dir]/[name]', chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website), 'process.env.DEMO_BUILD_ID': JSON.stringify(buildId), 'process.env.DEMO_API_URL': JSON.stringify(apiOrigin || '') }, legalComments: 'linked', logLevel: 'warning',
   // the operational workspaces are entries with stable names (ws/<name>.js): a failed load is retried at a fresh URL (src/hardening/lazy.tsx)
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
   // the export libraries (docx, pptxgenjs, pdf-lib, jszip: src/export/render.ts) carry documentation addresses inside their error
@@ -73,7 +78,7 @@ const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.joi
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
 // the CSP rides in the page as <meta> too (assessment SA-01): served without render.yaml's headers, nothing still leaves the page
 const { injectMetaCsp } = await import(path.join(repo, 'scripts/security/policy.mjs'));
-fs.writeFileSync(path.join(dist, 'index.html'), injectMetaCsp(decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8'))));
+fs.writeFileSync(path.join(dist, 'index.html'), injectMetaCsp(decorate(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8')), apiOrigin ? [apiOrigin] : []));
 // the View-as role is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts), so the role colour is right on the first frame
 fs.copyFileSync(path.join(app, 'src/role-boot.js'), path.join(dist, 'role-boot.js'));
 // the Proof Registry's public projection, as data (v1.8 A): the same file the website ships, so the two can be compared claim by claim

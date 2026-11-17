@@ -22,7 +22,8 @@ Read statically; the file was never run. The whole difference between the two en
 - **The inspection sheets.** They describe **this** build. The source paths and test ids are this repository's, not the legacy
   edition's, and a unit test fails if a named file does not exist.
 - **Failure handling.** The five faults are switched on the page by an engineering persona (`room.classify.approve`,
-  `tests.verify.all` or `provenance.review`). Each makes the product's own refusal with its reason, writes it to the room's ledger and
+  `tests.verify.all` or `provenance.review`). Anyone else admitted to the page reads the faults and who can inject them, and is
+  offered no switch (17 Nov 2026: the dead-end crawl found five switches that only repeated a refusal). Each makes the product's own refusal with its reason, writes it to the room's ledger and
   leaves the state unchanged:
 
   | Fault | The step it stops |

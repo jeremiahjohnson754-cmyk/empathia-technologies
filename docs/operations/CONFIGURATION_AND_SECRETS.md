@@ -13,6 +13,7 @@ Source of truth: `services/enterprise-api/src/config.ts` (API and workers), `app
 | `DEMO_SESSION_SECRET` | API | derived from the development secret | required in production when demonstration sessions are on; ≥ 32 bytes; must differ from `JWT_SECRET` |
 | `DEMO_SESSION_TTL_SECONDS` | API | 1800 | 60–86,400; a session is renewed from the sandbox key |
 | `DEMO_REMOTE_SALT` | API | derived from the demonstration secret | salts the hash of the address that opens a sandbox (rate limiting; the address is not stored) |
+| `DEMO_API_URL` | demo build and its local server | unset | the origin of the demonstration API. Unset (every public build so far): the demo has no connected page and its bundle and Content-Security-Policy name no server. Set: `#/connected` exists and `connect-src` names that one origin (`docs/product/CONNECTED_DEMO.md`) |
 | `DEMO_MAX_BODY_BYTES` / `DEMO_MAX_UPLOAD_BYTES` | API | 65,536 / 16,384 | a sandbox is not a file store: short JSON, and uploads that are short `text/plain` or `text/csv` notes |
 | `JWT_SECRET` | API | generated into `.local/jwt-secret` (mode 0600) | required in production (`config.ts:38`); ≥ 32 bytes always (`config.ts:43`) |
 | `JWT_ISSUER` / `JWT_AUDIENCE` | API | `empathia-dev-idp` / `empathia-enterprise-api` | set to the IdP's values under OIDC |

@@ -1,8 +1,10 @@
 # ADR-0013: Demonstration sandboxes and sessions (connecting the public demo to the server)
 
-Status: server side implemented 2026-11-17 · migration `0033_demo_sandbox.sql` · `services/enterprise-api/src/domain/demo.ts` ·
-tests `tests/security/demo-sandbox.test.mjs` (DS-01..14). Not deployed: hosting an API and a database for the public demonstration is a
-paid service and waits for the founder's word. The demo client (`apps/demo`) is not connected yet.
+Status: implemented 2026-11-17 · migration `0033_demo_sandbox.sql` · `services/enterprise-api/src/domain/demo.ts` · the demo's
+connected page `apps/demo/src/pages/Connected.tsx` (only in a build given `DEMO_API_URL`) · tests `tests/security/demo-sandbox.test.mjs`
+(DS-01..16), `tests/unit/connected-client.test.mjs` (CC-01..06), `tests/browser/demo-connected.test.mjs` (CN-01..10).
+Not deployed: hosting an API and a database for the public demonstration is a paid service and waits for the founder's word. The
+public sites are built without a server address and carry no connected page.
 
 ## Context
 
@@ -50,7 +52,10 @@ The API had nothing a public visitor could use: the development sign-in is refus
    recreating the demonstration database, which holds nothing else.
 9. **Bounded.** A cap on live sandboxes (200), a cap on openings per address per hour (12; a salted hash of the address is stored,
    never the address), the existing per-caller request budget, 64 KiB JSON bodies, and uploads limited to `text/plain` or `text/csv`
-   of at most 16 KiB — a sandbox is not a file store.
+   of at most 16 KiB — a sandbox is not a file store. And storage is bounded by construction (`0035_demo_sandbox_limits.sql`): a
+   sandbox stops recording at 4,000 audit rows (every write is one, so this bounds every table) and stops answering a quarter above
+   that (refused requests are audit rows too); it holds at most 60 evidence notes; and a database opens at most 5,000 sandboxes in
+   all, after which no new one opens until the operator recreates it. The limits are the schema owner's (`demo.js enable --max-…`).
 10. **Guards in the database.** A sandbox takes no person from outside (membership trigger on the email domain), never the architect,
     founder or security-administrator role, and no invitation; a sandbox person joins no other tenant.
 
@@ -71,7 +76,13 @@ The API had nothing a public visitor could use: the development sign-in is refus
   site's origin, `TRUSTED_PROXY=on` behind the platform proxy, and a schedule for recreating the database.
 - Phase 1 field records are on the server too (`0034_field_record.sql`, `FRS-01..09`): mounting, hook-ups and field moves are part of
   the same durable thread, and `DS-07` records them in a sandbox before commissioning starts.
-- Next: the demo client's connected mode (session store, role switch, the thread and field-record pages reading the server).
+- The demo's connected page (`#/connected`) takes a sandbox's room through nineteen steps, each as its own person, and reads the
+  thread and the audit history back from the server; a step tried as someone else shows the server's refusal. See
+  `docs/product/CONNECTED_DEMO.md`.
+- A request refused by the central authority check is recorded on the record its path names (`http/server.ts` `aimedAt`), so a
+  room's thread shows who tried what, not only what was allowed.
+- Next: the demo's other pages (Build a Room, the field record page, ServiceHands, Assurance, APEX) reading the server in a
+  connected build; a deployment, when the founder decides.
 
 ## Alternatives considered
 

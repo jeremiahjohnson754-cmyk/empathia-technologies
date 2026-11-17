@@ -9,6 +9,14 @@ import { adapt } from './registry.adapt.js';
 import { opsLoad } from './hardening/opsRoutes.js';
 import { ROLE_KEYS } from './access/policy.js';
 
+// The server-backed thread (ADR-0013) exists only in a build that names a server (DEMO_API_URL). A public build without one registers
+// no such page — nothing to open, search or link to — and its bundle carries neither the page nor a host name.
+const SERVER_THREAD: PageDef[] = process.env.DEMO_API_URL ? [{
+  id: 'thread.server', title: 'One room, end to end, on the server', purpose: 'The same journey with the records kept by the enterprise API: open a sandbox, take its room from the field record to an APEX case as each person in turn, and read the durable thread and audit history back', product: 'commissioning',
+  path: '/connected', authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the record of a room across the products, on the server: everyone who works on a room or answers for it' },
+  load: adapt(() => import('./pages/Connected.js'), (m) => h(m.ConnectedPage, {})),
+  search: { keywords: 'server backed connected sandbox durable database api thread audit history resume code demonstration session role switch field record', aliases: ['server thread', 'connected demo', 'sandbox'] },
+}] : [];
 export const OPS_PAGES: readonly PageDef[] = [
   {
     id: 'control', title: 'Mission Control', purpose: 'What changed, what matters, what needs action', product: 'mission-control', landing: true,
@@ -189,6 +197,7 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: adapt(() => import('./pages/Thread.js'), (m, p) => h(m.ThreadPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'thread end to end vertical slice traceability digital thread lite engineering commissioning servicehands assurance apex one room record chain evidence', aliases: ['digital thread', 'end to end', 'traceability'] },
   },
+  ...SERVER_THREAD,
   {
     id: 'install.redline', title: 'Field record and redlines', purpose: 'Phase 1 installation documentation over the Lite plan: how each device is mounted, what it is hooked up to, devices moved in the field and why, and notes pinned to the plan', product: 'lite',
     path: '/install/redline', authority: { roles: ['installer', 'service', 'syseng', 'designer', 'cxeng', 'ops', 'svcmgr', 'architect', 'qa'], why: 'the installation record: the people who install, approve the design, commission and serve the room (founder, 14 Nov 2026)' },

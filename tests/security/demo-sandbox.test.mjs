@@ -21,6 +21,10 @@
  *   DS-13  the standard tenants hold exactly the rows they held before, and both audit chains verify
  *   DS-14  the demonstration deployment (AUTH_MODE=demo): sign-in tokens, the development sign-in and the public forms are all refused
  *          there; production needs its own secret; a deployment is the product or the demonstration, never both
+ *   DS-15  a database for the demonstration alone: migrations and `demo.js enable`, no seed and no bootstrap — a sandbox opens, its
+ *          thread reads, and the database holds no tenant that is not a sandbox
+ *   DS-16  storage is bounded by construction: a sandbox stops recording at its ceiling of actions and reading a quarter above it,
+ *          holds a fixed number of evidence notes, and a database opens a fixed number of sandboxes in all
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -28,7 +32,7 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 import { setup, client, DEV_PASSWORD, mail, registerRoom, repo } from '../integration/harness.mjs';
 
-let h, c, A, B, std, demoApp, snapshot; const J = (x) => JSON.stringify(x);
+let h, c, A, B, std, demoApp, onlyApp, snapshot; const J = (x) => JSON.stringify(x);
 const api = path.join(repo, 'services/enterprise-api/dist/src');
 const sha = (s) => crypto.createHash('sha256').update(s).digest('hex');
 const n = (s) => Number(h.asSuper(s));
@@ -45,7 +49,7 @@ before(async () => {
   std = { designer: await c.login('designer'), syseng: await c.login('syseng'), steward: await c.login('steward') };
   std.room = (await call(std.designer, 'POST', '/v1/rooms', { body: { name: 'Standard Huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 3 } })).body.code;
 });
-after(async () => { await demoApp?.stop(); await h?.app.stop(); });
+after(async () => { await onlyApp?.stop(); await demoApp?.stop(); await h?.app.stop(); });
 
 test('DS-01 off until the schema owner enables it; the runtime role can neither read nor switch the setting', async () => {
   const s = await c.call('GET', '/v1/demo'); assert.equal(s.status, 200); assert.equal(s.body.enabled, false); assert.match(s.body.reason, /not enabled for this database/);
@@ -285,4 +289,59 @@ test('DS-14 the demonstration deployment accepts demonstration sessions only; pr
   assert.equal((await d.call('GET', `/v1/rooms/${B.room}`, { token: s.body.accessToken })).status, 200, 'the demonstration itself works there');
   // two processes with the same demonstration secret and the same database serve the same sessions (how the deployment scales out)
   assert.equal((await call(s.body.accessToken, 'GET', `/v1/rooms/${B.room}`)).status, 200);
+});
+
+test('DS-15 a database for the demonstration alone: migrations and enable, no seed — a sandbox opens and nothing else lives there', async () => {
+  const k = h.creds; const db = 'empathia_demo_only'; const url = (user, pw) => `postgres://${user}:${encodeURIComponent(pw)}@127.0.0.1:${k.port}/${db}`;
+  h.asSuper(`DROP DATABASE IF EXISTS ${db} WITH (FORCE)`); h.asSuper(`CREATE DATABASE ${db} OWNER ${k.owner}`); h.asSuper(`REVOKE ALL ON DATABASE ${db} FROM PUBLIC`); h.asSuper(`GRANT CONNECT ON DATABASE ${db} TO ${k.app}, ${k.worker}`);
+  const urls = { DATABASE_URL: url(k.owner, k.ownerPassword), APP_DATABASE_URL: url(k.app, k.appPassword), WORKER_DATABASE_URL: url(k.worker, k.workerPassword) };
+  const { migrate } = await import(path.join(api, 'db/migrate.js')); const { demoConfig } = await import(path.join(api, 'db/demo.js'));
+  await migrate(urls.DATABASE_URL);
+  assert.deepEqual((({ enabled, live, everOpened }) => [enabled, live, everOpened])(await demoConfig(urls.DATABASE_URL, 'status')), [false, 0, 0]);
+  const on = await demoConfig(urls.DATABASE_URL, 'enable', { maxLive: 5, ttlHours: 2 }); assert.deepEqual([on.enabled, on.max_live, on.ttl_hours], [true, 5, 2]);
+  const { start } = await import(path.join(api, 'main.js')); onlyApp = await start({ ...urls, AUTH_MODE: 'demo', PORT: '4170', OBJECT_STORE_DIR: path.join(repo, `.local/objects-${db}`) }); const d = client('http://127.0.0.1:4170');
+  const o = await d.call('POST', '/v1/demo/sandboxes', { body: {} }); assert.equal(o.status, 201, J(o.body));
+  const t = await d.call('GET', `/v1/rooms/${o.body.scenario.room}/thread`, { token: o.body.session.accessToken }); assert.equal(t.status, 200, J(t.body)); assert.equal(t.body.room.lifecycle, 'INSTALLED_UNVERIFIED');
+  const f = await d.call('PUT', `/v1/rooms/${o.body.scenario.room}/field-record/mounting/${(await d.call('GET', `/v1/rooms/${o.body.scenario.room}/field-record`, { token: o.body.session.accessToken })).body.devices[0].asset}`, { token: o.body.session.accessToken, body: { method: 'floor' } }); assert.equal(f.status, 200, J(f.body));
+  const { PgConnection, configFromUrl } = await import(path.join(api, 'db/pg.js')); const own = new PgConnection(configFromUrl(urls.DATABASE_URL)); await own.connect();
+  try {
+    const r = (await own.query('SELECT (SELECT count(*)::int FROM app.tenant) AS tenants, (SELECT count(*)::int FROM app.tenant t WHERE NOT EXISTS (SELECT 1 FROM app.demo_sandbox s WHERE s.tenant_id = t.id)) AS others, (SELECT count(*)::int FROM app.person WHERE password_hash IS NOT NULL OR external_subject IS NOT NULL) AS identities')).rows[0];
+    assert.deepEqual([r.tenants, r.others, r.identities], [1, 0, 0], 'one sandbox, no other tenant, nobody who could sign in any other way');
+  } finally { await own.end(); }
+  assert.equal((await d.call('POST', '/v1/auth/token', { body: { email: 'designer@empathia-demo.empathia.invalid', password: DEV_PASSWORD } })).status, 404);
+});
+
+test('DS-16 storage is bounded: a ceiling on a sandbox’s recorded actions and evidence notes, and on the sandboxes a database opens', async () => {
+  h.asSuper('UPDATE app.demo_config SET enabled = true, max_live = 200, per_remote_hour = 1000');
+  const X = await open(); const tid = tenantOf(X.tenant); const rows = () => n(`SELECT count(*) FROM app.audit_event WHERE tenant_id = '${tid}'`);
+  const inst = await as(X, 'installer'); const cx = await as(X, 'cxeng'); const note = (i) => call(inst, 'POST', `/v1/rooms/${X.room}/field-record/markups`, { body: { x: 1, y: 1, text: `note ${i} (synthetic)` } });
+  assert.ok(rows() < 100, `the scenario itself is ${rows()} audit rows`);
+  // evidence notes first, while there is room for writes
+  h.asSuper('UPDATE app.demo_config SET max_evidence = 1'); const up = (t) => call(cx, 'POST', '/v1/evidence', { raw: Buffer.from(t), headers: { 'content-type': 'text/plain', 'x-file-name': 'n.txt' } });
+  assert.equal((await up('first synthetic note')).status, 201); const second = await up('second synthetic note'); assert.equal(second.status, 429, J(second.body)); assert.match(second.body.detail, /holds its 1 evidence notes/);
+  assert.equal(n(`SELECT count(*) FROM app.evidence_object WHERE tenant_id = '${tid}'`), 1);
+  // actions: writes stop exactly at the ceiling
+  h.asSuper('UPDATE app.demo_config SET max_writes = 100, max_evidence = 60'); let made = 0; let stop = null;
+  for (let i = 0; i < 120 && !stop; i += 1) { const r = await note(i); if (r.status === 201) made += 1; else stop = r; }
+  assert.ok(stop && stop.status === 429, J(stop?.body)); assert.match(stop.body.detail, /has recorded its 100 actions: reset it/); assert.equal(rows(), 100, 'not one row past the ceiling'); assert.ok(made > 0);
+  for (const r of [await note('x'), await call(inst, 'PUT', `/v1/rooms/${X.room}/field-record/mounting/PA-0001`, { body: { method: 'floor' } }), await call(await as(X, 'designer'), 'POST', '/v1/rooms', { body: { name: 'More (synthetic)', template: 'huddle' } })]) assert.equal(r.status, 429);
+  assert.equal(rows(), 100); assert.equal(n(`SELECT count(*) FROM app.room WHERE tenant_id = '${tid}'`), 1);
+  // reads go on: the visitor can still see what they made
+  assert.equal((await call(inst, 'GET', `/v1/rooms/${X.room}/thread`)).status, 200); assert.equal((await call(inst, 'GET', '/v1/demo/sandbox')).status, 200);
+  // refused reads are audit rows too, so reading stops a quarter above the ceiling
+  let last = null; for (let i = 0; i < 40; i += 1) { last = await call(cx, 'GET', '/v1/people'); if (last.status === 429) break; assert.equal(last.status, 403); }
+  assert.equal(last.status, 429, J(last.body)); assert.equal(rows(), 125); assert.equal((await call(inst, 'GET', `/v1/rooms/${X.room}/thread`)).status, 429); assert.equal(rows(), 125, 'nothing more is written, whatever is asked');
+  // other sandboxes and the standard tenant are not touched by this one's ceiling
+  assert.equal((await call(await as(B, 'installer'), 'GET', `/v1/rooms/${B.room}/thread`)).status, 200); assert.equal((await call(std.designer, 'GET', `/v1/rooms/${std.room}`)).status, 200);
+  // a reset is the way out, and it works at the ceiling
+  h.asSuper('UPDATE app.demo_config SET max_writes = 4000'); const r = await c.call('POST', '/v1/demo/sandboxes/reset', { body: { sandboxId: X.id, key: X.key } }); assert.equal(r.status, 201, J(r.body));
+  // the database as a whole: a fixed number of sandboxes, ever
+  const opened = n('SELECT count(*) FROM app.demo_sandbox'); h.asSuper(`UPDATE app.demo_config SET max_total = ${opened}`);
+  const full = await c.call('POST', '/v1/demo/sandboxes', { body: {} }); assert.equal(full.status, 429, J(full.body)); assert.match(full.body.detail, /every sandbox its database allows/);
+  const st = (await c.call('GET', '/v1/demo')).body; assert.equal(st.enabled, false); assert.match(st.reason, /refreshed on a schedule/);
+  const Y = { id: r.body.sandbox.id, key: r.body.sandbox.key, room: r.body.scenario.room }; const noReset = await c.call('POST', '/v1/demo/sandboxes/reset', { body: { sandboxId: Y.id, key: Y.key } }); assert.equal(noReset.status, 429, J(noReset.body));
+  assert.equal((await call(await as(Y, 'installer'), 'GET', `/v1/rooms/${Y.room}/thread`)).status, 200, 'a refused reset closes nothing'); assert.equal(n('SELECT count(*) FROM app.demo_sandbox'), opened);
+  h.asSuper('UPDATE app.demo_config SET max_total = 5000');
+  // the limits are the owner's: the runtime role cannot change them
+  const k = await h.appConn(); try { await assert.rejects(k.query('UPDATE app.demo_config SET max_writes = 1000000'), /permission denied/); } finally { await k.end(); }
 });
