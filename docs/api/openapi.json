@@ -232,6 +232,279 @@
         }
       }
     },
+    "/v1/demo": {
+      "get": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Whether demonstration sandboxes are on offer here, and how many are in use. No sign-in; no sandbox data",
+        "operationId": "getV1Demo",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "availability"
+          }
+        }
+      }
+    },
+    "/v1/demo/sandboxes": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Open a demonstration sandbox: a synthetic tenant of your own with one person per role and one installed room. Returns its key once, and a session as the installer (unauthenticated; capped and rate-limited)",
+        "operationId": "postV1DemoSandboxes",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [],
+                "properties": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "the sandbox, its key and a session"
+          },
+          "404": {
+            "description": "demonstration sandboxes are not enabled",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "every sandbox is in use, or this address opened too many",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/sessions": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "A session as one person of a sandbox (unauthenticated; the sandbox key is the credential). How a visitor returns, and how they change role: the role decides what the session may do",
+        "operationId": "postV1DemoSessions",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "sandboxId",
+                  "key",
+                  "role"
+                ],
+                "properties": {
+                  "sandboxId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F-]{36}$"
+                  },
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  },
+                  "role": {
+                    "type": "string",
+                    "pattern": "^[a-z_]{2,40}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "access token"
+          },
+          "401": {
+            "description": "unknown, closed or expired sandbox, or a wrong key",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "demonstration sessions are not enabled",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/sandboxes/reset": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Reset: close the sandbox the key opens (its sessions stop at once; its records are kept, unreachable) and open a new one (unauthenticated; the sandbox key is the credential)",
+        "operationId": "postV1DemoSandboxesReset",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "sandboxId",
+                  "key"
+                ],
+                "properties": {
+                  "sandboxId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F-]{36}$"
+                  },
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$",
+                    "description": "the sandbox key, as it was returned when the sandbox opened"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "the new sandbox, its key and a session"
+          },
+          "401": {
+            "description": "unknown, closed or expired sandbox, or a wrong key",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "demonstration sessions are not enabled",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "this address opened too many sandboxes",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/sandbox": {
+      "get": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "The sandbox of the signed-in demonstration session: expiry, people and rooms",
+        "operationId": "getV1DemoSandbox",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "sandbox"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/sites": {
       "get": {
         "tags": [

@@ -10,8 +10,9 @@ import { validate } from './schema.js';
 import { ApiError } from './errors.js';
 import { RequestContext, IdempotencyKeyTaken, type Principal } from '../auth/context.js';
 import { OidcVerifier, type OidcClaims } from '../auth/oidc.js';
-import type { TokenVerifier } from '../auth/jwt.js';
+import { Hs256Tokens, unverifiedAudience, type TokenVerifier } from '../auth/jwt.js';
 import { resolvePrincipal, resolveOidcPrincipal } from '../domain/platform.js';
+import { sandboxLive, isSandboxTenant } from '../domain/demo.js';
 import { asJson, type PgPool, type Queryable } from '../db/pg.js';
 import type { Config } from '../config.js';
 import { log } from '../log.js';
@@ -55,6 +56,8 @@ class Bucket { tokens: number; at = Date.now(); constructor(public cap: number) 
 export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier, telemetry: Telemetry): http.Server {
   const buckets = new Map<string, Bucket>();
   const oidc = cfg.oidc ? new OidcVerifier({ issuer: cfg.oidc.issuer, audience: cfg.oidc.audience, jwksUrl: cfg.oidc.jwksUrl }) : null;
+  // demonstration sessions (ADR-0013): their own secret, issuer and audience — a development or provider token is never one, and the reverse
+  const demoTokens: TokenVerifier | null = cfg.demo ? new Hs256Tokens(cfg.demo.secret, cfg.demo.issuer, cfg.demo.audience, cfg.demo.ttlSeconds) : null;
   return http.createServer(async (req, res) => {
     const t0 = process.hrtime.bigint();
     const incoming = String(req.headers['x-correlation-id'] || '');
@@ -77,6 +80,8 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       if (!m) throw new ApiError('not_found', `no endpoint ${url.pathname}`);
       if ('allowed' in m) { send({ status: 405, body: { ...new ApiError('validation', `method not allowed; use ${m.allowed.join(', ')}`).problem(correlationId), status: 405 }, headers: { allow: m.allowed.join(', ') } }); return; }
       const { route, params } = m; routePath = route.path;
+      // the demonstration deployment (AUTH_MODE=demo) serves the demonstration and nothing else that needs no session
+      if (cfg.authMode === 'demo' && !route.auth && route.tag !== 'demo' && route.path !== '/health' && route.path !== '/v1/openapi.json') throw new ApiError('not_found', `${route.path} is not part of the demonstration deployment`);
       const ctx = new RequestContext(pool, correlationId);
 
       // authentication
@@ -86,8 +91,18 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       if (route.auth) {
         const h = String(req.headers.authorization || '');
         if (!h.startsWith('Bearer ')) throw new ApiError('unauthenticated', 'send Authorization: Bearer <token>');
-        let p: Principal | null;
-        if (cfg.authMode === 'oidc') {
+        let p: Principal | null; const bearer = h.slice(7);
+        if (demoTokens && unverifiedAudience(bearer) === cfg.demo!.audience) {
+          // a demonstration session: verified with the demonstration secret; the person and role are resolved from the database like any
+          // other, and the tenant must be a sandbox that is open and unexpired at this moment
+          let claims;
+          try { claims = demoTokens.verify(bearer); } catch (e) { throw new ApiError('unauthenticated', (e as Error).message); }
+          p = await resolvePrincipal(pool, claims.sub, claims.tid, claims.role);
+          if (!p || !(await sandboxLive(pool, claims.tid))) throw new ApiError('unauthenticated', 'the sandbox behind this demonstration session is closed or has expired: open a new one');
+          p.demo = true;
+        } else if (cfg.authMode === 'demo') {
+          throw new ApiError('unauthenticated', 'this deployment accepts demonstration sessions only');
+        } else if (cfg.authMode === 'oidc') {
           // production identity: the provider's token names a subject; the tenant and role for this request come from headers and are checked against memberships
           let claims: OidcClaims;
           try { claims = await oidc!.verify(h.slice(7)); } catch (e) { throw new ApiError('unauthenticated', (e as Error).message); }
@@ -99,6 +114,8 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
           p = await resolvePrincipal(pool, claims.sub, claims.tid, claims.role);
           if (!p) throw new ApiError('unauthenticated', 'the membership behind this token no longer exists or the person is disabled');
         }
+        // the boundary holds in both directions: a sandbox is reached only with a demonstration session
+        if (!p.demo && await isSandboxTenant(pool, p.tenantId)) throw new ApiError('unauthenticated', 'a demonstration sandbox is reached only with a demonstration session');
         ctx.principal = p; ctxRole = p.role; tenantId = p.tenantId; bucketKey = `p:${p.personId}`;
       }
       const b = buckets.get(bucketKey) || buckets.set(bucketKey, new Bucket(cfg.rateLimitPerMinute)).get(bucketKey)!;
@@ -110,8 +127,12 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       // body
       let raw: Buffer | null = null; let body: unknown = null;
       if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method || '')) {
+        // a demonstration sandbox is not a file store: short JSON, and uploads that are short text notes (ADR-0013)
+        const demoCaller = !!ctx.principal?.demo; const binary = route.bodyKind === 'binary';
+        if (demoCaller && binary && !/^text\/(plain|csv)\b/.test(String(req.headers['content-type'] || ''))) throw new ApiError('unsupported_media_type', 'a demonstration sandbox stores short text notes only: send text/plain or text/csv');
+        const cap = demoCaller ? Math.min(cfg.maxBodyBytes, binary ? cfg.demo!.maxUploadBytes : cfg.demo!.maxBodyBytes) : route.tag === 'demo' ? Math.min(cfg.maxBodyBytes, 4096) : cfg.maxBodyBytes;
         const chunks: Buffer[] = []; let n = 0;
-        for await (const c of req) { n += (c as Buffer).length; if (n > cfg.maxBodyBytes) throw new ApiError('payload_too_large', `the body exceeds ${cfg.maxBodyBytes} bytes`); chunks.push(c as Buffer); }
+        for await (const c of req) { n += (c as Buffer).length; if (n > cap) throw new ApiError('payload_too_large', `the body exceeds ${cap} bytes`); chunks.push(c as Buffer); }
         raw = Buffer.concat(chunks);
         if (route.bodyKind !== 'binary' && raw.length) {
           if (!/^application\/json/.test(String(req.headers['content-type'] || ''))) throw new ApiError('unsupported_media_type', 'send JSON (content-type: application/json)');

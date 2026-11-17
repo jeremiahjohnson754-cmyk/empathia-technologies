@@ -9,6 +9,11 @@ export interface TokenVerifier { verify(token: string): Claims }
 
 const b64 = (b: Buffer | string) => Buffer.from(b).toString('base64url');
 
+/** The audience a compact token names, read WITHOUT verifying it: only to choose the verifier. Nothing is trusted from this. */
+export function unverifiedAudience(token: string): string | null {
+  try { const a = (JSON.parse(Buffer.from(token.split('.')[1] || '', 'base64url').toString('utf8')) as { aud?: unknown }).aud; return typeof a === 'string' ? a : null; } catch { return null; }
+}
+
 export class Hs256Tokens implements TokenVerifier {
   constructor(private secret: Buffer, private iss: string, private aud: string, private ttl: number) {}
   issue(sub: string, tid: string, role: string, now = Math.floor(Date.now() / 1000)): { token: string; expiresIn: number } {

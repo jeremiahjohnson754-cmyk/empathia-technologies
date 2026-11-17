@@ -31,6 +31,8 @@ import * as ledger from '../domain/ledger.js';
 import * as inst from '../domain/installations.js';
 import * as proof from '../domain/proof.js';
 import * as defs from '../domain/deficiencies.js';
+import * as demo from '../domain/demo.js';
+import type { Config } from '../config.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PgPool } from '../db/pg.js';
@@ -49,7 +51,7 @@ const ok = (description: string, schema?: Schema) => ({ 200: { description, ...(
 const created = (description: string) => ({ 201: { description } });
 const ERR = { 400: { description: 'validation error' }, 401: { description: 'not signed in' }, 403: { description: 'not allowed for your role' }, 404: { description: 'not found in your tenant or scope' }, 422: { description: 'refused by a business rule' } };
 
-export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: ObjectStore; health: () => Promise<Record<string, unknown>>; authMode?: 'dev' | 'oidc' }): Router {
+export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: ObjectStore; health: () => Promise<Record<string, unknown>>; authMode?: Config['authMode']; demo?: { cfg: Config['demo']; tokens: Hs256Tokens | null } }): Router {
   const r = new Router();
   const add = (x: Route) => r.add({ ...x, responses: { ...x.responses, ...(x.auth ? ERR : {}) } as Route['responses'] });
 
@@ -59,8 +61,26 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   add({ method: 'POST', path: '/v1/auth/token', tag: 'auth', summary: 'Sign in with the development identity provider (AUTH_MODE=dev only)', auth: false,
     body: obj({ email: str({ maxLength: 200 }), password: str({ minLength: 1, maxLength: 200 }), tenant: str({ maxLength: 64 }), role: str({ maxLength: 40 }) }, ['email', 'password']),
     responses: { ...ok('access token'), 401: { description: 'wrong email or password' }, 409: { description: 'several memberships match' } },
-    handler: async (_c, q) => { if (deps.authMode === 'oidc') throw new ApiError('not_found', 'the development identity provider is disabled: this deployment authenticates with the configured OIDC provider'); return { status: 200, body: await platform.signIn(deps.pool, deps.tokens, q.body as never) }; } });
+    handler: async (_c, q) => { if (deps.authMode === 'oidc') throw new ApiError('not_found', 'the development identity provider is disabled: this deployment authenticates with the configured OIDC provider');
+      if (deps.authMode === 'demo') throw new ApiError('not_found', 'the development identity provider is disabled: this deployment accepts demonstration sessions only'); return { status: 200, body: await platform.signIn(deps.pool, deps.tokens, q.body as never) }; } });
   add({ method: 'GET', path: '/v1/me', tag: 'auth', summary: 'The signed-in person, tenant, role and authorities (resolved server-side)', auth: true, responses: ok('principal'), handler: async (c) => ({ status: 200, body: await platform.me(c) }) });
+
+  // ---------------------------------------------------------------------------------------- demonstration sandboxes (ADR-0013)
+  const dd: demo.DemoDeps = { pool: deps.pool, tokens: deps.demo?.tokens ?? null, cfg: deps.demo?.cfg ?? null };
+  const SBX = obj({ sandboxId: UUID, key: str({ pattern: '^[A-Za-z0-9_-]{43}$', description: 'the sandbox key, as it was returned when the sandbox opened' }) }, ['sandboxId', 'key']);
+  const remoteOf = (q: { headers: Record<string, string | string[] | undefined> }) => String(q.headers['x-empathia-remote'] || 'unknown');
+  add({ method: 'GET', path: '/v1/demo', tag: 'demo', summary: 'Whether demonstration sandboxes are on offer here, and how many are in use. No sign-in; no sandbox data', auth: false, responses: ok('availability'), handler: async () => ({ status: 200, body: await demo.status(dd) }) });
+  add({ method: 'POST', path: '/v1/demo/sandboxes', tag: 'demo', summary: 'Open a demonstration sandbox: a synthetic tenant of your own with one person per role and one installed room. Returns its key once, and a session as the installer (unauthenticated; capped and rate-limited)', auth: false,
+    body: obj({}, []), responses: { ...created('the sandbox, its key and a session'), 404: { description: 'demonstration sandboxes are not enabled' }, 429: { description: 'every sandbox is in use, or this address opened too many' } },
+    handler: async (c, q) => ({ status: 201, body: await demo.open(dd, r, remoteOf(q), c.correlationId) }) });
+  add({ method: 'POST', path: '/v1/demo/sessions', tag: 'demo', summary: 'A session as one person of a sandbox (unauthenticated; the sandbox key is the credential). How a visitor returns, and how they change role: the role decides what the session may do', auth: false,
+    body: obj({ sandboxId: UUID, key: str({ pattern: '^[A-Za-z0-9_-]{43}$' }), role: str({ pattern: '^[a-z_]{2,40}$' }) }, ['sandboxId', 'key', 'role']),
+    responses: { ...ok('access token'), 401: { description: 'unknown, closed or expired sandbox, or a wrong key' }, 404: { description: 'demonstration sessions are not enabled' } },
+    handler: async (_c, q) => ({ status: 200, body: await demo.signIn(dd, q.body as never) }) });
+  add({ method: 'POST', path: '/v1/demo/sandboxes/reset', tag: 'demo', summary: 'Reset: close the sandbox the key opens (its sessions stop at once; its records are kept, unreachable) and open a new one (unauthenticated; the sandbox key is the credential)', auth: false,
+    body: SBX, responses: { ...created('the new sandbox, its key and a session'), 401: { description: 'unknown, closed or expired sandbox, or a wrong key' }, 404: { description: 'demonstration sessions are not enabled' }, 429: { description: 'this address opened too many sandboxes' } },
+    handler: async (c, q) => ({ status: 201, body: await demo.reset(dd, r, q.body as never, remoteOf(q), c.correlationId) }) });
+  add({ method: 'GET', path: '/v1/demo/sandbox', tag: 'demo', summary: 'The sandbox of the signed-in demonstration session: expiry, people and rooms', auth: true, responses: ok('sandbox'), handler: async (c) => ({ status: 200, body: await demo.current(c) }) });
 
   // ---------------------------------------------------------------------------------------- organization
   add({ method: 'GET', path: '/v1/sites', tag: 'organization', summary: 'Sites and their buildings (within your site scope)', auth: true, responses: ok('sites'), handler: async (c) => ({ status: 200, body: await org.sites(c) }) });

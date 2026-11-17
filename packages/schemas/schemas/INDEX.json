@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 78,
+    "api": 81,
     "entities": 4
   },
   "files": [
@@ -517,6 +517,21 @@
       "file": "api/postV1AuthToken.json",
       "$id": "https://schemas.empathia.invalid/api/postV1AuthToken/0.1.0.json",
       "sha256": "6197653dee0e11ad8d5bca18a64aed5aecaba540263b9312ad68b44fdf5a07dd"
+    },
+    {
+      "file": "api/postV1DemoSandboxes.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DemoSandboxes/0.1.0.json",
+      "sha256": "9c2aa9b2ab945c3100bb50894911c17b0122557ef7b35dd9e6f4239b8a9131e9"
+    },
+    {
+      "file": "api/postV1DemoSessions.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DemoSessions/0.1.0.json",
+      "sha256": "8fab5cf473272b7e271b7b81e7253f17fe5e8b9019f71519c1b5966c032f3628"
+    },
+    {
+      "file": "api/postV1DemoSandboxesReset.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DemoSandboxesReset/0.1.0.json",
+      "sha256": "8fe2b43fa874f814305b4a885406132f2c0382210782897ca50277e283ae52b1"
     },
     {
       "file": "api/postV1Projects.json",

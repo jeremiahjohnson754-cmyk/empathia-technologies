@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1DemoSandboxes/0.1.0.json",
+  "title": "POST /v1/demo/sandboxes request body",
+  "description": "Open a demonstration sandbox: a synthetic tenant of your own with one person per role and one installed room. Returns its key once, and a session as the installer (unauthenticated; capped and rate-limited)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {}
+}

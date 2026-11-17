@@ -9,7 +9,9 @@ import { validateEvent, EVENT_SCHEMA_VERSION } from '@empathia/event-contracts';
 import { needsAuthority, notByItsAuthor } from '@empathia/commissioning-engine';   // the refusal wording Build a Room shares
 
 export interface Delegated { authority: string; grantorId: string; scope: { sites?: string[]; rooms?: string[]; projects?: string[] }; expiresAt: string; delegationId: string }
-export interface Principal { personId: string; name: string; tenantId: string; tenantSlug: string; role: string; authorities: string[]; siteScope: string[] | null; delegated: Delegated[] }
+export interface Principal { personId: string; name: string; tenantId: string; tenantSlug: string; role: string; authorities: string[]; siteScope: string[] | null; delegated: Delegated[];
+  /** set by the HTTP layer for a demonstration session (ADR-0013): the tenant is a live sandbox */
+  demo?: boolean }
 
 /**
  * The Idempotency-Key of a mutating request (D-35). The key is RESERVED by the first statement of the handler's first transaction — a row

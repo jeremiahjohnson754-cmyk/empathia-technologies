@@ -88,6 +88,23 @@ room and device creation, connections, revisions, results, work orders, projects
 * Regression test: `tests/security/recommissioning-negative.test.mjs` RN-15 (two concurrent requests, one key: one result record, one
   replacement — one installation, unit, outbox event and audit row).
 
+## Demonstration sandboxes and sessions (ADR-0013)
+
+For the public demonstration only. Off unless the process has `DEMO_SESSIONS=on` (or `AUTH_MODE=demo`) **and** the schema owner enabled
+sandboxes for the database (`node dist/src/db/demo.js enable`); otherwise every route below answers 404.
+
+| Operation | Sign-in | What it does |
+|---|---|---|
+| `GET /v1/demo` | none | whether sandboxes are on offer, how many are live, the caps |
+| `POST /v1/demo/sandboxes` | none | opens a sandbox: a synthetic tenant with one person per role and one installed room; returns its **key once** and a session as the installer. 429 when every sandbox is in use or the address opened too many this hour |
+| `POST /v1/demo/sessions` | the sandbox key | `{ sandboxId, key, role }` → a short-lived token as that sandbox's person for the role. How a visitor returns and how they change role |
+| `POST /v1/demo/sandboxes/reset` | the sandbox key | closes the sandbox and opens a new one in one transaction; the old sessions stop at once; nothing is deleted |
+| `GET /v1/demo/sandbox` | a demonstration session | the session's own sandbox: expiry, people, rooms |
+
+A demonstration session is an ordinary principal: every other route applies to it with the authorities of its role, inside its sandbox.
+It reaches no other tenant, and no other kind of token reaches a sandbox. Uploads from a sandbox are `text/plain` or `text/csv` of at
+most 16 KiB; JSON bodies at most 64 KiB. Regression: `tests/security/demo-sandbox.test.mjs` DS-01..14.
+
 ## Positions, physical assets and installations (ADR-0012)
 
 A room's device (`PA-xxxx`) is a **position**: the slot, its purpose, mounting and design history. The hardware is a **physical asset**

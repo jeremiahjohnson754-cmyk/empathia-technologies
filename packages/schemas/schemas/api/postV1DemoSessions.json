@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1DemoSessions/0.1.0.json",
+  "title": "POST /v1/demo/sessions request body",
+  "description": "A session as one person of a sandbox (unauthenticated; the sandbox key is the credential). How a visitor returns, and how they change role: the role decides what the session may do",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sandboxId",
+    "key",
+    "role"
+  ],
+  "properties": {
+    "sandboxId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "role": {
+      "type": "string",
+      "pattern": "^[a-z_]{2,40}$"
+    }
+  }
+}

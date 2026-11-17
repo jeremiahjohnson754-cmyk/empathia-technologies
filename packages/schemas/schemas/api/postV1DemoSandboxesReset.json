@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1DemoSandboxesReset/0.1.0.json",
+  "title": "POST /v1/demo/sandboxes/reset request body",
+  "description": "Reset: close the sandbox the key opens (its sessions stop at once; its records are kept, unreachable) and open a new one (unauthenticated; the sandbox key is the credential)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sandboxId",
+    "key"
+  ],
+  "properties": {
+    "sandboxId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$",
+      "description": "the sandbox key, as it was returned when the sandbox opened"
+    }
+  }
+}

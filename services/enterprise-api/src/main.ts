@@ -32,6 +32,8 @@ export async function start(over: Partial<Record<string, string>> = {}) {
   const telemetry = telemetryFor(cfg);
   const pool = new PgPool({ ...configFromUrl(cfg.databaseUrl), applicationName: 'empathia-enterprise-api', statementTimeoutMs: cfg.dbStatementTimeoutMs }, 10);
   const tokens = new Hs256Tokens(cfg.jwtSecret, cfg.jwtIssuer, cfg.jwtAudience, cfg.tokenTtlSeconds);
+  // demonstration sessions (ADR-0013): a separate signer — its tokens are never accepted as sign-in tokens, nor sign-in tokens as its own
+  const demoTokens = cfg.demo ? new Hs256Tokens(cfg.demo.secret, cfg.demo.issuer, cfg.demo.audience, cfg.demo.ttlSeconds) : null;
   const store = new LocalObjectStore(cfg.objectStoreDir);
   const workerPool = new PgPool({ ...configFromUrl(cfg.workerDatabaseUrl), applicationName: 'empathia-outbox-worker', statementTimeoutMs: cfg.workerStatementTimeoutMs }, 2);
   const worker = new OutboxWorker(workerPool, undefined, cfg.workerIntervalMs);
@@ -39,10 +41,10 @@ export async function start(over: Partial<Record<string, string>> = {}) {
     const t0 = Date.now();
     try {
       const db = (await pool.query<{ v: string; m: number }>("SELECT current_setting('server_version') AS v, app.migrations_applied() AS m")).rows[0]!;
-      return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, objectStore: store.kind, evidenceStoreWritable: storeWritable(cfg.objectStoreDir), worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, telemetry: telemetry.status(), release: { sha: cfg.release.sha, environment: cfg.release.environment }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
+      return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, demoSessions: !!cfg.demo, objectStore: store.kind, evidenceStoreWritable: storeWritable(cfg.objectStoreDir), worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, telemetry: telemetry.status(), release: { sha: cfg.release.sha, environment: cfg.release.environment }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
     } catch (e) { return { status: 'degraded', database: { reachable: false, error: (e as Error).message }, worker: { lastError: worker.lastError } }; }
   };
-  const router = buildRoutes({ pool, tokens, store, health, authMode: cfg.authMode });
+  const router = buildRoutes({ pool, tokens, store, health, authMode: cfg.authMode, demo: { cfg: cfg.demo, tokens: demoTokens } });
   const server = createServer(cfg, router, pool, tokens, telemetry);
   await new Promise<void>((ok) => server.listen(cfg.port, cfg.host, ok));
   if (process.env['WORKER'] !== 'off') worker.start();
