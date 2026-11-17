@@ -145,10 +145,12 @@ export class OutboxWorker {
   /** Every 10th tick, seal committed audit events into each tenant's hash chain (ADR-0010; sealing never runs inside a request). */
   /** The last tick's failure (database unreachable, …), or null. A failing tick never ends the process: it is logged once per outage. */
   lastError: string | null = null;
+  /** Asked before every timed tick: a reason not to run (the database's privileges are not verified, src/db/privileges.ts), or null. A refused tick is a failed tick: reported the same way, retried on the next. */
+  guard: (() => Promise<string | null>) | null = null;
   start(): void {
     if (this.timer) return;
     this.timer = setInterval(() => {
-      void this.tick().then(() => { if (this.lastError) { log('info', 'outbox worker recovered', { after: this.lastError }); this.lastError = null; } this.ticks += 1; return this.ticks % 10 === 0 ? this.seal() : 0; })
+      void (this.guard ? this.guard() : Promise.resolve(null)).then((why) => { if (why) throw new Error(why); return this.tick(); }).then(() => { if (this.lastError) { log('info', 'outbox worker recovered', { after: this.lastError }); this.lastError = null; } this.ticks += 1; return this.ticks % 10 === 0 ? this.seal() : 0; })
         .catch((err: unknown) => { const m = (err as Error).message; if (this.lastError !== m) log('error', 'outbox worker tick failed; retrying on the next tick', { error: m }); this.lastError = m; });
     }, this.intervalMs);
   }

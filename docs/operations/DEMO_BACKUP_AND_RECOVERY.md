@@ -101,19 +101,20 @@ platform. Evidence: `tests/evidence/RECOVERY_DRILL_PLATFORM_EXPORT.json`.
 |---|---|
 | D-01 the archive | sound: 258,591 bytes (SHA-256 `38c5d07f…`), 85 members, all plain files in relative paths; a directory-format dump of `empathia_demo`, 938 entries, from PostgreSQL 16.15; requested 19:27, written 19:28:14 UTC |
 | D-02 what it holds | 6,361 rows in 81 tables (48 of them empty), counted in the archive's own data files |
-| D-03 restore | into an empty database, as an owner who is **not** a superuser, with `--exit-on-error`: 1.3 s. Every table and function is that owner's |
+| D-03 restore | into an empty database, as an owner who is **not** a superuser, with `--exit-on-error`: 1.0 s. Every table and function is that owner's |
 | D-04 row integrity | the database holds exactly the 81 tables of the archive, and every table exactly the archive's rows: 6,361 of 6,361 |
 | D-05 migration hashes | 35 recorded, 35 in the checkout, each with the same SHA-256 (the hosted API also reports 35) |
 | D-06 audit chains | 430 sealed rows in 18 tenants' chains; every hash recomputed from its content and its predecessor: 0 differ, 0 broken links, 0 gaps |
 | D-07 row-level security | forced on 68 tables, 80 policies, as the migrations make it |
-| D-08 privileges | **the export carries none** (finding F-1). Put back from a freshly migrated reference database: 168 entries; afterwards 0 of 192 privilege lines differ from the reference |
+| D-08 privileges | **the export carries none** (finding F-1). The service started on the copy as restored answers `503 unhealthy` and refuses a request with `503 unavailable`; the repair command run as the runtime role is refused and changes nothing; run as the owner it makes 210 statements; afterwards 0 of 192 privilege lines differ from a freshly migrated reference database |
 | D-09 isolation in effect | as the service's runtime role: 0 rows with no tenant; exactly its own 31 audit rows as one sandbox, none of another's; another sandbox asked for by name: 0 rows; an update aimed at another sandbox's room: 0 rows changed. The runtime roles have no elevated attribute |
 | D-10 the service on the copy | started with the Blueprint's own start command; `/health` ok, database reachable, 35 migrations, nothing new applied |
 | D-11 data-loss boundary | the drill's sandbox opens on the copy with its own key. Recorded at 19:02:41 UTC, before the export: **in the copy**. Recorded at 19:34:45 UTC, after it: **not in the copy** (staging holds it) |
 | D-12 staging as it was | the hosted API answers on the same release (`688cf9f`) and still holds the later record |
 
-**Recovery time, measured:** from the archive in hand to the service answering on the verified copy, **8.6 seconds**: validation 0.1,
-restore 1.3, privileges 1.3, verification 5.2, the service 0.7. This is a 6,361-row database on a local disk. It is not the
+**Recovery time, measured:** from the archive in hand to the service answering on the verified copy, **8.2 seconds**: validation 0.1,
+restore 1.0, privileges 1.8, verification 4.7, the service 0.6 (the run of 20:2x UTC, after the fail-safe start was built; the first
+run, with the earlier remedy, took 8.6). This is a 6,361-row database on a local disk. It is not the
 platform's time, and it leaves out what a real recovery adds: creating a database instance, pointing the service at it and
 redeploying. Those have not been measured.
 
@@ -131,14 +132,22 @@ security-definer functions can be run by any role (5 in a migrated database), an
 The rehearsal had not caught this: its stand-in export was made by `pg_dump` with privileges in it. It now makes the stand-in the
 way the platform does (`--no-privileges`) and checks the remedy on every test run (RV-05 inside R-09).
 
-The remedy, in `restore-verify.mjs`: `reapplyPrivileges()` takes the privilege entries, and nothing else, from the schema of a
-reference database at the same migration level (an empty database on which the service's own migrations have run) and applies them
-to the copy as the owner; `privileges()` lists every privilege in both and the two lists must be equal. **A restore of a logical
-export is not finished until that comparison passes.** Point-in-time recovery is a physical copy and should keep privileges; that is
-expected, not verified.
+The remedy (founder, 17 Nov, 14:06: "The service should verify required privileges on startup. If privileges are missing, it
+should report an unhealthy state and refuse sensitive operations. Repair should happen through a separate, tightly permissioned
+migration or recovery process—not by giving the normal application account unrestricted authority to grant its own privileges."):
 
-Not yet done: the service does not put its own privileges back. A start step that asserts them on every start would make a restored
-copy heal itself; it changes the service, so it goes through the full regression first (listed below).
+- **The service checks.** At start, and again while it runs, it compares the database's privileges with the list the migrations
+  produce (`database/migrations/PRIVILEGES.json`). Too few and too many are both a mismatch. On a mismatch `/health` answers 503
+  `unhealthy`, every other request is refused with 503, and the worker does not run.
+- **The service does not repair.** `privileges.js repair` is a separate command that runs only as the owner of the schema; run as
+  either runtime role it is refused by name and changes nothing. It is one transaction, rolled back unless the result is exactly
+  the list.
+- **The result is checked independently.** `restore-verify.mjs privileges()` lists every privilege in the copy and in a freshly
+  migrated reference database; the two must be equal. **A restore of a logical export is not finished until that passes.**
+
+`docs/operations/DATABASE_PRIVILEGES.md` is the procedure. Point-in-time recovery is a physical copy and should keep privileges;
+that is expected, not verified. The fail-safe start is committed and rehearsed; **it is not deployed to staging until the full
+regression of its commit has passed.**
 
 #### Finding F-2: the export includes the platform's own extension
 
@@ -217,8 +226,8 @@ head that was recorded outside the database.
   2. a weekly job that downloads the newest export, restores it into a scratch PostgreSQL and runs RV-01…04, and fails loudly if
      any does not pass;
   3. optionally, a copy of each export kept off the platform, encrypted;
-  4. a start step in the service that asserts its privileges on every start (finding F-1), so a copy restored from an export needs
-     no separate privilege step. It changes the service's start command, so it is staged only after the full regression.
+  4. (done in the code, not yet deployed) the service verifies its privileges at start and refuses to operate when they differ;
+     the repair stays a separate command for the owner (finding F-1, `DATABASE_PRIVILEGES.md`).
 - **What that needs, and why it is not built yet:** a platform API key, held as a secret by whatever runs the schedule. Only the
   founder can create one, and it is never to be in the repository or in a chat. And a decision on where the schedule runs and where
   copies are kept.
@@ -243,5 +252,6 @@ head that was recorded outside the database.
   created from a backup, and the service has never been pointed at a recovered instance. The times above are a workstation's.
 - **Not verified:** the copy against the staging database row by row. The staging database cannot be read from outside its network;
   the copy was checked against the archive, against its own hashes and chains, and against what the hosted API reports.
-- **Not in place:** a scheduled export, a copy kept off the platform, a scheduled drill, and the service putting its own privileges
-  back after a restore.
+- **Not in place:** a scheduled export, a copy kept off the platform, a scheduled drill. The fail-safe start is not on staging yet.
+- **Not exercised on the platform:** the repair command. On Render it is run by an operator in the service's shell or as a one-off
+  job; that has not been done there.

@@ -57,7 +57,7 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
   const add = (x: Route) => r.add({ ...x, responses: { ...x.responses, ...(x.auth ? ERR : {}) } as Route['responses'] });
 
   // ---------------------------------------------------------------------------------------- platform
-  add({ method: 'GET', path: '/health', tag: 'platform', summary: 'Liveness and readiness (database, migrations, outbox backlog)', auth: false, responses: ok('service health'), handler: async () => ({ status: 200, body: await deps.health() }) });
+  add({ method: 'GET', path: '/health', tag: 'platform', summary: 'Liveness and readiness (database, migrations, outbox backlog)', auth: false, responses: ok('service health'), handler: async () => { const h = await deps.health(); return { status: (h as { status?: string }).status === 'unhealthy' ? 503 : 200, body: h }; } });   // unhealthy (17 Nov 2026): the database's privileges are not what this release requires
   add({ method: 'GET', path: '/v1/openapi.json', tag: 'platform', summary: 'This API’s OpenAPI 3.1 document (generated from the route table)', auth: false, responses: ok('OpenAPI document'), handler: async () => ({ status: 200, body: (await import('../openapi.js')).openapi(r) }) });
   add({ method: 'POST', path: '/v1/auth/token', tag: 'auth', summary: 'Sign in with the development identity provider (AUTH_MODE=dev only)', auth: false,
     body: obj({ email: str({ maxLength: 200 }), password: str({ minLength: 1, maxLength: 200 }), tenant: str({ maxLength: 64 }), role: str({ maxLength: 40 }) }, ['email', 'password']),

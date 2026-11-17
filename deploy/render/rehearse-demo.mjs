@@ -154,8 +154,11 @@ try {
   step('R-05', 'the runtime roles are not the owner and can do nothing but sign in: the API\'s role cannot read the sandbox table, change the setting, or create a tenant', denied.every(Boolean) && bare === 2 && asApp('SELECT count(*) FROM app.room').stdout.trim() === '0', `permission denied ×${denied.filter(Boolean).length} of 3 · roles with no attribute but LOGIN: ${bare} of 2 · rooms visible without a tenant: ${asApp('SELECT count(*) FROM app.room').stdout.trim()}`);
 
   // ---- recovery (scripts/ops/restore-verify.mjs; docs/operations/DEMO_BACKUP_AND_RECOVERY.md)
-  const { manifest, verify, restore, privileges, reapplyPrivileges } = await import('../../scripts/ops/restore-verify.mjs');
+  const { manifest, verify, restore, privileges } = await import('../../scripts/ops/restore-verify.mjs');
   const superUrl = (db) => url(creds.superuser, creds.superPassword, db); const ownerUrl = (db) => url(creds.owner, creds.ownerPassword, db); const dump = path.join(os.tmpdir(), `empathia-demo-rehearsal-${creds.port}.dir.tar.gz`);
+  // the list the service checks itself against (database/migrations/PRIVILEGES.json) is what these migrations make, here with an owner that is not a superuser
+  const cur = spawnSync(process.execPath, ['services/enterprise-api/dist/src/db/privileges.js', 'expected', '--check'], { cwd: rt, env: envFor(SUPER), encoding: 'utf8' });
+  step('R-13', 'the privilege list in the image is exactly what the migrations produce on an empty database', cur.status === 0, (cur.stdout || cur.stderr).trim().slice(0, 240));
   const pgDump = (user, pass, out, format = 'custom') => spawnSync(path.join(BIN, 'pg_dump'), ['-h', '127.0.0.1', '-p', String(creds.port), '-U', user, '-d', DB, `--format=${format}`, '-f', out], { env: { ...process.env, PGPASSWORD: pass }, encoding: 'utf8' });
   const asOwner = pgDump(creds.owner, creds.ownerPassword, `${dump}.owner`); fs.rmSync(`${dump}.owner`, { force: true });
   step('R-08', 'a plain pg_dump with the owner’s URL is refused: row-level security is forced on the owner, so the export has to be the platform’s', asOwner.status !== 0 && /row-level security policy/.test(asOwner.stderr), asOwner.stderr.trim().split('\n')[0].slice(0, 160));
@@ -175,17 +178,33 @@ try {
   psql('postgres', `CREATE DATABASE ${DB}_restored OWNER ${creds.owner}`);
   let restored = false; let why = exported.status === 0 ? '' : exported.stderr.trim().slice(0, 200); const tR = Date.now(); if (exported.status === 0) { try { restored = restore(dump, ownerUrl(`${DB}_restored`)); } catch (e) { why = e.message; } }
   const restoreSeconds = (Date.now() - tR) / 1000; const tV = Date.now();
-  // the privileges the export does not carry: put back from a database at the same migration level (here the source itself), then compared with it
-  let privs = { before: -1, applied: 0, left: -1 }; if (restored) { try { const want = privileges(superUrl(DB)); const diff = (have) => want.filter((l) => !have.includes(l)).length + have.filter((l) => !want.includes(l)).length; privs.before = diff(privileges(superUrl(`${DB}_restored`))); privs.applied = reapplyPrivileges(superUrl(DB), ownerUrl(`${DB}_restored`)); privs.left = diff(privileges(superUrl(`${DB}_restored`))); } catch (e) { why = e.message; } }
-  const checks = restored ? [...verify(superUrl(`${DB}_restored`), source), { id: 'RV-05', title: 'privileges put back from a migrated reference equal it', result: privs.before > 0 && privs.applied > 0 && privs.left === 0 ? 'PASS' : 'FAIL', detail: `${privs.before} differences as restored, ${privs.applied} entries applied, ${privs.left} differences afterwards` }] : []; const verifySeconds = (Date.now() - tV) / 1000; const owned = restored ? Number(psql(`${DB}_restored`, `SELECT count(*) FROM pg_tables WHERE schemaname = 'app' AND tableowner <> '${creds.owner}'`).stdout.trim()) : -1;
-  let served = false; let sameThread = false; let copyVersion = -1; const tS = Date.now(); let serveSeconds = 0;
-  if (restored && checks.every((x) => x.result === 'PASS')) { start(ownerUrl(`${DB}_restored`)); served = await waitFor(`${base}/health`); serveSeconds = (Date.now() - tS) / 1000;
+  // what came back is verified before any service has touched the copy
+  const verified = restored ? verify(superUrl(`${DB}_restored`), source) : []; const verifySeconds = (Date.now() - tV) / 1000; const owned = restored ? Number(psql(`${DB}_restored`, `SELECT count(*) FROM pg_tables WHERE schemaname = 'app' AND tableowner <> '${creds.owner}'`).stdout.trim()) : -1;
+  // The export carries no privileges. The service, started on the copy as it is, must say so and refuse; the runtime role must not be
+  // able to put them back; the owner's repair command must; and the running service must then recover without a restart.
+  const privs = { before: -1, unhealthy: false, refused: false, appRepair: 'not tried', ownerRepair: 'not tried', left: -1, healedSeconds: -1 }; const tS = Date.now(); let served = false;
+  if (restored) { try {
+    const want = privileges(superUrl(DB)); const copy = `${DB}_restored`; const diff = (have) => want.filter((l) => !have.includes(l)).length + have.filter((l) => !want.includes(l)).length;
+    privs.before = diff(privileges(superUrl(copy)));
+    start(ownerUrl(copy)); let h = { status: 0 }; const t = Date.now(); while (Date.now() - t < 60000) { h = await j('GET', '/health').catch(() => ({ status: 0 })); if (h.status) break; await new Promise((r) => setTimeout(r, 300)); }
+    privs.unhealthy = h.status === 503 && h.body?.status === 'unhealthy' && h.body?.privileges?.state === 'mismatch' && h.body.privileges.missing > 0;
+    const r = await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'exec' } }); privs.refused = r.status === 503 && r.body?.code === 'unavailable';
+    const repair = (extra) => spawnSync(process.execPath, ['services/enterprise-api/dist/src/db/privileges.js', 'repair'], { cwd: rt, env: { ...envFor(ownerUrl(copy)), ...extra }, encoding: 'utf8' });
+    const asApp = repair({ DATABASE_URL: url(creds.app, creds.appPassword, copy) }); privs.appRepair = asApp.status !== 0 && /by the owner of the schema/.test(asApp.stderr) && diff(privileges(superUrl(copy))) === privs.before ? 'refused, nothing changed' : `NOT REFUSED (${asApp.status} ${(asApp.stderr || asApp.stdout).trim().slice(0, 80)})`;
+    const asOwner = repair({}); privs.ownerRepair = asOwner.status === 0 ? `${JSON.parse(asOwner.stdout).statements} statements` : `FAILED: ${(asOwner.stderr || '').trim().slice(0, 160)}`;
+    privs.left = diff(privileges(superUrl(copy)));
+    const tH = Date.now(); while (Date.now() - tH < 45000) { const hh = await j('GET', '/health').catch(() => ({ status: 0 })); if (hh.status === 200 && hh.body?.status === 'ok' && hh.body?.privileges?.state === 'ok') { served = true; privs.healedSeconds = (Date.now() - tH) / 1000; break; } await new Promise((r2) => setTimeout(r2, 1000)); }
+  } catch (e) { why = e.message; } }
+  const serveSeconds = (Date.now() - tS) / 1000;
+  const checks = restored ? [...verified, { id: 'RV-05', title: 'privileges: unhealthy and refusing on the copy as restored; not repairable by the runtime role; equal to the source after the owner’s repair; the running service recovers', result: privs.before > 0 && privs.unhealthy && privs.refused && privs.appRepair === 'refused, nothing changed' && privs.left === 0 && served ? 'PASS' : 'FAIL', detail: `${privs.before} differences as restored · /health 503 unhealthy ${privs.unhealthy} · a request refused 503 ${privs.refused} · repair as the runtime role: ${privs.appRepair} · as the owner: ${privs.ownerRepair} · ${privs.left} differences afterwards · the running service ok again after ${privs.healedSeconds.toFixed(1)} s` }] : [];
+  let sameThread = false; let copyVersion = -1;
+  if (restored && checks.every((x) => x.result === 'PASS')) {
     const s2 = served ? await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'exec' } }) : { status: 0 };
     sameThread = s2.status === 200 && JSON.stringify((await j('GET', `/v1/rooms/${o.body.scenario.room}/thread`, { token: s2.body.accessToken })).body.stages) === JSON.stringify(before.thread);
     copyVersion = s2.status === 200 ? Number((await j('GET', fr, { token: s2.body.accessToken })).body.devices.find((d) => d.asset === dev)?.mounting?.version || 0) : -1; }
   recovery = { rows: source.rows, tables: Object.keys(source.tables).length, chains: source.auditHeads.length, exportBytes, exportSeconds, restoreSeconds, verifySeconds, serveSeconds, totalSeconds: restoreSeconds + verifySeconds + serveSeconds,
     lost: 'whatever was recorded after the export was made: here one mounting (version ' + lateVersion + ' on the source, version ' + copyVersion + ' in the copy)', measuredOn: 'this workstation, a local PostgreSQL cluster; not the platform' };
-  step('R-09', 'recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; the privileges the export does not carry are put back and equal the source’s; the API starts on the restored copy and a sandbox opened before the export opens with its key and reads the same thread',
+  step('R-09', 'recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; on the copy as restored the service is unhealthy and refuses, the runtime role cannot repair the privileges and the owner’s repair makes them equal to the source’s; the API then serves the restored copy and a sandbox opened before the export opens with its key and reads the same thread',
     restored && checks.length === 5 /* 17 Nov 2026: RV-05, the privileges, joined the four after the first drill on a real export */ && checks.every((x) => x.result === 'PASS') && owned === 0 && served && sameThread && lateVersion === 2 && copyVersion === 1,
     restored ? `${checks.map((x) => `${x.id} ${x.result}`).join(' · ')} · ${source.rows} rows, ${source.auditHeads.length} chains · objects not the owner’s: ${owned} · API on the copy ${served} · same thread ${sameThread} · recorded after the export: on the source v${lateVersion}${lateWhy}, in the copy v${copyVersion} (lost, as it must be) · export ${exportSeconds.toFixed(1)} s (${Math.round(exportBytes / 1024)} KiB), restore ${restoreSeconds.toFixed(1)} s, verify ${verifySeconds.toFixed(1)} s, serving again ${serveSeconds.toFixed(1)} s${checks.filter((x) => x.result === 'FAIL').map((x) => ` · ${x.id}: ${x.detail}`).join('')}` : `not restored: ${why}`);
 
@@ -214,7 +233,7 @@ try {
 } catch (e) { step('R-XX', 'the rehearsal could not be completed', false, (e && e.message) || String(e)); }
 finally { await stop(); try { clusterDown(); } catch { /* reported by the next run, which removes it first */ } fs.rmSync(objects, { recursive: true, force: true }); }
 
-const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07', 'R-08', 'R-09', 'R-10', 'R-11', 'R-12']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
+const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07', 'R-08', 'R-09', 'R-10', 'R-11', 'R-12', 'R-13']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
 const pass = steps.filter((x) => x.result === 'PASS').length; const fail = steps.length - pass;
 let commit = ''; try { commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(); } catch { /* not a checkout */ }
 fs.mkdirSync(path.join(repo, 'tests/evidence'), { recursive: true });

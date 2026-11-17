@@ -28,6 +28,7 @@ correlation id. Real captured examples: [EXAMPLES.md](EXAMPLES.md).
 | `unsupported_media_type` | 415 | Unsupported media type | JSON endpoint without `content-type: application/json`; evidence of a type outside jpeg/png/pdf/csv/json/text |
 | `rate_limited` | 429 | Too many requests | the caller's per-minute budget is spent (see API guide) |
 | `not_configured` | 501 | Not configured | AI generation (no model in the starter); probing or syncing an integration that is not a runnable MOCK |
+| `unavailable` | 503 | The service is not accepting requests | The database's privileges are not what this release requires (after a restore, for instance). Every route except `/health` and `/v1/openapi.json` answers this until an operator has repaired them as the owner; `/health` answers 503 with `status: "unhealthy"`. `docs/operations/DATABASE_PRIVILEGES.md` |
 | `internal` | 500 | Internal error | anything unexpected, including a stored evidence object whose hash no longer matches; details only in the server log |
 
 ## Database rules surfaced through the API

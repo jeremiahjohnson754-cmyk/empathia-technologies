@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadConfig, type Config } from './config.js';
 import { PgPool, configFromUrl } from './db/pg.js';
+import { PrivilegeGate } from './db/privileges.js';
 import { Hs256Tokens } from './auth/jwt.js';
 import { LocalObjectStore } from './storage/objectStore.js';
 import { buildRoutes } from './modules/routes.js';
@@ -37,20 +38,28 @@ export async function start(over: Partial<Record<string, string>> = {}) {
   const store = new LocalObjectStore(cfg.objectStoreDir);
   const workerPool = new PgPool({ ...configFromUrl(cfg.workerDatabaseUrl), applicationName: 'empathia-outbox-worker', statementTimeoutMs: cfg.workerStatementTimeoutMs }, 2);
   const worker = new OutboxWorker(workerPool, undefined, cfg.workerIntervalMs);
+  // the privileges, checked before the first request is served (src/db/privileges.ts)
+  const gate = new PrivilegeGate(pool, (level, msg, extra) => log(level, msg, extra));
+  await gate.check();
   const health = async () => {
     const t0 = Date.now();
+    if (!gate.ok) await gate.blocked();
+    if (gate.state === 'mismatch') return { status: 'unhealthy', service: 'empathia-enterprise-api', reason: 'database privileges do not match this release; requests are refused until an operator repairs them as the owner', privileges: gate.summary() };
     try {
       const db = (await pool.query<{ v: string; m: number }>("SELECT current_setting('server_version') AS v, app.migrations_applied() AS m")).rows[0]!;
-      return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, demoSessions: !!cfg.demo, objectStore: store.kind, evidenceStoreWritable: storeWritable(cfg.objectStoreDir), worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, telemetry: telemetry.status(), release: { sha: cfg.release.sha, environment: cfg.release.environment }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
-    } catch (e) { return { status: 'degraded', database: { reachable: false, error: (e as Error).message }, worker: { lastError: worker.lastError } }; }
+      // the database answers but its privileges could not be verified (the list is not in the image, the catalog could not be read): not ok
+      if (!gate.ok) return { status: 'unhealthy', service: 'empathia-enterprise-api', reason: 'database privileges could not be verified; requests are refused', privileges: gate.summary() };
+      return { status: 'ok', service: 'empathia-enterprise-api', version: '0.1.0', privileges: gate.summary(), database: { reachable: true, serverVersion: db.v, migrationsApplied: db.m, ms: Date.now() - t0 }, authMode: cfg.authMode, demoSessions: !!cfg.demo, objectStore: store.kind, evidenceStoreWritable: storeWritable(cfg.objectStoreDir), worker: { delivered: worker.delivered, failed: worker.failed, deadLettered: worker.dead }, telemetry: telemetry.status(), release: { sha: cfg.release.sha, environment: cfg.release.environment }, liveHealth: 'NOT_MONITORED', note: 'production starter on synthetic data — not production-ready' };
+    } catch (e) { return { status: 'degraded', database: { reachable: false, error: (e as Error).message }, privileges: gate.summary(), worker: { lastError: worker.lastError } }; }
   };
   const router = buildRoutes({ pool, tokens, store, health, authMode: cfg.authMode, demo: { cfg: cfg.demo, tokens: demoTokens } });
-  const server = createServer(cfg, router, pool, tokens, telemetry);
+  const server = createServer(cfg, router, pool, tokens, telemetry, gate);
   await new Promise<void>((ok) => server.listen(cfg.port, cfg.host, ok));
+  worker.guard = () => gate.blocked();   // the worker does not work on a database whose privileges are not verified; it asks again on every tick
   if (process.env['WORKER'] !== 'off') worker.start();
   log('info', 'enterprise-api listening', { url: `http://${cfg.host}:${cfg.port}`, authMode: cfg.authMode, env: cfg.env, release: telemetry.release, telemetry: telemetry.transport.kind });
   const stop = async () => { worker.stop(); await new Promise((ok) => server.close(() => ok(null))); await pool.end(); await workerPool.end(); await telemetry.flush(); };
-  return { server, pool, workerPool, worker, tokens, router, cfg, telemetry, stop };
+  return { server, pool, workerPool, worker, tokens, router, cfg, telemetry, gate, stop };
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

@@ -64,7 +64,7 @@ function aimedAt(params: Record<string, string>): { type: string; id: string } |
 
 class Bucket { tokens: number; at = Date.now(); constructor(public cap: number) { this.tokens = cap; } take(): boolean { const now = Date.now(); this.tokens = Math.min(this.cap, this.tokens + ((now - this.at) / 60000) * this.cap); this.at = now; if (this.tokens < 1) return false; this.tokens -= 1; return true; } }
 
-export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier, telemetry: Telemetry): http.Server {
+export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier, telemetry: Telemetry, gate?: { blocked(): Promise<string | null> }): http.Server {
   const buckets = new Map<string, Bucket>();
   const oidc = cfg.oidc ? new OidcVerifier({ issuer: cfg.oidc.issuer, audience: cfg.oidc.audience, jwksUrl: cfg.oidc.jwksUrl }) : null;
   // demonstration sessions (ADR-0013): their own secret, issuer and audience — a development or provider token is never one, and the reverse
@@ -93,6 +93,9 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       const { route, params } = m; routePath = route.path;
       // the demonstration deployment (AUTH_MODE=demo) serves the demonstration and nothing else that needs no session
       if (cfg.authMode === 'demo' && !route.auth && route.tag !== 'demo' && route.path !== '/health' && route.path !== '/v1/openapi.json') throw new ApiError('not_found', `${route.path} is not part of the demonstration deployment`);
+      // 17 Nov 2026: a database whose privileges are not exactly what the migrations make is not operated on. Health and the API's own
+      // description still answer; everything else is refused until an operator has repaired them as the owner (src/db/privileges.ts).
+      if (gate && route.path !== '/health' && route.path !== '/v1/openapi.json') { const why = await gate.blocked(); if (why) throw new ApiError('unavailable', why); }
       const ctx = new RequestContext(pool, correlationId);
 
       // authentication
