@@ -154,3 +154,27 @@ and one drift.
 
 **Sequence, stated plainly:** the full regression of `a05fdcb` is running and gates staging. This slice is developed on the
 working branch meanwhile and is not staged until its own full regression has passed.
+
+## Found on 17 Nov while starting slice 2: where the products do not yet agree about a position
+
+Founder, 17 Nov 2026, 15:31: "The critical requirement is one shared source of truth. If someone moves a camera in Engineering, its
+coordinates should update in Lite, its relevant commissioning checks should be reassessed, and Assurance should preserve the
+revision history. Not three different products pretending to agree."
+
+The camera of UNI-SCI-110 was moved through the server's own routes in a sandbox (a field move of 1.58 m for a sprinkler head,
+proposed by the installer, refused when the installer tried to approve it, approved by the systems engineer). What each view then
+returned:
+
+| View | What it returned for the camera | Agrees? |
+|---|---|---|
+| The field record (what Lite's plan reads) | designed (8, 19.4); as-built (9.5, 18.9) by move FM-0001 | yes: both, labelled |
+| The checks | six camera checks listed for the commissioning engineer to look at again | yes |
+| A design edit of an installed room | refused: "changes need a change order" | yes: the design is not silently edited |
+| The room as Engineering reads it (`GET /v1/rooms/:room`) | (8, 19.4), with no as-built position and no label saying which it is | **no**: it shows the designed position as if it were the position |
+| The baseline Assurance would take at acceptance | each device's id, category and label; **no position at all** | **no**: Assurance could not say where the camera was when the room was accepted, nor that it had moved |
+
+So the record is one (the move is stored once, with its history), and two readers do not read it. Slice 2 is therefore, on the
+server: one function that answers "where is this device" (designed, as-built, which is current, and the history of both), used by
+the room, the field record, the thread and the baseline; the baseline keeps each device's position at acceptance; and a test that
+moves the camera and asks all of them. Then the page: the move made on the plan in a proposed layer, decided by another person,
+and the three views shown side by side from the server.
