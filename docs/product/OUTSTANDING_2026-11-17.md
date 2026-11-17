@@ -16,10 +16,11 @@ This replaces `OUTSTANDING_2026-11-16.md` as the current list. Everything named 
 | `1cde8b5` | Failed `demo-field-ux`: a 23 px link on the deficiency workbench. Fixed in `d77e55e`. Not staged |
 | `d77e55e` | Failed a unit test: the API client's operation count was left at 168 when the thread route was added. Fixed in `52fce09`. Not staged |
 | `52fce09` | Failed `demo-deadends`: on Engineer start, a persona who may not inject a fault was offered five switches that only repeated a refusal. Fixed in `4914a32`. Not staged |
-| `4914a32` | Running. Build ok; unit, integration and security 123 passed, 0 failed; `demo-engineer-start` 6/0 and `demo-deadends` 111/0 on this commit; the light and dark browser batches are in progress |
+| `4914a32` | Failed `demo-offline` OF-08 (43 passed, 1 failed; 78 other light suites passed): the SIGNAL title page asked for its 1.8 MB sprite sheet on every visit, so opening the story library offline logged a failed request. Fixed in the next commit. Not staged |
+| the head | Running: one regression for everything, the connected page's suite included |
 
-`4914a32` contains the server work below up to the field records. It does not contain the connected page (`2eb47ce` and later): that
-needs its own full regression before it is staged, and its page does not exist in a public build anyway.
+The head contains everything below. The connected page does not exist in a public build (no server address), so staging the head
+changes nothing a visitor can reach there beyond the fixes and the pages already listed.
 
 ## Built on 17 Nov
 
@@ -44,7 +45,7 @@ needs its own full regression before it is staged, and its page does not exist i
 
 ## Outstanding
 
-- Finish the regression of `4914a32`; if it passes, stage it and verify both `-next` deploys. Then a full regression of the head.
+- Finish the regression of the head; if it passes, stage that commit and verify both `-next` deploys.
 - **#167, the rest:** the demo's other pages (Build a Room, the field record page, ServiceHands, Assurance, APEX) still use the
   browser's records. Only `#/connected` reads and writes the server.
 - **#163** SIGNAL feel: the display face (needs the font file), reading toolbar, chapter progress, panel wash and bubbles, contents.

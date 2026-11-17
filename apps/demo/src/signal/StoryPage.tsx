@@ -40,6 +40,15 @@ let missionCache: Promise<MissionIndex> | null = null;
 const loadMission = () => (missionCache ||= getJson<MissionIndex>('signal/mission.json').catch((e) => { missionCache = null; throw e; }));
 /** The shared sprite sheet (figures, props, backgrounds) is first-party art shipped with the build; it is put in the page once so panels can refer to it. */
 export const loadDefs = () => (defsReady ||= fetch('signal/defs.svg').then((r) => r.text()).then((svg) => { if (document.getElementById('sg-defs')) return; const d = document.createElement('div'); d.id = 'sg-defs'; d.className = 'sg-defs'; d.setAttribute('aria-hidden', 'true'); d.innerHTML = svg; document.body.appendChild(d); }).catch(() => { defsReady = null; }));
+/**
+ * The sprite sheet for a page that is not a chapter (the title page's cover and cast). Offline it is asked for only when this device
+ * holds it (the SIGNAL pack): a request that can only fail is not made, and the art arrives when the connection does.
+ * Found by the offline suite on 17 Nov 2026: the title page added on 16 Nov asked for the sheet on every visit, connected or not.
+ */
+export async function loadDefsIfHeld(): Promise<void> {
+  if (typeof navigator === 'undefined' || navigator.onLine !== false) { await loadDefs(); return; }
+  try { if (typeof caches !== 'undefined' && await caches.match(new URL('signal/defs.svg', document.baseURI).href)) await loadDefs(); } catch { /* no cache storage here: nothing is asked for */ }
+}
 export function useLoaded<T>(get: () => Promise<T>, key: string): { data: T | null; error: string | null } {
   const [st, set] = useState<{ data: T | null; error: string | null }>({ data: null, error: null });
   useEffect(() => { let live = true; set({ data: null, error: null }); get().then((d) => live && set({ data: d, error: null }), (e: Error) => live && set({ data: null, error: e.message })); return () => { live = false; }; }, [key]);   // eslint-disable-line react-hooks/exhaustive-deps
@@ -114,7 +123,7 @@ export default function StoryPage({ params, role }: PageProps) {
 function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress; commit: (p: Progress) => void }) {
   const next = resume(ix, progress); const started = Object.keys(progress.chapters).length > 0; const done = (s: number) => ix.chapters.filter((c) => c.season === s && progress.chapters[c.id]?.done).length;
   const [open, setOpen] = useState<number>(next.season); const st = ix.stats;
-  useEffect(() => { void loadDefs(); }, []);
+  useEffect(() => { void loadDefsIfHeld(); const on = () => { void loadDefs(); }; window.addEventListener('online', on); return () => window.removeEventListener('online', on); }, []);
   const seasonChapters = ix.chapters.filter((c) => c.season === open); const locks = useMemo(() => chapterLocks(ix, progress), [ix, progress]);
   return (
     <div className="sg" data-testid="story-library">
