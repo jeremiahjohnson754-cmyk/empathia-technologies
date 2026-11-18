@@ -1,10 +1,10 @@
 # Test results
 
-Run 2026-11-18T11:46:44.183Z on Node v22.23.4. PASS 139 · FAIL 0 · NOT_RUN 113 suites.
+Run 2026-11-18T12:07:41.566Z on Node v22.23.4. PASS 140 · FAIL 0 · NOT_RUN 113 suites.
 
 | Suite | Kind | Result | Passed / tests | Seconds | Why not run |
 |---|---|---|---|---|---|
-| unit: packages/commissioning-engine | unit | PASS | 158/158 | 1 |  |
+| unit: packages/commissioning-engine | unit | PASS | 158/158 | 0.9 |  |
 | unit: packages/event-contracts | unit | PASS | 3/3 | 0.1 |  |
 | unit: packages/relationship-engine | unit | PASS | 5/5 | 0.1 |  |
 | unit: packages/search-party | unit | PASS | 5/5 | 0.1 |  |
@@ -20,55 +20,56 @@ Run 2026-11-18T11:46:44.183Z on Node v22.23.4. PASS 139 · FAIL 0 · NOT_RUN 113
 | unit: packages/api-client | unit | PASS | 5/5 | 0.1 |  |
 | unit: packages/schemas | unit | PASS | 3/3 | 0.1 |  |
 | unit: integrations/contracts | unit | PASS | 7/7 | 0.1 |  |
-| unit: integrations/mocks | unit | PASS | 5/5 | 0.1 |  |
-| unit: packages/commercial (price list, pilot readiness, activation machines) | unit | PASS | 15/15 | 0.1 |  |
-| unit: packages/design-tokens (contrast both themes, D7/D37/D38) | unit | PASS | 22/22 | 0.1 |  |
+| unit: integrations/mocks | unit | PASS | 5/5 | 0.2 |  |
+| unit: packages/commercial (price list, pilot readiness, activation machines) | unit | PASS | 15/15 | 0.2 |  |
+| unit: packages/design-tokens (contrast both themes, D7/D37/D38) | unit | PASS | 22/22 | 0.2 |  |
 | unit: packages/ui (canonical products, ui.css on the tokens) | unit | PASS | 7/7 | 0.2 |  |
 | unit: ml research prototype (python) | unit | NOT_RUN | — | — | dataset not generated (node ml/datasets/generate_synthetic.mjs; python3 -I ml/training/train.py) |
 | unit: demo access policy and Scouter | unit | PASS | 15/15 | 0.4 |  |
-| service: intelligence-python | integration | PASS | 4/4 | 0.6 |  |
-| integration: api.test.mjs | integration | PASS | 22/22 | 6.2 |  |
-| integration: leads.test.mjs | integration | PASS | 5/5 | 2.7 |  |
-| integration: api-client.test.mjs | integration | PASS | 3/3 | 2.3 |  |
-| integration: integration-worker.test.mjs | integration | PASS | 1/1 | 2.5 |  |
-| integration: observability.test.mjs | integration | PASS | 5/5 | 2.4 |  |
+| service: intelligence-python | integration | PASS | 4/4 | 0.7 |  |
+| integration: api.test.mjs | integration | PASS | 22/22 | 6 |  |
+| integration: leads.test.mjs | integration | PASS | 5/5 | 2.2 |  |
+| integration: api-client.test.mjs | integration | PASS | 3/3 | 2.2 |  |
+| integration: integration-worker.test.mjs | integration | PASS | 1/1 | 2.4 |  |
+| integration: observability.test.mjs | integration | PASS | 5/5 | 2.1 |  |
 | security: authz.test.mjs | security | PASS | 45/45 | 5.1 |  |
-| security: founder-boundary.test.mjs | security | PASS | 6/6 | 2.8 |  |
-| security: proof-registry.test.mjs | security | PASS | 12/12 | 3.2 |  |
-| security: room-thread.test.mjs | security | PASS | 9/9 | 8.1 |  |
-| security: demo-sandbox.test.mjs | security | PASS | 18/18 | 29.1 |  |
-| security: field-record.test.mjs | security | PASS | 9/9 | 8.5 |  |
-| security: site-scope.test.mjs | security | PASS | 3/3 | 3.2 |  |
-| security: authority-matrix.test.mjs | security | PASS | 2/2 | 12.9 |  |
-| security: governance.test.mjs | security | PASS | 10/10 | 9.3 |  |
-| security: administration.test.mjs | security | PASS | 5/5 | 3.3 |  |
-| security: search-party.test.mjs | security | PASS | 7/7 | 3.8 |  |
-| security: oidc.test.mjs | security | PASS | 4/4 | 2.3 |  |
-| security: project-lifecycle.test.mjs | security | PASS | 16/16 | 9.1 |  |
-| security: service-lifecycle.test.mjs | security | PASS | 11/11 | 4.4 |  |
-| security: apex.test.mjs | security | PASS | 5/5 | 4.2 |  |
+| security: founder-boundary.test.mjs | security | PASS | 6/6 | 2.9 |  |
+| security: proof-registry.test.mjs | security | PASS | 12/12 | 3.5 |  |
+| security: room-thread.test.mjs | security | PASS | 9/9 | 7.5 |  |
+| security: demo-sandbox.test.mjs | security | PASS | 18/18 | 27.6 |  |
+| security: field-record.test.mjs | security | PASS | 9/9 | 8.2 |  |
+| security: site-scope.test.mjs | security | PASS | 3/3 | 3.1 |  |
+| security: authority-matrix.test.mjs | security | PASS | 2/2 | 13.5 |  |
+| security: governance.test.mjs | security | PASS | 10/10 | 9.5 |  |
+| security: administration.test.mjs | security | PASS | 5/5 | 3.4 |  |
+| security: search-party.test.mjs | security | PASS | 7/7 | 3.7 |  |
+| security: oidc.test.mjs | security | PASS | 4/4 | 2.6 |  |
+| security: project-lifecycle.test.mjs | security | PASS | 16/16 | 9.7 |  |
+| security: service-lifecycle.test.mjs | security | PASS | 11/11 | 4.2 |  |
+| security: apex.test.mjs | security | PASS | 5/5 | 3.9 |  |
 | security: field-intelligence.test.mjs | security | PASS | 6/6 | 3.6 |  |
-| security: learn.test.mjs | security | PASS | 4/4 | 4 |  |
+| security: learn.test.mjs | security | PASS | 4/4 | 3.9 |  |
 | security: mission-control.test.mjs | security | PASS | 8/8 | 4.1 |  |
-| security: competency.test.mjs | security | PASS | 6/6 | 5 |  |
-| security: ledger.test.mjs | security | PASS | 5/5 | 3.1 |  |
-| security: measurement-import.test.mjs | security | PASS | 4/4 | 3.2 |  |
+| security: competency.test.mjs | security | PASS | 6/6 | 4.5 |  |
+| security: ledger.test.mjs | security | PASS | 5/5 | 3.3 |  |
+| security: measurement-import.test.mjs | security | PASS | 4/4 | 3 |  |
 | security: hardening.test.mjs | security | PASS | 6/6 | 4.8 |  |
-| security: training-isolation.test.mjs | security | PASS | 5/5 | 19.5 |  |
+| security: training-isolation.test.mjs | security | PASS | 5/5 | 18.6 |  |
 | security: asset-retirement.test.mjs | security | PASS | 6/6 | 3.3 |  |
-| security: device-register.test.mjs | security | PASS | 10/10 | 4.2 |  |
-| security: deficiency-workflow.test.mjs | security | PASS | 7/7 | 3.8 |  |
+| security: device-register.test.mjs | security | PASS | 10/10 | 3.9 |  |
+| security: deficiency-workflow.test.mjs | security | PASS | 7/7 | 3.9 |  |
 | security: privileges.test.mjs | security | PASS | 7/7 | 3.2 |  |
 | security: placement.test.mjs | security | PASS | 7/7 | 6.3 |  |
-| security: criteria.test.mjs | security | PASS | 13/13 | 18.6 |  |
-| security: shutdown.test.mjs | security | PASS | 1/1 | 4 |  |
-| security: incidents.test.mjs | security | PASS | 11/11 | 10.8 |  |
-| security: second-technician.test.mjs | security | PASS | 7/7 | 5.5 |  |
-| security: flagship-model.test.mjs | security | PASS | 7/7 | 4.9 |  |
-| security: second-room.test.mjs | security | PASS | 7/7 | 13.5 |  |
-| security: measured-exception.test.mjs | security | PASS | 8/8 | 8 |  |
-| security: documentation.test.mjs | security | PASS | 7/7 | 7.9 |  |
-| security: directory.test.mjs | security | PASS | 7/7 | 6.2 |  |
+| security: criteria.test.mjs | security | PASS | 13/13 | 17.8 |  |
+| security: shutdown.test.mjs | security | PASS | 1/1 | 3.7 |  |
+| security: incidents.test.mjs | security | PASS | 11/11 | 11.7 |  |
+| security: second-technician.test.mjs | security | PASS | 7/7 | 5.6 |  |
+| security: flagship-model.test.mjs | security | PASS | 7/7 | 5 |  |
+| security: second-room.test.mjs | security | PASS | 7/7 | 14.3 |  |
+| security: measured-exception.test.mjs | security | PASS | 8/8 | 8.3 |  |
+| security: documentation.test.mjs | security | PASS | 7/7 | 7.7 |  |
+| security: directory.test.mjs | security | PASS | 7/7 | 6.3 |  |
+| security: vocabulary.test.mjs | security | PASS | 2/2 | 2.9 |  |
 | e2e: website lead form over the API | e2e | NOT_RUN | — | — | pass --browser |
 | browser: enterprise web E2E | e2e | NOT_RUN | — | — | pass --browser |
 | browser: design tokens (themes, theme-init, Inter) | browser | NOT_RUN | — | — | pass --browser |
@@ -77,21 +78,21 @@ Run 2026-11-18T11:46:44.183Z on Node v22.23.4. PASS 139 · FAIL 0 · NOT_RUN 113
 | browser: investor demo shell | browser | NOT_RUN | — | — | pass --browser |
 | unit: demo operational workspaces | unit | PASS | 13/13 | 0.3 |  |
 | unit: ServiceHands import — the CSV parser, hostile rows, the commit rule, round-trip of the queue exports | unit | PASS | 6/6 | 0.3 |  |
-| unit: reverberation instrument — known-answer decays, refusals on short range, octave filters, WAV/CSV readers | unit | PASS | 7/7 | 2.3 |  |
+| unit: reverberation instrument — known-answer decays, refusals on short range, octave filters, WAV/CSV readers | unit | PASS | 7/7 | 2.1 |  |
 | unit: Learn cases — separation of duties held in the store, with the DENIED ledger event | unit | PASS | 2/2 | 0.2 |  |
-| unit: people and experience — who did each job, experience by complexity and kind, totals by layer and quarter | unit | PASS | 4/4 | 0.7 |  |
-| unit: engineer faults — an injected fault refuses with its reason and leaves nothing half-done; the inspection sheets name files that exist | unit | PASS | 4/4 | 0.2 |  |
+| unit: people and experience — who did each job, experience by complexity and kind, totals by layer and quarter | unit | PASS | 4/4 | 0.8 |  |
+| unit: engineer faults — an injected fault refuses with its reason and leaves nothing half-done; the inspection sheets name files that exist | unit | PASS | 4/4 | 0.3 |  |
 | unit: SIGNAL title page — extracted from the reference build, inert, resolves in the canon sprite sheet, agrees with the canon | unit | PASS | 3/3 | 0.2 |  |
-| unit: one room end to end — handoff to service, the job does not close the deficiency, the verified retest does, APEX hypotheses, the ids that tie the stages | unit | PASS | 5/5 | 0.3 |  |
-| unit: phase 1 field record — mounting, hookups against the design, field moves decided independently, notes | unit | PASS | 5/5 | 0.2 |  |
+| unit: one room end to end — handoff to service, the job does not close the deficiency, the verified retest does, APEX hypotheses, the ids that tie the stages | unit | PASS | 5/5 | 0.2 |  |
+| unit: phase 1 field record — mounting, hookups against the design, field moves decided independently, notes | unit | PASS | 5/5 | 0.3 |  |
 | unit: the demo connected to the API — the sandbox key is stored and the session token is not, refusals are returned in the server’s words, a lost sandbox is forgotten, the nineteen-step journey reads its state from the server | unit | PASS | 6/6 | 0.2 |  |
 | unit: lifecycle refresh planning — refresh year per unit, annual plan and multi-year strategy agree, cost only when declared | unit | PASS | 5/5 | 0.8 |  |
 | unit: the universal phase engine — the verdict rule, the sign-off, commissioning unchanged on every room, a ServiceHands job phase by phase | unit | PASS | 3/3 | 0.8 |  |
-| unit: Search Party by asset ID and by person — every unit searchable, successions recorded, people and their rooms | unit | PASS | 3/3 | 1 |  |
+| unit: Search Party by asset ID and by person — every unit searchable, successions recorded, people and their rooms | unit | PASS | 3/3 | 0.9 |  |
 | unit: STI workflow — readings against the project policy, flags, the intelligibility exception and its refusals | unit | PASS | 3/3 | 0.2 |  |
 | unit: ServiceHands analytics — measures on hand-built jobs, the synthetic history, the vendor scorecard | unit | PASS | 4/4 | 0.8 |  |
-| unit: training and simulation never touch the real record (SIGNAL game day, drills, Learn cases, FI simulated run) | unit | PASS | 5/5 | 0.3 |  |
-| unit: export formats (every report in PDF, Word, Excel, PowerPoint, JSON and CSV, reopened by independent readers) | unit | PASS | 915/915 | 28.2 |  |
+| unit: training and simulation never touch the real record (SIGNAL game day, drills, Learn cases, FI simulated run) | unit | PASS | 5/5 | 0.2 |  |
+| unit: export formats (every report in PDF, Word, Excel, PowerPoint, JSON and CSV, reopened by independent readers) | unit | PASS | 915/915 | 25.5 |  |
 | browser: investor demo dispatch | browser | NOT_RUN | — | — | pass --browser |
 | browser: investor demo ServiceHands | browser | NOT_RUN | — | — | pass --browser |
 | browser: investor demo Core Replay | browser | NOT_RUN | — | — | pass --browser |
@@ -110,14 +111,14 @@ Run 2026-11-18T11:46:44.183Z on Node v22.23.4. PASS 139 · FAIL 0 · NOT_RUN 113
 | browser: demo-searchparty-bar | browser | NOT_RUN | — | — | pass --browser |
 | browser: demo-boundaries | browser | NOT_RUN | — | — | pass --browser |
 | browser: demo-training-isolation | browser | NOT_RUN | — | — | pass --browser |
-| unit: demo spaces (campus records, search, scenarios, tours) | unit | PASS | 11/11 | 1.4 |  |
-| unit: demo Lite (45 rooms, lenses, coverage overlays, four states, wayfinding, QR) | unit | PASS | 16/16 | 1.2 |  |
-| unit: demo worlds (four worlds, 52 role configurations, no-loss, no grant) | unit | PASS | 7/7 | 0.4 |  |
-| unit: demo estates (one model, University 38 classrooms / 4 dormitories / 3 campuses, Stadium, Convention) | unit | PASS | 21/21 | 0.4 |  |
-| unit: Space Optimizer engine (nine dimensions, options A/B/C, stated rules, every world) | unit | PASS | 14/14 | 0.8 |  |
+| unit: demo spaces (campus records, search, scenarios, tours) | unit | PASS | 11/11 | 1.6 |  |
+| unit: demo Lite (45 rooms, lenses, coverage overlays, four states, wayfinding, QR) | unit | PASS | 16/16 | 0.9 |  |
+| unit: demo worlds (four worlds, 52 role configurations, no-loss, no grant) | unit | PASS | 7/7 | 0.3 |  |
+| unit: demo estates (one model, University 38 classrooms / 4 dormitories / 3 campuses, Stadium, Convention) | unit | PASS | 21/21 | 0.3 |  |
+| unit: Space Optimizer engine (nine dimensions, options A/B/C, stated rules, every world) | unit | PASS | 14/14 | 0.6 |  |
 | unit: SIGNAL canon (hash manifest, 133 chapters / 1,610 panels / 387 decisions, engine rules, every chapter readable) | unit | PASS | 19/19 | 0.7 |  |
 | unit: SIGNAL content bundle (lessons, quizzes, drills, labs, incidents, gates; held by hash) | unit | PASS | 7/7 | 0.3 |  |
-| unit: SIGNAL story engine (decisions recorded as the reference does, clock, echoes, gates, quiz records) | unit | PASS | 16/16 | 0.3 |  |
+| unit: SIGNAL story engine (decisions recorded as the reference does, clock, echoes, gates, quiz records) | unit | PASS | 16/16 | 0.2 |  |
 | unit: SIGNAL drills (six kinds on the reference rules, all 146 drills) | unit | PASS | 9/9 | 0.2 |  |
 | unit: SIGNAL live incidents (the reference rules; all 121 solver paths end proven inside the clock) | unit | PASS | 7/7 | 0.2 |  |
 | unit: SIGNAL Fix-It Labs (shell rules; signal flow, network, power, fill, EQ, camera, DMX, RF: every lab fails at start, its fix passes) | unit | PASS | 15/15 | 0.2 |  |
@@ -133,35 +134,35 @@ Run 2026-11-18T11:46:44.183Z on Node v22.23.4. PASS 139 · FAIL 0 · NOT_RUN 113
 | unit: Design a Space concept (fixes, rehearsal, identity across versions, import guard) | unit | PASS | 4/4 | 0.3 |  |
 | unit: Scouter standard kits (propose, review by another role, publish, stale, adopt) | unit | PASS | 3/3 | 0.2 |  |
 | unit: Build a Room edits (move, duplicate, swap within a group, retire a connection, compare revisions) | unit | PASS | 8/8 | 0.2 |  |
-| unit: Build a Room commissioning workbook (a valid zip, seven sheets, formulas with cached counts, formula text kept as text) | unit | PASS | 3/3 | 0.3 |  |
+| unit: Build a Room commissioning workbook (a valid zip, seven sheets, formulas with cached counts, formula text kept as text) | unit | PASS | 3/3 | 0.2 |  |
 | unit: the five axes of the Experience Language (condition, provenance, confidence, workflow, maturity) | unit | PASS | 4/4 | 0.3 |  |
-| unit: Drawing Intelligence display viewing analysis (ST-VID-02 arithmetic, candidate sizes, provenance of every input) | unit | PASS | 3/3 | 0.1 |  |
+| unit: Drawing Intelligence display viewing analysis (ST-VID-02 arithmetic, candidate sizes, provenance of every input) | unit | PASS | 3/3 | 0.2 |  |
 | unit: SIGNAL glossary terms in the story (first use per chapter, the reference’s expressions) | unit | PASS | 4/4 | 0.2 |  |
 | unit: Engineering Manual (chapters, rules, workflow, exceptions) | unit | PASS | 10/10 | 0.9 |  |
-| unit: generated documents are current (estate manifests, product census, workflow matrix) | unit | PASS | 4/4 | 1.8 |  |
-| unit: search that reads the sentence (corrections, conditions, counted answers, drop one condition; every count recomputed from the records) | unit | PASS | 13/13 | 0.8 |  |
+| unit: generated documents are current (estate manifests, product census, workflow matrix) | unit | PASS | 4/4 | 1.9 |  |
+| unit: search that reads the sentence (corrections, conditions, counted answers, drop one condition; every count recomputed from the records) | unit | PASS | 13/13 | 0.9 |  |
 | unit: request portal (the proposal is the design engine's output; sending, refusals, following; who may ask) | unit | PASS | 10/10 | 0.4 |  |
-| unit: in this room (equipment, history, what a symptom points at, safe guidance, outcomes written to ServiceHands and the room; who may) | unit | PASS | 12/12 | 1 |  |
-| unit: room control (panel generated from each room record; no impossible state in 18,000 random presses; commands, simulated adapter, authority, ledger) | unit | PASS | 8/8 | 1.2 |  |
+| unit: in this room (equipment, history, what a symptom points at, safe guidance, outcomes written to ServiceHands and the room; who may) | unit | PASS | 12/12 | 0.9 |  |
+| unit: room control (panel generated from each room record; no impossible state in 18,000 random presses; commands, simulated adapter, authority, ledger) | unit | PASS | 8/8 | 1.1 |  |
 | unit: Site Champion (the permission model over every legacy table and registered surface; four governed actions, site scope, sixteen-role matrix, ledger) | unit | PASS | 9/9 | 0.8 |  |
-| unit: connect (people directory and site champions from the estate; verified app-jump formats and encoding; schedule-aware proposals across time zones in thousands of random cases; confirm re-checks and is idempotent; one adapter contract over the simulated calendar and the mock-tested Graph adapter; who may) | unit | PASS | 33/33 | 17.4 |  |
-| unit: room guides ("How do I use this room?" generated for all 90 rooms: no sentence names equipment a room lacks; sections follow the panel; nothing unsafe) | unit | PASS | 6/6 | 0.8 |  |
-| unit: Phase 5 documentation in the demonstration (profiles for all 90 rooms; the tracked room agrees with its dossier; sixteen-role matrix; the dossier’s gate; captures committed once) | unit | PASS | 6/6 | 0.8 |  |
+| unit: connect (people directory and site champions from the estate; verified app-jump formats and encoding; schedule-aware proposals across time zones in thousands of random cases; confirm re-checks and is idempotent; one adapter contract over the simulated calendar and the mock-tested Graph adapter; who may) | unit | PASS | 33/33 | 15.9 |  |
+| unit: room guides ("How do I use this room?" generated for all 90 rooms: no sentence names equipment a room lacks; sections follow the panel; nothing unsafe) | unit | PASS | 6/6 | 0.7 |  |
+| unit: Phase 5 documentation in the demonstration (profiles for all 90 rooms; the tracked room agrees with its dossier; sixteen-role matrix; the dossier’s gate; captures committed once) | unit | PASS | 6/6 | 0.9 |  |
 | unit: Site Champion’s first weeks (lessons never say to open, unplug or climb; the check is marked in the store and needs the safety answer; the list is read from the record; champion only) | unit | PASS | 8/8 | 0.3 |  |
 | unit: Microsoft Graph document source, MOCK-TESTED (same index as the simulated library after every change; folder rename and revocation found without the feed; no link off Graph followed; token never sent to a download; nothing outside the selection asked for) | unit | PASS | 11/11 | 0.3 |  |
-| unit: IT Onboarding Success Guide (covers the founder’s list; holds no tenant detail; personalised only from records; each item done by whoever it names; checks marked in the store; milestones derived; progress shown only to the starter, manager and, in part, mentor; revisions kept) | unit | PASS | 10/10 | 0.3 |  |
+| unit: IT Onboarding Success Guide (covers the founder’s list; holds no tenant detail; personalised only from records; each item done by whoever it names; checks marked in the store; milestones derived; progress shown only to the starter, manager and, in part, mentor; revisions kept) | unit | PASS | 10/10 | 0.4 |  |
 | unit: Instant Room rules (guided shots and their safety wording; a photograph judged by arithmetic; coverage; measurements; differences from the record as questions; a plan only when enough was captured, with every guess listed) | unit | PASS | 9/9 | 0.3 |  |
 | unit: Drawing Intelligence, reading and reviewing (six classes of knowing; no scale claimed from too little; overlaps and contradictions raised with both sources kept; untrusted input; the commissioning engine’s own rules as the standards review; revision diff) | unit | PASS | 10/10 | 0.3 |  |
 | unit: End User Success & Training Guide chapters (the founder’s twenty-eight contents each answered; no organisation, person or room named; nothing unsafe; no step-by-step for another company’s application; every link a registered page) | unit | PASS | 5/5 | 0.3 |  |
-| unit: Harmony tool registry (asking does not grant; answers carry sources; steps are prepared, never taken; no link a role cannot open; sixteen roles) | unit | PASS | 8/8 | 1.5 |  |
+| unit: Harmony tool registry (asking does not grant; answers carry sources; steps are prepared, never taken; no link a role cannot open; sixteen roles) | unit | PASS | 8/8 | 1.3 |  |
 | unit: knowledge contract (five trust zones; no cross-tenant read in 20,000 random cases; promotion and sharing need a named person and consent; source hierarchy; freshness) | unit | PASS | 12/12 | 0.2 |  |
-| unit: knowledge ledger and governed ingestion (every object well-formed and its worked examples recomputed; isolation over all objects, both customers and every role; sync engine equals a fresh import over random sequences; untrusted documents; promotion and sharing refusals) | unit | PASS | 13/13 | 11.9 |  |
+| unit: knowledge ledger and governed ingestion (every object well-formed and its worked examples recomputed; isolation over all objects, both customers and every role; sync engine equals a fresh import over random sequences; untrusted documents; promotion and sharing refusals) | unit | PASS | 13/13 | 9.7 |  |
 | unit: video QA (narration words, sync, captions, picture; the Film 13 scene record is what its measurements say) | unit | PASS | 8/8 | 0.2 |  |
-| unit: role start pages and keyboard shortcuts (16 roles against the real policy and records; every link opens for its role) | unit | PASS | 19/19 | 1.2 |  |
-| unit: offline worker and its build step (atomic install, shells kept across builds, network-first with fallback, ranged answers, packs) | unit | PASS | 17/17 | 0.3 |  |
+| unit: role start pages and keyboard shortcuts (16 roles against the real policy and records; every link opens for its role) | unit | PASS | 19/19 | 1.1 |  |
+| unit: offline worker and its build step (atomic install, shells kept across builds, network-first with fallback, ranged answers, packs) | unit | PASS | 17/17 | 0.2 |  |
 | unit: game day state machine (phases, faults on estate records, holds, independent verification, public view) | unit | PASS | 11/11 | 0.2 |  |
-| unit: the critical signal (chain generated from estate records; simulated, inferred and known observations; the procedure for the isolated hop, for every hop; who may; engine invariants over 16,000 random actions; ledger) | unit | PASS | 22/22 | 1.2 |  |
-| unit: demo core screens (health, spine, campus aggregates) | unit | PASS | 11/11 | 0.9 |  |
+| unit: the critical signal (chain generated from estate records; simulated, inferred and known observations; the procedure for the isolated hop, for every hop; who may; engine invariants over 16,000 random actions; ledger) | unit | PASS | 22/22 | 1 |  |
+| unit: demo core screens (health, spine, campus aggregates) | unit | PASS | 11/11 | 0.7 |  |
 | browser: demo-campus | browser | NOT_RUN | — | — | pass --browser |
 | browser: demo-rooms | browser | NOT_RUN | — | — | pass --browser |
 | browser: demo-lite | browser | NOT_RUN | — | — | pass --browser |
@@ -242,14 +243,14 @@ Run 2026-11-18T11:46:44.183Z on Node v22.23.4. PASS 139 · FAIL 0 · NOT_RUN 113
 | browser: demo-connected | browser | NOT_RUN | — | — | pass --browser |
 | browser: demo-flagship | browser | NOT_RUN | — | — | pass --browser |
 | unit: the migration ledger is checked (the pages it calls server are the ones listed; a server page imports the server client and the interface kit and reaches no browser-held record; the client stores the sandbox’s id and key only) | unit | PASS | 3/3 | 0.1 |  |
-| unit: private assets for the Founder Studio (the manifest holds names and hashes only; nothing private is tracked; a missing or altered store is refused; an unprovisioned studio suite is NOT RUN, never passed) | unit | PASS | 6/6 | 0.8 |  |
-| unit: the durable copy of the private assets (requests signed as the published example; push only to a bucket that keeps versions and gives nothing without a credential; pull keeps only files the manifest names; encrypted backups open only with the recipient’s key and restore all or nothing; no secret printed) | unit | PASS | 9/9 | 2.4 |  |
+| unit: private assets for the Founder Studio (the manifest holds names and hashes only; nothing private is tracked; a missing or altered store is refused; an unprovisioned studio suite is NOT RUN, never passed) | unit | PASS | 6/6 | 0.7 |  |
+| unit: the durable copy of the private assets (requests signed as the published example; push only to a bucket that keeps versions and gives nothing without a credential; pull keeps only files the manifest names; encrypted backups open only with the recipient’s key and restore all or nothing; no secret printed) | unit | PASS | 9/9 | 2.2 |  |
 | browser: Founder Studio | browser | NOT_RUN | — | — | pass --studio |
 | e2e: founder town hall (Founder Edition) | e2e | NOT_RUN | — | — | pass --studio |
 | e2e: founder decisions (hosted studio over the API) | e2e | NOT_RUN | — | — | pass --studio |
 | media: full decode of every curated film | media | NOT_RUN | — | — | pass --films (slow: decodes ~47 minutes of video) |
 | deploy: Render Blueprints (static validation) | deploy | PASS | 37/37 | 0.1 |  |
-| deploy: the demonstration staging rehearsed from its Blueprint — the start command on an empty database, the deployment check (permissions, unauthorized access, isolation, persistence, cross-origin, reset), a restart, the V-1 gate | deploy | PASS | 13/13 | 46 |  |
+| deploy: the demonstration staging rehearsed from its Blueprint — the start command on an empty database, the deployment check (permissions, unauthorized access, isolation, persistence, cross-origin, reset), a restart, the V-1 gate | deploy | PASS | 13/13 | 44.3 |  |
 | deploy: public sites audit (functional, a11y, responsive; no P0/P1) | deploy | NOT_RUN | — | — | pass --browser |
 | deploy: public static sites under the declared headers | deploy | NOT_RUN | — | — | pass --browser |
 | security: public sites (headers, build chain, servers, dist) | security | PASS | 10/10 | 5.5 |  |
