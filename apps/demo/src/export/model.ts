@@ -54,3 +54,6 @@ export const FORMATS: Array<{ f: Format; label: string; what: string; mime: stri
 /** A file name safe on every system: the report's id and kind, never a person's name. */
 export const fileName = (r: Report, f: Format) => `${r.id}-${r.kind}`.replace(/[^A-Za-z0-9._-]+/g, '-').replace(/-+/g, '-') + `.${f}`;
 export const cellText = (v: Cell) => (v == null ? '' : String(v));
+/** who exports a data report (founder, 18 Nov 2026: "pdf only for data reports have this role protected"): the same people the server lets
+ * export its estate report (reports/dataReport.ts EXPORT): the executive, the operations lead, the service manager; the architect sees all */
+export const DATA_EXPORT_ROLES = ['exec', 'ops', 'svcmgr', 'architect'];

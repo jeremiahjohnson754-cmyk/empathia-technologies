@@ -5,7 +5,7 @@
 // the scorecard puts the vendor needing attention first, a vendor and a month drill in, the path drills back up, quarters group the same
 // jobs, the export carries exactly the view on screen, the gate holds, and the page fits a phone.
 //   node tests/browser/demo-service-analytics.test.mjs
-import fs from 'node:fs';
+import fs from 'node:fs'; import { execFileSync } from 'node:child_process';
 import { harness } from './demo-shell-lib.mjs';
 const { ok, open, done } = await harness('demo-service-analytics');
 const level = (p) => p.getByTestId('service-analytics').getAttribute('data-level');
@@ -38,10 +38,12 @@ const tableRows = (p, id) => p.getByTestId(id).locator('details table tbody tr')
   // the export is the view on screen
   await p.evaluate(() => { location.hash = '#/v25/service/analytics?v=VN-COBALT'; }); await p.waitForFunction(() => document.querySelector('[data-testid=service-analytics]')?.getAttribute('data-level') === 'vendor');
   const kv = await p.getByTestId('san-kpis').innerText(); const openedV = Number((/Jobs opened\s+(\d+)/.exec(kv) || [])[1]);
-  const [dj] = await Promise.all([p.waitForEvent('download'), p.getByTestId('san-export').locator('button[data-format=json]').click()]); const j = JSON.parse(fs.readFileSync(await dj.path(), 'utf8'));
-  const [dx] = await Promise.all([p.waitForEvent('download'), p.getByTestId('san-export').locator('button[data-format=xlsx]').click()]);
-  const jobs = j.tables.Jobs.rows;
-  ok('SAB-05', 'the export carries exactly the drilled view: the same count of jobs, all the vendor’s, with the scorecard and the definitions', j.kind === 'service-analytics' && jobs.length === openedV && jobs.every((r) => r.v === 'Cobalt Ridge Systems') && j.tables['Vendor scorecard'].rows.length >= 4 && !!j.tables['Trend'] && dx.suggestedFilename().endsWith('.xlsx') && /synthetic/i.test(j.provenance.join(' ')), `${jobs.length} / ${openedV}`);
+  // a data report since 18 Nov 2026 (founder: "pdf only for data reports have this role protected"): one PDF, read here by poppler; the
+  // jobs are counted by their ids in its text, each job's line names the vendor (the JSON and workbook it carried before are not offered)
+  const [dj] = await Promise.all([p.waitForEvent('download'), p.getByTestId('san-export').locator('button[data-format=pdf]').click()]);
+  const txt = execFileSync('pdftotext', ['-layout', await dj.path(), '-'], { encoding: 'utf8' }); const jobLines = txt.split('\n').filter((l) => /^\s*SJ-\d{6}-\d{4}\b/.test(l));
+  const jobs = [...new Set(jobLines.map((l) => /SJ-\d{6}-\d{4}/.exec(l)[0]))]; const others = await p.getByTestId('san-export').locator('button[data-format]:not([data-format=pdf])').count();
+  ok('SAB-05', 'the export, a PDF only, carries exactly the drilled view: the same count of jobs, all the vendor’s, with the scorecard and the definitions', dj.suggestedFilename().endsWith('-service-analytics.pdf') && jobs.length === openedV && jobLines.every((l) => /Cobalt/.test(l)) && /Vendor scorecard/.test(txt) && /Trend by/.test(txt) && /How each figure is worked out/.test(txt) && /synthetic/i.test(txt) && others === 0, `${jobs.length} / ${openedV} · other formats ${others}`);
   ok('SAB-clean', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close(); }
 

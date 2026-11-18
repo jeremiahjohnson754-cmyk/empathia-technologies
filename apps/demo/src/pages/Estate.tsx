@@ -10,6 +10,7 @@ import { allRecords, openIssues, type RoomRecord } from '../campus/design.js';
 import { cxState, type CxState } from '../campus/cxRecord.js';
 import { asState, type AsState } from '../campus/asRecord.js';
 import { ExportMenu } from '../export/ExportMenu.js';
+import { DATA_EXPORT_ROLES } from '../export/model.js';
 import { estatePackage } from '../export/estate.js';
 import { EstateDrill, drillOf, drillHref, inScope, PRO_STATES } from './EstateDrill.js';
 import { BUILDINGS, shortName, roomHref, buildingByKey } from '../campus/canon.js';
@@ -114,7 +115,7 @@ export function CommissioningPage({ perspective, hash = '' }: { perspective: str
       <Card icon="building" title="Tests verified, by building" sub="Verified by someone other than the person who recorded them, of the tests the engine judged applicable">
         <ul className="kit-meters">{byBuilding(scope, (r) => r.counts).map(({ b, vals }) => { const v = vals.reduce((a, c) => a + c.verified, 0); const a = vals.reduce((s, c) => s + c.applicable, 0); return <MeterRow key={b.key} label={b.name} sub={`${v} of ${a} tests · ${plural(vals.length, 'room')}`} value={pct(v, a)} max={100} />; })}</ul>
       </Card>
-      <ExportMenu testId="estate-export" title="Portfolio brief" sub={`${bld === 'all' ? 'The campus' : bname}: by building, by room type and room by room, as six files`} by={persona}
+      <ExportMenu testId="estate-export" data={{ role: perspective, roles: DATA_EXPORT_ROLES }} title="Portfolio brief" sub={`${bld === 'all' ? 'The campus' : bname}: by building, by room type and room by room, as a PDF`} by={persona}
         make={() => estatePackage(recs, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, { building: drill.b || undefined, floor: drill.f ?? undefined })} />
       <Foot>Commissioning here is simulated on synthetic records: no room was surveyed and no test was run on real equipment.</Foot>
     </section>
@@ -163,7 +164,7 @@ export function AssurancePage({ perspective, hash = '' }: { perspective: string;
       </Card>
       <EstateDrill kind="as" recs={all} incidents={w.incidents} hash={hash} base="#/assurance" states={AS} roomBase="#/assurance/room" />
       <AssuranceInsights role={perspective} w={w} />
-      <ExportMenu testId="estate-export" title="Portfolio brief" sub={`${drill.b ? `${buildingByKey(drill.b)?.name}${drill.f != null ? `, floor ${drill.f}` : ''}` : 'The campus'}: by building, by room type and room by room, as six files`} by={persona}
+      <ExportMenu testId="estate-export" data={{ role: perspective, roles: DATA_EXPORT_ROLES }} title="Portfolio brief" sub={`${drill.b ? `${buildingByKey(drill.b)?.name}${drill.f != null ? `, floor ${drill.f}` : ''}` : 'The campus'}: by building, by room type and room by room, as a PDF`} by={persona}
         make={() => estatePackage(all, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, { building: drill.b || undefined, floor: drill.f ?? undefined })} />
       <Foot>Assurance here is modelled from synthetic records; nothing is monitored live, and no claim of operational health is made without live evidence.</Foot>
     </section>

@@ -18,7 +18,7 @@ function save(name: string, mime: string, bytes: Uint8Array) {
 }
 
 export interface Picture { name: string; label: string; svg: string; width: number; height: number; aggregate: string }
-export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-menu', pictures }: { make: () => Report | Promise<Report>; by: string; title?: string; sub?: string; testId?: string; /** drawings offered as PNG and JPEG beside the six files */ pictures?: Picture[] }) {
+export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-menu', pictures, data }: { make: () => Report | Promise<Report>; by: string; title?: string; sub?: string; testId?: string; /** drawings offered as PNG and JPEG beside the six files */ pictures?: Picture[] ; /** a data report (founder, 18 Nov 2026): PDF only, and only for the roles that answer for the figures (the server's own rule for its estate report) */ data?: { role: string; roles: string[] } }) {
   const { apply } = useWorkspace();
   const [busy, setBusy] = useState<Format | null>(null); const [last, setLast] = useState<Made | null>(null); const [err, setErr] = useState<string | null>(null);
   const go = async (f: Format) => {
@@ -33,13 +33,15 @@ export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-m
     } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
     finally { setBusy(null); }
   };
-  return <Card icon="download" title={title} sub={sub || 'Six files from this record, written in your browser'} testId={testId}>
-    <div className="xp-grid" role="group" aria-label={`${title}: choose a format`}>
-      {FORMATS.map((x) => <button key={x.f} type="button" className="ui-btn xp-btn" onClick={() => go(x.f)} disabled={!!busy} aria-busy={busy === x.f} data-testid={`export-${x.f}`} data-format={x.f}>
+  const allowed = !data || data.roles.includes(data.role); const formats = data ? FORMATS.filter((x) => x.f === 'pdf') : FORMATS;
+  return <Card icon="download" title={title} sub={sub || (data ? 'A data report, as a PDF written in your browser' : 'Six files from this record, written in your browser')} testId={testId}>
+    {data ? <p className="wk-note" data-testid={`${testId}-data`} data-allowed={allowed}>{allowed ? 'A data report is exported as a PDF only: the figures as this view shows them, their definitions and where they come from.' : 'Data reports are exported as PDFs by the executive, the operations lead, the service manager or the architect. This role reads the view; it does not export it.'}</p> : null}
+    {allowed ? <div className="xp-grid" role="group" aria-label={`${title}: choose a format`}>
+      {formats.map((x) => <button key={x.f} type="button" className="ui-btn xp-btn" onClick={() => go(x.f)} disabled={!!busy} aria-busy={busy === x.f} data-testid={`export-${x.f}`} data-format={x.f}>
         <Icon name="download" size={16} /><span className="xp-btn__t"><b>{x.label}</b><span className="ui-meta">{busy === x.f ? 'Writing…' : x.what}</span></span>
       </button>)}
-    </div>
-    {pictures?.length ? <div className="xp-grid xp-grid--pics" role="group" aria-label="Pictures">{pictures.flatMap((pic) => (['png', 'jpeg'] as const).map((k) => <button key={`${pic.name}-${k}`} type="button" className="ui-btn xp-btn" disabled={!!busy} data-testid={`export-pic-${k}`} data-format={`pic-${k}`}
+    </div> : null}
+    {pictures?.length && allowed ? <div className="xp-grid xp-grid--pics" role="group" aria-label="Pictures">{pictures.flatMap((pic) => (['png', 'jpeg'] as const).map((k) => <button key={`${pic.name}-${k}`} type="button" className="ui-btn xp-btn" disabled={!!busy} data-testid={`export-pic-${k}`} data-format={`pic-${k}`}
       onClick={async () => { setBusy('csv'); setErr(null); try { const { canvasRaster, canvasJpeg } = await import('./media.js'); const { sha256Hex } = await import('./render.js'); const t0 = performance.now();
         const bytes = k === 'png' ? await canvasRaster(pic.svg, pic.width, pic.height) : await canvasJpeg(pic.svg, pic.width, pic.height); if (!bytes) throw new Error('This browser could not draw the picture.');
         const name = `${pic.name}.${k === 'png' ? 'png' : 'jpg'}`; save(name, k === 'png' ? 'image/png' : 'image/jpeg', bytes); const sha = await sha256Hex(bytes);

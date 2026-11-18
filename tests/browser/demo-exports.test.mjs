@@ -149,16 +149,16 @@ const sha = (b) => crypto.createHash('sha256').update(b).digest('hex');
   // the portfolio brief: the estate drilled up (buildings, room types) and down (every room); the building filter scopes it
   const t = await open('#/commissioning', { role: 'architect', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
   const card = p.getByTestId('estate-export'); await card.waitFor();
-  const [d1] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=json]').click()]);
-  const all = JSON.parse(fs.readFileSync(await d1.path(), 'utf8'));
+  // a data report since 18 Nov 2026 (founder: "pdf only for data reports have this role protected"): the brief is a PDF, read here by
+  // poppler; its rooms are counted by their ids in the text (the JSON and the deck it carried before are no longer offered for it)
+  const roomsIn = (f) => [...new Set((spawnSync('pdftotext', ['-layout', f, '-'], { encoding: 'utf8' }).stdout || '').match(/\bR-[A-Z]{2,4}-\d+-\d+\b/g) || [])];
+  const [d1] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pdf]').click()]); const all = roomsIn(await d1.path());
   await p.getByRole('radio', { name: 'Beacon', exact: true }).click(); await p.waitForTimeout(200);
-  const [d2] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=json]').click()]);
-  const one = JSON.parse(fs.readFileSync(await d2.path(), 'utf8'));
-  const [d3] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pptx]').click()]);
-  const pz = await JSZip.loadAsync(fs.readFileSync(await d3.path())); const chart = Object.keys(pz.files).some((n) => /^ppt\/charts\/chart\d+\.xml$/.test(n));
+  const [d2] = await Promise.all([p.waitForEvent('download'), card.locator('button[data-format=pdf]').click()]); const one = roomsIn(await d2.path());
+  const others = await card.locator('button[data-format]:not([data-format=pdf])').count();
   const tiles = await p.getByTestId('tiles').innerText();
-  ok('XP-EST', 'the portfolio brief counts what the command centre counts: every room for the campus, only Beacon’s once Beacon is chosen, with a deck that carries a native chart', d1.suggestedFilename() === 'EST-CAMPUS-portfolio-brief.json' && all.entities.rooms.length === all.tables.Rooms.rows.length && all.entities.rooms.length >= 100
-    && d2.suggestedFilename() === 'EST-BCN-portfolio-brief.json' && one.entities.rooms.length > 0 && one.entities.rooms.every((r) => r.building === 'BCN') && tiles.includes(`of ${one.entities.rooms.length}`) && chart && !t.errs.length && !t.off.length, `${all.entities.rooms.length} / ${one.entities.rooms.length} · ${tiles.replace(/\s+/g, ' ').slice(0, 60)}`);
+  ok('XP-EST', 'the portfolio brief, a data report, is a PDF only: every room for the campus, only Beacon’s once Beacon is chosen, as the command centre counts them', d1.suggestedFilename() === 'EST-CAMPUS-portfolio-brief.pdf' && all.length >= 100
+    && d2.suggestedFilename() === 'EST-BCN-portfolio-brief.pdf' && one.length > 0 && one.every((r) => r.startsWith('R-BCN-')) && tiles.includes(`of ${one.length}`) && others === 0 && !t.errs.length && !t.off.length, `${all.length} / ${one.length} · other formats ${others} · ${tiles.replace(/\s+/g, ' ').slice(0, 60)}`);
   await t.close();
 }
 {

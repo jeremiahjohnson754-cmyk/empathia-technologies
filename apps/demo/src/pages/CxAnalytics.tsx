@@ -11,6 +11,7 @@ import { months } from '../service/analytics.js';
 import { personaOf, personaLabel } from '../build/store.js';
 import { TrendChart } from './TrendChart.js';
 import { ExportMenu } from '../export/ExportMenu.js';
+import { DATA_EXPORT_ROLES } from '../export/model.js';
 import type { Report } from '../export/model.js';
 import { SITE } from '../campus/canon.js';
 
@@ -63,7 +64,7 @@ export function CxAnalyticsPage({ perspective, hash }: { perspective: string; ha
       <Card icon="check" title={`Rooms accepted in the last ${n} months`} sub="Newest first" testId="cxa-rooms">
         <ul className="plain">{accRooms.slice(0, 15).map((e) => { const r = recs.find((x) => x.outline.id === e.room)!; return <li key={e.room + e.at}><span className="ui-mono">{e.at.slice(0, 10)}</span> · <a href={roomHref(r.outline)}>{shortName(r.outline)} · {r.outline.name}</a></li>; })}{!accRooms.length ? <li className="ui-muted">None in this window.</li> : null}</ul>
       </Card>
-      <ExportMenu testId="cxa-export" title="Commissioning analytics" by={personaLabel(persona)} sub="This view, with its drill, as six files" make={report} />
+      <ExportMenu testId="cxa-export" data={{ role: perspective, roles: DATA_EXPORT_ROLES }} title="Commissioning analytics" by={personaLabel(persona)} sub="This view, with its drill, as a PDF" make={report} />
     </section>
   );
 }

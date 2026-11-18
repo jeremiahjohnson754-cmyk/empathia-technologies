@@ -5,7 +5,7 @@
 // drilled view opens directly; a malformed or unknown address falls back a level instead of breaking; the portfolio brief exported at a
 // level carries exactly that level's rooms; phone width fits.
 //   node tests/browser/demo-drill.test.mjs
-import fs from 'node:fs';
+import fs from 'node:fs'; import { execFileSync } from 'node:child_process';
 import { harness } from './demo-shell-lib.mjs';
 const { ok, open, done } = await harness('demo-drill');
 const num = (s) => Number(String(s).replace(/[^0-9]/g, ''));
@@ -45,9 +45,10 @@ const num = (s) => Number(String(s).replace(/[^0-9]/g, ''));
   await card.getByRole('link', { name: /Blocked · clear/ }).click(); await p.waitForFunction(() => !/s=/.test(location.hash));
   // the export carries the drilled level
   await p.goto(p.url().split('#')[0] + '#/commissioning?b=ATL&f=4'); await card.waitFor();
-  const [dl] = await Promise.all([p.waitForEvent('download'), p.getByTestId('estate-export').locator('button[data-format=json]').click()]);
-  const j = JSON.parse(fs.readFileSync(await dl.path(), 'utf8'));
-  ok('DR-08', 'the portfolio brief exported at a floor carries exactly that floor’s rooms', dl.suggestedFilename() === 'EST-ATL-F4-portfolio-brief.json' && j.entities.rooms.length === roomsHere && j.entities.rooms.every((r) => r.building === 'ATL'), `${j.entities.rooms.length} vs ${roomsHere}`);
+  // a data report (18 Nov 2026): the brief is a PDF only; its rooms are read from the PDF's text by poppler
+  const [dl] = await Promise.all([p.waitForEvent('download'), p.getByTestId('estate-export').locator('button[data-format=pdf]').click()]);
+  const rooms = [...new Set((execFileSync('pdftotext', ['-layout', await dl.path(), '-'], { encoding: 'utf8' })).match(/\bR-[A-Z]{2,4}-\d+-\d+\b/g) || [])];
+  ok('DR-08', 'the portfolio brief exported at a floor carries exactly that floor’s rooms', dl.suggestedFilename() === 'EST-ATL-F4-portfolio-brief.pdf' && rooms.length === roomsHere && rooms.every((r) => r.startsWith('R-ATL-4-')), `${rooms.length} vs ${roomsHere}`);
   ok('DR-09', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close(); }
 

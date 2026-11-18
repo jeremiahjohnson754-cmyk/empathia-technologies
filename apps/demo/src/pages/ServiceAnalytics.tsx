@@ -16,6 +16,7 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel } from '../build/store.js';
 import { TrendChart } from './TrendChart.js';
 import { ExportMenu } from '../export/ExportMenu.js';
+import { DATA_EXPORT_ROLES } from '../export/model.js';
 import { serviceAnalyticsPackage } from '../export/serviceAnalytics.js';
 
 export interface Drill { m: 6 | 12 | 15; g: 'month' | 'quarter'; b: string | null; v: string | null; p: string | null; at: string | null }
@@ -103,7 +104,7 @@ export function ServiceAnalyticsPage({ perspective, hash }: { perspective: strin
             <td>{j.respondedAt ? <Tag tone={respondedInSla(j) ? 'ok' : 'bad'}>{respondedInSla(j) ? 'in SLA' : 'late'}</Tag> : '—'}</td><td>{rh === null ? '—' : <><Tag tone={restoredInSla(j) ? 'ok' : 'bad'}>{Math.round(rh)} h</Tag> <span className="ui-meta">target {SLA_HOURS[j.severity].restore} h</span></>}</td><td>{j.closedAt ? 'Closed' : 'Open'}{j.reopened ? ' · reopened' : ''}</td></tr>; })}</tbody></table></div>
         {jobs.length > 25 ? <p className="wk-note">The newest 25 of {jobs.length} are listed; click a month in a chart to narrow them, and every one is in the exported workbook.</p> : null}
       </Card>
-      <ExportMenu testId="san-export" title="Service analytics report" by={personaLabel(persona)} sub="This view (with its drill) as six files: the trends, the vendor scorecard, by building and project, and every job behind it"
+      <ExportMenu testId="san-export" data={{ role: perspective, roles: DATA_EXPORT_ROLES }} title="Service analytics report" by={personaLabel(persona)} sub="This view (with its drill) as a PDF: the trends, the vendor scorecard, by building and project, and every job behind it"
         make={() => serviceAnalyticsPackage({ jobs: scope, all, periods: ps, months: ms, drill: d, crumbs: crumbs.map((c) => c[0]), projName, scorecard: card }, made)} />
       <details className="ln-dom" data-testid="san-defs"><summary><b>How each figure is worked out</b></summary><dl className="san__defs">{DEFINITIONS.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
         <p className="wk-note">The history is synthetic: generated from a fixed seed so every visit and every test sees the same jobs, shaped like a service history and labelled wherever it appears. Each job’s vendor is the one the support agreement names for its building and layer; where no active agreement covers it, the internal team serves it and the scorecard says so.</p></details>
