@@ -24,6 +24,9 @@ export const opensNative = (role: RoleKey, href: string) => { const r = resolve(
 export const translate = (href: string) => { const r = resolve(href); return r && !Object.keys(r.params).length ? hrefOf(r.page.id, {}, Object.fromEntries(r.query)) : href; };
 
 /** V2.5.3's tab icon names (ROLE tabs) → the kit's icon set. */
+// Field Tools one jump from anywhere for the people who work on site (founder, 18 Nov 2026): service, engineering, installation,
+// commissioning and the project managers; every other role reaches it through Search Party and the product menu.
+const FIELD_TOOL_ROLES: ReadonlySet<string> = new Set(['service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'architect']);
 const TAB_ICON: Record<string, IconName> = {
   home: 'home', campus: 'campus', search: 'search', room: 'room', place: 'place', people: 'users', check: 'check', device: 'device', project: 'layers',
   time: 'clock', learn: 'book', evidence: 'shield', commission: 'shield', network: 'route', issue: 'alert', support: 'wrench', ops: 'wrench', graph: 'chart',
@@ -53,6 +56,7 @@ export function Shell({ role, hash, at, onViewAs, onRole, children }: { role: Ro
         <span className="synth-chip" title="Every person, room, device and figure in this demonstration is invented">Synthetic data</span>
         {cur && <a href={hrefOf(cur.landing!.id)} className="shell__product" data-p={cur.id} aria-current="true" title={cur.purpose}><span className="pmark" aria-hidden="true" /><span className="shell__pn">{cur.name}</span></a>}
         <div className="shell__tools">
+          {FIELD_TOOL_ROLES.has(role) && pages.some((p) => p.id === 'fieldtools') && <a className="shell__ft" href="#/field-tools" aria-current={(here || '').startsWith('#/field-tools') ? 'page' : undefined} data-testid="shell-fieldtools" title="Field Tools: calculators for the site"><Icon name="wrench" size={18} /><span className="shell__ft__l">Field Tools</span></a>}
           <QuickFind role={role} pages={pages} open={findOpen} setOpen={setFindOpen} />
           <Notifications role={role} />
           <ThemeSwitch className="shell__theme" />

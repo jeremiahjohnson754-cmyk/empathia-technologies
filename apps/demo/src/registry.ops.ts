@@ -256,6 +256,15 @@ export const OPS_PAGES: readonly PageDef[] = [
     load: opsLoad('fiscan'), search: { keywords: 'scan replay findings provenance policy', aliases: ['room scan'] },
   },
   {
+    // Founder, 18 Nov 2026: "call it field tools … something people can instantly be able to jump over to … not to be confused with
+    // commissioning tools". Arithmetic for the site: every role may open it, it shows no record, and a result grants nothing.
+    id: 'fieldtools', title: 'Field Tools', purpose: 'Calculators for the site: display, projection, LED, video bandwidth, audio, acoustics, power, rigging, network, cabling; each shows its working', product: 'field',
+    path: '/field-tools', alias: ['/field-tools/:tool', '/tools', '/tools/:tool', '/calc', '/calc/:tool'],
+    authority: { roles: ROLE_KEYS, why: 'reference arithmetic with no record in it (founder, 18 Nov 2026): every role may use it, and a calculation grants nothing' },
+    load: () => import('./fieldtools/FieldTools.js'),
+    search: { keywords: 'field tools calculator calculators throw distance throw ratio lumens contrast screen size viewing distance led wall pixel pitch bandwidth hdmi sdi spl db dbu dbv impedance 70v 100v constant voltage ceiling speaker cable loss delay wavelength rt60 reverberation critical distance pag nag room modes ohms law amps watts circuits voltage drop ups btu bridle wll design factor subnet poe dante aes67 fiber loss budget cat6 100 m lux foot-candles labour crew convert units', aliases: ['field tools', 'calculator', 'calculators', 'tools', 'av calculator', 'subnet calculator', 'throw calculator', 'bandwidth calculator'] },
+  },
+  {
     id: 'decisions.desk', title: 'Decision desk', purpose: 'Approve, hold or reject against a scope revision; fund separately', product: 'pro',
     path: '/v25/decisions', authority: { area: 'decisions' },
     actions: [{ id: 'budget.decide', label: 'Decide', authority: { action: 'budget.decide' } }],
