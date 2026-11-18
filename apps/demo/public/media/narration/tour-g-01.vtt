@@ -1,19 +1,19 @@
 WEBVTT
 
-NOTE AI-generated voice (synthetic, not a real person). ElevenLabs premade voice Brian, eleven_v4. The first take generated for the line, chosen without listening (see docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md). Cue boundaries at the measured pauses (silencedetect -45 dB) nearest each sentence end.
+NOTE AI-generated voice (synthetic, not a real person). ElevenLabs premade voice Brian, eleven_v4. Chosen by the founder after listening (18 Nov 2026). See docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md. Cue boundaries at the measured pauses (silencedetect -45 dB) nearest each sentence end.
 
 1
-00:00:00.000 --> 00:00:02.058
+00:00:00.000 --> 00:00:01.966
 Every room has a story.
 
 2
-00:00:02.058 --> 00:00:07.090
+00:00:01.966 --> 00:00:06.882
 This is Atlas 4.218, a boardroom on a fictional campus.
 
 3
-00:00:07.090 --> 00:00:13.019
+00:00:06.882 --> 00:00:12.793
 Core Replay plays its life from its own records, and every step tells you how sure it is.
 
 4
-00:00:13.019 --> 00:00:15.308
+00:00:12.793 --> 00:00:15.151
 Watching never changes the room.

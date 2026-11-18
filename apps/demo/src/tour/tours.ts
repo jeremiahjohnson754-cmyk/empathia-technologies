@@ -6,7 +6,7 @@
  */
 import { REFERENCE_ROOM_ID } from '../campus/canon.js';
 
-export interface Stop { id: string; title: string; text: string; href: string; spot?: string; narration?: string;
+export interface Stop { id: string; title: string; text: string; href: string; spot?: string; narration?: string; captionsOnly?: string;
   /** the question this stop tends to raise, and its plain answer (tour D) */
   ask?: { q: string; a: string };
   /** searches a visitor can run from this stop with one press (tour D's "search anything" stop) */
@@ -26,14 +26,14 @@ export const TOURS: Tour[] = [
     { id: 'G6', title: 'Commissioning proves it', text: 'Each applicable test recorded by its responsible role and verified by somebody else. A result nobody independently checked does not count.', href: `#/replay/${REFERENCE_ROOM_ID}?at=commissioning`, spot: 'rp-card', narration: 'tour-g-06' },
     { id: 'G7', title: 'The commissioning record', text: 'The tests themselves: what was required, what was observed, by whom, and who verified it. Synthetic evidence, labelled as such.', href: `#/commissioning/room/${REFERENCE_ROOM_ID}`, narration: 'tour-g-07' },
     { id: 'G8', title: 'The accepted baseline', text: 'Baseline v1: what the room was proven to do. Everything afterwards is compared with it, and it is never overwritten.', href: `#/replay/${REFERENCE_ROOM_ID}?at=baseline1`, spot: 'rp-card', narration: 'tour-g-08' },
-    { id: 'G9', title: 'A failure becomes work', text: 'In use, things fail. A problem in this room is a ServiceHands job tied to the room and, where known, the device: the same ids again.', href: '#/servicehands', spot: 'jobs' },
+    { id: 'G9', title: 'A failure becomes work', text: 'In use, things fail. A problem in this room is a ServiceHands job tied to the room and, where known, the device: the same ids again.', href: '#/servicehands', spot: 'jobs', captionsOnly: 'tour-g-09' },
     { id: 'G10', title: 'Who can fix it', text: 'Search Party from the room: who supports it, who knows it, its relationships, each with where it comes from. From here, a problem goes straight to ServiceHands with the room filled in.', href: `#/search?focus=Room:${REFERENCE_ROOM_ID}`, spot: 'sp-room-acts', narration: 'tour-g-10' },
     { id: 'G11', title: 'The exact device', text: 'Search for the replacement unit AS-0112: its position, its room, its history. Search Party, Lite and ServiceHands all resolve the same asset.', href: '#/search?q=AS-0112', narration: 'tour-g-11' },
-    { id: 'G12', title: 'A change reopens exactly what it touches', text: 'The camera at PA-0007 is replaced like-for-like: AS-0097 out, AS-0112 in. The engine reopens only the tests that name PA-0007; the old results stay as history and never count for the new unit.', href: `#/replay/${REFERENCE_ROOM_ID}?at=change`, spot: 'rp-card' },
-    { id: 'G13', title: 'Re-accepted, history kept', text: 'The reopened tests are run again and verified. Baseline v2 becomes current; v1 is preserved. Compare any two moments with the time layers.', href: `#/replay/${REFERENCE_ROOM_ID}?at=baseline2`, spot: 'rp-card' },
+    { id: 'G12', title: 'A change reopens exactly what it touches', text: 'The camera at PA-0007 is replaced like-for-like: AS-0097 out, AS-0112 in. The engine reopens only the tests that name PA-0007; the old results stay as history and never count for the new unit.', href: `#/replay/${REFERENCE_ROOM_ID}?at=change`, spot: 'rp-card', captionsOnly: 'tour-g-12' },
+    { id: 'G13', title: 'Re-accepted, history kept', text: 'The reopened tests are run again and verified. Baseline v2 becomes current; v1 is preserved. Compare any two moments with the time layers.', href: `#/replay/${REFERENCE_ROOM_ID}?at=baseline2`, spot: 'rp-card', captionsOnly: 'tour-g-13' },
     { id: 'G14', title: 'Assurance watches the baseline', text: 'Assurance holds the accepted state and its revisions, so a later difference shows as drift against a known baseline, not as a guess.', href: `#/assurance/room/${REFERENCE_ROOM_ID}`, narration: 'tour-g-14' },
-    { id: 'G15', title: 'What leadership sees', text: 'The same records roll up into diagnosis and analytics. Every figure traces to the rooms and jobs it came from; none of it is streamed from a real building.', href: '#/v25/apex' },
-    { id: 'G16', title: 'One room. Now the whole estate.', text: 'The failure map shows every building’s open issues, as counts and per 10 rooms, from the same records. Follow everything that happened to one room, then imagine that across the enterprise. (Turning a resolved fault into a reviewed lesson in Learn is designed, not built yet.)', href: '#/pro/issues', spot: 'pro-failure-map' },
+    { id: 'G15', title: 'What leadership sees', text: 'The same records roll up into diagnosis and analytics. Every figure traces to the rooms and jobs it came from; none of it is streamed from a real building.', href: '#/v25/apex', captionsOnly: 'tour-g-15' },
+    { id: 'G16', title: 'One room. Now the whole estate.', text: 'The failure map shows every building’s open issues, as counts and per 10 rooms, from the same records. Follow everything that happened to one room, then imagine that across the enterprise. (Turning a resolved fault into a reviewed lesson in Learn is designed, not built yet.)', href: '#/pro/issues', spot: 'pro-failure-map', captionsOnly: 'tour-g-16' },
   ] },
 
   { key: 'a', title: 'Tour A — The Living Campus', audience: 'Anyone', goal: 'Understand the concept in a few minutes.', stops: [
@@ -156,9 +156,10 @@ export const TOURS: Tour[] = [
 ];
 
 /** Narration takes that are shipped (apps/demo/public/media/narration), each held by its hash. A stop without one is text only.
- *  tour-a-05 was owner-approved by ear. The Tour G takes (18 Nov 2026) are measured — loudness, length, no long gaps, hash — but
- *  nobody has listened to them yet; docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md records each one and what is still owed (G9,
- *  G12, G13, G15, G16 were refused by ElevenLabs when the account's credits ran out, so those stops are text only). */
+ *  tour-a-05 was owner-approved by ear. Of the Tour G takes (18 Nov 2026), ten are the founder's own picks after listening; G7 is
+ *  the first take, not yet chosen by ear. G9, G12, G13, G15 and G16 have no voice (ElevenLabs refused them when the account's
+ *  credits ran out; founder 16:41: "make them silent with captions") — see CAPTIONS_ONLY. Provenance:
+ *  docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md. */
 export const NARRATION: Record<string, { src: string; captions: string; transcript: string; seconds: number; voice: string; lufs: number; sha256: string; source: string }> = {
   'tour-a-05': {
     src: 'media/narration/tour-a-05.mp3', captions: 'media/narration/tour-a-05.vtt', seconds: 10.81, lufs: -23.5,
@@ -167,71 +168,82 @@ export const NARRATION: Record<string, { src: string; captions: string; transcri
     sha256: 'a5f1b476451d504d1b2144b766de7509e758bee9e3a27e9f2d84b3fce5a36064', source: 'pilot take tour-sample s01 (owner-approved 2026-11-01 08:07 CT; source sha256 8a9927d3…), gain −4.65 dB to −23 LUFS, mono 96 kb/s',
   },
   'tour-g-01': {
-    src: 'media/narration/tour-g-01.mp3', captions: 'media/narration/tour-g-01.vtt', seconds: 15.31, lufs: -23.5,
+    src: 'media/narration/tour-g-01.mp3', captions: 'media/narration/tour-g-01.vtt', seconds: 15.15, lufs: -23.4,
     transcript: 'Every room has a story. This is Atlas 4.218, a boardroom on a fictional campus. Core Replay plays its life from its own records, and every step tells you how sure it is. Watching never changes the room.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '1df29f1378defb84d731d927f1d45a9c762a5d1c12319b455216d1787da8a637', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation FnS0PobPJBVCcNdg3rbH, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 64a5f6c3…), gain −0.5 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'f49c35f59ccbe68360822089febcb8ae570b51bfb4c8943d4132961444ac886e', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation 66oKWmt04qNUfw5mZ90M, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 cbac6ec7…), gain −0.4 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-02': {
     src: 'media/narration/tour-g-02.mp3', captions: 'media/narration/tour-g-02.vtt', seconds: 14.03, lufs: -23.5,
     transcript: 'It begins with intent. Nine requirements, six of them must-haves: everyone heard and seen at the far end, one touch to join, simple enough for a guest. Everything that follows is judged against these.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'c797160408a456302e67e0339f3d94eae246724c3aabddb472b2bc98438e1f3b', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation ijnqK1jRQUzKcedoE9Rq, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 0f365880…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'c797160408a456302e67e0339f3d94eae246724c3aabddb472b2bc98438e1f3b', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation ijnqK1jRQUzKcedoE9Rq, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 0f365880…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-03': {
-    src: 'media/narration/tour-g-03.mp3', captions: 'media/narration/tour-g-03.vtt', seconds: 10.53, lufs: -23.4,
+    src: 'media/narration/tour-g-03.mp3', captions: 'media/narration/tour-g-03.vtt', seconds: 10.45, lufs: -23.5,
     transcript: 'Then the room is designed. Every device becomes a numbered position, and before anything is installed, the commissioning engine already knows which tests this design will need.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '8d455ef9c3854ba6a27a3ba6aeaee58657f9618406f2a94082043e226fe4b36a', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation PIg3pWjUlNDodFM8FvT4, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 52316a43…), gain −1 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '35f06a50f1db624816b782b7d7e2d3f833885cbbe8e944cd60ef2eff4373b107', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation 8tyxEsmHhRecrpZdWzL3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 9c1b3cd5…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-04': {
-    src: 'media/narration/tour-g-04.mp3', captions: 'media/narration/tour-g-04.vtt', seconds: 8.99, lufs: -23.5,
+    src: 'media/narration/tour-g-04.mp3', captions: 'media/narration/tour-g-04.vtt', seconds: 9.17, lufs: -23.4,
     transcript: 'This is the same room in Lite. The same record, seen in three dimensions: the walls, the furniture, and every device at its position.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '2a75054c0b56860ce2967f89272c778fc760295aabfcfa2a611082500c8bde1b', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation 884NJnW2enVAX8LVzeo2, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 e86facab…), gain −1.5 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '8eef209559b25b00e3329b2c1fbbf3348ce0eccf3123c6937f3984d23187bfe7', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation WHLKCuh3Sm2z3YUNJpkX, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 9bca2d12…), gain −1 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-05': {
-    src: 'media/narration/tour-g-05.mp3', captions: 'media/narration/tour-g-05.vtt', seconds: 11.65, lufs: -23.4,
+    src: 'media/narration/tour-g-05.mp3', captions: 'media/narration/tour-g-05.vtt', seconds: 11.55, lufs: -23.4,
     transcript: 'The design becomes real. The front camera’s position now holds a physical unit with its own identity. A position and the asset in it are different things, and the record keeps both.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '43d5bc98bf6f560984263775e8575efa6d689f36019e3605a58699418743c5b9', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation qjb77RYnqwJGhBoPmlw4, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 fa1eaa76…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '382f0b45f9aa92307ce00a9794a32a2d0a20a1589d1b60a5e1f89c268e4107f7', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation xEk3ctEiinXQPrFeAZAD, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 510c3b1f…), gain −0.7 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-06': {
-    src: 'media/narration/tour-g-06.mp3', captions: 'media/narration/tour-g-06.vtt', seconds: 10.37, lufs: -23.5,
+    src: 'media/narration/tour-g-06.mp3', captions: 'media/narration/tour-g-06.vtt', seconds: 10.19, lufs: -23.4,
     transcript: 'Commissioning proves it. Each test is recorded by the person responsible, and checked by somebody else. A result nobody independently verified does not count.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'd92498366f4c7cc207e7038b325db49cca879d543c3d9308b153a0c8c4fd5e4d', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation G6drE5n6VOw02wLA0l70, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 ab273e70…), gain −0.6 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'c9f19495ff32114fb907c73b2fbef5d258ed133ea55c3f863ee6ddf42a214013', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation lnUIEkALdiJNuJamLqe3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 8b7120ea…), gain −0.6 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-07': {
     src: 'media/narration/tour-g-07.mp3', captions: 'media/narration/tour-g-07.vtt', seconds: 9.95, lufs: -23.5,
     transcript: 'Here is the record itself: what was required, what was observed, who recorded it, and who verified it. The evidence is synthetic, and it says so.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'a1cc732a1276ae8b25a6354298da3946b41546a7dc2b7af2a746b083b31f942c', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation NgKBU1Usu87Kt4xPNAY3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 f6b0a4f4…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'a1cc732a1276ae8b25a6354298da3946b41546a7dc2b7af2a746b083b31f942c', source: 'Tour G take 1 of its line, first take; the founder’s picks did not include G7, so it is not yet chosen by ear (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation NgKBU1Usu87Kt4xPNAY3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 f6b0a4f4…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-08': {
     src: 'media/narration/tour-g-08.mp3', captions: 'media/narration/tour-g-08.vtt', seconds: 10.45, lufs: -23.4,
     transcript: 'The room is no longer just installed. Its accepted condition is now documented. Baseline one is what this room was proven to do, and it is never overwritten.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'a337661383445fa61268bb82e8ee2819d7e044820ed46bd0f8197e752b61fecf', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation ze4rNhFfYYEiigH4EiLw, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 2417e01a…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'a337661383445fa61268bb82e8ee2819d7e044820ed46bd0f8197e752b61fecf', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation ze4rNhFfYYEiigH4EiLw, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 2417e01a…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-10': {
     src: 'media/narration/tour-g-10.mp3', captions: 'media/narration/tour-g-10.vtt', seconds: 9.64, lufs: -23.5,
     transcript: 'Who can fix it? Search Party starts from the room: who supports it, who knows it, and how they are connected, each with where that knowledge came from.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '28ba7d7e3c7a6c86e2b959fda85c174e2abfdf98e4123bbf8bf505dec922cdcd', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation kFkiOn1cVf2IrUgI9yRh, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 b4c8ddd6…), gain −1.2 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '28ba7d7e3c7a6c86e2b959fda85c174e2abfdf98e4123bbf8bf505dec922cdcd', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation kFkiOn1cVf2IrUgI9yRh, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 b4c8ddd6…), gain −1.2 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-11': {
-    src: 'media/narration/tour-g-11.mp3', captions: 'media/narration/tour-g-11.vtt', seconds: 8.83, lufs: -23.5,
+    src: 'media/narration/tour-g-11.mp3', captions: 'media/narration/tour-g-11.vtt', seconds: 8.91, lufs: -23.5,
     transcript: 'And where is the equipment? Search for the replacement unit, and every product finds the same asset: its position, its room, its history.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '4a9b67d1747a606c68edc0db65663b1ce040601cb6eadd24643d629783104d4c', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation APYvFaAwCM2RIcNaLpNG, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 dd05387a…), gain −1 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '949d5933124658d2166af6b70599d4e603276d1a8b7a1e10738939ec7acc0d62', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation FvkpPBuzaxPHam25nQq1, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 5b779dd8…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-14': {
     src: 'media/narration/tour-g-14.mp3', captions: 'media/narration/tour-g-14.vtt', seconds: 7.63, lufs: -23.5,
     transcript: 'Assurance holds the accepted state, so any later difference shows as drift against a known baseline, not as a guess.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '97c2c43ccd287b033f07987506ec760aab89d66868e766a0ba282cc28bd7da22', source: 'Tour G take, first of the line (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation fksjm3N9vFzqBKBqEaDo, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 ac45e37e…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '97c2c43ccd287b033f07987506ec760aab89d66868e766a0ba282cc28bd7da22', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation fksjm3N9vFzqBKBqEaDo, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 ac45e37e…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
   },
 };
+/** Stops whose line was written for the voice but has no take (ElevenLabs refused them when the credits ran out; founder 18 Nov
+ *  16:41: "it's good enough to make them silent with captions"). The same words, shown as timed captions with no sound, at the pace
+ *  of the shipped takes (2.6 words a second), and labelled as captions only. One entry per sentence. */
+export const CAPTIONS_ONLY: Record<string, string[]> = {
+  'tour-g-09': ['In use, things fail.', 'When they do, the problem becomes work: a ServiceHands job tied to this room and, where it is known, to the exact device.'],
+  'tour-g-12': ['When the camera is replaced, the system reopens only the tests that involve that position.', 'The old results stay as history.', 'They never count for the new unit.'],
+  'tour-g-13': ['The reopened tests are run again, and verified independently.', 'Baseline two becomes current.', 'Baseline one is kept, so you can always compare.'],
+  'tour-g-15': ['The same records roll up to leadership.', 'Every figure traces back to the rooms and the jobs it came from.', 'None of it is streamed from a real building.'],
+  'tour-g-16': ['One room.', 'One connected history.', 'Every decision connected to the people, the technology and the evidence it affects.', 'Now imagine that across your entire enterprise.'],
+};
+export const CAPTION_WPS = 2.6;
 export const BANNED = /\b(live|real-time monitoring|certif\w*|production-ready|100%)\b/i;
 export const tourByKey = (k: string) => TOURS.find((t) => t.key === k);

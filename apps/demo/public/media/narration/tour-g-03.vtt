@@ -1,11 +1,11 @@
 WEBVTT
 
-NOTE AI-generated voice (synthetic, not a real person). ElevenLabs premade voice Brian, eleven_v4. The first take generated for the line, chosen without listening (see docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md). Cue boundaries at the measured pauses (silencedetect -45 dB) nearest each sentence end.
+NOTE AI-generated voice (synthetic, not a real person). ElevenLabs premade voice Brian, eleven_v4. Chosen by the founder after listening (18 Nov 2026). See docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md. Cue boundaries at the measured pauses (silencedetect -45 dB) nearest each sentence end.
 
 1
-00:00:00.000 --> 00:00:01.845
+00:00:00.000 --> 00:00:01.691
 Then the room is designed.
 
 2
-00:00:01.845 --> 00:00:10.527
+00:00:01.691 --> 00:00:10.449
 Every device becomes a numbered position, and before anything is installed, the commissioning engine already knows which tests this design will need.

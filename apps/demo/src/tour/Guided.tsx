@@ -6,7 +6,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { Button, Tag } from '@empathia/ui';
-import { TOURS, NARRATION, tourByKey, type Tour } from './tours.js';
+import { TOURS, NARRATION, CAPTIONS_ONLY, CAPTION_WPS, tourByKey, type Tour } from './tours.js';
 import { NATIVE, areaKey } from '../registry.js';
 import { resolve } from '../registry.pages.js';
 
@@ -59,6 +59,7 @@ export function GuidedPanel({ hash }: { hash: string }) {
         {s.tries && <ul className="tour__tries" aria-label="Searches to try" data-testid="tour-tries">{s.tries.map((q) => <li key={q}><a className="ui-btn ui-btn--sm" href={`#/search?q=${encodeURIComponent(q)}`}>{q}</a></li>)}</ul>}
         {s.ask && <details key={s.id} className="tour__ask" data-testid="tour-ask"><summary>{s.ask.q}</summary><p>{s.ask.a}</p></details>}
         {take && <Narration key={s.narration} id={s.narration!} />}
+        {!take && s.captionsOnly && CAPTIONS_ONLY[s.captionsOnly] && <ReadAlong key={s.captionsOnly} id={s.captionsOnly} />}
       </>}
       <div className="tour__acts">
         <Button small onClick={() => goto({ ...run, i: run.i - 1, paused: false })} disabled={run.i === 0}>Previous</Button>
@@ -97,6 +98,33 @@ function Narration({ id }: { id: string }) {
         {playing && cue && <p className="narr__cue" data-testid="narr-cue">{cue}</p>}
       </>}
       <div className="narr__foot"><details><summary>Transcript</summary><p>{n.transcript}</p></details><p className="ui-meta narr__who">{n.voice}</p></div>
+    </div>
+  );
+}
+
+/** A stop whose line has no recorded voice: the same words as timed captions with no sound (founder 18 Nov 16:41), at the pace of the
+ *  recorded takes, labelled as captions only. Read along starts it; nothing moves on its own. */
+function ReadAlong({ id }: { id: string }) {
+  const cues = CAPTIONS_ONLY[id]!;
+  const times = cues.map((c) => Math.max(1.2, c.split(/\s+/).length / CAPTION_WPS) + 0.35);
+  const total = times.reduce((a, b) => a + b, 0);
+  const [at, setAt] = useState(0); const [running, setRunning] = useState(false);
+  useEffect(() => {
+    if (!running) return undefined;
+    const t0 = performance.now() - at * 1000;
+    const tick = setInterval(() => { const s = (performance.now() - t0) / 1000; if (s >= total) { setAt(0); setRunning(false); } else setAt(s); }, 100);
+    return () => clearInterval(tick);
+  }, [running]);   // eslint-disable-line react-hooks/exhaustive-deps
+  let acc = 0; let i = 0; while (i < cues.length - 1 && at >= acc + times[i]!) { acc += times[i]!; i += 1; }
+  return (
+    <div className="narr narr--captions" data-testid="captions-only">
+      <div className="narr__row">
+        <button type="button" className="narr__play" onClick={() => setRunning(!running)} aria-pressed={running} data-testid="read-along">{running ? 'Pause captions' : 'Read along'}</button>
+        <span className="narr__bar" aria-hidden="true"><i style={{ width: `${Math.min(100, (at / total) * 100)}%` }} /></span>
+        <span className="narr__t ui-meta">{mmss(at)} / {mmss(total)}</span>
+      </div>
+      {running && <p className="narr__cue" data-testid="narr-cue" aria-live="off">{cues[i]}</p>}
+      <div className="narr__foot"><details><summary>Transcript</summary><p>{cues.join(' ')}</p></details><p className="ui-meta narr__who">No recorded voice for this stop: captions only, no sound.</p></div>
     </div>
   );
 }
