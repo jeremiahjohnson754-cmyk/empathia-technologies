@@ -1,16 +1,16 @@
 {
- "at": "2026-11-18T13:54:58.716Z",
+ "at": "2026-11-18T17:22:46.032Z",
  "scheme": "light",
- "pass": 252,
+ "pass": 255,
  "fail": 0,
  "notRun": 0,
- "tests": 252,
+ "tests": 255,
  "results": [
   {
    "id": "W-00",
    "name": "the sitemap lists the pages",
    "result": "PASS",
-   "detail": "/ /platform /products /products/mission-control /products/lite /products/pro /products/search-party /products/servicehands /products/commissioning /products/apex /products/field-intelligence /products/learn /solutions /how-it-works /films /technology /proof /trust /founder /about /collabora-sing /pricing /pricing/catalogue /pilots /request-demo /pilot-partners /contact /privacy /legal"
+   "detail": "/ /platform /products /products/mission-control /products/lite /products/pro /products/search-party /products/servicehands /products/commissioning /products/apex /products/field-intelligence /products/learn /solutions /experiences /how-it-works /films /technology /proof /trust /founder /about /collabora-sing /pricing /pricing/catalogue /pilots /request-demo /pilot-partners /contact /privacy /legal"
   },
   {
    "id": "W-desktop-/",
@@ -89,6 +89,12 @@
    "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
    "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/experiences",
+   "name": "/experiences answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Walk into the rooms the platform runs\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/how-it-works",
@@ -283,6 +289,12 @@
    "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\",\"h1n\":1,\"broken\":[]}"
   },
   {
+   "id": "W-tablet-/experiences",
+   "name": "/experiences answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Walk into the rooms the platform runs\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
    "id": "W-tablet-/how-it-works",
    "name": "/how-it-works answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
@@ -473,6 +485,12 @@
    "name": "/solutions answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
    "detail": "{\"status\":200,\"over\":0,\"h1\":\"The same record, read by each team\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/experiences",
+   "name": "/experiences answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Walk into the rooms the platform runs\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/how-it-works",
@@ -844,7 +862,7 @@
    "id": "W-founder-1440",
    "name": "founder section at 1440: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:36125/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:34593/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-click",
@@ -862,13 +880,13 @@
    "id": "W-founder-768",
    "name": "founder section at 768: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:36125/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:34593/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-390",
    "name": "founder section at 390: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point, stacked",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:36125/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:34593/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-rooms-/",
@@ -892,7 +910,7 @@
    "id": "W-captures-dark",
    "name": "every product capture is from the synthetic demonstration in the dark theme (D43), with its route and hashes",
    "result": "PASS",
-   "detail": "mission-control lite pro search-party servicehands apex learn commissioning field room"
+   "detail": "mission-control lite pro search-party servicehands apex learn commissioning field room exp-campus exp-stadium exp-expo"
   },
   {
    "id": "W-capture-mission-control",
@@ -1228,7 +1246,7 @@
    "id": "WC-play",
    "name": "pressing play plays the 1280 × 776, 35-second film from this site, with no sound decoded, and it can be sought to its last scene",
    "result": "PASS",
-   "detail": "{\"can\":true,\"t\":1.80668,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.157803}"
+   "detail": "{\"can\":true,\"t\":1.80977,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.162226}"
   },
   {
    "id": "WC-label",
@@ -1238,7 +1256,7 @@
   },
   {
    "id": "WC-only-here",
-   "name": "no page other than /collabora-sing (28 pages and the not-found page checked), and no script or stylesheet, references the film's key or files; films.json keeps it exclusive to this section",
+   "name": "no page other than /collabora-sing (29 pages and the not-found page checked), and no script or stylesheet, references the film's key or files; films.json keeps it exclusive to this section",
    "result": "PASS",
    "detail": ""
   },
@@ -1450,7 +1468,7 @@
    "id": "WR-ten-seconds",
    "name": "the sequence lasts ten seconds (9.6 to 10.6 s measured) and then settles to the resting composition by itself: no attribute, no animation left, only Replay offered",
    "result": "PASS",
-   "detail": "{\"ms\":10120,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
+   "detail": "{\"ms\":10046,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
   },
   {
    "id": "WR-no-shift",
@@ -1468,13 +1486,13 @@
    "id": "WR-replay",
    "name": "Replay starts the sequence again from its beginning",
    "result": "PASS",
-   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1400.0329999969595}"
+   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1383.3619999999112}"
   },
   {
    "id": "WR-pause",
    "name": "Pause freezes it (the clock stands still and two screenshots half a second apart are identical) and the button becomes Play; Play, from the keyboard, carries on from the same moment",
    "result": "PASS",
-   "detail": "{\"pa\":\"paused\",\"t1\":1449.9449999969602,\"t2\":1449.9449999969602,\"t3\":1699.997999995066,\"same\":true}"
+   "detail": "{\"pa\":\"paused\",\"t1\":1433.2839999999117,\"t2\":1433.2839999999117,\"t3\":1683.343999999858,\"same\":true}"
   },
   {
    "id": "WR-once",
@@ -1504,7 +1522,7 @@
    "id": "W-budgets",
    "name": "home ≤ 48 KB, site.js ≤ 8 KB, theme-init.js ≤ 512 B, three preloaded Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB",
    "result": "PASS",
-   "detail": "{\"home\":49035,\"js\":4032,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":742166,\"maxCapture\":67280}"
+   "detail": "{\"home\":49132,\"js\":4032,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":969926,\"maxCapture\":67280}"
   },
   {
    "id": "W-rails-390",

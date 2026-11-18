@@ -150,6 +150,54 @@
     "room-1280.webp": "e4142fea3b7c735f86a4fdabb8c1c72a5eb3d45c968cf9e62d09e46057de25a0",
     "room-640.webp": "7d9e28d78ad59eb8b917088c5c17f2606c26e94df4fe30a1979ea58b214badb0"
    }
+  },
+  "exp-campus": {
+   "route": "#/play/campus",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "f7e15f5",
+   "capturedAt": "2026-11-18T17:20:56.990Z",
+   "data": "synthetic demonstration data",
+   "venues": "fictional",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "exp-campus-1280.webp": "d6f0d30c6add734a48cff941e8d7083ab59a9d00c687e00a9138a0c89ab07168",
+    "exp-campus-640.webp": "963dc4024546500812317e71e40a823ff85b946af1ef3dace4388878b3d7bc46"
+   }
+  },
+  "exp-stadium": {
+   "route": "#/play/stadium",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "f7e15f5",
+   "capturedAt": "2026-11-18T17:21:03.595Z",
+   "data": "synthetic demonstration data",
+   "venues": "fictional",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "exp-stadium-1280.webp": "224d293c5aa55f2faff2e06a9d1aa63eb19c6d07180491f4426240c8f4c7a456",
+    "exp-stadium-640.webp": "844914a89506f09689f1deef37cf906dc55f599bfdbb5be11cee81c74c1ad604"
+   }
+  },
+  "exp-expo": {
+   "route": "#/play/expo",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "f7e15f5",
+   "capturedAt": "2026-11-18T17:21:11.265Z",
+   "data": "synthetic demonstration data",
+   "venues": "fictional",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "exp-expo-1280.webp": "74a39b1a4ec2f575fc35106ff88a2a06e2542d99754117c3418cbd78c4074c24",
+    "exp-expo-640.webp": "107a764d84a5627ccbd7cab2ed31b5f75455b598d71e651a8814f5505fa9a5d2"
+   }
   }
  }
 }

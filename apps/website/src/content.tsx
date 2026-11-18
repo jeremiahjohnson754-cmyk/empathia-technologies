@@ -5,7 +5,7 @@
 import { proofPage, LeadClaim } from './proof.js';
 import React from 'react';
 import { LeadForm, type LeadKind } from './form.js';
-import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, Stage, Counts, Scenes, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
+import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine, FilmPlayer, Spectrum, Shot, ExpShot, ProductTiles, EnquiryCard, EnquiryLink, FounderBlock, Stage, Counts, Scenes, Chapters, RoomMix, GlassRail, Strip, RoomDrawing, FilmPending, PlanRecord, type StripItem, type Evidence, type Film, type Cue, type Capture, type ChapterItem } from './ui.js';
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
 import { commercialPages } from './commercial.js';
@@ -105,6 +105,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       <Section eyebrow="The products" title="Nine products. One record." lead="Each product is a stage of the same governed lifecycle and shares one identity for every room, device, person and project. Each says how much of it you can see in the public demonstration today." tone="deep">
         <ProductTiles captures={ctx.captures} />
       </Section>
+      <p className="exp-line"><a href="/experiences">Three worlds in 3D: play, operate, explore →</a></p>
       <Strip id="flow" eyebrow="The workflow" title="From request to a proven room" items={FLOW} flow />
       <Section eyebrow="The demonstration campus" title={`${ROOM_TOTAL} rooms, each with its record`}><Campus /></Section>
       <Strip id="estates" eyebrow="Where it fits" title="Built for the rooms of every estate" items={ESTATES} foot={estatesFoot} />
@@ -185,6 +186,23 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Section id="facilities" title="Facilities and workplace" lead="Room readiness, service coverage and the right contact, with engineering detail kept where engineers need it." />
         <Strip id="estates" eyebrow="Where it fits" title="Built for the rooms of every estate" items={ESTATES} foot={estatesFoot} />
         <CtaBand title="Bring your team’s questions." body="A guided demonstration on synthetic data, or a bounded pilot with your rooms."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href="/pilot-partners">Pilots and partnerships</a></Actions></CtaBand>
+      </>
+    ) },
+    { path: '/experiences', title: 'Experiences — Empathia Technologies', description: 'Three worlds you can walk through in the browser: Campus Life at a university, Stadium LIVE and the Expo hall. Fictional venues, synthetic data, first versions.', nav: 'Experiences', body: (
+      <>
+        <Hero label="Experiences" title="Walk into the rooms the platform runs" lead="Three worlds in 3D, in the browser: a university you play, a stadium you operate and an expo hall you explore. Every venue is fictional and every figure synthetic; each is a first version, and each says so."
+          action={{ href: demo('#/play/campus'), label: 'Play Campus Life' }} />
+        {([
+          ['exp-campus', 'Campus Life', 'A university you play', 'Walk and run across the Quad of Kestrel Valley University, meet Professor Calder, open Science Hall and fix the circuit bench in the SCI-110 lecture theatre before her 09:00 lecture. Three circuits, worked out with Ohm’s law, light the board; fact cards, experience and levels along the way; progress kept in your browser.', '#/play/campus', 'Play Campus Life', 'The SCI-110 lecture theatre in Campus Life, with the circuit bench, the desks and the projection screen'],
+          ['exp-stadium', 'Stadium LIVE', 'A stadium you operate', 'Harborlight Stadium under the lights. The console changes the bowl itself: seven atmospheres from pregame to concert, five cameras, cheers and a wave, a replayable match, the ribbon and the boards, a modeled crowd-level map that states its assumptions, PA and wireless coverage, the venue’s AV devices and their (simulated) state. Sound only when you turn it on.', '#/play/stadium', 'Open Stadium LIVE', 'Harborlight Stadium at night in Stadium LIVE, with the LIVE console beside the bowl'],
+          ['exp-expo', 'Expo LIVE', 'An expo hall you explore', 'Hall A of the Larkspur Exchange Convention Centre: twenty fictional exhibitors and the Empathia showcase, the plan beside the hall. Fly to a booth, save it to your agenda, leave your details only with consent, join a session and answer its poll, ask a question that waits for the moderator; the organiser’s view adds modeled footfall.', '#/play/expo', 'Walk the Expo hall', 'The Empathia stand in Expo LIVE, with the hall plan and the stand’s card'],
+        ] as Array<[string, string, string, string, string, string, string]>).map(([file, name, kicker, body, route, cta, alt], i) => (
+          <Section key={file} id={file} eyebrow={kicker} title={name} tone={i === 1 ? 'deep' : undefined} lead={body}>
+            <ExpShot file={file} cap={ctx.captures[file]} alt={alt} eager={i === 0} />
+            <Actions><a className="btn btn--primary" href={demo(route)}>{cta}</a></Actions>
+          </Section>))}
+        <Section id="honest" title="What these are, and what they are not" lead="First versions: the venues, people and figures are fictional; levels and footfall are modeled and say so; device states are simulated; nothing here is a live feed or a measurement. They are drawn by your browser’s graphics hardware; frame rates on real phones and computers have not yet been measured, and the characters and buildings are early models that will be replaced with richer ones." />
+        <CtaBand title="See them with your team." body="A guided demonstration walks the three worlds and the platform behind them."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href={demo('#/worlds')}>Choose a world</a></Actions></CtaBand>
       </>
     ) },
     { path: '/how-it-works', title: 'How it works — Empathia Technologies', description: 'The governed lifecycle from request to assurance baseline.', nav: 'How it works', body: (

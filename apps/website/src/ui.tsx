@@ -173,6 +173,14 @@ export const Shot = ({ p, cap, eager, file, alt, cta }: { p: Product; cap?: Capt
   </figure>
 ) : null; };
 
+/** A capture of one of the three Experiences (D43 rules: dark, reduced motion, synthetic; listed with its hash in PROVENANCE.json). */
+export const ExpShot = ({ file, cap, alt, eager }: { file: string; cap?: Capture; alt: string; eager?: boolean }) => cap ? (
+  <figure className="shot shot--exp" data-exp={file}>
+    <div className="shot__frame"><img src={`/media/product/${file}-1280.webp`} srcSet={`/media/product/${file}-640.webp 640w, /media/product/${file}-1280.webp 1280w`} sizes="(max-width: 1100px) 92vw, 640px" width={cap.w} height={cap.h} loading={eager ? 'eager' : 'lazy'} decoding="async" alt={alt} />
+      <span className="shot__badge" aria-hidden="true">Fictional venue · synthetic data</span></div>
+    <figcaption><b>Fictional venue, synthetic data</b><span>Captured from the demonstration in a browser</span></figcaption>
+  </figure>) : null;
+
 /** The nine products as image-led tiles, in the canonical order (D37/D40), each in its own colour. */
 export const ProductTiles = ({ captures, exclude, compact }: { captures: Record<string, Capture>; exclude?: string; compact?: boolean }) => (
   <><p className="rail-hint" aria-hidden="true">Swipe for each product →</p><ul className="tiles" aria-label="The nine products">{PRODUCTS.filter((p) => p.id !== exclude).map((p) => {

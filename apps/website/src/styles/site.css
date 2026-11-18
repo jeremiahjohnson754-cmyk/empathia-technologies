@@ -804,3 +804,8 @@ p { text-wrap: pretty; }
 }
 @media (min-width: 721px) { .rail-hint { display: none; } }
 @media (prefers-reduced-motion: no-preference) { .tiles, .chapters, .cards--4, dl.states { scroll-behavior: smooth; } }
+
+/* the Experiences page (18 Nov 2026) */
+.shot--exp { margin: 18px 0 10px; }
+.shot--exp .shot__frame img { width: 100%; height: auto; display: block; }
+.exp-line { max-width: var(--max, 1180px); margin: 0 auto 8px; padding: 0 24px; font-weight: 600; }
