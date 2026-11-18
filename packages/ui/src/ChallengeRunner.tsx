@@ -318,6 +318,29 @@ function Listen({ st }: { st: CState }) {
   return <p className="lab__row"><Button disabled={!!playing} onClick={() => play('before')}>▶ Hear it untouched</Button><Button disabled={!!playing} onClick={() => play('after')}>▶ Hear it through your compressor</Button>{playing && <span className="ui-meta" aria-live="polite">Playing {playing === 'before' ? 'the untouched take' : 'your setting'}…</span>}</p>;
 }
 
+/** The reach-cues stage (restored 18 Nov 2026 from the reference's draw(), read as text): the truss and eight fixtures showing your
+ *  current look (beams by look, the chase alternating on the beat, the strobe flashing four times a second), the band, the crowd that
+ *  jumps and raises its hands as its mood rises, and the crowd meter. Under reduced motion nothing bobs, jumps or flashes. */
+function CueStage({ look: L, crowd: mood, t, beat, running }: { look: number; crowd: number; t: number; beat: number; running: boolean }) {
+  const still = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const beatPh = running ? (((t / beat) % 1) + 1) % 1 : 0, strobeOn = L === 6 && !still && Math.floor(t * 4) % 2 === 0, lit = L === 8; const LOOKS = CH.Reach.LOOKS;
+  return <div className="lab__svgwrap"><svg className="ch__svg" viewBox="0 0 800 360" role="img" aria-label={`The stage under look ${L} (${LOOKS[L]?.n || 'pre-show'}), the band and the crowd; crowd mood ${Math.round(mood)} of 100.`} data-testid="cue-stage" data-look={L}>
+    <rect x={0} y={0} width={800} height={300} fill={L === 7 ? '#020203' : '#0B0F1A'} /><rect x={60} y={30} width={680} height={10} fill="#475569" />
+    {Array.from({ length: 8 }, (_x, i) => { const hx = 100 + i * 86, on = L !== 0 && L !== 7 && L !== 8 && !(L === 4 && (i + Math.floor(t / beat)) % 2 === 1), col = L === 6 ? (strobeOn ? '#FFFFFF' : '#94A3B8') : LOOKS[L]?.c || '#000';
+      const spread = L === 1 || L === 2 ? 70 : L === 3 ? 60 : 36, op = L === 3 ? 0.22 : L === 5 ? 0.42 : L === 6 ? (strobeOn ? 0.32 : 0.12) : 0.3;
+      return <g key={i}><rect x={hx - 12} y={40} width={24} height={18} rx={4} fill="#1F2937" stroke="#64748B" />{on && <path d={`M${hx - 6} 58 L${hx - spread} 250 L${hx + spread} 250 L${hx + 6} 58 Z`} fill={col} opacity={op} />}</g>; })}
+    <rect x={40} y={250} width={720} height={14} fill="#1E293B" />
+    {([[250, 'singer'], [360, 'guitar'], [470, 'drums'], [580, 'keys']] as const).map(([x], j) => { const bob = running && !still ? Math.sin(beatPh * 2 * Math.PI + j) * 3 : 0;
+      return <g key={x}><circle cx={x} cy={176 + bob} r={13} fill={L === 7 ? '#0B0F1A' : '#CBD5E1'} /><rect x={x - 14} y={190 + bob} width={28} height={60 - bob} rx={6} fill={L === 7 ? '#0B0F1A' : '#334155'} /></g>; })}
+    <rect x={0} y={284} width={800} height={76} fill={lit ? '#3B2412' : '#0A0D14'} />
+    {[300, 322, 344].map((y, r) => Array.from({ length: 22 }, (_x, i) => { const cx = 20 + i * 36 + (r % 2) * 18, jump = running && !still && mood > 62 ? (Math.abs(Math.sin((beatPh + i * 0.13) * Math.PI)) * (mood - 60)) / 6 : 0;
+      return <g key={`${r}-${i}`}><circle cx={cx} cy={y - jump} r={8} fill={lit ? '#FDBA74' : '#1E293B'} />{mood > 70 && <line x1={cx - 6} y1={y - 6 - jump} x2={cx - 10} y2={y - 20 - jump} stroke={lit ? '#FDBA74' : '#334155'} strokeWidth={3} />}</g>; }))}
+    <rect x={756} y={60} width={18} height={200} fill="#111827" stroke="#475569" /><rect x={758} y={258 - CH.clamp(mood, 0, 100) * 2} width={14} height={CH.clamp(mood, 0, 100) * 2} fill={mood >= 60 ? '#34D399' : mood >= 40 ? '#FBBF24' : '#F87171'} />
+    <text x={765} y={52} textAnchor="middle" fill="#CBD5E1" fontSize={12} fontWeight={800}>CROWD</text>
+    <text x={765} y={278} textAnchor="middle" fill="#CBD5E1" fontSize={12} fontWeight={800}>{Math.round(mood)}</text>
+  </svg></div>;
+}
+
 // ------------------------------------------------------------------------------------------------------------------- reach-cues
 function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; done: boolean; onFinish: (r: Result) => void }) {
   const Q = CH.Reach, S = useMemo(() => Q.song(lv), [lv]), W = useMemo(() => Q.windows(factor), [factor]);
@@ -347,6 +370,7 @@ function CueDesk({ lv, factor, done, onFinish }: { lv: number; factor: number; d
   useEffect(() => () => { silence(); void ac.current?.close(); }, []);
   const X = (s: number) => 10 + CH.clamp(s / S.len, 0, 1) * 580, next = run ? S.cues.find((c, i) => !run.hits[i] && c.t > t - W[2]) : null;
   return <div className="stack ch__cues" data-testid="cue-desk" data-running={!!run} data-clock={run ? (useAC.current ? 'audio' : 'wall') : undefined} data-steps={steps.current}>
+    <CueStage look={run?.look ?? 0} crowd={run?.crowd ?? 50} t={run ? t : 0} beat={S.beat} running={!!run} />
     <div className="lab__svgwrap"><svg className="ch__svg" viewBox="0 0 600 120" role="img" aria-label="The song’s timeline with its sections, the cue points and the playhead.">
       {S.secs.map((s, j) => { const show = lv < 4 || t >= s.t; return <g key={j}><rect className={show ? 'ch__sec' : 'ch__sec is-hidden'} x={X(s.t)} y={40} width={Math.max(1, X(s.t + s.bars * S.bar) - X(s.t) - 2)} height={22} />{show && X(s.t + s.bars * S.bar) - X(s.t) > 44 && <text className="ch__t" x={X(s.t) + 4} y={56}>{s.name.replace('chorus2', 'chorus+').toUpperCase()}</text>}</g>; })}
       {S.cues.map((c, i) => { const h = run?.hits[i]; return <g key={i}><path className={h ? (h.ok && (h.g === 'perfect' || h.g === 'good') ? 'ch__cue is-ok' : 'ch__cue is-bad') : 'ch__cue'} d={`M${X(c.t)} 64 l-5 9 h10 Z`} />{lv === 1 && <text className="ch__t" x={X(c.t)} y={88} textAnchor="middle">{Q.CUE_HINT[c.sec]!.split(' ')[0]}</text>}</g>; })}

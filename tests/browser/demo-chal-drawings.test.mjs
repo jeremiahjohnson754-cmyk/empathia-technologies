@@ -14,5 +14,11 @@ for (const [mode, id, word] of [['see', 'see-focus', /FOCUS (✓|✗)/], ['recor
   if (await slider.count()) { await slider.focus(); await p.keyboard.press('Home'); }
   const after = await svg.innerHTML(); ok(`CD-02 ${id}`, 'it redraws when a control changes', after !== before || !(await slider.count()));
 }
+await p.locator('[role=tab][data-mode=reach]').click(); await p.locator('[data-testid=chal-card-reach-cues] .ch__lv[data-lv="1"]').click();
+{ const ch = p.locator('[data-testid=chal-stage] [data-testid=challenge]'); await ch.waitFor(); const stage = ch.locator('[data-testid=cue-stage]');
+  ok('CD-04a', 'reach-cues draws the stage, the band, the crowd and its meter', (await stage.count()) === 1 && /CROWD/.test(await stage.textContent()));
+  await ch.locator('.ch__check input').uncheck(); await ch.getByRole('button', { name: '▶ Start the song' }).click(); await p.waitForTimeout(400); await p.keyboard.press('5'); await p.waitForTimeout(150);
+  ok('CD-04b', 'a key changes the look on the stage', (await stage.getAttribute('data-look')) === '5', await stage.getAttribute('data-look'));
+  await ch.getByRole('button', { name: '■ Stop (counts as a fail)' }).click(); }
 ok('CD-03', 'no console errors, nothing off the origin', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close();
 await done();
