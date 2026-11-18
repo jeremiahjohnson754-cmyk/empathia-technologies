@@ -44,6 +44,31 @@ export const SHELL_PAGES: readonly PageDef[] = [
     search: { keywords: 'anatomy device blocks layers signal power network control firmware mounting fault isolate', aliases: ['anatomy', 'device anatomy', 'inside a camera'] },
   },
   {
+    // Founder, 18 Nov 2026: the CTS practice exam and learning space, the Pre CTS-D and CTS-I spaces, and how the three differ
+    id: 'learn.certs', title: 'Certifications: CTS, CTS-D, CTS-I', purpose: 'The three AVIXA certifications side by side: who each is for, how the exams compare, where to study each', product: 'learn',
+    path: '/learn/certifications', alias: ['/certifications', '/learn/certs'], authority: { roles: ROLE_KEYS, why: 'study material with no record in it (founder, 18 Nov 2026): every role may study, and a practice score grants nothing' },
+    load: adapt(() => import('./certs/CertPage.js'), (m) => h(m.CertPage, { cert: 'all' })),
+    search: { keywords: 'certification certifications cts cts-d cts-i avixa exam compare difference study', aliases: ['certifications', 'cts vs cts-d', 'which certification'] },
+  },
+  {
+    id: 'learn.cts', title: 'CTS study space', purpose: 'The CTS exam: facts and weights as AVIXA publishes them, a study guide per duty, the math and physics, original practice exams and drills, exam-day strategy', product: 'learn',
+    path: '/learn/cts', alias: ['/learn/cts/:tab', '/cts', '/cts/:tab'], authority: { roles: ROLE_KEYS, why: 'study material with no record in it (founder, 18 Nov 2026): every role may study, and a practice score grants nothing' },
+    load: adapt(() => import('./certs/CertPage.js'), (m, p) => h(m.CertPage, { cert: 'CTS', tab: p.params['tab'] })),
+    search: { keywords: 'cts certified technology specialist practice exam test questions quiz study guide formulas avixa', aliases: ['cts', 'cts practice exam', 'cts exam', 'cts practice test'] },
+  },
+  {
+    id: 'learn.ctsd', title: 'CTS-D study space', purpose: 'The CTS-D design exam: facts, duties and weights, a study guide, coordination and documentation, practice, strategy', product: 'learn',
+    path: '/learn/cts-d', alias: ['/learn/cts-d/:tab', '/cts-d', '/cts-d/:tab'], authority: { roles: ROLE_KEYS, why: 'study material with no record in it (founder, 18 Nov 2026): every role may study, and a practice score grants nothing' },
+    load: adapt(() => import('./certs/CertPage.js'), (m, p) => h(m.CertPage, { cert: 'CTS-D', tab: p.params['tab'] })),
+    search: { keywords: 'cts-d ctsd design certification exam practice study guide avixa', aliases: ['cts-d', 'ctsd', 'cts design'] },
+  },
+  {
+    id: 'learn.ctsi', title: 'CTS-I study space', purpose: 'The CTS-I installation exam: facts, duties and weights, a study guide, installation practice, strategy', product: 'learn',
+    path: '/learn/cts-i', alias: ['/learn/cts-i/:tab', '/cts-i', '/cts-i/:tab'], authority: { roles: ROLE_KEYS, why: 'study material with no record in it (founder, 18 Nov 2026): every role may study, and a practice score grants nothing' },
+    load: adapt(() => import('./certs/CertPage.js'), (m, p) => h(m.CertPage, { cert: 'CTS-I', tab: p.params['tab'] })),
+    search: { keywords: 'cts-i ctsi installation certification exam practice study guide avixa', aliases: ['cts-i', 'ctsi', 'cts installation'] },
+  },
+  {
     // A5 (12 Nov 2026): the first equipment lesson of the Equipment Experience Engine: applicability, sources, film, practice
     id: 'learn.lesson', title: 'Equipment lesson', purpose: 'How to use the equipment in front of you: what the lesson applies to, its sources and state, the film with captions, and one practice decision', product: 'learn',
     path: '/learn/lesson', alias: ['/learn/lesson/:id'], authority: { roles: ROLE_KEYS, why: 'training content about a room type, with no record in it: every role may learn from it, and learning grants nothing' },
