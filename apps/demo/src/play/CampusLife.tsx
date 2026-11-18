@@ -95,6 +95,7 @@ export function CampusLifePage() {
       const s = st.current; r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = canvas.current!; const aspect = cv.width / Math.max(1, cv.height);
       const cam = camera(s); const vp = m4.mul(m4.persp(0.95, aspect, 0.1, 220), m4.look(cam.eye, cam.at)); const inside = inHall(s.x, s.z);
       r.begin(vp, cam.eye, inside ? [0.86, 0.84, 0.8] : [0.8, 0.87, 0.93], inside ? 30 : 60, inside ? 80 : 150);
+      if (!inside) r.sky(cam.eye, [0.86, 0.9, 0.95], [0.42, 0.62, 0.9], 140);
       r.draw(W); if (!inside) r.draw(RF);
       const open = s.doorT * 1.25; const dw = (DOOR.x1 - DOOR.x0) / 2;
       r.draw(r.unit, m4.trs([DOOR.x0 + dw / 2 - open, DOOR.h / 2, DOOR.z], 0, [dw, DOOR.h, 0.12]), hex(DOOR.color)); r.draw(r.unit, m4.trs([DOOR.x1 - dw / 2 + open, DOOR.h / 2, DOOR.z], 0, [dw, DOOR.h, 0.12]), hex(DOOR.color));

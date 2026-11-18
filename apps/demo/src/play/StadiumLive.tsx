@@ -66,11 +66,11 @@ export function StadiumLivePage() {
   const [drawn, setDrawn] = useState(0);
 
   // the scene: static meshes once; the crowd when the fill or the colours change
-  const meshes = useRef<{ r: Renderer; bowl: Mesh; pitch: Mesh; heads: Mesh; glass: Mesh; ribbon: Mesh; screens: Mesh; stage: Mesh; crowd: Array<{ mesh: Mesh; section: number; upper: boolean }>; dba: Array<{ mesh: Mesh; section: number }>; pa: Mesh; rf: Mesh } | null>(null);
+  const meshes = useRef<{ r: Renderer; city: Mesh; windows: Mesh; water: Mesh; beams: Mesh; bowl: Mesh; pitch: Mesh; heads: Mesh; glass: Mesh; ribbon: Mesh; screens: Mesh; stage: Mesh; crowd: Array<{ mesh: Mesh; section: number; upper: boolean }>; dba: Array<{ mesh: Mesh; section: number }>; pa: Mesh; rf: Mesh } | null>(null);
   useEffect(() => {
     let r: Renderer; try { r = new Renderer(canvas.current!); } catch (e) { setErr((e as Error).message); return; }
     const bowl: number[] = [], pitch: number[] = [], heads: number[] = [], glass: number[] = [], ribbon: number[] = [], screens: number[] = [], stage: number[] = [], pa: number[] = [], rf: number[] = [];
-    boxVerts({ min: [-260, -0.3, -220], max: [260, 0, 220], color: '#2C3A30' }, bowl);
+    boxVerts({ min: [-700, -0.3, -700], max: [700, 0, 140], color: '#2A332D' }, bowl); boxVerts({ min: [-150, -0.02, -110], max: [150, 0.01, 110], color: '#3A4440' }, bowl);
     boxVerts({ min: [-62, 0, -45], max: [62, 0.02, 45], color: '#3E7D3A' }, pitch);
     for (let k = 0; k < 10; k++) { const x0 = -PITCH.L / 2 + k * PITCH.L / 10; boxVerts({ min: [x0, 0.02, -PITCH.W / 2], max: [x0 + PITCH.L / 10, 0.03, PITCH.W / 2], color: k % 2 ? '#4A9446' : '#55A350' }, pitch); }
     const line = (x0: number, z0: number, x1: number, z1: number) => boxVerts({ min: [Math.min(x0, x1) - 0.06, 0.03, Math.min(z0, z1) - 0.06], max: [Math.max(x0, x1) + 0.06, 0.045, Math.max(z0, z1) + 0.06], color: '#F4F4EE' }, pitch);
@@ -96,11 +96,25 @@ export function StadiumLivePage() {
     boxVerts({ min: [-58, 0, -12], max: [-38, 1.6, 12], color: '#22262B' }, stage); boxVerts({ min: [-58, 1.6, -12], max: [-56, 16, -10], color: '#3A3F45' }, stage); boxVerts({ min: [-58, 1.6, 10], max: [-56, 16, 12], color: '#3A3F45' }, stage); boxVerts({ min: [-58, 15, -12], max: [-40, 16, 12], color: '#3A3F45' }, stage); boxVerts({ min: [-57.9, 2, -9], max: [-57.6, 14, 9], color: '#FFFFFF' }, screens);
     for (const d of DEVICES.filter((x) => x.kind === 'pa')) { const [x, y, z] = d.at; const dir = norm([-x, -y * 0.6, -z]); const tip: V3 = [x + dir[0] * 70, 2, z + dir[2] * 70]; const w = 28; const px = -dir[2], pz = dir[0];
       prismVerts([[x, z], [tip[0] + px * w, tip[2] + pz * w], [tip[0] - px * w, tip[2] - pz * w]], 1.0, 1.6, '#2F9BD7', pa); }
+    // the city around the harbour: towers to the north and the sides, the water to the south, lit windows that come on at night
+    const city: number[] = [], windows: number[] = [], water: number[] = [], beams: number[] = [];
+    for (let i = 0; i < 140; i++) { const a = rnd(i * 3.1) * Math.PI * 2; const rr = 255 + rnd(i * 5.7) * 210; const x = Math.cos(a) * rr * 1.25, z = Math.sin(a) * rr; if (z > 150) continue;
+      const w = 12 + rnd(i * 7.3) * 22, d = 12 + rnd(i * 2.9) * 22, h = 18 + Math.pow(rnd(i * 4.4), 2) * 150; const shade = 0.16 + rnd(i * 9.1) * 0.14;
+      boxVerts({ min: [x - w / 2, 0, z - d / 2], max: [x + w / 2, h, z + d / 2], color: '#' + [shade, shade * 1.05, shade * 1.18].map((c) => Math.round(c * 255).toString(16).padStart(2, '0')).join('') }, city);
+      for (let y = 6; y < h - 4; y += 5.5) { if (rnd(i * 13 + y) < 0.35) continue; const lit = rnd(i * 17 + y) < 0.5 ? '#FFD98A' : '#BFE3FF';
+        boxVerts({ min: [x - w / 2 + 1, y, z - d / 2 - 0.15], max: [x + w / 2 - 1, y + 1.4, z - d / 2 - 0.05], color: lit }, windows); boxVerts({ min: [x - w / 2 - 0.15, y, z - d / 2 + 1], max: [x - w / 2 - 0.05, y + 1.4, z + d / 2 - 1], color: lit }, windows);
+        boxVerts({ min: [x + w / 2 + 0.05, y, z - d / 2 + 1], max: [x + w / 2 + 0.15, y + 1.4, z + d / 2 - 1], color: lit }, windows); boxVerts({ min: [x - w / 2 + 1, y, z + d / 2 + 0.05], max: [x + w / 2 - 1, y + 1.4, z + d / 2 + 0.15], color: lit }, windows); } }
+    boxVerts({ min: [-700, -0.25, 140], max: [700, -0.05, 700], color: '#0E2A3F' }, water);
+    for (let i = 0; i < 40; i++) { const x = -520 + i * 26 + rnd(i) * 10; boxVerts({ min: [x, -0.04, 150 + rnd(i * 2) * 120], max: [x + 1.2, -0.03, 230 + rnd(i * 3) * 180], color: '#2F5C78' }, water); }
+    // light-tower beams: a wedge of light from each head down to the pitch, added to the night
+    for (const [x, z] of [[100, 78], [-100, 78], [100, -78], [-100, -78]] as Array<[number, number]>) { const hx = x * 0.97, hz = z * 0.97; const tx = x * 0.25, tz = z * 0.22; const px = -(tz - hz), pz = tx - hx; const l = Math.hypot(px, pz); const ux = px / l * 6, uz = pz / l * 6, vx = px / l * 34, vz = pz / l * 34;
+      const tri = (a: V3, b: V3, c: V3) => { for (const p2 of [a, b, c]) beams.push(p2[0], p2[1], p2[2], 0, 1, 0, 1, 1, 1); };
+      const A: V3 = [hx - ux, 52, hz - uz], B: V3 = [hx + ux, 52, hz + uz], C: V3 = [tx + vx, 0.2, tz + vz], D: V3 = [tx - vx, 0.2, tz - vz]; tri(A, B, C); tri(A, C, D); }
     const dba = []; const crowd: Array<{ mesh: Mesh; section: number; upper: boolean }> = [];
     for (const t of TIERS) for (let s = 0; s < SECTIONS; s++) { const v: number[] = []; const per = SEGS / SECTIONS; const r0 = Math.floor(t.rows * 0.3);
       prismVerts([rowQuad(t, r0, s * per).pts[0]!, rowQuad(t, r0, (s + 1) * per - 1).pts[1]!, rowQuad(t, t.rows - 1, (s + 1) * per - 1).pts[2]!, rowQuad(t, t.rows - 1, s * per).pts[3]!], t.y1 + 0.5, t.y1 + 1.2, '#FFFFFF', v);
       if (!t.upper) dba.push({ mesh: r.mesh(v), section: s }); }
-    meshes.current = { r, bowl: r.mesh(bowl), pitch: r.mesh(pitch), heads: r.mesh(heads), glass: r.mesh(glass), ribbon: r.mesh(ribbon), screens: r.mesh(screens), stage: r.mesh(stage), crowd, dba, pa: r.mesh(pa), rf: r.mesh(rf) };
+    meshes.current = { r, city: r.mesh(city), windows: r.mesh(windows), water: r.mesh(water), beams: r.mesh(beams), bowl: r.mesh(bowl), pitch: r.mesh(pitch), heads: r.mesh(heads), glass: r.mesh(glass), ribbon: r.mesh(ribbon), screens: r.mesh(screens), stage: r.mesh(stage), crowd, dba, pa: r.mesh(pa), rf: r.mesh(rf) };
     setDrawn((x) => x + 1);
     return () => { r.dispose(); meshes.current = null; };
   }, []);
@@ -137,12 +151,15 @@ export function StadiumLivePage() {
       else if (P.view === 'flyover') { const fy = o.yaw + 1.1, fp = 1.0, fd = 290; eye = [Math.sin(fy) * Math.cos(fp) * fd, Math.sin(fp) * fd, Math.cos(fy) * Math.cos(fp) * fd]; }   // high above the roof line; it circles unless motion is reduced
       else if (P.view === 'field') { eye = [-10, 1.7, 37]; at = [8, 3, 0]; } else if (P.view === 'seat') { eye = [24, 10.2, 54.5]; at = [-4, 1, 0]; } else { eye = [0, 17, 61]; at = [0, 0, 0]; }
       const vp = m4.mul(m4.persp(P.view === 'field' ? 1.05 : 0.9, aspect, 0.5, 900), m4.look(eye, at));
-      const sky = lerp(ATMOS.empty.sky, A.sky, night * 0.9 + 0.1 * (A.night ? 1 : 0)); r.begin(vp, eye, sky, 220, 700);
+      const zen = lerp([0.36, 0.56, 0.86], A.label === 'Concert' ? [0.05, 0.02, 0.12] : [0.015, 0.025, 0.07], night); const hor = lerp([0.83, 0.89, 0.96], A.label === 'Concert' ? [0.3, 0.12, 0.32] : [0.26, 0.17, 0.2], night);
+      r.begin(vp, eye, hor, 300, 880); r.sky(eye, hor, zen, 860);
+      r.draw(M.city); r.draw(M.water); r.glow(night); r.draw(M.windows, m4.ident(), lerp([0.32, 0.36, 0.42], [1, 1, 1], night)); r.glow(0);
       r.draw(M.bowl);
       r.glow(0.55 * night); r.draw(M.pitch, m4.ident(), undefined); r.glow(0);
       if (A.label === 'Concert') { r.draw(M.stage); }
       r.glow(0.8 * night + 0.1); r.draw(M.glass); r.glow(1);
       r.draw(M.heads, m4.ident(), lerp([0.55, 0.58, 0.62], S.lc, night));
+      if (night > 0.05) { r.glow(1); r.draw(M.beams, m4.ident(), S.lc, 0.07 * night, true); r.glow(0); r.glow(1); }
       const cheerNow = cheerRef.current && now - cheerRef.current.at < 3500 ? cheerRef.current : null; const ce = cheerNow ? Math.sin(Math.min(1, (now - cheerNow.at) / 3500) * Math.PI) : 0;
       const ribbonCol: V3 = cheerNow ? hex(cheerNow.side === 'away' ? '#B42318' : P.ribbon) : hex(P.ribbon);
       r.draw(M.ribbon, m4.ident(), lerp(ribbonCol, [1, 1, 1], (cheerNow ? 0.35 : 0.08) + 0.12 * Math.sin(now / 900) * (reducedRef.current ? 0 : 1)));   // a cheer brightens the ribbon in the cheering side's colour
