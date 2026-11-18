@@ -32,7 +32,7 @@ export const TOURS: Tour[] = [
     { id: 'G12', title: 'A change reopens exactly what it touches', text: 'The camera at PA-0007 is replaced like-for-like: AS-0097 out, AS-0112 in. The engine reopens only the tests that name PA-0007; the old results stay as history and never count for the new unit.', href: `#/replay/${REFERENCE_ROOM_ID}?at=change`, spot: 'rp-card' },
     { id: 'G13', title: 'Re-accepted, history kept', text: 'The reopened tests are run again and verified. Baseline v2 becomes current; v1 is preserved. Compare any two moments with the time layers.', href: `#/replay/${REFERENCE_ROOM_ID}?at=baseline2`, spot: 'rp-card' },
     { id: 'G14', title: 'Assurance watches the baseline', text: 'Assurance holds the accepted state and its revisions, so a later difference shows as drift against a known baseline, not as a guess.', href: `#/assurance/room/${REFERENCE_ROOM_ID}` },
-    { id: 'G15', title: 'What leadership sees', text: 'The same records roll up into diagnosis and analytics. Every figure traces to the rooms and jobs it came from; nothing here is live telemetry.', href: '#/v25/apex' },
+    { id: 'G15', title: 'What leadership sees', text: 'The same records roll up into diagnosis and analytics. Every figure traces to the rooms and jobs it came from; none of it is streamed from a real building.', href: '#/v25/apex' },
     { id: 'G16', title: 'One room. Now the whole estate.', text: 'The failure map shows every building’s open issues, as counts and per 10 rooms, from the same records. Follow everything that happened to one room, then imagine that across the enterprise. (Turning a resolved fault into a reviewed lesson in Learn is designed, not built yet.)', href: '#/pro/issues', spot: 'pro-failure-map' },
   ] },
 

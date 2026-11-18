@@ -484,6 +484,11 @@
     "file": "apps/demo/src/lite/l3.tsx",
     "evidence": "ordinary-word",
     "note": "zoom in and out on the spatial stage"
+   },
+   {
+    "file": "apps/demo/src/map/EmpathiaMap.tsx",
+    "evidence": "ordinary-word",
+    "note": "the map's zoom in and zoom out buttons"
    }
   ]
  }

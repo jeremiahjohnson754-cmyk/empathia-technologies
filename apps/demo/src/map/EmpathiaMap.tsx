@@ -4,7 +4,7 @@
  * street style of the fictional campus, the buildings in 3D, fluid pan / zoom / rotate / tilt with mouse, touch and keyboard, and a
  * camera that flies — campus → building → floor (cut away, rooms laid out) → room — and back up. A building opens a place card; a room
  * opens the exact room in Lite, Commissioning, Assurance, Core Replay, Search Party and ServiceHands. Original Empathia design: familiar
- * conventions (search, zoom, layers, compass, place card), none of Google's marks or styling.
+ * conventions (search, zoom, layers, compass, place card), with no other map provider's marks or styling.
  * Honesty: the imagery is painted from the canonical footprints and says so; storey heights and the room layout inside a floor are
  * MODELED (the canon holds floor counts and room sizes, not floor plans); every number on a pin comes from the room records.
  * Every building and room is also a real button (keyboard, screen reader); without WebGL2 the caller shows the SVG map instead.
