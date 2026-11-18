@@ -5,7 +5,7 @@
  * at levels 1–2). Mastery runs on the challenge's own clock unless timers are off. reach-cues is played live: keys 1–8 fire looks against
  * the song's clock. Drawings are SVG attributes and one canvas, never inline styles, so the page keeps its content policy.
  */
-import { useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react';
 import { Button } from './components.js';
 import * as CH from './challenges/index.js';
 import type { Challenge, Control, CState, Result } from './challenges/core.js';
@@ -116,6 +116,7 @@ function Drawing({ C, st, lv }: { C: Challenge; st: CState; lv: number }): React
     case 'build-studio': return <Rt60 st={st} lv={lv} />;
     case 'build-rf': return <RfPlan st={st} lv={lv} />;
     case 'record-loud': return <LoudBars st={st} />;
+    case 'see-focus': return <FocusPicture st={st} lv={lv} />;
     case 'record-take': return <TakeLadder st={st} />;
     case 'record-panel': return <PanelAbove st={st} lv={lv} />;
     case 'build-stream': return <StreamBars st={st} lv={lv} />;
@@ -211,6 +212,52 @@ function LoudBars({ st }: { st: CState }) {
     <rect className="ch__band" x={40} y={Y(-22)} width={540} height={Y(-26) - Y(-22)} />
     {R.seg.map((s) => { const w = (s.d / tot) * 540, x0 = x; x += w; return <g key={s.sn}><rect className={s.locked ? 'ch__bar is-locked' : 'ch__bar'} x={x0 + 2} y={Y(s.L)} width={w - 4} height={170 - Y(s.L)} /><text className="ch__t" x={x0 + w / 2} y={190} textAnchor="middle">{s.sn}</text></g>; })}
     <line className="ch__int" x1={40} x2={580} y1={Y(R.I)} y2={Y(R.I)} /><text className="ch__t" x={44} y={14}>loudness by segment (LKFS) · dashed: integrated {CH.round(R.I, 1)} · band: −24 ±2</text></Svg>;
+}
+
+/** see-focus, the camera's picture (restored 18 Nov 2026 from the reference's draw(), read as text): an interviewee at 2.5 m in front
+ *  of a bookshelf at 6 m, rendered through your settings: background and subject blur from the thin-lens blur circles, the hand's motion
+ *  blur from the shutter, exposure and white balance as a colour matrix, ISO as grain, mains flicker as rolling bands (six updates a
+ *  second, none under reduced motion). The HUD says every value in words. */
+const cctRGB = (K: number): [number, number, number] => { const t = K / 100; const r = t <= 66 ? 255 : 329.698727446 * Math.pow(t - 60, -0.1332047592), g = t <= 66 ? 99.4708025861 * Math.log(t) - 161.1195681661 : 288.1221695283 * Math.pow(t - 60, -0.0755148492), b = t >= 66 ? 255 : t <= 19 ? 0 : 138.5177312231 * Math.log(t - 10) - 305.0447927307; const c = (v: number) => Math.round(Math.max(0, Math.min(255, v))); return [c(r), c(g), c(b)]; };
+function FocusPicture({ st, lv }: { st: CState; lv: number }) {
+  const id = useId().replace(/:/g, ''); const C = CH.See.camera(st, lv); const W = 800, H = 450, k = W / 1920, coc = 0.025;
+  const [phase, setPhase] = useState(0);
+  useEffect(() => { if (!C.flick || C.resid < 0.005 || matchMedia('(prefers-reduced-motion: reduce)').matches) return; const iv = setInterval(() => setPhase((p) => p + (2 * Math.PI * 120) / C.fps), 1000 / 6); return () => clearInterval(iv); }, [C.flick, C.fps, C.resid]);
+  const a = cctRGB(3200), bw = cctRGB(Number(st['wb'])); let gains = [0, 1, 2].map((i) => Math.pow(a[i]! / Math.max(1, bw[i]!), 2.2)); const gm = Math.max(...gains), e = Math.pow(2, CH.clamp(C.dEV, -5, 4));
+  gains = gains.map((g) => CH.round((g / gm) * e * (gm > 1.4 ? 1.15 : 1), 4));
+  const nz = 0.035 * (Number(st['iso']) / 800) * (C.dEV < 0 ? Math.pow(2, -C.dEV / 2) : 1); const sharp = C.bs <= coc; const meter = 380, mx = CH.clamp(C.dEV, -3, 3);
+  const books = ['#7F1D1D', '#1E3A8A', '#14532D', '#CA8A04', '#3F3F46', '#9A3412'];
+  return <div className="lab__svgwrap"><svg className="ch__svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`The camera’s picture through your settings: ${sharp ? 'her eyes are sharp' : 'she is soft'}, exposure ${C.dEV > 0 ? '+' : ''}${CH.round(C.dEV, 1)} stops, white balance ${Math.round(C.wbErr)} mired off${C.flick ? `, flicker ${CH.round(C.resid * 100, 1)}%` : ''}.`} data-testid="see-focus-picture">
+    <defs>
+      <filter id={`${id}bg`} x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation={CH.round((C.bbPx * k) / 2.4, 2)} /></filter>
+      <filter id={`${id}su`} x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation={CH.round((C.bsPx * k) / 2.4, 2)} /></filter>
+      <filter id={`${id}ha`} x="-60%" y="-20%" width="220%" height="140%"><feGaussianBlur stdDeviation={`${CH.round(Math.max((C.hand * k) / 2.2, (C.bsPx * k) / 2.4), 2)} ${CH.round((C.bsPx * k) / 2.4, 2)}`} /></filter>
+      <filter id={`${id}gr`}><feColorMatrix type="matrix" values={`${gains[0]} 0 0 0 0 0 ${gains[1]} 0 0 0 0 0 ${gains[2]} 0 0 0 0 0 1 0`} /></filter>
+      <filter id={`${id}nz`}><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves={1} seed={3} /><feColorMatrix type="saturate" values="0.2" /></filter>
+      <linearGradient id={`${id}fl`} x1="0" y1="0" x2="0" y2="1">{Array.from({ length: 13 }, (_x, i) => { const y = i / 12; return <stop key={i} offset={y} stopColor="#000" stopOpacity={CH.round(0.5 + 0.5 * Math.cos(2 * Math.PI * 1.9 * y + phase), 3)} />; })}</linearGradient>
+    </defs>
+    <g filter={`url(#${id}gr)`}>
+      <g filter={`url(#${id}bg)`}><rect x={-20} y={-20} width={840} height={490} fill="#8C7A68" />
+        {[0, 1, 2, 3].map((sh) => { const yy = 40 + sh * 95; return <g key={sh}><rect x={440} y={yy + 70} width={340} height={10} fill="#5B4636" />{Array.from({ length: 14 }, (_x, b) => <rect key={b} x={446 + b * 23} y={yy + 12 + ((b * 7) % 13)} width={18} height={58 - ((b * 7) % 13)} fill={books[(b + sh) % 6]} />)}</g>; })}
+        <rect x={60} y={60} width={150} height={190} fill="#C9D6E3" /><rect x={70} y={70} width={130} height={170} fill="#E8EEF4" /><circle cx={330} cy={150} r={34} fill="#FFE8B0" /><rect x={326} y={184} width={8} height={120} fill="#3F3F46" /></g>
+      <g filter={`url(#${id}su)`}><path d="M150 450 C160 350 230 318 320 312 C410 318 480 350 492 450 Z" fill="#1E3A5F" /><rect x={296} y={262} width={48} height={60} fill="#C68B64" /><ellipse cx={320} cy={214} rx={62} ry={76} fill="#D59A72" />
+        <path d="M258 200 C258 140 300 128 322 128 C360 128 386 150 384 206 C372 170 330 160 300 176 C282 186 266 196 258 200 Z" fill="#2B1B12" />
+        {[296, 344].map((ex) => <g key={ex}><ellipse cx={ex} cy={212} rx={9} ry={6} fill="#FFFFFF" /><circle cx={ex} cy={212} r={4.5} fill="#1F2937" /><circle cx={ex + 1.5} cy={210.5} r={1.4} fill="#FFFFFF" /></g>)}
+        <path d="M304 250 Q320 262 336 250" stroke="#7F1D1D" strokeWidth={3} fill="none" /><circle cx={350} cy={352} r={5} fill="#111827" />
+        {Array.from({ length: 6 }, (_x, ln) => <rect key={ln} x={230 + ln * 8} y={360} width={4} height={40} fill={ln % 2 ? '#F8FAFC' : '#0F172A'} />)}</g>
+      <g filter={`url(#${id}ha)`}><ellipse cx={520} cy={380} rx={30} ry={22} fill="#D59A72" /><rect x={490} y={390} width={40} height={70} fill="#1E3A5F" /></g>
+    </g>
+    <rect className="ch__noise" x={0} y={0} width={W} height={H} filter={`url(#${id}nz)`} opacity={CH.round(CH.clamp(nz, 0, 0.7), 3)} />
+    <rect x={0} y={0} width={W} height={H} fill={`url(#${id}fl)`} opacity={CH.round(CH.clamp(C.resid * 2.2, 0, 0.8), 3)} />
+    <g className="ch__hud"><rect x={0} y={0} width={W} height={30} fill="#000" opacity={0.55} />
+      <text x={10} y={21} fill="#F8FAFC" fontSize={14} fontWeight={800}>f/{String(st['N'])} · 1/{String(st['sh'])} ({Math.round(C.ang)}°) · ISO {String(st['iso'])} · ND {String(st['nd'])} · {String(st['wb'])} K · {C.fps}p · {String(st['fl'])} mm</text>
+      <rect x={meter} y={H - 34} width={240} height={26} rx={6} fill="#000" opacity={0.6} />
+      {[-3, -2, -1, 0, 1, 2, 3].map((s2) => <line key={s2} x1={meter + 20 + (s2 + 3) * 33.3} x2={meter + 20 + (s2 + 3) * 33.3} y1={H - 30} y2={H - 22} stroke="#CBD5E1" />)}
+      <path d={`M${meter + 20 + (mx + 3) * 33.3} ${H - 20} l-6 10 h12 Z`} fill={Math.abs(C.dEV) <= 0.5 ? '#34D399' : '#FBBF24'} />
+      <text x={meter + 120} y={H - 38} textAnchor="middle" fill="#F8FAFC" fontSize={13} fontWeight={800}>exposure {C.dEV > 0 ? '+' : ''}{CH.round(C.dEV, 1)} stops</text>
+      {sharp && <rect x={250} y={130} width={140} height={170} fill="none" stroke="#34D399" strokeWidth={2} strokeDasharray="8 5" />}
+      <text x={10} y={H - 12} fill={sharp ? '#34D399' : '#F87171'} fontSize={14} fontWeight={800}>{sharp ? 'FOCUS ✓ on her eyes' : 'FOCUS ✗ — she is soft'}</text></g>
+  </svg></div>;
 }
 
 // Restored 18 Nov 2026 from the reference's chal_record.js / chal_build.js draw() (read as text): the vocal take's gain ladder, the

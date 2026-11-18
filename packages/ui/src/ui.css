@@ -390,3 +390,4 @@ input.lab__input { width: 9em; } select.lab__input { min-width: 0; width: 100%; 
 .ch__mk.is-ok { fill: var(--ok); } .ch__mk.is-hot { fill: var(--bad); } .ch__mk.is-off { fill: var(--warn); } .ch__t--bad { fill: var(--bad); font-weight: 700; }
 .ch__table { fill: var(--bg2, var(--panel)); stroke: var(--line); } .ch__head2 { fill: var(--tx3, var(--tx2)); opacity: .55; } .ch__stand { stroke: var(--tx2, var(--tx)); stroke-width: 3; } .ch__capsule { fill: var(--tx); }
 .ch__lobe { fill: var(--accent); opacity: .16; stroke: var(--accent); } .ch__leak { fill: none; stroke: var(--ok); stroke-width: 2; stroke-dasharray: 6 4; } .ch__leak.is-bad { stroke: var(--bad); }
+.ch__noise { mix-blend-mode: overlay; }
