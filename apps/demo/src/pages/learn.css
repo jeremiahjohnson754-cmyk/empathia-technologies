@@ -352,7 +352,20 @@ main details > summary { min-height: 24px; }
 .fb__value { margin: var(--sp-3) 0; padding: var(--sp-3); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--bg2); font-size: var(--fs-md); } .fb__value b { font-variant-numeric: tabular-nums; }
 .fb__notes { margin: var(--sp-2) 0; } .fb__notes summary { cursor: pointer; min-height: var(--target-min); display: flex; align-items: center; }
 .fl__measured li { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr) minmax(0, 1.5fr) minmax(0, 1.2fr); gap: 6px var(--sp-3); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); } .fl__measured li:last-child { border-bottom: 0; }
-@media (max-width: 860px) { .fb__grid2, .fl__measured li { grid-template-columns: minmax(0, 1fr); } }
+/* a deficiency and the work that corrects it: two records side by side */
+.fl__issues > li { padding: var(--sp-2) 0 var(--sp-3); border-bottom: 1px solid var(--line); } .fl__issues > li:last-child { border-bottom: 0; } .fl__issue { margin: 0 0 var(--sp-2); }
+.ca { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
+.ca__steps { list-style: none; margin: var(--sp-2) 0 0; padding: 0; display: grid; gap: var(--sp-2); }
+.ca__step { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: var(--r-md); }
+.ca__step[data-state=now] { border-color: var(--accent); background: var(--bg2); } .ca__step[data-state=later] { opacity: 0.72; }
+.ca__n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line3); font-size: var(--fs-xs); font-weight: 700; font-variant-numeric: tabular-nums; }
+.ca__step[data-state=done] .ca__n { border-color: var(--ok); color: var(--ok); } .ca__step[data-state=now] .ca__n { border-color: var(--accent); }
+.ca__body { display: grid; gap: var(--sp-2); margin-top: 4px; } .ca__body:empty { display: none; } .ca__body p { margin: 0; }
+.ca__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); } .ca__body input[type=text], .ca__body input[type=date], .ca__body select { width: 100%; min-height: var(--target-min); }
+.ca__checks { display: grid; gap: 2px; } .ca__checks label { display: flex; align-items: center; gap: 8px; min-height: var(--target-min); } .ca__checks input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.ca__answer { padding: var(--sp-3); border-left: 3px solid var(--accent); border-radius: var(--r-sm); background: var(--panel2); } .ca__answer p { margin: 4px 0 0; }
+.ca__cands li { display: flex; flex-wrap: wrap; gap: 6px var(--sp-3); align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line); } .ca__cands li:last-child { border-bottom: 0; }
+@media (max-width: 860px) { .fb__grid2, .fl__measured li, .ca, .ca__row { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 860px) { .fl__bar, .fl__work { grid-template-columns: minmax(0, 1fr); } .fl__stages li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
 
 /* #/connected — the server-backed thread (ADR-0013) */

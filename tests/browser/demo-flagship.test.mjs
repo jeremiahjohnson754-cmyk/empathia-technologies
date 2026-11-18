@@ -31,7 +31,11 @@
 //   FL-21  the bench is an analysis: positions on the plan, octave bands, a longer decay a larger figure; nothing sent until recorded
 //   FL-22  the measurement on the server: the bench's value, SIMULATED, the analysis package as evidence, the database's verdict shown
 //   FL-23  PASS on a measurement that misses the limit refused; FAIL recorded; a deficiency opened and listed
-//   FL-24  a second measurement meets the limit and carries a PASS; refresh, a second person's browser, phone width
+//   FL-24  handed to ServiceHands by the service manager; triage; Search Party's answer and the candidates are the server's; assigned
+//   FL-25  the technician's work with each gate held by the server; a closed job leaves the deficiency open and the test failed
+//   FL-26  the correction recorded; a retest refused until the room is measured again; PASS on the new measurement; closed by
+//          someone else's verification
+//   FL-27  refresh, a second person's browser, phone width
 //   node tests/browser/demo-flagship.test.mjs
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
@@ -278,17 +282,58 @@ let failedOn = null;
       && (await shownIssue.getAttribute('data-issue')) === issues[0].code && (await p.locator('[data-testid=fl-measured] li').first().getAttribute('data-cited')) === 'FAIL' && /fail/i.test(cell),
     `PASS: ${pass.text.slice(0, 150)} (row still ${rowsBefore}) · FAIL: row ${row.result}, ${issues.length} deficiency ${issues[0]?.code} ${issues[0]?.state} “${issues[0]?.title}” · plan cell “${cell.trim().slice(0, 40)}”`); }
 
-{ await setDecay(p, 0.8); await p.getByTestId('fl-bench-analyse').click(); await p.getByTestId('fl-bench-value').waitFor(); const again = await benchValue(p); await p.getByTestId('fl-bench-record').click(); const rec = await saidOk(p);
-  await p.getByTestId('fl-result-pass').click(); const pass = await saidOk(p); const ms = await measuredOnServer(); const row = (await srv('cxeng', '')).commissioning.rows.find((x) => x.test_id === RT);
-  await p.reload(); await p.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(p); const afterReload = await p.locator('[data-testid=fl-measured] li').evaluateAll((els) => els.map((e) => `${e.getAttribute('data-within')}/${e.getAttribute('data-cited')}`));
+// ------------------------------------------------------------------------------------------------ the corrective action: ServiceHands, Search Party, the retest
+const press = async (pg, id) => { await pg.getByTestId(id).click(); return saidOk(pg); };
+const issueOnServer = async () => (await srv('cxeng', '/thread')).stages.find((x) => x.key === 'commissioning').records.issues[0];
+const woOnServer = async (code) => (await api.call('GET', `/v1/work-orders/${code}`, { token: await as('svcmgr') })).body;
+const panel = p.getByTestId('fl-corrective'); let WO = '';
+
+{ const notMine = await press(p, 'fl-wo-raise'); const none = (await issueOnServer()).workOrders.length;                       // still the commissioning engineer
+  await actAs(p, 'svcmgr'); const raised = await press(p, 'fl-wo-raise'); WO = (await issueOnServer()).workOrders[0];
+  const triaged = await press(p, 'fl-wo-triage'); const w = await woOnServer(WO); const need = await text(p, 'fl-wo-need');
+  await actAs(p, 'cxeng'); const hidden = await p.getByTestId('fl-candidates-hidden').count(); const cannot = await press(p, 'fl-sp-ask');
+  await actAs(p, 'svcmgr'); const asked = await press(p, 'fl-sp-ask'); const answer = (await text(p, 'fl-sp-answer')).replace(/\s+/g, ' ');
+  const shown = await p.locator('[data-testid=fl-candidates] li[data-eligible=yes]').evaluateAll((els) => els.map((e) => e.getAttribute('data-person'))); const reasons = await p.locator('[data-testid=fl-candidates] li[data-eligible=yes]').first().innerText();
+  const assigned = await press(p, 'fl-assign'); const after = await woOnServer(WO); await shot(p, 'flagship-assigned');
+  ok('FL-24', 'the deficiency is handed to ServiceHands by the service manager (the commissioning engineer is refused); triage sets what the job needs; Search Party’s answer and the candidates are the server’s, with their reasons; who may not assign sees no ranking; the person assigned is one the gates admit',
+    notMine.ok === 'no' && none === 0 && raised.ok === 'yes' && /^WO-/.test(WO) && triaged.ok === 'yes' && w.state === 'TRIAGED' && w.severity === 'High' && w.need.certs.every((k) => need.includes(k)) && hidden === 1
+      && asked.ok === 'yes' && answer.includes(w.candidates.eligible[0].name) && /pass the hard gates/.test(answer) && /calendars are not connected/.test(answer) && JSON.stringify(shown) === JSON.stringify(w.candidates.eligible.map((k) => k.id)) && w.candidates.eligible[0].reasons.every((r) => reasons.includes(r))
+      && assigned.ok === 'yes' && after.state === 'ASSIGNED' && after.assignee.id === w.candidates.eligible[0].id && (await text(p, 'fl-wo-assignee')).includes(after.assignee.name),
+    `engineer raising: ${notMine.text.slice(0, 60)} · ${WO} ${w.state} ${w.severity}, needs ${w.need.certs.join('+')} · engineer asking Search Party: ${cannot.ok} “${cannot.text.slice(0, 70)}” · ${answer.slice(0, 150)} · ${shown.length} eligible shown of ${w.candidates.eligible.length} · assigned to ${after.assignee?.name} (${after.state})`); }
+
+{ const notTech = await press(p, 'fl-wo-accept'); await actAs(p, 'service'); const accepted = await press(p, 'fl-wo-accept');
+  const empty = await press(p, 'fl-wo-preflight'); const pf1 = await p.getByTestId('fl-pf-state').getAttribute('data-ok'); const blocked = await press(p, 'fl-wo-start'); const s1 = (await woOnServer(WO)).state;
+  await p.getByTestId('fl-pf-safety').check(); await p.getByTestId('fl-pf-tools').check(); await p.getByTestId('fl-pf-access').fill('facilities desk (synthetic)'); const full = await press(p, 'fl-wo-preflight'); const pf2 = await p.getByTestId('fl-pf-state').getAttribute('data-ok');
+  const started = await press(p, 'fl-wo-start'); const early = await press(p, 'fl-wo-submit'); const s2 = (await woOnServer(WO)).state;
+  const ev = await press(p, 'fl-wo-evidence'); const handed = await press(p, 'fl-wo-submit'); const own = await press(p, 'fl-wo-verify'); const s3 = (await woOnServer(WO)).state;
+  await actAs(p, 'cxeng'); const verified = await press(p, 'fl-wo-verify'); await actAs(p, 'svcmgr'); const unconfirmed = await press(p, 'fl-wo-close'); const s4 = (await woOnServer(WO)).state;
+  await p.getByTestId('fl-wo-confirmed').check(); const closed = await press(p, 'fl-wo-close'); const w = await woOnServer(WO); const issue = await issueOnServer(); const row = (await srv('cxeng', '')).commissioning.rows.find((x) => x.test_id === RT);
+  ok('FL-25', 'the technician’s work, each gate held by the server: only the assignee accepts; a failed preflight is recorded and blocks the start; no hand-over without field evidence; the technician cannot verify their own work; closing needs the requester’s confirmation; and a closed job leaves the deficiency open and the test failed',
+    notTech.ok === 'no' && accepted.ok === 'yes' && empty.ok === 'yes' && pf1 === 'no' && blocked.ok === 'no' && s1 === 'ACCEPTED' && full.ok === 'yes' && pf2 === 'yes' && started.ok === 'yes' && early.ok === 'no' && s2 === 'IN_PROGRESS' && ev.ok === 'yes' && handed.ok === 'yes'
+      && own.ok === 'no' && s3 === 'VERIFYING' && verified.ok === 'yes' && unconfirmed.ok === 'no' && s4 === 'RESOLVED' && closed.ok === 'yes' && w.state === 'CLOSED' && w.evidenceCount === 1 && issue.state === 'OPEN' && /^FAIL/.test(row.result),
+    `manager accepting: ${notTech.text.slice(0, 50)} · empty preflight ${pf1}, start: ${blocked.text.slice(0, 60)} · full preflight ${pf2} · hand-over without evidence: ${early.text.slice(0, 50)} · own verification: ${own.text.slice(0, 50)} · close without confirmation: ${unconfirmed.text.slice(0, 50)} · ${WO} ${w.state}; ${issue.code} ${issue.state}; test ${row.result}`); }
+
+let retest = null;
+{ await actAs(p, 'cxeng'); const started = await press(p, 'fl-def-start'); await actAs(p, 'service'); const fixed = await press(p, 'fl-def-fixed');
+  await actAs(p, 'cxeng'); const tooSoon = await press(p, 'fl-def-retest'); const wf1 = (await issueOnServer()).workflow;
+  await setDecay(p, 0.8); await p.getByTestId('fl-bench-analyse').click(); await p.getByTestId('fl-bench-value').waitFor(); const again = await benchValue(p); const rec = await press(p, 'fl-bench-record'); const pass = await press(p, 'fl-result-pass');
+  const ms = await measuredOnServer(); retest = ms[0]; const done = await press(p, 'fl-def-retest'); const names = await text(p, 'fl-def-retest-evidence'); const self = await press(p, 'fl-def-verify'); const wf2 = (await issueOnServer()).workflow;
+  await actAs(p, 'syseng'); const closed = await press(p, 'fl-def-verify'); const issue = await issueOnServer(); const row = (await srv('cxeng', '')).commissioning.rows.find((x) => x.test_id === RT); await shot(p, 'flagship-corrected');
+  ok('FL-26', 'the correction is recorded by the person who did it; a retest is refused while the test’s result is still the failure; measured again at the bench the room meets the criterion, PASS is recorded on that measurement, and the retest names it; whoever retested cannot verify it; verified by someone else, the deficiency is closed',
+    started.ok === 'yes' && fixed.ok === 'yes' && tooSoon.ok === 'no' && /current result is FAIL/.test(tooSoon.text + JSON.stringify(await p.getByTestId('fl-said').innerText())) && wf1 === 'PENDING_RETEST' && again < 0.92 && rec.ok === 'yes' && /meets the criterion/.test(rec.text) && pass.ok === 'yes'
+      && ms.length === 2 && retest.within === true && retest.cited_by_result === 'PASS' && ms[1].id === failedOn.id && done.ok === 'yes' && names.includes(retest.id) && self.ok === 'no' && wf2 === 'PENDING_RETEST' && closed.ok === 'yes' && issue.workflow === 'CLOSED' && issue.state !== 'OPEN' && row.result === 'PASS_UNVERIFIED'
+      && (await panel.getAttribute('data-workflow')) === 'CLOSED',
+    `retest before measuring: ${tooSoon.text.slice(0, 110)} · bench ${again} s: ${rec.text.slice(0, 50)} · retest “${names.trim().slice(0, 70)}” · own verification: ${self.text.slice(0, 60)} · ${issue.code} ${issue.state}/${issue.workflow} · test ${row.result}`); }
+
+{ await p.reload(); await p.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(p); const mine = async (pg) => ({ measured: await pg.locator('[data-testid=fl-measured] li').evaluateAll((els) => els.map((e) => `${e.getAttribute('data-within')}/${e.getAttribute('data-cited')}`)), wo: await pg.getByTestId('fl-corrective').getAttribute('data-wo-state'), wf: await pg.getByTestId('fl-corrective').getAttribute('data-workflow'), counts: await text(pg, 'fl-cx-counts') });
+  const afterReload = await mine(p);
   const u = await open('#/connected', { role: 'qa_reviewer', sw: false }); const q = u.page; q.setDefaultTimeout(30000); await q.getByTestId('connected').waitFor(); await q.waitForFunction(() => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === 'ready');
   await q.getByTestId('cn-resume-code').fill(`${stored.id}.${stored.key}`); await q.getByTestId('cn-resume').click(); await q.getByTestId('cn-journey').waitFor({ timeout: 120000 });
-  await q.goto(`${base}#/flagship`); await q.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(q); const theirs = await q.locator('[data-testid=fl-measured] li').evaluateAll((els) => els.map((e) => `${e.getAttribute('data-within')}/${e.getAttribute('data-cited')}`)); const theirIssues = await q.locator('[data-testid=fl-issues] li').count();
+  await q.goto(`${base}#/flagship`); await q.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(q); const theirs = await mine(q);
   await q.setViewportSize({ width: 390, height: 844 }); await q.waitForTimeout(200); const over = await q.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); await shot(q, 'flagship-bench-phone');
-  ok('FL-24', 'a second measurement, of a shorter decay, meets the criterion and carries a PASS that waits for someone else; both measurements, their verdicts and the deficiency are the same after a refresh and in a second person’s browser; nothing scrolls sideways at phone width',
-    again < 0.92 && rec.ok === 'yes' && /meets the criterion/.test(rec.text) && pass.ok === 'yes' && ms.length === 2 && ms[0].within === true && ms[0].cited_by_result === 'PASS' && ms[1].id === failedOn.id && ms[1].cited_by_result === 'FAIL' && row.result === 'PASS_UNVERIFIED'
-      && JSON.stringify(afterReload) === JSON.stringify(['yes/PASS', 'no/FAIL']) && JSON.stringify(theirs) === JSON.stringify(afterReload) && theirIssues === 1 && over <= 1 && !u.errs.length && !pageErrs().length,
-    `${again} s: ${rec.text.slice(0, 60)} · row ${row.result} · server ${ms.map((m) => `${Number(m.value)} ${m.within} ${m.cited_by_result}`).join(' | ')} · after reload ${afterReload} · second browser ${theirs}, ${theirIssues} deficiency · phone overflow ${over}px · ${[...u.errs, ...pageErrs()].slice(0, 2)}`);
+  ok('FL-27', 'after a refresh, and in a second person’s browser opened with the resume code alone, the measurements, their verdicts, the closed job and the closed deficiency are the same; nothing scrolls sideways at phone width; no error but the refusals asked for',
+    JSON.stringify(afterReload.measured) === JSON.stringify(['yes/PASS', 'no/FAIL']) && afterReload.wo === 'CLOSED' && afterReload.wf === 'CLOSED' && JSON.stringify(theirs) === JSON.stringify(afterReload) && over <= 1 && !u.errs.length && !pageErrs().length,
+    `after reload ${JSON.stringify(afterReload).slice(0, 160)} · second browser the same ${JSON.stringify(theirs) === JSON.stringify(afterReload)} · phone overflow ${over}px · ${[...u.errs, ...pageErrs()].slice(0, 2)}`);
   await u.close(); }
 
 await h.app.stop();

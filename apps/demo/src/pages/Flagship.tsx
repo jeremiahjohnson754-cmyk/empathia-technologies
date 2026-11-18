@@ -24,6 +24,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PageHero, Card, Tag, Notice } from '@empathia/ui';
 import { connected, SandboxGone, type Availability, type Sandbox } from '../connected/client.js';
 import { ReverbBench, type BenchOutput, type BenchTest } from '../flagship/ReverbBench.js';
+import { CorrectiveAction, type Deficiency, type Issue, type WorkOrder } from '../flagship/CorrectiveAction.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
 interface Point { x: number; y: number }
@@ -40,7 +41,6 @@ interface CriteriaAnswer { sandbox: boolean; tests: Array<BenchTest & { personas
 interface Measured { id: string; metric: string; value: string | number; unit: string; provenance: string; calibration_status: string; instrument_id: string | null; location: string; test_id: string | null; evidence_id: string | null; within: boolean | null; criterion_version: number | null;
   criterion_lower: string | null; criterion_upper: string | null; recorded_by_name: string; recorded_role: string; created_at: string; cited_by_result: string | null }
 interface RegisterAnswer { items: Array<{ asset: string | null; position: string; missing: string[] }> }
-interface Issue { code: string; title: string; state: string; workflow: string; workOrders: string[] }
 interface Connection { id: string; from: string; to: string; kind: string; why: string }
 interface Row { test_id: string; label: string; pack: string; domain: string; phase: number; tier: number; applicable: boolean; why: string[]; personas: string[]; evidence: string[]; instrument: boolean; devices: string[]; result: string }
 interface RoomAnswer {
@@ -50,7 +50,7 @@ interface RoomAnswer {
   commissioning: { engineVersion: string; ruleVersion: string; library: number; applicable: number; counts: Record<string, number>; rows: Row[] } | null;
 }
 interface Thread { room: { code: string; lifecycle: string; revision: number }; complete?: boolean; missing?: string[]; stages: Array<{ key: string; product: string; records: Record<string, unknown> }> }
-interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; place: { building: string; buildingName: string; site: string; siteName: string } | null }
+interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; place: { building: string; buildingName: string; site: string; siteName: string } | null }
 type Said = { ok: boolean; warn?: boolean; title: string; text: string; reasons?: string[] };
 const at = (p: Point) => `${p.x} m across, ${p.y} m from the front`;
 const same = (a: Point, b: Point) => Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005;
@@ -138,9 +138,13 @@ export function FlagshipPage() {
         c.call<{ items: Array<{ code: string; name: string; buildings: Array<{ code: string; name: string }> }> }>(as, 'GET', '/v1/sites'),
         c.call<FieldAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/field-record`), c.call<BaselineAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/baselines`)]);
       const [criteria, measured, register] = await Promise.all([c.call<CriteriaAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/criteria`), c.call<{ items: Measured[] }>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/measurements`), c.call<RegisterAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/register`)]);
+      // each deficiency of the room with its own workflow record and, when one was raised, its work order
+      const found = thread.ok ? (((thread.body.stages.find((s) => s.key === 'commissioning')?.records as { issues?: Issue[] } | undefined)?.issues) || []) : []; const service: Loaded['service'] = {};
+      await Promise.all(found.slice(0, 6).map(async (i) => { const [d, w] = await Promise.all([c.call<Deficiency>(as, 'GET', `/v1/issues/${i.code}/deficiency`), i.workOrders[0] ? c.call<WorkOrder>(as, 'GET', `/v1/work-orders/${i.workOrders[0]}`) : Promise.resolve(null)]);
+        service[i.code] = { def: d.ok ? d.body : null, wo: w && w.ok ? w.body : null }; }));
       if (!alive.current) return;
       const b = list.ok ? list.body.items.find((x) => x.code === room.body.room.code)?.building : undefined; const site = b && sites.ok ? sites.body.items.find((s) => s.buildings.some((x) => x.code === b)) : undefined;
-      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
+      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
       setSelected((s) => (s && room.body.devices.some((d) => d.id === s) ? s : null));
     } catch (e) {
       if (e instanceof SandboxGone) { setSb(null); setData(null); setSaid({ ok: false, title: 'The sandbox is no longer there.', text: `${e.message}. Open a new one to continue.` }); }
@@ -355,7 +359,9 @@ export function FlagshipPage() {
         </Card>
 
         <Card icon="alert" title="Deficiencies" sub={issues.length ? `${issues.filter((i) => i.state === 'OPEN').length} open of ${issues.length}` : 'None'} testId="fl-issues-card">
-          {issues.length ? <ul className="fl__list" data-testid="fl-issues">{issues.map((i) => <li key={i.code} data-issue={i.code} data-state={i.state}><span className="ui-mono">{i.code}</span> <Tag tone={i.state === 'OPEN' ? 'bad' : 'ok'}>{words(i.state)}</Tag> {i.title} <span className="ui-muted">· {words(i.workflow)}{i.workOrders.length ? ` · ${i.workOrders.join(', ')}` : ' · no work order yet'}</span></li>)}</ul>
+          {issues.length ? <ul className="fl__list fl__issues" data-testid="fl-issues">{issues.map((i) => <li key={i.code} data-issue={i.code} data-state={i.state}><p className="fl__issue"><span className="ui-mono">{i.code}</span> <Tag tone={i.state === 'OPEN' ? 'bad' : 'ok'}>{words(i.state)}</Tag> <b>{i.title}</b> <span className="ui-muted">· {words(i.workflow)}{i.workOrders.length ? ` · ${i.workOrders.join(', ')}` : ' · no work order yet'}</span></p>
+            <CorrectiveAction issue={i} def={data.service[i.code]?.def || null} wo={data.service[i.code]?.wo || null}
+              t={{ call: (method, path, body) => c.call(who, method, path, body), act, refused, person: person(who), busy: !!busy, roles: PEOPLE }} /></li>)}</ul>
             : <p data-testid="fl-issues-none">No deficiency is open on this room. A failed result opens one.</p>}
         </Card>
 

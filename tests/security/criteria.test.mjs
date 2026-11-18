@@ -20,6 +20,8 @@
 //   CR-08  provenance: an uncalibrated field measurement and an inferred value pass nothing, even within the limit
 //   CR-09  outside a sandbox a SIMULATED value passes nothing — through the API, and again when the row is written to the table directly
 //   CR-10  a room with no criterion for a test is as before: its result needs no measurement, and a measurement of it has no verdict
+//   CR-11  the retest of a deficiency opened by a failed measured test is the test's own new result: PASS on a measurement recorded
+//          after the correction. A sentence is not a retest; a measurement taken before the correction is not one; a FAIL is not one
 import test, { before, after } from 'node:test'; import assert from 'node:assert/strict';
 import { setup, client, registerRoom } from '../integration/harness.mjs';
 
@@ -158,4 +160,20 @@ test('CR-10 a room with no criterion for a test is as before: no measurement nee
   const r = await call(T.cxeng, 'POST', `${S}/results`, { body: { testId: row.test_id, state: 'PASS', evidenceId: ev, evidenceKind: row.evidence[0], instrument: 'SYN-METER-01 (synthetic)' } }); assert.equal(r.status, 201, J(r.body));
   const cov = await measure(T.cxeng, HALL, { testId: 'acoustic_coverage', metric: 'laeq_spread', unit: 'dB', value: 4.5 }); assert.equal(cov.status, 201, J(cov.body)); assert.equal(cov.body.within, null); assert.equal(cov.body.criterion, null); assert.match(cov.body.says, /no criterion for acoustic_coverage, so there is no verdict/);
   const plain = await call(T.cxeng, 'POST', `${HALL}/measurements`, { body: { metric: 'spl_laeq', value: 62, unit: 'dB(A)', method: 'observation', measuredAt: new Date().toISOString(), location: 'row 4', source: 'walk-through', provenance: 'OBSERVED' } }); assert.equal(plain.status, 201, J(plain.body)); assert.equal(plain.body.within, undefined, 'a measurement that names no test is the record it always was');
+});
+
+test('CR-11 the retest of a failed measured test is its own new result on a measurement recorded after the correction', async () => {
+  const issue = h.asSuper("SELECT i.code FROM app.room_issue i JOIN app.room r ON r.id = i.room_id WHERE i.key = 'test-failed:reverberation_rt60' AND r.canonical_ref = 'UNI-SCI-110'"); const D = `/v1/issues/${issue}/deficiency`;
+  const step = (token, body) => call(token, 'POST', D, { body }); const day = new Date(Date.now() + 10 * 864e5).toISOString().slice(0, 10);
+  assert.equal((await step(T.cxeng, { step: 'start', ownerRole: 'installer', targetDate: day })).status, 200);
+  assert.equal((await step(T.installer, { step: 'fixed', rootCause: 'INSTALLATION', action: 'Absorptive panels fitted to the rear wall (synthetic)' })).status, 200);
+  // the test's current result is a PASS from before the correction (CR-08): it does not retest the correction
+  const early = await step(T.cxeng, { step: 'retest', result: 'PASS', evidence: 'it sounds fine now' }); assert.equal(early.status, 422, J(early.body)); assert.match(J(early.body), /recorded at .* before the correction/);
+  const ev = await evidence(T.cxeng, 'after the correction'); const bad = await measure(T.cxeng, HALL, { value: 1.2 }); assert.equal((await result(T.cxeng, HALL, 'FAIL', bad.body.id, ev)).status, 201);
+  const failing = await step(T.cxeng, { step: 'retest', result: 'PASS', evidence: 'typed, not measured' }); assert.equal(failing.status, 422, J(failing.body)); assert.match(J(failing.body), /its current result is FAIL/);
+  const good = await measure(T.cxeng, HALL, { value: 0.8 }); assert.equal((await result(T.cxeng, HALL, 'PASS', good.body.id, ev)).status, 201);
+  const ok = await step(T.cxeng, { step: 'retest', result: 'PASS', evidence: 'typed, not measured' }); assert.equal(ok.status, 200, J(ok.body));
+  assert.equal(ok.body.retest.evidence, `measurement ${good.body.id}: t30_mid 0.8 s`, 'the retest names the measurement, whatever the request said');
+  const closed = await step(T.syseng, { step: 'verify' }); assert.equal(closed.status, 200, J(closed.body)); assert.equal(closed.body.workflow, 'CLOSED');
+  assert.equal(Number(h.asSuper("SELECT count(*) FROM app.audit_event WHERE action = 'deficiency.retest' AND outcome = 'DENIED'")), 2, 'both refused retests are in the audit trail');
 });

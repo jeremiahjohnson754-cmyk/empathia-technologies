@@ -1,6 +1,6 @@
 # ADR-0014 · Acceptance criteria, and results that rest on a judged measurement
 
-Date: 17 Nov 2026 · Status: accepted · Migration: `0037_measurements.sql` · Tests: `tests/security/criteria.test.mjs` CR-01…10
+Date: 17 Nov 2026 · Status: accepted · Migration: `0037_measurements.sql` · Tests: `tests/security/criteria.test.mjs` CR-01…11
 
 Founder, 17 Nov 2026: "the measurement benches writing directly to authoritative server records"; "run a genuinely interactive
 commissioning measurement, attach evidence, generate a failed test and deficiency".
@@ -28,7 +28,10 @@ told the server the outcome, which is the browser being trusted with the verdict
    sandbox only, a SIMULATED value. The rule is in the API (where a refusal gets a reason a person can act on) and again as a trigger
    on `app.test_result`, so a row written round the API is refused by the table.
 5. **A FAIL says what was measured.** The deficiency a FAIL opens carries the reading, the limit and its version.
-6. **No limit is invented.** The scenario sets one criterion, on the lecture theatre's reverberation. Every other measured test has
+6. **A retest is a measurement.** The retest of a deficiency opened by a failed test that has a criterion is the test's own new
+   result: PASS, resting on a measurement recorded after the correction was recorded. The deficiency's retest names that
+   measurement, whatever the request says; a sentence, an older measurement or a current FAIL is refused (CR-11).
+7. **No limit is invented.** The scenario sets one criterion, on the lecture theatre's reverberation. Every other measured test has
    none until the design authority sets one, and a measurement of a test with no criterion has no verdict. A room with no criterion
    for a test records its results exactly as before.
 

@@ -138,3 +138,20 @@ export async function citeMeasurement(q: Queryable, tenantId: string, room: { id
   }
   return { why, id: m.id, measured: `${reading}${judged ? `, criterion ${judged} (version ${m.c_version})` : ''}${m.provenance === 'FIELD_MEASURED' ? '' : `, ${m.provenance}`}` };
 }
+
+/**
+ * The retest of a deficiency opened by a failed test that has a criterion (0037): it is not a sentence someone types. It is the test's
+ * own current result — PASS, resting on a measurement recorded after the correction was recorded. Returns null when the test has no
+ * criterion on this room (the retest is then recorded as before), else why it may not be recorded as PASS (empty when it may) and the
+ * measurement it rests on.
+ */
+export async function retestOnMeasurement(q: Queryable, roomId: string, testId: string, fixedAt: string | null): Promise<{ why: string[]; evidence: string | null } | null> {
+  const c = inForce(await criteria(q, roomId), testId); if (!c) return null;
+  const r = (await q.query<{ state: string; measurement_id: string | null; metric: string | null; value: string | null; unit: string | null; measured: string | null; after: boolean | null }>(
+    `SELECT t.state, t.measurement_id, m.metric, m.value, m.unit, to_json(m.created_at) #>> '{}' AS measured, (m.created_at > $3::timestamptz) AS after
+       FROM app.current_result c JOIN app.test_result t ON t.id = c.result_id LEFT JOIN app.measurement m ON m.id = t.measurement_id WHERE c.room_id = $1 AND c.test_id = $2`, [roomId, testId, fixedAt])).rows[0];
+  const need = `the retest of ${testId} is the test’s own new result: record PASS on a measurement taken after the correction, then record the retest`;
+  if (!r || r.state !== 'PASS' || !r.measurement_id) return { why: [`${need} (its current result is ${r ? r.state : 'not recorded'})`], evidence: null };
+  if (fixedAt && r.after === false) return { why: [`${need} (the measurement its result rests on was recorded at ${r.measured}, before the correction at ${fixedAt})`], evidence: null };
+  return { why: [], evidence: `measurement ${r.measurement_id}: ${r.metric} ${Number(r.value)} ${r.unit}`.slice(0, 120) };
+}

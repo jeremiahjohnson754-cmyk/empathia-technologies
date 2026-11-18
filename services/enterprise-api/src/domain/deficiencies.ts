@@ -11,6 +11,7 @@ import { step, ROOT_CAUSES, type Deficiency, type DeficiencyAction, type Deficie
 import type { RequestContext } from '../auth/context.js';
 import { findRoom } from './rooms.js';
 import { invalid, notFound } from '../http/errors.js';
+import { retestOnMeasurement } from './criteria.js';
 
 export const STEP_AUTHORITY: Record<DeficiencyAction['kind'], string[]> = {
   start: ['deficiency.open', 'issue.assign'], fixed: ['work.evidence', 'deviation.raise'],
@@ -73,6 +74,16 @@ export async function deficiencyStep(ctx: RequestContext, issueCode: string, bod
       if (!/^[0-9a-f-]{36}$/.test(a.requestedBy) || !(await q.query('SELECT 1 FROM app.person WHERE id = $1', [a.requestedBy])).rowCount) throw invalid('requestedBy is the person who asked for the exception');
     }
     if (a.kind === 'defer' && r.owner_role && r.owner_role === ctx.p.role) why.push('the role that owns the deficiency does not approve its deferral');
+    // 0037: a deficiency opened by a failed test that has a criterion is retested by measuring again. A PASS here is the test's own new
+    // result on a measurement recorded after the correction; the evidence of the retest is that measurement, whatever the request says.
+    if (a.kind === 'retest' && a.result === 'PASS') {
+      const key = (await q.query<{ key: string }>('SELECT key FROM app.room_issue WHERE id = $1', [r.id])).rows[0]!.key; const testId = /^test-failed:(.+)$/.exec(key)?.[1];
+      if (testId) {
+        const fixedAt = (await q.query<{ at: string }>(`SELECT to_json(at) #>> '{}' AS at FROM app.issue_event WHERE issue_id = $1 AND kind = 'workflow' AND detail->>'step' = 'fixed' ORDER BY id DESC LIMIT 1`, [r.id])).rows[0]?.at ?? null;
+        const m = await retestOnMeasurement(q, r.room_id, testId, fixedAt);
+        if (m) { why.push(...m.why); if (m.evidence) a.evidence = m.evidence; }
+      }
+    }
     const now = new Date().toISOString(); const res = step(toEngine(r), a, ctx.p.personId, now);
     if (!res.ok) why.push(...res.why);
     if (why.length) await ctx.refuse(`deficiency.${a.kind}`, target, why, { from: r.workflow });
@@ -101,6 +112,6 @@ export async function deficiencyOf(ctx: RequestContext, issueCode: string) {
     if (!r) throw notFound(`issue ${issueCode}`);
     await findRoom(ctx, q, r.room_id);
     const history = (await q.query<{ detail: Record<string, unknown>; at: string; actor_id: string | null }>(`SELECT detail, at, actor_id FROM app.issue_event WHERE issue_id = $1 AND kind = 'workflow' ORDER BY id`, [r.id])).rows;
-    return { ...view(r), history: history.map((h) => ({ ...h.detail, at: h.at, by: h.actor_id })) };
+    return { ...view(r), history: history.map((h) => ({ ...h.detail, at: h.at, by: h.actor_id })), rootCauses: ROOT_CAUSES };
   });
 }
