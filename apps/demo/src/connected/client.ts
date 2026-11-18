@@ -57,7 +57,7 @@ export class Connected {
   forget(): void { this.keep(null); }
   code(): string { const s = this.sandbox(); return s ? `${s.id}.${s.key}` : ''; }
 
-  private async send<T>(method: string, path: string, body?: unknown, headers: Record<string, string> = {}, raw?: string): Promise<Answer<T>> {
+  private async send<T>(method: string, path: string, body?: unknown, headers: Record<string, string> = {}, raw?: string | ArrayBuffer): Promise<Answer<T>> {
     const r = await this.d.fetch(this.d.base + path, { method, headers: { ...(body !== undefined ? { 'content-type': 'application/json' } : {}), ...headers }, ...(raw !== undefined ? { body: raw } : body !== undefined ? { body: JSON.stringify(body) } : {}), credentials: 'omit', cache: 'no-store' });
     return asAnswer<T>(r);
   }
@@ -113,8 +113,8 @@ export class Connected {
     return a.body.accessToken;
   }
   /** Call the API as one person of the sandbox. A refusal is returned, with the server's own words, never thrown. */
-  async call<T = unknown>(role: string, method: string, path: string, body?: unknown, note?: { text: string; fileName: string }): Promise<Answer<T>> {
-    const go = async () => this.send<T>(method, path, note ? undefined : body, { authorization: `Bearer ${await this.token(role)}`, ...(note ? { 'content-type': 'text/plain', 'x-file-name': note.fileName } : {}) }, note?.text);
+  async call<T = unknown>(role: string, method: string, path: string, body?: unknown, note?: { text?: string; data?: ArrayBuffer; mediaType?: string; fileName: string }): Promise<Answer<T>> {
+    const go = async () => this.send<T>(method, path, note ? undefined : body, { authorization: `Bearer ${await this.token(role)}`, ...(note ? { 'content-type': note.mediaType || 'text/plain', 'x-file-name': note.fileName } : {}) }, note ? note.data ?? note.text ?? '' : undefined);
     let a = await go();
     if (a.status === 401) { this.tokens.delete(role); a = await go(); if (a.status === 401) { this.forget(); throw new SandboxGone(a.detail); } }
     return a;

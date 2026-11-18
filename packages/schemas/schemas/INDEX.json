@@ -856,7 +856,7 @@
     {
       "file": "api/postV1RoomsRoomMeasurements.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomMeasurements/0.1.0.json",
-      "sha256": "fa5da614d2ea61ca0a3a4dbf0f7cd3a130bd776dc3ed84cf5fafd5a335cdf965"
+      "sha256": "cbbfd12a9bf29c1492152fc77b232829720782853631e915fadd124740ee7c03"
     },
     {
       "file": "api/postV1RoomsRoomMeasurementsImport.json",

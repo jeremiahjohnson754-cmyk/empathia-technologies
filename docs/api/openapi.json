@@ -15291,7 +15291,7 @@
         "tags": [
           "commissioning"
         ],
-        "summary": "Record a measurement (DESIGN_SPECIFIED / SIMULATED / INFERRED / OBSERVED / FIELD_MEASURED — never conflated; dBFS is never recorded as SPL). With testId it answers that test: it rests on an evidence file, and the database works out whether it meets the room’s criterion in force",
+        "summary": "Record a measurement (DESIGN_SPECIFIED / SIMULATED / INFERRED / OBSERVED / FIELD_MEASURED — never conflated; dBFS is never recorded as SPL). With testId it answers that test: it rests on an evidence file, and the database works out whether it meets the room’s criterion in force. A reverberation value (t30_mid, t20_mid) is worked out again by the server from that evidence: the server’s value is recorded, and a value sent that differs is refused",
         "operationId": "postV1RoomsRoomMeasurements",
         "x-authority": [
           "work.evidence",

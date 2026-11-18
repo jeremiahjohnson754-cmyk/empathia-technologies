@@ -10,6 +10,10 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "default": "./dist/src/index.js"
+    },
+    "./acoustics": {
+      "types": "./dist/src/acoustics.d.ts",
+      "default": "./dist/src/acoustics.js"
     }
   },
   "scripts": {

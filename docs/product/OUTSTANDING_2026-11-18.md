@@ -34,8 +34,8 @@ This replaces `OUTSTANDING_2026-11-17.md` as the current list. Everything named 
 
 ## The flagship room: what is true of it now
 
-Lecture Theatre SCI-110 (`#/flagship`, connected builds only). One browser suite, `demo-flagship` FL-01…30, walks the whole of
-it and checks every step against the server: 30 passed, 0 failed in light and in dark. Open the room; drag the camera; submit;
+Lecture Theatre SCI-110 (`#/flagship`, connected builds only). One browser suite, `demo-flagship` FL-01…31, walks the whole of
+it and checks every step against the server: 31 passed, 0 failed in light and in dark. Open the room; drag the camera; submit;
 refused to its recorder; approved by someone else; register; start commissioning; measure reverberation at the bench; PASS refused
 on a value over the limit; FAIL and its deficiency; work order; Search Party; assignment; preflight; field evidence; verification;
 closing; correction; a retest that is a new measurement; handover documents; the remaining checks; verification; the acceptance
@@ -46,7 +46,8 @@ What is thin or simulated there, each stated on the page or in ADR-0014:
 
 - No room is measured. The bench analyses synthetic reference signals (or a response file loaded in the browser); the measurement
   is recorded as SIMULATED; outside a sandbox the server refuses a SIMULATED value as a pass.
-- The server records the value the bench sends with its evidence file. It does not recompute the value from the file.
+- Reverberation: the server works the value out again from the evidence and records its own figure (ADR-0016, CR-13, FL-31). It
+  checks arithmetic and provenance, not that a file was recorded in the room. The other four measured tests are still recorded as sent.
 - A note stands in for each handover document; the 71 other checks are recorded on one synthetic observation note.
 - The room's design is nine device positions for 180 seats (the auditorium template).
 - The sandbox has one technician: Search Party's answer is one person who passes; nobody is shown failing a gate.

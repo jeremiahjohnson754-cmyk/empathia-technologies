@@ -49,6 +49,7 @@ told the server the outcome, which is the browser being trusted with the verdict
 - **The server does not recompute the value from the evidence file.** It records the value the recorder sends, with the file. The
   control is the one commissioning already has: someone else verifies the result. Recomputing on the server needs the analysis code
   in a package both sides use; it is not done.
+  *(18 Nov 2026: done for reverberation, ADR-0016. The other four metrics are still recorded as sent.)*
 - **Pass with Exception** (V3.9) is not modelled: a value that misses its limit is FAIL or nothing.
 - **Uncertainty is recorded and not used.** A value within the limit by less than its uncertainty is judged within.
 - Five tests have metrics defined (`criteria.ts`): reverberation, intelligibility, noise floor, coverage, limiter level. Others

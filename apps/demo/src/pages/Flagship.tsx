@@ -40,7 +40,9 @@ interface BaselineAnswer { current: Baseline | null }
 interface CriteriaAnswer { sandbox: boolean; tests: Array<BenchTest & { personas: string[] }>; versions: Array<{ test: string; version: number; inForce: boolean }>; may: { set: boolean } }
 /** A measurement as the server lists it (the ADR-0004 record with its test, evidence and the database's judgement). */
 interface Measured { id: string; metric: string; value: string | number; unit: string; provenance: string; calibration_status: string; instrument_id: string | null; location: string; test_id: string | null; evidence_id: string | null; within: boolean | null; criterion_version: number | null;
-  criterion_lower: string | null; criterion_upper: string | null; recorded_by_name: string; recorded_role: string; created_at: string; cited_by_result: string | null }
+  criterion_lower: string | null; criterion_upper: string | null; recorded_by_name: string; recorded_role: string; created_at: string; cited_by_result: string | null;
+  /** 0040: how the server arrived at the value, when it worked it out itself from the evidence */
+  validation: { sent: number; recomputed: number; synthetic: boolean; positions: unknown[] } | null }
 interface RegisterAnswer { items: Array<{ asset: string | null; position: string; missing: string[] }> }
 interface Connection { id: string; from: string; to: string; kind: string; why: string }
 interface Row { test_id: string; label: string; pack: string; domain: string; phase: number; tier: number; applicable: boolean; why: string[]; personas: string[]; evidence: string[]; instrument: boolean; devices: string[]; result: string }
@@ -188,8 +190,13 @@ export function FlagshipPage() {
   const startCommissioning = () => act('Asking the server to start commissioning…', async () => {
     const a = await c.call(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/lifecycle`, { to: 'COMMISSIONING' }); if (!a.ok) return refused(a, 'the start of commissioning');
     return { ok: true, title: 'The room is in commissioning.', text: 'Results and measurements can be recorded now, each by the role responsible for the test.' }; });
-  const recordMeasurement = (o: BenchOutput) => act('Uploading the analysis package and recording the measurement…', async () => {
-    const ev = await c.call<{ id: string }>(who, 'POST', '/v1/evidence', undefined, { text: o.packageText, fileName: `sci-110-reverberation-analysis-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.json` }); if (!ev.ok) return refused(ev, 'the evidence file');
+  const recordMeasurement = (o: BenchOutput) => act('Uploading the evidence and asking the server to work the value out and record it…', async () => {
+    // each response file goes up first, so that the server can read it; the package then names it by the id the server gave it
+    const ids = new Map<number, string>();
+    for (const f of o.files) { const up = await c.call<{ id: string }>(who, 'POST', '/v1/evidence', undefined, { data: f.data, mediaType: f.mediaType, fileName: f.name });
+      if (!up.ok) return refused(up, `the response file ${f.name}, which the server has to read to work the value out itself. Nothing was recorded`); ids.set(f.position, up.body.id); }
+    const pkg = { ...o.pkg, positions: o.pkg.positions.map((p) => (ids.has(p.position) ? { ...p, response: { ...p.response, evidenceId: ids.get(p.position) } } : p)) };
+    const ev = await c.call<{ id: string }>(who, 'POST', '/v1/evidence', undefined, { text: JSON.stringify(pkg, null, 1), fileName: `sci-110-reverberation-analysis-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.json` }); if (!ev.ok) return refused(ev, 'the evidence file');
     const a = await c.call<{ id: string; within: boolean | null; says: string }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/measurements`, { testId: 'reverberation_rt60', metric: 't30_mid', unit: 's', value: o.value, method: o.method, measuredAt: new Date().toISOString(), location: o.location, source: o.source, provenance: o.provenance,
       ...(o.instrumentId ? { instrumentId: o.instrumentId } : {}), ...(o.calibrationStatus ? { calibrationStatus: o.calibrationStatus } : {}), ...(o.calibrationDue ? { calibrationDue: o.calibrationDue } : {}), evidenceId: ev.body.id, detail: o.detail });
     if (!a.ok) return refused(a, 'the measurement');
@@ -351,14 +358,14 @@ export function FlagshipPage() {
 
         <Card icon="chart" title="Measurements on the server" sub={`${data.measured.length} recorded for this room’s tests`} testId="fl-measured-card">
           {data.measured.length ? <ol className="fl__list fl__measured" data-testid="fl-measured">{data.measured.map((m, i) => <li key={m.id} data-measurement={m.id} data-within={m.within === null ? 'none' : m.within ? 'yes' : 'no'} data-cited={m.cited_by_result || ''}>
-            <span><b>{Number(m.value)} {m.unit}</b> <span className="ui-muted">{m.metric} · {m.test_id}</span></span>
+            <span><b>{Number(m.value)} {m.unit}</b> <span className="ui-muted">{m.metric} · {m.test_id}</span>{m.validation ? <span className="ui-muted" data-testid="fl-recomputed" data-recomputed={m.validation.recomputed} data-sent={m.validation.sent}> · worked out by the server from the evidence ({m.validation.positions.length} responses{m.validation.synthetic ? ', synthetic reference signals' : ''}); {m.validation.sent} {m.unit} was sent</span> : null}</span>
             <span>{m.within === null ? <Tag tone="muted">no criterion: no verdict</Tag> : m.within ? <Tag tone="ok">meets the criterion</Tag> : <Tag tone="bad">does not meet the criterion</Tag>} {limitOf(m) ? <span className="ui-muted">{limitOf(m)}</span> : null}</span>
             <span><Tag tone={m.provenance === 'FIELD_MEASURED' && m.calibration_status === 'CALIBRATED' ? 'ok' : 'warn'}>{m.provenance === 'FIELD_MEASURED' ? `field measured, ${m.calibration_status === 'CALIBRATED' ? 'calibrated' : 'not calibrated'}` : words(m.provenance)}</Tag> <span className="ui-muted">{m.location} · {m.recorded_by_name}, {when(m.created_at)}</span></span>
             <span className="build__row">{m.cited_by_result ? <Tag tone={tone(m.cited_by_result)}>a result rests on it: {words(m.cited_by_result)}</Tag> : i === 0 ? <>
               <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-result-pass" disabled={!!busy} onClick={() => void recordResult(m, 'PASS')}>Record PASS on it</button>
               <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-result-fail" disabled={!!busy} onClick={() => void recordResult(m, 'FAIL')}>Record FAIL on it</button></> : <span className="ui-muted">superseded by a later measurement</span>}</span></li>)}</ol>
             : <p data-testid="fl-measured-none">Nothing has been measured yet. A measurement recorded at the bench appears here with the verdict the database gave it.</p>}
-          <p className="ui-meta">Whether a value meets the criterion is worked out by the database when the measurement is recorded. A result is recorded on a measurement, and the server refuses PASS on one that does not meet the criterion.</p>
+          <p className="ui-meta">A reverberation value is worked out again by the server from its evidence before it is recorded; the figure here is the server’s. Whether it meets the criterion is worked out by the database when the measurement is recorded. A result is recorded on a measurement, and the server refuses PASS on one that does not meet the criterion.</p>
         </Card>
 
         <Card icon="alert" title="Deficiencies" sub={issues.length ? `${issues.filter((i) => i.state === 'OPEN').length} open of ${issues.length}` : 'None'} testId="fl-issues-card">

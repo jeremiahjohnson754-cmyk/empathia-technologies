@@ -25,7 +25,7 @@ async function currentPlanRow(q: Queryable, roomId: string, testId: string): Pro
 }
 
 // ------------------------------------------------------------------------------------------------ evidence
-const EVIDENCE_TYPES = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv', 'application/json', 'text/plain'];
+const EVIDENCE_TYPES = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv', 'application/json', 'text/plain', 'audio/wav'];   // audio/wav (0040): an impulse response the server reads to work a reverberation value out itself
 export const EVIDENCE_AUTHORITIES = ['work.evidence', 'field.scan', 'test.verify', 'tests.verify.all', 'test.verify.audio', 'test.verify.video', 'test.verify.control'];
 
 /** The declared type must match the bytes (KV-17: content-type sniffing). Binary types by their signature; text types must be valid
@@ -36,6 +36,7 @@ export function contentMismatch(mt: string, data: Buffer): string | null {
   if (mt === 'image/png') return starts([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]) ? null : 'no PNG signature';
   if (mt === 'image/jpeg') return starts([0xff, 0xd8, 0xff]) ? null : 'no JPEG signature';
   if (mt === 'application/pdf') return data.subarray(0, 5).toString('latin1') === '%PDF-' ? null : 'no PDF header';
+  if (mt === 'audio/wav') return data.subarray(0, 4).toString('latin1') === 'RIFF' && data.subarray(8, 12).toString('latin1') === 'WAVE' ? null : 'no RIFF/WAVE header';
   let text: string;
   try { text = new TextDecoder('utf-8', { fatal: true }).decode(data); } catch { return 'not valid UTF-8 text'; }
   if (text.includes('\u0000')) return 'contains NUL bytes (binary content)';
@@ -45,7 +46,7 @@ export function contentMismatch(mt: string, data: Buffer): string | null {
 
 export async function uploadEvidence(ctx: RequestContext, store: ObjectStore, data: Buffer, mediaType: string, fileName: string) {
   await ctx.require(EVIDENCE_AUTHORITIES, 'upload evidence');
-  const mt = mediaType.split(';')[0]!.trim().toLowerCase();
+  let mt = mediaType.split(';')[0]!.trim().toLowerCase(); if (mt === 'audio/x-wav' || mt === 'audio/wave') mt = 'audio/wav';
   if (!EVIDENCE_TYPES.includes(mt)) throw new ApiError('unsupported_media_type', `evidence must be one of ${EVIDENCE_TYPES.join(', ')}`);
   if (!data.length) throw invalid('the evidence file is empty');
   const mismatch = contentMismatch(mt, data);

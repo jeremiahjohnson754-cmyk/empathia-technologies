@@ -40,10 +40,13 @@
 //   FL-29  verification by someone else; the acceptance lent, not self-granted; accepted by the operations lead; baseline 1
 //   FL-30  the baseline: the design untouched, the as-built place, the measured value and its limit; closed field record; refresh,
 //          a second person's browser, phone width
+//   FL-31  the server works the value out itself: the measurement carries the figure the server recomputed from the package; a loaded
+//          response file is analysed on the page, and the sandbox's server refuses to store it, so nothing is recorded from it
 //   node tests/browser/demo-flagship.test.mjs
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
 import { setup, client } from '../integration/harness.mjs';
+import { syntheticIR, writeWav16 } from '@empathia/commissioning-engine/acoustics';
 
 const API_PORT = 4151; const API = `http://127.0.0.1:${API_PORT}`;
 const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'demo-flagship-'));
@@ -159,7 +162,9 @@ const near = (a, b, tol = 0.011) => Math.abs(a - b) <= tol; const grid = (v) => 
 // the browser logs every 4xx answer as a console error; the refusals this test asks for on purpose (FL-14, FL-16, FL-20, FL-22, FL-23)
 // are 403s (not this person's to do) and 422s (refused by a rule) and are asserted where they happen, so they are not counted as
 // page errors here. Anything else is.
-const pageErrs = () => t.errs.filter((e) => !/status of 4(03|22)/.test(e));
+// 415: FL-31 has the server refuse a response file (a sandbox stores short text notes only); the browser logs the refused request
+// as it does a 403 or a 422, and the page shows the refusal, which is what the check reads.
+const pageErrs = () => t.errs.filter((e) => !/status of 4(03|15|22)/.test(e));
 let draft = null;
 
 { await actAs(p, 'installer'); await mark(p).click(); await p.getByTestId('fl-move').click(); await p.getByTestId('fl-move-panel').waitFor();
@@ -275,7 +280,19 @@ let failedOn = null;
     notResponsible.ok === 'no' && /403/.test(notResponsible.text) && none === 0 && r.ok === 'yes' && /does not meet the criterion \(at most 1 s, version 1\)/.test(r.text) && ms.length === 1 && Number(m.value) === first && m.within === false && m.provenance === 'SIMULATED' && m.criterion_version === 1
       && pkg && pkg.synthetic === true && pkg.value === first && pkg.positions.length === 4 && pkg.positions.every((x) => x.response.synthetic === true && x.bands.length >= 4) && /No room was measured/.test(pkg.statement)
       && (await li.getAttribute('data-within')) === 'no' && (await li.getAttribute('data-measurement')) === m.id && /does not meet/.test(await li.innerText()) && /simulated/.test(await li.innerText()),
-    `installer: ${notResponsible.text.slice(0, 80)} · ${r.text.slice(0, 110)} · server ${m ? `${Number(m.value)} s within ${m.within} ${m.provenance} v${m.criterion_version}` : 'nothing'} · package ${pkg ? `${pkg.positions.length} positions, synthetic ${pkg.synthetic}` : 'unreadable'}`); }
+    `installer: ${notResponsible.text.slice(0, 80)} · ${r.text.slice(0, 110)} · server ${m ? `${Number(m.value)} s within ${m.within} ${m.provenance} v${m.criterion_version}` : 'nothing'} · package ${pkg ? `${pkg.positions.length} positions, synthetic ${pkg.synthetic}` : 'unreadable'}`);
+
+  // FL-31: the figure on the record is the server's own, and a file the server cannot read records nothing
+  const v = m?.validation; const shown = p.getByTestId('fl-recomputed').first(); const shownText = (await shown.innerText()).replace(/\s+/g, ' ');
+  const wav = Buffer.from(writeWav16(syntheticIR(0.6, { rate: 16000, seed: 5 }).samples, 16000));
+  await p.getByTestId('fl-bench-file-1').setInputFiles({ name: 'position-1-synthetic.wav', mimeType: 'audio/wav', buffer: wav }); await p.getByTestId('fl-bench-analyse').click(); await p.getByTestId('fl-bench-value').waitFor();
+  const withFile = await benchValue(p); const note = await p.getByTestId('fl-bench-files-note').count(); await p.getByTestId('fl-bench-record').click(); const fileSaid = await saidOk(p); const after = (await measuredOnServer()).length;
+  await p.getByTestId('fl-bench-typical').click(); const noteGone = await p.getByTestId('fl-bench-files-note').count();
+  ok('FL-31', 'the measurement carries the figure the server worked out again from the package (the same as the bench’s, and said so on the page); a loaded response file is analysed on the page and changes the figure, the page says a sandbox will not store it, the server refuses it and nothing is recorded',
+    !!v && v.recomputed === first && v.sent === first && v.synthetic === true && v.positions.length === 4 && /recomputed by the server/.test(v.method) && /The server worked this out again from the evidence \(4 responses, synthetic reference signals\)/.test(r.text)
+      && Number(await shown.getAttribute('data-recomputed')) === first && /worked out by the server from the evidence \(4 responses, synthetic reference signals\)/.test(shownText)
+      && withFile < first && note === 1 && fileSaid.ok === 'no' && /short text notes only/.test(fileSaid.text) && /Nothing was recorded/.test(fileSaid.text) && after === 1 && noteGone === 0,
+    `server: sent ${v?.sent} s, recomputed ${v?.recomputed} s over ${v?.positions?.length} responses · page: “${shownText.slice(0, 90)}” · with a 0.6 s file at position 1 the bench shows ${withFile} s · ${fileSaid.text.slice(0, 150)} · ${after} on the server`); }
 
 { await p.getByTestId('fl-result-pass').click(); const pass = await saidOk(p); const rowsBefore = (await srv('cxeng', '')).commissioning.rows.find((x) => x.test_id === RT).result;
   await p.getByTestId('fl-result-fail').click(); const fail = await saidOk(p); const room = await srv('cxeng', ''); const row = room.commissioning.rows.find((x) => x.test_id === RT);

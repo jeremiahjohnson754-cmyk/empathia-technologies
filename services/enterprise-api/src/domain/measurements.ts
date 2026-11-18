@@ -10,6 +10,10 @@
  * 0037: a measurement may name the test it answers. Then it rests on an evidence file, is recorded by the test's responsible role on a
  * room in COMMISSIONING, uses the metric and unit the test is measured in (criteria.ts), and the database works out whether it meets
  * the room's criterion in force. A measurement that names no test is as before.
+ *
+ * 0040: where the server can work the value out from the evidence (recompute.ts: the reverberation metrics) it does, before it records
+ * anything. Its own value is the one recorded and judged, with how it was arrived at; a value sent that differs is refused, and so is
+ * a package of synthetic signals offered as a field measurement.
  */
 import type { RequestContext } from '../auth/context.js';
 import { ApiError, invalid, notFound } from '../http/errors.js';
@@ -17,6 +21,7 @@ import { findRoom } from './rooms.js';
 import { evidenceContent } from './commissioning.js';
 import type { ObjectStore } from '../storage/objectStore.js';
 import { forTest, limitWords } from './criteria.js';
+import { RECOMPUTED, TOLERANCE, recomputeReverberation } from './recompute.js';
 
 export const PROVENANCE = ['DESIGN_SPECIFIED', 'SIMULATED', 'INFERRED', 'OBSERVED', 'FIELD_MEASURED'] as const;
 export const RECORD_AUTHORITIES = ['work.evidence', 'field.scan', 'test.verify', 'tests.verify.all', 'fi.plan', 'fi.monitor', 'fipv.operate', 'lite.edit'];
@@ -25,12 +30,28 @@ const SPL_UNITS = /^db ?\(?[acz]?\)?$|^db ?spl$/i;
 
 export interface MeasurementInput { metric: string; value: number; unit: string; method: string; instrumentId?: string; calibrationStatus?: string; calibrationDue?: string; measuredAt: string; location: string; source: string; provenance: string; uncertainty?: number; uncertaintyUnit?: string; testResultId?: string; testId?: string; evidenceId?: string; detail?: Record<string, unknown> }
 
-export async function record(ctx: RequestContext, ref: string, m: MeasurementInput) {
+export async function record(ctx: RequestContext, ref: string, m: MeasurementInput, store?: ObjectStore) {
   await ctx.require(RECORD_AUTHORITIES, 'record a measurement', { type: 'Room', id: ref });
   if (!PROVENANCE.includes(m.provenance as never)) throw invalid(`provenance is one of ${PROVENANCE.join(', ')}`);
   if (Number.isNaN(Date.parse(m.measuredAt))) throw invalid('measuredAt must be a date-time');
   if (m.provenance === 'FIELD_MEASURED' && !m.instrumentId) throw invalid('a field measurement names its instrument');
   if (/dbfs/i.test(m.method) || /dbfs/i.test(m.source) || /dbfs/i.test(m.unit)) { if (SPL_UNITS.test(m.unit.replace(/\s/g, '')) || /spl|laeq|lcpeak/i.test(m.metric)) throw new ApiError('rule_refused', 'a dBFS level from a digital file is not a sound pressure level: record it in dBFS, or measure with a calibrated meter'); }
+  // 0040: the server works the value out itself from the evidence, where it can. The checks that need no arithmetic come first (who
+  // may record, on what room, in which metric), so that nobody learns about a file from a refusal they had no standing to get.
+  let validation: Record<string, unknown> | null = null;
+  if (m.testId && RECOMPUTED[m.metric]) {
+    if (!store) throw new ApiError('internal', 'the evidence store is not available to the measurement recorder');
+    await ctx.tx(async (q) => { const room = await findRoom(ctx, q, ref);
+      const t = await forTest(ctx, q, room, { testId: m.testId!, metric: m.metric, unit: m.unit, value: Number(m.value), evidenceId: m.evidenceId });
+      if (t.forbidden) { await ctx.audit(null, 'measurement.record', 'DENIED', { type: 'Room', id: room.code }, { testId: m.testId, why: [t.forbidden] }); throw new ApiError('forbidden', t.forbidden); }
+      if (t.why.length) await ctx.refuse('measurement.record', { type: 'Room', id: room.code }, t.why, { testId: m.testId }); });
+    const rc = await recomputeReverberation(ctx, store, m.evidenceId!, m.metric); const sent = Number(m.value); const why = [...rc.why];
+    if (rc.value !== null && Math.abs(rc.value - sent) > TOLERANCE) why.push(`the value sent (${sent} ${m.unit}) is not what the evidence gives: worked out again from the ${rc.positions.length} responses in the package, ${RECOMPUTED[m.metric]} at 500 Hz and 1 kHz is ${rc.value} ${m.unit}`);
+    if (rc.synthetic && m.provenance !== 'SIMULATED') why.push(`the package contains synthetic reference responses: a value worked out from them is SIMULATED, not ${m.provenance}`);
+    if (why.length) await ctx.refuse('measurement.record', { type: 'Room', id: ref }, why, { testId: m.testId, evidenceId: m.evidenceId, sent, recomputed: rc.value });
+    validation = { method: 'recomputed by the server from the evidence', engine: '@empathia/commissioning-engine/acoustics', fit: RECOMPUTED[m.metric], bands: ['500 Hz', '1 kHz'], sent, recomputed: rc.value, tolerance: TOLERANCE, synthetic: rc.synthetic, positions: rc.positions };
+    m = { ...m, value: rc.value! };   // the server's value is the one recorded and judged
+  }
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref); let criterion: Awaited<ReturnType<typeof forTest>>['criterion'] = null;
     const detail = m.detail && typeof m.detail === 'object' && !Array.isArray(m.detail) ? m.detail : null;
@@ -42,25 +63,28 @@ export async function record(ctx: RequestContext, ref: string, m: MeasurementInp
       if (t.why.length) await ctx.refuse('measurement.record', { type: 'Room', id: room.code }, t.why, { testId: m.testId });
       criterion = t.criterion;
     }
-    const r = await q.query<{ id: string; within: boolean | null }>(`INSERT INTO app.measurement (tenant_id, room_id, test_result_id, metric, value, unit, method, instrument_id, calibration_status, calibration_due, measured_at, location, source, provenance, uncertainty, uncertainty_unit, recorded_by, recorded_role, test_id, evidence_id, detail)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21) RETURNING id, within`,
+    const r = await q.query<{ id: string; within: boolean | null }>(`INSERT INTO app.measurement (tenant_id, room_id, test_result_id, metric, value, unit, method, instrument_id, calibration_status, calibration_due, measured_at, location, source, provenance, uncertainty, uncertainty_unit, recorded_by, recorded_role, test_id, evidence_id, detail, validation)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22) RETURNING id, within`,
       [ctx.p.tenantId, room.id, m.testResultId || null, m.metric, m.value, m.unit, m.method, m.instrumentId || null, m.calibrationStatus || (m.provenance === 'FIELD_MEASURED' ? 'UNKNOWN' : 'NOT_APPLICABLE'), m.calibrationDue || null, m.measuredAt, m.location, m.source, m.provenance, m.uncertainty ?? null, m.uncertaintyUnit || null, ctx.p.personId, ctx.p.role,
-        m.testId || null, m.evidenceId || null, detail ? JSON.stringify(detail) : null]);
+        m.testId || null, m.evidenceId || null, detail ? JSON.stringify(detail) : null, validation ? JSON.stringify(validation) : null]);
     const within = r.rows[0]!.within;
     await ctx.audit(q, 'measurement.record', 'ALLOWED', { type: 'Measurement', id: r.rows[0]!.id }, { room: room.code, metric: m.metric, provenance: m.provenance, ...(m.testId ? { testId: m.testId, value: Number(m.value), within, criterionVersion: criterion?.version ?? null } : {}) });
     if (!m.testId) return { id: r.rows[0]!.id, provenance: m.provenance, approvalState: 'UNREVIEWED' };
     const words = criterion ? limitWords(criterion) : null;
+    const v = validation as { sent: number; recomputed: number; positions: unknown[]; synthetic: boolean } | null;
+    const worked = v ? `The server worked this out again from the evidence (${v.positions.length} responses${v.synthetic ? ', synthetic reference signals' : ''}): ${v.recomputed} ${m.unit}; ${v.sent} ${m.unit} was sent. ` : '';
     return { id: r.rows[0]!.id, provenance: m.provenance, approvalState: 'UNREVIEWED', test: m.testId, metric: m.metric, value: Number(m.value), unit: m.unit, within,
+      validation: v ? { recomputed: v.recomputed, sent: v.sent, positions: v.positions.length, synthetic: v.synthetic } : null,
       criterion: criterion ? { version: criterion.version, lower: criterion.lower, upper: criterion.upper, source: criterion.source, words } : null,
-      says: !criterion ? `${Number(m.value)} ${m.unit} recorded. This room has no criterion for ${m.testId}, so there is no verdict on it.`
+      says: worked + (!criterion ? `${Number(m.value)} ${m.unit} recorded. This room has no criterion for ${m.testId}, so there is no verdict on it.`
         : within ? `${Number(m.value)} ${m.unit} meets the criterion (${words}, version ${criterion.version}).`
-        : `${Number(m.value)} ${m.unit} does not meet the criterion (${words}, version ${criterion.version}). The result can be recorded as FAIL, not as PASS.` };
+        : `${Number(m.value)} ${m.unit} does not meet the criterion (${words}, version ${criterion.version}). The result can be recorded as FAIL, not as PASS.`) };
   });
 }
 
 export async function list(ctx: RequestContext, ref: string) {
   return ctx.tx(async (q) => { const room = await findRoom(ctx, q, ref); return { room: room.code, items: (await q.query(`SELECT m.id, m.metric, m.value, m.unit, m.method, m.instrument_id, m.import_id, m.import_row, m.calibration_status, m.calibration_due, m.measured_at, m.location, m.source, m.provenance, m.uncertainty, m.uncertainty_unit, m.approval_state, m.approved_by, m.approved_at, m.approval_note, m.recorded_by, m.recorded_role, m.test_result_id,
-      m.test_id, m.evidence_id, m.detail, m.within, k.version AS criterion_version, k.lower AS criterion_lower, k.upper AS criterion_upper, p.display_name AS recorded_by_name, m.created_at,
+      m.test_id, m.evidence_id, m.detail, m.validation, m.within, k.version AS criterion_version, k.lower AS criterion_lower, k.upper AS criterion_upper, p.display_name AS recorded_by_name, m.created_at,
       (SELECT t.state FROM app.test_result t WHERE t.measurement_id = m.id ORDER BY t.recorded_at DESC LIMIT 1) AS cited_by_result
       FROM app.measurement m JOIN app.person p ON p.id = m.recorded_by LEFT JOIN app.acceptance_criterion k ON k.id = m.criterion_id WHERE m.room_id = $1 ORDER BY m.measured_at DESC, m.created_at DESC`, [room.id])).rows }; });
 }

@@ -22,20 +22,53 @@
 //   CR-10  a room with no criterion for a test is as before: its result needs no measurement, and a measurement of it has no verdict
 //   CR-12  accepted, the baseline keeps what the room was accepted on: the measured values with the limit and version each was judged
 //          against, beside the design revision and where each device was; it is immutable; and the criterion can no longer be changed
+//   CR-13  the server works a reverberation value out again from the evidence (0040): evidence that is not an analysis package, a
+//          package the value sent does not follow from, synthetic signals offered as a field measurement, a response that was never
+//          uploaded, another organization's file and a single position are each refused and nothing is recorded; a value that
+//          follows is recorded as the SERVER's figure with how it was arrived at; a row written to the table without that passes
+//          nothing; a WAV that is not one is not stored
 //   CR-11  the retest of a deficiency opened by a failed measured test is the test's own new result: PASS on a measurement recorded
 //          after the correction. A sentence is not a retest; a measurement taken before the correction is not one; a FAIL is not one
 import test, { before, after } from 'node:test'; import assert from 'node:assert/strict';
 import { setup, client, registerRoom } from '../integration/harness.mjs';
+import { analyseBands, meanOverPositions, syntheticIR, readCsv, readWav, writeWav16 } from '@empathia/commissioning-engine/acoustics';
 
 let h, c; const T = {}; const J = (x) => JSON.stringify(x); const HALL = '/v1/rooms/UNI-SCI-110'; const RT = 'reverberation_rt60';
 const call = (token, method, p, o = {}) => c.call(method, p, { token, ...o });
 const evidence = async (token, text) => { const r = await call(token, 'POST', '/v1/evidence', { raw: `synthetic: ${text}`, headers: { 'content-type': 'text/plain', 'x-file-name': `${text.replace(/[^a-z0-9]+/gi, '-')}.txt` } }); assert.equal(r.status, 201, J(r.body)); return r.body.id; };
 const reading = (o = {}) => ({ testId: RT, metric: 't30_mid', unit: 's', value: 1.42, method: 'ISO 3382-2 integrated impulse response, T30', measuredAt: new Date().toISOString(), location: 'four receiver positions', source: 'synthetic reference responses (no room was measured)', provenance: 'SIMULATED', ...o });
-const measure = async (token, base, o = {}) => call(token, 'POST', `${base}/measurements`, { body: reading({ evidenceId: o.evidenceId || await evidence(token, `impulse responses ${Math.random().toString(36).slice(2, 8)}`), ...o }) });
+// 0040: a reverberation value is worked out again by the server from its evidence, so these tests send what the bench sends: an
+// analysis package, and the value the shared analysis gives for it. `pack` finds four reference decays whose T30 (500 Hz and 1 kHz,
+// mean over the positions) is exactly the value a test asks for, so the tests keep their round numbers. A value that is not
+// SIMULATED cannot rest on synthetic signals, so for those the same responses are written as files and uploaded (kind 'csv', the
+// one file type a sandbox stores, or 'wav').
+const csvOf = (ir) => { const out = new Array(ir.samples.length); for (let i = 0; i < out.length; i++) out[i] = `${(i / ir.rate).toFixed(6)},${ir.samples[i].toExponential(3)}`; return out.join('\n'); };
+const mid = (irs) => { const m = meanOverPositions(irs.map((ir) => analyseBands(ir))); const a = m.find((x) => x.band === '500 Hz').t30.mean; const b = m.find((x) => x.band === '1 kHz').t30.mean; return Math.round(((a + b) / 2) * 100) / 100; };
+const packs = new Map();
+const pack = (target, kind = 'synthetic') => { const key = `${target}:${kind}`; if (packs.has(key)) return packs.get(key); const rate = kind === 'synthetic' ? 16000 : 8000;
+  const gen = (x, k) => syntheticIR(x, { rate, seed: 20 + k * 13, floorDb: -80 }); const file = (ir) => (kind === 'csv' ? csvOf(ir) : Buffer.from(writeWav16(ir.samples, rate)));
+  const back = (f) => (kind === 'csv' ? readCsv(f) : readWav(f.buffer.slice(f.byteOffset, f.byteOffset + f.byteLength)));
+  let d = target; for (let i = 0; i < 40; i++) { const decays = [0, 1, 2, 3].map((k) => Math.round(d * (1 + 0.02 * (k - 1.5)) * 1000) / 1000);
+    const files = kind === 'synthetic' ? null : decays.map((x, k) => file(gen(x, k))); const got = mid(files ? files.map(back) : decays.map(gen));
+    if (got === target) { const out = { decays, files, rate }; packs.set(key, out); return out; }
+    d = Math.round((d + (target - got) * 0.7) * 1000) / 1000; }
+  throw new Error(`no reference decays give ${target} s`); };
+const packageFor = async (token, target, kind = 'synthetic', edit = (x) => x) => { const p = pack(target, kind); const positions = [];
+  for (let k = 0; k < 4; k++) { if (!p.files) { positions.push({ position: k + 1, response: { synthetic: true, decaySeconds: p.decays[k], seed: 20 + k * 13, rate: p.rate, floorDb: -80 } }); continue; }
+    const up = await call(token, 'POST', '/v1/evidence', { raw: p.files[k], headers: { 'content-type': kind === 'csv' ? 'text/csv' : 'audio/wav', 'x-file-name': `position-${k + 1}.${kind}` } }); assert.equal(up.status, 201, J(up.body));
+    positions.push({ position: k + 1, response: { file: `position-${k + 1}.${kind}`, evidenceId: up.body.id } }); }
+  const body = edit({ kind: 'reverberation analysis package', test: RT, metric: 't30_mid', unit: 's', value: target, synthetic: !p.files, positions });
+  const r = await call(token, 'POST', '/v1/evidence', { raw: JSON.stringify(body), headers: { 'content-type': 'text/plain', 'x-file-name': 'analysis-package.json' } }); assert.equal(r.status, 201, J(r.body)); return r.body.id; };
+const measure = async (token, base, o = {}) => { const r = reading(o); let evidenceId = o.evidenceId;
+  if (!evidenceId) evidenceId = r.testId === RT ? await packageFor(token, r.value, r.provenance !== 'SIMULATED' ? 'csv' : 'synthetic') : await evidence(token, `readings ${Math.random().toString(36).slice(2, 8)}`);
+  return call(token, 'POST', `${base}/measurements`, { body: { ...r, evidenceId } }); };
 const result = (token, base, state, measurementId, evidenceId, testId = RT) => call(token, 'POST', `${base}/results`, { body: { testId, state, evidenceId, evidenceKind: 'INSTRUMENT_MEASURED', instrument: 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09', ...(measurementId ? { measurementId } : {}) } });
 
 before(async () => {
-  h = await setup({ db: 'empathia_criteria', port: 4153, env: { DEMO_SESSIONS: 'on' } }); c = client(h.base); h.asSuper('UPDATE app.demo_config SET enabled = true');
+  // DEMO_MAX_UPLOAD_BYTES: a sandbox takes 16 kB an upload, and an impulse response is larger. CR-08 and CR-13 need a field value in
+  // the sandbox's room, which now rests on response files the server reads (0040), so this suite's server takes 400 kB. The cap
+  // itself is tested where it belongs (demo-sandbox suite), at its default.
+  h = await setup({ db: 'empathia_criteria', port: 4153, env: { DEMO_SESSIONS: 'on', DEMO_MAX_UPLOAD_BYTES: String(400 * 1024) } }); c = client(h.base); h.asSuper('UPDATE app.demo_config SET enabled = true');
   const o = await c.call('POST', '/v1/demo/sandboxes', { body: {} }); assert.equal(o.status, 201, J(o.body)); const sb = o.body.sandbox; T.scenario = o.body.scenario?.room || sb.room;
   T.people = o.body.personas;
   for (const role of ['designer', 'syseng', 'installer', 'cxeng', 'exec', 'qa_reviewer', 'opslead']) T[role] = (await c.call('POST', '/v1/demo/sessions', { body: { sandboxId: sb.id, key: sb.key, role } })).body.accessToken;
@@ -155,6 +188,7 @@ test('CR-09 outside a sandbox a SIMULATED value passes nothing, through the API 
   assert.throws(() => h.asSuper(`INSERT INTO app.test_result (tenant_id, room_id, test_id, state, evidence_id, evidence_kind, instrument, recorded_by, recorded_role)
     SELECT m.tenant_id, m.room_id, m.test_id, 'PASS', '${ev}', 'INSTRUMENT_MEASURED', 'x', m.recorded_by, 'cxeng' FROM app.measurement m WHERE m.id = '${sim.body.id}'`), /its result cites a measurement/);
   assert.equal((await result(t.cxeng, R, 'FAIL', sim.body.id, ev)).status, 201, 'a simulated value may still be the reason something is recorded as not passed');
+  T.R = R; T.t = t;
 });
 
 test('CR-10 a room with no criterion for a test is as before: no measurement needed, and no verdict on one', async () => {
@@ -199,4 +233,36 @@ test('CR-12 the accepted baseline keeps the measured values and the limits they 
   assert.throws(() => h.asSuper(`UPDATE app.assurance_baseline SET measurements = '[]'::jsonb WHERE id = '${b.id}'`), /EM005/);
   // a later result does not reach back into the baseline
   const late = await call(T.syseng, 'PUT', `${HALL}/criteria/${RT}`, { body: { metric: 't30_mid', upper: 2, source: 'after the fact' } }); assert.equal(late.status, 422, J(late.body)); assert.match(J(late.body), /fixed when it was accepted/);
+});
+
+test('CR-13 a reverberation value is worked out again by the server from its evidence; what does not follow from the evidence is refused', async () => {
+  const t = T.t; const R = T.R; const count = () => Number(h.asSuper(`SELECT count(*) FROM app.measurement m JOIN app.room r ON r.id = m.room_id WHERE r.code = '${R.split('/').pop()}'`)); const n0 = count();
+  const post = (o) => call(t.cxeng, 'POST', `${R}/measurements`, { body: reading(o) }); const refused = async (o, re) => { const r = await post(o); assert.equal(r.status, 422, J(r.body)); assert.match(J(r.body), re); };
+  // evidence the server cannot work a value out from
+  await refused({ value: 0.8, evidenceId: await evidence(t.cxeng, 'a note that says 0.8 s') }, /not an analysis package the server can read/);
+  await refused({ value: 0.8, evidenceId: await packageFor(t.cxeng, 0.8, 'synthetic', (b) => ({ ...b, kind: 'a spreadsheet' })) }, /not a reverberation analysis package/);
+  await refused({ value: 0.8, evidenceId: await packageFor(t.cxeng, 0.8, 'synthetic', (b) => ({ ...b, positions: b.positions.slice(0, 1) })) }, /mean of 2 to 8 positions; the package has 1/);
+  await refused({ value: 0.8, evidenceId: await packageFor(t.cxeng, 0.8, 'synthetic', (b) => ({ ...b, positions: b.positions.map((x, i) => (i ? x : { position: 1, response: { file: 'position-1.wav', sha256: 'ab'.repeat(32) } })) })) }, /neither a synthetic reference nor an uploaded file/);
+  const theirs = await call(T.cxeng, 'POST', '/v1/evidence', { raw: 'another organization', headers: { 'content-type': 'text/plain', 'x-file-name': 'theirs.txt' } }); assert.equal(theirs.status, 201);
+  await refused({ value: 0.8, evidenceId: await packageFor(t.cxeng, 0.8, 'synthetic', (b) => ({ ...b, positions: b.positions.map((x, i) => (i ? x : { position: 1, response: { file: 'theirs.csv', evidenceId: theirs.body.id } })) })) }, /not an evidence file of this organization/);
+  // a value that does not follow from the package: the package gives 1.42 s, the request says 0.8 s (which would meet the limit)
+  await refused({ value: 0.8, evidenceId: await packageFor(t.cxeng, 1.42) }, /the value sent \(0\.8 s\) is not what the evidence gives: worked out again from the 4 responses in the package, T30 at 500 Hz and 1 kHz is 1\.42 s/);
+  // synthetic signals offered as a measurement of the room
+  await refused({ value: 0.8, evidenceId: await packageFor(t.cxeng, 0.8), provenance: 'FIELD_MEASURED', instrumentId: 'SYN-ANALYSER-02 (synthetic)', calibrationStatus: 'CALIBRATED', calibrationDue: '2027-09-30' }, /synthetic reference responses: a value worked out from them is SIMULATED, not FIELD_MEASURED/);
+  assert.equal(count(), n0, 'nothing was recorded by a refused request');
+  // a field value on response files the server reads (WAV): the figure recorded is the server's, with how it was arrived at
+  const ok = await post({ value: 0.81, evidenceId: await packageFor(t.cxeng, 0.8, 'wav'), provenance: 'FIELD_MEASURED', instrumentId: 'SYN-ANALYSER-02 (synthetic)', calibrationStatus: 'CALIBRATED', calibrationDue: '2027-09-30' });
+  assert.equal(ok.status, 201, J(ok.body)); assert.equal(ok.body.value, 0.8, 'the server recorded its own figure, not the 0.81 s it was sent'); assert.equal(ok.body.within, true);
+  assert.deepEqual(ok.body.validation, { recomputed: 0.8, sent: 0.81, positions: 4, synthetic: false }); assert.match(ok.body.says, /The server worked this out again from the evidence \(4 responses\): 0\.8 s; 0\.81 s was sent/);
+  const row = (await call(t.cxeng, 'GET', `${R}/measurements`)).body.items.find((m) => m.id === ok.body.id); assert.equal(Number(row.value), 0.8);
+  assert.equal(row.validation.positions.length, 4); assert.match(row.validation.positions[0].source, /^file position-1\.wav$/); assert.equal(row.validation.fit, 'T30'); assert.ok(row.validation.positions.every((x) => x.t500 > 0.6 && x.t500 < 1 && x.t1k > 0.6 && x.t1k < 1), J(row.validation.positions));
+  assert.throws(() => h.asSuper(`UPDATE app.measurement SET validation = '{"recomputed": 0.5}' WHERE id = '${ok.body.id}'`), /immutable/);
+  const ev = await evidence(t.cxeng, 'fixture result'); assert.equal((await result(t.cxeng, R, 'PASS', ok.body.id, ev)).status, 201, 'a calibrated field value the server worked out itself, within the limit, passes');
+  // round the API: the same kind of row written to the table with no validation passes nothing
+  h.asSuper(`INSERT INTO app.measurement (tenant_id, room_id, metric, value, unit, method, measured_at, location, source, provenance, instrument_id, calibration_status, recorded_by, recorded_role, test_id, evidence_id)
+    SELECT tenant_id, room_id, metric, 0.7, unit, method, now(), location, 'no validation (test)', provenance, instrument_id, calibration_status, recorded_by, recorded_role, test_id, evidence_id FROM app.measurement WHERE id = '${ok.body.id}'`);
+  assert.throws(() => h.asSuper(`INSERT INTO app.test_result (tenant_id, room_id, test_id, state, evidence_id, evidence_kind, instrument, recorded_by, recorded_role, measurement_id)
+    SELECT m.tenant_id, m.room_id, m.test_id, 'PASS', '${ev}', 'INSTRUMENT_MEASURED', 'x', m.recorded_by, 'cxeng', m.id FROM app.measurement m WHERE m.source = 'no validation (test)'`), /not worked out again from its evidence by the server: it passes nothing/);
+  // a WAV is stored only when it is one
+  const notWav = await call(t.cxeng, 'POST', '/v1/evidence', { raw: Buffer.from('RIFX not a wave file at all'), headers: { 'content-type': 'audio/wav', 'x-file-name': 'x.wav' } }); assert.equal(notWav.status, 415, J(notWav.body)); assert.match(J(notWav.body), /no RIFF\/WAVE header/);
 });

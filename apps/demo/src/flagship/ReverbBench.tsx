@@ -21,8 +21,11 @@ import { analyseBands, meanOverPositions, quality, syntheticIR, readWav, readCsv
 
 export interface BenchCriterion { version: number; metric: string; unit: string; lower: number | null; upper: number | null; source: string; setBy: string; words: string }
 export interface BenchTest { test: string; name: string; criterion: BenchCriterion | null; measurements: number; mayMeasure: boolean }
-export interface BenchOutput { value: number; provenance: 'SIMULATED' | 'FIELD_MEASURED'; instrumentId?: string; calibrationStatus?: 'CALIBRATED' | 'UNKNOWN'; calibrationDue?: string; location: string; source: string; method: string; detail: Record<string, unknown>; packageText: string }
-interface Pos { id: number; x: number; y: number; file: { name: string; sha256: string; ir: IR } | null }
+export interface BenchOutput { value: number; provenance: 'SIMULATED' | 'FIELD_MEASURED'; instrumentId?: string; calibrationStatus?: 'CALIBRATED' | 'UNKNOWN'; calibrationDue?: string; location: string; source: string; method: string; detail: Record<string, unknown>;
+  /** The analysis package (the evidence file) as an object, and the response files it names: the page uploads each file so that the server can
+   *  read it, puts the id the server gave it in the package, and uploads the package. The server works the value out again from those. */
+  pkg: { positions: Array<{ position: number; response: Record<string, unknown> }> } & Record<string, unknown>; files: Array<{ position: number; name: string; mediaType: string; data: ArrayBuffer }> }
+interface Pos { id: number; x: number; y: number; file: { name: string; sha256: string; ir: IR; data: ArrayBuffer; mediaType: string } | null }
 interface Done { per: Array<{ pos: Pos; rt: number | null; bands: Analysis[] }>; means: BandMean[]; value: number | null; why: string[] }
 
 const MAX = 6; const MAX_BYTES = 20_000_000; const RATE = 16000;
@@ -66,7 +69,7 @@ export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord 
   const load = async (id: number, file: File | undefined) => {
     if (!file) return; setMsg(null);
     try { if (file.size > MAX_BYTES) throw new Error('the file is over 20 MB'); const buf = await file.arrayBuffer(); const ir = /\.csv$/i.test(file.name) ? readCsv(new TextDecoder().decode(buf)) : readWav(buf);
-      const hash = await sha256(buf); change(pos.map((p) => (p.id === id ? { ...p, file: { name: file.name, sha256: hash, ir } } : p))); }
+      const hash = await sha256(buf); change(pos.map((p) => (p.id === id ? { ...p, file: { name: file.name, sha256: hash, ir, data: buf, mediaType: /\.csv$/i.test(file.name) ? 'text/csv' : 'audio/wav' } } : p))); }
     catch (e) { setMsg(`${file.name} could not be read as an impulse response: ${(e as Error).message}`); }
   };
   const analyse = () => {
@@ -81,14 +84,14 @@ export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord 
     const detail = { quantity: 'T30, mean of the 500 Hz and 1 kHz octave bands, averaged over the positions', positions: done.per.map((x) => ({ position: x.pos.id, x: x.pos.x, y: x.pos.y, source: x.pos.file ? `file ${x.pos.file.name}` : `synthetic reference, decay ${x.rt} s`,
       t30_500: fit(x.bands.find((a) => a.band === '500 Hz'), 'T30')?.seconds ?? null, t30_1k: fit(x.bands.find((a) => a.band === '1 kHz'), 'T30')?.seconds ?? null })), bands: done.means.map((m) => ({ band: m.band, edt: m.edt.mean, t20: m.t20.mean, t30: m.t30.mean })) };
     const pkg = { kind: 'reverberation analysis package', room: 'UNI-SCI-110', test: test.test, metric: 't30_mid', unit: 's', value: done.value, synthetic,
-      statement: synthetic ? 'SYNTHETIC: one or more responses are reference signals of a chosen decay time, generated in the browser from the seed and decay listed. No room was measured.' : 'The responses are files loaded in the browser. The files themselves are not in this package: each is named with its SHA-256.',
+      statement: synthetic ? 'SYNTHETIC: one or more responses are reference signals of a chosen decay time, generated from the seed and decay listed. The server regenerates them from the same figures and works the value out itself. No room was measured.' : 'The responses are files, each uploaded as evidence and named here with its SHA-256 and the id the server gave it. The server reads them and works the value out itself.',
       analysis: 'Schroeder backward integration with noise subtraction and truncation; least-squares fit from 5 to 35 dB down (T30), 5 to 25 dB (T20), 0 to 10 dB (EDT); a figure is refused when the dynamic range cannot support it',
       positions: done.per.map((x) => ({ position: x.pos.id, x: x.pos.x, y: x.pos.y, response: x.pos.file ? { file: x.pos.file.name, sha256: x.pos.file.sha256, rate: x.pos.file.ir.rate, seconds: r2(x.pos.file.ir.seconds) } : { synthetic: true, decaySeconds: x.rt, seed: 7 + x.pos.id * 13, rate: RATE, floorDb: -80 },
         bands: x.bands.map((a) => ({ band: a.band, edt: fit(a, 'EDT')?.seconds ?? null, t20: fit(a, 'T20')?.seconds ?? null, t30: fit(a, 'T30')?.seconds ?? null, dynamicRangeDb: a.dynamicRange, refused: a.fits.filter((f) => f.refused).map((f) => `${f.name}: ${f.refused}`), notes: quality(a) })) })),
       bandMeans: detail.bands, generatedAt: new Date().toISOString() };
     return { value: done.value, provenance: synthetic ? 'SIMULATED' : 'FIELD_MEASURED', ...(synthetic ? {} : { instrumentId: instrument.trim(), calibrationStatus: chain, ...(chain === 'CALIBRATED' && due ? { calibrationDue: due } : {}) }),
       location: `${done.per.length} receiver positions: ${done.per.map((x) => `P${x.pos.id} (${x.pos.x}, ${x.pos.y})`).join(', ')}`.slice(0, 120), source: synthetic ? 'synthetic reference responses generated in the browser (no room was measured)' : `impulse response files: ${done.per.map((x) => x.pos.file!.name).join(', ')}`.slice(0, 200),
-      method: 'ISO 3382-2 integrated impulse response, T30', detail, packageText: JSON.stringify(pkg, null, 1) };
+      method: 'ISO 3382-2 integrated impulse response, T30', detail, pkg, files: done.per.filter((x) => x.pos.file).map((x) => ({ position: x.pos.id, name: x.pos.file!.name, mediaType: x.pos.file!.mediaType, data: x.pos.file!.data })) };
   }, [done, test, synthetic, instrument, chain, due]);
   const chainReady = synthetic || (instrument.trim().length >= 3 && (chain !== 'CALIBRATED' || !!due));
   const shown = done?.per[show]; const shownBand = shown?.bands.find((a) => a.band === '1 kHz');
@@ -143,7 +146,9 @@ export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord 
           : <div data-testid="fl-bench-refused"><Notice tone="bad"><b>There is no figure to record.</b> The data does not support one:<ul className="fl__list">{done.why.map((w) => <li key={w}>{w}</li>)}</ul></Notice></div>}
         {done.per.some((x) => x.bands.some((a) => quality(a).length)) ? <details className="fb__notes"><summary>Measurement-quality notes</summary><ul className="fl__list">{done.per.flatMap((x) => x.bands.filter((a) => a.band === '500 Hz' || a.band === '1 kHz').flatMap((a) => quality(a).map((q) => <li key={`${x.pos.id}${a.band}${q}`}>P{x.pos.id}, {a.band}: {q}</li>)))}</ul></details> : null}
         <h4 className="fl__h4">4 · Record it on the server</h4>
-        <p className="ui-meta">The value, the positions and an analysis package (uploaded as the evidence file) go to the server as the {person}. The database then works out whether the value meets the criterion. {synthetic ? 'It is recorded as SIMULATED.' : `It is recorded as a field measurement, ${chain === 'CALIBRATED' ? 'calibrated' : 'not calibrated'}.`}</p>
+        <p className="ui-meta">The value, the positions and an analysis package (uploaded as the evidence file) go to the server as the {person}. <b>The server does not take this page’s figure on trust:</b> it works the value out again from the evidence with the same analysis, records its own figure, and refuses a value that does not follow from the evidence. The database then works out whether that figure meets the criterion.</p>
+        {pos.some((p) => p.file) ? <div data-testid="fl-bench-files-note"><Notice tone="warn"><b>A loaded response has to be uploaded for the server to read it.</b> A demonstration sandbox stores short text notes only, so the server here will refuse the file and nothing is recorded from it: a loaded response can be analysed on this page, not recorded. The reference signals can be recorded, as SIMULATED.</Notice></div> : null}
+        <p className="ui-meta"> {synthetic ? 'It is recorded as SIMULATED.' : `It is recorded as a field measurement, ${chain === 'CALIBRATED' ? 'calibrated' : 'not calibrated'}.`}</p>
         <p className="build__row"><button type="button" className="ui-btn ui-btn--primary" data-testid="fl-bench-record" disabled={busy || !output || !chainReady} onClick={() => { if (output) onRecord(output); }}>Record the measurement as the {person}</button>
           {!chainReady ? <span className="ui-meta">Name the instrument{chain === 'CALIBRATED' ? ' and when its calibration is due' : ''}.</span> : null}</p>
       </div> : null}
