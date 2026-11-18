@@ -20,6 +20,7 @@ import { ApiError, notFound, refused, invalid } from '../http/errors.js';
 import { applyReplacement, planSubstitution, recordRoomInstallation, roomInstallations, failpoint, registerItems } from './installations.js';
 import { substitutionsFrom, changesFrom, reverificationFrom, gateFacts, revisionBindingFrom, designBindingFact, type Substitution, type Reverification, type Change } from './reverification.js';
 import { designEditFor, patchEdit } from './design-edits.js';
+import { exceptedTests } from './exceptions.js';
 export type { Substitution, Reverification };
 
 const sha256 = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
@@ -534,7 +535,7 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref, true);
     const L = await load(ctx, q, room.id);
-    const open = (await q.query<{ severity: string }>("SELECT severity FROM app.room_issue WHERE room_id = $1 AND state = 'OPEN'", [room.id])).rows;
+    const open = (await q.query<{ severity: string }>("SELECT severity FROM app.room_issue WHERE room_id = $1 AND state = 'OPEN' AND NOT (workflow = 'ACCEPTED_EXCEPTION' AND EXISTS (SELECT 1 FROM app.measured_exception x WHERE x.issue_id = room_issue.id AND x.code = room_issue.exception_ref AND x.state = 'APPROVED'))", [room.id])).rows;
     const plan = (await q.query<{ id: string }>('SELECT id FROM app.cx_plan WHERE room_id = $1 ORDER BY compiled_at DESC, id DESC LIMIT 1', [room.id])).rows[0];
     const rows = plan ? (await q.query<{ test_id: string; applicable: boolean }>('SELECT test_id, applicable FROM app.cx_plan_row WHERE plan_id = $1', [plan.id])).rows : [];
     const labels = new Map((await q.query<{ test_id: string; result_label: string }>('SELECT test_id, result_label FROM app.current_result WHERE room_id = $1', [room.id])).rows.map((r) => [r.test_id, r.result_label]));
@@ -548,6 +549,8 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
       savedRevisions: (await q.query<{ n: number }>('SELECT count(*)::int AS n FROM app.room_revision WHERE room_id = $1', [room.id])).rows[0]!.n,
       // what DESIGN_APPROVED approves is the latest saved revision: it has to describe the design as it stands
       latestDescribesDesign: to === 'DESIGN_APPROVED' ? await latestDescribes(q, room, L) : undefined,
+      // 0042: a FAIL excepted on an approved measured exception record counts as PASS WITH EXCEPTION, never as a pass
+      excepted: to === 'ACCEPTED' ? await exceptedTests(q, room.id) : undefined,
       rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: (labels.get(r.test_id) || 'NOT_TESTED') as never } as never)),
       results: L.results, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false, ...rvFacts(rvn), designBinding: recommissionBinding(rc),
       // the device register gates the start of commissioning (founder, 14 Nov 2026): every in-service unit registered first
@@ -561,7 +564,7 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
     const extra: string[] = []; const args: unknown[] = [room.id, to];
     if (to === 'DESIGN_APPROVED') { args.push((await q.query<{ n: number }>('SELECT max(rev_no) AS n FROM app.room_revision WHERE room_id = $1', [room.id])).rows[0]!.n); extra.push(`approved_revision = $${args.length}`); }
     if (to === 'PLANNED') extra.push('approved_revision = NULL');
-    if (to === 'ACCEPTED') { args.push({ at: new Date().toISOString(), signedBy: ctx.p.personId, revision: room.approved_revision, results: Object.fromEntries(labels), state: 'ACCEPTED_BASELINE', note: 'signed accepted baseline: the as-accepted design and the verified results; not live monitoring' }); extra.push(`baseline = $${args.length}`); }
+    if (to === 'ACCEPTED') { args.push({ at: new Date().toISOString(), signedBy: ctx.p.personId, revision: room.approved_revision, results: { ...Object.fromEntries(labels), ...Object.fromEntries((await exceptedTests(q, room.id)).map((t) => [t, 'PASS_WITH_EXCEPTION'])) }, state: 'ACCEPTED_BASELINE', note: 'signed accepted baseline: the as-accepted design and the verified results; not live monitoring' }); extra.push(`baseline = $${args.length}`); }
     await q.query(`UPDATE app.room SET lifecycle = $2${extra.length ? `, ${extra.join(', ')}` : ''} WHERE id = $1`, args);
     if (to === 'INSTALLED_UNVERIFIED') await q.query(`UPDATE app.planned_asset SET lifecycle = 'INSTALLED_UNVERIFIED' WHERE room_id = $1 AND removed_at IS NULL`, [room.id]);
     room.lifecycle = to; const rev = await bump(q, room);
@@ -604,7 +607,7 @@ export async function readiness(ctx: RequestContext, ref: string) {
     const room = await findRoom(ctx, q, ref);
     const L = await load(ctx, q, room.id);
     const a = analyzeRoom(L.input, C);
-    const open = (await q.query<{ code: string; severity: string; title: string; owner_role: string | null }>("SELECT code, severity, title, owner_role FROM app.room_issue WHERE room_id = $1 AND state = 'OPEN' ORDER BY severity, code", [room.id])).rows;
+    const open = (await q.query<{ code: string; severity: string; title: string; owner_role: string | null }>("SELECT code, severity, title, owner_role FROM app.room_issue WHERE room_id = $1 AND state = 'OPEN' AND NOT (workflow = 'ACCEPTED_EXCEPTION' AND EXISTS (SELECT 1 FROM app.measured_exception x WHERE x.issue_id = room_issue.id AND x.code = room_issue.exception_ref AND x.state = 'APPROVED')) ORDER BY severity, code", [room.id])).rows;
     const plan = (await q.query<{ id: string }>('SELECT id FROM app.cx_plan WHERE room_id = $1 ORDER BY compiled_at DESC, id DESC LIMIT 1', [room.id])).rows[0];
     const rows = plan ? (await q.query<{ test_id: string; applicable: boolean; personas: string[] }>('SELECT test_id, applicable, personas FROM app.cx_plan_row WHERE plan_id = $1', [plan.id])).rows : [];
     const labels = new Map((await q.query<{ test_id: string; result_label: string }>('SELECT test_id, result_label FROM app.current_result WHERE room_id = $1', [room.id])).rows.map((r) => [r.test_id, r.result_label]));
@@ -618,7 +621,7 @@ export async function readiness(ctx: RequestContext, ref: string) {
     const counts = { applicable: applicable.length, verified: applicable.filter((r) => lab(r.test_id) === 'PASS_VERIFIED' && !reopened.has(r.test_id)).length, awaiting: applicable.filter((r) => lab(r.test_id) === 'PASS_UNVERIFIED').length, failed: applicable.filter((r) => lab(r.test_id) === 'FAIL').length, other: applicable.filter((r) => ['NOT_SUPPORTED', 'INCONCLUSIVE'].includes(lab(r.test_id))).length, notTested: applicable.filter((r) => lab(r.test_id) === 'NOT_TESTED').length, revalidation: reopened.size };
     const facts = { from: room.lifecycle, classificationApproved: !!approved && !approved.stale, openIssues: open, savedRevisions: revisions.n, rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: lab(r.test_id) as never } as never)), results: L.results as never, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false };
     const reg = await registerItems(q, room.id);
-    const blockers = next ? lifecycleBlockers({ ...facts, to: next, latestDescribesDesign: next === 'DESIGN_APPROVED' ? await latestDescribes(q, room, L) : undefined, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null, register: next === 'COMMISSIONING' ? registerFacts(reg) : undefined }) : ['the room is OPERATIONAL: no further governed step'];
+    const blockers = next ? lifecycleBlockers({ ...facts, to: next, latestDescribesDesign: next === 'DESIGN_APPROVED' ? await latestDescribes(q, room, L) : undefined, excepted: next === 'ACCEPTED' ? await exceptedTests(q, room.id) : undefined, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null, register: next === 'COMMISSIONING' ? registerFacts(reg) : undefined }) : ['the room is OPERATIONAL: no further governed step'];
     const evidence = (await q.query<{ n: number }>('SELECT count(DISTINCT evidence_id)::int AS n FROM app.test_result WHERE room_id = $1 AND evidence_id IS NOT NULL', [room.id])).rows[0]!.n;
     const baselines = (await q.query<{ version: number; state: string; published_at: string }>('SELECT version, state, published_at FROM app.assurance_baseline WHERE room_id = $1 ORDER BY version', [room.id])).rows;
     const exceptions = (await q.query<{ n: number }>("SELECT count(*)::int AS n FROM app.baseline_exception WHERE room_id = $1 AND state = 'REQUESTED'", [room.id])).rows[0]!.n;

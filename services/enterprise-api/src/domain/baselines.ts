@@ -5,6 +5,7 @@
  * evidence objects cited; publishing supersedes the current version and keeps the lineage. Exceptions are requested and decided by
  * different people. Nothing here is ever overwritten.
  */
+import { exceptedTests } from './exceptions.js';
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { ApiError, invalid, notFound } from '../http/errors.js';
@@ -30,7 +31,7 @@ export async function bindCurrent(q: Queryable, room: { id: string; approved_rev
        FROM app.current_result c JOIN app.test_result t ON t.id = c.result_id JOIN app.measurement m ON m.id = t.measurement_id LEFT JOIN app.acceptance_criterion k ON k.id = m.criterion_id WHERE c.room_id = $1 ORDER BY c.test_id`, [room.id])).rows;
   const measurements = measured.map((m) => ({ test: m.test_id, measurement: m.id, metric: m.metric, value: Number(m.value), unit: m.unit, provenance: m.provenance, within: m.within,
     criterion: m.version === null ? null : { version: m.version, lower: m.lower === null ? null : Number(m.lower), upper: m.upper === null ? null : Number(m.upper), source: m.source } }));
-  return { designRevision: rev.rev_no, designSha256: rev.sha256, planId: plan?.id || null, measurements, results: Object.fromEntries(res.map((r) => [r.test_id, r.result_label])),
+  return { designRevision: rev.rev_no, designSha256: rev.sha256, planId: plan?.id || null, measurements, results: { ...Object.fromEntries(res.map((r) => [r.test_id, r.result_label])), ...Object.fromEntries((await exceptedTests(q, room.id)).map((t) => [t, 'PASS_WITH_EXCEPTION'])) },   // 0042: never shown as a pass
     evidenceIds: [...new Set(res.map((r) => r.evidence_id).filter((x): x is string => !!x))], devices: rev.snapshot.devices.filter((d) => !d.furniture).map((d) => ({ id: d.id, category: d.cat, label: d.label, placement: placeOf(d.id) })),
     authors: [...new Set(res.flatMap((r) => [r.recorded_by, r.verified_by]).filter((x): x is string => !!x))] };
 }

@@ -198,3 +198,18 @@ test('the device register gates INSTALLED_UNVERIFIED → COMMISSIONING only (fou
   assert.deepEqual(lifecycleBlockers({ ...base, register: open.map((x) => ({ ...x, missing: [] })) }), [], 'registered: commissioning may start');
   assert.ok(!lifecycleBlockers({ ...base, from: 'ACCEPTED', register: open }).some((b) => /device register/.test(b)), 'a recommissioning is not gated by the register');
 });
+
+test('Pass with Exception (0042): a FAIL excepted on an approved record does not block acceptance; anything else still does, and nothing is called a pass', () => {
+  const rows = [{ id: 't1', applicable: true, result: 'PASS_VERIFIED' }, { id: 't2', applicable: true, result: 'FAIL' }] as never[];
+  const results = { t1: { state: 'PASS', by: 'rec', verified: { by: 'ver' }, evidence: { kind: 'X', ref: 'e' } }, t2: { state: 'FAIL', by: 'rec', evidence: { kind: 'X', ref: 'e' } } } as never;
+  const f = { from: 'COMMISSIONING', to: 'ACCEPTED' as const, classificationApproved: true, openIssues: [], savedRevisions: 1, rows, results, hasBaseline: true, hasLiveMonitoringEvidence: false };
+  assert.match(lifecycleBlockers(f).join(' '), /1 of 2 passed and independently verified/, 'without the exception the FAIL blocks');
+  assert.deepEqual(lifecycleBlockers({ ...f, excepted: ['t2'] }), [], 'excepted on an approved record: acceptance may proceed');
+  // an exception covers a FAIL only: an unverified or untested result is not excepted by naming it
+  const g = { ...f, rows: [{ id: 't1', applicable: true, result: 'PASS_UNVERIFIED' }, { id: 't2', applicable: true, result: 'FAIL' }] as never[],
+    results: { t1: { state: 'PASS', by: 'rec', evidence: { kind: 'X', ref: 'e' } }, t2: { state: 'FAIL', by: 'rec', evidence: { kind: 'X', ref: 'e' } } } as never };
+  assert.match(lifecycleBlockers({ ...g, excepted: ['t1', 't2'] }).join(' '), /0 of 2 passed and independently verified and 1 PASS WITH EXCEPTION/);
+  assert.notDeepEqual(lifecycleBlockers({ ...g, excepted: ['t1', 't2'] }), []);
+  // an open deficiency still blocks
+  assert.match(lifecycleBlockers({ ...f, excepted: ['t2'], openIssues: [{ severity: 'Critical' }] }).join(' '), /1 open issue/);
+});

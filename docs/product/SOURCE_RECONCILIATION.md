@@ -92,7 +92,7 @@ Each row below says where the server holds the same thing, and whether it does: 
    handover tests, the register and the drawings. V3.9's Documentation and Submission gate is the same thing (task 199).
 4. **An intelligibility exception, as the workbook has it, is not a record**: the measured value, why it is poor, the mitigation and
    who logged it. With 0037 the measured value and its limit are now held, so this is a small step from here; it is also V3.9's
-   Pass with Exception.
+   Pass with Exception. **Built 18 Nov 2026 (0042, ADR-0020)** for measured tests with a criterion; no page shows it yet.
 5. **The network facts of a device stop at the address.** VLAN, addressing mode, gateway, switch and port, PoE.
 6. **Lifecycle facts of a unit**: firmware baseline per model, warranty and support-contract dates, replacement forecast.
 7. **Vocabulary**: user impact on a deficiency; the workbook's finer root causes; a Blocked status; region and zone on a site.

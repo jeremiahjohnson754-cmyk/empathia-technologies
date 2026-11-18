@@ -30,6 +30,12 @@ export interface LifecycleFacts {
    * saved revision, so a design changed after it was saved is saved again first. Omitted = not checked (the demonstrator's golden cases).
    */
   latestDescribesDesign?: boolean;
+  /**
+   * Applicable tests whose current FAIL is covered by an approved measured exception record on which their deficiency was excepted
+   * (0042, the V3.9 "Pass with Exception"). Acceptance counts them as PASS WITH EXCEPTION: not a pass, never shown as one; they do not
+   * block it. Omitted = none.
+   */
+  excepted?: readonly string[];
   rows: ApplicabilityRow[];
   results: Record<string, RecordedResult> | undefined;
   hasBaseline: boolean;
@@ -94,7 +100,9 @@ export function lifecycleBlockers(f: LifecycleFacts): string[] {
     const rv = (f.reverification || []).filter((t) => appIds.has(t.testId));
     const superseded = new Set(rv.filter((t) => t.rerun).map((t) => t.testId));
     const counted = app.filter((r) => !superseded.has(r.id));
-    const gap = counted.some((r) => r.result !== 'PASS_VERIFIED');
+    const exc = new Set(f.excepted || []);
+    const excFail = counted.filter((r) => exc.has(r.id) && r.result === 'FAIL').length;   // an exception covers a FAIL, nothing else
+    const gap = counted.some((r) => r.result !== 'PASS_VERIFIED' && !(exc.has(r.id) && r.result === 'FAIL'));
     const C = resultCounts(counted, f.results);
     // in ACCEPTANCE_BLOCKER_ORDER: 1 · the design the re-acceptance binds
     const bound = f.designBinding ? designBindingSentence(f.designBinding) : null;
@@ -107,7 +115,7 @@ export function lifecycleBlockers(f: LifecycleFacts): string[] {
     why.push(...rb);
     // 4 · the general count, when other results are missing
     if (!app.length || gap) {
-      why.push(`acceptance needs every applicable test executed, passed and independently verified with evidence: ${C.verified} of ${app.length} passed and independently verified (${C.recorded} recorded: ${resultWords(C).replace(/^\d+ passed and independently verified, /, '')}; ${C.notTested} not tested${superseded.size ? `; ${superseded.size} recorded before a change of device and no longer counted` : ''})`);
+      why.push(`acceptance needs every applicable test executed, passed and independently verified with evidence: ${C.verified} of ${app.length} passed and independently verified${excFail ? ` and ${excFail} PASS WITH EXCEPTION (failed, excepted on an approved record)` : ''} (${C.recorded} recorded: ${resultWords(C).replace(/^\d+ passed and independently verified, /, '')}; ${C.notTested} not tested${superseded.size ? `; ${superseded.size} recorded before a change of device and no longer counted` : ''})`);
     }
   }
   if (f.to === 'OPERATIONAL') {

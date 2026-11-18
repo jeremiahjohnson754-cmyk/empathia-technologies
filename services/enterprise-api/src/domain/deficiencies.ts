@@ -13,6 +13,7 @@ import type { Queryable } from '../db/pg.js';
 import { findRoom } from './rooms.js';
 import { invalid, notFound } from '../http/errors.js';
 import { retestOnMeasurement } from './criteria.js';
+import { forExcept } from './exceptions.js';
 
 export const STEP_AUTHORITY: Record<DeficiencyAction['kind'], string[]> = {
   start: ['deficiency.open', 'issue.assign'], fixed: ['work.evidence', 'deviation.raise'],
@@ -87,6 +88,10 @@ export async function runStep(ctx: RequestContext, issueCode: string, a: Deficie
     if (hooks.before) why.push(...await hooks.before(q, { id: r.id, workflow: r.workflow }));
     if (a.kind === 'start' && !(await q.query('SELECT 1 FROM app.role WHERE key = $1', [a.owner])).rowCount) throw invalid(`unknown role ${a.owner}`);
     if (a.kind === 'except') {
+      // 0042: a failed measured test with a criterion is excepted only on its own approved exception record; its logger is the requester
+      const k = (await q.query<{ key: string }>('SELECT key FROM app.room_issue WHERE id = $1', [r.id])).rows[0]!.key;
+      const rec = await forExcept(q, r.id, r.room_id, k, a.exceptionId);
+      if (rec) { why.push(...rec.why); if (rec.loggedBy) a.requestedBy = rec.loggedBy; }
       if (!/^[0-9a-f-]{36}$/.test(a.requestedBy) || !(await q.query('SELECT 1 FROM app.person WHERE id = $1', [a.requestedBy])).rowCount) throw invalid('requestedBy is the person who asked for the exception');
     }
     if (a.kind === 'defer' && r.owner_role && r.owner_role === ctx.p.role) why.push('the role that owns the deficiency does not approve its deferral');
