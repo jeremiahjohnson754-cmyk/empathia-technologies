@@ -56,6 +56,10 @@
 //   FL-41  ServiceHands on the server (#/servicehands/queue): the deficiency's work order listed with its state, room and issue; opened,
 //          its next governed steps from the same panel; the ServiceHands workspace says where the server's queue is
 //   FL-42  the incidents tab lists the room's incidents with their status and work orders, linking the room
+//   FL-43  platform jumps (#/platforms, 0047): a technician reads them and is offered no change; the operations lead sets the
+//          organization's XiO Cloud address and it is what the jump opens; the vendor-documented default stands where nothing is set
+//          and an unset platform is no link; an installer records the room's own Q-SYS Reflect address and its jump opens it in a new
+//          tab with no opener; the room page carries the same jumps
 //   FL-39  who to call: the support paths of the room's site from the server, Teams/email/copy hand-offs (nothing sent)
 //   FL-38  Pass with Exception from the page: an exception record logged, refused to its logger, rejected with a reason by the systems engineer
 //   FL-37  documentation and submission (0043): the required documents submitted and approved by different people, and the packet
@@ -552,6 +556,30 @@ let INC1 = '', INC2 = '', SPK = '';
   await q.waitForFunction(() => !document.querySelector('[data-testid=sq-busy]'), null, { timeout: 60000 }).catch(() => undefined); await q.getByTestId('sq-who').selectOption('svcmgr'); await q.waitForFunction(() => !document.querySelector('[data-testid=sq-busy]'), null, { timeout: 60000 }).catch(() => undefined);
   await q.getByTestId('sq-tab-incidents').click(); const li = q.locator(`[data-testid=sq-incidents] li[data-incident="${INC1}"]`); const txt = (await li.count()) ? (await li.innerText()).replace(/\s+/g, ' ') : ''; const href = (await li.count()) ? await li.locator('a').getAttribute('href') : '';
   ok('FL-42', 'the queue’s incidents tab lists the room’s incident with its status and work order, linking the room', txt.includes(INC1) && /WO-/.test(txt) && /^#\/flagship\//.test(href || ''), `${txt.slice(0, 120)} · ${href}`);
+  await q.close(); }
+
+{ // FL-43: platform jumps, a second tab of the same sandbox
+  const q = await t.ctx.newPage(); await q.goto(p.url().replace(/#.*/, '#/platforms'));
+  const settle = async () => { await q.waitForSelector('[data-testid=pj-may]', { timeout: 60000 }).catch(() => undefined); };
+  await settle(); await q.getByTestId('pj-who').selectOption('service'); await q.waitForSelector('[data-testid=pj-may][data-configure=false]', { timeout: 30000 }).catch(() => undefined);
+  const techEdits = await q.locator('[data-testid^=pj-edit-]').count();
+  await q.getByTestId('pj-who').selectOption('opslead'); await q.waitForSelector('[data-testid=pj-edit-xio-cloud]', { timeout: 30000 }).catch(() => undefined);
+  await q.getByTestId('pj-edit-xio-cloud').click(); await q.getByTestId('pj-url').fill('https://xio.example.com/estate'); await q.getByTestId('pj-save').click();
+  await q.waitForSelector('[data-testid=pj-said]', { timeout: 30000 }).catch(() => undefined); await q.waitForSelector('li[data-platform=xio-cloud][data-opens="https://xio.example.com/estate"]', { timeout: 30000 }).catch(() => undefined);
+  const saved = await q.getByTestId('pj-said').getAttribute('data-ok').catch(() => null);
+  const opens = async (k) => q.locator(`li[data-platform=${k}]`).getAttribute('data-opens').catch(() => null);
+  const xio = await opens('xio-cloud'); const teams = await opens('teams-rooms-pro'); const sn = await opens('servicenow'); const snLinks = await q.locator('li[data-platform=servicenow] a').count();
+  const note = (await q.locator('[data-testid=pj-page]').innerText()).replace(/\s+/g, ' ');
+  await q.getByTestId('pj-who').selectOption('installer'); await q.waitForSelector('[data-testid=jumps-room] [data-testid=jumps-platform]', { timeout: 30000 }).catch(() => undefined);
+  await q.locator('[data-testid=pj-room] details.jp-record > summary').click().catch(() => undefined);
+  await q.getByTestId('jumps-platform').selectOption('q-sys-reflect'); await q.getByTestId('jumps-url').fill('https://reflect.example.com/sites/7'); await q.getByTestId('jumps-record').click();
+  await q.waitForSelector('[data-testid=jump-q-sys-reflect]', { timeout: 30000 }).catch(() => undefined);
+  const jl = q.getByTestId('jump-q-sys-reflect'); const jhref = await jl.getAttribute('href').catch(() => null); const jt = await jl.getAttribute('target').catch(() => null); const jrel = await jl.getAttribute('rel').catch(() => null);
+  const onRoom = await p.getByTestId('fl-jumps').count();
+  ok('FL-43', 'platform jumps: read-only for a technician; the operations lead sets the organization’s XiO Cloud address; documented default and unset platform shown as such; an installer records the room’s own Q-SYS Reflect address and its jump opens in a new tab without an opener; the room page has the jumps',
+    techEdits === 0 && saved === 'true' && xio === 'https://xio.example.com/estate' && teams === 'https://portal.rooms.microsoft.com/' && sn === '' && snLinks === 0 && /not an integration/.test(note)
+    && jhref === 'https://reflect.example.com/sites/7' && jt === '_blank' && /noopener/.test(jrel || '') && /noreferrer/.test(jrel || '') && onRoom === 1,
+    `tech edits ${techEdits} · saved ${saved} · xio ${xio} · teams ${teams} · sn ${sn}/${snLinks} · jump ${jhref} ${jt} ${jrel} · room ${onRoom}`);
   await q.close(); }
 
 

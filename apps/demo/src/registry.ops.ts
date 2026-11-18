@@ -28,6 +28,12 @@ const SERVER_THREAD: PageDef[] = process.env.DEMO_API_URL ? [{
   path: '/servicehands/queue', alias: ['/service/queue'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the service record of the sandbox’s rooms, as the connected thread: the roles whose work it is (18 Nov 2026)' },
   load: adapt(() => import('./pages/ServiceQueue.js'), (m) => h(m.ServiceQueuePage, {})),
   search: { keywords: 'servicehands server queue work orders incidents triage assign accept preflight evidence verify close sandbox', aliases: ['service queue', 'work orders on the server', 'servicehands queue'] },
+}, {
+  // founder, 18 Nov 2026, 07:49: jumps to the organization's own portals (0047); links, not integrations
+  id: 'platforms', title: 'Platform jumps', purpose: 'Open the organization’s own portal for a room, a unit or the estate: device clouds, meeting-room portals, audio processing and networks, signage, drawings and the service desk. Links, not integrations', product: 'mission-control',
+  path: '/platforms', alias: ['/jumps', '/connected/platforms'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'where the organization’s own tools are, for everyone who works on its rooms; setting an address is the server’s decision (18 Nov 2026)' },
+  load: adapt(() => import('./pages/Platforms.js'), (m) => h(m.PlatformsPage, {})),
+  search: { keywords: 'platform jump portal xio cloud utelogy teams rooms pro microsoft 365 m365 sharepoint xyte q-sys qsys reflect dante appspace signage sennheiser autodesk servicenow open in link', aliases: ['jumps', 'open in', 'portals', 'xio cloud', 'q-sys reflect', 'servicenow'] },
 }] : [];
 export const OPS_PAGES: readonly PageDef[] = [
   {

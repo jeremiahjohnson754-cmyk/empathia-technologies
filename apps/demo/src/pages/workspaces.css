@@ -96,3 +96,15 @@ a.wk-card:hover { border-color: var(--accent); } a.wk-card:focus-visible { outli
 .sq-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 70vh; overflow-y: auto; }
 .sq-items a { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--r-sm); border: 1px solid var(--line); color: var(--tx); text-decoration: none; font-size: var(--fs-sm); }
 .sq-items li.on a, .sq-items a:hover { border-color: var(--p-servicehands); } .sq-items a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* platform jumps (18 Nov 2026): links to the organization's own portals */
+.pj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--sp-3, 12px); margin-block: var(--sp-3, 12px); }
+.pj-list, .jp-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.pj-list > li, .jp-links > li { display: grid; gap: 4px; min-width: 0; }
+.pj-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.pj-row a, .jp-links a { overflow-wrap: anywhere; }
+.pj-edit { align-items: end; }
+.jp { display: grid; gap: 8px; }
+.jp-note { max-width: 70ch; }
+.fl__jumps { margin-block: 8px; }
+.fl__jumps > summary { cursor: pointer; font-weight: 600; }

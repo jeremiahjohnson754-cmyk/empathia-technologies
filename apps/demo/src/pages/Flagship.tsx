@@ -28,6 +28,7 @@ import { CorrectiveAction, type Cred, type Deficiency, type Exc, type Issue, typ
 import { Finishing, BaselineCard, type Baseline, type Person, type DocMatrix } from '../flagship/Acceptance.js';
 import { WhoToCall, type Support } from '../flagship/WhoToCall.js';
 import { Incidents, type Catalogue, type Incident, type IncidentData, type Intelligence } from '../flagship/Incidents.js';
+import { SubjectJumps } from '../connected/Jumps.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
 interface Point { x: number; y: number }
@@ -315,6 +316,9 @@ export function FlagshipPage({ room }: { room?: string }) {
             <span className="ui-meta" data-testid="fl-at" data-as={data.as}>read at {when(data.at)} as the {PEOPLE.find(([k]) => k === data.as)?.[1].toLowerCase()} · sandbox <span className="ui-mono">{sb.tenant}</span></span>
           </div>
         </section>
+        <details className="fl__jumps" data-testid="fl-jumps"><summary>Open in the organization’s own tools</summary>
+          <SubjectJumps key={`${who}/${R.room.code}`} c={c} who={who} subject="room" refCode={R.room.code} />
+          <p className="ui-meta"><a href="#/platforms">Every platform and where it goes</a></p></details>
 
         <div className="fl__work">
           <Card icon="map" title="Plan" sub={`${R.devices.filter((d) => !d.furniture).length} device positions and ${R.devices.filter((d) => d.furniture).length} pieces of furniture, to scale${seatsDrawn ? ` · ${seatsDrawn} seats drawn of ${R.room.occupancy}` : ''}`} testId="fl-plan-card">
