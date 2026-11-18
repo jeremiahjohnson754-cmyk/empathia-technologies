@@ -24,13 +24,13 @@ export const STEP_AUTHORITY: Record<DeficiencyAction['kind'], string[]> = {
 export const ANY_STEP_AUTHORITY = [...new Set(Object.values(STEP_AUTHORITY).flat())];
 const KINDS = Object.keys(STEP_AUTHORITY) as Array<DeficiencyAction['kind']>;
 
-interface Row { key: string;
+interface Row { key: string; user_impact: string | null;
   id: string; code: string; room_id: string; category: string; title: string; check_name: string; severity: 'Critical' | 'High' | 'Medium' | 'Low'; state: string; workflow: DeficiencyState;
   owner_role: string | null; target_date: string | null; root_cause: string | null; corrective_action: string | null; fixed_by: string | null;
   retest: Deficiency['retest']; exception_ref: string | null; exception_requested_by: string | null; exception_approved_by: string | null;
   deferral: Deficiency['deferral']; closed_by: string | null; created_at: string; resolution: unknown;
 }
-const COLS = `id, code, room_id, key, category, title, check_name, severity, state, workflow, owner_role, to_char(target_date, 'YYYY-MM-DD') AS target_date, root_cause, corrective_action,
+const COLS = `id, code, room_id, key, user_impact, category, title, check_name, severity, state, workflow, owner_role, to_char(target_date, 'YYYY-MM-DD') AS target_date, root_cause, corrective_action,
   fixed_by, retest, exception_ref, exception_requested_by, exception_approved_by, deferral, closed_by, created_at, resolution`;
 
 /** what a deficiency is against decides whether it may be excepted: safety, security, evidence, tenant isolation and separation of duties
@@ -43,7 +43,7 @@ function toEngine(r: Row): Deficiency {
     exception: r.exception_ref ? { id: r.exception_ref, requestedBy: r.exception_requested_by || '', approvedBy: r.exception_approved_by || '' } : null,
     deferral: r.deferral, closedBy: r.closed_by, history: [] };
 }
-const view = (r: Row) => ({ issueId: r.code, test: /^test-failed:(.+)$/.exec(r.key)?.[1] ?? null, state: r.state, workflow: r.workflow, severity: r.severity, waivable: waivable(r), ownerRole: r.owner_role, targetDate: r.target_date, rootCause: r.root_cause,
+const view = (r: Row) => ({ issueId: r.code, test: /^test-failed:(.+)$/.exec(r.key)?.[1] ?? null, userImpact: r.user_impact, state: r.state, workflow: r.workflow, severity: r.severity, waivable: waivable(r), ownerRole: r.owner_role, targetDate: r.target_date, rootCause: r.root_cause,
   correctiveAction: r.corrective_action, fixedBy: r.fixed_by, retest: r.retest, exception: r.exception_ref ? { ref: r.exception_ref, requestedBy: r.exception_requested_by, approvedBy: r.exception_approved_by } : null,
   deferral: r.deferral, closedBy: r.closed_by });
 
@@ -135,5 +135,30 @@ export async function deficiencyOf(ctx: RequestContext, issueCode: string) {
     await findRoom(ctx, q, r.room_id);
     const history = (await q.query<{ detail: Record<string, unknown>; at: string; actor_id: string | null }>(`SELECT detail, at, actor_id FROM app.issue_event WHERE issue_id = $1 AND kind = 'workflow' ORDER BY id`, [r.id])).rows;
     return { ...view(r), history: history.map((h) => ({ ...h.detail, at: h.at, by: h.actor_id })), rootCauses: ROOT_CAUSES };
+  });
+}
+
+/**
+ * The user impact of a deficiency (0046; the workbook's vocabulary, the same five words as an incident): recorded by someone who opens or
+ * assigns issues, each change an issue event with who and why.
+ */
+export const IMPACT_AUTHORITIES = ['deficiency.open', 'issue.assign', 'service.triage'];
+export async function setImpact(ctx: RequestContext, code: string, body: { impact?: string; why?: string }) {
+  await ctx.require(IMPACT_AUTHORITIES, 'record the user impact of a deficiency', { type: 'RoomIssue', id: code });
+  const IMP = ['none', 'minor_annoyance', 'moderate_disruption', 'major_disruption', 'executive_impact'];
+  if (!IMP.includes(String(body.impact))) throw invalid(`impact is one of ${IMP.join(', ')}`);
+  return ctx.tx(async (q) => {
+    const r = (await q.query<{ id: string; user_impact: string | null; state: string; incident: boolean }>("SELECT i.id, i.user_impact, i.state, EXISTS (SELECT 1 FROM app.incident n WHERE n.issue_id = i.id) AS incident FROM app.room_issue i WHERE i.code = $1 FOR UPDATE", [code])).rows[0];
+    if (!r) throw notFound(`issue ${code}`);
+    const why: string[] = [];
+    if (r.incident) why.push(`${code} is an incident: its user impact was recorded when it was reported`);
+    if (r.state !== 'OPEN') why.push(`${code} is ${r.state.toLowerCase()}: its impact is history`);
+    if (r.user_impact === body.impact) why.push(`${code} is already recorded as ${String(body.impact).replace(/_/g, ' ')}`);
+    if (String(body.why ?? '').trim().length < 5) why.push('say why (who is affected, how)');
+    if (why.length) await ctx.refuse('issue.impact', { type: 'RoomIssue', id: code }, why);
+    await q.query('UPDATE app.room_issue SET user_impact = $2 WHERE id = $1', [r.id, body.impact]);
+    await q.query("INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,'impact',$3,$4)", [ctx.p.tenantId, r.id, { from: r.user_impact, to: body.impact, why: String(body.why).trim() }, ctx.p.personId]);
+    await ctx.audit(q, 'issue.impact', 'ALLOWED', { type: 'RoomIssue', id: code }, { from: r.user_impact, to: body.impact });
+    return { issue: code, userImpact: body.impact, was: r.user_impact };
   });
 }

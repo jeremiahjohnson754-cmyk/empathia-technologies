@@ -96,7 +96,7 @@ Each row below says where the server holds the same thing, and whether it does: 
    Pass with Exception. **Built 18 Nov 2026 (0042, ADR-0020)** for measured tests with a criterion; no page shows it yet.
 5. **The network facts of a device stop at the address.** VLAN, addressing mode, gateway, switch and port, PoE. **Built 18 Nov 2026 (0045, ADR-0023).**
 6. **Lifecycle facts of a unit**: firmware baseline per model, warranty and support-contract dates, replacement forecast. **Built 18 Nov 2026 (0045, ADR-0023)** except the replacement forecast.
-7. **Vocabulary**: user impact on a deficiency; the workbook's finer root causes; a Blocked status; region and zone on a site.
+7. **Vocabulary**: user impact on a deficiency; the workbook's finer root causes; a Blocked status; region and zone on a site. **Built 18 Nov 2026 (0046)**: user impact on a deficiency (with why, an issue event each change) and region and zone on a site; Blocked stays an incident status (a deficiency waiting on something outside its workflow is Deferred with its reason).
 
 Nothing above is fixed by this document. Items 1 to 4 are the ones worth a decision from the founder on order: each is a migration,
 its rules, its routes and its tests.

@@ -52,6 +52,7 @@
 //          confirm it and its reporter can; the reporter cannot close it and the service manager can
 //   FL-36  a second report of the same kind on the same device is marked a repeat by the database; a blocked incident's correction
 //          waits; an escalation is recorded once; what the records add up to is the server's count; phone width
+//   FL-40  the user impact of a deficiency recorded from the page, with why (0046)
 //   FL-39  who to call: the support paths of the room's site from the server, Teams/email/copy hand-offs (nothing sent)
 //   FL-38  Pass with Exception from the page: an exception record logged, refused to its logger, rejected with a reason by the systems engineer
 //   FL-37  documentation and submission (0043): the required documents submitted and approved by different people, and the packet
@@ -339,6 +340,11 @@ const panel = p.getByTestId('fl-corrective'); let WO = ''; const second = {};   
     logged.ok === 'yes' && r0?.measured?.value > r0?.limit?.upper && self.ok === 'no' && no.ok === 'yes' && r1.state === 'REJECTED' && state === 'NONE' && (await issueOnServer()).state === 'OPEN',
     `log: ${logged.text.slice(0, 60)} · ${r0?.code} ${r0?.measured?.value} ${r0?.measured?.unit} vs ≤ ${r0?.limit?.upper} · by its logger: ${self.text.slice(0, 60)} · rejected: ${r1?.state}`);
   await actAs(p, 'cxeng'); }
+
+// the user impact of the deficiency (0046): recorded with why by the commissioning engineer; an issue event on the server
+{ await p.getByTestId('fl-def-impact-v').selectOption('major_disruption'); const set = await press(p, 'fl-def-impact-set');
+  const d = await (async () => { const i = await issueOnServer(); return (await api.call('GET', `/v1/issues/${i.code}/deficiency`, { token: await as('cxeng') })).body; })();
+  ok('FL-40', 'the user impact of the deficiency is recorded from the page with why, and the server holds it', set.ok === 'yes' && d.userImpact === 'major_disruption', `${set.text.slice(0, 80)} · server ${d.userImpact}`); }
 
 { const notMine = await press(p, 'fl-wo-raise'); const none = (await issueOnServer()).workOrders.length;                       // still the commissioning engineer
   await actAs(p, 'svcmgr'); const raised = await press(p, 'fl-wo-raise'); WO = (await issueOnServer()).workOrders[0];

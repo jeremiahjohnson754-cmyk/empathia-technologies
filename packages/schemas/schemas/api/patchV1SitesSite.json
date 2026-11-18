@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/patchV1SitesSite/0.1.0.json",
+  "title": "PATCH /v1/sites/{site} request body",
+  "description": "Name a site’s region and zone (an administrator; audited)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "region": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "zone": {
+      "type": "string",
+      "maxLength": 60
+    }
+  }
+}

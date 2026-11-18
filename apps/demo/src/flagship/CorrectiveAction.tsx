@@ -15,7 +15,7 @@ import { useState, type ReactNode } from 'react';
 import { Tag } from '@empathia/ui';
 
 export interface Issue { code: string; title: string; state: string; workflow: string; workOrders: string[]; check?: string }
-export interface Deficiency { issueId: string; test?: string | null; state: string; workflow: string; severity: string; ownerRole: string | null; targetDate: string | null; rootCause: string | null; correctiveAction: string | null; fixedBy: string | null;
+export interface Deficiency { issueId: string; test?: string | null; userImpact?: string | null; state: string; workflow: string; severity: string; ownerRole: string | null; targetDate: string | null; rootCause: string | null; correctiveAction: string | null; fixedBy: string | null;
   retest: { result: string; evidence: string } | null; closedBy: string | null; rootCauses?: string[] }
 interface Cand { id: string; name: string; hardFails: string[]; reasons: string[]; score: number }
 /** A credential as the server lists it to whoever is asking: everyone's for those who record or verify them, one's own otherwise. */
@@ -169,6 +169,20 @@ function ExceptionRecord({ issue, records, dw, t }: { issue: Issue; records: Exc
   );
 }
 
+/** The user impact of the deficiency (0046): the same five words as an incident, recorded with why; each change an issue event. */
+const IMPACT_WORDS = ['none', 'minor_annoyance', 'moderate_disruption', 'major_disruption', 'executive_impact'];
+function ImpactLine({ issue, def, t }: { issue: Issue; def: Deficiency | null; t: Tools }) {
+  const [v, setV] = useState(def?.userImpact || 'moderate_disruption'); const [why, setWhy] = useState('Speech at the back of the theatre is hard to follow (synthetic).'); const { go, post, btn } = kit(t);
+  if (issue.state !== 'OPEN') return def?.userImpact ? <p className="ui-meta" data-testid="fl-def-impact">User impact: {words(def.userImpact)}</p> : null;
+  return (
+    <div className="ca__row" data-testid="fl-def-impact" data-impact={def?.userImpact || ''}>
+      <label className="kit-field">User impact <select value={v} data-testid="fl-def-impact-v" onChange={(e: { target: { value: string } }) => setV(e.target.value)}>{IMPACT_WORDS.map((x) => <option key={x} value={x}>{words(x)}</option>)}</select></label>
+      <label className="kit-field">Why <input type="text" value={why} maxLength={500} data-testid="fl-def-impact-why" onChange={(e: { target: { value: string } }) => setWhy(e.target.value)} /></label>
+      {btn('fl-def-impact-set', def?.userImpact ? `Change from ${words(def.userImpact)}` : 'Record the impact', () => void go('Recording the user impact…', 'the user impact', post(`/v1/issues/${issue.code}/impact`, { impact: v, why }), { ok: true, title: `User impact: ${words(v)}.`, text: 'Recorded as an issue event, with who and why.' }))}
+    </div>
+  );
+}
+
 export function CorrectiveAction({ issue, def, wo, creds, excs = [], measured = false, t }: { issue: Issue; def: Deficiency | null; wo: WorkOrder | null; creds: Cred[]; excs?: Exc[]; measured?: boolean; t: Tools }) {
   const [owner, setOwner] = useState('service'); const [due, setDue] = useState(inDays(10)); const [cause, setCause] = useState('ACOUSTICS'); const [action, setAction] = useState('Absorptive panels fitted to the rear wall, as the acoustic brief allows (synthetic)');
   const D = `/v1/issues/${issue.code}/deficiency`; const ws = wo?.state || 'NONE'; const dw = def?.workflow || issue.workflow; const { go, post, btn } = kit(t);
@@ -178,6 +192,7 @@ export function CorrectiveAction({ issue, def, wo, creds, excs = [], measured = 
       <ServiceWork issue={issue} wo={wo} creds={creds} t={t} />
       <div className="ca__col">
         <h4 className="fl__h4">The deficiency’s own record <Tag tone={dw === 'CLOSED' ? 'ok' : 'warn'}>{words(dw)}</Tag></h4>
+        <ImpactLine issue={issue} def={def} t={t} />
         <ol className="ca__steps">
           <Step id="def-start" n={1} title="Name the owner and a date" who="commissioning engineer" state={dw === 'OPEN' ? 'now' : 'done'}>
             {dw === 'OPEN' ? <><div className="ca__row"><label className="kit-field">Owner <select value={owner} data-testid="fl-def-owner" onChange={(e: { target: { value: string } }) => setOwner(e.target.value)}>{t.roles.map(([k, n]) => <option key={k} value={k}>{n}</option>)}</select></label>

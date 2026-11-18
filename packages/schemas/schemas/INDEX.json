@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 105,
+    "api": 107,
     "entities": 4
   },
   "files": [
@@ -707,6 +707,16 @@
       "file": "api/postV1DirectorySupportPathsCodeDecide.json",
       "$id": "https://schemas.empathia.invalid/api/postV1DirectorySupportPathsCodeDecide/0.1.0.json",
       "sha256": "e9b09d9d9162883cebdca4470d1d451987f114a408a262334172a7bb10a3ef90"
+    },
+    {
+      "file": "api/patchV1SitesSite.json",
+      "$id": "https://schemas.empathia.invalid/api/patchV1SitesSite/0.1.0.json",
+      "sha256": "f5eae4a29bcb1ab7b6d001b82efddadcf746a3eb7161b2ffa980bdff8d539d1c"
+    },
+    {
+      "file": "api/postV1IssuesIssueImpact.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueImpact/0.1.0.json",
+      "sha256": "cc783bebf70b5e8cec0aee3686168814b4601febb6c1631a011e76f7ebf806e5"
     },
     {
       "file": "api/postV1RoomsRoomDocumentationKind.json",
