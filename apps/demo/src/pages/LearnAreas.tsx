@@ -7,6 +7,7 @@
  * from the records. Scores stay in this browser; a completion is a training line in the ledger, never an authorization to work.
  */
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { QuizLibrary } from '../learn/QuizLibrary.js';
 import { PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, Notice, Button, Tag, ProgressBar, EmptyState, ScoreRing, QuizRunner, DrillRunner, DRILL_KINDS, IncidentRunner, Incidents, type Quiz, type Drill, type IconName } from '@empathia/ui';
 import { V, fill, trainingCases, caseById, loadProgress, record, minutesOf, RESPONSES, RULES, score, readinessOf, competencyEvidence, roomsFor, archetypesIn, hopsOf, type TrainingCase, type Progress, type Episode, type Scene } from '../learn/model.js';
 import { loadLabs } from '../learn/store.js';
@@ -670,11 +671,12 @@ export function LibraryPage({ perspective }: { perspective: string }) {
   return (
     <section className="wk ln" data-native="workspace" data-testid="learn-library">
       <Head role={perspective} current="#/learn/library" title="Learn" lede="The knowledge that belongs to the estate: thirteen kinds, each linked to the rooms, devices and issues it explains." />
-      <LibGate lib={lib} err={err}>{(l) => (
+      <LibGate lib={lib} err={err}>{(l) => (<>
         <Card icon="spark" tone="violet" title="SIGNAL lessons" sub={`SIGNAL world · fiction · ${l.lessonOrder.length} lessons, each with a check`} testId="library-lessons">
           <div className="ln-kinds">{l.lessonDomains.map((d) => { const ids = l.lessonOrder.filter((id) => l.lessons[id]?.domain === d); return <details key={d} className="ln-dom"><summary><b>{d}</b> <span className="ui-meta">{plural(ids.length, 'lesson')}</span></summary><List label={`${d} lessons`}>{ids.map((id) => <ListRow key={id} title={l.lessons[id]!.title} sub={l.lessons[id]!.sum} onClick={() => setSel(id)} current={sel === id} />)}</List></details>; })}</div>
           {sel && l.lessons[sel] ? <article className="stack ln-lesson" data-testid="lesson"><h3>{l.lessons[sel]!.title}</h3>{l.lessons[sel]!.cards.map((c, i) => <p key={i} className="learn__card" dangerouslySetInnerHTML={html(c)} />)}{l.lessons[sel]!.quiz && l.quizzes[l.lessons[sel]!.quiz!] ? <QuizRunner q={l.quizzes[l.lessons[sel]!.quiz!]!} /> : null}</article> : null}
-        </Card>)}</LibGate>
+        </Card>
+        <Card icon="check" tone="violet" title="SIGNAL quizzes" sub="SIGNAL world · fiction · every quiz of the standalone, by kind and season" testId="library-quizzes"><QuizLibrary quizzes={l.quizzes} seasonOf={(l as unknown as { seasonOf?: Record<string, number> }).seasonOf || {}} /></Card></>)}</LibGate>
       <Timeline />
       <Card icon="layers" title="Thirteen kinds of knowledge" sub="What each kind is, and how many this demonstration's records hold">
         <div className="ln-kk">{V.KNOWLEDGE_KINDS.map(([k, d]) => <div key={k} className="ln-kk__i"><b className="num">{held[k] ?? '—'}</b><span><b>{k}</b><span className="ui-meta">{d}</span></span></div>)}</div>

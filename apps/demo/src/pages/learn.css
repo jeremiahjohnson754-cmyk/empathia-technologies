@@ -396,3 +396,8 @@ main details > summary { min-height: 24px; }
 .wc__who { display: grid; gap: .3rem; }
 .wc__acts { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
 .wc__acts .ui-meta { flex-basis: 100%; margin: 0; }
+/* the SIGNAL quiz library (learn/QuizLibrary.tsx) */
+.ql { display: grid; gap: var(--sp-2); }
+.ql__filters { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: flex-end; }
+.ql__filters input, .ql__filters select { min-height: 40px; }
+.ql__list { max-height: 520px; overflow-y: auto; }
