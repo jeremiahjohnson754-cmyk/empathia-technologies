@@ -11,6 +11,7 @@
 //   FTB-06  "/" stays the shell's Search Party key here too (the page does not take it); arrow keys step a number; Shift steps by ten
 //   FTB-07  a job: start one, save two calculations with a note, reload, they are still there, open one, remove one, delete the job
 //   FTB-08  copy the report: the clipboard holds the tool, inputs, results and the verification line (or the fallback shows it)
+//   FTB-10  a calculator links where it is studied: the certification math pages and the practice questions that use it
 //   FTB-09  an unknown calculator says so; 390 px has no sideways scroll; no console errors; no off-origin requests
 import { harness } from './demo-shell-lib.mjs';
 const { ok, open, done } = await harness('demo-fieldtools');
@@ -53,6 +54,8 @@ const { ok, open, done } = await harness('demo-fieldtools');
   ok('FTB-04c', 'and the working', /2\^6 − 2 = 62/.test(w2), w2.slice(0, 300));
   await p.focus('[data-field="p"]'); await p.keyboard.press('ArrowUp'); ok('FTB-06b', 'ArrowUp steps the prefix by one', (await p.inputValue('[data-field="p"]')) === '27');
   await p.keyboard.press('Shift+ArrowUp'); ok('FTB-06c', 'Shift+ArrowUp steps by ten, held at the maximum', (await p.inputValue('[data-field="p"]')) === '32');
+  await p.waitForSelector('[data-testid="ft-learn-CTS"]', { timeout: 8000 }).catch(() => undefined);
+  const learn = await p.innerText('[data-testid="ft-learn"]').catch(() => ''); ok('FTB-10', 'the subnet calculator links its CTS math page and the questions that use it', /CTS math and physics/.test(learn) && /\d+ CTS questions? use it/.test(learn), learn);
   ok('FTB-04d', 'no console errors', !t.errs.length, t.errs.join(' | '));
   await t.close();
 }

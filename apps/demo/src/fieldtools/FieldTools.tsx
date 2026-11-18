@@ -141,6 +141,8 @@ function ToolView({ tool, query, jobs, active, setActive, setJobs, store }: { to
       {tool.caution && <p className="ft-caution" role="note"><Icon name="shield" size={16} /> {tool.caution}</p>}
     </details>
 
+    <LearnIt tool={tool} />
+
     <div className="ft-panel ft-keep" data-testid="ft-keep">
       <h2>Keep or share it</h2>
       <div className="ft-keep__row">
@@ -157,6 +159,19 @@ function ToolView({ tool, query, jobs, active, setActive, setJobs, store }: { to
       <textarea ref={fallback} className="ft-fallback" hidden readOnly aria-label="Text to copy" />
     </div>
   </article>;
+}
+
+/** where this arithmetic is studied: the certification questions that use this calculator, loaded only when a tool is open */
+function LearnIt({ tool }: { tool: Tool }) {
+  const [n, setN] = useState<Record<string, number> | null>(null);
+  useEffect(() => { let live = true; import('../certs/exam.js').then((E) => { if (!live) return; const out: Record<string, number> = {}; for (const [c, qs] of Object.entries(E.BANKS)) out[c] = qs.filter((q) => q.tool === tool.id).length; setN(out); }).catch(() => undefined); return () => { live = false; }; }, [tool.id]);
+  const used = n ? Object.entries(n).filter(([, k]) => k > 0) : [];
+  if (!tool.cts?.length && !used.length) return null;
+  return <div className="ft-panel ft-learn" data-testid="ft-learn"><h2><Icon name="book" size={16} /> Learn it</h2>
+    <p className="ft-fine">This arithmetic is on the {tool.cts?.join(', ')} exam outlines’ ground. Study it with the formula, then practise:</p>
+    <div className="ft-keep__row">{(tool.cts || []).map((c) => <a key={c} className="ui-btn ui-btn--sm" href={`#/learn/${c.toLowerCase()}/math`}>{c} math and physics</a>)}
+      {used.map(([c, k]) => <a key={c} className="ui-btn ui-btn--sm" href={`#/learn/${c.toLowerCase()}/practice`} data-testid={`ft-learn-${c}`}>{k} {c} question{k === 1 ? '' : 's'} use it</a>)}</div>
+  </div>;
 }
 
 function Jobs({ jobs, active, setActive, setJobs, store }: { jobs: Job[]; active: string; setActive: (s: string) => void; setJobs: (j: Job[]) => void; store: boolean }) {
