@@ -42,6 +42,17 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
   await t.close();
 }
 
+{ // 18 Nov first-time-viewer pass: the top bar wrapped to a third row at 390 px (avatar alone on a row, 157 px instead of 106). At every
+  // common phone width the bar must fit the height the layout reserves for it (--top-h), and the account button must stay on the first row.
+  const t = await open([390, 844], 'light', { hash: '#/home' });
+  for (const w of [320, 360, 375, 390, 412, 430, 768]) {
+    await t.page.setViewportSize({ width: w, height: 844 }); await t.page.waitForTimeout(250);
+    const v = await t.page.evaluate(() => { const bar = document.querySelector('.shell__bar'); const top = parseFloat(getComputedStyle(document.querySelector('.demo')).getPropertyValue('--top-h')); const va = document.querySelector('.viewas-btn')?.getBoundingClientRect(); const em = document.querySelector('.shell__brand')?.getBoundingClientRect(); return { h: Math.round(bar.getBoundingClientRect().height), top, sameRow: !!va && !!em && Math.abs((va.top + va.height / 2) - (em.top + em.height / 2)) < 12 }; });
+    ok(`CORE-bar-${w}`, `${w} px: the top bar fits its reserved height (${'--top-h'}) and View as sits on the brand's row`, v.h <= v.top + 1 && v.sameRow, JSON.stringify(v));
+  }
+  await t.close();
+}
+
 { // V2.5.3 addresses and destructive input, once per scheme at 1440
   for (const scheme of SCHEMES) {
     const t = await open([1440, 900], scheme, { hash: '#/investor' });

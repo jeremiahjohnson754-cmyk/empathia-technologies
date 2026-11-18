@@ -205,7 +205,11 @@ body.has-dialog { overflow: hidden; }
   .sheet__grab { display: block; width: 44px; height: 5px; border-radius: 3px; margin: 0 auto 10px; background: var(--line2); }
 }
 @media (max-width: 560px) { .demo-shell .shell__product { display: none; } }
-@media (max-width: 380px) { .shell__word { display: none; } }
+/* 18 Nov first-time-viewer pass: brand + "Synthetic data" + Field Tools + notes + View as need ~406 px with the wordmark, so between 381 and
+   ~410 px the avatar fell to a third row (the bar grew from 106 to 157 px on a 390 px iPhone). The wordmark goes below 420 px (the
+   emblem still names the company and links home); under 350 px the gaps and chip padding tighten so the row fits a 320 px phone. */
+@media (max-width: 419px) { .shell__word { display: none; } }
+@media (max-width: 350px) { .demo-shell .shell__bar { gap: 4px; padding-left: 8px; padding-right: 8px; } .synth-chip { padding: 2px 7px; } }
 
 /* ---------------------------------------------------------------- the role veil (V2.5.3 roleVeil: ~0.9 s, visual only) */
 .veil { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; pointer-events: none; background: var(--bg); color: var(--tx); animation: veil .9s var(--ease) both; }

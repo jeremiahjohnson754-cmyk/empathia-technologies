@@ -12,7 +12,7 @@ import { harness } from './demo-shell-lib.mjs';
 const { open, ok, done, base, browser } = await harness('demo-campus-life');
 
 const KEY_OF = { n: 'w', s: 's', e: 'd', w: 'a' };
-async function at(p) { return p.evaluate(() => { const e = document.querySelector('[data-testid=campus-life]'); const g = (k) => e.getAttribute(`data-${k}`); return { x: Number(g('x')), z: Number(g('z')), cam: Number(g('cam')), eyeZ: Number(g('eye-z')), yaw: Number(g('yaw')), xp: Number(g('xp')), level: Number(g('level')), stage: g('stage'), door: g('door'), inside: g('inside'), fps: Number(g('fps')), cards: Number(g('cards')), speed: Number(g('speed')) }; }); }
+async function at(p) { return p.evaluate(() => { const e = document.querySelector('[data-testid=campus-life]'); const g = (k) => e.getAttribute(`data-${k}`); return { x: Number(g('x')), z: Number(g('z')), cam: Number(g('cam')), eyeZ: Number(g('eye-z')), yaw: Number(g('yaw')), xp: Number(g('xp')), level: Number(g('level')), stage: g('quest'), door: g('door'), inside: g('inside'), fps: Number(g('fps')), cards: Number(g('cards')), speed: Number(g('speed')) }; }); }
 /** hold keys until a condition holds or time runs out; returns the last position */
 async function hold(p, keys, until, ms = 8000) { for (const k of keys) await p.keyboard.down(k); const t0 = Date.now(); let s = await at(p);
   while (Date.now() - t0 < ms && !until(s)) { await p.waitForTimeout(40); s = await at(p); } for (const k of keys) await p.keyboard.up(k); await p.waitForTimeout(120); return at(p); }
@@ -121,6 +121,11 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
   await p.waitForTimeout(1500); const fpsPhone = (await at(p)).fps;
   ok('CL-15', `a phone-sized screen: no sideways scroll; the HUD fits; ${coarse ? `the thumb-stick moves the student (${moved?.toFixed(2)} m)` : 'this browser reports a fine pointer, so the touch controls are hidden (they are tested with a coarse pointer in CL-16)'}`, over <= 0 && (!coarse || moved > 1), `overflow ${over} · coarse ${coarse} · moved ${moved}`);
   ok('CL-16f', `frame rate at phone size (390 × 844) in the same headless browser: ${fpsPhone} fps; budget ≥ 8 (not a phone measurement)`, fpsPhone >= 8, `${fpsPhone} fps`);
+  // 18 Nov first-time-viewer pass: the game wrote its quest stage to data-stage, which the design tokens read as "a dark 3D stage", so
+  // the page's intro took the dark theme's pale text on the light page. The intro must read in the page's own text colour.
+  const tone = await p.evaluate(() => { const sec = document.querySelector('[data-testid=campus-life]'); return { stageAttr: sec.hasAttribute('data-stage'), intro: getComputedStyle(sec.querySelector('.cl-head p')).color, page: getComputedStyle(document.querySelector('main')).getPropertyValue('--tx2').trim() }; });
+  const rgb = (c) => c.startsWith('#') ? `rgb(${parseInt(c.slice(1, 3), 16)}, ${parseInt(c.slice(3, 5), 16)}, ${parseInt(c.slice(5, 7), 16)})` : c;
+  ok('CL-19', 'the page keeps its own theme: the game no longer marks itself a dark stage, and the intro is in the page text colour', !tone.stageAttr && tone.intro === rgb(tone.page), JSON.stringify(tone));
   await t.close(); }
 
 { // touch controls on a touch device (a coarse pointer): a context with touch, as a phone's browser has; the stick driven by touch pointers
@@ -134,5 +139,8 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
   const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   ok('CL-16', 'touch: on a touch device the thumb-stick shows and pushing it up walks the student north; no sideways scroll', coarse && vis && moved > 1 && over <= 0, `coarse ${coarse} · visible ${vis} · moved ${moved.toFixed(2)} m · overflow ${over}`);
   ok('CL-17', 'no console error on the touch device', !errs.length, errs.slice(0, 3).join(' | '));
+  // 18 Nov first-time-viewer pass: on a 390 px phone the quest card covered the player card. No two HUD pieces may overlap on a phone.
+  const hud = await p.evaluate(() => { const r = (s) => { const b = document.querySelector(s)?.getBoundingClientRect(); return b && b.width ? { s, l: b.left, t: b.top, r: b.right, b: b.bottom } : null; }; const xs = ['.cl-who', '.cl-quest', '.cl-map', '.cl-stick', '.cl-acts', '.cl-bar'].map(r).filter(Boolean); const hit = []; for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i], b = xs[j]; if (a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1) hit.push(`${a.s}×${b.s}`); } return { n: xs.length, hit }; });
+  ok('CL-20', `touch phone (390 × 844): the ${hud.n} HUD pieces (player, quest, map, stick, actions, bar) do not overlap`, hud.n >= 5 && !hud.hit.length, JSON.stringify(hud));
   await ctx.close(); }
 await done();

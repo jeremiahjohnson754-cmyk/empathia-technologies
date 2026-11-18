@@ -137,7 +137,7 @@ export function CampusLifePage() {
   const restart = () => { const f = fresh(); st.current = f; store(f); setSaved('Started again'); setPaused(false); setPanel(null); };
 
   return <section className="cl" ref={root} data-testid="campus-life" data-ready={!err} data-x={s.x.toFixed(2)} data-z={s.z.toFixed(2)} data-yaw={s.camYaw.toFixed(3)} data-cam={s.camDist.toFixed(2)} data-eye-z={s.eyeZ.toFixed(2)}
-    data-xp={s.xp} data-level={lvl} data-stage={s.stage} data-door={s.door ? 'open' : 'closed'} data-inside={s.inside} data-fps={s.fps} data-cards={s.cards.length} data-speed={s.speed.toFixed(2)}>
+    data-xp={s.xp} data-level={lvl} data-quest={s.stage} data-door={s.door ? 'open' : 'closed'} data-inside={s.inside} data-fps={s.fps} data-cards={s.cards.length} data-speed={s.speed.toFixed(2)}>
     <header className="cl-head"><h1>Campus Life</h1><p>Kestrel Valley University · the Quad and Science Hall · a first playable slice. Everything here is fictional; progress is kept <b>in this browser</b>.</p></header>
     <div className="cl-stage">
       <canvas ref={canvas} className="cl-canvas" tabIndex={0} aria-label="Campus Life: the Quad and Science Hall. Move with W A S D, run with Shift, act with E, turn the camera with the left and right arrow keys or by dragging, C to put it behind you." data-testid="cl-canvas"

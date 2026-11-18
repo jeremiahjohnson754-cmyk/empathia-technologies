@@ -65,7 +65,13 @@
 .cl-led { fill: #3b2a2a; stroke: #111; stroke-width: 1; }
 .cl-led--on { fill: #ffcf4a; filter: drop-shadow(0 0 6px #ffcf4a); }
 .cl-foot { color: var(--tx2, #5b6676); font-size: 12px; margin: 0; }
-@media (max-width: 640px) { .cl-quest { max-width: 60%; } .cl-who { min-width: 0; } .cl-xp { width: 90px; } .cl-bar { max-width: 100%; } }
+/* 18 Nov first-time-viewer pass: on a 390 px phone the quest card (max 60%) slid over the player card, hiding the name and level. On
+   narrow stages the two stack: the player card top-left, the quest a full-width strip under it; the touch-screen map drops below both. */
+@media (max-width: 640px) {
+  .cl-who { min-width: 0; max-width: calc(100% - 24px); } .cl-xp { width: 90px; } .cl-bar { max-width: 100%; }
+  .cl-quest { left: 12px; right: 12px; top: 92px; max-width: none; }
+}
+@media (max-width: 640px) and (pointer: coarse) { .cl-map { top: 182px; width: 104px; } }
 @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) .cl-sheet { background: #16202b; color: #e8edf2; } :root:not([data-theme=light]) .cl-opt-btn { background: #1f2b38; color: #e8edf2; } }
 :root[data-theme=dark] .cl-sheet { background: #16202b; color: #e8edf2; } :root[data-theme=dark] .cl-opt-btn { background: #1f2b38; color: #e8edf2; }
 

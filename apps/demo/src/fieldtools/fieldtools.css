@@ -118,7 +118,7 @@
 .ft-x { display: grid; place-items: center; width: 36px; height: 36px; border-radius: var(--r-sm); border: 0; background: transparent; color: var(--tx3); cursor: pointer; }
 .ft-x:hover { background: var(--bg2); color: var(--tx); }
 
-.shell__ft { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border-radius: var(--r-pill); border: 1px solid color-mix(in srgb, var(--p-field) 45%, var(--line2)); color: var(--tx); text-decoration: none; font-size: var(--fs-sm); background: var(--bg2); }
+.shell__ft { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 44px; justify-content: center; padding: 0 12px;   /* 44 × 44 touch target (P-*-03; was 40 tall) */ border-radius: var(--r-pill); border: 1px solid color-mix(in srgb, var(--p-field) 45%, var(--line2)); color: var(--tx); text-decoration: none; font-size: var(--fs-sm); background: var(--bg2); }
 .shell__ft { white-space: nowrap; }
 .shell__ft:hover { border-color: var(--p-field); } .shell__ft:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .shell__ft[aria-current="page"] { background: var(--p-field); color: var(--bg); border-color: var(--p-field); }
