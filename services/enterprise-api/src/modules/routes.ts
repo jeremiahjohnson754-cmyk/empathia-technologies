@@ -34,6 +34,7 @@ import * as defs from '../domain/deficiencies.js';
 import * as exc from '../domain/exceptions.js';
 import * as docs from '../domain/documentation.js';
 import * as dir from '../domain/directory.js';
+import * as jumps from '../domain/jumps.js';
 import * as fw from '../domain/firmware.js';
 import * as demo from '../domain/demo.js';
 import * as fr from '../domain/fieldRecord.js';
@@ -229,6 +230,17 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
     responses: created('support path'), handler: async (c, q) => ({ status: 201, body: await dir.proposePath(c, q.body as never) }) });
   add({ method: 'POST', path: '/v1/directory/support-paths/:code/decide', tag: 'directory', summary: 'Approve or reject a proposed support path: a data steward, never its proposer, once; an approval supersedes the site’s approved path for that domain', auth: true, authority: dir.VERIFY, action: 'decide a support path',
     body: obj({ decision: str({ enum: ['APPROVED', 'REJECTED'] }), note: str({ maxLength: 500 }) }, ['decision']), responses: ok('support path'), handler: async (c, q) => ({ status: 200, body: await dir.decidePath(c, q.params['code']!, q.body as never) }) });
+  // ---------------------------------------------------------------------------------------- platform jumps (0047): links, not integrations
+  const KEYS = jumps.PLATFORMS.map((x) => x.key); const URLS = str({ minLength: 10, maxLength: 400, pattern: '^https://' });
+  add({ method: 'GET', path: '/v1/platforms', tag: 'platforms', summary: 'The platforms a jump can open (device clouds, meeting-room portals, collaboration, DSP and audio-network management, signage, design and ITSM) with the address the organization set or the vendor’s documented sign-in address; a jump exchanges no data and is not an integration', auth: true, responses: ok('platforms'), handler: async (c) => ({ status: 200, body: await jumps.list(c) }) });
+  add({ method: 'PUT', path: '/v1/platforms/:platform', tag: 'platforms', summary: 'Set where the organization’s jump to one platform goes (https only), or turn it off (the security administrator or the operations lead; audited)', auth: true, authority: jumps.CONFIGURE, action: 'set where a platform jump goes',
+    body: obj({ url: URLS, label: str({ maxLength: 80, nullable: true }), enabled: bool() }, ['url']), responses: ok('platform link'), handler: async (c, q) => ({ status: 200, body: await jumps.configure(c, q.params['platform']!, q.body as never) }) });
+  for (const subject of ['room', 'device'] as const) {
+    const base = subject === 'room' ? '/v1/rooms/:ref/platforms' : '/v1/assets/:ref/platforms';
+    add({ method: 'GET', path: base, tag: 'platforms', summary: `The jumps for one ${subject}: its own address in a platform where someone recorded it, else the organization’s portal`, auth: true, responses: ok('jumps'), handler: async (c, q) => ({ status: 200, body: await jumps.forSubject(c, subject, q.params['ref']!) }) });
+    add({ method: 'POST', path: base, tag: 'platforms', summary: `Record where this ${subject} is in a platform (https only; replaces the current address, which is kept): someone who designs, installs, serves or triages it`, auth: true, authority: jumps.RECORD, action: `record where this ${subject} is in a platform`,
+      body: obj({ platform: str({ enum: KEYS }), url: URLS }, ['platform', 'url']), responses: created('reference'), handler: async (c, q) => ({ status: 201, body: await jumps.recordRef(c, subject, q.params['ref']!, q.body as never) }) });
+  }
   add({ method: 'PATCH', path: '/v1/sites/:site', tag: 'organization', summary: 'Name a site’s region and zone (an administrator; audited)', auth: true, authority: org.SITE_AUTHORITIES, action: 'name a site’s region and zone',
     body: obj({ region: str({ maxLength: 60 }), zone: str({ maxLength: 60 }) }, []), responses: ok('site'), handler: async (c, q) => ({ status: 200, body: await org.placeSite(c, q.params['site']!, (q.body || {}) as never) }) });
   add({ method: 'POST', path: '/v1/issues/:issue/impact', tag: 'issues', summary: 'Record the user impact of a deficiency (none, minor annoyance, moderate or major disruption, executive impact) with why; each change is an issue event', auth: true, authority: defs.IMPACT_AUTHORITIES, action: 'record the user impact of a deficiency',
