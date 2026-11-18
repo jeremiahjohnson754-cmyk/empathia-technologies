@@ -3,7 +3,7 @@
  * page — no external renderer, nothing fetched — and they stay dark in light mode (D36: `data-stage` takes the dark tokens).
  * Every device is a keyboard-reachable button with an accessible name; colour is never the only signal (each layer has a letter glyph).
  */
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { BUILDINGS, type Building } from '../campus/canon.js';
 import { C, type Position, type Layer } from '../campus/design.js';
 import type { Connection } from '@empathia/domain-types';
@@ -29,7 +29,19 @@ const keyAct = (fn: () => void) => (e: { key: string; preventDefault: () => void
  */
 export interface CampusTile { score: number | null; band: 'healthy' | 'monitor' | 'action' | 'none'; issues: number; rooms: number }
 const BAND_GLYPH = { healthy: '●', monitor: '▲', action: '◆', none: '○' } as const;
-export function CampusMap({ tiles, onOpen, onPreview, current }: { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string }) {
+/** The campus map wherever it appears: the Empathia Map (WebGL2: aerial imagery, 3D buildings, fly-to drill-down; task #234), or this
+ *  SVG isometric map where the browser has no WebGL2. Both keep one keyboard button per building (data-testid campus-b-<key>). */
+type MapProps = { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string };
+let MapCode: ((p: MapProps) => JSX.Element) | null = null;
+const hasGl = () => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch { return false; } };
+export function CampusMap(props: MapProps) {
+  // the map's code (~48 KB) is fetched when a map is first shown, so the page around it renders at once (18 Nov)
+  const [gl] = useState(hasGl); const [M, setM] = useState(() => MapCode);
+  useEffect(() => { if (!gl || M) return; let live = true; import('../map/EmpathiaMap.js').then((m) => { MapCode = m.EmpathiaMap; if (live) setM(() => m.EmpathiaMap); }).catch(() => { /* stays on the placeholder; the list beside the map holds every building */ }); return () => { live = false; }; }, [gl, M]);
+  if (!gl) return <CampusMapSvg {...props} />;
+  return M ? <M {...props} /> : <div className="emap" aria-busy="true" data-testid="emap-loading"><div className="emap__view emap__view--loading"><span>Loading the campus map…</span></div></div>;
+}
+export function CampusMapSvg({ tiles, onOpen, onPreview, current }: { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string }) {
   const [hot, setHot] = useState<string | null>(null);
   const peek = (b: Building | null) => { setHot(b?.key || null); onPreview?.(b); };
   const S = 62; const cos = Math.cos(Math.PI / 6), sin = Math.sin(Math.PI / 6); const FH = 0.34;

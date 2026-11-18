@@ -31,7 +31,7 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
     if (vp[2] === 'desktop' || vp[2] === 'phone') await t.page.screenshot({ path: path.join(out, `${tag}-${slug}.png`), fullPage: true });
   }
   // the numbers equal the records
-  await t.go('#/campus', 600);
+  await t.go('#/campus', 600); await t.page.waitForSelector('[data-testid="campus-b-ATL"]', { timeout: 15000 }).catch(() => {});   // the map loads on demand (18 Nov, #234)
   const camp = await t.page.evaluate(() => ({ b: document.querySelectorAll('[data-testid^="campus-b-"]').length, rows: document.querySelectorAll('[data-testid="building-list"] .kit-meter').length, intro: document.querySelector('main')?.innerText.match(/(\d+) buildings and (\d+) regional sites, (\d+) rooms, (\d+) device positions/)?.slice(1).map(Number), sites: document.querySelectorAll('[data-testid="regional-sites"] .kit-meter').length, pills: document.querySelectorAll('[data-testid="building-pills"] a').length }));
   // 10 Nov 2026: 2 → 7 sites off the map and 8 → 13 pills: the 90-room estate adds five fictional sites (Westmere, Highfield, Eastgate,
   // Stonebridge, Millbrook). The campus map still draws its six buildings.
@@ -204,8 +204,10 @@ for (const scheme of SCHEMES) {
 
 { // reduced motion: the 3D campus and the room still work
   const t = await open([1440, 900], SCHEMES[0], { hash: '#/campus', reducedMotion: 'reduce' }); await t.page.waitForTimeout(500);
-  await t.page.focus('[data-testid="campus-b-HZN"]'); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(400);
-  ok('CORE-reduced-motion', 'under reduced motion a building opens from the keyboard', (await t.page.evaluate(() => location.hash)) === '#/campus/HZN' && !t.errs.length);
+  // CHANGED 18 Nov 2026 (#234 Empathia Map): the first Enter on a building flies to it and opens its place card (as a map app does);
+  // a second Enter, or the card's Open button, opens the building page. The keyboard path is the same length plus one key.
+  await t.page.waitForSelector('[data-testid="campus-b-HZN"]', { timeout: 15000 }).catch(() => {}); await t.page.focus('[data-testid="campus-b-HZN"]'); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(300); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(400);
+  ok('CORE-reduced-motion', 'under reduced motion a building opens from the keyboard (Enter for its card, Enter again to open)', (await t.page.evaluate(() => location.hash)) === '#/campus/HZN' && !t.errs.length);
   await t.close();
 }
 await done();

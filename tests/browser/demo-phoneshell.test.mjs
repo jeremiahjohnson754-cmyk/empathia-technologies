@@ -29,7 +29,8 @@ for (const w of [360, 390, 768]) {
   let reached = 0; const missed = [];
   for (let i = 0; i < menu.products.length; i++) {
     await p.click('[data-testid=menu-open]'); await p.locator('.drawer__product > a').nth(i).click(); await p.waitForTimeout(350);
-    if (await p.locator('[data-testid=access-page], [data-testid=not-found]').count() === 0 && (await main(p)).length > 20 && await p.locator('[data-testid=menu]').count() === 0) reached += 1; else missed.push(menu.products[i].n);
+    const why = { refused: await p.locator('[data-testid=access-page], [data-testid=not-found]').count(), text: (await main(p)).length, menu: await p.locator('[data-testid=menu]').count() };   // 18 Nov: the failure now says which condition failed
+    if (!why.refused && why.text > 20 && !why.menu) reached += 1; else missed.push(`${menu.products[i].n} ${JSON.stringify(why)}`);
   }
   ok(`P-${w}-08`, `${w} px: every product is reached in two taps (menu, product)`, reached === menu.products.length, missed.join(','));
   await p.click('[data-testid=menu-open]'); await p.click('[data-testid=menu] [data-theme-choice=light]'); await p.waitForTimeout(100);

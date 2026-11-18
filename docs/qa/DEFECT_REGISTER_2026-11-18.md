@@ -91,6 +91,27 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **Fix:** on phones the ladder shows in two columns. Every stage and product stays. The hero is now 2,220 px.
 - **Regression test:** visual check plus W-words and W-tilefit. A height budget is still to be set in the mobile design system (#226).
 
+### D18-09 · P1 (founder 14:10: "Fix the campus maps … not the quality we're looking for") · Rebuilt
+- **Product:** the campus map on the investor start, Mission Control, Campus and the Search Party map tab.
+- **What was wrong:** a hand-drawn isometric SVG with six flat boxes. No imagery, zoom, rotate or tilt, no drill-down below the building, and no jumps to the room in other products.
+- **Fix:** the Empathia Map (`apps/demo/src/map/`):
+  - **Ground and buildings:** synthetic aerial imagery and our own street style, painted from the canonical footprints. Buildings in 3D with façades and rooftop units; 3D trees.
+  - **Moving around:** pan, zoom, rotate and tilt by mouse, touch and keyboard. Fly-to camera.
+  - **Drill-down:** campus → building (place card, floors) → floor (cutaway with a modeled room layout) → room. The room card links to the room record, Lite, Commissioning, Assurance, Core Replay, Search Party, ServiceHands and People.
+  - **Also:** search, breadcrumbs, compass, and the place card below the map on phones.
+  - **Fallback:** the SVG map where there is no WebGL2.
+- **Labelling:** imagery, storey heights and room layouts are labelled synthetic or modeled.
+- **Regression test:** `demo-map` MAP-01…15 and MAP-phone, MAP-p360, in light and dark.
+- **Related test changes:** `demo-campus` CA-*-04 and `demo-core` CORE-reduced-motion now press Enter once for the place card and again to open, with the reason recorded. The campus checks wait for the map's code, which loads on demand.
+
+### D18-10 · P2 · Fixed (found while building D18-09)
+- **What was wrong:** the map slowed the pages around it. Painting the imagery in one go blocked the main thread for about 0.9 s in total. On a software renderer the opening flight took 70–100 ms per frame, so a page opened right after Mission Control could still be loading 350 ms later (`demo-phoneshell` P-*-08, intermittent).
+- **Fix:**
+  - The imagery is painted in steps that yield to the browser.
+  - The map's code loads on demand (35 KB chunk), and its 3D starts after the page has painted.
+  - A graphics tier: a software renderer gets no opening flight, standard resolution and short flights. The map records the tier as `data-gpu`.
+- **Regression test:** `demo-phoneshell` 49/49 three runs in a row (it was failing 1–3 runs in 3). `demo-map` MAP-15. The P-*-08 failure message now names the condition that failed.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220

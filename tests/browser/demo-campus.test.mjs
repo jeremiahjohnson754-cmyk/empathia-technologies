@@ -9,6 +9,8 @@ const { ok, open, done, out } = await harness('demo-campus');
 
 for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/campus' });
+  // CHANGED 18 Nov 2026 (#234): the map's code loads when the map is first shown, so the checks wait for its building buttons
+  await t.page.waitForSelector('[data-testid="campus-b-ATL"]', { timeout: 15000 }).catch(() => {});
   const site = await t.page.evaluate(() => {
     const st = document.querySelector('[data-testid="campus-stage"]'); const bg = st ? getComputedStyle(st).backgroundColor : '';
     const lum = (() => { const m = bg.match(/\d+(\.\d+)?/g); if (!m) return 1; const [r, g, b] = m.map(Number); return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255; })();
@@ -20,8 +22,12 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`CA-${tag}-03`, 'no horizontal overflow on the campus page', (await t.overflow()) <= 0, await t.overflow());
   if (vp[2] === 'desktop') await t.page.screenshot({ path: path.join(out, `${tag}-site.png`) });
   // keyboard: focus a building on the map and press Enter
-  await t.page.focus('[data-testid="campus-b-ATL"]'); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(250);
-  ok(`CA-${tag}-04`, 'a building on the map opens with the keyboard', (await t.page.evaluate(() => location.hash)) === '#/campus/ATL' && /Atlas HQ/.test(await t.text()));
+  // CHANGED 18 Nov 2026 (#234 Empathia Map): Enter on a building opens its place card first (floors, health, links); Enter again opens
+  // the building page. Before, one Enter opened the page with no card.
+  await t.page.focus('[data-testid="campus-b-ATL"]'); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(300);
+  const card = (await t.page.locator('[data-testid="emap-card"]').count()) === 1 || (await t.page.locator('svg[data-testid="campus-3d"]').count()) === 1;
+  if (await t.page.locator('[data-testid="emap-card"]').count()) await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(300);
+  ok(`CA-${tag}-04`, 'a building on the map opens with the keyboard (its place card first, then the page)', card && (await t.page.evaluate(() => location.hash)) === '#/campus/ATL' && /Atlas HQ/.test(await t.text()));
   const fl = await t.page.locator('[data-testid^="floor-ATL-"]').count();
   ok(`CA-${tag}-05`, 'Atlas HQ lists its seven floors, each saying whether it holds a canonical room', fl === 7, fl);
   await t.page.click('[data-testid="floor-ATL-4"]'); await t.page.waitForTimeout(250);
@@ -31,7 +37,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   await t.page.click('[data-testid="floor-room-R-ATL-4-218"]'); await t.page.waitForTimeout(400);
   ok(`CA-${tag}-08`, 'a room tile opens the room view at its campus address', (await t.page.evaluate(() => location.hash)) === '#/campus/ATL/4/R-ATL-4-218' && (await t.page.locator('[data-testid="room-view"]').count()) === 1);
   // the glyphs agree with the room records: open issues of Beacon on the map = sum on the rooms list
-  await t.go('#/campus');
+  await t.go('#/campus'); await t.page.waitForSelector('[data-testid="campus-b-BCN"]', { timeout: 15000 }).catch(() => {});
   const glyph = await t.page.evaluate(() => { const g = document.querySelector('[data-testid="campus-b-BCN"]'); return g ? g.getAttribute('aria-label') : ''; });
   await t.go('#/rooms?building=BCN');
   const listed = await t.page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="room-list"] tbody tr td:nth-child(6)')).reduce((n, td) => n + (Number(td.textContent) || 0), 0));
