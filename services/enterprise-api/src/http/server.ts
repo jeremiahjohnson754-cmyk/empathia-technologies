@@ -74,7 +74,7 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
     const incoming = String(req.headers['x-correlation-id'] || '');
     const correlationId = /^[A-Za-z0-9._-]{8,80}$/.test(incoming) ? incoming : crypto.randomUUID();
     const origin = String(req.headers.origin || '');
-    const cors: Record<string, string> = cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin', 'access-control-allow-headers': 'authorization, content-type, idempotency-key, x-correlation-id, x-file-name', 'access-control-allow-methods': 'GET, POST, PUT, PATCH, DELETE', 'access-control-expose-headers': 'x-correlation-id' } : {};
+    const cors: Record<string, string> = cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin', 'access-control-allow-headers': 'authorization, content-type, idempotency-key, x-correlation-id, x-file-name', 'access-control-allow-methods': 'GET, POST, PUT, PATCH, DELETE', 'access-control-expose-headers': 'x-correlation-id, content-disposition, x-empathia-figures-sha256, x-empathia-file-sha256' } : {};
     let status = 500; let ctxRole = '-'; let routePath = '(unmatched)'; let tenantId: string | undefined; const startedAt = Date.now();
     const send = (r: Res) => {
       status = r.status;

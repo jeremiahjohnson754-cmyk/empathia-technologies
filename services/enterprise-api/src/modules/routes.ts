@@ -35,6 +35,7 @@ import * as exc from '../domain/exceptions.js';
 import * as docs from '../domain/documentation.js';
 import * as dir from '../domain/directory.js';
 import * as jumps from '../domain/jumps.js';
+import * as dataReport from '../reports/dataReport.js';
 import * as fw from '../domain/firmware.js';
 import * as demo from '../domain/demo.js';
 import * as fr from '../domain/fieldRecord.js';
@@ -99,6 +100,8 @@ export function buildRoutes(deps: { pool: PgPool; tokens: Hs256Tokens; store: Ob
     body: obj({ code: str({ pattern: '^PRJ-[A-Z0-9-]{2,32}$' }), name: str({ minLength: 1, maxLength: 120 }) }, ['code', 'name']), responses: created('project'), handler: async (c, q) => ({ status: 201, body: await org.createProject(c, q.body as never) }) });
   add({ method: 'POST', path: '/v1/rooms/:room/project', tag: 'organization', summary: 'Put a room into a project, or take it out (projectCode null)', auth: true, authority: 'project.decide',
     body: obj({ projectCode: str({ pattern: '^PRJ-[A-Z0-9-]{2,32}$', nullable: true }) }, ['projectCode']), responses: ok('assignment'), handler: async (c, q) => ({ status: 200, body: await org.assignRoomToProject(c, q.params['room']!, (q.body as { projectCode: string | null }).projectCode) }) });
+  add({ method: 'GET', path: '/v1/reports/estate.pdf', tag: 'reporting', summary: 'The estate data report as a PDF (data reports export as PDF only): the KPI summary read with the caller’s own scope, each figure with its definition, the SHA-256 of the figures; the executive, operations lead, service manager or security administrator; every export audited', auth: true, authority: dataReport.EXPORT, action: 'export a data report', responses: ok('application/pdf'),
+    handler: async (c) => { const r = await dataReport.estatePdf(c); return { status: 200, raw: r.pdf, headers: { 'content-type': 'application/pdf', 'content-disposition': `attachment; filename="${r.fileName}"`, 'x-empathia-figures-sha256': r.figuresSha256, 'x-empathia-file-sha256': r.fileSha256, 'cache-control': 'no-store' } }; } });
   add({ method: 'GET', path: '/v1/reports/summary', tag: 'reporting', summary: 'KPI summary: lifecycle, commissioning coverage and verification, issues, work orders, assets, evidence (operational performance NOT_MONITORED)', auth: true, responses: ok('summary'), handler: async (c) => ({ status: 200, body: await analytics.summary(c) }) });
 
   // ---------------------------------------------------------------------------------------- rooms
