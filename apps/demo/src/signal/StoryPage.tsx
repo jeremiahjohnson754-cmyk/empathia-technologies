@@ -15,6 +15,7 @@ import { objectiveDone, type MissionIndex } from './mission.js';
 import { buildRx, chapterMarks, needs, type GlossaryIndex, type GlRx, type Seg, type Term } from './glossary.js';
 import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Formula, type Incidents, type LabData } from '@empathia/ui';
 import { FieldCalculator } from '@empathia/ui';
+import { ArtZoom, arrowKeys, zoomFrom, type ZoomPic } from './zoom.js';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { Cinematic } from './CinematicPlayer.js';
 import { cinematicFor, sceneOf } from './cinematic.js';
@@ -122,6 +123,7 @@ export default function StoryPage({ params, role }: PageProps) {
 }
 
 function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress; commit: (p: Progress) => void }) {
+  const [zoom, setZoom] = useState<ZoomPic | null>(null);
   const next = resume(ix, progress); const started = Object.keys(progress.chapters).length > 0; const done = (s: number) => ix.chapters.filter((c) => c.season === s && progress.chapters[c.id]?.done).length;
   const [open, setOpen] = useState<number>(next.season); const st = ix.stats;
   useEffect(() => { void loadDefsIfHeld(); const on = () => { void loadDefs(); }; window.addEventListener('online', on); return () => window.removeEventListener('online', on); }, []);
@@ -131,7 +133,7 @@ function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress;
       <Crumbs items={[{ label: 'Learn', href: '#/learn' }, { label: 'SIGNAL' }]} />
       {/* The title page, exactly as the founder's reference build opens: the cover, the hour, the invitation, the cast (founder, 16 Nov
           2026: "SIGNAL needs to feel like SIGNAL"). The art is his; titlepage.gen.ts is extracted from the build, never edited. */}
-      <section className="tp" aria-label="SIGNAL — title page" data-testid="story-title">
+      <section className="tp" aria-label="SIGNAL — title page" data-testid="story-title" onClick={(e) => { const z = zoomFrom(e.target); if (z) setZoom(z); }}>{zoom && <ArtZoom pic={zoom} onClose={() => setZoom(null)} />}
         <figure className="tp-cover" role="img" aria-label={TITLE_PAGE.alt} data-testid="story-cover" dangerouslySetInnerHTML={{ __html: COVER_SVG }} />
         <div className="tp-inner">
           <h1 tabIndex={-1} className="ui-sr">SIGNAL</h1>
@@ -168,6 +170,7 @@ function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress;
 }
 
 function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id: string; role: string; progress: Progress; commit: (p: Progress) => void; update: (f: (p: Progress) => Progress) => void }) {
+  const [zoom, setZoom] = useState<ZoomPic | null>(null);   // the standalone's enlarged-picture viewer (zoom.tsx)
   const ch = useLoaded(() => getJson<Chapter>(`signal/story/${id}.json`), id); const art = useLoaded(() => Promise.all([getJson<{ panels: string[]; closing: { alt: string; svg: string }[] }>(`signal/art/${id}.json`), loadDefs()]).then((r) => r[0]), `art-${id}`);
   const retry = (se: number) => { void loadRatings().then((X) => { commit({ ...RT.retrySeason(progress, X, se), last: null }); const first = ix.chapters.find((c) => c.season === se); location.hash = `#/story/${first ? first.id : 's01e00'}`; }); };
   const restart = () => { commit({ ...emptyProgress(), clock: progress.clock, gates: progress.gates }); location.hash = '#/story/pro01'; };
@@ -209,7 +212,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
   if (ch.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() ? <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, open without a connection. Your progress is untouched.</p> : <p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
   let panelNo = -1;
   return (
-    <article className="sg sg-read" data-testid="story-reader" data-still={still} data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}><FieldCalculator showWhen=".lab" />
+    <article onClick={(e) => { const z = zoomFrom(e.target); if (z) setZoom(z); }} className="sg sg-read" data-testid="story-reader" data-still={still} data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}><FieldCalculator showWhen=".lab" />{zoom && <ArtZoom pic={zoom} onClose={() => setZoom(null)} />}
       <Crumbs items={[{ label: 'Learn', href: '#/learn' }, { label: 'SIGNAL', href: '#/story' }, { label: ref.season ? `Season ${ref.season}` : 'Prologue', href: '#/story' }, { label: ref.title }]} />
       {failed != null && <div className="sg-banner" role="status" data-testid="story-gameover-banner"><b>✕ Game over · Season {failed} review failed (Story Score {progress.reviews[`S${failed}`]!.score}).</b> <button type="button" className="ui-btn" onClick={() => retry(failed)}>↺ Retry Season {failed}</button> <button type="button" className="ui-btn ui-btn--quiet" onClick={restart}>⟲ Restart</button></div>}
       <p className="kicker">{ref.kicker} <Draft /></p>
@@ -296,7 +299,7 @@ function QuizView({ q, id, rec, onDone }: { q: Quiz; id: string; rec?: { best: n
   return <div className="sg-quiz" data-testid="story-quiz" data-quiz={id} data-answered={n} data-of={q.qs.length} key={round}>
     <h4>✎ {q.title}</h4>{rec && n === 0 && <p className="ui-meta" data-testid="story-quiz-rec">Done before: best {rec.best} of {rec.total}, first {rec.first}. Answer again to practise; the first score stays.</p>}
     <ol className="sg-qs">{q.qs.map((x, i) => { const got = picked[i]; const done = got !== undefined; return <li key={i} data-done={done}><p className="sg-q">{x.q}</p>
-      <div className="sg-qopts" role="group" aria-label={`Question ${i + 1}`}>{x.o.map((o, j) => <button key={j} type="button" className="sg-opt sg-qopt" disabled={done} data-state={!done ? '' : j === x.a ? 'right' : j === got ? 'wrong' : ''} onClick={() => setPicked({ ...picked, [i]: j })}>{o}{done && j === x.a ? <span className="sg-mark"> ✓ right answer</span> : done && j === got ? <span className="sg-mark"> ✕ your answer</span> : null}</button>)}</div>
+      <div className="sg-qopts" role="group" aria-label={`Question ${i + 1}`} onKeyDown={arrowKeys}>{x.o.map((o, j) => <button key={j} type="button" className="sg-opt sg-qopt" disabled={done} data-state={!done ? '' : j === x.a ? 'right' : j === got ? 'wrong' : ''} onClick={() => setPicked({ ...picked, [i]: j })}>{o}{done && j === x.a ? <span className="sg-mark"> ✓ right answer</span> : done && j === got ? <span className="sg-mark"> ✕ your answer</span> : null}</button>)}</div>
       {done && <p className="sg-why" role="status">{got === x.a ? '✓ Right. ' : '✕ Not quite. '}{x.why}</p>}</li>; })}</ol>
     {n === q.qs.length && <p className="sg-score" data-testid="story-quiz-score">Score {right} of {q.qs.length}{right === q.qs.length ? ' · clean sheet' : ' · review the explanations above'} <button type="button" className="ui-btn ui-btn--quiet" onClick={() => { setPicked({}); setRound(round + 1); }}>Retake</button></p>}
   </div>;
@@ -458,7 +461,7 @@ export function ItemView(p: ViewProps): JSX.Element | null {
     case 'talk': { const a = p.state.talks[it.id]; return (
       <section className="sg-talk" data-item="talk" data-answered={a !== undefined}>
         <p className="sg-talk__q"><Face id={it.who} pose="N" expr="talk" /><span><b>{name(it.who)}</b> {it.prompt}</span></p>
-        {a === undefined ? <div className="sg-opts" role="group" aria-label="Your reply">{it.options.map((o, i) => <button key={i} type="button" className="sg-opt" onClick={() => p.onTalk(it.id, i)} data-talk={i}>{o.label}</button>)}</div>
+        {a === undefined ? <div className="sg-opts" role="group" aria-label="Your reply" onKeyDown={arrowKeys}>{it.options.map((o, i) => <button key={i} type="button" className="sg-opt" onClick={() => p.onTalk(it.id, i)} data-talk={i}>{o.label}</button>)}</div>
           : <><p className="sg-said">You said: {it.options[a]!.label}</p><p className="sg-reply"><Face id={it.options[a]!.who} pose={it.options[a]!.pose} expr={it.options[a]!.expr} /><span><b>{name(it.options[a]!.who)}</b> {it.options[a]!.reply}</span></p>
             <p className="ui-meta">{Object.entries(it.options[a]!.trust).map(([k, v]) => `${k} ${v > 0 ? `+${v}` : v}`).join(' · ') || 'No change in trust'}</p></>}
       </section>); }
@@ -516,7 +519,7 @@ function Decision({ d, n, state, clock, onChoose, onTimeout, onReplay, items: p_
       {!recorded && total !== null && <p className="sg-clock" data-testid="story-clock" data-left={left ?? ''} data-running={running}>{running ? <>Time to decide: <b>{left}</b> s</> : <>{total} s to decide. The clock starts when this card is in view, and restarts if it leaves the screen.</>}</p>}
       {missed && <div className="sg-missed" role="alert" data-testid="story-timeout"><p><b>Time ran out.</b> {(d.timeout || ['Someone else decided for you.']).join(' ')}</p><p>Tap any option to see what it would have done, or replay the decision to make it count.</p>
         <p><button type="button" className="ui-btn" data-testid="story-replay-decision" onClick={() => { setPeek(null); setHints(0); onReplay?.(d.id); }}>Replay this decision</button></p></div>}
-      <div className="sg-opts" role="group" aria-label="Options">{d.options.map((o) => (
+      <div className="sg-opts" role="group" aria-label="Options" onKeyDown={arrowKeys}>{d.options.map((o) => (
         <button key={o.letter} type="button" className="sg-opt" aria-pressed={missed ? peek === o.letter : c?.letter === o.letter} onClick={() => { if (missed) setPeek(o.letter); else onChoose(d, o.letter, { hints }); }} data-option={o.letter}>
           <b>{o.letter}</b> <span>{o.label}{o.badges.length > 0 && <span className="sg-badges">{o.badges.map((b, i) => <span key={i} className="ui-tag">{b.text}</span>)}</span>}</span></button>))}</div>
       {!recorded && d.hints.length > 0 && <div className="sg-hints">{d.hints.slice(0, hints).map((h) => <p key={h.id} className="sg-hint"><b>Hint {h.id.slice(1)}.</b> {h.text}</p>)}

@@ -188,3 +188,13 @@
 .sg-band { border: 1px solid var(--line2); border-top: 4px solid var(--c, var(--accent)); border-radius: 12px; padding: 10px 12px; }
 .sg-band__h { font-weight: 800; letter-spacing: .2em; text-transform: uppercase; font-size: 11px; color: var(--tx2); }
 @media (prefers-reduced-motion: reduce) { .tp-btn:hover { filter: none; } }
+/* the enlarged-picture viewer (zoom.tsx), as the standalone draws it: a night backdrop, the bar, the picture scrollable at full width */
+.sg-read .sg-art, .tp-cover { cursor: zoom-in; }
+.sg-zoom { position: fixed; inset: 0; z-index: 220; background: #03050A; display: flex; flex-direction: column; color-scheme: dark; }
+.sg-zoom__bar { display: flex; gap: 8px; align-items: center; padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px; color: #CBD5E1; font: 700 13px/1.3 var(--font-mono, ui-monospace, monospace); }
+.sg-zoom__bar span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sg-zoom__box { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; text-align: center; padding: 0 16px calc(env(safe-area-inset-bottom, 0px) + 16px); }
+.sg-zoom__pic { display: block; width: min(100%, 1400px); height: auto; margin: 0 auto; background: #0B1220; border-radius: 10px; }
+.sg-zoom__pic--rot { width: auto; max-width: none; }
+.sg-zoom__alt { max-width: 70ch; color: #CBD5E1; font-size: 14px; line-height: 1.5; margin: 12px auto 0; }
+body.zooming { overflow: hidden; }
