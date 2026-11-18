@@ -27,8 +27,8 @@ type Story = Omit<Product, keyof CanonProduct | 'slug'>;
 const STORY: Record<string, Story> = {
   'mission-control': {
     body: 'Mission Control counts live records at every station of the lifecycle, from the first request to the last service visit, and says what changed, what matters and what needs action. Every count opens the records behind it.',
-    showsAs: ['simulated', 'declared', 'simulated'], shows: ['The lifecycle with every station counted', 'What changed since you last looked, and why it matters', 'The ledger behind every state'],
-    limits: 'The counts come from the synthetic demonstration estate; nothing is connected to a live system.', demoState: 'native', demo: { href: '#/v25', label: 'Open Mission Control' },
+    showsAs: ['simulated', 'declared', 'simulated', 'declared', 'declared'], shows: ['The lifecycle with every station counted', 'What changed since you last looked, and why it matters', 'The ledger behind every state', 'Data reports as PDFs and as a Power BI project of your own records, made by the server for the people who answer for the figures, each export audited', 'Jumps from a room or a device to your organisation’s own device cloud, meeting-room portal or service desk'],
+    limits: 'The counts come from the synthetic demonstration estate; nothing is connected to a live system. Jumps are links you open in your own portal, not integrations: nothing is read from or sent to it. The Power BI project is written to Microsoft’s published file formats and has not yet been opened in Power BI Desktop by us; nothing is published for you.', demoState: 'native', demo: { href: '#/v25', label: 'Open Mission Control' },
     shotAlt: 'Mission Control in the investor demonstration: the campus drawn as buildings, each with its health and open issues computed from its rooms’ records.',
   },
   lite: {

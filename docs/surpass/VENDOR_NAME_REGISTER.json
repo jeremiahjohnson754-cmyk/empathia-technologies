@@ -253,6 +253,11 @@
     "file": "apps/demo/src/tour/tours.ts",
     "evidence": "file-format",
     "note": "Office file formats: the exported files open in Microsoft Office"
+   },
+   {
+    "file": "apps/website/src/products.ts",
+    "evidence": "file-format",
+    "note": "Mission Control’s limits: the Power BI project is written to Microsoft’s published file formats; not yet opened in Power BI Desktop by us; nothing is published"
    }
   ],
   "OneDrive": [
