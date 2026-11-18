@@ -14,6 +14,13 @@ const OPEN = { roles: ROLE_KEYS, why: 'the world-first entry (v1.8 ADR-022): a p
 
 export const WORLD_PAGES: readonly PageDef[] = [
   {
+    // task #181 (founder, 17 Nov 2026 10:20): Expo LIVE, the first slice of the convention experience
+    id: 'play.expo', title: 'Expo LIVE', purpose: 'The Northlight Technology Expo in 3D with its plan: twenty exhibitors and the Empathia showcase, sessions with polls and moderated questions, an agenda, details left only with consent, and the organiser’s modeled footfall', product: 'shell',
+    path: '/play/expo', alias: ['/expo/live', '/worlds/convention/live'], authority: OPEN,
+    load: () => import('./play/ExpoLive.js'),
+    search: { keywords: 'expo convention hall booth exhibitor session poll question agenda consent footfall organiser 3d', aliases: ['expo live', 'convention live', 'northlight expo'] },
+  },
+  {
     // task #182 (founder, 17 Nov 2026 10:20 and 13:40): Stadium LIVE, the bowl in 3D with the LIVE console
     id: 'play.stadium', title: 'Stadium LIVE', purpose: 'Harborlight Stadium in 3D with the LIVE console: atmospheres from pregame to concert, cameras, crowd cheers and waves, synthesised sound (opt-in), modeled crowd levels and PA coverage, boards and ribbon, AV devices and a replayable event timeline', product: 'shell',
     path: '/play/stadium', alias: ['/stadium/live', '/worlds/stadium/live'], authority: OPEN,

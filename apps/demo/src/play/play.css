@@ -107,3 +107,36 @@
 .slv-vote span, .slv-vote em { position: relative; font-style: normal; }
 .slv-vote[aria-pressed=true] { border-color: #0a7268; }
 .slv button, .slv input, .slv a { scroll-margin-top: 96px; scroll-margin-bottom: 24px; }
+
+/* Expo LIVE (task #181) */
+.xpo { display: grid; gap: 10px; }
+.xpo-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 12px; align-items: start; }
+@media (max-width: 1000px) { .xpo-grid { grid-template-columns: minmax(0, 1fr); } }
+.xpo-stage { position: relative; height: min(74vh, 720px); min-height: 380px; border-radius: 14px; overflow: hidden; background: #dfe4ea; touch-action: none; }
+.xpo-tag { pointer-events: auto; border: 0; background: transparent; padding: 0; cursor: pointer; }
+.xpo-tag b { background: rgba(15,23,42,.72); padding: 2px 7px; border-radius: 6px; text-shadow: none; font-size: 11px; font-weight: 600; }
+.xpo-tag--show b { background: #0a7268; font-size: 12px; } .xpo-tag--sel b { background: #b54708; font-size: 13px; } .xpo-tag--place b { background: rgba(255,255,255,.92); color: #0f172a; }
+.xpo-bar { position: absolute; left: 12px; bottom: 12px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.xpo-org { display: inline-flex; gap: 6px; align-items: center; }
+.xpo-fps { color: #0f172a; font-size: 12px; background: rgba(255,255,255,.7); padding: 2px 6px; border-radius: 6px; }
+.xpo-side { display: grid; gap: 10px; max-height: min(74vh, 720px); overflow: auto; padding-right: 2px; }
+.xpo-plan { width: 100%; height: auto; border: 1px solid var(--ui-line, rgba(15,23,42,.14)); border-radius: 12px; background: var(--ui-surface, #fff); }
+.xpo-plan__hall { fill: #eef1f4; stroke: #9aa2ab; stroke-width: .4; } .xpo-plan__stage { fill: #22262b; }
+.xpo-plan__t { font-size: 3.2px; fill: #0f172a; font-weight: 600; pointer-events: none; }
+.xpo-plan__stage + .xpo-plan__t { fill: #fff; }
+.xpo-plan__b { cursor: pointer; } .xpo-plan__b:focus-visible rect { stroke: #f2c14e; stroke-width: .8; outline: none; } .xpo-plan__b .xpo-plan__t { fill: #fff; }
+.xpo-card { border: 1px solid var(--ui-line, rgba(15,23,42,.14)); border-radius: 12px; padding: 12px; display: grid; gap: 6px; background: var(--ui-surface, #fff); }
+.xpo-card h2 { margin: 0; font-size: 1.15rem; } .xpo-card p { margin: 0; line-height: 1.45; }
+.xpo-kick { font-weight: 700; font-size: 12px; }
+.xpo-lead { display: grid; gap: 6px; }
+.xpo-note { margin: 0; color: var(--ui-muted, #5b6676); font-size: 12px; line-height: 1.45; }
+.xpo-list ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 2px; }
+.xpo-list button { width: 100%; text-align: left; border: 0; background: transparent; color: inherit; font: inherit; font-size: 13px; padding: 4px 2px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+.xpo-list button span { color: var(--ui-muted, #5b6676); font-size: 12px; }
+.xpo-sessions { display: grid; gap: 6px; } .xpo-sessions h2 { margin: 0; font-size: 1.05rem; }
+.xpo-sess > button { width: 100%; text-align: left; border: 1px solid var(--ui-line, rgba(15,23,42,.14)); background: transparent; color: inherit; border-radius: 8px; padding: 6px 8px; font: inherit; font-size: 13px; cursor: pointer; display: grid; gap: 2px; }
+.xpo-sess > button span { color: var(--ui-muted, #5b6676); font-size: 12px; }
+.xpo-sess > button[aria-pressed=true] { border-color: #0a7268; background: #e6f4ef; color: #0f172a; }
+.xpo-poll { display: grid; gap: 6px; padding: 8px 2px; } .xpo-poll p { margin: 0; }
+.xpo button, .xpo input, .xpo a, .xpo .xpo-plan__b { scroll-margin-top: 96px; }
+.xpo, .slv { --cl-panel: rgba(255,255,255,.9); --cl-line: rgba(15,23,42,.14); --cl-ink: #0f172a; --cl-teal: #0a7268; }
