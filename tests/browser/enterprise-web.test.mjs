@@ -86,6 +86,12 @@ try {
   const dbDevices = Number(h.asSuper(`SELECT count(*) FROM app.planned_asset a JOIN app.room r ON r.id = a.room_id WHERE r.code = '${code}' AND a.removed_at IS NULL AND NOT a.furniture`));
   ok('W-08', 'adding a device persists it: the table and the database agree', dbDevices === before + 1, `${before} → ${dbDevices}`);
   await shot('04-room-devices');
+  // (added 18 Nov: DESIGN_APPROVED approves the latest saved revision and is refused while the design has changed since it, so the
+  //  designer saves the added device as a revision, through the page, before the systems engineer approves)
+  await page.click('#tab-drawings'); await page.waitForSelector('button:has-text("Save revision")');
+  await page.click('button:has-text("Save revision")');
+  await page.waitForFunction(() => [...document.querySelectorAll('.ui-table caption')].some((c) => /Revisions/.test(c.textContent || '') && c.closest('table').querySelectorAll('tbody tr').length === 2));
+  ok('W-08b', 'the designer saves the change as revision 2 from the page; the database agrees', h.asSuper(`SELECT max(v.rev_no) FROM app.room_revision v JOIN app.room r ON r.id = v.room_id WHERE r.code = '${code}'`) === '2');
 
   // ---------------------------------------------------------------- the server is the authority, not the UI
   const forged = await page.evaluate(async ([apiBase, room]) => {

@@ -25,6 +25,11 @@ export interface LifecycleFacts {
   classificationApproved: boolean;
   openIssues: Array<{ severity: string }>;
   savedRevisions: number;
+  /**
+   * Whether the latest saved revision describes the design as it stands (binding.ts designKey). What DESIGN_APPROVED approves is the latest
+   * saved revision, so a design changed after it was saved is saved again first. Omitted = not checked (the demonstrator's golden cases).
+   */
+  latestDescribesDesign?: boolean;
   rows: ApplicabilityRow[];
   results: Record<string, RecordedResult> | undefined;
   hasBaseline: boolean;
@@ -76,6 +81,7 @@ export function lifecycleBlockers(f: LifecycleFacts): string[] {
     const hi = f.openIssues.filter((x) => x.severity === 'High' || x.severity === 'Critical').length;
     if (hi) why.push(`${hi} open High/Critical design deficiencies`);
     if (!f.savedRevisions) why.push('no saved revision');
+    else if (f.latestDescribesDesign === false) why.push('the design has changed since its latest saved revision: save it as a revision first (what is approved is a saved revision, never the unsaved draft)');
   }
   if (f.to === 'COMMISSIONING' && f.from === 'INSTALLED_UNVERIFIED' && f.register) {
     const open = f.register.filter((x) => x.missing.length);

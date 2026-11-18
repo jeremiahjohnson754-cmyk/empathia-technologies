@@ -522,6 +522,12 @@ export async function approveDrawing(ctx: RequestContext, ref: string, kind: str
 }
 
 // ------------------------------------------------------------------------------------------------ lifecycle
+/** Whether the room's latest saved revision describes its design as it stands now (true when there is none: 'no saved revision' says that). */
+async function latestDescribes(q: Queryable, room: RoomRow, L: Loaded): Promise<boolean> {
+  const revs = (await q.query<{ rev_no: number; created_by: string; snapshot: DesignSnapshot }>('SELECT rev_no, created_by, snapshot FROM app.room_revision WHERE room_id = $1 ORDER BY rev_no DESC LIMIT 1', [room.id])).rows;
+  return !revs.length || revisionBindingFrom(revs, null, L.input).latestDescribesDesign;
+}
+
 export async function transition(ctx: RequestContext, ref: string, to: RoomLifecycle) {
   if (!ROOM_LIFECYCLE.includes(to)) throw invalid(`unknown lifecycle state ${to}`);
   await ctx.require(LIFECYCLE_AUTHORITY[to], `move a room to ${to}`, { type: 'Room', id: ref });
@@ -540,6 +546,8 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
     const why = lifecycleBlockers({
       from: room.lifecycle, to, classificationApproved: !!approved && !approved.stale, openIssues: open,
       savedRevisions: (await q.query<{ n: number }>('SELECT count(*)::int AS n FROM app.room_revision WHERE room_id = $1', [room.id])).rows[0]!.n,
+      // what DESIGN_APPROVED approves is the latest saved revision: it has to describe the design as it stands
+      latestDescribesDesign: to === 'DESIGN_APPROVED' ? await latestDescribes(q, room, L) : undefined,
       rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: (labels.get(r.test_id) || 'NOT_TESTED') as never } as never)),
       results: L.results, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false, ...rvFacts(rvn), designBinding: recommissionBinding(rc),
       // the device register gates the start of commissioning (founder, 14 Nov 2026): every in-service unit registered first
@@ -610,7 +618,7 @@ export async function readiness(ctx: RequestContext, ref: string) {
     const counts = { applicable: applicable.length, verified: applicable.filter((r) => lab(r.test_id) === 'PASS_VERIFIED' && !reopened.has(r.test_id)).length, awaiting: applicable.filter((r) => lab(r.test_id) === 'PASS_UNVERIFIED').length, failed: applicable.filter((r) => lab(r.test_id) === 'FAIL').length, other: applicable.filter((r) => ['NOT_SUPPORTED', 'INCONCLUSIVE'].includes(lab(r.test_id))).length, notTested: applicable.filter((r) => lab(r.test_id) === 'NOT_TESTED').length, revalidation: reopened.size };
     const facts = { from: room.lifecycle, classificationApproved: !!approved && !approved.stale, openIssues: open, savedRevisions: revisions.n, rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: lab(r.test_id) as never } as never)), results: L.results as never, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false };
     const reg = await registerItems(q, room.id);
-    const blockers = next ? lifecycleBlockers({ ...facts, to: next, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null, register: next === 'COMMISSIONING' ? registerFacts(reg) : undefined }) : ['the room is OPERATIONAL: no further governed step'];
+    const blockers = next ? lifecycleBlockers({ ...facts, to: next, latestDescribesDesign: next === 'DESIGN_APPROVED' ? await latestDescribes(q, room, L) : undefined, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null, register: next === 'COMMISSIONING' ? registerFacts(reg) : undefined }) : ['the room is OPERATIONAL: no further governed step'];
     const evidence = (await q.query<{ n: number }>('SELECT count(DISTINCT evidence_id)::int AS n FROM app.test_result WHERE room_id = $1 AND evidence_id IS NOT NULL', [room.id])).rows[0]!.n;
     const baselines = (await q.query<{ version: number; state: string; published_at: string }>('SELECT version, state, published_at FROM app.assurance_baseline WHERE room_id = $1 ORDER BY version', [room.id])).rows;
     const exceptions = (await q.query<{ n: number }>("SELECT count(*)::int AS n FROM app.baseline_exception WHERE room_id = $1 AND state = 'REQUESTED'", [room.id])).rows[0]!.n;

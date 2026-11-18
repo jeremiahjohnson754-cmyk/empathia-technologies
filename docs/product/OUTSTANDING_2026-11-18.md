@@ -55,12 +55,13 @@ Not checked on staging: the whole flagship journey in a browser against the depl
 
 ## The flagship room: what is true of it now
 
-Lecture Theatre SCI-110 (`#/flagship`, connected builds only). One browser suite, `demo-flagship` FL-01…33, walks the whole of
+Lecture Theatre SCI-110 (`#/flagship`, connected builds only). One browser suite, `demo-flagship` FL-01…36, walks the whole of
 it and checks every step against the server. Open the room; drag the camera; submit;
 refused to its recorder; approved by someone else; register; start commissioning; measure reverberation at the bench; PASS refused
 on a value over the limit; FAIL and its deficiency; work order; Search Party; assignment; preflight; field evidence; verification;
 closing; correction; a retest that is a new measurement; handover documents; the remaining checks; verification; the acceptance
-lent and given; baseline 1 with the designed place, the as-built place and the measured value. A refresh and a second person's
+lent and given; baseline 1 with the designed place, the as-built place and the measured value. Then, in service: an incident
+reported by a requestor, worked by the second technician, confirmed by its reporter, closed; a repeat found by the database. A refresh and a second person's
 browser are checked at four points.
 
 What is thin or simulated there, each stated on the page or in ADR-0014:
@@ -71,7 +72,9 @@ What is thin or simulated there, each stated on the page or in ADR-0014:
   checks arithmetic and provenance, not that a file was recorded in the room. The other four measured tests are still recorded as sent.
 - A note stands in for each handover document; the 71 other checks are recorded on one synthetic observation note.
 - The room's design is 36 device positions and 30 seating blocks that add up to its 180 seats (ADR-0018, FM-01…05), added by its
-  designer through the API before approval. The rake is not modelled; heights and positions are a plausible synthetic design with no
+  designer through the API and saved as design revision 2 before approval: what is approved is that revision (until 18 Nov the
+  scenario approved revision 1, the template saved at creation; the server now refuses to approve a design changed since its latest
+  saved revision, ADR-0018 amendment, FM-02b). The rake is not modelled; heights and positions are a plausible synthetic design with no
   coverage or sightline calculation behind them beyond the server's design checks.
 - The sandbox has two technicians (ADR-0017, ST-01…07, FL-32): the second is refused by the gates until the data steward verifies a
   credential the service manager recorded, and a job is refused to whichever of them it was not assigned to. Two is still a small
@@ -95,9 +98,11 @@ What is thin or simulated there, each stated on the page or in ADR-0014:
 
 ## Open, in the order they will be taken
 
-1. Finish the regression of `66df289`; stage it if COMPLETE; verify both `-next` sites and the staged API (41 migrations, sixteen
+1. Regression of the commit that carries the incidents card and the approved-revision fix (`66df289` ran prepare, base and three
+   light parts, but approved the template revision, so it is not staged); stage it if COMPLETE; verify both `-next` sites and the staged API (41 migrations, sixteen
    people, three rooms). Measure how long a sandbox takes to open there.
-1a. A page for operational incidents (the server record exists, ADR-0015); the ServiceHands pages still keep theirs in the browser.
+1a. The ServiceHands pages of the demonstration still keep their records in the browser: move them to the server's work orders
+    and incidents (the room page already reads and writes both: FL-24…25, FL-34…36).
 2. V3.9 rules not modelled (task 199): Pass with Exception and the exception record with its measured value; the Documentation and
    Submission gate; sequential phases; an API-bypass test per gate.
 3. The flagship's thin places above: a bench and a criterion for a second measured test; Harbor 201 given the theatre's treatment;

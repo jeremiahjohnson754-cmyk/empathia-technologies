@@ -69,14 +69,15 @@ let tenant, code;
     no.ok === 'no' && /Refused by the server \(403\)/.test(no.text) && /Designer/.test(no.text) && /may not record how a device is mounted/.test(no.text) && /^0 of /.test(still) && denied1 === denied0 + 1
     && yes.ok === 'yes' && /^1 of /.test(now) && /Wall bracket/.test(now) && /field\.mounting\.record/.test(audit) && /DENIED/.test(await text(p, 'cn-audit-counts')) && n('SELECT count(*) FROM app.field_mounting') === 1, `${no.text.slice(0, 150)} | ${now.slice(0, 60)}`); }
 
-{ await p.getByTestId('cn-run').click(); await settle(p);   // the installer records the field move
+{ const revs0 = n('SELECT count(*) FROM app.room_revision');   // (changed 18 Nov: was "one revision per room"; the theatre now has two, so the check is that approving a move adds none)
+  await p.getByTestId('cn-run').click(); await settle(p);   // the installer records the field move
   const proposed = await text(p, 'cn-moves'); const step = await p.getByTestId('cn-next').getAttribute('data-step');
   await p.getByTestId('cn-try-role').selectOption('installer'); await p.getByTestId('cn-try').click(); await settle(p);
   const no = await said(p); const stillProposed = await text(p, 'cn-moves');
   await p.getByTestId('cn-run').click(); await settle(p); const approved = await text(p, 'cn-moves');
   ok('CN-04', 'the installer who recorded the move cannot approve it; the systems engineer does; the as-built position is kept beside the design',
     /PROPOSED/.test(proposed) && step === 'approve-move' && no.ok === 'no' && /\(403\)/.test(no.text) && /PROPOSED/.test(stillProposed) && /APPROVED/.test(approved) && /Systems Engineer/.test(approved)
-    && n("SELECT count(*) FROM app.field_move WHERE state = 'APPROVED' AND decided_by <> recorded_by") === 1 && n('SELECT count(*) FROM app.room_revision') === n('SELECT count(*) FROM app.room'), `${no.text.slice(0, 120)} | ${approved.slice(0, 80)}`); }
+    && n("SELECT count(*) FROM app.field_move WHERE state = 'APPROVED' AND decided_by <> recorded_by") === 1 && n('SELECT count(*) FROM app.room_revision') === revs0, `${no.text.slice(0, 120)} | ${approved.slice(0, 80)}`); }
 
 let whole;
 { await p.getByTestId('cn-run-all').click(); await settle(p, 420000);

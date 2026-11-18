@@ -5,6 +5,8 @@
 //          that add up to its occupancy, and thirty-six devices by category; every one inside the walls and between floor and ceiling
 //   FM-02  the design holds together by the server's own checks: no open design deficiency; every loudspeaker is driven, every
 //          microphone and camera goes somewhere, every networked device reaches a switch; the plan was approved on this design
+//   FM-02b the approved revision is revision 2, carrying every position the room has (revision 1 is the template saved at creation);
+//          a design changed after its latest saved revision is refused DESIGN_APPROVED until it is saved again
 //   FM-03  everything downstream sees the same room: the commissioning plan names only devices that exist and covers the added
 //          kinds, the register lists every device, and a sandbox still opens well inside its limits
 //   FM-04  a height is part of where a device is: between the floor and the ceiling or refused; changing it is a move, under the
@@ -55,8 +57,28 @@ test('FM-02 the design holds together by the server’s own checks, and the plan
   for (const d of devs.filter((x) => x.cat === 'speaker')) assert.equal(hall.connections.filter((k) => k.to === d.id && cat.get(k.from) === 'amp').length, 1, `${d.label} is driven once`);
   assert.ok(hall.connections.every((k) => cat.has(k.from) && cat.has(k.to)), 'every connection joins two devices of this room'); assert.ok(hall.connections.length >= 50, `${hall.connections.length} proposed connections`);
   // approved as designed: the lifecycle the scenario reached needs an approved plan and classification on the current revision
-  assert.equal(hall.room.lifecycle, 'INSTALLED_UNVERIFIED'); assert.equal(hall.revisions.length, 1, 'one revision: the design that was approved'); assert.equal(hall.room.approvedRevision, hall.revisions[0].rev_no);
-  const plan = hall.drawings.find((d) => d.kind === 'plan'); assert.deepEqual([plan.state, plan.revNo], ['APPROVED', hall.room.approvedRevision], 'the plan drawing is approved on that revision: a device added after it would have sent it back for review');
+  // (changed 18 Nov: FM-02 expected one revision, and so missed that the approved revision 1 was the template saved at creation, without the
+  //  theatre's equipment; what DESIGN_APPROVED approves is now the latest saved revision, which must describe the design as it stands)
+  assert.equal(hall.room.lifecycle, 'INSTALLED_UNVERIFIED'); assert.deepEqual(hall.revisions.map((r) => r.rev_no), [1, 2], 'created, then the theatre saved'); assert.equal(hall.room.approvedRevision, 2, 'the approved revision is the one carrying the theatre');
+  // (changed 18 Nov: a drawing's revNo is the drawing's own revision, not the design's; the two only matched while the design had one
+  //  revision. APPROVED is the check: a design input other than the one approved puts the drawing in REVIEW_REQUIRED)
+  const plan = hall.drawings.find((d) => d.kind === 'plan'); assert.equal(plan.state, 'APPROVED', 'the plan drawing is approved on this design: a device added after it would have sent it back for review');
+});
+
+test('FM-02b the approved revision holds every position of the room as it stands: the baseline is never derived from the template', async () => {
+  const cmp = (await call(T.syseng, 'GET', `${HALL}/revisions/compare?a=1&b=2`)).body; assert.deepEqual(cmp.removed, []);
+  const n = (rev) => Number(h.asSuper(`SELECT jsonb_array_length(r.snapshot->'devices') FROM app.room_revision r WHERE r.room_id = '${hall.room.id}' AND r.rev_no = ${rev}`));
+  assert.equal(n(2), hall.devices.length, 'revision 2 holds every position the room has'); assert.equal(n(1) + cmp.added.length, n(2), `revision 2 adds ${cmp.added.length} positions to the template's ${n(1)}`);
+  // and the rule behind it: a design changed after its latest saved revision is not approved until it is saved again
+  const mk = await call(T.designer, 'POST', '/v1/rooms', { body: { name: 'Rule check huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 4 } }); assert.equal(mk.status, 201, J(mk.body)); const D = `/v1/rooms/${mk.body.code}`;
+  await call(T.designer, 'POST', `${D}/drawings/generate`); await call(T.syseng, 'POST', `${D}/drawings/plan/approve`); await call(T.syseng, 'POST', `${D}/classification/approve`, { body: {} });
+  const add = await call(T.designer, 'POST', `${D}/devices`, { body: { category: 'speaker', x: 1, y: 1 } }); assert.ok(add.status < 300, J(add.body));
+  const r = await call(T.syseng, 'POST', `${D}/lifecycle`, { body: { to: 'DESIGN_APPROVED' } });
+  assert.equal(r.status, 422, J(r.body)); assert.match(J(r.body), /changed since its latest saved revision/);
+  // saved, it moves (the classification approval is still current: adding a loudspeaker does not change the archetype)
+  assert.equal((await call(T.designer, 'POST', `${D}/revisions`, { body: { reason: 'loudspeaker added' } })).status, 201);
+  await call(T.designer, 'POST', `${D}/drawings/generate`); await call(T.syseng, 'POST', `${D}/drawings/plan/approve`);
+  const r2 = await call(T.syseng, 'POST', `${D}/lifecycle`, { body: { to: 'DESIGN_APPROVED' } }); assert.ok(r2.status < 300, J(r2.body));
 });
 
 test('FM-03 everything downstream sees the same room: the commissioning plan, the register, and the sandbox’s limits', async () => {

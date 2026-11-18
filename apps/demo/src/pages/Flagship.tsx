@@ -26,6 +26,7 @@ import { connected, SandboxGone, type Availability, type Sandbox } from '../conn
 import { ReverbBench, type BenchOutput, type BenchTest } from '../flagship/ReverbBench.js';
 import { CorrectiveAction, type Cred, type Deficiency, type Issue, type Tools, type WorkOrder } from '../flagship/CorrectiveAction.js';
 import { Finishing, BaselineCard, type Baseline, type Person } from '../flagship/Acceptance.js';
+import { Incidents, type Catalogue, type Incident, type IncidentData, type Intelligence } from '../flagship/Incidents.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
 interface Point { x: number; y: number }
@@ -57,7 +58,7 @@ interface RoomAnswer {
   commissioning: { engineVersion: string; ruleVersion: string; library: number; applicable: number; counts: Record<string, number>; rows: Row[] } | null;
 }
 interface Thread { room: { code: string; lifecycle: string; revision: number }; complete?: boolean; missing?: string[]; stages: Array<{ key: string; product: string; records: Record<string, unknown> }> }
-interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; creds: Cred[]; people: Person[]; rooms: RoomListed[]; place: { building: string; buildingName: string; site: string; siteName: string } | null }
+interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; creds: Cred[]; people: Person[]; rooms: RoomListed[]; incidents: IncidentData; place: { building: string; buildingName: string; site: string; siteName: string } | null }
 type Said = { ok: boolean; warn?: boolean; title: string; text: string; reasons?: string[] };
 const at = (p: Point) => `${p.x} m across, ${p.y} m from the front`;
 const same = (a: Point, b: Point) => Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005;
@@ -169,9 +170,16 @@ export function FlagshipPage({ room }: { room?: string }) {
       const found = thread.ok ? (((thread.body.stages.find((s) => s.key === 'commissioning')?.records as { issues?: Issue[] } | undefined)?.issues) || []) : []; const service: Loaded['service'] = {};
       await Promise.all(found.slice(0, 6).map(async (i) => { const [d, w] = await Promise.all([c.call<Deficiency>(as, 'GET', `/v1/issues/${i.code}/deficiency`), i.workOrders[0] ? c.call<WorkOrder>(as, 'GET', `/v1/work-orders/${i.workOrders[0]}`) : Promise.resolve(null)]);
         service[i.code] = { def: d.ok ? d.body : null, wo: w && w.ok ? w.body : null }; }));
+      // a room in service: its incidents as this person may see them, the work order of each that has one, and what the records add up to
+      const incidents: IncidentData = { items: [], catalogue: null, intelligence: null, work: {} };
+      if (['ACCEPTED', 'OPERATIONAL'].includes(room.body.room.lifecycle)) {
+        const [li, intel] = await Promise.all([c.call<{ items: Incident[]; catalogue: Catalogue }>(as, 'GET', `/v1/incidents?room=${encodeURIComponent(room.body.room.code)}&limit=20`), c.call<Intelligence>(as, 'GET', '/v1/incidents/intelligence?days=90')]);
+        if (li.ok) { incidents.items = li.body.items; incidents.catalogue = li.body.catalogue; } if (intel.ok) incidents.intelligence = intel.body;
+        await Promise.all(incidents.items.filter((x) => x.workOrders[0] && !['CLOSED', 'DEFERRED'].includes(x.status)).slice(0, 6).map(async (x) => { const w = await c.call<WorkOrder>(as, 'GET', `/v1/work-orders/${x.workOrders[0]}`); incidents.work[x.incident] = w.ok ? w.body : null; }));
+      }
       if (!alive.current) return;
       const b = list.ok ? list.body.items.find((x) => x.code === room.body.room.code)?.building : undefined; const site = b && sites.ok ? sites.body.items.find((s) => s.buildings.some((x) => x.code === b)) : undefined;
-      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, rooms: list.ok ? list.body.items : [], creds: creds.ok ? creds.body.items : [], people: sandbox.ok ? sandbox.body.personas : [], place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
+      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, incidents, rooms: list.ok ? list.body.items : [], creds: creds.ok ? creds.body.items : [], people: sandbox.ok ? sandbox.body.personas : [], place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
       setSelected((s) => (s && room.body.devices.some((d) => d.id === s) ? s : null));
     } catch (e) {
       if (e instanceof SandboxGone) { setSb(null); setData(null); setSaid({ ok: false, title: 'The sandbox is no longer there.', text: `${e.message}. Open a new one to continue.` }); }
@@ -360,9 +368,15 @@ export function FlagshipPage({ room }: { room?: string }) {
                 {!mover && !waiting && F?.writable ? <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-move" disabled={!!busy} onClick={() => startMove(sel.id)}>Move this {sel.furniture ? 'position' : 'device'}</button> : null}
                 <button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" data-testid="fl-clear" onClick={() => { setSelected(null); setOnlySelected(false); stopMove(); }}>Back to every device</button></p>
               {F && !F.writable ? <p className="ui-meta" data-testid="fl-closed">The room’s field record is closed in this state: a change now is a change order and recommissioning.</p> : null}
-            </div> : <ul className="fl__devs" data-testid="fl-devices">{R.devices.map((d) => <li key={d.id}><button type="button" className="fl__devbtn" data-device={d.id} onClick={() => setSelected(d.id)}>
-              <span className="fl__chip" data-family={d.furniture ? 'furniture' : familyOf(d.cat).family} aria-hidden="true">{d.furniture ? '▭' : familyOf(d.cat).letter}</span>
-              <span><b>{d.label}</b> <span className="ui-muted">{d.furniture ? 'furniture' : familyOf(d.cat).family}</span></span><span className="ui-mono ui-muted">{d.id}</span></button></li>)}</ul>}
+            </div> : (() => {
+              // equipment first, listed; the furniture (thirty seating blocks in the theatre) folded underneath, still one press away
+              const item = (d: Device) => <li key={d.id}><button type="button" className="fl__devbtn" data-device={d.id} onClick={() => setSelected(d.id)}>
+                <span className="fl__chip" data-family={d.furniture ? 'furniture' : familyOf(d.cat).family} aria-hidden="true">{d.furniture ? '▭' : familyOf(d.cat).letter}</span>
+                <span><b>{d.label}</b> <span className="ui-muted">{d.furniture ? 'furniture' : familyOf(d.cat).family}</span></span><span className="ui-mono ui-muted">{d.id}</span></button></li>;
+              const furn = R.devices.filter((d) => d.furniture);
+              return <><ul className="fl__devs" data-testid="fl-devices">{R.devices.filter((d) => !d.furniture).map(item)}</ul>
+                {furn.length ? <details className="fl__furn" data-testid="fl-devices-furniture"><summary>{furn.length} pieces of furniture</summary><ul className="fl__devs">{furn.map(item)}</ul></details> : null}</>;
+            })()}
           </Card>
         </div>
 
@@ -413,6 +427,7 @@ export function FlagshipPage({ room }: { room?: string }) {
           measuredTests={(data.criteria?.tests || []).filter((x) => x.criterion).map((x) => x.test)} people={data.people} t={tools} />
 
         <BaselineCard baseline={B} revision={R.room.approvedRevision} names={Object.fromEntries((data.criteria?.tests || []).map((x) => [x.test, x.name]))} />
+        <Incidents room={{ code: R.room.code, name: R.room.name }} lifecycle={R.room.lifecycle} devices={R.devices} selected={selected} data={data.incidents} creds={data.creds} t={tools} />
 
         <Card icon="check" title="Commissioning plan" sub={R.commissioning ? `${R.commissioning.applicable} of ${R.commissioning.library} tests apply to this room · rules ${R.commissioning.ruleVersion}, engine ${R.commissioning.engineVersion}` : 'The server holds no plan for this room'} testId="fl-cx-card">
           {R.commissioning ? <>

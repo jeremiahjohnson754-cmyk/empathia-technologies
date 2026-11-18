@@ -201,6 +201,8 @@ async function seedScenario(pool: PgPool, router: Router, tenantId: string, peop
     for (; seat < SEAT_ROWS * SEAT_X.length; seat++) await invoke(router, designer, 'POST', D, { category: 'chairs', ...seatAt(seat) });
     for (const d of FLAGSHIP_MODEL.add) await invoke(router, designer, 'POST', D, d);
   }
+  // what DESIGN_APPROVED approves is the latest saved revision: the theatre's equipment and seating are saved as revision 2 by its designer
+  await invoke(router, designer, 'POST', `/v1/rooms/${hall}/revisions`, { reason: 'the theatre\u2019s own equipment and seating (synthetic)' });
   await invoke(router, designer, 'POST', `/v1/rooms/${hall}/drawings/generate`);
   await invoke(router, syseng, 'POST', `/v1/rooms/${hall}/drawings/plan/approve`);
   await invoke(router, syseng, 'POST', `/v1/rooms/${hall}/classification/approve`, {});

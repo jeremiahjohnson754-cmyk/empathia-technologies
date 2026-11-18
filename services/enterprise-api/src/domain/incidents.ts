@@ -36,7 +36,7 @@ export const SEVERITIES = ['Critical', 'High', 'Medium', 'Low'];
 export const IN_SERVICE = ['ACCEPTED', 'OPERATIONAL'];
 export const MANAGE = ['service.triage', 'issue.assign'];
 export const RECURRENCE_DAYS = 30;
-export const catalogue = { entryTypes: ENTRY_TYPES, issueTypes: ISSUE_TYPES, domains: DOMAINS, detectedDuring: DETECTED, userImpacts: IMPACTS, resolutionTypes: RESOLUTIONS, severities: SEVERITIES, recurrenceDays: RECURRENCE_DAYS };
+export const catalogue = { entryTypes: ENTRY_TYPES, issueTypes: ISSUE_TYPES, domains: DOMAINS, detectedDuring: DETECTED, userImpacts: IMPACTS, resolutionTypes: RESOLUTIONS, severities: SEVERITIES, rootCauses: ROOT_CAUSES, recurrenceDays: RECURRENCE_DAYS };   // rootCauses: the workflow's own list, so a page asks for none of its own
 
 interface Row { id: string; code: string; title: string; severity: string; state: string; workflow: string; owner_role: string | null; target_date: string | null; root_cause: string | null; corrective_action: string | null; retest: { result: string; evidence: string } | null; resolution: { at?: string } | null;
   room_id: string; room_code: string; room_name: string; entry_type: string; issue_type: string; domain: string; detected_during: string; user_impact: string; device: string | null; description: string; reported_by: string; reporter: string; reported_role: string; reported_at: string;

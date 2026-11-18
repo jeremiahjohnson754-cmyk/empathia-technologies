@@ -64,3 +64,24 @@ one camera, two loudspeakers for twenty metres of depth, and every ceiling devic
 - No assistive-listening device, projector or lecture-capture appliance: the catalogue has no category for the first, and the room
   does not need the second.
 - The video switcher and the encoder are named by no test's devices: the catalogue has no device family for them.
+
+## Amendment, 18 Nov 2026: what was approved was the template
+
+Found while reviewing the room page: the accepted baseline read "the design (9 device positions at revision 1)". Revision 1 is
+the snapshot saved when the room is created, the auditorium template. The scenario added the theatre's 27 devices and 28 seating
+blocks after that and never saved a revision, and `DESIGN_APPROVED` sets `approved_revision` to the latest saved revision, so the
+room was approved, installed and accepted against a snapshot that did not contain most of it. FM-02 asserted one revision and
+compared a drawing's own revision number with the design's; both passed by coincidence.
+
+Two changes:
+
+1. **The rule.** `DESIGN_APPROVED` is refused while the latest saved revision does not describe the design as it stands (the
+   engine's `designKey`, the same comparison the recommissioning binding uses): "the design has changed since its latest saved
+   revision: save it as a revision first". It is in `lifecycleBlockers`, so the transition and the readiness list say the same.
+   A room with no saved revision keeps its own reason.
+2. **The scenario.** The designer saves revision 2 ("the theatre's own equipment and seating (synthetic)") before the drawings
+   are generated; the systems engineer approves revision 2, which holds every one of the room's positions.
+
+FM-02 now asserts revisions `[1, 2]` and approved revision 2, and that the plan drawing is APPROVED (not that its number equals
+the design's). FM-02b checks that revision 2 holds every position, and that a fresh room changed after its saved revision is
+refused, then approved once saved.

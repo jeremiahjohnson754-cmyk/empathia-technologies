@@ -41,6 +41,8 @@ before(async () => {
   // a proposed connection of the design between the first two devices (the template may already have one)
   const dc = (await fr('designer')).designConnections.find((x) => (x.from === D[0] && x.to === D[1]) || (x.from === D[1] && x.to === D[0]));
   conn = dc ? dc.code : (await call('designer', 'POST', `/v1/rooms/${room}/connections`, { body: { from: D[0], to: D[1], kind: 'signal' } })).body.code;
+  // (added 18 Nov: DESIGN_APPROVED approves the latest saved revision and refuses a design changed since it; the added connection is saved)
+  if (!dc) await call('designer', 'POST', `/v1/rooms/${room}/revisions`, { body: { reason: 'connection added' } });
   await call('designer', 'POST', `/v1/rooms/${room}/drawings/generate`); await call('syseng', 'POST', `/v1/rooms/${room}/drawings/plan/approve`); await call('syseng', 'POST', `/v1/rooms/${room}/classification/approve`, { body: {} });
   conn = (await fr('designer')).designConnections.find((x) => (x.from === D[0] && x.to === D[1]) || (x.from === D[1] && x.to === D[0])).code;
 });

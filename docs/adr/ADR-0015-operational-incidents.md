@@ -1,6 +1,6 @@
 # ADR-0015 · An operational incident is an issue of a room in service
 
-Date: 18 Nov 2026 · Status: accepted · Migration: `0039_operational_incidents.sql` · Tests: `tests/security/incidents.test.mjs` IN-01…11
+Date: 18 Nov 2026 · Status: accepted · Migration: `0039_operational_incidents.sql` · Tests: `tests/security/incidents.test.mjs` IN-01…11; `tests/browser/demo-flagship.test.mjs` FL-34…36
 
 Founder, 17 Nov 2026, 19:05: "prioritize operational incident intelligence." And the reconciliation of the founder's Operational
 Issue Intelligence workbook (`docs/product/SOURCE_RECONCILIATION.md`): the server knew a deficiency of a design and a deficiency
@@ -42,7 +42,9 @@ of commissioning; a room in service with a fault had no record to open.
   no target but the date its owner was given.
 - **Root causes are the workflow's eight.** The workbook's programming error, user training gap, vendor defect and end of life have
   no value of their own.
-- **No page yet.** The demonstration's ServiceHands pages still keep their records in the browser; this is the server record they
-  are to move to.
+- **One page so far** (18 Nov 2026): the room page `#/flagship[/room]` has an "In service: incidents" card once a room is accepted
+  (`apps/demo/src/flagship/Incidents.tsx`; `demo-flagship` FL-34…36). It reports, lists and works the incidents of that room
+  through these routes, shows the repeat the database found, and shows what the records add up to. The demonstration's ServiceHands
+  pages still keep their own records in the browser; they have not moved to this record.
 - **Monitoring as a source is a word, not a connection**: nothing opens an incident from telemetry, because no telemetry is connected.
 - A user-facing reporter outside the organization (a guest in a room) cannot report: reporting needs a signed-in member.
