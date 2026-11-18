@@ -1,3 +1,36 @@
+# Session handoff — 18 Nov 2026, 15:55 America/Chicago (read this first)
+
+**Branch** `v18/continuation`, HEAD **`f8b3e59`** (pushed). **Staging still `81276b2`** (not restaged; the plan is ONE exact-commit
+regression on the final combined commit, then stage, then verify). Production untouched (founder's word required).
+
+**Founder directives received today** (verbatim in `.local/directives/2026-11-18-*`; the private reference PDF/PPTX in
+`.local/reference/2026-11-18-maps/` names a real employer — conceptual only, never public, never sent to any connector):
+1159 cinematic RPG / Search Party / destructive QA (#217–#222); 1227 mobile + two QA cycles + desktop + device detection (#223–#228);
+1315 investor experience / Core Replay / tours / deep links / media (#229–#233); 1321 Core Replay as the signature demo (in #230);
+1342/1351/1400 maps (#234: our own game-engine-quality imagery + licensed real-world data only with founder approval; one shared
+navigation service; trustworthy heatmaps) and connector polish (#235); 1408 park backup tasks (#174 #195 #196 marked PARKED);
+1538 heatmap metrics (#236).
+
+**Done today (all committed, each with tests; defect register `docs/qa/DEFECT_REGISTER_2026-11-18.md` D18-01…13):**
+- Stadium night lighting; Experiences captures refreshed on the website.
+- First-time-viewer fixes: shell bar wrap at 381–410/320 px; Campus Life theme (data-stage collision) and HUD overlap; Field Tools
+  44 px; investor start eyebrow; corporate product tiles never split words ("Commissioning & Assurance"); shorter phone hero.
+- #223 context-preserving navigation (`apps/demo/src/shell/trail.tsx`): per-entry scroll memory + "Back to …" trail chip;
+  Search Party room → ServiceHands; intake draft kept in the tab. Suite `demo-return-trail` (21).
+- #234 Empathia Map (`apps/demo/src/map/`): synthetic aerial + street style painted from canonical footprints, 3D buildings, fly-to
+  drill campus → building → floor cutaway → room with exact jumps; lenses (Health risk; Issues as count / per 10 rooms) with legend,
+  source and time; Pro Issue Intelligence "Where it fails"; graphics tier (`data-gpu`); idle start; on-demand code. Suite `demo-map` (25).
+- #229 Core Replay for every campus room from its record (`apps/demo/src/replay/history.ts` `stagesFromRecord`).
+
+**Next, in order:** (1) #230 "The Life of a Room" flagship tour on R-ATL-4-218 driving the real pages (Core Replay → Lite →
+Commissioning fail → ServiceHands → Search Party match → retest → baseline → change → Learn → APEX), with "same record" ids visible;
+(2) #232 corporate product pages → exact demo states (typed launch intent + return); (3) #236 heatmap metrics; #234 earth/region level;
+(4) #217 SIGNAL branching chapter; (5) #225 two destructive QA cycles; (6) final exact-commit regression → stage → verify.
+Suites to keep green while changing the map/shell: demo-map, demo-campus (prints "N/N PASS"), demo-core (read RESULTS.json),
+demo-phoneshell, demo-access, demo-return-trail, demo-rolehome, demo-replay, website (light and dark).
+
+---
+
 # State and outstanding work (18 Nov 2026, 09:05 UTC)
 
 This replaces `OUTSTANDING_2026-11-17.md` as the current list. Everything named here is committed on `v18/continuation`.
