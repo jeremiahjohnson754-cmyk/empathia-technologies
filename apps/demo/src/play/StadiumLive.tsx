@@ -154,7 +154,7 @@ export function StadiumLivePage() {
       const zen = lerp([0.36, 0.56, 0.86], A.label === 'Concert' ? [0.05, 0.02, 0.12] : [0.015, 0.025, 0.07], night); const hor = lerp([0.83, 0.89, 0.96], A.label === 'Concert' ? [0.3, 0.12, 0.32] : [0.26, 0.17, 0.2], night);
       r.begin(vp, eye, hor, 300, 880); r.sky(eye, hor, zen, 860);
       r.draw(M.city); r.draw(M.water); r.glow(night); r.draw(M.windows, m4.ident(), lerp([0.32, 0.36, 0.42], [1, 1, 1], night)); r.glow(0);
-      r.draw(M.bowl);
+      r.glow(0.12 * night); r.draw(M.bowl); r.glow(0);   // under the lights, the stands are lit from the towers
       r.glow(0.55 * night); r.draw(M.pitch, m4.ident(), undefined); r.glow(0);
       if (A.label === 'Concert') { r.draw(M.stage); }
       r.glow(0.8 * night + 0.1); r.draw(M.glass); r.glow(1);
@@ -169,7 +169,7 @@ export function StadiumLivePage() {
       for (const g of M.crowd) { const away = AWAY.includes(g.section); let y = 0;
         if (!reducedRef.current) { if (cheerNow && (cheerNow.side === 'all' || (cheerNow.side === 'away') === away)) y = 0.35 * ce * Math.abs(Math.sin(now / 160 + g.section)); if (waveRef.current) { const ph = ((now / 1000) * 1.6 - g.section / SECTIONS * Math.PI * 2) % (Math.PI * 2); y = Math.max(y, Math.max(0, Math.cos(ph)) ** 6 * 0.9); } }
         const tint = P.look === 'away' ? (away ? undefined : lerp([0.35, 0.36, 0.38], [1, 1, 1], 0.2)) : P.look === 'home' ? (away ? lerp([0.35, 0.36, 0.38], [1, 1, 1], 0.2) : undefined) : undefined;
-        r.draw(g.mesh, m4.trs([0, y, 0], 0, [1, 1, 1]), P.look !== 'neutral' && tint ? tint : undefined); }
+        r.glow(0.42 * night); r.draw(g.mesh, m4.trs([0, y, 0], 0, [1, 1, 1]), P.look !== 'neutral' && tint ? tint : undefined); r.glow(0); }
       if (A.label === 'Concert') { r.glow(1); for (let i = 0; i < 4; i++) r.draw(r.unit, m4.trs([-30 + i * 14, 0.4, Math.sin(now / 700 * (reducedRef.current ? 0 : 1) + i) * 12], 0, [10, 0.2, 10]), S.lc, 0.35); r.glow(0); }
       // overlays
       if (P.overlay === 'dba') { r.glow(1); for (const g of M.dba) { const db = modeledDba(g.section, fill, exciteRef.current, cheerNow ? (cheerNow.side === 'all' ? 'home' : cheerNow.side) : null); const k2 = Math.max(0, Math.min(1, (db - 70) / 40)); r.draw(g.mesh, m4.ident(), lerp([0.2, 0.62, 0.9], [0.86, 0.15, 0.12], k2), 0.62); } r.glow(0); }

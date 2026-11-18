@@ -156,8 +156,8 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "7375347",
-   "capturedAt": "2026-11-18T17:52:14.679Z",
+   "commit": "4000e9e",
+   "capturedAt": "2026-11-18T18:04:27.491Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,
@@ -172,15 +172,15 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "7375347",
-   "capturedAt": "2026-11-18T17:52:21.400Z",
+   "commit": "4000e9e",
+   "capturedAt": "2026-11-18T18:04:34.014Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,
    "height": 800,
    "files": {
-    "exp-stadium-1280.webp": "224d293c5aa55f2faff2e06a9d1aa63eb19c6d07180491f4426240c8f4c7a456",
-    "exp-stadium-640.webp": "844914a89506f09689f1deef37cf906dc55f599bfdbb5be11cee81c74c1ad604"
+    "exp-stadium-1280.webp": "cd01c9f5159be0ab2b12aaa66db79b4223a6ddd41319787ff0e50f3144b46936",
+    "exp-stadium-640.webp": "76a4d87eff5ad07b6a8038142bbe9bda448615404d1f7ce594db0b3356915f55"
    }
   },
   "exp-expo": {
@@ -188,15 +188,15 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "7375347",
-   "capturedAt": "2026-11-18T17:52:29.530Z",
+   "commit": "4000e9e",
+   "capturedAt": "2026-11-18T18:04:42.168Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,
    "height": 800,
    "files": {
-    "exp-expo-1280.webp": "74a39b1a4ec2f575fc35106ff88a2a06e2542d99754117c3418cbd78c4074c24",
-    "exp-expo-640.webp": "107a764d84a5627ccbd7cab2ed31b5f75455b598d71e651a8814f5505fa9a5d2"
+    "exp-expo-1280.webp": "c405ca657b7e957e110239af33847dcd44356cb7d8488794a684b5fcabed7426",
+    "exp-expo-640.webp": "d7e964282c4d4a9c5d2a5c069edf953f81359ee8952bd96fcd604f7c468a7e00"
    }
   }
  }
