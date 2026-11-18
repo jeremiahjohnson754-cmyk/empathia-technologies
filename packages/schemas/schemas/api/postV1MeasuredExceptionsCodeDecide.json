@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1MeasuredExceptionsCodeDecide/0.1.0.json",
+  "title": "POST /v1/measured-exceptions/{code}/decide request body",
+  "description": "Approve or reject a measured exception record, once, never by its logger; a rejection says why",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  }
+}

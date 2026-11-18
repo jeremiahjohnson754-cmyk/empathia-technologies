@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 93,
+    "api": 98,
     "entities": 4
   },
   "files": [
@@ -554,6 +554,11 @@
       "sha256": "0cf6360b9c7ad941e0a7e149508e1b0225388d0d06714c590477cb9bd4602f23"
     },
     {
+      "file": "api/postV1RoomsRoomDevicesBatch.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDevicesBatch/0.1.0.json",
+      "sha256": "d8e63be11f2c1250979f28b3a0b31ea4497e3c21027a98bc6b1f75f758f45487"
+    },
+    {
       "file": "api/postV1RoomsRoomDevices.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDevices/0.1.0.json",
       "sha256": "04071b56277959fafacd62052c056ae714c28865999abc31906696beed3fe468"
@@ -657,6 +662,26 @@
       "file": "api/postV1IssuesIssueDeficiency.json",
       "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueDeficiency/0.1.0.json",
       "sha256": "e9b7cbb35d57d3772145f68e211606572847dd8848fde60212c905ffe5172091"
+    },
+    {
+      "file": "api/postV1IssuesIssueMeasuredException.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueMeasuredException/0.1.0.json",
+      "sha256": "1d2a17a2111dae0f926999155bb9c6f70918ec0fe20d2d82a76acd9f41c54798"
+    },
+    {
+      "file": "api/postV1MeasuredExceptionsCodeDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1MeasuredExceptionsCodeDecide/0.1.0.json",
+      "sha256": "6dd22a112c741baf4ab58773bfce7a27e0cb6df9ac897c2a33ddf74944077faa"
+    },
+    {
+      "file": "api/postV1RoomsRoomDocumentationKind.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDocumentationKind/0.1.0.json",
+      "sha256": "7f60b9ac38c0b50f9522ba9fdc8f0ec671424ba50b26287c4659692a8d0bd0a4"
+    },
+    {
+      "file": "api/postV1RoomsRoomDocumentationKindReview.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDocumentationKindReview/0.1.0.json",
+      "sha256": "c127b59a9f3b5f3f62b7f7c9a4fa82366ae50b9d293792b4404bfc446d48775d"
     },
     {
       "file": "api/postV1IssuesIssueWorkOrders.json",

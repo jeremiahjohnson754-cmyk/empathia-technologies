@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueMeasuredException/0.1.0.json",
+  "title": "POST /v1/issues/{issue}/measured-exception request body",
+  "description": "Log the exception record of a deficiency opened by a failed measured test with a criterion: why the value is poor, the root cause, the mitigation and evidence. The measured value, metric and limits are copied by the database from the measurement the current FAIL rests on",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "whyPoor",
+    "rootCause",
+    "mitigation"
+  ],
+  "properties": {
+    "whyPoor": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "rootCause": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "mitigation": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "evidenceId": {
+      "type": "string",
+      "maxLength": 40
+    }
+  }
+}
