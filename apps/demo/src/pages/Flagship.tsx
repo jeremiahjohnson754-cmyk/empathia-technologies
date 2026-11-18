@@ -24,7 +24,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PageHero, Card, Tag, Notice } from '@empathia/ui';
 import { connected, SandboxGone, type Availability, type Sandbox } from '../connected/client.js';
 import { ReverbBench, type BenchOutput, type BenchTest } from '../flagship/ReverbBench.js';
-import { CorrectiveAction, type Deficiency, type Issue, type WorkOrder } from '../flagship/CorrectiveAction.js';
+import { CorrectiveAction, type Deficiency, type Issue, type Tools, type WorkOrder } from '../flagship/CorrectiveAction.js';
+import { Finishing, BaselineCard, type Baseline, type Person } from '../flagship/Acceptance.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
 interface Point { x: number; y: number }
@@ -35,7 +36,7 @@ interface Device { id: string; cat: string; label: string; role: string; model: 
 interface FieldAnswer { room: { bounds: { w: number; l: number } }; writable: boolean; may: { record: boolean; decide: boolean };
   devices: Array<{ asset: string; asBuilt: Point & { moved: string | null }; recheck: Array<{ test: string; label: string; result: string | null }> }>;
   moves: Array<{ move: string; device: string; state: string; from: Point; to: Point; metres: number; reason: string; note: string; by: string; decidedBy: string | null; decision: string | null; mayDecide: boolean }>; catalogue: { moveReasons: string[] } }
-interface BaselineAnswer { current: { version: number; devices: Array<{ id: string; placement: { designed: Point; asBuilt: (Point & { move: string }) | null; at: Point; basis: string } | null }> } | null }
+interface BaselineAnswer { current: Baseline | null }
 interface CriteriaAnswer { sandbox: boolean; tests: Array<BenchTest & { personas: string[] }>; versions: Array<{ test: string; version: number; inForce: boolean }>; may: { set: boolean } }
 /** A measurement as the server lists it (the ADR-0004 record with its test, evidence and the database's judgement). */
 interface Measured { id: string; metric: string; value: string | number; unit: string; provenance: string; calibration_status: string; instrument_id: string | null; location: string; test_id: string | null; evidence_id: string | null; within: boolean | null; criterion_version: number | null;
@@ -50,7 +51,7 @@ interface RoomAnswer {
   commissioning: { engineVersion: string; ruleVersion: string; library: number; applicable: number; counts: Record<string, number>; rows: Row[] } | null;
 }
 interface Thread { room: { code: string; lifecycle: string; revision: number }; complete?: boolean; missing?: string[]; stages: Array<{ key: string; product: string; records: Record<string, unknown> }> }
-interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; place: { building: string; buildingName: string; site: string; siteName: string } | null }
+interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; people: Person[]; place: { building: string; buildingName: string; site: string; siteName: string } | null }
 type Said = { ok: boolean; warn?: boolean; title: string; text: string; reasons?: string[] };
 const at = (p: Point) => `${p.x} m across, ${p.y} m from the front`;
 const same = (a: Point, b: Point) => Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005;
@@ -137,14 +138,15 @@ export function FlagshipPage() {
       const [thread, list, sites, field, baseline] = await Promise.all([c.call<Thread>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/thread`), c.call<{ items: Array<{ code: string; building: string }> }>(as, 'GET', '/v1/rooms?limit=50'),
         c.call<{ items: Array<{ code: string; name: string; buildings: Array<{ code: string; name: string }> }> }>(as, 'GET', '/v1/sites'),
         c.call<FieldAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/field-record`), c.call<BaselineAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/baselines`)]);
-      const [criteria, measured, register] = await Promise.all([c.call<CriteriaAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/criteria`), c.call<{ items: Measured[] }>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/measurements`), c.call<RegisterAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/register`)]);
+      const [criteria, measured, register, sandbox] = await Promise.all([c.call<CriteriaAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/criteria`), c.call<{ items: Measured[] }>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/measurements`), c.call<RegisterAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/register`),
+        c.call<{ personas: Person[] }>(as, 'GET', '/v1/demo/sandbox')]);
       // each deficiency of the room with its own workflow record and, when one was raised, its work order
       const found = thread.ok ? (((thread.body.stages.find((s) => s.key === 'commissioning')?.records as { issues?: Issue[] } | undefined)?.issues) || []) : []; const service: Loaded['service'] = {};
       await Promise.all(found.slice(0, 6).map(async (i) => { const [d, w] = await Promise.all([c.call<Deficiency>(as, 'GET', `/v1/issues/${i.code}/deficiency`), i.workOrders[0] ? c.call<WorkOrder>(as, 'GET', `/v1/work-orders/${i.workOrders[0]}`) : Promise.resolve(null)]);
         service[i.code] = { def: d.ok ? d.body : null, wo: w && w.ok ? w.body : null }; }));
       if (!alive.current) return;
       const b = list.ok ? list.body.items.find((x) => x.code === room.body.room.code)?.building : undefined; const site = b && sites.ok ? sites.body.items.find((s) => s.buildings.some((x) => x.code === b)) : undefined;
-      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
+      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, people: sandbox.ok ? sandbox.body.personas : [], place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
       setSelected((s) => (s && room.body.devices.some((d) => d.id === s) ? s : null));
     } catch (e) {
       if (e instanceof SandboxGone) { setSb(null); setData(null); setSaid({ ok: false, title: 'The sandbox is no longer there.', text: `${e.message}. Open a new one to continue.` }); }
@@ -219,6 +221,7 @@ export function FlagshipPage() {
   const bench = data?.criteria?.tests.find((t) => t.test === 'reverberation_rt60') || null; const registerOpen = (data?.register?.items || []).filter((x) => x.missing.length).length; const registerAll = (data?.register?.items || []).length;
   const issues = ((data?.thread?.stages.find((s) => s.key === 'commissioning')?.records as { issues?: Issue[] } | undefined)?.issues) || [];
   const limitOf = (m: Measured) => (m.criterion_version === null ? null : `${m.criterion_upper !== null && m.criterion_lower !== null ? `between ${Number(m.criterion_lower)} and ${Number(m.criterion_upper)}` : m.criterion_upper !== null ? `at most ${Number(m.criterion_upper)}` : `at least ${Number(m.criterion_lower)}`} ${m.unit}, version ${m.criterion_version}`);
+  const tools: Tools = { call: (method, path, body, note) => c.call(who, method, path, body, note), act, refused, person: person(who), busy: !!busy, roles: PEOPLE };
   const mover = R && moving ? R.devices.find((d) => d.id === moving) || null : null; const moverAt = mover ? placeOf(mover) : null;
   const far = mover && moverAt && draft ? dist(moverAt, draft) : 0; const ready = !!(mover && draft && far >= 0.05 && reason && (reason !== 'other' || note.trim()));
 
@@ -361,9 +364,14 @@ export function FlagshipPage() {
         <Card icon="alert" title="Deficiencies" sub={issues.length ? `${issues.filter((i) => i.state === 'OPEN').length} open of ${issues.length}` : 'None'} testId="fl-issues-card">
           {issues.length ? <ul className="fl__list fl__issues" data-testid="fl-issues">{issues.map((i) => <li key={i.code} data-issue={i.code} data-state={i.state}><p className="fl__issue"><span className="ui-mono">{i.code}</span> <Tag tone={i.state === 'OPEN' ? 'bad' : 'ok'}>{words(i.state)}</Tag> <b>{i.title}</b> <span className="ui-muted">· {words(i.workflow)}{i.workOrders.length ? ` · ${i.workOrders.join(', ')}` : ' · no work order yet'}</span></p>
             <CorrectiveAction issue={i} def={data.service[i.code]?.def || null} wo={data.service[i.code]?.wo || null}
-              t={{ call: (method, path, body) => c.call(who, method, path, body), act, refused, person: person(who), busy: !!busy, roles: PEOPLE }} /></li>)}</ul>
+              t={tools} /></li>)}</ul>
             : <p data-testid="fl-issues-none">No deficiency is open on this room. A failed result opens one.</p>}
         </Card>
+
+        <Finishing room={FLAGSHIP_REF} lifecycle={R.room.lifecycle} rows={rows} counts={{ recorded: R.commissioning?.counts['recorded'] ?? 0, verified: R.commissioning?.counts['verified'] ?? 0, applicable: R.commissioning?.applicable ?? 0 }}
+          measuredTests={(data.criteria?.tests || []).filter((x) => x.criterion).map((x) => x.test)} people={data.people} t={tools} />
+
+        <BaselineCard baseline={B} revision={R.room.approvedRevision} names={Object.fromEntries((data.criteria?.tests || []).map((x) => [x.test, x.name]))} />
 
         <Card icon="check" title="Commissioning plan" sub={R.commissioning ? `${R.commissioning.applicable} of ${R.commissioning.library} tests apply to this room · rules ${R.commissioning.ruleVersion}, engine ${R.commissioning.engineVersion}` : 'The server holds no plan for this room'} testId="fl-cx-card">
           {R.commissioning ? <>

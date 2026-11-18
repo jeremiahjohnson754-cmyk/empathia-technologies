@@ -30,7 +30,8 @@ test('ML-01 every page the ledger calls "server" is listed here, and the reverse
 test('ML-02 a server page reads no browser-held record: it imports the server’s client and the interface kit, and nothing else', () => {
   for (const [page, file] of Object.entries(SERVER_PAGES)) {
     const all = importsOf(file); assert.ok(all.length >= 3, `${page} imports were read`);
-    const direct = all.filter((i) => i.from === file || /^apps\/demo\/src\/flagship\//.test(i.from)); const bad = direct.filter((i) => !ALLOWED.some((re) => re.test(i.spec)));
+    const direct = all.filter((i) => i.from === file || /^apps\/demo\/src\/flagship\//.test(i.from)); const sibling = (i) => /^apps\/demo\/src\/flagship\//.test(i.from) && /^\.\/[A-Za-z]+\.js$/.test(i.spec);   // one of the page's own components importing another (18 Nov 2026)
+    const bad = direct.filter((i) => !ALLOWED.some((re) => re.test(i.spec)) && !sibling(i));
     assert.deepEqual(bad, [], `${page} imports only React, the interface kit and the server client`);
     // and what those import, in turn, never reaches the browser's own records of rooms, field work, service or the estates
     const reach = all.filter((i) => /\/(campus|estate|install|service|assurance|lite|worlds|decisions|drawing|rooms)\//.test(i.spec));

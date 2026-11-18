@@ -10,7 +10,7 @@ import type { RequestContext } from '../auth/context.js';
 import { ApiError, invalid, notFound } from '../http/errors.js';
 import { findRoom } from './rooms.js';
 
-interface Bound { designRevision: number; designSha256: string; planId: string | null; results: Record<string, string>; evidenceIds: string[]; devices: unknown[]; authors: string[] }
+interface Bound { designRevision: number; designSha256: string; planId: string | null; results: Record<string, string>; evidenceIds: string[]; devices: unknown[]; measurements: unknown[]; authors: string[] }
 import { placementsOf } from './placement.js';
 
 /** What the room's current state binds: the approved design revision, the current result labels, the evidence they cite, the authors. */
@@ -23,7 +23,14 @@ export async function bindCurrent(q: Queryable, room: { id: string; approved_rev
   // its as-built place and the move. Without it Assurance could not say where a device was at acceptance, nor that it had moved.
   const places = await placementsOf(q, room.id);
   const placeOf = (id: string) => { const p = places.get(id); return p ? { designed: p.designed, asBuilt: p.asBuilt ? { x: p.asBuilt.x, y: p.asBuilt.y, move: p.asBuilt.move } : null, at: p.current, basis: p.basis } : null; };
-  return { designRevision: rev.rev_no, designSha256: rev.sha256, planId: plan?.id || null, results: Object.fromEntries(res.map((r) => [r.test_id, r.result_label])),
+  // 0038: the measured values the room is accepted on, each with the limit it was judged against. A later result replaces the current
+  // one; the baseline keeps what was current when it was taken.
+  const measured = (await q.query<{ test_id: string; id: string; metric: string; value: string; unit: string; provenance: string; within: boolean | null; version: number | null; lower: string | null; upper: string | null; source: string | null }>(
+    `SELECT c.test_id, m.id, m.metric, m.value, m.unit, m.provenance, m.within, k.version, k.lower, k.upper, k.source
+       FROM app.current_result c JOIN app.test_result t ON t.id = c.result_id JOIN app.measurement m ON m.id = t.measurement_id LEFT JOIN app.acceptance_criterion k ON k.id = m.criterion_id WHERE c.room_id = $1 ORDER BY c.test_id`, [room.id])).rows;
+  const measurements = measured.map((m) => ({ test: m.test_id, measurement: m.id, metric: m.metric, value: Number(m.value), unit: m.unit, provenance: m.provenance, within: m.within,
+    criterion: m.version === null ? null : { version: m.version, lower: m.lower === null ? null : Number(m.lower), upper: m.upper === null ? null : Number(m.upper), source: m.source } }));
+  return { designRevision: rev.rev_no, designSha256: rev.sha256, planId: plan?.id || null, measurements, results: Object.fromEntries(res.map((r) => [r.test_id, r.result_label])),
     evidenceIds: [...new Set(res.map((r) => r.evidence_id).filter((x): x is string => !!x))], devices: rev.snapshot.devices.filter((d) => !d.furniture).map((d) => ({ id: d.id, category: d.cat, label: d.label, placement: placeOf(d.id) })),
     authors: [...new Set(res.flatMap((r) => [r.recorded_by, r.verified_by]).filter((x): x is string => !!x))] };
 }
@@ -34,8 +41,8 @@ export async function publish(ctx: RequestContext, q: Queryable, room: { id: str
   const cur = (await q.query<{ id: string; version: number }>("SELECT id, version FROM app.assurance_baseline WHERE room_id = $1 AND state = 'CURRENT'", [room.id])).rows[0];
   const version = cur ? cur.version + 1 : 1;
   if (cur) await q.query("UPDATE app.assurance_baseline SET state = 'SUPERSEDED', superseded_at = now(), superseded_by = $2 WHERE id = $1", [cur.id, ctx.p.personId]);
-  const r = await q.query<{ id: string }>(`INSERT INTO app.assurance_baseline (tenant_id, room_id, version, design_revision, design_sha256, plan_id, results, evidence_ids, devices, reason, published_by, supersedes) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING id`,
-    [ctx.p.tenantId, room.id, version, b.designRevision, b.designSha256, b.planId, b.results, b.evidenceIds, JSON.stringify(b.devices), reason, ctx.p.personId, cur?.id || null]);
+  const r = await q.query<{ id: string }>(`INSERT INTO app.assurance_baseline (tenant_id, room_id, version, design_revision, design_sha256, plan_id, results, evidence_ids, devices, reason, published_by, supersedes, measurements) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING id`,
+    [ctx.p.tenantId, room.id, version, b.designRevision, b.designSha256, b.planId, b.results, b.evidenceIds, JSON.stringify(b.devices), reason, ctx.p.personId, cur?.id || null, JSON.stringify(b.measurements)]);
   if (cur) await ctx.emit(q, 'assurance.baseline_superseded', { type: 'Room', id: room.code, rev: version }, { roomId: room.code, oldBaselineId: cur.id, newBaselineId: r.rows[0]!.id, version });
   await ctx.audit(q, 'assurance.baseline_published', 'ALLOWED', { type: 'Room', id: room.code }, { version, supersedes: cur?.id || null, designRevision: b.designRevision, evidence: b.evidenceIds.length });
   return { id: r.rows[0]!.id, version, supersedes: cur?.id || null };
@@ -44,7 +51,7 @@ export async function publish(ctx: RequestContext, q: Queryable, room: { id: str
 export async function lineage(ctx: RequestContext, ref: string) {
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref);
-    const items = (await q.query('SELECT id, version, state, design_revision, design_sha256, plan_id, results, evidence_ids, devices, reason, published_by, published_at, supersedes, superseded_at, superseded_by FROM app.assurance_baseline WHERE room_id = $1 ORDER BY version', [room.id])).rows;
+    const items = (await q.query('SELECT b.id, b.version, b.state, b.design_revision, b.design_sha256, b.plan_id, b.results, b.evidence_ids, b.devices, b.measurements, b.reason, b.published_by, p.display_name AS published_by_name, b.published_at, b.supersedes, b.superseded_at, b.superseded_by FROM app.assurance_baseline b JOIN app.person p ON p.id = b.published_by WHERE b.room_id = $1 ORDER BY b.version', [room.id])).rows;
     const exceptions = (await q.query('SELECT id, baseline_id, kind, dimension, rationale, state, requested_by, requested_at, decided_by, decided_at, decision_note, expires_at FROM app.baseline_exception WHERE room_id = $1 ORDER BY requested_at', [room.id])).rows;
     return { room: room.code, current: items.find((x) => (x as { state: string }).state === 'CURRENT') || null, items, exceptions };
   });

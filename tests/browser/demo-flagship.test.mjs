@@ -36,6 +36,10 @@
 //   FL-26  the correction recorded; a retest refused until the room is measured again; PASS on the new measurement; closed by
 //          someone else's verification
 //   FL-27  refresh, a second person's browser, phone width
+//   FL-28  acceptance asked too early is refused with reasons; the handover documents one at a time; the other checks one request each
+//   FL-29  verification by someone else; the acceptance lent, not self-granted; accepted by the operations lead; baseline 1
+//   FL-30  the baseline: the design untouched, the as-built place, the measured value and its limit; closed field record; refresh,
+//          a second person's browser, phone width
 //   node tests/browser/demo-flagship.test.mjs
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
@@ -334,6 +338,48 @@ let retest = null;
   ok('FL-27', 'after a refresh, and in a second person’s browser opened with the resume code alone, the measurements, their verdicts, the closed job and the closed deficiency are the same; nothing scrolls sideways at phone width; no error but the refusals asked for',
     JSON.stringify(afterReload.measured) === JSON.stringify(['yes/PASS', 'no/FAIL']) && afterReload.wo === 'CLOSED' && afterReload.wf === 'CLOSED' && JSON.stringify(theirs) === JSON.stringify(afterReload) && over <= 1 && !u.errs.length && !pageErrs().length,
     `after reload ${JSON.stringify(afterReload).slice(0, 160)} · second browser the same ${JSON.stringify(theirs) === JSON.stringify(afterReload)} · phone overflow ${over}px · ${[...u.errs, ...pageErrs()].slice(0, 2)}`);
+  await u.close(); }
+
+// ------------------------------------------------------------------------------------------------ to acceptance, and the baseline
+const rowsOnServer = async () => (await srv('cxeng', '')).commissioning.rows.filter((x) => x.applicable);
+const count = async (re) => (await rowsOnServer()).filter((x) => re.test(x.result)).length;
+
+// asked as the QA reviewer, who holds the acceptance authority, so the server answers with what is in the way and not with who may ask
+{ await actAs(p, 'qa_reviewer'); await p.getByTestId('fl-accept').click(); const early = await saidOk(p); const reasons = await p.getByTestId('fl-said-reasons').locator('li').allInnerTexts().catch(() => []); const stage = (await srv('cxeng', '')).room.lifecycle;
+  await actAs(p, 'cxeng'); const docs = p.locator('[data-testid=fl-docs] li'); const nDocs = await docs.count(); const disabled = await docs.first().getByTestId('fl-doc-record').isDisabled();
+  const names = await docs.evaluateAll((els) => els.map((e) => e.getAttribute('data-test'))); let recorded = 0;
+  for (const tId of names) { const li = p.locator(`[data-testid=fl-docs] li[data-test="${tId}"]`); await li.getByTestId('fl-doc-note').fill(`handed over to the operations owner on site (synthetic): ${tId}`); await li.getByTestId('fl-doc-record').click(); const r = await saidOk(p); if (r.ok === 'yes') recorded += 1; }
+  const docRows = (await rowsOnServer()).filter((x) => x.pack === 'handover'); const restBefore = Number(await p.getByTestId('fl-rest').getAttribute('data-count'));
+  await actAs(p, 'installer'); const notMine = await press(p, 'fl-pass-all'); const passedThen = await count(/^PASS/);
+  await actAs(p, 'cxeng'); const all = await press(p, 'fl-pass-all'); const passedNow = await count(/^PASS/); const total = (await rowsOnServer()).length;
+  ok('FL-28', 'acceptance asked too early is refused by the server with what is in the way; the five handover documents are recorded one at a time, each with what was handed over; the other checks are recorded one request each by the role responsible (the installer is stopped at the first that is not theirs)',
+    early.ok === 'no' && reasons.length >= 1 && stage === 'COMMISSIONING' && nDocs === 5 && disabled && recorded === 5 && docRows.length === 5 && docRows.every((x) => x.result === 'PASS_UNVERIFIED') && restBefore === total - 6 && notMine.ok === 'no' && passedThen < total && all.ok === 'yes' && passedNow === total
+      && Number(await p.getByTestId('fl-rest').getAttribute('data-count')) === 0,
+    `early acceptance: ${early.text.slice(0, 60)} · ${reasons.length} reasons, first “${(reasons[0] || '').slice(0, 90)}” · ${recorded} of ${nDocs} documents recorded · ${restBefore} other checks · installer: ${notMine.text.slice(0, 80)} (${passedThen} of ${total} passed) · engineer: ${all.text.slice(0, 30)} (${passedNow} of ${total})`); }
+
+{ const own = await press(p, 'fl-verify-all'); const v0 = await count(/^PASS_VERIFIED$/); await actAs(p, 'qa_reviewer'); const verified = await press(p, 'fl-verify-all'); const v1 = await count(/^PASS_VERIFIED$/); const total = (await rowsOnServer()).length;
+  const ready = await p.getByTestId('fl-ready').getAttribute('data-ready'); const lent = await press(p, 'fl-lend'); const notTheirs = await press(p, 'fl-accept'); const s1 = (await srv('cxeng', '')).room.lifecycle;
+  await actAs(p, 'opslead'); const accepted = await press(p, 'fl-accept'); const room = await srv('cxeng', ''); const base1 = (await srv('syseng', '/baselines')).current;
+  ok('FL-29', 'every result is verified by someone who did not record it (the recorder is stopped at the first); the verifier lends the acceptance and does not accept; the operations lead accepts, and the server publishes baseline 1',
+    own.ok === 'no' && v0 === 0 && verified.ok === 'yes' && v1 === total && ready === 'yes' && lent.ok === 'yes' && notTheirs.ok === 'no' && s1 === 'COMMISSIONING' && accepted.ok === 'yes' && room.room.lifecycle === 'ACCEPTED' && base1 && base1.version === 1
+      && (await p.getByTestId('fl-finish-card').count()) === 0,
+    `recorder verifying: ${own.text.slice(0, 70)} (${v0} verified) · QA: ${v1} of ${total} verified · lent: ${lent.text.slice(0, 50)} · QA accepting: ${notTheirs.text.slice(0, 60)} · operations lead: ${room.room.lifecycle}, baseline ${base1?.version}`); }
+
+{ const base1 = (await srv('syseng', '/baselines')).current; const room = await srv('cxeng', ''); const camServer = room.devices.find((d) => d.id === cam.id); const bCam = base1.devices.find((d) => d.id === cam.id).placement; const bRt = base1.measurements.find((m) => m.test === RT);
+  const card = p.getByTestId('fl-baseline'); const place = p.locator(`[data-testid=fl-bl-places] tr[data-device="${cam.id}"]`); const designed = await place.locator('[data-col=designed]').innerText(); const builtCell = await place.locator('[data-col=built]').innerText();
+  const meas = p.locator(`[data-testid=fl-bl-measured] tr[data-test="${RT}"]`); const measText = (await meas.innerText()).replace(/\s+/g, ' '); const three = await p.locator(`[data-testid=fl-views] tr[data-device="${cam.id}"] [data-view=assurance]`).innerText();
+  await mark(p).click(); const noMove = await p.getByTestId('fl-move').count(); const closedNote = await p.getByTestId('fl-closed').count(); await shot(p, 'flagship-accepted');
+  await p.reload(); await p.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(p); const vReload = await p.getByTestId('fl-baseline').getAttribute('data-version');
+  const u = await open('#/connected', { role: 'exec', sw: false }); const q = u.page; q.setDefaultTimeout(30000); await q.getByTestId('connected').waitFor(); await q.waitForFunction(() => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === 'ready');
+  await q.getByTestId('cn-resume-code').fill(`${stored.id}.${stored.key}`); await q.getByTestId('cn-resume').click(); await q.getByTestId('cn-journey').waitFor({ timeout: 120000 });
+  await q.goto(`${base}#/flagship`); await q.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(q); const theirV = await q.getByTestId('fl-baseline').getAttribute('data-version'); const theirBuilt = await q.locator(`[data-testid=fl-bl-places] tr[data-device="${cam.id}"] [data-col=built]`).innerText();
+  await q.setViewportSize({ width: 390, height: 844 }); await q.waitForTimeout(200); const over = await q.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); await shot(q, 'flagship-accepted-phone');
+  ok('FL-30', 'the baseline keeps three things side by side and the page shows the server’s record of each: the design (the approved revision and the camera’s designed place, untouched), the as-built place the move was approved to, and the measured value the room was accepted on with its limit; the field record is closed; a refresh and a second person’s browser show the same',
+    (await card.getAttribute('data-version')) === '1' && base1.design_revision === room.room.approvedRevision && camServer.x === cam.x && camServer.y === cam.y && bCam.designed.x === cam.x && bCam.designed.y === cam.y && bCam.asBuilt.x === built.x && bCam.asBuilt.y === built.y && bCam.basis === 'AS_BUILT'
+      && designed.includes(`${cam.x} m across, ${cam.y} m from the front`) && builtCell.includes(`${built.x} m across, ${built.y} m from the front`) && builtCell.includes(move.move) && (await place.getAttribute('data-basis')) === 'AS_BUILT'
+      && bRt.measurement === retest.id && Number(await meas.getAttribute('data-value')) === Number(retest.value) && /at most 1 s/.test(measText) && /version 1/.test(measText) && /simulated/.test(measText) && /in baseline 1/.test(three)
+      && noMove === 0 && closedNote === 1 && vReload === '1' && theirV === '1' && theirBuilt.includes(move.move) && over <= 1 && !u.errs.length && !pageErrs().length,
+    `baseline ${base1.version} on design revision ${base1.design_revision} (approved ${room.room.approvedRevision}) · camera designed (${bCam.designed.x}, ${bCam.designed.y}), as built (${bCam.asBuilt.x}, ${bCam.asBuilt.y}) ${bCam.asBuilt.move}; the design row still (${camServer.x}, ${camServer.y}) · measured “${measText.slice(0, 110)}” · three products: “${three.trim().slice(0, 60)}” · move offered ${noMove}, closed note ${closedNote} · reload v${vReload}, second browser v${theirV} · phone overflow ${over}px · ${[...u.errs, ...pageErrs()].slice(0, 2)}`);
   await u.close(); }
 
 await h.app.stop();

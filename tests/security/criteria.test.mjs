@@ -20,6 +20,8 @@
 //   CR-08  provenance: an uncalibrated field measurement and an inferred value pass nothing, even within the limit
 //   CR-09  outside a sandbox a SIMULATED value passes nothing — through the API, and again when the row is written to the table directly
 //   CR-10  a room with no criterion for a test is as before: its result needs no measurement, and a measurement of it has no verdict
+//   CR-12  accepted, the baseline keeps what the room was accepted on: the measured values with the limit and version each was judged
+//          against, beside the design revision and where each device was; it is immutable; and the criterion can no longer be changed
 //   CR-11  the retest of a deficiency opened by a failed measured test is the test's own new result: PASS on a measurement recorded
 //          after the correction. A sentence is not a retest; a measurement taken before the correction is not one; a FAIL is not one
 import test, { before, after } from 'node:test'; import assert from 'node:assert/strict';
@@ -35,7 +37,8 @@ const result = (token, base, state, measurementId, evidenceId, testId = RT) => c
 before(async () => {
   h = await setup({ db: 'empathia_criteria', port: 4153, env: { DEMO_SESSIONS: 'on' } }); c = client(h.base); h.asSuper('UPDATE app.demo_config SET enabled = true');
   const o = await c.call('POST', '/v1/demo/sandboxes', { body: {} }); assert.equal(o.status, 201, J(o.body)); const sb = o.body.sandbox; T.scenario = o.body.scenario?.room || sb.room;
-  for (const role of ['designer', 'syseng', 'installer', 'cxeng', 'exec', 'qa_reviewer']) T[role] = (await c.call('POST', '/v1/demo/sessions', { body: { sandboxId: sb.id, key: sb.key, role } })).body.accessToken;
+  T.people = o.body.personas;
+  for (const role of ['designer', 'syseng', 'installer', 'cxeng', 'exec', 'qa_reviewer', 'opslead']) T[role] = (await c.call('POST', '/v1/demo/sessions', { body: { sandboxId: sb.id, key: sb.key, role } })).body.accessToken;
 });
 after(async () => { await h.app.stop(); });
 
@@ -176,4 +179,24 @@ test('CR-11 the retest of a failed measured test is its own new result on a meas
   assert.equal(ok.body.retest.evidence, `measurement ${good.body.id}: t30_mid 0.8 s`, 'the retest names the measurement, whatever the request said');
   const closed = await step(T.syseng, { step: 'verify' }); assert.equal(closed.status, 200, J(closed.body)); assert.equal(closed.body.workflow, 'CLOSED');
   assert.equal(Number(h.asSuper("SELECT count(*) FROM app.audit_event WHERE action = 'deficiency.retest' AND outcome = 'DENIED'")), 2, 'both refused retests are in the audit trail');
+});
+
+test('CR-12 the accepted baseline keeps the measured values and the limits they were judged against; it is immutable; the criterion is then fixed', async () => {
+  const ev = await evidence(T.cxeng, 'remaining checks');
+  const noise = await measure(T.cxeng, HALL, { testId: 'audio_noise_floor', metric: 'laeq', unit: 'dB(A)', value: 33, method: 'LAeq 60 s, unoccupied' }); assert.equal(noise.status, 201, J(noise.body)); assert.equal(noise.body.within, true);
+  assert.equal((await result(T.cxeng, HALL, 'PASS', noise.body.id, ev, 'audio_noise_floor')).status, 201);
+  const rows = () => call(T.cxeng, 'GET', HALL).then((r) => r.body.commissioning.rows.filter((x) => x.applicable));
+  for (const r of (await rows()).filter((x) => !/^PASS/.test(x.result))) { const w = await call(T.cxeng, 'POST', `${HALL}/results`, { body: { testId: r.test_id, state: 'PASS', evidenceId: ev, evidenceKind: r.evidence[0], instrument: 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09' } }); assert.equal(w.status, 201, `${r.test_id}: ${J(w.body)}`); }
+  for (const r of (await rows()).filter((x) => x.result !== 'PASS_VERIFIED')) { const v = await call(T.qa_reviewer, 'POST', `${HALL}/results/${r.test_id}/verify`); assert.equal(v.status, 200, `${r.test_id}: ${J(v.body)}`); }
+  const ops = T.people.find((p) => p.role === 'opslead'); assert.equal((await call(T.qa_reviewer, 'POST', '/v1/delegations', { body: { granteeId: ops.id, authority: 'customer.accept', reason: 'synthetic: QA verified and does not accept', days: 2 } })).status, 201);
+  const acc = await call(T.opslead, 'POST', `${HALL}/lifecycle`, { body: { to: 'ACCEPTED' } }); assert.equal(acc.status, 200, J(acc.body));
+  const b = (await call(T.syseng, 'GET', `${HALL}/baselines`)).body.current; assert.ok(b, 'a baseline is published'); assert.equal(b.version, 1);
+  const rt = b.measurements.find((m) => m.test === RT); const nf = b.measurements.find((m) => m.test === 'audio_noise_floor');
+  assert.deepEqual([rt.metric, rt.value, rt.unit, rt.provenance, rt.within, rt.criterion.version, rt.criterion.upper], ['t30_mid', 0.8, 's', 'SIMULATED', true, 2, 0.9], J(rt));
+  assert.deepEqual([nf.value, nf.criterion.version, nf.criterion.upper], [33, 2, 38]); assert.match(rt.criterion.source, /Revised brief/);
+  assert.equal(b.measurements.length, 2, 'only results that rest on a measurement are listed; the coverage reading (no result on it) is not');
+  assert.equal(b.results[RT], 'PASS_VERIFIED'); assert.ok(b.devices.every((d) => d.placement && d.placement.designed), 'and where each device was');
+  assert.throws(() => h.asSuper(`UPDATE app.assurance_baseline SET measurements = '[]'::jsonb WHERE id = '${b.id}'`), /EM005/);
+  // a later result does not reach back into the baseline
+  const late = await call(T.syseng, 'PUT', `${HALL}/criteria/${RT}`, { body: { metric: 't30_mid', upper: 2, source: 'after the fact' } }); assert.equal(late.status, 422, J(late.body)); assert.match(J(late.body), /fixed when it was accepted/);
 });

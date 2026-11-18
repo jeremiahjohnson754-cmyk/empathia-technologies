@@ -96,7 +96,9 @@ export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord 
   return (
     <Card icon="pulse" title="Measurement bench: reverberation" sub={test?.criterion ? `This room has to meet: T30 (500 Hz and 1 kHz) ${test.criterion.words}` : 'This room has no criterion for reverberation'} testId="fl-bench-card">
       {test?.criterion ? <p className="ui-meta" data-testid="fl-bench-criterion" data-version={test.criterion.version} data-upper={test.criterion.upper ?? ''}>Criterion version {test.criterion.version}, from “{test.criterion.source}”, set by {test.criterion.setBy}. The limit is the server’s record; this bench does not hold it and does not judge against it.</p> : null}
-      {lifecycle !== 'COMMISSIONING' ? <Notice tone="warn"><b>The room is not in commissioning yet.</b> The analysis works now; the server records a measurement only for a room in commissioning.</Notice> : null}
+      {lifecycle !== 'COMMISSIONING' ? <div data-testid="fl-bench-closed"><Notice tone="warn">{['PLANNED', 'DESIGN_APPROVED', 'INSTALLATION_PENDING', 'INSTALLED_UNVERIFIED'].includes(lifecycle)
+        ? <><b>The room is not in commissioning yet.</b> The analysis works now; the server records a measurement for a test only on a room in commissioning.</>
+        : <><b>The room is {lifecycle.replace(/_/g, ' ').toLowerCase()}: commissioning is over.</b> The analysis still works, and the server will refuse to record its result for this test. What the room was accepted on is in the baseline.</>}</Notice></div> : null}
       <div className="fb__grid2">
         <div>
           <h4 className="fl__h4">1 · Receiver positions</h4>

@@ -365,7 +365,9 @@ main details > summary { min-height: 24px; }
 .ca__checks { display: grid; gap: 2px; } .ca__checks label { display: flex; align-items: center; gap: 8px; min-height: var(--target-min); } .ca__checks input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
 .ca__answer { padding: var(--sp-3); border-left: 3px solid var(--accent); border-radius: var(--r-sm); background: var(--panel2); } .ca__answer p { margin: 4px 0 0; }
 .ca__cands li { display: flex; flex-wrap: wrap; gap: 6px var(--sp-3); align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line); } .ca__cands li:last-child { border-bottom: 0; }
-@media (max-width: 860px) { .fb__grid2, .fl__measured li, .ca, .ca__row { grid-template-columns: minmax(0, 1fr); } }
+.fn__docs li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 6px var(--sp-3); align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); } .fn__docs li:last-child { border-bottom: 0; }
+.fn__doc { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .fn__doc input { flex: 1 1 14ch; min-width: 0; min-height: var(--target-min); }
+@media (max-width: 860px) { .fb__grid2, .fl__measured li, .ca, .ca__row, .fn__docs li { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 860px) { .fl__bar, .fl__work { grid-template-columns: minmax(0, 1fr); } .fl__stages li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
 
 /* #/connected — the server-backed thread (ADR-0013) */

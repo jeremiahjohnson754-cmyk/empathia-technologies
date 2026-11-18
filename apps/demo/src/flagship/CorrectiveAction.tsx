@@ -25,7 +25,7 @@ export interface WorkOrder { code: string; state: string; workType: string | nul
 export interface Qualified { status: string; summary: string; items: Array<{ label: string; via: string; provenance: string }>; uncertainty: string[]; confidence: string }
 export interface Answer<T = unknown> { ok: boolean; status: number; body: T; detail: string; reasons: string[] }
 export type Said = { ok: boolean; warn?: boolean; title: string; text: string; reasons?: string[] };
-export interface Tools { call: <T = unknown>(method: string, path: string, body?: unknown) => Promise<Answer<T>>; act: (label: string, run: () => Promise<Said>) => Promise<void>; refused: (a: Answer, what: string) => Said; person: string; busy: boolean; roles: Array<[string, string]> }
+export interface Tools { call: <T = unknown>(method: string, path: string, body?: unknown, note?: { text: string; fileName: string }) => Promise<Answer<T>>; act: (label: string, run: () => Promise<Said>) => Promise<void>; refused: (a: Answer, what: string) => Said; person: string; busy: boolean; roles: Array<[string, string]> }
 
 const words = (x: string) => x.replace(/_/g, ' ').toLowerCase();
 const WO_ORDER = ['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'RESOLVED', 'CLOSED'];
