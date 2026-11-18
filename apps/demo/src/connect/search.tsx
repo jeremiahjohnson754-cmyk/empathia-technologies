@@ -7,7 +7,7 @@ import type { RoleKey } from '../registry.types.js';
 import { REFERENCE_ROOM_ID, roomById, shortName } from '../campus/canon.js';
 import { ALL_BUILDINGS, findPeople, roomInText } from './directory.js';
 import { mayKnowWho, visibleTo } from './access.js';
-import { WhoKnows } from './ContactBar.js';
+import { ContactBar, WhoKnows } from './ContactBar.js';   // founder, 18 Nov 2026: Teams, Outlook and copy contact info back on Search Party's people
 import { zoneCity } from './time.js';
 
 const WHO_WORDS = /\bwho (knows|do i (contact|ask|call)|looks after|to (contact|ask|call))\b|\bsite champion\b|\bchampion (for|of)\b/i;
@@ -26,8 +26,8 @@ export function ConnectSearch({ q, focus, role }: { q: string; focus: { type: st
       {!asked && fRoom && <WhoKnows role={role} kind="room" id={fRoom} />}
       {!building && fBuilding && <WhoKnows role={role} kind="building" id={fBuilding} />}
       {found.length > 0 && <section aria-labelledby="cx-sp-people-h" data-testid="sp-people-hits" data-count={found.length}><h2 className="build__h" id="cx-sp-people-h">People</h2>
-        <ul className="cx-list">{found.map((p) => <li key={p.id}><a className="cx-card" href={`#/people/${p.id}`} data-person={p.id}><span className="cx-card__h"><b>{p.name}</b><span>{p.title}</span></span><span className="cx-card__m">{p.buildings.map((k) => ALL_BUILDINGS.find((b) => b.key === k)?.short || k).join(', ')} · {zoneCity(p.tz)} time</span></a></li>)}</ul>
-        <p className="ui-meta">Synthetic people, from the directory. <a href={`#/people?q=${encodeURIComponent(text)}`}>Open the directory with this search</a></p></section>}
+        <ul className="cx-list">{found.map((p) => <li key={p.id}><a className="cx-card" href={`#/people/${p.id}`} data-person={p.id}><span className="cx-card__h"><b>{p.name}</b><span>{p.title}</span></span><span className="cx-card__m">{p.buildings.map((k) => ALL_BUILDINGS.find((b) => b.key === k)?.short || k).join(', ')} · {zoneCity(p.tz)} time</span></a><ContactBar role={role} person={p} compact /></li>)}</ul>
+        <p className="ui-meta">Synthetic people, from the directory: their addresses and numbers are fictional, so Teams, email and the phone will not find them; nothing is sent from here. <a href={`#/people?q=${encodeURIComponent(text)}`}>Open the directory with this search</a></p></section>}
     </div>
   );
 }

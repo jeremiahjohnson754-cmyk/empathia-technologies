@@ -78,3 +78,15 @@
 
 @media (max-width: 900px) { .cx-cols, .cx-filters, .cx-two, .cx-row { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .cx-act, .cx-card, .cx-slot { transition: none; } }
+
+/* Search Party's people results carry their contact bar under the card (founder, 18 Nov 2026) */
+.cx-search .cx-list > li { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; }
+.cx-search .cx-list > li > .cx-card { height: auto; }
+/* in Search Party's results the bar is a row of chips: Teams, email, copy, call, profile; the rest is on the person's profile */
+.cx-search .cx-bar--compact .cx-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.cx-search .cx-bar--compact .cx-acts > li:not(:has([data-testid="cx-teams.chat"], [data-testid="cx-mail.compose"], [data-testid="cx-copy-card"], [data-testid="cx-teams.call"], [data-testid="cx-profile"])) { display: none; }
+.cx-search .cx-bar--compact .cx-act { min-height: 0; width: auto; padding: 6px 10px; gap: 6px; align-items: center; border-radius: 999px; }
+.cx-search .cx-bar--compact .cx-act .cx-ic { margin-top: 0; width: 16px; height: 16px; }
+.cx-search .cx-bar--compact .cx-act > span > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.cx-search .cx-bar--compact .cx-bar__avail { font-size: var(--fs-sm); margin: 0; }
+.cx-search .cx-bar--compact .cx-synth { display: none; }   /* said once, under the list */
