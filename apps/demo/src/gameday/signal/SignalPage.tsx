@@ -79,7 +79,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
   const gameday = `#/gameday?as=${encodeURIComponent(config.id)}`;
 
   // the step is kept in the address without a navigation; a link to another step of this page (or the browser's back) moves there
-  useEffect(() => { try { history.replaceState(null, '', signalHref(config.id, step)); } catch { /* the address stays */ } }, [config.id, step]);
+  useEffect(() => { try { history.replaceState(history.state, '', signalHref(config.id, step)); } catch { /* the address stays */ } }, [config.id, step]);
   useEffect(() => { const s = query.get('step'); if (isSignalStep(s) && s !== step) setStep(s); }, [query.toString()]);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { const h = () => { const s = new URLSearchParams(location.hash.split('?')[1] || '').get('step'); setStep(isSignalStep(s) ? s : 'alert'); }; addEventListener('hashchange', h); return () => removeEventListener('hashchange', h); }, []);
   useEffect(() => {

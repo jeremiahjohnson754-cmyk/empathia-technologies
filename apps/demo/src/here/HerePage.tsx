@@ -100,7 +100,7 @@ function Room({ id, role, query, sees, can }: { id: string } & Pick<PageProps, '
   useEffect(() => { try { localStorage.setItem(RECENT_KEY, JSON.stringify([id, ...recentRooms().filter((x) => x !== id)].slice(0, 4))); } catch { /* not kept */ } }, [id]);
   useEffect(() => { try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ roomId: id, step, symptom, note, results, joinId } satisfies Draft)); } catch { /* the visit lasts the page */ } }, [id, step, symptom, note, results, joinId]);
   // the step is kept in the address without a navigation, so the page is not reloaded and focus stays with the step
-  useEffect(() => { try { history.replaceState(null, '', `#/here/${id}?step=${step}${symptom ? `&s=${symptom}` : ''}`); } catch { /* the address stays */ } }, [id, step, symptom]);
+  useEffect(() => { try { history.replaceState(history.state, '', `#/here/${id}?step=${step}${symptom ? `&s=${symptom}` : ''}`); } catch { /* the address stays */ } }, [id, step, symptom]);
   // a link to another step of the same room (from search, from a tour) moves there
   useEffect(() => { const qs = query.get('step') as StepId | null; const sy = symptomOf(query.get('s')); if (sy && sy.id !== symptom) { setSymptom(sy.id); setResults({}); } if (qs && STEPS.includes(qs) && qs !== step) setStepRaw(!sy && !symptom && (qs === 'try' || qs === 'record') ? 'wrong' : qs); }, [query.toString()]);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {

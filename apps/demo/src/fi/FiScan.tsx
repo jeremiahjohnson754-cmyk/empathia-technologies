@@ -35,7 +35,7 @@ export default function FiScan({ perspective, hash }: WorkspaceProps) {
   useEffect(() => { setPlaying(false); setStep(Math.max(0, Math.min(MAX_STEP, Number(param(hash, 'step')) || 0))); }, [id, param(hash, 'step')]);   // eslint-disable-line react-hooks/exhaustive-deps
   const findings = useMemo(() => (room ? findingsOf(room.id) : []), [room]);
   const actions = useMemo(() => (room ? actionsOf(room) : []), [room]);
-  const set = (n: number) => { const k = Math.max(0, Math.min(MAX_STEP, n)); setStep(k); try { history.replaceState(null, '', `#/v25/fi/scan/${id}?mode=${mode}&step=${k}`); } catch { /* keep going */ } };
+  const set = (n: number) => { const k = Math.max(0, Math.min(MAX_STEP, n)); setStep(k); try { history.replaceState(history.state, '', `#/v25/fi/scan/${id}?mode=${mode}&step=${k}`); } catch { /* keep going */ } };
   useEffect(() => { if (!playing) return; const t = setTimeout(() => { if (step >= MAX_STEP) setPlaying(false); else set(step + 2); }, 250); return () => clearTimeout(t); }, [playing, step]);   // eslint-disable-line react-hooks/exhaustive-deps
   if (!room) return (
     <section className="ops" data-testid="fiscan"><OpsHead product="field" kicker="Field Intelligence · scan replay" title="Choose a room to scan" persona={persona} />

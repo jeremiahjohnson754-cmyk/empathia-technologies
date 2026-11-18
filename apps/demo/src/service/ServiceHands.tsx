@@ -5,7 +5,7 @@
  * technician's mobile-first workspace (instructions, safety, preflight, parts, notes, blockers, escalation, evidence, FI findings), the
  * independent verification, the resolution, the closure (which says plainly that a closed ticket is not recommissioning) and learning.
  */
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Lanes, Foot, weekCounts, weekBacklog, deltaOf, plural, type Series } from '../pages/viz.js';
 import { WORK_NEEDS } from '@empathia/service-engine';
 import { Tag, PageHero, StatTile, Donut, Card, Chip, EmptyState } from '@empathia/ui';
@@ -93,17 +93,25 @@ function Home({ ops }: { ops: Ops }) {
   </>);
 }
 
+const DRAFT = 'empathia.draft.sh-intake.v1';
+function readDraft(): IntakeInput | null { try { const v = JSON.parse(sessionStorage.getItem(DRAFT) || 'null'); return v && typeof v === 'object' && typeof v.roomId === 'string' && Array.isArray(v.answers) && Array.isArray(v.attachments) ? v as IntakeInput : null; } catch { return null; } }
+
 function Intake({ ops, hash }: { ops: Ops; hash: string }) {
   const { persona } = ops;
-  const [f, setF] = useState<IntakeInput>({ entry: S.techForPersona(persona) ? 'technician' : 'employee', roomId: param(hash, 'room') || '', category: '', assetId: null, title: '', summary: '', answers: [], attachments: [] });
   const [tried, setTried] = useState(false); const [done, setDone] = useState<string | null>(null);
+  // 18 Nov (#223): a half-filled report survives leaving the page (to look the room up in Search Party, say) and coming back. Kept in this
+  // browser tab only (sessionStorage), restored for the same room or when no room is named, dropped once the report is made.
+  const fresh: IntakeInput = { entry: S.techForPersona(persona) ? 'technician' : 'employee', roomId: param(hash, 'room') || '', category: '', assetId: null, title: '', summary: '', answers: [], attachments: [] };
+  const [f, setF] = useState<IntakeInput>(() => { const d = readDraft(); return d && (!fresh.roomId || d.roomId === fresh.roomId) ? d : fresh; });
+  const restored = useMemo(() => { const d = readDraft(); return !!d && (!fresh.roomId || d.roomId === fresh.roomId); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (done) return; const dirty = !!(f.title || f.summary || f.category || f.answers.length || f.attachments.length); try { if (dirty) sessionStorage.setItem(DRAFT, JSON.stringify(f)); } catch { /* storage refused: the form still works, unsaved */ } }, [f]);   // eslint-disable-line react-hooks/exhaustive-deps
   const errs = intakeErrors(f); const room = roomOf(f.roomId); const qs = CATEGORIES[f.category]?.questions || [];
   const canReport = ['request.submit', 'service.triage', 'work.evidence'].some((a) => holds(persona, a));
   const set = (k: keyof IntakeInput, v: unknown) => setF((x) => ({ ...x, [k]: v }));
   const submit = () => {
     setTried(true);
     if (Object.keys(errs).length) { setTimeout(() => (document.querySelector('[aria-invalid=true]') as HTMLElement | null)?.focus(), 0); return; }
-    const r = ops.apply((x) => submitRequest(x, persona, f)); if (r && 'id' in r) setDone(r.id);
+    const r = ops.apply((x) => submitRequest(x, persona, f)); if (r && 'id' in r) { setDone(r.id); try { sessionStorage.removeItem(DRAFT); } catch { /* none */ } }
   };
   const err = (k: string) => (tried && errs[k] ? <span className="ui-field__error" id={`in-${k}-e`}>{errs[k]}</span> : null);
   const inv = (k: string) => ({ 'aria-invalid': tried && !!errs[k] ? true : undefined, 'aria-describedby': tried && errs[k] ? `in-${k}-e` : undefined });
@@ -115,6 +123,7 @@ function Intake({ ops, hash }: { ops: Ops; hash: string }) {
     <OpsHead product="servicehands" kicker="ServiceHands · intake" title="Report a problem" persona={persona} lead={<>A few structured answers save the technician a visit. Attachments here are synthetic placeholders: this demonstration takes no files.</>} />
     {!canReport ? <NotYours who="employee, technician or service manager" what="Reporting a problem" /> : (
     <form className="ops-card ops-form" noValidate onSubmit={(e) => { e.preventDefault(); submit(); }} data-testid="intake">
+      {restored && <p className="ops-note" role="status" data-testid="intake-draft">Your unfinished report was kept in this browser tab and is back as you left it. Nothing has been sent.</p>}
       <fieldset className="ops-form"><legend>Who is reporting</legend><div className="ops-row">{Object.entries(ENTRY_POINTS).map(([k, l]) => <label key={k} className="check"><input type="radio" name="entry" checked={f.entry === k} onChange={() => set('entry', k)} /> {l}</label>)}</div>{err('entry')}</fieldset>
       <label className="ops-field">Room<select value={f.roomId} onChange={(e) => setF({ ...f, roomId: e.target.value, assetId: null })} {...inv('roomId')} data-testid="in-room"><option value="">Choose the room…</option>{ROOMS.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</select>{err('roomId')}</label>
       {room && room.positions.length > 0 && <label className="ops-field">Device, if you know it <span className="ops-meta">(optional)</span><select value={f.assetId || ''} onChange={(e) => set('assetId', e.target.value || null)}><option value="">Not sure</option>{room.positions.map((p) => <option key={p.pa} value={p.asset}>{p.label} ({p.asset})</option>)}</select></label>}

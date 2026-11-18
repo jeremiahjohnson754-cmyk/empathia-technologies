@@ -45,7 +45,7 @@ function RoomReplay({ room, ops, hash, role }: { room: RoomRec; ops: ReturnType<
   useEffect(() => { const k = stages.findIndex((x) => x.key === param(hash, 'at')); if (k >= 0 && k !== i) setI(k); }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps -- a link to ?at= within the same room moves the position const [playing, setPlaying] = useState(false); const [cmp, setCmp] = useState<[number, number]>([0, stages.length - 1]);
   const confirm = useConfirm(); const undo = useUndo(); const timer = useRef<number | null>(null);
   const st = stages[Math.min(i, stages.length - 1)]!;
-  const go = (n: number) => { const k = Math.max(0, Math.min(stages.length - 1, n)); setI(k); try { history.replaceState(null, '', `#/replay/${room.id}?at=${stages[k]!.key}`); } catch { /* the address keeps the old position */ } };
+  const go = (n: number) => { const k = Math.max(0, Math.min(stages.length - 1, n)); setI(k); try { history.replaceState(history.state, '', `#/replay/${room.id}?at=${stages[k]!.key}`); } catch { /* the address keeps the old position */ } };
   useEffect(() => {
     if (!playing) return;
     timer.current = window.setTimeout(() => { if (i >= stages.length - 1) setPlaying(false); else go(i + 1); }, reduced() ? 2400 : 1600);

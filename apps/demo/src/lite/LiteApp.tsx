@@ -30,7 +30,7 @@ export function storedLens(role: RoleKey, asked?: string | null): Lens | null {
   return lensFor(role, asked || saved);
 }
 export function saveLens(l: string) { try { localStorage.setItem(LENS_KEY, l); } catch { /* storage may be blocked */ } }
-export const setQuery = (base: string, q: URLSearchParams) => { const s = q.toString(); history.replaceState(null, '', `${base}${s ? `?${s}` : ''}`); dispatchEvent(new HashChangeEvent('hashchange')); };
+export const setQuery = (base: string, q: URLSearchParams) => { const s = q.toString(); history.replaceState(history.state, '', `${base}${s ? `?${s}` : ''}`); dispatchEvent(new HashChangeEvent('hashchange')); };
 
 export default function LiteApp(props: PageProps) {
   const sub = (props.params['*'] || '').split('/').filter(Boolean).map((s) => decodeURIComponent(s));

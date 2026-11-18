@@ -165,7 +165,7 @@ export default function KnowledgePage({ role, params, query, can, sees }: PagePr
   const acts: Acts = { run, said, refused, at, name, setName };
   // the filters live in the address, so a link reopens the same list and Back from an object returns to it
   const qs = useMemo(() => { const p = new URLSearchParams(); if (other) p.set('as', 'other'); if (q.trim()) p.set('q', q.trim().slice(0, 80)); if (domain) p.set('domain', domain); if (type) p.set('type', type); if (aud) p.set('aud', aud); if (zone) p.set('zone', String(zone)); const s = p.toString(); return s ? `?${s}` : ''; }, [other, q, domain, type, aud, zone]);
-  useEffect(() => { if (id) return; try { history.replaceState(null, '', `#/knowledge${qs}`); } catch { /* the address stays */ } }, [id, qs]);
+  useEffect(() => { if (id) return; try { history.replaceState(history.state, '', `#/knowledge${qs}`); } catch { /* the address stays */ } }, [id, qs]);
   useEffect(() => { if (!id) setZone(Number(query.get('zone')) || 0); }, [id, query.get('zone')]);   // eslint-disable-line react-hooks/exhaustive-deps
   const filters: Filters = { domain, type: type as ContentType | '', audience: aud, zone: zone as TrustZone | 0 };
   const found = useMemo(() => view.search(q, filters), [view, q, domain, type, aud, zone]);   // eslint-disable-line react-hooks/exhaustive-deps

@@ -38,7 +38,7 @@ function readInput(query: URLSearchParams, subject: string): MeetInput {
 function writeAddress(i: MeetInput, step: StepId, slot: number | null, id: string | null) {
   const q = new URLSearchParams(); if (i.withIds.length) q.set('with', i.withIds.join(',')); if (i.optionalIds.length) q.set('opt', i.optionalIds.join(',')); if (i.roomId) q.set('room', i.roomId); if (i.about) q.set('about', `${i.about.kind}:${i.about.id}`);
   if (i.minutes !== 30) q.set('min', String(i.minutes)); if (i.fromDay) q.set('day', i.fromDay); q.set('step', step); if (slot && (step === 'review')) q.set('slot', String(slot)); if (id && step === 'done') q.set('id', id);
-  try { history.replaceState(null, '', `#/meet?${q}`); } catch { /* the address stays */ }
+  try { history.replaceState(history.state, '', `#/meet?${q}`); } catch { /* the address stays */ }
 }
 
 /** A real navigation to #/meet (a link, Back, a typed address) starts the page afresh from that address; the page's own address updates do not. */

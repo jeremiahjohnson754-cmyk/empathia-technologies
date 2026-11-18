@@ -51,7 +51,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
   useEffect(() => { setSel(dev); }, [id, dev]);   // a deep link (?device=) selects that position
   const o = r.outline; const B = buildingByKey(o.building)!;
   const here = base || roomHref(o);
-  const setTab = (k: string) => { const n = new URLSearchParams(q); if (k === 'overview' && !startTab) n.delete('tab'); else n.set('tab', k); n.delete('device'); history.replaceState(null, '', `${here}${n.toString() ? `?${n}` : ''}`); dispatchEvent(new HashChangeEvent('hashchange')); };
+  const setTab = (k: string) => { const n = new URLSearchParams(q); if (k === 'overview' && !startTab) n.delete('tab'); else n.set('tab', k); n.delete('device'); history.replaceState(history.state, '', `${here}${n.toString() ? `?${n}` : ''}`); dispatchEvent(new HashChangeEvent('hashchange')); };
   const h = roomHealth(r, w); const iss = roomIssues(r, w); const hw = r.positions.filter((p) => !p.furniture);
   const featured = featuredRooms(8); if (!featured.some((x) => x.id === o.id)) featured.splice(1, 0, o);
   const roomAt = (x: typeof o) => (base && base.startsWith('#/room') ? `#/room/${x.id}` : roomHref(x));
@@ -123,7 +123,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
             </Section>
           </div>
         </>}
-        {tab === 'devices' && <Devices r={r} setSel={(c) => { setSel(c); const n = new URLSearchParams(q); n.delete('tab'); n.set('device', c); history.replaceState(null, '', `${here}?${n}`); dispatchEvent(new HashChangeEvent('hashchange')); }} />}
+        {tab === 'devices' && <Devices r={r} setSel={(c) => { setSel(c); const n = new URLSearchParams(q); n.delete('tab'); n.set('device', c); history.replaceState(history.state, '', `${here}?${n}`); dispatchEvent(new HashChangeEvent('hashchange')); }} />}
         {tab === 'tests' && <Tests r={r} />}
         {tab === 'history' && <History r={r} />}
         {tab === 'coverage' && <Coverage r={r} />}

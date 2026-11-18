@@ -52,7 +52,7 @@ export default function IngestPage({ role, query, can }: PageProps) {
   const opens = (href: string) => { const x = resolve(href.split('?')[0]!); return !!x && canOpen(role, x); };
   const setName = (v: string) => { setNameRaw(v); try { sessionStorage.setItem(NAME_KEY, v); } catch { /* the name lasts the page */ } };
 
-  useEffect(() => { try { history.replaceState(null, '', `#/knowledge/sources?step=${step}`); } catch { /* the address stays */ } }, [step]);
+  useEffect(() => { try { history.replaceState(history.state, '', `#/knowledge/sources?step=${step}`); } catch { /* the address stays */ } }, [step]);
   useEffect(() => { if (moved.current) headRef.current?.focus(); railRef.current?.querySelector('[aria-current=step]')?.scrollIntoView?.({ block: 'nearest', inline: 'center' }); }, [step]);
   // a link to another step of this page (from the ledger, from Surface) moves there, when the journey has got that far
   useEffect(() => { const q = query.get('step') as Step | null; if (q && STEPS.includes(q) && STEPS.indexOf(q) <= STEPS.indexOf(stepAt(s))) { moved.current = true; setStepRaw(q); } }, [query.get('step')]);   // eslint-disable-line react-hooks/exhaustive-deps

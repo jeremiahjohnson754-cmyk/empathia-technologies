@@ -311,3 +311,14 @@ body.has-dialog { overflow: hidden; }
   .shell, .demo-shell { display: block !important; }
   .shell__main { padding: 0 !important; margin: 0 !important; max-inline-size: none !important; }
 }
+/* #223 the return trail: one quiet chip at the top of the page that returns to the last place of work exactly as it was */
+.trail { display: flex; align-items: stretch; gap: 0; width: fit-content; max-width: 100%; margin: 0 0 12px; border: 1px solid var(--line2); border-radius: var(--r-pill); background: var(--panel); overflow: hidden; }
+.trail__back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 14px 4px 12px; color: var(--tx); text-decoration: none; min-width: 0; font-size: var(--fs-sm); }
+.trail__back .kit-icon { color: var(--accent); flex: none; }
+.trail__t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trail__k { color: var(--tx2); } .trail__s { color: var(--tx2); }
+.trail__back:hover b, .trail__back:focus-visible b { text-decoration: underline; text-underline-offset: 3px; }
+.trail__back:focus-visible, .trail__x:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.trail__x { flex: none; width: 44px; min-height: 44px; display: grid; place-items: center; border: 0; border-left: 1px solid var(--line); background: transparent; color: var(--tx2); cursor: pointer; }
+.trail__x:hover { color: var(--tx); background: var(--panel2); }
+main h1 { scroll-margin-top: calc(var(--top-h, 64px) + 12px); }

@@ -24,6 +24,9 @@ import { ContactLinks } from './enquiry/WorkWith.js';
 import { ENQUIRY } from './enquiry.js';
 import { OfflineStrip } from './offline/Strip.js';
 import { Shortcuts } from './start/ShortcutSheet.js';
+import { installScrollMemory, settleScroll, notePage, ReturnChip } from './shell/trail.js';
+
+installScrollMemory();   // #223: per-entry scroll memory, installed before the router listens
 
 const START = '#/investor';
 /** The address the router reads: an in-page anchor (#problems) or an empty hash is the investor start. */
@@ -49,7 +52,7 @@ export function App() {
   const first = useRef(true);
   const pending = useRef('');   // a role switch's announcement, said instead of the heading by the focus effect that follows it
   useEffect(() => {
-    if (!location.hash) history.replaceState(null, '', START);
+    if (!location.hash) history.replaceState(history.state, '', START);
     const h = () => setHash(location.hash || START); addEventListener('hashchange', h); return () => removeEventListener('hashchange', h);
   }, []);
   const route = routeOf(hash);
@@ -57,6 +60,9 @@ export function App() {
   // room every coverage switch scrolled the page back to the top, because the heading was focused again on each one)
   const page = route.split('?')[0];
   const d = decide(role, route);
+  // #223: a new page starts at its top, a revisited one where it was left; places of work are remembered for the return chip
+  useEffect(() => { settleScroll(); }, [page]);
+  useEffect(() => { notePage(route, d.kind === 'page' ? d.at.page.id : null, d.kind === 'page' ? d.at.params : {}); }, [route]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const switchTo = useCallback((r: RoleKey, o: { tour?: boolean } = {}) => {
     setSheet(false);
@@ -75,7 +81,7 @@ export function App() {
     // a page whose code is still loading has no heading yet: focus stays on main until the heading arrives (within 4 s), then moves to it —
     // unless the person has already moved focus somewhere else
     let obs: MutationObserver | null = null; let stop: ReturnType<typeof setTimeout> | undefined;
-    const toHeading = (h1: HTMLElement) => { if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: false }); };
+    const toHeading = (h1: HTMLElement) => { if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); };   // #223: scrolling is settleScroll's (top for a new page, the remembered place on Back)
     const t = setTimeout(() => {
       const h1 = document.querySelector<HTMLElement>('main h1'); const m = document.getElementById('main');
       // a role change is announced with the page it lands on. When that page's code arrives late (a slow phone, a busy machine), the late
@@ -109,7 +115,7 @@ export function App() {
       <div className="demo" data-r={role}>
         <Shell role={role} hash={route} at={d.kind === 'page' ? d.at : null} onViewAs={() => setSheet(true)} onRole={(r) => switchTo(r)}>
           <TourPanel hash={hash} onPerspective={(p) => { if (ROLE_KEYS.includes(p as RoleKey)) switchTo(p as RoleKey, { tour: true }); }} />
-          <div className="wrap"><OfflineStrip />{body}</div>
+          <div className="wrap"><OfflineStrip /><ReturnChip route={route} allowed={(h) => { const x = decide(role, routeOf(h)); return x.kind !== 'missing' && x.allowed; }} />{body}</div>
         </Shell>
         <ViewAsSheet open={sheet} role={role} onPick={(r) => switchTo(r)} onClose={() => setSheet(false)} />
         <RoleVeil show={veil} />
