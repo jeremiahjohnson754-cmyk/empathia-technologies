@@ -48,6 +48,14 @@ await suite('demo-replay', 4484, async ({ ok, open, goto, over, text, smallTarge
       ok('RP-15', 'a room with a lighter history says its early life is not held, and offers no scenario control to a perspective without the authority', /Not held/.test(await text(page)) && (await page.locator('[data-testid=rp-apply]').count()) === 0);
       await goto(page, '#/replay/R-NOPE', 'designer');
       ok('RP-16', 'an unknown room says so with a way back', /Room not found/.test(await text(page)));
+      // 18 Nov (D18-13): every campus room replays from its own record — the map's room card offers Core Replay for all of them
+      await goto(page, '#/replay/R-HZN-1-500', 'svcmgr'); await page.waitForSelector('[data-testid=replay]');
+      const rp = await text(page); const nst = await page.locator('.ops-strip li').count();
+      ok('RP-20', 'a campus room outside the four reference rooms replays from its record: request not held, design modeled, its next step not yet, never “not found”', !/Room not found/.test(rp) && /Not held/.test(rp) && nst >= 3 && (await page.locator('.ops-strip li').last().textContent()) === 'Next', `${nst} stages`);
+      await page.locator('[data-testid=rp-scrub]').focus(); await page.keyboard.press('ArrowRight'); await page.waitForTimeout(100);
+      ok('RP-21', 'its design stage says the layout is modeled from a template, not surveyed', /Modeled/.test(await page.getByTestId('rp-card').innerText()), (await page.getByTestId('rp-card').innerText()).slice(0, 120));
+      await goto(page, '#/replay', 'svcmgr'); await page.waitForSelector('[data-testid=replay-home]');
+      ok('RP-22', 'the replay home offers any of the 140 campus rooms, not only the four with a deep history', (await page.locator('[data-testid=replay-any] option').count()) === 141);
     }
     ok(`RP-${tag}-99`, 'no page error, no console error, no request leaves the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
     await ctx.close();

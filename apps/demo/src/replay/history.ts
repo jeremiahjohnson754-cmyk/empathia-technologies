@@ -5,10 +5,12 @@
  * preserved): the tests the replacement reopens are the engine's applicable tests that name that position — never a hand-typed list.
  */
 import type * as S from '../workspace/store.js';
-import { roomOf, referenceDesign, SWAP } from '../fi/rooms.js';
+import { roomOf, referenceDesign, SWAP, type RoomRec } from '../fi/rooms.js';
+import { roomRecord, type RoomRecord } from '../campus/design.js';
+import { buildingByKey } from '../campus/canon.js';
 
-export type StageStatus = 'recorded' | 'archive' | 'ahead' | 'none';
-export const STATUS_TEXT: Record<StageStatus, string> = { recorded: 'Recorded', archive: 'Inferred or reconstructed', ahead: 'Not yet', none: 'Not held in this demonstration' };
+export type StageStatus = 'recorded' | 'modeled' | 'archive' | 'ahead' | 'none';
+export const STATUS_TEXT: Record<StageStatus, string> = { recorded: 'Recorded', modeled: 'Modeled (designed from a template, not surveyed)', archive: 'Inferred or reconstructed', ahead: 'Not yet', none: 'Not held in this demonstration' };
 export interface Stage { key: string; label: string; at: string | null; status: StageStatus; title: string; detail: string; ids: string[]; focus: string[]; assetAt: Record<string, string>; baseline: number | null }
 
 const D = (s: string) => new Date(s).toISOString();
@@ -50,4 +52,34 @@ export function stagesOf(roomId: string, w: Pick<S.Workspace, 'incidents' | 'wor
   }
   out.push(st({ key: 'next', label: 'Next', status: 'ahead', title: 'What has not happened yet', detail: room.reference ? 'The open issue is restored and verified; the exception is approved or withdrawn. Neither is shown as done.' : 'Commissioning against a baseline has not been recorded for this room.', assetAt: after, baseline: room.reference ? 2 : null }));
   return out;
+}
+
+// ---- every other campus room (18 Nov, D18-13: the map's room card offered Core Replay for all 140 rooms, but only the four rooms above
+// had a replay; the rest landed on "Room not found"). A room's replay is built from its own canonical record (campus/design.ts): its
+// design as modeled, its dated events, installations, removals and baselines in date order, its issues (undated: the record holds no
+// date for them), and what blocks its next step. Nothing is made up to fill a gap: what the record does not hold is shown as not held.
+/** the campus record as a room the replay page can draw (its device positions, in metres) */
+export function recordRoom(id: string): RoomRec | null {
+  const r = roomRecord(id); if (!r) return null; const o = r.outline;
+  const live = (code: string) => r.installations.find((x) => x.position === code && !x.removedAt)?.asset || '—';
+  return { id: o.id, name: `${buildingByKey(o.building)?.short || o.building} ${o.number} ${o.name}`, building: o.building as RoomRec['building'], archetype: o.archetype, w: o.dims[0], d: o.dims[1], reference: false,
+    positions: r.positions.map((p) => ({ pa: p.code, asset: live(p.code), cat: p.cat, label: p.label, x: p.x, y: p.y, networked: false })) };
+}
+const human = (t: string) => t.replace(/[._]/g, ' ').replace(/\b\w/, (c) => c.toUpperCase());
+export function stagesFromRecord(rec: RoomRecord): Stage[] {
+  const after = Object.fromEntries(rec.positions.map((p) => [p.code, rec.installations.find((x) => x.position === p.code && !x.removedAt)?.asset || '—']));
+  const st = (o: Partial<Stage> & Pick<Stage, 'key' | 'label' | 'status' | 'title' | 'detail'>): Stage => ({ at: null, ids: [], focus: [], assetAt: after, baseline: null, ...o });
+  const o = rec.outline; const cur = rec.baselines.find((b) => b.state === 'CURRENT');
+  const head: Stage[] = [st({ key: 'request', label: 'Request', status: 'none', title: 'Not held', detail: `The request for ${o.name} is not in this demonstration's records. Nothing has been made up to fill the gap.` }),
+    st({ key: 'design', label: 'Design', status: o.kind === 'designed' ? 'modeled' : 'archive', title: `${rec.archetypeName} at ${o.dims[0]} × ${o.dims[1]} m: ${rec.positions.length} device position${rec.positions.length === 1 ? '' : 's'}`, detail: o.kind === 'designed' ? `Designed from the ${rec.archetypeName} template${rec.templateNote ? ` (${rec.templateNote})` : ''}: layout and devices are modeled, never surveyed.` : 'Reconstructed from the earlier records; the original design is not held.', focus: rec.positions.map((p) => p.code), ids: [o.id] })];
+  const dated: Stage[] = [];
+  rec.events.forEach((e, k) => dated.push(st({ key: `ev-${k}`, label: human(e.type), at: e.at, status: 'recorded', title: e.detail, detail: `By ${e.by}${e.outcome ? `; ${e.outcome === 'DENIED' ? 'refused' : 'allowed'}` : ''}${e.scenario ? `; scenario ${e.scenario}` : ''}.` })));
+  const installs = new Map<string, number>(); rec.installations.forEach((x) => installs.set(x.installedAt.slice(0, 10), (installs.get(x.installedAt.slice(0, 10)) || 0) + 1));
+  [...installs.entries()].forEach(([d, n], k) => dated.push(st({ key: `in-${k}`, label: 'Install', at: new Date(d).toISOString(), status: 'recorded', title: `${n} device${n === 1 ? '' : 's'} installed`, detail: 'From the installation records (position, asset, who, basis).', focus: rec.installations.filter((x) => x.installedAt.startsWith(d)).map((x) => x.position) })));
+  rec.installations.filter((x) => x.removedAt).forEach((x, k) => dated.push(st({ key: `rm-${k}`, label: 'Unit removed', at: x.removedAt!, status: 'recorded', title: `${x.asset} removed from ${x.position}`, detail: `${x.removalReason || 'Reason not recorded'}. Its history stays with the asset.`, focus: [x.position], ids: [x.asset, x.position] })));
+  rec.baselines.forEach((b) => dated.push(st({ key: `bl-${b.version}`, label: `Baseline v${b.version}`, at: b.at, status: b.state === 'PENDING_ACCEPTANCE' ? 'ahead' : 'recorded', title: `Baseline v${b.version} ${b.state === 'CURRENT' ? 'current' : b.state === 'SUPERSEDED' ? 'superseded (preserved)' : 'pending acceptance'}`, detail: b.note, baseline: b.version })));
+  dated.sort((a, b) => (a.at || '').localeCompare(b.at || ''));
+  const tail: Stage[] = rec.issues.map((i) => st({ key: `is-${i.id}`, label: i.state === 'RESOLVED' ? 'Issue and fix' : 'Open issue', status: 'recorded', title: `${i.id}: ${i.title}`, detail: `${i.severity} severity, ${i.state.toLowerCase().replace('_', ' ')}; found by ${i.source}. The record holds no date for it.`, focus: i.positions, ids: [i.id], baseline: cur?.version ?? null }));
+  tail.push(st({ key: 'next', label: 'Next', status: 'ahead', title: rec.nextStep ? `Next: ${rec.nextStep.to.toLowerCase().replace(/_/g, ' ')}` : 'Where the record ends', detail: rec.nextStep?.blockers.length ? `Blocked until: ${rec.nextStep.blockers.join('; ')}.` : 'Nothing further is recorded for this room yet.', baseline: cur?.version ?? null }));
+  return [...head, ...dated, ...tail];
 }

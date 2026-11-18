@@ -129,6 +129,17 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **Fix:** the map starts its 3D when the browser is idle, and builds its trees in a later idle slot.
 - **Regression test:** `demo-access` 31/31, two runs in a row.
 
+### D18-13 · P1 · Fixed (a dead end introduced by D18-09, found in the first-time-viewer review of the room card)
+- **What was wrong:** the map's room card offered Core Replay for all 140 rooms, but only four rooms had a replay. The other 136 opened "Room not found".
+- **Fix:** every campus room now replays from its own canonical record:
+  - The request shows as not held.
+  - The design is labelled modeled (from a template, not surveyed), as a new status class, or reconstructed.
+  - Dated events, installations, removals and baselines follow in date order.
+  - Issues are listed without dates, because the record holds none, saying so.
+  - The next step and its blockers show as not yet.
+  - Nothing is invented. The four rooms with a deep history are unchanged. The replay index offers any of the 140 rooms.
+- **Regression test:** `demo-replay` RP-20…22 (30/30) and `demo-map` MAP-23 (25/25, light and dark). `demo-destructive` 164/164 and `demo-hardening` 38/38 still pass.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220

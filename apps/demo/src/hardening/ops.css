@@ -66,7 +66,7 @@
 .ops-stage svg { display: block; width: 100%; height: auto; }
 .ops-prov { font-size: var(--fs-xs); font-weight: 700; letter-spacing: .04em; padding: 1px 6px; border-radius: var(--r-xs, 4px); border: 1px solid currentColor; }
 .ops-prov--KNOWN, .ops-prov--recorded, .ops-prov--VERIFIED { color: var(--ok); }
-.ops-prov--INFERRED, .ops-prov--archive { color: var(--warn); }
+.ops-prov--INFERRED, .ops-prov--archive, .ops-prov--modeled { color: var(--warn); }
 .ops-prov--SIMULATED, .ops-prov--MODELED { color: var(--info); }
 .ops-prov--none, .ops-prov--ahead, .ops-prov--UNKNOWN { color: var(--tx3); }
 /* failure, loading */

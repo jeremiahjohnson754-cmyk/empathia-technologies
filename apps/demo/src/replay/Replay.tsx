@@ -13,14 +13,16 @@ import { useOps } from '../hardening/useOps.js';
 import { opsPath } from '../hardening/path.js';
 import { useConfirm, useUndo } from '../safeguards/Safeguards.js';
 import { ROOMS, roomOf, SWAP, type RoomRec } from '../fi/rooms.js';
-import { stagesOf, reopenedBySwap, STATUS_TEXT, type Stage } from './history.js';
+import { stagesOf, reopenedBySwap, STATUS_TEXT, recordRoom, stagesFromRecord, type Stage } from './history.js';
+import { roomRecord } from '../campus/design.js';
+import { CAMPUS_ROOMS, buildingByKey } from '../campus/canon.js';
 import * as S from '../workspace/store.js';
 
 const CAT_COLOR: Record<string, string> = { camera: 'var(--c-camera)', bar: 'var(--c-camera)', display: 'var(--c-display)', projector: 'var(--c-display)', micceil: 'var(--c-audio)', speaker: 'var(--c-speaker)', dsp: 'var(--c-audio)', amp: 'var(--c-speaker)', compute: 'var(--c-network)', switch: 'var(--c-network)', control: 'var(--c-control)', touch: 'var(--c-touch)' };
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export default function Replay({ perspective, hash }: WorkspaceProps) {
-  const ops = useOps(perspective); const room = roomOf(opsPath(hash)[1] || '');
+  const ops = useOps(perspective); const id = opsPath(hash)[1] || ''; const room = roomOf(id) || recordRoom(id);
   if (!opsPath(hash)[1]) return <Home persona={ops.persona} w={ops.w} />;
   if (!room) return <section className="ops"><OpsHead kicker="Core Replay" title="Room not found" persona={ops.persona} lead={<>There is no room {opsPath(hash)[1]} in this demonstration. <a href="#/replay">Choose a room</a></>} /></section>;
   return <RoomReplay key={room.id} room={room} ops={ops} hash={hash} role={perspective} />;
@@ -32,14 +34,15 @@ function Home({ persona, w }: { persona: string; w: WX }) {
       <OpsHead product="mission" kicker="Mission Control · Core Replay" title="Core Replay" persona={persona} lead={<>Choose a room and watch its life: request, design, build, commissioning, use, issues, a replacement, reverification and what comes next. Playback never changes the room.</>} />
       <ul className="ops-board">{ROOMS.map((r) => { const st = stagesOf(r.id, w); return (
         <li key={r.id} className="ops-col"><a className="ops-job" href={`#/replay/${r.id}`} data-room={r.id}><b>{r.name}</b><span className="ops-meta">{st.length} stages · {st.filter((s) => s.status === 'recorded').length} recorded{r.reference ? ' · reference room' : ' · early life not held'}</span>
-          <span className="ops-row" aria-hidden="true">{st.map((s) => <span key={s.key} className={`ops-prov ops-prov--${s.status}`}>{s.status === 'recorded' ? '●' : s.status === 'archive' ? '◐' : '○'}</span>)}</span></a></li>); })}</ul>
-      <p className="ops-meta">● recorded · ◐ inferred or reconstructed · ○ not yet, or not held</p>
+          <span className="ops-row" aria-hidden="true">{st.map((s) => <span key={s.key} className={`ops-prov ops-prov--${s.status}`}>{s.status === 'recorded' ? '●' : s.status === 'archive' || s.status === 'modeled' ? '◐' : '○'}</span>)}</span></a></li>); })}</ul>
+      <p className="ops-meta">● recorded · ◐ modeled, inferred or reconstructed · ○ not yet, or not held</p>
+      <label className="ops-field" style={{ maxWidth: 520 }}>Any room on the campus: its replay from its own record<select defaultValue="" onChange={(e) => { if (e.target.value) location.hash = `#/replay/${e.target.value}`; }} data-testid="replay-any"><option value="">Choose a room…</option>{CAMPUS_ROOMS.map((r) => <option key={r.id} value={r.id}>{buildingByKey(r.building)?.short || r.building} {r.number} · {r.name}</option>)}</select></label>
     </section>
   );
 }
 
 function RoomReplay({ room, ops, hash, role }: { room: RoomRec; ops: ReturnType<typeof useOps>; hash: string; role: string }) {
-  const { w, persona } = ops; const stages = useMemo(() => stagesOf(room.id, w), [room.id, w]);
+  const { w, persona } = ops; const stages = useMemo(() => (roomOf(room.id) ? stagesOf(room.id, w) : stagesFromRecord(roomRecord(room.id)!)), [room.id, w]);
   const start = Math.max(0, stages.findIndex((s) => s.key === param(hash, 'at')));
   const [i, setI] = useState(start); const [playing, setPlaying] = useState(false); const [cmp, setCmp] = useState<[number, number]>([0, stages.length - 1]);
   useEffect(() => { const k = stages.findIndex((x) => x.key === param(hash, 'at')); if (k >= 0 && k !== i) setI(k); }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps -- a link to ?at= within the same room moves the position const [playing, setPlaying] = useState(false); const [cmp, setCmp] = useState<[number, number]>([0, stages.length - 1]);

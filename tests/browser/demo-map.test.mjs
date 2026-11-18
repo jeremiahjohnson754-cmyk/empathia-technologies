@@ -69,6 +69,10 @@ await p.getByTestId('emap-up-campus').click(); await p.getByTestId('emap-lens-ri
 ok('MAP-21', 'the Health risk lens shows 100 − health for each scored building and no value for an unscored one (never a zero)', rv.length === 6 && rv.every((x) => /^risk \d+$|^—$/.test(x || '')), rv.join(' | '));
 await p.getByTestId('emap-lens-none').click(); await p.evaluate(() => { location.hash = '#/pro/issues'; }); await p.waitForSelector('[data-testid=pro-failure-map] [data-testid=emap][data-ready=true]', { timeout: 30000 });
 ok('MAP-22', 'Pro Issue Intelligence carries the failure map: the same campus map, opened on the Issues lens', (await p.locator('[data-testid=pro-failure-map] [data-testid=emap]').getAttribute('data-lens')) === 'issues' && (await p.locator('[data-testid=pro-failure-map] [data-testid^="emap-lv-"]').count()) === 6, '');
+await p.evaluate(() => { location.hash = '#/campus'; }); await p.waitForSelector('[data-testid=emap][data-ready=true]'); await p.waitForTimeout(400);
+await p.getByTestId('emap-q').fill('3.213'); await p.waitForTimeout(250); await p.getByTestId('emap-hit-R-ATL-3-213').click(); await p.waitForTimeout(400); await p.getByTestId('emap-j-replay').click(); await p.waitForSelector('[data-testid=replay], [data-testid=replay-home]', { timeout: 15000 }).catch(() => {});
+ok('MAP-23', 'the Core Replay jump from a designed room lands on that room’s replay, built from its record (D18-13: it was “Room not found”)', (await p.locator('[data-testid=replay]').count()) === 1 && !/Room not found/.test(await p.locator('main').innerText()), await p.evaluate(() => location.hash));
+await p.evaluate(() => { location.hash = '#/campus'; }); await p.waitForSelector('[data-testid=emap][data-ready=true]');
 ok('MAP-15', `the map knows the graphics it runs on and says so (data-gpu=${await A(p, 'gpu')}): a software renderer gets no opening flight and standard resolution, a GPU the cinematic opening`, ['software', 'hardware'].includes(await A(p, 'gpu') || ''), await A(p, 'gpu'));
 ok('MAP-14', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
 await t.close();
