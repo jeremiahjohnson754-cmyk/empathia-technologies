@@ -116,6 +116,9 @@ function Drawing({ C, st, lv }: { C: Challenge; st: CState; lv: number }): React
     case 'build-studio': return <Rt60 st={st} lv={lv} />;
     case 'build-rf': return <RfPlan st={st} lv={lv} />;
     case 'record-loud': return <LoudBars st={st} />;
+    case 'record-take': return <TakeLadder st={st} />;
+    case 'record-panel': return <PanelAbove st={st} lv={lv} />;
+    case 'build-stream': return <StreamBars st={st} lv={lv} />;
     default: return null;
   }
 }
@@ -208,6 +211,51 @@ function LoudBars({ st }: { st: CState }) {
     <rect className="ch__band" x={40} y={Y(-22)} width={540} height={Y(-26) - Y(-22)} />
     {R.seg.map((s) => { const w = (s.d / tot) * 540, x0 = x; x += w; return <g key={s.sn}><rect className={s.locked ? 'ch__bar is-locked' : 'ch__bar'} x={x0 + 2} y={Y(s.L)} width={w - 4} height={170 - Y(s.L)} /><text className="ch__t" x={x0 + w / 2} y={190} textAnchor="middle">{s.sn}</text></g>; })}
     <line className="ch__int" x1={40} x2={580} y1={Y(R.I)} y2={Y(R.I)} /><text className="ch__t" x={44} y={14}>loudness by segment (LKFS) · dashed: integrated {CH.round(R.I, 1)} · band: −24 ±2</text></Svg>;
+}
+
+// Restored 18 Nov 2026 from the reference's chal_record.js / chal_build.js draw() (read as text): the vocal take's gain ladder, the
+// panel from above, and the stream's budget bars, each computed from the same model the check uses.
+function TakeLadder({ st }: { st: CState }) {
+  const R = CH.Record.take(st); const psum = (a: number[]) => 10 * Math.log10(a.reduce((x, v) => x + 10 ** (v / 10), 0));
+  const cols = [{ n: 'AT THE MIC', u: 'dB SPL', v: [R.loudSPL, R.softSPL, psum([28 - 4.8, st['fan'] ? 42 + (st['fanPos'] === 'rear' ? -20 : 0) : -99])] }, { n: 'MIC OUTPUT', u: 'dBu', v: [R.micLoud, R.micSoft, R.nRoom - Number(st['g']) + 18] },
+    { n: `PREAMP (+${st['g']} dB)`, u: 'dBu', v: [R.micLoud + Number(st['g']), R.micSoft + Number(st['g']), R.noise + 18] }, { n: 'CONVERTER', u: 'dBFS', v: [R.peak, R.soft, R.noise] }];
+  const Y = (v: number, i: number) => { const lo = i === 0 ? 0 : i === 3 ? -130 : -112, hi = i === 0 ? 130 : i === 3 ? 0 : 18; return 300 - ((CH.clamp(v, lo, hi) - lo) / (hi - lo)) * 228; };
+  const marks: [number, string, string][] = [[0, 'ch__mk is-loud', 'chorus'], [1, 'ch__mk is-soft', 'verse'], [2, 'ch__mk is-noise', 'noise']];
+  return <Svg h={360} label={`The gain ladder from the singer to the converter: chorus, verse and noise at each stage; chorus peaks ${R.live ? `${CH.round(R.peak, 1)} dBFS` : 'no signal'}.`}>
+    {cols.map((c, i) => { const x = 20 + i * 145; return <g key={c.n}>
+      <rect className="ch__col" x={x} y={52} width={110} height={248} /><text className="ch__t" x={x + 55} y={20} textAnchor="middle">{c.n}</text><text className="ch__t" x={x + 55} y={318} textAnchor="middle">{c.u}</text>
+      {i >= 2 && <g><line className="ch__clip" x1={x} x2={x + 110} y1={Y(i === 3 ? 0 : 18, i)} y2={Y(i === 3 ? 0 : 18, i)} /><text className="ch__t" x={x + 108} y={Y(i === 3 ? 0 : 18, i) + 14} textAnchor="end">clip</text></g>}
+      {!R.live && i >= 1 ? <text className="ch__t ch__t--bad" x={x + 55} y={170} textAnchor="middle">no signal</text>
+        : marks.map(([k, cls, w]) => { const y = Y(c.v[k]!, i); return <g key={w}><rect className={cls} x={x + 8} y={y - 3} width={94} height={6} /><text className="ch__t" x={x + 55} y={y - 7} textAnchor="middle">{w} {CH.round(c.v[k]!, 0)}</text></g>; })}
+      {i < 3 && <text className="ch__t" x={x + 128} y={172} textAnchor="middle">→</text>}</g>; })}
+    <text className="ch__t" x={10} y={350}>Signal-to-noise under the verse: {R.live ? `${CH.round(R.soft - R.noise, 1)} dB` : '—'} · direct-to-room {CH.round(R.drr, 1)} dB · typical figures, not a product (CH-01)</text>
+  </Svg>;
+}
+function PanelAbove({ st, lv }: { st: CState; lv: number }) {
+  const C = CH.Record.panel(st, lv); const n = C.n; const X = (k: number) => 300 + (k - (n - 1) / 2) * Math.min(C.s * 190, 480 / Math.max(1, n - 1)); const pat = String(st['pat']);
+  const lobe = (x: number, y: number) => { if (pat === 'omni') return <circle className="ch__lobe" cx={x} cy={y} r={26} />; let d = ''; for (let a = 0; a <= 72; a += 1) { const th = (a / 72) * 2 * Math.PI, rr = 26 * CH.Record.polar(pat, th); d += `${a ? 'L' : 'M'}${(x + rr * Math.sin(th)).toFixed(1)} ${(y - rr * Math.cos(th)).toFixed(1)}`; } return <path className="ch__lobe" d={`${d}Z`} />; };
+  const mY = (i: number) => 120 + Number(st[`d${i}`]) * 0.7;
+  return <Svg h={300} label={`The panel from above: ${n} talkers, their microphones and pickup patterns, each channel's average level; the worst leak ${C.wp ? `${CH.Record.PANEL_NM[C.wp[0]]} into ${CH.Record.PANEL_NM[C.wp[1]]}'s mic, ${CH.round(C.worst, 1)} dB` : 'none'}.`}>
+    <rect className="ch__table" x={40} y={150} width={520} height={44} rx={10} />
+    {Array.from({ length: n }, (_x, i) => { const x = X(i), lv2 = C.lev[i]!, ok = Math.abs(lv2 - C.mean) <= 2; return <g key={i}>
+      <circle className="ch__head2" cx={x} cy={96} r={17} /><text className="ch__t" x={x} y={62} textAnchor="middle">{CH.Record.PANEL_NM[i]}</text><text className="ch__t" x={x} y={76} textAnchor="middle">{CH.Record.PANEL_LV[i]} dB SPL @1 m</text>
+      <line className="ch__stand" x1={x} x2={x} y1={mY(i)} y2={200} /><circle className="ch__capsule" cx={x} cy={mY(i)} r={5} />{lobe(x, mY(i))}
+      <rect className="ch__col" x={x - 24} y={226} width={48} height={12} /><rect className={lv2 > -6 ? 'ch__mk is-hot' : ok ? 'ch__mk is-ok' : 'ch__mk is-off'} x={x - 24} y={226} width={48 * CH.clamp((lv2 + 50) / 50, 0, 1)} height={12} />
+      <text className="ch__t" x={x} y={256} textAnchor="middle">{CH.round(lv2, 1)} dBFS</text></g>; })}
+    {C.wp && <path className={C.worst > -9.5 ? 'ch__leak is-bad' : 'ch__leak'} d={`M${X(C.wp[0])} 96 Q${(X(C.wp[0]) + X(C.wp[1])) / 2} 44 ${X(C.wp[1])} ${mY(C.wp[1])}`} />}
+    <text className="ch__t" x={14} y={20}>FROM ABOVE · worst leak: {C.wp ? `${CH.Record.PANEL_NM[C.wp[0]]} into ${CH.Record.PANEL_NM[C.wp[1]]}’s mic, ${CH.round(C.worst, 1)} dB → comb filter ±${CH.round(C.comb / 2, 1)} dB` : '—'}</text>
+    <text className="ch__t" x={14} y={288}>Speech averages (peaks ≈ 12 dB higher) · seats {C.s} m apart · room 150 m³, RT60 0.8 s · typical (CH-01)</text>
+  </Svg>;
+}
+function StreamBars({ st, lv }: { st: CState; lv: number }) {
+  const C = CH.Build.stream(st, lv); const bppMin = lv >= 2 ? 0.07 : 0.05, syncW = lv >= 3 ? [45, 15] : [60, 40];
+  const rows: [string, number, string, boolean][] = [['Upload used', C.use, `${CH.round(C.use * 100, 0)}% of ${CH.round(C.eff, 1)} Mbps`, C.use <= 0.75], ['Picture (bits/pixel)', C.bpp / 0.15, `${CH.round(C.bpp, 3)} bpp`, C.bpp >= bppMin],
+    ['CPU load', C.cpu / 100, `${Math.round(C.cpu)}%`, C.cpu <= 90], ['Mic above game', (C.diff + 5) / 25, `${C.diff >= 0 ? '+' : ''}${C.diff} dB`, C.diff >= 6 && C.diff <= 14], ['Mix peak', (C.pk + 30) / 30, `${CH.round(C.pk, 1)} dBFS`, C.pk <= -1]];
+  if (lv >= 2) rows.push(['Lip sync (audio early +)', (C.lead + 100) / 200, `${C.lead > 0 ? '+' : ''}${Math.round(C.lead)} ms`, C.lead <= syncW[1]! && C.lead >= -syncW[0]!]);
+  return <Svg h={20 + rows.length * 34} label="Your stream: upload used, picture quality in bits per pixel, CPU load, the audio mix and the lip-sync error.">
+    {rows.map(([label, frac, txt, good], i) => { const y = 10 + i * 34; return <g key={label}><text className="ch__t" x={10} y={y + 15}>{label}</text><rect className="ch__col" x={170} y={y} width={300} height={20} />
+      <rect className={good ? 'ch__mk is-ok' : 'ch__mk is-hot'} x={170} y={y} width={300 * CH.clamp(frac, 0, 1)} height={20} /><text className={good ? 'ch__t' : 'ch__t ch__t--bad'} x={478} y={y + 15}>{txt}{good ? '' : ' ✗'}</text></g>; })}
+  </Svg>;
 }
 
 /** Hear the vocal through your compressor (before or after). Sound starts only from the button, at a quiet level. */
