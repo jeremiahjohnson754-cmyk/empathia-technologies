@@ -30,7 +30,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import path from 'node:path';
-import { setup, client, DEV_PASSWORD, mail, registerRoom, repo } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, mail, registerRoom, documentRoom, repo } from '../integration/harness.mjs';
 
 let h, c, A, B, std, demoApp, onlyApp, snapshot; const J = (x) => JSON.stringify(x);
 const api = path.join(repo, 'services/enterprise-api/dist/src');
@@ -187,6 +187,8 @@ test('DS-07 the whole thread in a sandbox, by demonstration sessions only; the s
   const ops = (await call(T.qa_reviewer, 'GET', '/v1/demo/sandbox')).body; assert.ok(ops.personas.some((p) => p.role === 'opslead'));
   const opsId = h.asSuper(`SELECT id FROM app.person WHERE email = 'opslead@${A.tenant}.empathia.invalid'`);
   await ok(call(T.qa_reviewer, 'POST', '/v1/delegations', { body: { granteeId: opsId, authority: 'customer.accept', reason: 'synthetic: QA verified and does not accept', days: 2 } }), 'delegation', 201);
+  // (added 18 Nov: acceptance also needs the documentation packet approved and signed by both sides, 0043)
+  await documentRoom(c, room, { submit: T.cxeng, review: T.qa_reviewer, vendor: await as(A, 'opslead'), internal: T.syseng });
   await ok(call(await as(A, 'opslead'), 'POST', `/v1/rooms/${room}/lifecycle`, { body: { to: 'ACCEPTED' } }), 'accept');
   await ok(call(T.cxeng, 'POST', `/v1/issues/${issue}/apex`, { body: {} }), 'apex', 201);
   const t = await ok(call(T.syseng, 'GET', `/v1/rooms/${room}/thread`), 'thread'); assert.equal(t.complete, true, t.missing.join(' | ')); assert.equal(t.room.lifecycle, 'ACCEPTED');

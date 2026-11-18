@@ -9,7 +9,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, DEV_PASSWORD, mail, repo, registerRoom } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, mail, repo, registerRoom, documentRoom } from '../integration/harness.mjs';
 import path from 'node:path'; import { pathToFileURL } from 'node:url';
 const CE = await import(pathToFileURL(path.join(repo, 'packages/commissioning-engine/dist/src/index.js')).href);   // the shared refusal wording
 
@@ -18,7 +18,9 @@ const atInstall = {}; let buildingA = false;   // the installation as recorded, 
 const J = (x) => JSON.stringify(x);
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
 const call = (persona, method, p, opts = {}) => c.call(method, p, { token: opts.token || T[persona], body: opts.body, headers: opts.headers, raw: opts.raw });
-const move = (code, to, persona, token) => call(persona, 'POST', `/v1/rooms/${code}/lifecycle`, { body: { to }, token });
+// (changed 18 Nov: acceptance now also needs the documentation packet approved and signed (0043); it is completed first, so the
+//  acceptances and refusals here test what they always tested)
+const move = async (code, to, persona, token) => { if (to === 'ACCEPTED') await documentRoom(c, code, { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng }); return call(persona, 'POST', `/v1/rooms/${code}/lifecycle`, { body: { to }, token }); };
 const room = (code) => call('syseng', 'GET', `/v1/rooms/${code}`);
 const ready = async (code) => (await call('designer', 'GET', `/v1/rooms/${code}/readiness`)).body;
 const posHistory = async (code, pos, persona = 'syseng') => call(persona, 'GET', `/v1/rooms/${code}/positions/${pos}/history`);

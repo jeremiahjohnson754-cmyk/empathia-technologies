@@ -86,23 +86,26 @@ test('CC-05 resuming from a code', async () => {
   const ok = await w.c.resume(`${ID}.${KEY}`); assert.equal(ok.ok, true); assert.deepEqual(w.c.sandbox(), { id: ID, key: KEY, tenant: 'sbx-0123456789abcdef', expiresAt: '2026-11-20T00:00:00Z', room: 'R-ATL-0001' });
 });
 
-test('CC-06 the journey: nineteen steps in order, each with a person; the next step is the first whose record is not on the server', () => {
-  assert.equal(J.STEPS.length, 19); assert.equal(new Set(J.STEPS.map((s) => s.id)).size, 19); for (const s of J.STEPS) { assert.ok(J.ROLE_LABEL[s.role], `${s.id}: ${s.role}`); assert.ok(s.title && s.what.length > 30); }
-  assert.deepEqual(J.STEPS.map((s) => s.id), ['mount', 'move', 'approve-move', 'register', 'commission', 'fail', 'handoff', 'work', 'verify-work', 'close-work', 'def-start', 'def-fixed', 'retest', 'def-verify', 'pass-all', 'verify-all', 'lend-acceptance', 'accept', 'apex']);
-  const st = (o = {}) => ({ acceptanceLent: false, people: [], register: [], rows: [{ test_id: 't1', label: 'T1', applicable: true, evidence: ['photo'], result: 'NOT_TESTED' }],
+// (changed 18 Nov: four Documentation & Submission steps (0043) come before the acceptance is lent: submit, review, and the two signatures)
+test('CC-06 the journey: twenty-three steps in order, each with a person; the next step is the first whose record is not on the server', () => {
+  assert.equal(J.STEPS.length, 23); assert.equal(new Set(J.STEPS.map((s) => s.id)).size, 23); for (const s of J.STEPS) { assert.ok(J.ROLE_LABEL[s.role], `${s.id}: ${s.role}`); assert.ok(s.title && s.what.length > 30); }
+  assert.deepEqual(J.STEPS.map((s) => s.id), ['mount', 'move', 'approve-move', 'register', 'commission', 'fail', 'handoff', 'work', 'verify-work', 'close-work', 'def-start', 'def-fixed', 'retest', 'def-verify', 'pass-all', 'verify-all', 'submit-docs', 'review-docs', 'sign-vendor', 'sign-internal', 'lend-acceptance', 'accept', 'apex']);
+  const docs = (complete) => ({ status: { required: 1, approved: complete ? 1 : 0, percent: complete ? 100 : 0, unsigned: complete ? [] : ['VENDOR', 'INTERNAL'], complete }, documents: [{ kind: 'as_built_drawings', label: 'As-built drawings', required: true, versions: complete ? [{ version: 1, state: 'APPROVED' }] : [] }], signatures: complete ? [{ side: 'VENDOR', current: true }, { side: 'INTERNAL', current: true }] : [] });
+  const st = (o = {}) => ({ acceptanceLent: false, docs: docs(false), people: [], register: [], rows: [{ test_id: 't1', label: 'T1', applicable: true, evidence: ['photo'], result: 'NOT_TESTED' }],
     field: { writable: true, devices: [{ asset: 'PA-0001', designed: { x: 1, y: 1 }, asBuilt: { x: 1, y: 1, moved: null }, mounting: null, hookups: [] }], moves: [], hookups: [], markups: [], room: { bounds: { w: 4, l: 5 } }, stats: {} },
     thread: { room: { code: 'R', name: 'Room', lifecycle: 'INSTALLED_UNVERIFIED', revision: 1 }, links: [], missing: [], complete: false, audit: { latest: [], byAggregate: [], aggregates: 1 }, stages: [
       { key: 'lite', records: { positions: 1, fieldRecord: { devices: 1, mounted: 0, hookups: 0, notInDesign: 0, moves: { proposed: 0, approved: 0, rejected: 0 }, notes: { open: 0, total: 0 } } } },
       { key: 'engineering', records: { revisions: [], register: { devices: 1, complete: 0 } } }, { key: 'commissioning', records: { issues: [] } }, { key: 'service', records: { workOrders: [] } }, { key: 'assurance', records: { baselines: [], current: null } }, { key: 'apex', records: { cases: [] } }] }, ...o });
-  const s0 = st(); assert.equal(J.nextStep(s0).id, 'mount'); assert.deepEqual(J.progress(s0), { done: 0, total: 19 });
+  const s0 = st(); assert.equal(J.nextStep(s0).id, 'mount'); assert.deepEqual(J.progress(s0), { done: 0, total: 23 });
   const s1 = st(); s1.thread.stages[0].records.fieldRecord.mounted = 1; assert.equal(J.nextStep(s1).id, 'move');
   // an order the server could be in after a partial visit: the register filled before the field record was touched
   const s2 = st(); s2.thread.stages[1].records.register.complete = 1; assert.equal(J.nextStep(s2).id, 'mount'); assert.equal(J.STEPS.find((x) => x.id === 'register').done(s2), true);
   assert.match(J.STEPS.find((x) => x.id === 'commission').ready(st({ thread: { ...st().thread, room: { ...st().thread.room, lifecycle: 'COMMISSIONING' } } })), /COMMISSIONING/);
-  assert.match(J.STEPS.find((x) => x.id === 'accept').ready({ ...st(), rows: [{ test_id: 't1', applicable: true, evidence: [], result: 'PASS_VERIFIED' }] }), /has not been lent/);
+  assert.match(J.STEPS.find((x) => x.id === 'accept').ready({ ...st(), rows: [{ test_id: 't1', applicable: true, evidence: [], result: 'PASS_VERIFIED' }] }), /documentation packet is not approved/);
+  assert.match(J.STEPS.find((x) => x.id === 'accept').ready({ ...st(), docs: docs(true), rows: [{ test_id: 't1', applicable: true, evidence: [], result: 'PASS_VERIFIED' }] }), /has not been lent/);
   const all = st({ acceptanceLent: true, rows: [{ test_id: 't1', label: 'T1', applicable: true, evidence: ['photo'], result: 'PASS_VERIFIED' }] });
   all.thread.room.lifecycle = 'ACCEPTED'; all.thread.stages[0].records.fieldRecord = { devices: 1, mounted: 1, hookups: 0, notInDesign: 0, moves: { proposed: 0, approved: 1, rejected: 0 }, notes: { open: 0, total: 0 } };
   all.thread.stages[1].records.register.complete = 1; all.thread.stages[2].records.issues = [{ code: 'ISS-1', state: 'RESOLVED', workflow: 'CLOSED', retest: { result: 'PASS', evidence: 'E' }, fixedBy: 'x', workOrders: ['WO-1'], cases: ['APX-1'] }];
   all.thread.stages[3].records.workOrders = [{ code: 'WO-1', issue: 'ISS-1', state: 'CLOSED', assigned: true, evidence: 1, verification: { outcome: 'pass' } }]; all.thread.stages[4].records = { baselines: [{ version: 1 }], current: 1 }; all.thread.stages[5].records.cases = [{ code: 'APX-1' }];
-  assert.equal(J.nextStep(all), null); assert.deepEqual(J.progress(all), { done: 19, total: 19 });
+  assert.equal(J.nextStep(all), null); assert.deepEqual(J.progress(all), { done: 23, total: 23 });
 });

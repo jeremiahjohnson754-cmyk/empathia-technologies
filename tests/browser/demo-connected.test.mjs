@@ -2,6 +2,7 @@
 // The interactive demo connected to the server (ADR-0013; founder, 17 Nov 2026: "someone could inspect a device, update its field
 // record, complete a commissioning workflow, switch roles, and observe the same durable history through ServiceHands, Assurance, and
 // APEX — even in a fresh browser session"). A real enterprise API on a real database, a demo built with DEMO_API_URL, a real browser.
+//   (changed 18 Nov: the journey has twenty-three steps: Documentation & Submission (0043) adds submit, review and the two signatures before the acceptance)
 //   CN-01  a build without DEMO_API_URL carries no connected page, no server name and no way to reach one
 //   CN-02  the page opens a sandbox: a synthetic organization on the server with one installed room, nothing done yet
 //   CN-03  scoped permissions: the first step tried as the designer is refused by the server, in the server's words, and nothing
@@ -57,7 +58,7 @@ let tenant, code;
   await p.getByTestId('cn-open').click(); await settle(p); await p.getByTestId('cn-journey').waitFor();
   tenant = await text(p, 'cn-tenant'); code = await p.getByTestId('cn-code').inputValue(); const journey = await text(p, 'cn-journey'); const thread = await text(p, 'cn-thread');
   ok('CN-02', 'the page opens a sandbox: a synthetic organization on the server with one installed room and nothing done yet',
-    /^sbx-[0-9a-f]{16}$/.test(tenant) && n('SELECT count(*) FROM app.demo_sandbox') === before + 1 && n(`SELECT count(*) FROM app.tenant WHERE slug = '${tenant}'`) === 1 && /^0 of 19 steps/.test(journey.split('\n').find((l) => /steps/.test(l)) || '')
+    /^sbx-[0-9a-f]{16}$/.test(tenant) && n('SELECT count(*) FROM app.demo_sandbox') === before + 1 && n(`SELECT count(*) FROM app.tenant WHERE slug = '${tenant}'`) === 1 && /^0 of 23 steps/.test(journey.split('\n').find((l) => /steps/.test(l)) || '')
     && /INSTALLED_UNVERIFIED/.test(thread) && /^0 of \d+ complete/.test(await text(p, 'cn-register')) && /^0 of /.test(await text(p, 'cn-mounted')) && /^[0-9a-f-]{36}\.[A-Za-z0-9_-]{43}$/.test(code), `${tenant} · ${journey.slice(0, 80)}`); }
 
 { const denied0 = n(`SELECT count(*) FROM app.audit_event e JOIN app.tenant t ON t.id = e.tenant_id WHERE t.slug = '${tenant}' AND e.outcome = 'DENIED'`);
@@ -84,7 +85,7 @@ let whole;
   const complete = await p.getByTestId('connected').getAttribute('data-complete'); const steps = await p.locator('[data-testid=cn-steps] li[data-state=done]').count(); whole = await text(p, 'cn-thread');
   const tid = h.asSuper(`SELECT id FROM app.tenant WHERE slug = '${tenant}'`); const c = (sql) => n(sql.replace('$T', `'${tid}'`));
   ok('CN-05', 'every remaining step, each as its own person, to a whole thread with its records in the database',
-    complete === 'yes' && steps === 19 && /ACCEPTED/.test(whole) && /CLOSED/.test(await text(p, 'cn-wos')) && /retest PASS/.test(await text(p, 'cn-issues')) && /v1/.test(await text(p, 'cn-baselines')) && /CURRENT/.test(await text(p, 'cn-baselines')) && /hypothes[ie]s/.test(await text(p, 'cn-cases'))
+    complete === 'yes' && steps === 23 && /ACCEPTED/.test(whole) && /CLOSED/.test(await text(p, 'cn-wos')) && /retest PASS/.test(await text(p, 'cn-issues')) && /v1/.test(await text(p, 'cn-baselines')) && /CURRENT/.test(await text(p, 'cn-baselines')) && /hypothes[ie]s/.test(await text(p, 'cn-cases'))
     && c("SELECT count(*) FROM app.work_order WHERE tenant_id = $T AND state = 'CLOSED'") === 1 && c("SELECT count(*) FROM app.assurance_baseline WHERE tenant_id = $T AND state = 'CURRENT'") === 1 && c('SELECT count(*) FROM app.apex_case WHERE tenant_id = $T') === 1
     && c("SELECT count(*) FROM app.room WHERE tenant_id = $T AND lifecycle = 'ACCEPTED'") === 1 && c('SELECT count(DISTINCT actor_id) FROM app.audit_event WHERE tenant_id = $T') >= 9, `complete ${complete} · ${steps} steps · ${(await said(p)).text.slice(0, 160)}`); }
 
@@ -95,7 +96,7 @@ let whole;
   await q.getByTestId('cn-resume-code').fill(code); await q.getByTestId('cn-resume').click(); await settle(q); await q.getByTestId('cn-thread').waitFor();
   const same = await text(q, 'cn-thread'); const sameTenant = await text(q, 'cn-tenant'); const complete = await q.getByTestId('connected').getAttribute('data-complete');
   ok('CN-06', 'a fresh browser session with nothing stored opens the same sandbox from its resume code and reads the same thread',
-    empty === null && bad.ok === 'no' && /not a resume code/.test(bad.text) && sameTenant === tenant && same === whole && complete === 'yes' && (await q.locator('[data-testid=cn-steps] li[data-state=done]').count()) === 19 && !f.errs.length, `${sameTenant} · same ${same === whole} · ${f.errs.slice(0, 2)}`);
+    empty === null && bad.ok === 'no' && /not a resume code/.test(bad.text) && sameTenant === tenant && same === whole && complete === 'yes' && (await q.locator('[data-testid=cn-steps] li[data-state=done]').count()) === 23 && !f.errs.length, `${sameTenant} · same ${same === whole} · ${f.errs.slice(0, 2)}`);
   await f.close(); }
 
 { const stored = await p.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter((k) => /sandbox|thread|connected|field/.test(k) && /^empathia\.demo\.(sandbox|connected)/.test(k)).map((k) => [k, Object.keys(JSON.parse(localStorage.getItem(k))).sort()])));
@@ -110,7 +111,7 @@ let whole;
   const g = await open('#/connected', { role: 'exec', sw: false }); await g.page.waitForFunction(() => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === 'ready');
   await g.page.getByTestId('cn-resume-code').fill(code); await g.page.getByTestId('cn-resume').click(); await settle(g.page); const old = await said(g.page); await g.close();
   ok('CN-08', 'reset: a new sandbox with nothing done; the old one is closed, its records kept, and its resume code opens nothing',
-    fresh !== tenant && /^sbx-/.test(fresh) && /0 of 19 steps/.test(journey) && closed === 'reset' && kept > 100 && old.ok === 'no' && /did not open a sandbox/.test(old.text) && /unknown, closed or expired/.test(old.text), `${fresh} · ${closed} · ${kept} audit rows kept · ${old.text.slice(0, 100)}`);
+    fresh !== tenant && /^sbx-/.test(fresh) && /0 of 23 steps/.test(journey) && closed === 'reset' && kept > 100 && old.ok === 'no' && /did not open a sandbox/.test(old.text) && /unknown, closed or expired/.test(old.text), `${fresh} · ${closed} · ${kept} audit rows kept · ${old.text.slice(0, 100)}`);
   const offOrigin = t.off.filter((u) => !u.startsWith(API));
   // the browser logs every refused request as a console error: the two refusals this test asked for (CN-03, CN-04) are the only ones
   const other = t.errs.filter((e) => !/status of 403/.test(e));

@@ -21,7 +21,7 @@
  *   node tests/e2e/checkpoint-room-lifecycle.e2e.mjs [evidence-dir]
  */
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
-import { setup, client, DEV_PASSWORD, mail, registerRoom } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, mail, registerRoom, documentRoom } from '../integration/harness.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 // the shared engine's sentence builders: the expected acceptance blockers are built with them, so the API's wording and order are the engine's
@@ -174,6 +174,9 @@ try {
 
   // ============================================================================================ 4 · accept the baseline
   step(10, 'accept-baseline', 'Accept the room as the authorized reviewer; baseline v1 is published');
+  // (added 18 Nov: Documentation & Submission (0043) is a gate before acceptance: the packet approved and signed by both sides)
+  const docsDone = await documentRoom(c, code, { submit: await tok('installer'), review: await tok('qa_reviewer'), vendor: await tok('opslead'), internal: await tok('syseng') });
+  ok('C-33b', 'the documentation packet: every required document approved and signed by the integrator and the owner, two different people', docsDone.status.complete && docsDone.signatures.filter((x) => x.current).length === 2, J(docsDone.status));
   ok('C-34', 'the systems engineer cannot accept the room (403: customer.accept)', (await move('syseng', 'ACCEPTED')).status === 403);
   const qaAcc = await move('qa_reviewer', 'ACCEPTED');
   ok('C-35', 'the QA reviewer verified results of this room and is refused the acceptance (422, separation of duties)', qaAcc.status === 422 && /separation of duties/.test(J(qaAcc.body)), J(qaAcc.body));

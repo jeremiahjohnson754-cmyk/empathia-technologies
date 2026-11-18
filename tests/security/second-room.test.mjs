@@ -17,7 +17,7 @@
 //   SR-07  two rooms, two records: the theatre is still installed and unverified with no move, no measurement, no deficiency and no
 //          baseline; a measurement of one room carries no result in the other; each criterion is its own
 import test, { before, after } from 'node:test'; import assert from 'node:assert/strict';
-import { setup, client, registerRoom } from '../integration/harness.mjs';
+import { setup, client, registerRoom, documentRoom } from '../integration/harness.mjs';
 import { analyseBands, meanOverPositions, syntheticIR } from '@empathia/commissioning-engine/acoustics';
 
 let h, c, sb; const T = {}; const J = (x) => JSON.stringify(x); const S = '/v1/rooms/CNV-MR-H201'; const HALL = '/v1/rooms/UNI-SCI-110'; const RT = 'reverberation_rt60'; let suite, cam,   // suite: the session room as the server returned it at the start
@@ -119,6 +119,8 @@ test('SR-06 every other check recorded and independently verified; acceptance le
   for (const r of (await rows()).filter((x) => x.result !== 'PASS_VERIFIED')) { const v = await call(T.qa_reviewer, 'POST', `${S}/results/${r.test_id}/verify`); assert.equal(v.status, 200, `${r.test_id}: ${J(v.body)}`); }
   assert.ok([403, 422].includes((await call(T.qa_reviewer, 'POST', `${S}/lifecycle`, { body: { to: 'ACCEPTED' } })).status), 'the verifier does not accept');
   const ops = T.people.find((p) => p.role === 'opslead'); assert.equal((await call(T.qa_reviewer, 'POST', '/v1/delegations', { body: { granteeId: ops.id, authority: 'customer.accept', reason: 'synthetic: QA verified and does not accept', days: 2 } })).status, 201);
+  // (added 18 Nov: acceptance also needs the documentation packet approved and signed by both sides, 0043)
+  await documentRoom(c, S.replace('/v1/rooms/', ''), { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng });
   const acc = await call(T.opslead, 'POST', `${S}/lifecycle`, { body: { to: 'ACCEPTED' } }); assert.equal(acc.status, 200, J(acc.body));
   const b = (await call(T.syseng, 'GET', `${S}/baselines`)).body.current; assert.equal(b.version, 1);
   const place = b.devices.find((d) => d.id === cam.id).placement; assert.deepEqual([place.basis, place.designed.x, place.asBuilt.x, place.at.x], ['AS_BUILT', cam.x, built.x, built.x]);

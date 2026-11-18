@@ -15,7 +15,7 @@
 //          open incidents; another organization sees none of it
 //   IN-11  the thirty days are counted: the same kind forty-five days before is not repeated, ten days before is
 import test, { before, after } from 'node:test'; import assert from 'node:assert/strict';
-import { setup, client, registerRoom } from '../integration/harness.mjs';
+import { setup, client, registerRoom, documentRoom } from '../integration/harness.mjs';
 
 let h, c, sb; const T = {}; const J = (x) => JSON.stringify(x); let ROOM = '', R = ''; const HALL = '/v1/rooms/UNI-SCI-110';
 const call = (token, method, p, o = {}) => c.call(method, p, { token, ...o });
@@ -36,6 +36,8 @@ before(async () => {
   for (const r of await rows()) { const w = await call(T.cxeng, 'POST', `${R}/results`, { body: { testId: r.test_id, state: 'PASS', evidenceId: ev, evidenceKind: r.evidence[0], instrument: 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09' } }); assert.equal(w.status, 201, `${r.test_id}: ${J(w.body)}`); }
   for (const r of await rows()) assert.equal((await call(T.qa_reviewer, 'POST', `${R}/results/${r.test_id}/verify`)).status, 200, r.test_id);
   const ops = T.people.find((p) => p.role === 'opslead'); assert.equal((await call(T.qa_reviewer, 'POST', '/v1/delegations', { body: { granteeId: ops.id, authority: 'customer.accept', reason: 'synthetic: QA verified and does not accept', days: 2 } })).status, 201);
+  // (added 18 Nov: acceptance also needs the documentation packet approved and signed by both sides, 0043)
+  await documentRoom(c, R.replace('/v1/rooms/', ''), { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng });
   const acc = await call(T.opslead, 'POST', `${R}/lifecycle`, { body: { to: 'ACCEPTED' } }); assert.equal(acc.status, 200, J(acc.body));
 });
 after(async () => { await h.app.stop(); });

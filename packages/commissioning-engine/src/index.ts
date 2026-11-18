@@ -25,6 +25,7 @@ export * from './applicability.js';
 export * from './results.js';
 export * from './recording.js';
 export * from './lifecycle.js';
+export * from './documentation.js';
 export * from './design.js';
 export * from './substitution.js';
 export * from './installations.js';

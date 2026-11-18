@@ -88,3 +88,32 @@ export async function registerRoom(c, room, token, { serialOf = () => undefined 
   if (open.length) throw new Error(`register of ${room} still open: ${JSON.stringify(open).slice(0, 300)}`);
   return after;
 }
+
+/**
+ * Documentation & Submission (0043): submit every document the room requires (one synthetic text file each), approve each as the
+ * reviewer, and sign the packet for both sides — the gate a room passes before ACCEPTED. Tokens: submit (installer or commissioning
+ * engineer), review (QA reviewer), vendor (operations lead), internal (systems engineer). Each step is checked; nothing is skipped.
+ */
+export async function documentRoom(c, room, { submit, review, vendor, internal }) {
+  const m = await c.call('GET', `/v1/rooms/${room}/documentation`, { token: submit });
+  if (m.status !== 200) throw new Error(`documentation of ${room}: ${m.status} ${JSON.stringify(m.body).slice(0, 300)}`);
+  for (const d of m.body.documents.filter((x) => x.required)) {
+    const last = d.versions[d.versions.length - 1];
+    if (last?.state === 'APPROVED') continue;
+    if (!last || last.state === 'REJECTED') {
+      const ev = await c.call('POST', '/v1/evidence', { token: submit, raw: `synthetic ${d.label} of ${room}`, headers: { 'content-type': 'text/plain', 'x-file-name': `${d.kind}.txt` } });
+      if (ev.status !== 201) throw new Error(`evidence for ${d.kind}: ${ev.status} ${JSON.stringify(ev.body).slice(0, 300)}`);
+      const s = await c.call('POST', `/v1/rooms/${room}/documentation/${d.kind}`, { token: submit, body: { evidenceId: ev.body.id } });
+      if (s.status !== 201) throw new Error(`submit ${d.kind}: ${s.status} ${JSON.stringify(s.body).slice(0, 300)}`);
+    }
+    const r = await c.call('POST', `/v1/rooms/${room}/documentation/${d.kind}/review`, { token: review, body: { decision: 'APPROVED' } });
+    if (r.status !== 200) throw new Error(`review ${d.kind}: ${r.status} ${JSON.stringify(r.body).slice(0, 300)}`);
+  }
+  const now = (await c.call('GET', `/v1/rooms/${room}/documentation`, { token: submit })).body;
+  for (const [side, token] of [['VENDOR', vendor], ['INTERNAL', internal]]) {
+    if (now.signatures.some((s) => s.side === side && s.current)) continue;
+    const g = await c.call('POST', `/v1/rooms/${room}/documentation/sign/${side}`, { token });
+    if (g.status !== 201) throw new Error(`sign ${side}: ${g.status} ${JSON.stringify(g.body).slice(0, 300)}`);
+  }
+  return (await c.call('GET', `/v1/rooms/${room}/documentation`, { token: submit })).body;
+}

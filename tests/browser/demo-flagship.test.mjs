@@ -52,6 +52,8 @@
 //          confirm it and its reporter can; the reporter cannot close it and the service manager can
 //   FL-36  a second report of the same kind on the same device is marked a repeat by the database; a blocked incident's correction
 //          waits; an escalation is recorded once; what the records add up to is the server's count; phone width
+//   FL-37  documentation and submission (0043): the required documents submitted and approved by different people, and the packet
+//          signed for the integrator and the owner by two different people, before acceptance; refused to the wrong role each time
 //   FL-33  the same page on another room: chosen from the page, Harbor 201 of the convention centre is read from the server by its
 //          own identifier (its plan, its devices, its criterion, the seats its plan draws); its camera is moved and approved there and
 //          the lecture theatre's record does not change; the address keeps the room across a refresh; a room the sandbox does not
@@ -407,6 +409,20 @@ const count = async (re) => (await rowsOnServer()).filter((x) => re.test(x.resul
     early.ok === 'no' && reasons.length >= 1 && stage === 'COMMISSIONING' && nDocs === 5 && disabled && recorded === 5 && docRows.length === 5 && docRows.every((x) => x.result === 'PASS_UNVERIFIED') && restBefore === total - 6 && notMine.ok === 'no' && passedThen < total && all.ok === 'yes' && passedNow === total
       && Number(await p.getByTestId('fl-rest').getAttribute('data-count')) === 0,
     `early acceptance: ${early.text.slice(0, 60)} · ${reasons.length} reasons, first “${(reasons[0] || '').slice(0, 90)}” · ${recorded} of ${nDocs} documents recorded · ${restBefore} other checks · installer: ${notMine.text.slice(0, 80)} (${passedThen} of ${total} passed) · engineer: ${all.text.slice(0, 30)} (${passedNow} of ${total})`); }
+
+// Documentation & Submission (0043): the documents the theatre requires, submitted by the installer, approved by the QA reviewer (the
+// installer is refused), and the packet signed for the integrator and the owner by two different people (the reviewer is refused)
+{ const docsOn = () => srv('cxeng', '/documentation');
+  await actAs(p, 'installer'); const m0 = p.getByTestId('fl-doc-matrix'); const required = Number(await m0.getAttribute('data-required'));
+  const submitted = await press(p, 'fl-doc-submit-all'); const notReviewer = await press(p, 'fl-doc-approve-all');
+  await actAs(p, 'qa_reviewer'); const approved = await press(p, 'fl-doc-approve-all'); const pct = await p.getByTestId('fl-doc-matrix').getAttribute('data-percent'); const notVendor = await press(p, 'fl-doc-sign-vendor');
+  await actAs(p, 'opslead'); const vendor = await press(p, 'fl-doc-sign-vendor'); await actAs(p, 'syseng'); const owner = await press(p, 'fl-doc-sign-internal');
+  const server = await docsOn(); const complete = await p.getByTestId('fl-doc-matrix').getAttribute('data-complete');
+  ok('FL-37', 'documentation and submission: the theatre’s fourteen required documents are submitted by the installer and approved by the QA reviewer (the installer may not review); the packet is signed for the integrator by the operations lead and for the owner by the systems engineer (the reviewer may not sign for the integrator); the server agrees',
+    required === 14 && submitted.ok === 'yes' && notReviewer.ok === 'no' && approved.ok === 'yes' && pct === '100' && notVendor.ok === 'no' && vendor.ok === 'yes' && owner.ok === 'yes' && complete === 'yes'
+      && server.status.complete === true && server.signatures.filter((x) => x.current).length === 2 && new Set(server.signatures.map((x) => x.role)).size === 2,
+    `${required} required · installer: ${submitted.text.slice(0, 40)} / reviewing: ${notReviewer.text.slice(0, 60)} · QA: ${approved.text.slice(0, 30)} (${pct}%), signing for the integrator: ${notVendor.text.slice(0, 50)} · signed: ${vendor.ok}/${owner.ok} · server ${server.status.approved}/${server.status.required}`);
+  await actAs(p, 'cxeng'); }
 
 { const own = await press(p, 'fl-verify-all'); const v0 = await count(/^PASS_VERIFIED$/); await actAs(p, 'qa_reviewer'); const verified = await press(p, 'fl-verify-all'); const v1 = await count(/^PASS_VERIFIED$/); const total = (await rowsOnServer()).length;
   const ready = await p.getByTestId('fl-ready').getAttribute('data-ready'); const lent = await press(p, 'fl-lend'); const notTheirs = await press(p, 'fl-accept'); const s1 = (await srv('cxeng', '')).room.lifecycle;

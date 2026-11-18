@@ -22,13 +22,14 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, DEV_PASSWORD, registerRoom } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, registerRoom, documentRoom } from '../integration/harness.mjs';
 
 let h, c, T = {}, ids = {}, req, prj, room, evidence, failTest, issue, apx, wo, lc;
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
 const get = (tok = T.opslead) => c.call('GET', `/v1/projects/${prj}`, { token: tok });
 const deliver = (to, tok, extra = {}) => c.call('POST', `/v1/projects/${prj}/delivery`, { token: tok, body: { to, ...extra } });
-const moveRoom = (to, tok) => c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: tok, body: { to } });
+// (changed 18 Nov: acceptance also needs the documentation packet approved and signed (0043); it is completed first)
+const moveRoom = async (to, tok) => { if (to === 'ACCEPTED') await documentRoom(c, room, { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng }); return c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: tok, body: { to } }); };
 const fresh = async (role) => (await c.call('POST', '/v1/auth/token', { body: { email: `${role}@empathia-demo.empathia.invalid`, password: DEV_PASSWORD, tenant: 'empathia-demo', role } })).body.accessToken;
 const audit = async (pred) => (await c.call('GET', '/v1/audit?limit=300', { token: T.secadmin })).body.items.find(pred);
 

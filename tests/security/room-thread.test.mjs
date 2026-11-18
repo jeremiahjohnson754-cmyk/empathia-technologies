@@ -18,7 +18,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, DEV_PASSWORD, mail, registerRoom } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, mail, registerRoom, documentRoom } from '../integration/harness.mjs';
 
 let h, c, room, issue, wo, apx, failed; const T = {}; const J = (x) => JSON.stringify(x);
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
@@ -100,6 +100,8 @@ test('TH-05 every applicable test passes and is verified by someone else; the ro
   for (const r of rows) assert.equal((await call('cxeng', 'POST', `/v1/rooms/${room}/results`, { body: { testId: r.test_id, state: 'PASS', evidenceId: e.id, evidenceKind: r.evidence[0], instrument } })).status, 201, r.test_id);
   for (const r of rows) assert.equal((await call('qa_reviewer', 'POST', `/v1/rooms/${room}/results/${r.test_id}/verify`)).status, 200, r.test_id);
   assert.equal((await call('qa_reviewer', 'POST', '/v1/delegations', { body: { granteeId: who('opslead'), authority: 'customer.accept', reason: 'synthetic: QA verified and does not accept', days: 2 } })).status, 201);
+  // (added 18 Nov: acceptance also needs the documentation packet approved and signed by both sides, 0043)
+  await documentRoom(c, room, { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng });
   const acc = await call('opslead', 'POST', `/v1/rooms/${room}/lifecycle`, { body: { to: 'ACCEPTED' }, token: await fresh('opslead') }); assert.equal(acc.status, 200, J(acc.body));
   const t = await thread(); const a = stage(t, 'assurance');
   assert.equal(t.room.lifecycle, 'ACCEPTED'); assert.equal(a.current, 1); assert.deepEqual(a.baselines.map((b) => [b.version, b.state]), [[1, 'CURRENT']]);

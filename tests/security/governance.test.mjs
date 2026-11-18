@@ -13,12 +13,14 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, registerRoom } from '../integration/harness.mjs';
+import { setup, client, registerRoom, documentRoom } from '../integration/harness.mjs';
 
 let h, c, T = {}, code, evidence, rows, ids = {};
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
 const room = (tok = T.designer) => c.call('GET', `/v1/rooms/${code}`, { token: tok });
-const move = (to, tok) => c.call('POST', `/v1/rooms/${code}/lifecycle`, { token: tok, body: { to } });
+// (changed 18 Nov: acceptance now also needs the documentation packet approved and signed (0043); it is completed here first, so the
+//  refusals and acceptances below are about what they always tested)
+const move = async (to, tok) => { if (to === 'ACCEPTED') await documentRoom(c, code, { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng }); return c.call('POST', `/v1/rooms/${code}/lifecycle`, { token: tok, body: { to } }); };
 const audit = async (pred) => (await c.call('GET', '/v1/audit?limit=200', { token: T.secadmin })).body.items.find(pred);
 
 before(async () => {

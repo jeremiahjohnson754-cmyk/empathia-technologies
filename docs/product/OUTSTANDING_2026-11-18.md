@@ -1,16 +1,28 @@
-# State and outstanding work (18 Nov 2026, 04:30 UTC)
+# State and outstanding work (18 Nov 2026, 09:05 UTC)
 
 This replaces `OUTSTANDING_2026-11-17.md` as the current list. Everything named here is committed on `v18/continuation`.
 
 ## What the public sites serve
 
 - **Staging** (`empathia-demo-next`, `empathia-website-next`, branch `phase3/legendary-experience`) and the staged API
-  (`staging/demo-api`): **`c3fc763`**, since 18 Nov 2026, 04:15 UTC. 38 migrations. It is the whole flagship journey as it stood
-  at that commit: the lecture theatre with its nine template devices, one technician, the value recorded as the bench sent it.
-- **Not staged**: `46dd956` (operational incidents), `f615a99` (the server recomputes the measured value), `6471efe` (the second
-  technician), `66df289` (the theatre's physical model; the second room). Each passes its own suites. Their exact-commit regression
-  (of `66df289`, which contains all four) is running; they go to staging if, and only if, its report says COMPLETE.
+  (`staging/demo-api`): **`81276b2`**, since 18 Nov 2026, 08:42 UTC. 41 migrations. The flagship journey with operational incidents,
+  the server's own reverberation value, the second technician, the theatre's physical model (36 devices, 30 seating blocks, approved
+  as revision 2), the second room (Harbor 201), and incidents on the room page.
+- **Not staged**: `0d40c12` (Pass with Exception, 0042) and the Documentation & Submission gate (0043, being committed). They go to
+  staging after their own exact-commit regression.
 - **Production** (`main`): unchanged. It waits for the founder's word.
+
+### How `81276b2` was verified on staging (18 Nov 2026, 08:42 to 09:05 UTC)
+
+| Check | Result |
+|---|---|
+| The platform's deploy list for the three services | each `live` on `81276b20…` (website 08:41:59, demo site 08:42:08, API live by 08:47) |
+| `/health` on the staged API | ok; 41 migrations applied; privileges ok |
+| `demo-smoke` from the staged commit, with the site's origin | 12 passed, 0 failed (sixteen people, three rooms) |
+| `demo-edge` | 6 passed, 0 failed, 1 not run |
+| `connected-browsers` on the deployed site, `--commit=81276b2` | 9 passed, 0 failed |
+| `#/flagship` on the deployed site, in a browser | sandbox opened from the page; the theatre read from the staged API: 67 positions, approved revision 2, no console error |
+| How long a sandbox takes to open on staging | **24.5 s** for one `POST /v1/demo/sandboxes` (27.0 s from the button to the plan). Locally 1.8 to 3 s. Too slow for a demonstration: see Open, item 1b |
 
 ### How `c3fc763` was verified on staging (18 Nov 2026, 04:15 to 04:25 UTC)
 
@@ -98,9 +110,14 @@ What is thin or simulated there, each stated on the page or in ADR-0014:
 
 ## Open, in the order they will be taken
 
-1. Regression of the commit that carries the incidents card and the approved-revision fix (`66df289` ran prepare, base and three
-   light parts, but approved the template revision, so it is not staged); stage it if COMPLETE; verify both `-next` sites and the staged API (41 migrations, sixteen
+1. Done: `81276b2` regression COMPLETE (base 136/0/113; browser 107/107 light and dark; `demo-critical-signal` dark failed once
+   while a second test run loaded the machine and passed alone, the result counted) and staged. Next: the regression of the commit
+   with 0042 and 0043; stage it if COMPLETE; verify both `-next` sites and the staged API (41 migrations, sixteen
    people, three rooms). Measure how long a sandbox takes to open there.
+1b. **Sandbox opening time on staging (24.5 s)**: the scenario is about 120 API requests in-process, each its own transaction and
+   audit row, on 0.5 CPU. Measure where the time goes on the staged instance, then shorten it without skipping a rule (one
+   transaction per room, or the scenario seeded by the same routes in batches). Not a reason to buy a larger plan without the
+   founder's word.
 1a. The ServiceHands pages of the demonstration still keep their records in the browser: move them to the server's work orders
     and incidents (the room page already reads and writes both: FL-24…25, FL-34…36).
 2. V3.9 rules not modelled (task 199): Pass with Exception and the exception record with its measured value; the Documentation and

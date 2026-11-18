@@ -89,7 +89,7 @@ Each row below says where the server holds the same thing, and whether it does: 
    people who never sign in. That is what the name Search Party meant first.
 3. **A documentation checklist per room is not a record.** The workbooks track fifteen named documents and photographs per room
    with a link each, a documentation percentage, and a sign-off packet with a vendor date and an internal date. The server has five
-   handover tests, the register and the drawings. V3.9's Documentation and Submission gate is the same thing (task 199).
+   handover tests, the register and the drawings. V3.9's Documentation and Submission gate is the same thing (task 199). **Built 18 Nov 2026 (0043, ADR-0021)**: the matrix, versioned submissions, review and two signatures, a gate before acceptance.
 4. **An intelligibility exception, as the workbook has it, is not a record**: the measured value, why it is poor, the mitigation and
    who logged it. With 0037 the measured value and its limit are now held, so this is a small step from here; it is also V3.9's
    Pass with Exception. **Built 18 Nov 2026 (0042, ADR-0020)** for measured tests with a criterion; no page shows it yet.

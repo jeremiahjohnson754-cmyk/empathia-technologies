@@ -6,6 +6,7 @@
 import { ROOM_LIFECYCLE, type ApplicabilityRow, type RecordedResult, type RoomLifecycle } from '@empathia/domain-types';
 import { resultCounts, resultWords } from './results.js';
 import { reverificationBlockers, type ChangeKind, type ReverificationState } from './substitution.js';
+import { documentationBlocker, type DocumentationFact } from './documentation.js';
 import { designBindingSentence, type DesignBinding, type RevisionBinding } from './binding.js';
 
 /** The authority each target state requires (the demonstrator's policy names). */
@@ -36,6 +37,11 @@ export interface LifecycleFacts {
    * block it. Omitted = none.
    */
   excepted?: readonly string[];
+  /**
+   * Documentation & Submission (documentation.ts, 0043): the required documents with their states and the two signatures. A mandatory
+   * gate between functional verification and acceptance. Omitted = not checked (the demonstrator's golden cases carry none).
+   */
+  documentation?: DocumentationFact;
   rows: ApplicabilityRow[];
   results: Record<string, RecordedResult> | undefined;
   hasBaseline: boolean;
@@ -109,6 +115,9 @@ export function lifecycleBlockers(f: LifecycleFacts): string[] {
     if (bound) why.push(bound);
     // 2 · open issues
     if (f.openIssues.length) why.push(`${f.openIssues.length} open issue(s): every deficiency is closed with its retest before acceptance`);
+    // 2b · documentation and submission (V3.9): every required document approved, the packet signed by both sides
+    const doc = f.documentation ? documentationBlocker(f.documentation) : null;
+    if (doc) why.push(doc);
     // 3 · the tests a change of unit reopened (one wording with the demonstration); when they are the only gap, the count goes with them
     const rb = reverificationBlockers(rv, f.changeKinds);
     if (rb.length && superseded.size && !gap) rb[0] = `${rb[0]} — acceptance counts ${C.verified} of ${app.length} applicable tests as passed and independently verified; the ${superseded.size} earlier result(s) no longer count`;

@@ -24,13 +24,17 @@ export interface Baseline { id: string; version: number; design_revision: number
   devices: Array<{ id: string; label: string; placement: { designed: Point; asBuilt: (Point & { move: string }) | null; at: Point; basis: string } | null }>;
   measurements: Array<{ test: string; metric: string; value: number; unit: string; provenance: string; criterion: { version: number; lower: number | null; upper: number | null; source: string } | null }> }
 export interface Person { role: string; name: string; id: string }
+/** The documentation matrix as the server holds it (0043): the documents this room requires, each one's versions, the percentage, the signatures. */
+export interface DocMatrix { status: { required: number; approved: number; percent: number; missing: string[]; waiting: string[]; rejected: string[]; unsigned: string[]; complete: boolean; open: boolean };
+  documents: Array<{ kind: string; label: string; photo: boolean; required: boolean; versions: Array<{ version: number; state: string; fileName: string; reviewNote: string | null }> }>;
+  packet: string | null; signatures: Array<{ side: string; name: string | null; role: string; at: string; current: boolean }>; may: { submit: boolean; review: boolean; sign: { VENDOR: boolean; INTERNAL: boolean } } }
 
 const words = (x: string) => x.replace(/_/g, ' ').toLowerCase();
 const at = (p: Point) => `${p.x} m across, ${p.y} m from the front`;
 const limit = (c: { lower: number | null; upper: number | null }, unit: string) => (c.lower !== null && c.upper !== null ? `between ${c.lower} and ${c.upper} ${unit}` : c.upper !== null ? `at most ${c.upper} ${unit}` : `at least ${c.lower} ${unit}`);
 const INSTRUMENT = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
 
-export function Finishing({ room, lifecycle, rows, counts, measuredTests, people, t }: { room: string; lifecycle: string; rows: PlanRow[]; counts: { recorded: number; verified: number; applicable: number }; measuredTests: string[]; people: Person[]; t: Tools }) {
+export function Finishing({ room, lifecycle, rows, counts, measuredTests, people, matrix, t }: { room: string; lifecycle: string; rows: PlanRow[]; counts: { recorded: number; verified: number; applicable: number }; measuredTests: string[]; people: Person[]; matrix: DocMatrix | null; t: Tools }) {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const docs = rows.filter((r) => r.pack === 'handover'); const passed = (r: PlanRow) => /^PASS/.test(r.result);
   const rest = rows.filter((r) => r.pack !== 'handover' && !passed(r) && !measuredTests.includes(r.test_id)); const atBench = rows.filter((r) => measuredTests.includes(r.test_id) && !passed(r));
@@ -53,6 +57,21 @@ export function Finishing({ room, lifecycle, rows, counts, measuredTests, people
     return { ok: true, title: `The acceptance is lent to ${ops.name} for two days.`, text: 'A record with a reason and an expiry: the person who verified does not also accept.' }; });
   const accept = () => t.act('Asking the server to accept the room…', async (): Promise<Said> => { const a = await t.call('POST', `/v1/rooms/${room}/lifecycle`, { to: 'ACCEPTED' }); if (!a.ok) return t.refused(a, 'the acceptance');
     return { ok: true, title: 'The room is accepted.', text: 'The server published baseline 1: the design revision and its hash, where each device is, the results, the evidence and the measured values it was accepted on.' }; });
+  // Documentation & Submission (0043): one evidence file per required document (a written note stands in for it here), reviewed by
+  // someone other than its submitter, then the packet signed for the integrator and for the owner by two different people
+  const req = (matrix?.documents || []).filter((d) => d.required); const last = (d: DocMatrix['documents'][number]) => d.versions[d.versions.length - 1];
+  const toSubmit = req.filter((d) => !last(d) || last(d)!.state === 'REJECTED'); const toReview = req.filter((d) => last(d)?.state === 'SUBMITTED');
+  const submitDocs = () => t.act(`Submitting ${toSubmit.length} documents, one request each…`, async (): Promise<Said> => {
+    let n = 0; for (const d of toSubmit) { const ev = await upload(`${d.label} for ${room} (synthetic: a note stands in for the document; no room was documented).`, `${d.kind}.txt`); if (!ev.ok) return t.refused(ev, d.label);
+      const a = await t.call('POST', `/v1/rooms/${room}/documentation/${d.kind}`, { evidenceId: ev.body.id }); if (!a.ok) return { ...t.refused(a, d.label), title: `Stopped at ${d.label} after ${n} submitted (${a.status}).` }; n += 1; }
+    return { ok: true, title: `${n} documents submitted.`, text: 'Each waits for someone other than its submitter to review it.' }; });
+  const reviewDocs = () => t.act(`Approving ${toReview.length} documents, one request each…`, async (): Promise<Said> => {
+    let n = 0; for (const d of toReview) { const a = await t.call('POST', `/v1/rooms/${room}/documentation/${d.kind}/review`, { decision: 'APPROVED' }); if (!a.ok) return { ...t.refused(a, `the review of ${d.label}`), title: `Stopped at ${d.label} after ${n} approved (${a.status}).` }; n += 1; }
+    return { ok: true, title: `${n} documents approved.`, text: 'None by the person who submitted it.' }; });
+  const signDocs = (side: 'VENDOR' | 'INTERNAL') => t.act(`Signing the packet for the ${side === 'VENDOR' ? 'integrator' : 'owner'}…`, async (): Promise<Said> => {
+    const a = await t.call('POST', `/v1/rooms/${room}/documentation/sign/${side}`); if (!a.ok) return t.refused(a, 'the signature');
+    return { ok: true, title: `Signed for the ${side === 'VENDOR' ? 'integrator' : 'owner'}.`, text: 'Over the packet as it stands. A document changed after this leaves the signature on the packet it signed.' }; });
+  const sig = (side: string) => matrix?.signatures.filter((x) => x.side === side).slice(-1)[0];
   const btn = (id: string, label: string, onClick: () => void, primary = false, disabled = false, extra: Record<string, string> = {}) => <button type="button" className={`ui-btn ui-btn--sm${primary ? ' ui-btn--primary' : ''}`} data-testid={id} disabled={t.busy || disabled} onClick={onClick} {...extra}>{label}</button>;
 
   if (lifecycle !== 'COMMISSIONING') return null;
@@ -69,8 +88,20 @@ export function Finishing({ room, lifecycle, rows, counts, measuredTests, people
       <p data-testid="fl-rest" data-count={rest.length}>{rest.length ? `${rest.length} checks have no passing result yet.` : 'Every other check has a passing result.'}{atBench.length ? ` ${atBench.length} more ${atBench.length === 1 ? 'has' : 'have'} a criterion and ${atBench.length === 1 ? 'is' : 'are'} measured at the bench, not recorded here.` : ''}</p>
       <p className="build__row">{btn('fl-pass-all', `Record ${rest.length} checks as passed, as the ${t.person}`, () => void passAll(), false, !rest.length)}{btn('fl-verify-all', `Verify ${toVerify.length} results as the ${t.person}`, () => void verifyAll(), false, !toVerify.length)}</p>
       <p className="ui-meta">Recording them at once is a shortcut of the demonstration and says so in the evidence: one synthetic observation note, one request for each check. Verification is one request for each result, and the server refuses the person who recorded it.</p>
+      <h4 className="fl__h4">Documentation and submission</h4>
+      {matrix ? <div data-testid="fl-doc-matrix" data-required={matrix.status.required} data-approved={matrix.status.approved} data-percent={matrix.status.percent} data-complete={matrix.status.complete ? 'yes' : 'no'}>
+        <p><b>{matrix.status.approved} of {matrix.status.required}</b> required documents approved ({matrix.status.percent}%). What this room requires follows from what it contains.</p>
+        <ul className="fl__list fn__docs">{req.map((d) => { const v = last(d); return <li key={d.kind} data-kind={d.kind} data-state={v?.state || 'NONE'}>
+          <span><b>{d.label}</b>{v ? <span className="ui-muted"> · version {v.version}, {v.fileName}</span> : null}{v?.state === 'REJECTED' && v.reviewNote ? <span className="ui-muted"> · rejected: {v.reviewNote}</span> : null}</span>
+          <Tag tone={v?.state === 'APPROVED' ? 'ok' : v?.state === 'REJECTED' ? 'bad' : v ? 'warn' : 'muted'}>{v ? words(v.state) : 'not submitted'}</Tag></li>; })}</ul>
+        <p className="build__row">{btn('fl-doc-submit-all', `Submit ${toSubmit.length} documents as the ${t.person}`, () => void submitDocs(), false, !toSubmit.length)}{btn('fl-doc-approve-all', `Approve ${toReview.length} documents as the ${t.person}`, () => void reviewDocs(), false, !toReview.length)}</p>
+        <ul className="fl__list" data-testid="fl-doc-signatures">{(['VENDOR', 'INTERNAL'] as const).map((side) => { const g = sig(side); return <li key={side} data-side={side} data-current={g?.current ? 'yes' : 'no'}>
+          <span><b>{side === 'VENDOR' ? 'The integrator' : 'The owner'}</b> <span className="ui-muted">{g ? `${g.current ? 'signed' : 'signed an earlier packet'}: ${g.name || g.role}, ${new Date(g.at).toLocaleString()}` : 'not signed'}</span></span>
+          {g?.current ? <Tag tone="ok">signed</Tag> : btn(side === 'VENDOR' ? 'fl-doc-sign-vendor' : 'fl-doc-sign-internal', `Sign as the ${t.person}`, () => void signDocs(side))}</li>; })}</ul>
+        <p className="ui-meta">A written note stands in for each document here. The server refuses a review by the submitter, a signature before every document is approved, and one person signing for both sides.</p>
+      </div> : <p className="ui-muted">The documentation could not be read as this person.</p>}
       <h4 className="fl__h4">Sign-off</h4>
-      <p data-testid="fl-ready" data-ready={allVerified ? 'yes' : 'no'}>{allVerified ? 'Every applicable check is passed and independently verified.' : `${rows.filter((r) => r.result !== 'PASS_VERIFIED').length} checks are not yet passed and independently verified. You can still ask: the server says what is in the way.`}</p>
+      <p data-testid="fl-ready" data-ready={allVerified && matrix?.status.complete ? 'yes' : 'no'}>{allVerified ? `Every applicable check is passed and independently verified.${matrix?.status.complete ? ' The documentation is approved and signed.' : ' The documentation is not yet approved and signed.'}` : `${rows.filter((r) => r.result !== 'PASS_VERIFIED').length} checks are not yet passed and independently verified. You can still ask: the server says what is in the way.`}</p>
       <p className="build__row">{btn('fl-lend', `Lend the acceptance to the operations lead, as the ${t.person}`, () => void lend())}{btn('fl-accept', `Accept the room as the ${t.person}`, () => void accept(), true)}</p>
     </Card>
   );

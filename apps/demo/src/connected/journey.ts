@@ -23,7 +23,9 @@ export interface FieldDevice { asset: string; label: string; designed: { x: numb
 export interface FieldRecord { room: { bounds: { w: number; l: number } }; writable: boolean; devices: FieldDevice[]; hookups: Array<{ hookup: string; device: string; port: string; to: string; asDesigned: boolean; removed: unknown }>; moves: Array<{ move: string; device: string; state: string; reason: string; metres: number; by: string; decidedBy: string | null }>; markups: Array<{ markup: string; text: string; state: string }>; stats: FieldStats }
 export interface RegisterItem { asset: string | null; position: string; missing: string[]; complete: boolean }
 export interface Person { role: string; name: string; id: string }
-export interface State { thread: Thread; field: FieldRecord; rows: PlanRow[]; register: RegisterItem[]; people: Person[]; acceptanceLent: boolean }
+/** The documentation matrix of the room as the server holds it (0043): what is required, each document's latest state, the signatures. */
+export interface Docs { status: { required: number; approved: number; percent: number; unsigned: string[]; complete: boolean }; documents: Array<{ kind: string; label: string; required: boolean; versions: Array<{ version: number; state: string }> }>; signatures: Array<{ side: string; current: boolean }> }
+export interface State { thread: Thread; field: FieldRecord; rows: PlanRow[]; register: RegisterItem[]; people: Person[]; acceptanceLent: boolean; docs: Docs }
 
 export const ROLE_LABEL: Record<string, string> = { installer: 'Installer', syseng: 'Systems Engineer', cxeng: 'Commissioning Engineer', svcmgr: 'Service Manager', service: 'Service Technician', qa_reviewer: 'QA Reviewer', opslead: 'Operations Lead', designer: 'Designer', exec: 'Executive', steward: 'Data Steward', requestor: 'Requestor' };
 export const TRY_ROLES = ['installer', 'syseng', 'cxeng', 'svcmgr', 'service', 'qa_reviewer', 'opslead', 'designer', 'exec'];
@@ -41,12 +43,12 @@ export const woOf = (s: State): ThreadWo | null => { const i = issueOf(s); retur
 
 /** Load everything the journey reads, as one person of the sandbox (any member may read a room they can see). */
 export async function load(c: Connected, room: string, role = 'syseng'): Promise<{ state: State | null; refused: Answer | null }> {
-  const [t, f, r, g, sb, ops] = await Promise.all([c.call<Thread>(role, 'GET', `/v1/rooms/${room}/thread`), c.call<FieldRecord>(role, 'GET', `/v1/rooms/${room}/field-record`),
+  const [t, f, r, g, sb, ops, d] = await Promise.all([c.call<Thread>(role, 'GET', `/v1/rooms/${room}/thread`), c.call<FieldRecord>(role, 'GET', `/v1/rooms/${room}/field-record`),
     c.call<{ commissioning: { rows: PlanRow[] } | null }>(role, 'GET', `/v1/rooms/${room}`), c.call<{ items: RegisterItem[] }>(role, 'GET', `/v1/rooms/${room}/register`),
-    c.call<{ personas: Person[] }>(role, 'GET', '/v1/demo/sandbox'), c.call<{ delegated: Array<{ authority: string }> }>('opslead', 'GET', '/v1/me')]);
-  const bad = [t, f, r, g, sb, ops].find((a) => !a.ok); if (bad) return { state: null, refused: bad };
+    c.call<{ personas: Person[] }>(role, 'GET', '/v1/demo/sandbox'), c.call<{ delegated: Array<{ authority: string }> }>('opslead', 'GET', '/v1/me'), c.call<Docs>(role, 'GET', `/v1/rooms/${room}/documentation`)]);
+  const bad = [t, f, r, g, sb, ops, d].find((a) => !a.ok); if (bad) return { state: null, refused: bad };
   return { state: { thread: t.body, field: f.body, rows: (r.body.commissioning?.rows || []).filter((x) => x.applicable), register: g.body.items, people: sb.body.personas,
-    acceptanceLent: ops.body.delegated.some((d) => d.authority === 'customer.accept') }, refused: null };
+    acceptanceLent: ops.body.delegated.some((x) => x.authority === 'customer.accept'), docs: d.body }, refused: null };
 }
 
 /** A step stopped by the server: the request that was refused and the server's own words. */
@@ -125,12 +127,27 @@ export const STEPS: Step[] = [
     done: (s) => s.rows.length > 0 && s.rows.every((r) => r.result === 'PASS_VERIFIED'), ready: (s) => (s.rows.length > 0 && s.rows.every((r) => /^PASS/.test(r.result)) ? null : 'some checks have no passing result yet'),
     run: async (c, s, role, room) => { const todo = s.rows.filter((r) => r.result !== 'PASS_VERIFIED');
       for (const r of todo) await must(`verify ${r.test_id}`, c.call(role, 'POST', `/v1/rooms/${room}/results/${r.test_id}/verify`)); return `${todo.length} result${todo.length === 1 ? '' : 's'} independently verified.`; } },
+  { id: 'submit-docs', role: 'installer', stage: 'assurance', title: 'Submit the handover documents', what: 'Documentation & Submission: the documents this room requires follow from what it contains (as-builts, rack elevation, IP schema, DSP file, photographs, screenshots, the commissioning report). One evidence file each (synthetic notes here).',
+    done: (s) => rec<{ current: number | null }>(s, 'assurance').current != null || s.docs.documents.filter((d) => d.required).every((d) => d.versions.length && d.versions[d.versions.length - 1]!.state !== 'REJECTED'), ready: (s) => (['INSTALLED_UNVERIFIED', 'COMMISSIONING'].includes(s.thread.room.lifecycle) ? null : 'documents are submitted for an installed room until it is accepted'),
+    run: async (c, s, role, room) => { const todo = s.docs.documents.filter((d) => d.required && (!d.versions.length || d.versions[d.versions.length - 1]!.state === 'REJECTED'));
+      for (const d of todo) { const ev = await note(c, role, d.label); await must(`submit ${d.label}`, c.call(role, 'POST', `/v1/rooms/${room}/documentation/${d.kind}`, { evidenceId: ev })); }
+      return `${todo.length} document${todo.length === 1 ? '' : 's'} submitted for review.`; } },
+  { id: 'review-docs', role: 'qa_reviewer', stage: 'assurance', title: 'Review the documents', what: 'The QA reviewer approves each document. Never the person who submitted it.',
+    done: (s) => rec<{ current: number | null }>(s, 'assurance').current != null || s.docs.status.approved === s.docs.status.required, ready: (s) => (s.docs.documents.some((d) => d.required && d.versions[d.versions.length - 1]?.state === 'SUBMITTED') ? null : 'no document is waiting for review'),
+    run: async (c, s, role, room) => { const todo = s.docs.documents.filter((d) => d.required && d.versions[d.versions.length - 1]?.state === 'SUBMITTED');
+      for (const d of todo) await must(`approve ${d.label}`, c.call(role, 'POST', `/v1/rooms/${room}/documentation/${d.kind}/review`, { decision: 'APPROVED' })); return `${todo.length} document${todo.length === 1 ? '' : 's'} approved: ${s.docs.status.required} of ${s.docs.status.required}.`; } },
+  { id: 'sign-vendor', role: 'opslead', stage: 'assurance', title: 'Sign the packet for the integrator', what: 'The operations lead signs the documentation packet as it stands, for the integrator.',
+    done: (s) => rec<{ current: number | null }>(s, 'assurance').current != null || s.docs.signatures.some((x) => x.side === 'VENDOR' && x.current), ready: (s) => (s.docs.status.approved === s.docs.status.required ? null : 'not every document is approved yet'),
+    run: async (c, _s, role, room) => { await must('sign for the integrator', c.call(role, 'POST', `/v1/rooms/${room}/documentation/sign/VENDOR`)); return 'Signed for the integrator.'; } },
+  { id: 'sign-internal', role: 'syseng', stage: 'assurance', title: 'Sign the packet for the owner', what: 'The systems engineer signs the same packet for the owner: a second person.',
+    done: (s) => rec<{ current: number | null }>(s, 'assurance').current != null || s.docs.signatures.some((x) => x.side === 'INTERNAL' && x.current), ready: (s) => (s.docs.status.approved === s.docs.status.required ? null : 'not every document is approved yet'),
+    run: async (c, _s, role, room) => { await must('sign for the owner', c.call(role, 'POST', `/v1/rooms/${room}/documentation/sign/INTERNAL`)); return 'Signed for the owner: the packet carries both signatures.'; } },
   { id: 'lend-acceptance', role: 'qa_reviewer', stage: 'assurance', title: 'Lend the acceptance to the operations lead', what: 'The person who verified does not also accept: the QA reviewer lends the acceptance authority to the operations lead for two days. The loan is a record with a reason and an expiry.',
     done: (s) => s.acceptanceLent || rec<{ current: number | null }>(s, 'assurance').current != null, ready: () => null,
     run: async (c, s, role) => { const ops = s.people.find((p) => p.role === 'opslead'); if (!ops) throw new Error('the sandbox has no operations lead');
       await must('lend the acceptance', c.call(role, 'POST', '/v1/delegations', { granteeId: ops.id, authority: 'customer.accept', reason: 'synthetic: QA verified and does not accept', days: 2 })); return `The acceptance is lent to ${ops.name} for two days.`; } },
   { id: 'accept', role: 'opslead', stage: 'assurance', title: 'Accept the room', what: 'The operations lead accepts. The server publishes baseline v1: the design revision, its hash and the evidence, immutable.',
-    done: (s) => rec<{ current: number | null }>(s, 'assurance').current != null, ready: (s) => (!(s.rows.length > 0 && s.rows.every((r) => r.result === 'PASS_VERIFIED')) ? 'not every check is independently verified' : s.acceptanceLent ? null : 'the acceptance has not been lent to the operations lead'),
+    done: (s) => rec<{ current: number | null }>(s, 'assurance').current != null, ready: (s) => (!(s.rows.length > 0 && s.rows.every((r) => r.result === 'PASS_VERIFIED')) ? 'not every check is independently verified' : !s.docs.status.complete ? 'the documentation packet is not approved and signed by both sides' : s.acceptanceLent ? null : 'the acceptance has not been lent to the operations lead'),
     run: async (c, _s, role, room) => { await must('accept the room', c.call(role, 'POST', `/v1/rooms/${room}/lifecycle`, { to: 'ACCEPTED' })); return 'Accepted. Baseline v1 is published.'; } },
   { id: 'apex', role: 'cxeng', stage: 'apex', title: 'Open an APEX case on the deficiency', what: 'A diagnosis record on the same issue: hypotheses with what is against each, never a verified fault.',
     done: (s) => (rec<{ cases?: unknown[] }>(s, 'apex').cases || []).length >= 1, ready: (s) => (issueOf(s) ? null : 'there is no deficiency yet'),

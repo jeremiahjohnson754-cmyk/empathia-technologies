@@ -19,7 +19,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, DEV_PASSWORD, mail, registerRoom } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, mail, registerRoom, documentRoom } from '../integration/harness.mjs';
 
 let h, c, room, planned, D, conn; const T = {}; const J = (x) => JSON.stringify(x);
 const call = (who, method, p, o = {}) => c.call(method, p, { token: o.token || T[who], body: o.body, headers: o.headers, raw: o.raw });
@@ -196,6 +196,8 @@ test('FRS-09 after acceptance the field record is closed', async () => {
   for (const r of rows) assert.equal((await call('cxeng', 'POST', `/v1/rooms/${room}/results`, { body: { testId: r.test_id, state: 'PASS', evidenceId: ev.id, evidenceKind: r.evidence[0], instrument: 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09' } })).status, 201, r.test_id);
   for (const r of rows) assert.equal((await call('qa_reviewer', 'POST', `/v1/rooms/${room}/results/${r.test_id}/verify`)).status, 200, r.test_id);
   assert.equal((await call('qa_reviewer', 'POST', '/v1/delegations', { body: { granteeId: who('opslead'), authority: 'customer.accept', reason: 'synthetic: QA verified and does not accept', days: 2 } })).status, 201);
+  // (added 18 Nov: acceptance also needs the documentation packet approved and signed by both sides, 0043)
+  await documentRoom(c, room, { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng });
   const acc = await call('x', 'POST', `/v1/rooms/${room}/lifecycle`, { body: { to: 'ACCEPTED' }, token: await fresh('opslead') }); assert.equal(acc.status, 200, J(acc.body));
   const r = await fr(); assert.equal(r.writable, false); const before = JSON.stringify(r.stats);
   await refused(call('installer', 'PUT', `${base()}/mounting/${D[2]}`, { body: { method: 'floor' } }), /field record is closed.*change order/);

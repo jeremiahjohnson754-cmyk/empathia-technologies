@@ -10,7 +10,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, registerRoom } from './harness.mjs';
+import { setup, client, registerRoom, documentRoom } from './harness.mjs';
 
 let h, c, code, row, failRow, evidence, issueCode, workOrder;
 const T = {};
@@ -24,7 +24,9 @@ before(async () => {
 after(async () => { await h?.app.stop(); });
 
 const room = (tok = T.designer) => c.call('GET', `/v1/rooms/${code}`, { token: tok });
-const move = (to, tok) => c.call('POST', `/v1/rooms/${code}/lifecycle`, { token: tok, body: { to } });
+// (changed 18 Nov: acceptance now also needs the documentation packet approved and signed (0043); it is completed first, so the
+//  acceptances and refusals here test what they always tested)
+const move = async (to, tok) => { if (to === 'ACCEPTED') await documentRoom(c, code, { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng }); return c.call('POST', `/v1/rooms/${code}/lifecycle`, { token: tok, body: { to } }); };
 const upload = (tok, text = 'synthetic field observation', type = 'text/plain') => c.call('POST', '/v1/evidence', { token: tok, raw: Buffer.from(text), headers: { 'content-type': type, 'x-file-name': 'observation.txt' } });
 
 test('health: database reachable, migrations applied, live health NOT_MONITORED, never production-ready', async () => {

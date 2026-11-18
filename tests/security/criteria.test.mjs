@@ -30,7 +30,7 @@
 //   CR-11  the retest of a deficiency opened by a failed measured test is the test's own new result: PASS on a measurement recorded
 //          after the correction. A sentence is not a retest; a measurement taken before the correction is not one; a FAIL is not one
 import test, { before, after } from 'node:test'; import assert from 'node:assert/strict';
-import { setup, client, registerRoom } from '../integration/harness.mjs';
+import { setup, client, registerRoom, documentRoom } from '../integration/harness.mjs';
 import { analyseBands, meanOverPositions, syntheticIR, readCsv, readWav, writeWav16 } from '@empathia/commissioning-engine/acoustics';
 
 let h, c; const T = {}; const J = (x) => JSON.stringify(x); const HALL = '/v1/rooms/UNI-SCI-110'; const RT = 'reverberation_rt60';
@@ -223,6 +223,8 @@ test('CR-12 the accepted baseline keeps the measured values and the limits they 
   for (const r of (await rows()).filter((x) => !/^PASS/.test(x.result))) { const w = await call(T.cxeng, 'POST', `${HALL}/results`, { body: { testId: r.test_id, state: 'PASS', evidenceId: ev, evidenceKind: r.evidence[0], instrument: 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09' } }); assert.equal(w.status, 201, `${r.test_id}: ${J(w.body)}`); }
   for (const r of (await rows()).filter((x) => x.result !== 'PASS_VERIFIED')) { const v = await call(T.qa_reviewer, 'POST', `${HALL}/results/${r.test_id}/verify`); assert.equal(v.status, 200, `${r.test_id}: ${J(v.body)}`); }
   const ops = T.people.find((p) => p.role === 'opslead'); assert.equal((await call(T.qa_reviewer, 'POST', '/v1/delegations', { body: { granteeId: ops.id, authority: 'customer.accept', reason: 'synthetic: QA verified and does not accept', days: 2 } })).status, 201);
+  // (added 18 Nov: acceptance also needs the documentation packet approved and signed by both sides, 0043)
+  await documentRoom(c, HALL.replace('/v1/rooms/', ''), { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng });
   const acc = await call(T.opslead, 'POST', `${HALL}/lifecycle`, { body: { to: 'ACCEPTED' } }); assert.equal(acc.status, 200, J(acc.body));
   const b = (await call(T.syseng, 'GET', `${HALL}/baselines`)).body.current; assert.ok(b, 'a baseline is published'); assert.equal(b.version, 1);
   const rt = b.measurements.find((m) => m.test === RT); const nf = b.measurements.find((m) => m.test === 'audio_noise_floor');

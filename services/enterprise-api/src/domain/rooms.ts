@@ -21,6 +21,7 @@ import { applyReplacement, planSubstitution, recordRoomInstallation, roomInstall
 import { substitutionsFrom, changesFrom, reverificationFrom, gateFacts, revisionBindingFrom, designBindingFact, type Substitution, type Reverification, type Change } from './reverification.js';
 import { designEditFor, patchEdit } from './design-edits.js';
 import { exceptedTests } from './exceptions.js';
+import { documentationFact } from './documentation.js';
 export type { Substitution, Reverification };
 
 const sha256 = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
@@ -551,6 +552,8 @@ export async function transition(ctx: RequestContext, ref: string, to: RoomLifec
       latestDescribesDesign: to === 'DESIGN_APPROVED' ? await latestDescribes(q, room, L) : undefined,
       // 0042: a FAIL excepted on an approved measured exception record counts as PASS WITH EXCEPTION, never as a pass
       excepted: to === 'ACCEPTED' ? await exceptedTests(q, room.id) : undefined,
+      // 0043: Documentation & Submission, a mandatory gate before acceptance
+      documentation: to === 'ACCEPTED' ? await documentationFact(q, room.id) : undefined,
       rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: (labels.get(r.test_id) || 'NOT_TESTED') as never } as never)),
       results: L.results, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false, ...rvFacts(rvn), designBinding: recommissionBinding(rc),
       // the device register gates the start of commissioning (founder, 14 Nov 2026): every in-service unit registered first
@@ -621,7 +624,7 @@ export async function readiness(ctx: RequestContext, ref: string) {
     const counts = { applicable: applicable.length, verified: applicable.filter((r) => lab(r.test_id) === 'PASS_VERIFIED' && !reopened.has(r.test_id)).length, awaiting: applicable.filter((r) => lab(r.test_id) === 'PASS_UNVERIFIED').length, failed: applicable.filter((r) => lab(r.test_id) === 'FAIL').length, other: applicable.filter((r) => ['NOT_SUPPORTED', 'INCONCLUSIVE'].includes(lab(r.test_id))).length, notTested: applicable.filter((r) => lab(r.test_id) === 'NOT_TESTED').length, revalidation: reopened.size };
     const facts = { from: room.lifecycle, classificationApproved: !!approved && !approved.stale, openIssues: open, savedRevisions: revisions.n, rows: rows.map((r) => ({ id: r.test_id, applicable: r.applicable, result: lab(r.test_id) as never } as never)), results: L.results as never, hasBaseline: !!room.baseline, hasLiveMonitoringEvidence: false };
     const reg = await registerItems(q, room.id);
-    const blockers = next ? lifecycleBlockers({ ...facts, to: next, latestDescribesDesign: next === 'DESIGN_APPROVED' ? await latestDescribes(q, room, L) : undefined, excepted: next === 'ACCEPTED' ? await exceptedTests(q, room.id) : undefined, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null, register: next === 'COMMISSIONING' ? registerFacts(reg) : undefined }) : ['the room is OPERATIONAL: no further governed step'];
+    const blockers = next ? lifecycleBlockers({ ...facts, to: next, latestDescribesDesign: next === 'DESIGN_APPROVED' ? await latestDescribes(q, room, L) : undefined, excepted: next === 'ACCEPTED' ? await exceptedTests(q, room.id) : undefined, documentation: next === 'ACCEPTED' ? await documentationFact(q, room.id) : undefined, ...rvFacts(rvn), designBinding: next === 'ACCEPTED' ? recommissionBinding(rc) : null, register: next === 'COMMISSIONING' ? registerFacts(reg) : undefined }) : ['the room is OPERATIONAL: no further governed step'];
     const evidence = (await q.query<{ n: number }>('SELECT count(DISTINCT evidence_id)::int AS n FROM app.test_result WHERE room_id = $1 AND evidence_id IS NOT NULL', [room.id])).rows[0]!.n;
     const baselines = (await q.query<{ version: number; state: string; published_at: string }>('SELECT version, state, published_at FROM app.assurance_baseline WHERE room_id = $1 ORDER BY version', [room.id])).rows;
     const exceptions = (await q.query<{ n: number }>("SELECT count(*)::int AS n FROM app.baseline_exception WHERE room_id = $1 AND state = 'REQUESTED'", [room.id])).rows[0]!.n;
