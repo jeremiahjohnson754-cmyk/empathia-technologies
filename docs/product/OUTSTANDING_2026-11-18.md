@@ -49,7 +49,20 @@ staging. Every slice below is committed and pushed with its own suites run; none
 | `1ef09ed`, `b5e635f` | **Field Tools** (`#/field-tools`): 39 site calculators with their working, ten live drawings, links that carry inputs, jobs on the device; the header jump for field roles; each links where it is studied | `field-tools` 9/9; `demo-fieldtools` 35/35 |
 | `ce3ca01` | **CTS, CTS-D and CTS-I study spaces** (`#/learn/certifications`, `#/learn/cts`, `#/learn/cts-d`, `#/learn/cts-i`): facts and outlines from AVIXA's 2026 handbooks, sourced and dated; 273 original questions; 19 drill templates; timed practice in the outline's proportions; study guides, math and physics, strategy; unofficial and not affiliated | `certs` 7/7; `demo-certs` 28/28 |
 | `af41f92` … `4dfe43a` | **SIGNAL parity**: all 693 quizzes reachable in the Learn library; the field calculator (🧮); arrow keys between options and the enlarged-picture viewer; all thirteen challenge drawings | `field-calc` 4/4; `demo-quizlib` 8/8; `demo-fieldcalc` 13/13; `demo-story-keys` 11/11; `demo-chal-drawings` 11/11; story, learn, boss, cinematic and SIGNAL suites rerun |
-| (this commit) | **ServiceHands on the server** (`#/servicehands/queue`, connected builds): the sandbox's work orders and incidents across rooms, each worked with the room page's ServiceWork panel; the browser's ServiceHands workspace says where it is. **Shorter phone pages** on the corporate site (home 24.9 → 16.3 screens; products 7.4 → 3.8) by sideways rails; Field Tools and the study spaces named on the product pages with their limits | `demo-flagship` FL-41, FL-42; `website` |
+| `72ae4b9` | **ServiceHands on the server** (`#/servicehands/queue`, connected builds): the sandbox's work orders and incidents across rooms, each worked with the room page's ServiceWork panel; the browser's ServiceHands workspace says where it is. **Shorter phone pages** on the corporate site (home 24.9 → 16.3 screens; products 7.4 → 3.8) by sideways rails; Field Tools and the study spaces named on the product pages with their limits | `demo-flagship` FL-41, FL-42; `website` |
+
+| `72ae4b9` | Learn's lesson cards mark glossary terms at first use with the story's pop-over | `demo-quizlib` QL-09 |
+| `1f06ce7`, `5622424` | **Platform jumps** (0047; `#/platforms`, room page): links to the organization's own portals (XiO Cloud, Utelogy, Teams Rooms Pro, Microsoft 365, SharePoint, Xyte, Q-SYS Reflect, Dante, Appspace, signage, Sennheiser, Autodesk, ServiceNow). **Links, not integrations**: nothing is read from or sent to a platform. Live integrations are a separate, pending capability (task #213) | `platform-jumps` 4/4; `demo-flagship` FL-43 |
+| `d7de08b`, `36835a6` | **Data reports as PDF only, role protected**: `GET /v1/reports/estate.pdf` (server-written PDF, figures' and file's SHA-256, audited); in the demo, service analytics, commissioning analytics and the portfolio brief export a PDF only, for the executive, operations lead, service manager or architect | `data-report` 3/3; `demo-service-analytics`, `demo-cx-analytics`, `demo-drill`, `demo-exports` |
+| `a9c48dc` | **Power BI project export**: `GET /v1/reports/powerbi.zip`, a PBIP (TMDL model, twelve DAX measures with the summary's definitions, three PBIR pages, Empathia theme) of the organization's records; `#/reports/server`. Nothing published. **NOT RUN: opening it in Power BI Desktop** (needs Windows) | `powerbi-export` 4/4 (Microsoft's schemas); `demo-flagship` FL-44 |
+
+### Recorded for later (founder, 18 Nov 08:03–08:23)
+
+- #210 commissioning: evidence in any order (already so on the server); phase sign-off with dependencies; reassessment when a design
+  revision, approved redline or equipment change invalidates evidence.
+- #214 impact-aware change after acceptance (the PTZ move): impact, preserved evidence, ServiceHands and Search Party, verified retests,
+  a new baseline revision; the accepted baseline never rewritten.
+- #212 learning ↔ calculation ↔ commissioning round trip. #213 live vendor integrations (pending). #211 Extron on the roadmap.
 
 ## Regressions
 
