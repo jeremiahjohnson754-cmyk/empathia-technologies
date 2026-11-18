@@ -9,7 +9,10 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const ledger = fs.readFileSync(path.join(repo, 'docs/product/MIGRATION_LEDGER.md'), 'utf8');
 // pages the ledger names as server, with the source file that is the page
 const SERVER_PAGES = { '#/connected': 'apps/demo/src/pages/Connected.tsx', '#/flagship': 'apps/demo/src/pages/Flagship.tsx' };
-const ALLOWED = [/^react$/, /^@empathia\/ui$/, /^\.\.\/connected\/[a-z]+\.js$/];
+// 17 Nov 2026: the flagship page gained a measurement bench. ../flagship/* are the page's own components and are held to the same
+// list; ../bench/reverb.js is a calculation (impulse response in, decay times out) with no imports and no stored record, and the
+// second assertion of ML-02 still checks that nothing reached through any of them holds a record.
+const ALLOWED = [/^react$/, /^@empathia\/ui$/, /^\.\.\/connected\/[a-z]+\.js$/, /^\.\.\/flagship\/[A-Za-z]+\.js$/, /^\.\.\/bench\/reverb\.js$/];
 const importsOf = (file, seen = new Set()) => {
   const abs = path.join(repo, file); if (seen.has(abs)) return []; seen.add(abs);
   const src = fs.readFileSync(abs, 'utf8'); const out = [];
@@ -27,7 +30,7 @@ test('ML-01 every page the ledger calls "server" is listed here, and the reverse
 test('ML-02 a server page reads no browser-held record: it imports the server’s client and the interface kit, and nothing else', () => {
   for (const [page, file] of Object.entries(SERVER_PAGES)) {
     const all = importsOf(file); assert.ok(all.length >= 3, `${page} imports were read`);
-    const direct = all.filter((i) => i.from === file); const bad = direct.filter((i) => !ALLOWED.some((re) => re.test(i.spec)));
+    const direct = all.filter((i) => i.from === file || /^apps\/demo\/src\/flagship\//.test(i.from)); const bad = direct.filter((i) => !ALLOWED.some((re) => re.test(i.spec)));
     assert.deepEqual(bad, [], `${page} imports only React, the interface kit and the server client`);
     // and what those import, in turn, never reaches the browser's own records of rooms, field work, service or the estates
     const reach = all.filter((i) => /\/(campus|estate|install|service|assurance|lite|worlds|decisions|drawing|rooms)\//.test(i.spec));

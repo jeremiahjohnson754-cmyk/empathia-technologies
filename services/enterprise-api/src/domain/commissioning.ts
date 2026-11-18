@@ -13,7 +13,7 @@ import type { RequestContext } from '../auth/context.js';
 import type { ObjectStore } from '../storage/objectStore.js';
 import { analyze, findRoom, load, relate, reverificationNow } from './rooms.js';
 import { ApiError, invalid, notFound, refused } from '../http/errors.js';
-import { citeMeasurement } from './criteria.js';
+import { citeMeasurement, QUANTITIES } from './criteria.js';
 
 async function code(q: Queryable, kind: string, prefix: string): Promise<string> { return (await q.query<{ c: string }>('SELECT app.next_code($1, $2) AS c', [kind, prefix])).rows[0]!.c; }
 
@@ -113,12 +113,14 @@ export async function recordResult(ctx: RequestContext, ref: string, body: { tes
 
 async function openCxDeficiency(ctx: RequestContext, q: Queryable, roomId: string, roomCode: string, planId: string, row: ApplicabilityRow, evidenceId: string, measured: string | null = null) {
   const key = `test-failed:${row.id}`;
+  // a base test whose label in the library is its identifier (reverberation_rt60) is named by what it measures
+  const name = row.label === row.id ? QUANTITIES[row.id]?.name ?? row.label : row.label;
   const i = (await q.query<{ id: string; code: string; state: string }>('SELECT id, code, state FROM app.room_issue WHERE room_id = $1 AND key = $2', [roomId, key])).rows[0];
   const revNo = (await q.query<{ n: number }>('SELECT coalesce(max(rev_no), 0) AS n FROM app.room_revision WHERE room_id = $1', [roomId])).rows[0]!.n;
   if (!i) {
     const c = await code(q, 'issue', 'RISS-');
     const ins = (await q.query<{ id: string }>(`INSERT INTO app.room_issue (tenant_id, room_id, code, key, category, check_name, severity, title, rationale, assets, first_seen_rev, last_seen_rev) VALUES ($1,$2,$3,$4,'INSTALLATION_COMMISSIONING_DEFICIENCY','commissioning_test_failed',$5,$6,$7,$8,$9,$9) RETURNING id`,
-      [ctx.p.tenantId, roomId, c, key, row.tier === 1 ? 'High' : 'Medium', `${row.label} failed`, `the ${row.label} test failed on the installed room (evidence ${evidenceId})${measured ? `. Measured ${measured}` : ''}`, row.devices || [], revNo])).rows[0]!;
+      [ctx.p.tenantId, roomId, c, key, row.tier === 1 ? 'High' : 'Medium', `${name} failed`, `the ${name} test failed on the installed room (evidence ${evidenceId})${measured ? `. Measured ${measured}` : ''}`, row.devices || [], revNo])).rows[0]!;
     await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, ins.id, 'created', { source: 'commissioning: physical test result', evidenceId, ...(measured ? { measured } : {}) }, ctx.p.personId]);
     await relate(ctx, q, { type: 'RoomIssue', id: c }, 'AFFECTS', { type: 'Room', id: roomCode }, 'FIELD_OBSERVED');
     await ctx.emit(q, 'commission.test_failed', { type: 'Room', id: roomCode, rev: 1 }, { planId, testId: row.id, roomId: roomCode });

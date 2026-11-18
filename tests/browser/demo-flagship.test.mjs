@@ -27,6 +27,11 @@
 //          naming it marked to look at again; design row and revision unchanged; no baseline claimed
 //   FL-18  it survives a refresh and a second person's browser (resume code only); designed layer can be hidden; phone width
 //   FL-19  a rejected second move changes no place and is kept in the history
+//   FL-20  before commissioning: the register by the installer, the start by the systems engineer; others refused by the server
+//   FL-21  the bench is an analysis: positions on the plan, octave bands, a longer decay a larger figure; nothing sent until recorded
+//   FL-22  the measurement on the server: the bench's value, SIMULATED, the analysis package as evidence, the database's verdict shown
+//   FL-23  PASS on a measurement that misses the limit refused; FAIL recorded; a deficiency opened and listed
+//   FL-24  a second measurement meets the limit and carries a PASS; refresh, a second person's browser, phone width
 //   node tests/browser/demo-flagship.test.mjs
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
@@ -143,9 +148,10 @@ const mark = (pg) => pg.locator(`[data-testid=fl-plan] .fl__dev[data-device="${c
 const actAs = async (pg, role) => { await pg.getByTestId('fl-who').selectOption(role); await pg.waitForFunction((r) => document.querySelector('[data-testid=fl-at]')?.getAttribute('data-as') === r, role, { timeout: 60000 }); await settle(pg); };
 const saidOk = async (pg) => { await settle(pg); return { ok: await pg.getByTestId('fl-said').getAttribute('data-ok'), text: (await text(pg, 'fl-said')).replace(/\s+/g, ' ') }; };
 const near = (a, b, tol = 0.011) => Math.abs(a - b) <= tol; const grid = (v) => near(Math.round(v * 20) / 20, v, 1e-9);
-// the browser logs every 4xx answer as a console error; the two refusals this test asks for on purpose (FL-14, FL-16) are 403s and are
-// asserted where they happen, so they are not counted as page errors here. Anything else is.
-const pageErrs = () => t.errs.filter((e) => !/status of 403/.test(e));
+// the browser logs every 4xx answer as a console error; the refusals this test asks for on purpose (FL-14, FL-16, FL-20, FL-22, FL-23)
+// are 403s (not this person's to do) and 422s (refused by a rule) and are asserted where they happen, so they are not counted as
+// page errors here. Anything else is.
+const pageErrs = () => t.errs.filter((e) => !/status of 4(03|22)/.test(e));
 let draft = null;
 
 { await actAs(p, 'installer'); await mark(p).click(); await p.getByTestId('fl-move').click(); await p.getByTestId('fl-move-panel').waitFor();
@@ -223,6 +229,67 @@ let built = null;
     sent.ok === 'yes' && r.ok === 'yes' && /rejected/.test(r.text) && near(tried.x, built.x + 2, 0.011) && stays.x === built.x && stays.y === built.y && server.placement.current.x === built.x && server.placement.proposed === null && server.placement.designed.x === cam.x
       && (await p.locator('[data-testid=fl-plan] .fl__proposed').count()) === 0 && hist.length === 2 && hist.includes('APPROVED') && hist.includes('REJECTED') && server.placement.history.length === 2 && !pageErrs().length,
     `tried (${tried.x}, ${tried.y}) · ${r.text.slice(0, 80)} · plan (${stays.x}, ${stays.y}) · server current (${server.placement.current.x}, ${server.placement.current.y}), designed (${server.placement.designed.x}, ${server.placement.designed.y}) · history ${hist} · ${pageErrs().slice(0, 2)}`); }
+
+// ------------------------------------------------------------------------------------------------ commissioning: the bench, the measurement, the result
+// The bench works a value out; the server records it; the database judges it; the result rests on it. Each check reads the server itself.
+const RT = 'reverberation_rt60'; const measuredOnServer = async () => (await srv('cxeng', '/measurements')).items.filter((m) => m.test_id === RT);
+const benchValue = async (pg) => Number(await pg.getByTestId('fl-bench-value').getAttribute('data-value'));
+const setDecay = async (pg, want) => { const el = pg.getByTestId('fl-bench-rt'); await el.focus(); for (let i = 0; i < 60; i++) { const v = Number(await el.inputValue()); if (Math.abs(v - want) < 0.001) return; await pg.keyboard.press(v > want ? 'ArrowLeft' : 'ArrowRight'); } throw new Error(`the decay slider did not reach ${want}`); };
+
+{ const before = await p.getByTestId('fl-register-state').getAttribute('data-open'); const all = await p.getByTestId('fl-register-state').getAttribute('data-all');
+  await actAs(p, 'exec'); await p.getByTestId('fl-register').click(); const no = await saidOk(p); const stillOpen = (await srv('installer', '/register')).items.filter((x) => x.missing.length).length;
+  await actAs(p, 'installer'); await p.getByTestId('fl-register').click(); const filled = await saidOk(p); const open = (await srv('installer', '/register')).items.filter((x) => x.missing.length).length;
+  await p.getByTestId('fl-commission').click(); const notYours = await saidOk(p); const stage1 = (await srv('cxeng', '')).room.lifecycle;
+  await actAs(p, 'syseng'); await p.getByTestId('fl-commission').click(); const started = await saidOk(p); const stage2 = (await srv('cxeng', '')).room.lifecycle;
+  ok('FL-20', 'before commissioning: the register is filled by the installer (anyone else is refused by the server) and commissioning is started by the systems engineer (the installer is refused); the server holds each step',
+    Number(before) > 0 && before === all && no.ok === 'no' && stillOpen === Number(before) && filled.ok === 'yes' && open === 0 && notYours.ok === 'no' && stage1 === 'INSTALLED_UNVERIFIED' && started.ok === 'yes' && stage2 === 'COMMISSIONING' && (await p.getByTestId('fl-start-card').count()) === 0,
+    `${before} of ${all} units open · as the executive: ${no.text.slice(0, 70)} (${stillOpen} still open) · as the installer ${filled.text.slice(0, 30)} (${open} open) · installer starting: ${notYours.text.slice(0, 60)} (${stage1}) · systems engineer: ${stage2}`); }
+
+let first = 0;
+{ await actAs(p, 'cxeng'); const crit = await p.getByTestId('fl-bench-criterion').getAttribute('data-upper'); const disabled = await p.getByTestId('fl-bench-analyse').isDisabled();
+  await p.getByTestId('fl-bench-typical').click(); const placed = await p.locator('[data-testid=fl-bench-plan] .fb__pos').count();
+  // one more, by clicking the plan, then removed: the plan takes positions
+  const plan = p.getByTestId('fl-bench-plan'); await plan.scrollIntoViewIfNeeded(); const b = await plan.boundingBox(); await p.mouse.click(b.x + b.width * 0.5, b.y + b.height * 0.5); const clicked = await p.locator('[data-testid=fl-bench-plan] .fb__pos').count();
+  await p.locator('[data-testid=fl-bench-positions] li').last().getByRole('button', { name: 'remove' }).click();
+  await setDecay(p, 0.8); await p.getByTestId('fl-bench-analyse').click(); await p.getByTestId('fl-bench-value').waitFor(); const low = await benchValue(p);
+  await setDecay(p, 1.4); const cleared = (await p.getByTestId('fl-bench-result').count()) === 0; await p.getByTestId('fl-bench-analyse').click(); await p.getByTestId('fl-bench-value').waitFor(); first = await benchValue(p);
+  const mid = await p.locator('[data-testid=fl-bench-bands] tr[data-mid=yes]').count(); const curve = await p.locator('[data-testid=fl-bench-decay] .fb__curve').getAttribute('d'); const none = (await measuredOnServer()).length; await shot(p, 'flagship-bench');
+  ok('FL-21', 'the bench is an analysis, not a number typed in: positions are placed on the plan, the responses are analysed in octave bands, a longer decay gives a larger figure, changing an input discards the old figure, and nothing reaches the server until it is recorded',
+    crit === '1' && disabled && placed === 4 && clicked === 5 && low > 0.7 && low < 0.92 && first > 1.28 && first < 1.56 && cleared && mid === 2 && curve.length > 500 && none === 0,
+    `criterion at most ${crit} s · ${placed} typical positions, ${clicked} after a click on the plan · decay 0.8 s → ${low} s, 1.4 s → ${first} s · old figure discarded ${cleared} · ${mid} mid bands · curve ${curve.length} characters · ${none} on the server`); }
+
+let failedOn = null;
+{ await actAs(p, 'installer'); await p.getByTestId('fl-bench-typical').click(); await p.getByTestId('fl-bench-analyse').click(); await p.getByTestId('fl-bench-record').click(); const notResponsible = await saidOk(p); const none = (await measuredOnServer()).length;
+  await actAs(p, 'cxeng'); await p.getByTestId('fl-bench-record').click(); const r = await saidOk(p); const ms = await measuredOnServer(); const m = ms[0]; failedOn = m;
+  const file = m ? await api.call('GET', `/v1/evidence/${m.evidence_id}/content`, { token: await as('cxeng') }) : null; const pkg = file && typeof file.body === 'object' ? file.body : null;
+  const li = p.locator('[data-testid=fl-measured] li').first();
+  ok('FL-22', 'recorded as the commissioning engineer (the installer is refused), the measurement is on the server with the value the bench showed, as SIMULATED, with the analysis package as its evidence; the verdict on the page is the one the database gave',
+    notResponsible.ok === 'no' && /403/.test(notResponsible.text) && none === 0 && r.ok === 'yes' && /does not meet the criterion \(at most 1 s, version 1\)/.test(r.text) && ms.length === 1 && Number(m.value) === first && m.within === false && m.provenance === 'SIMULATED' && m.criterion_version === 1
+      && pkg && pkg.synthetic === true && pkg.value === first && pkg.positions.length === 4 && pkg.positions.every((x) => x.response.synthetic === true && x.bands.length >= 4) && /No room was measured/.test(pkg.statement)
+      && (await li.getAttribute('data-within')) === 'no' && (await li.getAttribute('data-measurement')) === m.id && /does not meet/.test(await li.innerText()) && /simulated/.test(await li.innerText()),
+    `installer: ${notResponsible.text.slice(0, 80)} · ${r.text.slice(0, 110)} · server ${m ? `${Number(m.value)} s within ${m.within} ${m.provenance} v${m.criterion_version}` : 'nothing'} · package ${pkg ? `${pkg.positions.length} positions, synthetic ${pkg.synthetic}` : 'unreadable'}`); }
+
+{ await p.getByTestId('fl-result-pass').click(); const pass = await saidOk(p); const rowsBefore = (await srv('cxeng', '')).commissioning.rows.find((x) => x.test_id === RT).result;
+  await p.getByTestId('fl-result-fail').click(); const fail = await saidOk(p); const room = await srv('cxeng', ''); const row = room.commissioning.rows.find((x) => x.test_id === RT);
+  const issues = (await srv('cxeng', '/thread')).stages.find((x) => x.key === 'commissioning').records.issues || []; const shownIssue = p.locator('[data-testid=fl-issues] li').first();
+  await p.locator('[data-testid=fl-phases] button').first().click(); const cell = await p.locator(`[data-testid=fl-rows] tr[data-test="${RT}"] td`).last().innerText(); await shot(p, 'flagship-failed');
+  ok('FL-23', 'PASS on a measurement that misses the limit is refused by the server and nothing is recorded; FAIL on it is recorded, the plan shows it, and the server opens a deficiency that the page lists',
+    pass.ok === 'no' && /cannot be recorded as PASS/.test(pass.text + (await p.getByTestId('fl-said').innerText())) && rowsBefore === 'NOT_TESTED' && fail.ok === 'yes' && /^FAIL/.test(row.result) && issues.length === 1 && issues[0].state === 'OPEN'
+      && (await shownIssue.getAttribute('data-issue')) === issues[0].code && (await p.locator('[data-testid=fl-measured] li').first().getAttribute('data-cited')) === 'FAIL' && /fail/i.test(cell),
+    `PASS: ${pass.text.slice(0, 150)} (row still ${rowsBefore}) · FAIL: row ${row.result}, ${issues.length} deficiency ${issues[0]?.code} ${issues[0]?.state} “${issues[0]?.title}” · plan cell “${cell.trim().slice(0, 40)}”`); }
+
+{ await setDecay(p, 0.8); await p.getByTestId('fl-bench-analyse').click(); await p.getByTestId('fl-bench-value').waitFor(); const again = await benchValue(p); await p.getByTestId('fl-bench-record').click(); const rec = await saidOk(p);
+  await p.getByTestId('fl-result-pass').click(); const pass = await saidOk(p); const ms = await measuredOnServer(); const row = (await srv('cxeng', '')).commissioning.rows.find((x) => x.test_id === RT);
+  await p.reload(); await p.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(p); const afterReload = await p.locator('[data-testid=fl-measured] li').evaluateAll((els) => els.map((e) => `${e.getAttribute('data-within')}/${e.getAttribute('data-cited')}`));
+  const u = await open('#/connected', { role: 'qa_reviewer', sw: false }); const q = u.page; q.setDefaultTimeout(30000); await q.getByTestId('connected').waitFor(); await q.waitForFunction(() => document.querySelector('[data-testid=connected]')?.getAttribute('data-state') === 'ready');
+  await q.getByTestId('cn-resume-code').fill(`${stored.id}.${stored.key}`); await q.getByTestId('cn-resume').click(); await q.getByTestId('cn-journey').waitFor({ timeout: 120000 });
+  await q.goto(`${base}#/flagship`); await q.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(q); const theirs = await q.locator('[data-testid=fl-measured] li').evaluateAll((els) => els.map((e) => `${e.getAttribute('data-within')}/${e.getAttribute('data-cited')}`)); const theirIssues = await q.locator('[data-testid=fl-issues] li').count();
+  await q.setViewportSize({ width: 390, height: 844 }); await q.waitForTimeout(200); const over = await q.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); await shot(q, 'flagship-bench-phone');
+  ok('FL-24', 'a second measurement, of a shorter decay, meets the criterion and carries a PASS that waits for someone else; both measurements, their verdicts and the deficiency are the same after a refresh and in a second person’s browser; nothing scrolls sideways at phone width',
+    again < 0.92 && rec.ok === 'yes' && /meets the criterion/.test(rec.text) && pass.ok === 'yes' && ms.length === 2 && ms[0].within === true && ms[0].cited_by_result === 'PASS' && ms[1].id === failedOn.id && ms[1].cited_by_result === 'FAIL' && row.result === 'PASS_UNVERIFIED'
+      && JSON.stringify(afterReload) === JSON.stringify(['yes/PASS', 'no/FAIL']) && JSON.stringify(theirs) === JSON.stringify(afterReload) && theirIssues === 1 && over <= 1 && !u.errs.length && !pageErrs().length,
+    `${again} s: ${rec.text.slice(0, 60)} · row ${row.result} · server ${ms.map((m) => `${Number(m.value)} ${m.within} ${m.cited_by_result}`).join(' | ')} · after reload ${afterReload} · second browser ${theirs}, ${theirIssues} deficiency · phone overflow ${over}px · ${[...u.errs, ...pageErrs()].slice(0, 2)}`);
+  await u.close(); }
 
 await h.app.stop();
 { const s = await open('#/flagship', { role: 'cxeng', sw: false, init: `localStorage.setItem('empathia.demo.sandbox.v1', ${JSON.stringify(JSON.stringify(stored))})` }); const r = s.page;

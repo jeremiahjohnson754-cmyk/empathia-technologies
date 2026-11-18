@@ -20,6 +20,12 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   }
   ok(`RJ-${tag}-02`, 'each place opens on the same room, carries the row naming it, and links back to it in Lite; Back returns to Lite', landed.every((x) => x.endsWith(':ok')), landed.join(' | '));
   // a device chosen in Lite travels with the link to the campus room view
+  // 17 Nov 2026: wait for the route focus to land before pointing at anything. After a navigation the shell moves focus to the page's
+  // heading (App.tsx, "route focus"), and when the page's code arrives late it does so when the heading arrives, scrolling to it. This
+  // check came straight from six Back navigations and clicked a 3D hit button by its coordinates while that scroll was still to come:
+  // in two of three runs of the regression of a05fdcb (dark, desktop) the click went to where the button had been, chose nothing, and
+  // the check timed out waiting for the device panel. A person cannot click within those milliseconds. What is checked is unchanged.
+  await p.waitForFunction(() => { const h = document.querySelector('main h1'); return !!h && document.activeElement === h; }, null, { timeout: 6000 });
   await p.getByTestId('lite-room-3d').evaluate((el) => el.scrollIntoView({ block: 'center' }));
   await p.locator('[data-testid=lite-room-3d] .l3-hitbtn[aria-label^="Cam"]').first().click({ force: true }); await p.waitForTimeout(250);
   const code = (await p.locator('[data-testid=lite-device] dd.mono').first().innerText()).trim(); const camp = await p.getByTestId('room-jump-campus').getAttribute('href');

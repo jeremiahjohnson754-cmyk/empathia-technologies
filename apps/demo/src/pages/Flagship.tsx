@@ -23,6 +23,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PageHero, Card, Tag, Notice } from '@empathia/ui';
 import { connected, SandboxGone, type Availability, type Sandbox } from '../connected/client.js';
+import { ReverbBench, type BenchOutput, type BenchTest } from '../flagship/ReverbBench.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
 interface Point { x: number; y: number }
@@ -34,6 +35,12 @@ interface FieldAnswer { room: { bounds: { w: number; l: number } }; writable: bo
   devices: Array<{ asset: string; asBuilt: Point & { moved: string | null }; recheck: Array<{ test: string; label: string; result: string | null }> }>;
   moves: Array<{ move: string; device: string; state: string; from: Point; to: Point; metres: number; reason: string; note: string; by: string; decidedBy: string | null; decision: string | null; mayDecide: boolean }>; catalogue: { moveReasons: string[] } }
 interface BaselineAnswer { current: { version: number; devices: Array<{ id: string; placement: { designed: Point; asBuilt: (Point & { move: string }) | null; at: Point; basis: string } | null }> } | null }
+interface CriteriaAnswer { sandbox: boolean; tests: Array<BenchTest & { personas: string[] }>; versions: Array<{ test: string; version: number; inForce: boolean }>; may: { set: boolean } }
+/** A measurement as the server lists it (the ADR-0004 record with its test, evidence and the database's judgement). */
+interface Measured { id: string; metric: string; value: string | number; unit: string; provenance: string; calibration_status: string; instrument_id: string | null; location: string; test_id: string | null; evidence_id: string | null; within: boolean | null; criterion_version: number | null;
+  criterion_lower: string | null; criterion_upper: string | null; recorded_by_name: string; recorded_role: string; created_at: string; cited_by_result: string | null }
+interface RegisterAnswer { items: Array<{ asset: string | null; position: string; missing: string[] }> }
+interface Issue { code: string; title: string; state: string; workflow: string; workOrders: string[] }
 interface Connection { id: string; from: string; to: string; kind: string; why: string }
 interface Row { test_id: string; label: string; pack: string; domain: string; phase: number; tier: number; applicable: boolean; why: string[]; personas: string[]; evidence: string[]; instrument: boolean; devices: string[]; result: string }
 interface RoomAnswer {
@@ -43,8 +50,8 @@ interface RoomAnswer {
   commissioning: { engineVersion: string; ruleVersion: string; library: number; applicable: number; counts: Record<string, number>; rows: Row[] } | null;
 }
 interface Thread { room: { code: string; lifecycle: string; revision: number }; complete?: boolean; missing?: string[]; stages: Array<{ key: string; product: string; records: Record<string, unknown> }> }
-interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; place: { building: string; buildingName: string; site: string; siteName: string } | null }
-type Said = { ok: boolean; title: string; text: string; reasons?: string[] };
+interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; place: { building: string; buildingName: string; site: string; siteName: string } | null }
+type Said = { ok: boolean; warn?: boolean; title: string; text: string; reasons?: string[] };
 const at = (p: Point) => `${p.x} m across, ${p.y} m from the front`;
 const same = (a: Point, b: Point) => Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005;
 const dist = (a: Point, b: Point) => Math.round(Math.hypot(a.x - b.x, a.y - b.y) * 100) / 100;
@@ -130,9 +137,10 @@ export function FlagshipPage() {
       const [thread, list, sites, field, baseline] = await Promise.all([c.call<Thread>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/thread`), c.call<{ items: Array<{ code: string; building: string }> }>(as, 'GET', '/v1/rooms?limit=50'),
         c.call<{ items: Array<{ code: string; name: string; buildings: Array<{ code: string; name: string }> }> }>(as, 'GET', '/v1/sites'),
         c.call<FieldAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/field-record`), c.call<BaselineAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/baselines`)]);
+      const [criteria, measured, register] = await Promise.all([c.call<CriteriaAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/criteria`), c.call<{ items: Measured[] }>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/measurements`), c.call<RegisterAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/register`)]);
       if (!alive.current) return;
       const b = list.ok ? list.body.items.find((x) => x.code === room.body.room.code)?.building : undefined; const site = b && sites.ok ? sites.body.items.find((s) => s.buildings.some((x) => x.code === b)) : undefined;
-      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
+      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
       setSelected((s) => (s && room.body.devices.some((d) => d.id === s) ? s : null));
     } catch (e) {
       if (e instanceof SandboxGone) { setSb(null); setData(null); setSaid({ ok: false, title: 'The sandbox is no longer there.', text: `${e.message}. Open a new one to continue.` }); }
@@ -163,6 +171,29 @@ export function FlagshipPage() {
     if (!a.ok) return refused(a, approve ? 'the approval' : 'the rejection');
     setDecision(''); return approve ? { ok: true, title: `${move} is approved.`, text: `${dev.label} is now recorded where it was installed. The designed position is kept beside it, and the tests that name the device are listed to be looked at again.` }
       : { ok: true, title: `${move} is rejected.`, text: `${dev.label} stays where it was. The proposal is kept in the history.` }; });
+  // ---- commissioning: the register, the start, the bench's measurement and the result that rests on it. Each is one or more requests
+  // to the server as the person chosen; the server decides, and what it decides is read back.
+  const fillRegister = () => act('Recording a serial, and a hostname and address where there is a network port, for every unit…', async () => {
+    const todo = (data?.register?.items || []).filter((x) => x.asset && x.missing.length); const t = Math.random().toString(36).slice(2, 7); let n = 0;
+    for (const x of todo) { n += 1;
+      if (x.missing.includes('hostname') || x.missing.includes('IP address')) { const a = await c.call(who, 'PUT', `/v1/assets/${x.asset}/register`, { hostname: `syn-sci110-${t}-${n}`, ip: `10.110.${Math.floor(Math.random() * 200) + 20}.${n + 10}` }); if (!a.ok) return refused(a, `the register entry of ${x.asset}`); }
+      if (x.missing.includes('serial')) { const a = await c.call(who, 'POST', `/v1/assets/${x.asset}/identity`, { state: 'DECLARED', serial: `SYN-SN-SCI110-${t}-${n}` }); if (!a.ok) return refused(a, `the serial of ${x.asset}`); } }
+    return { ok: true, title: `${n} unit${n === 1 ? '' : 's'} registered.`, text: 'Synthetic serials, hostnames and addresses, one request for each. Commissioning can start once every unit is in the register.' }; });
+  const startCommissioning = () => act('Asking the server to start commissioning…', async () => {
+    const a = await c.call(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/lifecycle`, { to: 'COMMISSIONING' }); if (!a.ok) return refused(a, 'the start of commissioning');
+    return { ok: true, title: 'The room is in commissioning.', text: 'Results and measurements can be recorded now, each by the role responsible for the test.' }; });
+  const recordMeasurement = (o: BenchOutput) => act('Uploading the analysis package and recording the measurement…', async () => {
+    const ev = await c.call<{ id: string }>(who, 'POST', '/v1/evidence', undefined, { text: o.packageText, fileName: `sci-110-reverberation-analysis-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.json` }); if (!ev.ok) return refused(ev, 'the evidence file');
+    const a = await c.call<{ id: string; within: boolean | null; says: string }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/measurements`, { testId: 'reverberation_rt60', metric: 't30_mid', unit: 's', value: o.value, method: o.method, measuredAt: new Date().toISOString(), location: o.location, source: o.source, provenance: o.provenance,
+      ...(o.instrumentId ? { instrumentId: o.instrumentId } : {}), ...(o.calibrationStatus ? { calibrationStatus: o.calibrationStatus } : {}), ...(o.calibrationDue ? { calibrationDue: o.calibrationDue } : {}), evidenceId: ev.body.id, detail: o.detail });
+    if (!a.ok) return refused(a, 'the measurement');
+    return { ok: true, warn: a.body.within === false, title: a.body.within === false ? 'Recorded. The server says it does not meet the criterion.' : a.body.within ? 'Recorded. The server says it meets the criterion.' : 'Recorded.', text: a.body.says }; });
+  const recordResult = (m: Measured, state: 'PASS' | 'FAIL') => act(`Asking the server to record ${state} on this measurement…`, async () => {
+    const kind = R?.commissioning?.rows.find((r) => r.test_id === m.test_id)?.evidence[0] || 'INSTRUMENT_MEASURED';
+    const a = await c.call<{ resultLabel: string }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/results`, { testId: m.test_id, state, evidenceId: m.evidence_id, evidenceKind: kind, instrument: m.instrument_id || `none: ${m.provenance.toLowerCase()} reference responses`, measurementId: m.id });
+    if (!a.ok) return refused(a, `${state} on this measurement`);
+    return state === 'FAIL' ? { ok: true, warn: true, title: 'FAIL is recorded.', text: 'The server opened a deficiency that states what was measured against what. Acceptance is blocked until it is closed by a verified retest.' }
+      : { ok: true, title: `${words(a.body.resultLabel)} is recorded.`, text: 'A pass waits for someone else to verify it: its recorder cannot.' }; });
   // when a move starts, the marker on the plan takes the keyboard, so the arrow keys work without a pointer
   useEffect(() => { if (moving) (document.querySelector(`.fl__plan [data-device="${moving}"]`) as SVGGElement | null)?.focus(); }, [moving]);
 
@@ -181,6 +212,9 @@ export function FlagshipPage() {
   const again = useMemo(() => new Map((F?.devices || []).flatMap((d) => d.recheck.map((r) => [r.test, d.asset] as [string, string]))), [F]);
   const moved = R ? R.devices.filter((d) => d.placement && (d.placement.basis === 'AS_BUILT' || d.placement.proposed)) : [];
   const compared = R ? (sel && !moved.some((d) => d.id === sel.id) ? [sel, ...moved] : moved) : [];
+  const bench = data?.criteria?.tests.find((t) => t.test === 'reverberation_rt60') || null; const registerOpen = (data?.register?.items || []).filter((x) => x.missing.length).length; const registerAll = (data?.register?.items || []).length;
+  const issues = ((data?.thread?.stages.find((s) => s.key === 'commissioning')?.records as { issues?: Issue[] } | undefined)?.issues) || [];
+  const limitOf = (m: Measured) => (m.criterion_version === null ? null : `${m.criterion_upper !== null && m.criterion_lower !== null ? `between ${Number(m.criterion_lower)} and ${Number(m.criterion_upper)}` : m.criterion_upper !== null ? `at most ${Number(m.criterion_upper)}` : `at least ${Number(m.criterion_lower)}`} ${m.unit}, version ${m.criterion_version}`);
   const mover = R && moving ? R.devices.find((d) => d.id === moving) || null : null; const moverAt = mover ? placeOf(mover) : null;
   const far = mover && moverAt && draft ? dist(moverAt, draft) : 0; const ready = !!(mover && draft && far >= 0.05 && reason && (reason !== 'other' || note.trim()));
 
@@ -200,7 +234,7 @@ export function FlagshipPage() {
       {avail?.enabled && sb && absent ? <Notice tone="warn"><b>This sandbox was opened before the lecture theatre existed on the server.</b> It has no room with the identifier {FLAGSHIP_REF}. A new sandbox has it; the old one stays on the server until it expires.{' '}
         <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-new" disabled={!!busy} onClick={() => void open(true)}>Close this one and open a new one</button></Notice> : null}
       {busy ? <p role="status" data-testid="fl-busy"><Tag tone="warn">working</Tag> {busy}</p> : null}
-      {said ? <div data-testid="fl-said" data-ok={said.ok ? 'yes' : 'no'}><Notice tone={said.ok ? 'ok' : 'bad'}><b>{said.title}</b> {said.text}{said.reasons?.length ? <ul className="fl__list" data-testid="fl-said-reasons">{said.reasons.map((r) => <li key={r}>{r}</li>)}</ul> : null}</Notice></div> : null}
+      {said ? <div data-testid="fl-said" data-ok={said.ok ? 'yes' : 'no'}><Notice tone={!said.ok ? 'bad' : said.warn ? 'warn' : 'ok'}><b>{said.title}</b> {said.text}{said.reasons?.length ? <ul className="fl__list" data-testid="fl-said-reasons">{said.reasons.map((r) => <li key={r}>{r}</li>)}</ul> : null}</Notice></div> : null}
 
       {sb && R && data ? <>
         <section className="fl__bar" aria-label="The room and who is reading it" data-testid="fl-bar">
@@ -298,9 +332,36 @@ export function FlagshipPage() {
             : <p data-testid="fl-views-none">No position has moved or has a move waiting, so every product reads the designed positions. Choose a device on the plan to compare it, or move one.</p>}
         </Card>
 
+        {R.room.lifecycle === 'INSTALLED_UNVERIFIED' ? <Card icon="check" title="Before commissioning starts" sub="The server does not start commissioning on an unfilled device register" testId="fl-start-card">
+          <p data-testid="fl-register-state" data-open={registerOpen} data-all={registerAll}>{data.register ? <>{registerAll - registerOpen} of {registerAll} units are in the register{registerOpen ? <>: {registerOpen} still need a serial{data.register.items.some((x) => x.missing.includes('hostname')) ? ', or a hostname and address' : ''}.</> : '.'}</> : 'The register could not be read as this person.'}</p>
+          <p className="build__row">
+            <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-register" disabled={!!busy || !registerOpen} onClick={() => void fillRegister()}>Fill the register with synthetic values as the {person(who)}</button>
+            <button type="button" className="ui-btn ui-btn--primary ui-btn--sm" data-testid="fl-commission" disabled={!!busy} onClick={() => void startCommissioning()}>Start commissioning as the {person(who)}</button></p>
+          <p className="ui-meta">The installer fills the register; the systems engineer starts commissioning. Asked as anyone else, the server refuses and its words are shown.</p>
+        </Card> : null}
+
+        <ReverbBench geometry={R.room.geometry} test={bench} lifecycle={R.room.lifecycle} person={person(who)} busy={!!busy} onRecord={(o) => void recordMeasurement(o)} />
+
+        <Card icon="chart" title="Measurements on the server" sub={`${data.measured.length} recorded for this room’s tests`} testId="fl-measured-card">
+          {data.measured.length ? <ol className="fl__list fl__measured" data-testid="fl-measured">{data.measured.map((m, i) => <li key={m.id} data-measurement={m.id} data-within={m.within === null ? 'none' : m.within ? 'yes' : 'no'} data-cited={m.cited_by_result || ''}>
+            <span><b>{Number(m.value)} {m.unit}</b> <span className="ui-muted">{m.metric} · {m.test_id}</span></span>
+            <span>{m.within === null ? <Tag tone="muted">no criterion: no verdict</Tag> : m.within ? <Tag tone="ok">meets the criterion</Tag> : <Tag tone="bad">does not meet the criterion</Tag>} {limitOf(m) ? <span className="ui-muted">{limitOf(m)}</span> : null}</span>
+            <span><Tag tone={m.provenance === 'FIELD_MEASURED' && m.calibration_status === 'CALIBRATED' ? 'ok' : 'warn'}>{m.provenance === 'FIELD_MEASURED' ? `field measured, ${m.calibration_status === 'CALIBRATED' ? 'calibrated' : 'not calibrated'}` : words(m.provenance)}</Tag> <span className="ui-muted">{m.location} · {m.recorded_by_name}, {when(m.created_at)}</span></span>
+            <span className="build__row">{m.cited_by_result ? <Tag tone={tone(m.cited_by_result)}>a result rests on it: {words(m.cited_by_result)}</Tag> : i === 0 ? <>
+              <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-result-pass" disabled={!!busy} onClick={() => void recordResult(m, 'PASS')}>Record PASS on it</button>
+              <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-result-fail" disabled={!!busy} onClick={() => void recordResult(m, 'FAIL')}>Record FAIL on it</button></> : <span className="ui-muted">superseded by a later measurement</span>}</span></li>)}</ol>
+            : <p data-testid="fl-measured-none">Nothing has been measured yet. A measurement recorded at the bench appears here with the verdict the database gave it.</p>}
+          <p className="ui-meta">Whether a value meets the criterion is worked out by the database when the measurement is recorded. A result is recorded on a measurement, and the server refuses PASS on one that does not meet the criterion.</p>
+        </Card>
+
+        <Card icon="alert" title="Deficiencies" sub={issues.length ? `${issues.filter((i) => i.state === 'OPEN').length} open of ${issues.length}` : 'None'} testId="fl-issues-card">
+          {issues.length ? <ul className="fl__list" data-testid="fl-issues">{issues.map((i) => <li key={i.code} data-issue={i.code} data-state={i.state}><span className="ui-mono">{i.code}</span> <Tag tone={i.state === 'OPEN' ? 'bad' : 'ok'}>{words(i.state)}</Tag> {i.title} <span className="ui-muted">· {words(i.workflow)}{i.workOrders.length ? ` · ${i.workOrders.join(', ')}` : ' · no work order yet'}</span></li>)}</ul>
+            : <p data-testid="fl-issues-none">No deficiency is open on this room. A failed result opens one.</p>}
+        </Card>
+
         <Card icon="check" title="Commissioning plan" sub={R.commissioning ? `${R.commissioning.applicable} of ${R.commissioning.library} tests apply to this room · rules ${R.commissioning.ruleVersion}, engine ${R.commissioning.engineVersion}` : 'The server holds no plan for this room'} testId="fl-cx-card">
           {R.commissioning ? <>
-            <p className="ui-meta">The plan is compiled on the server from the room’s design: each test says why it applies, who records it and what evidence it needs. Nothing has been recorded yet: {R.commissioning.counts['notTested']} not tested, {R.commissioning.counts['verified']} verified.</p>
+            <p className="ui-meta">The plan is compiled on the server from the room’s design: each test says why it applies, who records it and what evidence it needs. <span data-testid="fl-cx-counts">{R.commissioning.counts['recorded'] ?? 0} of {R.commissioning.applicable} have a result on the server; {R.commissioning.counts['verified'] ?? 0} are independently verified.</span></p>
             <div className="fl__phases" role="group" aria-label="Phase" data-testid="fl-phases">
               <button type="button" className="fl__phase" aria-pressed={phase === 'all'} onClick={() => setPhase('all')}>All <span>{rows.length}</span></button>
               {phases.map((p) => <button key={p} type="button" className="fl__phase" aria-pressed={phase === p} data-phase={p} onClick={() => setPhase(p)}>Phase {p} <span>{rows.filter((r) => r.phase === p).length}</span></button>)}

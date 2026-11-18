@@ -58,7 +58,15 @@ export async function start(over: Partial<Record<string, string>> = {}) {
   worker.guard = () => gate.blocked();   // the worker does not work on a database whose privileges are not verified; it asks again on every tick
   if (process.env['WORKER'] !== 'off') worker.start();
   log('info', 'enterprise-api listening', { url: `http://${cfg.host}:${cfg.port}`, authMode: cfg.authMode, env: cfg.env, release: telemetry.release, telemetry: telemetry.transport.kind });
-  const stop = async () => { worker.stop(); await new Promise((ok) => server.close(() => ok(null))); await pool.end(); await workerPool.end(); await telemetry.flush(); };
+  // Stopping is bounded (17 Nov 2026). server.close() waits for every connection to end, and one client holding a connection open kept
+  // a stopping service alive for as long as it liked: a browser suite of this repository sat in stop() for eighteen minutes, and a
+  // platform's SIGTERM would have ended in its SIGKILL. Idle connections are closed at once; requests in flight get the grace period
+  // (SHUTDOWN_GRACE_MS, ten seconds unless set) to finish; whatever is still open then is closed, and it is logged that it was.
+  const grace = Math.max(0, Number(process.env['SHUTDOWN_GRACE_MS'] ?? 10000) || 0);
+  const stop = async () => { worker.stop();
+    await new Promise<void>((ok) => { const t = setTimeout(() => { log('warn', 'shutdown: connections still open after the grace period were closed', { graceMs: grace }); server.closeAllConnections(); }, grace);
+      server.close(() => { clearTimeout(t); ok(); }); server.closeIdleConnections(); });
+    await pool.end(); await workerPool.end(); await telemetry.flush(); };
   return { server, pool, workerPool, worker, tokens, router, cfg, telemetry, gate, stop };
 }
 

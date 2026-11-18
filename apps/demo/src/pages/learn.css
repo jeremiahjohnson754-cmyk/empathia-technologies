@@ -338,6 +338,21 @@ main details > summary { min-height: 24px; }
 .fl__move input[type=text], .fl__move input[type=number], .fl__move select { min-height: var(--target-min); width: 100%; } .fl__xy { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
 .fl__history li { padding: 4px 0; border-bottom: 1px solid var(--line); } .fl__history li:last-child { border-bottom: 0; }
 .fl__views th[scope=row] { min-width: 16ch; font-weight: 600; } .fl__views td { vertical-align: top; min-width: 18ch; }
+/* the reverberation bench and what the server recorded */
+.fb__grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-4) var(--sp-5); align-items: start; margin-bottom: var(--sp-3); }
+.fb__plan { display: block; width: 100%; max-height: 46vh; border-radius: var(--r-md); background: var(--bg2); cursor: crosshair; touch-action: manipulation; }
+.fb__pos circle { fill: var(--accent); stroke: var(--tx); stroke-width: 0.08; } .fb__pos text { font-size: 0.6px; font-weight: 700; fill: var(--accent-ink); pointer-events: none; }
+.fb__poslist li { display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: center; padding: 6px 0; font-size: var(--fs-sm); border-bottom: 1px solid var(--line); } .fb__poslist li:last-child { border-bottom: 0; }
+.fb__file { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: var(--fs-xs); color: var(--tx2); } .fb__file input { font-size: var(--fs-xs); max-width: 100%; }
+.fb__grid2 input[type=range] { width: 100%; min-height: var(--target-min); accent-color: var(--accent); } .fb__grid2 input[type=text], .fb__grid2 input[type=date], .fb__grid2 select { width: 100%; min-height: var(--target-min); }
+.fb__decay { display: block; width: 100%; height: auto; border-radius: var(--r-md); background: var(--bg2); }
+.fb__grid { stroke: var(--line); stroke-width: 1; } .fb__tick { font-size: 11px; fill: var(--tx2); font-variant-numeric: tabular-nums; } .fb__label { font-size: 12px; fill: var(--tx); }
+.fb__curve { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; } .fb__fit { stroke: var(--tx); stroke-width: 2; stroke-dasharray: 6 4; }
+.fb__tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--sp-2) 0 0; } .fb__table td, .fb__table th { font-variant-numeric: tabular-nums; } .fb__table tr[data-mid=yes] { background: var(--accent-bg); }
+.fb__value { margin: var(--sp-3) 0; padding: var(--sp-3); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--bg2); font-size: var(--fs-md); } .fb__value b { font-variant-numeric: tabular-nums; }
+.fb__notes { margin: var(--sp-2) 0; } .fb__notes summary { cursor: pointer; min-height: var(--target-min); display: flex; align-items: center; }
+.fl__measured li { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr) minmax(0, 1.5fr) minmax(0, 1.2fr); gap: 6px var(--sp-3); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); } .fl__measured li:last-child { border-bottom: 0; }
+@media (max-width: 860px) { .fb__grid2, .fl__measured li { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 860px) { .fl__bar, .fl__work { grid-template-columns: minmax(0, 1fr); } .fl__stages li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
 
 /* #/connected — the server-backed thread (ADR-0013) */
