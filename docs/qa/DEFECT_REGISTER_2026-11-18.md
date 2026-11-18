@@ -112,6 +112,23 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
   - A graphics tier: a software renderer gets no opening flight, standard resolution and short flights. The map records the tier as `data-gpu`.
 - **Regression test:** `demo-phoneshell` 49/49 three runs in a row (it was failing 1–3 runs in 3). `demo-map` MAP-15. The P-*-08 failure message now names the condition that failed.
 
+### D18-11 · P2 (founder 13:42: "add areas to pro failure heatmaps for issue intelligence"; 14:00: "Trustworthy heatmaps") · Built
+- **What was wrong:** the map had no intelligence lenses. Pro Issue Intelligence had no map at all.
+- **Fix:** lenses on the same Empathia Map:
+  - **Health risk:** 100 − health. An unscored building shows no value, never a zero.
+  - **Issues:** shown as a count, or as a rate per 10 rooms.
+  - **Heat layer:** a sequential heat layer on the ground.
+  - **Pins:** each pin shows its value.
+  - **Legend:** the scale, the highest building by raw count and by rate (they differ: Atlas has the most issues, Beacon the highest rate), the source, "synthetic", and the time computed.
+  - **Building card:** the numerator ÷ denominator behind the rate, with a drill-down to the building's rooms.
+- **Pro:** Issue Intelligence now carries the same map, opened on the Issues lens ("Where it fails").
+- **Regression test:** `demo-map` MAP-16…22. The phone checks include the lens and legend (no overlap, 44 px targets). Light and dark.
+
+### D18-12 · P2 · Fixed (found by `demo-access` R1-03 after D18-11)
+- **What was wrong:** on the investor start, the map's 3D start-up ran during an immediate keyboard navigation, so focus had not reached the new page's heading within 400 ms.
+- **Fix:** the map starts its 3D when the browser is idle, and builds its trees in a later idle slot.
+- **Regression test:** `demo-access` 31/31, two runs in a row.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220

@@ -72,3 +72,21 @@
 }
 @media (prefers-reduced-motion: reduce) { .emap__pin, .emap__rpin { transition: none; } }
 .emap__view--loading { display: grid; place-items: center; background: linear-gradient(135deg, #2c3b2a, #43573a 45%, #3a4c35); color: #dfe8f3; font-size: 13px; }
+/* lenses (#234): the lens switch under the layers, a legend that says what the colour means, the numbers behind it and where they come from */
+.emap__lens { position: absolute; right: 12px; top: 62px; display: inline-flex; padding: 3px; gap: 2px; border-radius: 14px; background: var(--em-glass); border: 1px solid var(--em-line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.emap__lens button, .emap__seg button { min-height: 38px; min-width: 44px; padding: 0 11px; border: 0; border-radius: 11px; background: transparent; color: var(--em-tx2); font: inherit; font-weight: 600; cursor: pointer; }
+.emap__lens button[aria-pressed=true], .emap__seg button[aria-pressed=true] { background: #f2c14e; color: #2a1d02; }
+.emap__lens button:focus-visible, .emap__seg button:focus-visible, .emap__inline:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.emap__legend { position: absolute; right: 12px; top: 112px; width: min(290px, calc(100% - 84px)); padding: 12px 14px; border-radius: 16px; background: var(--em-glass); border: 1px solid var(--em-line); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: grid; gap: 8px; box-shadow: 0 10px 28px rgba(0,0,0,.35); }
+.emap__legend h3 { margin: 0; font-size: 14px; } .emap__legend p { margin: 0; font-size: 12px; line-height: 1.45; color: var(--em-tx2); } .emap__legend b { color: var(--em-tx); }
+.emap__seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 14px; background: rgba(255,255,255,.05); border: 1px solid var(--em-line); justify-self: start; }
+.emap__scale { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; font-size: 11.5px; color: var(--em-tx2); font-variant-numeric: tabular-nums; }
+.emap__scale i { grid-column: 1 / -1; height: 8px; border-radius: 4px; } .emap__scale span:last-child { grid-column: 3; }
+.emap__src { font-size: 11px !important; }
+.emap__legend .emap__jump { justify-self: start; }
+.emap__lv { color: #ffd98a; font-variant-numeric: tabular-nums; }
+.emap__inline { color: #7fe0d3; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 640px) {
+  .emap__lens { position: static; margin: 10px 0 0; display: flex; width: fit-content; background: #121a26; }
+  .emap__legend { position: static; width: auto; margin: 8px 0 0; background: #121a26; }
+}

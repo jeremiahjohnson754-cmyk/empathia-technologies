@@ -31,14 +31,14 @@ export interface CampusTile { score: number | null; band: 'healthy' | 'monitor' 
 const BAND_GLYPH = { healthy: '●', monitor: '▲', action: '◆', none: '○' } as const;
 /** The campus map wherever it appears: the Empathia Map (WebGL2: aerial imagery, 3D buildings, fly-to drill-down; task #234), or this
  *  SVG isometric map where the browser has no WebGL2. Both keep one keyboard button per building (data-testid campus-b-<key>). */
-type MapProps = { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string };
+type MapProps = { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; lens?: 'none' | 'risk' | 'issues' };
 let MapCode: ((p: MapProps) => JSX.Element) | null = null;
 const hasGl = () => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch { return false; } };
 export function CampusMap(props: MapProps) {
   // the map's code (~48 KB) is fetched when a map is first shown, so the page around it renders at once (18 Nov)
   const [gl] = useState(hasGl); const [M, setM] = useState(() => MapCode);
   useEffect(() => { if (!gl || M) return; let live = true; import('../map/EmpathiaMap.js').then((m) => { MapCode = m.EmpathiaMap; if (live) setM(() => m.EmpathiaMap); }).catch(() => { /* stays on the placeholder; the list beside the map holds every building */ }); return () => { live = false; }; }, [gl, M]);
-  if (!gl) return <CampusMapSvg {...props} />;
+  if (!gl) return <CampusMapSvg tiles={props.tiles} onOpen={props.onOpen} onPreview={props.onPreview} current={props.current} />;
   return M ? <M {...props} /> : <div className="emap" aria-busy="true" data-testid="emap-loading"><div className="emap__view emap__view--loading"><span>Loading the campus map…</span></div></div>;
 }
 export function CampusMapSvg({ tiles, onOpen, onPreview, current }: { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string }) {

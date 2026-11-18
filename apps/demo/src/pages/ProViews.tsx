@@ -18,6 +18,7 @@ import { TrendChart } from './TrendChart.js';
 import { syntheticHistory, monthKey } from '../service/history.js';
 import { months, stats, LAYER_LABEL } from '../service/analytics.js';
 import { campusStats } from '../campus/metrics.js';
+import { CampusMap, Stage } from '../spatial/Spatial.js';
 import { readRegister } from '../campus/registerStore.js';
 import { deviceRegister, retiredRegister } from '../campus/registers.js';
 
@@ -112,6 +113,10 @@ export function IssuesPage({ perspective }: { perspective: string }) {
         <StatTile label="Service jobs open" value={w.incidents.filter((i) => !DONE.includes(i.state)).length} icon="ticket" tone="servicehands" href="#/servicehands" />
         <StatTile label="Recurrences" value={rec.length} icon="undo" tone="apex" href="#/v25/apex" hint="Diagnosed by APEX before another visit" />
       </div>
+      {/* #234 (founder 13:42, 14:00): the failure map — the same campus map with the Issues lens, counts and rates per 10 rooms, the source and
+          its time, each building drilling to its rooms. One map component, so it agrees with Campus and Mission Control. */}
+      {(() => { const c = campusStats(w); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
+        return <Card icon="map" title="Where it fails" sub="Open room issues on the campus map: counts or per 10 rooms; select a building for its rooms"><div data-testid="pro-failure-map"><Stage label="Failure map" testId="pro-map-stage"><CampusMap tiles={tiles} lens="issues" onOpen={(b) => { location.hash = `#/campus/${b.key}`; }} /></Stage></div></Card>; })()}
       <div className="wk-g2">
         <Card icon="pulse" title="Open by severity"><Donut label="Open room issues by severity" total="open" segments={sev} /></Card>
         <Card icon="filter" title="Where issues come from" sub="Every room issue, by the check that found it"><Donut label="Room issues by source" total="issues" segments={bySource} /></Card>
