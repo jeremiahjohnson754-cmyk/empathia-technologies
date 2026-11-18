@@ -1,6 +1,6 @@
-# Session handoff — 18 Nov 2026, 15:55 America/Chicago (read this first)
+# Session handoff — 18 Nov 2026, 16:40 America/Chicago (read this first)
 
-**Branch** `v18/continuation`, HEAD **`f8b3e59`** (pushed). **Staging still `81276b2`** (not restaged; the plan is ONE exact-commit
+**Branch** `v18/continuation`, HEAD **`5edfcb6`** (pushed). The container restarted once at ~16:05 (a test run was killed, exit 137); nothing was lost. **Staging still `81276b2`** (not restaged; the plan is ONE exact-commit
 regression on the final combined commit, then stage, then verify). Production untouched (founder's word required).
 
 **Founder directives received today** (verbatim in `.local/directives/2026-11-18-*`; the private reference PDF/PPTX in
@@ -21,12 +21,14 @@ navigation service; trustworthy heatmaps) and connector polish (#235); 1408 park
   drill campus → building → floor cutaway → room with exact jumps; lenses (Health risk; Issues as count / per 10 rooms) with legend,
   source and time; Pro Issue Intelligence "Where it fails"; graphics tier (`data-gpu`); idle start; on-demand code. Suite `demo-map` (25).
 - #229 Core Replay for every campus room from its record (`apps/demo/src/replay/history.ts` `stagesFromRecord`).
+- #230 Tour G "The Life of a Room" (`apps/demo/src/tour/tours.ts`, 16 stops on the real pages); the investor start leads with it
+  under the founder's headline. Still to do in #230: the cinematic opening, "show me the backend" moments, narration (Brian needs the
+  founder's word for paid generation), the learning-from-the-field stop (designed, not built), reset of a tour's sandbox state.
 
-**Next, in order:** (1) #230 "The Life of a Room" flagship tour on R-ATL-4-218 driving the real pages (Core Replay → Lite →
-Commissioning fail → ServiceHands → Search Party match → retest → baseline → change → Learn → APEX), with "same record" ids visible;
+**Next, in order:** (1) #230 remaining pieces above, and the tour panel covering the top of each page (it hides the page heading);
 (2) #232 corporate product pages → exact demo states (typed launch intent + return); (3) #236 heatmap metrics; #234 earth/region level;
 (4) #217 SIGNAL branching chapter; (5) #225 two destructive QA cycles; (6) final exact-commit regression → stage → verify.
-Suites to keep green while changing the map/shell: demo-map, demo-campus (prints "N/N PASS"), demo-core (read RESULTS.json),
+Suites to keep green while changing the map/shell: demo-map, demo-tours (prints "N/N PASS"), demo-worlds, demo-campus (prints "N/N PASS"), demo-core (read RESULTS.json),
 demo-phoneshell, demo-access, demo-return-trail, demo-rolehome, demo-replay, website (light and dark).
 
 ---
