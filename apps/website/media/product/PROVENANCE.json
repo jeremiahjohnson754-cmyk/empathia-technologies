@@ -156,15 +156,15 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4000e9e",
-   "capturedAt": "2026-11-18T18:04:27.491Z",
+   "commit": "af1f13b",
+   "capturedAt": "2026-11-18T19:16:13.622Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,
    "height": 800,
    "files": {
-    "exp-campus-1280.webp": "a57198e1609b141f582290a6ce72ae3f64539e27bc4f7bce3ba5a1592d3eeb0c",
-    "exp-campus-640.webp": "085829e1cd357fe9e2aad1208bbc6c20a1e5e97f63d86dc128c34b17a70ee7fc"
+    "exp-campus-1280.webp": "4303803b889bae0a6376723bee5d31d2687819bd6b043143b248eeca4004587b",
+    "exp-campus-640.webp": "46fd071adecf6224fbd6b569f4cb1a66c85a367a41df83363e8a8374c790e0bb"
    }
   },
   "exp-stadium": {
@@ -172,15 +172,15 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4000e9e",
-   "capturedAt": "2026-11-18T18:04:34.014Z",
+   "commit": "af1f13b",
+   "capturedAt": "2026-11-18T19:16:19.938Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,
    "height": 800,
    "files": {
-    "exp-stadium-1280.webp": "cd01c9f5159be0ab2b12aaa66db79b4223a6ddd41319787ff0e50f3144b46936",
-    "exp-stadium-640.webp": "76a4d87eff5ad07b6a8038142bbe9bda448615404d1f7ce594db0b3356915f55"
+    "exp-stadium-1280.webp": "a1e03e527d3a952a45f2e6625fba598ffe15169d19c54b09d1a9b55357ad9a3b",
+    "exp-stadium-640.webp": "cd8036c7d31158e38c905a6b66ca1ef237c79251e68b283ef33273cb9b4efb10"
    }
   },
   "exp-expo": {
@@ -188,15 +188,15 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "4000e9e",
-   "capturedAt": "2026-11-18T18:04:42.168Z",
+   "commit": "af1f13b",
+   "capturedAt": "2026-11-18T19:16:27.659Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,
    "height": 800,
    "files": {
-    "exp-expo-1280.webp": "c405ca657b7e957e110239af33847dcd44356cb7d8488794a684b5fcabed7426",
-    "exp-expo-640.webp": "d7e964282c4d4a9c5d2a5c069edf953f81359ee8952bd96fcd604f7c468a7e00"
+    "exp-expo-1280.webp": "d4c065972f732205151f2367f12f4ce8670d12a228abf8219346c96615f93bb7",
+    "exp-expo-640.webp": "61b19a6ede8cb510808fd950353b803466f22402212deb11a5129348e8aa0802"
    }
   }
  }
