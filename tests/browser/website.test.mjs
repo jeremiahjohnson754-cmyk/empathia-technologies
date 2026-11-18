@@ -599,6 +599,22 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   await p.setViewportSize({ width: 1280, height: 900 }); await p.goto(`${base}/`); const wide = await p.evaluate(() => ({ tiles: getComputedStyle(document.querySelector('.tiles')).overflowX, hint: getComputedStyle(document.querySelector('.rail-hint')).display }));
   ok('W-rails-desk', 'on a desktop the same lists are grids again and the swipe hint is hidden', wide.tiles !== 'auto' && wide.hint === 'none', JSON.stringify(wide)); await c.close(); }
 
+{ // 18 Nov first-time-viewer pass (founder 13:53: "fix that commissioning and assurance button … that so bugs me"): product names
+  // broke inside words on phones (ServiceHand·s, Commissioni·ng & Assurance) because the tiles allowed a break anywhere. On every page,
+  // at phone and tablet widths, no word of four or more letters in a link, button, heading or nav item may be split across two lines
+  // (a break at a hyphen is a normal break, not a split word), and every product name must fit inside its tile.
+  const split = []; const spill = [];
+  for (const w of [320, 360, 375, 390, 412, 768]) { const c = await browser.newContext({ viewport: { width: w, height: 900 } }); const p = await c.newPage();
+    for (const pg of pages) { await p.goto(`${base}${pg}`); await p.waitForTimeout(80);
+      const r = await p.evaluate(() => { const bad = []; for (const el of document.querySelectorAll('a, button, .btn, h1, h2, h3, nav li')) { if (!el.getClientRects().length) continue; const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = tw.nextNode())) { const re = /[^\s\-–—/]{4,}/g; let m; while ((m = re.exec(n.textContent))) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); if (new Set([...rg.getClientRects()].filter((x) => x.width > 0).map((x) => Math.round(x.top))).size > 1) bad.push(m[0]); } } }
+        const over = [...document.querySelectorAll('.glass__tile')].filter((t) => { const a = t.querySelector('.glass__txt a'); return a && (a.getBoundingClientRect().right > t.getBoundingClientRect().right - 4 || a.scrollWidth > a.clientWidth + 1); }).map((t) => t.textContent.trim());
+        return { bad: [...new Set(bad)], over }; });
+      r.bad.forEach((x) => split.push(`${w} ${pg} “${x}”`)); r.over.forEach((x) => spill.push(`${w} ${pg} ${x}`)); }
+    await c.close(); }
+  ok('W-words', 'no word in a link, button, heading or menu is split across lines on any page at 320–768 px (hyphen breaks aside)', !split.length, split.slice(0, 8).join(' | '));
+  ok('W-tilefit', 'every product name fits inside its tile on every page at 320–768 px', !spill.length, spill.slice(0, 8).join(' | '));
+}
+
 await browser.close(); srv.kill();
 // CHANGED 2026-11-10: a check can now be NOT_RUN (the film's playback, in a browser without an H.264 decoder). It is counted apart and
 // printed apart, never as a pass: before, `pass` was every result that had not failed.

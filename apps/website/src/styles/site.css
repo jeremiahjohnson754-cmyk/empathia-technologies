@@ -488,7 +488,7 @@ p { text-wrap: pretty; }
   .glass__tile { min-height: 64px; padding: 12px 14px; gap: 10px; }
   .glass__txt small { display: none; }
   .glass__go { display: none; }
-  .glass__txt a { overflow-wrap: anywhere; hyphens: auto; }
+  .glass__txt a { overflow-wrap: normal; word-break: normal; hyphens: manual; }   /* 18 Nov first-time-viewer pass: “anywhere” split product names mid-word (ServiceHand·s, Commissioni·ng) */
   .glass__txt a { font-size: 15px; }
   .glass__ico { width: 36px; height: 36px; }
   .strip__items, .strip__items--flow { grid-auto-flow: row; grid-template-columns: 1fr; }
@@ -809,3 +809,19 @@ p { text-wrap: pretty; }
 .shot--exp { margin: 18px 0 10px; }
 .shot--exp .shot__frame img { width: 100%; height: auto; display: block; }
 .exp-line { max-width: var(--max, 1180px); margin: 0 auto 8px; padding: 0 24px; font-weight: 600; }
+
+/* 18 Nov first-time-viewer pass (phone): the home hero stacked the nine-stage evidence line as a 900 px ladder and the product rail
+   broke names inside words. Every stage and every product stays; the ladder becomes two columns and narrow tiles put the icon above the
+   name so whole words fit. */
+@media (max-width: 720px) {
+  .hero .eline { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; row-gap: 0; padding: 18px 16px 2px; }
+  .hero .eline::before { display: none; }
+  .hero .eline__stop { grid-template-columns: 12px minmax(0, 1fr); column-gap: 10px; padding: 0 0 16px; }
+  .hero .eline__dot { width: 12px; height: 12px; margin-top: 3px; }
+  .hero .eline__stop b { margin-top: 0; font-size: 15px; }
+  .hero .eline__adds { font-size: 13px; min-height: 0; }
+}
+@media (max-width: 430px) and (min-width: 381px) {
+  .glass__tile { flex-direction: column; align-items: flex-start; gap: 8px; min-height: 0; }
+  .glass__ico { width: 32px; height: 32px; }
+}

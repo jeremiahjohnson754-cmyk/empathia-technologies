@@ -76,6 +76,21 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **Fix:** the scroll is written onto the new history entry at once. Both events read the entry's own state.
 - **Regression test:** `demo-return-trail` RT-*-04, -07 and -08.
 
+### D18-07 · P2 · Fixed (founder 13:53: "fix that commissioning and assurance button … that so bugs me")
+- **Product and viewport:** corporate site product tiles, at 390 and 412 px.
+- **What was wrong:** product names split inside words: "ServiceHand·s" and "Commissioni·ng & Assurance".
+- **Root cause:** `.glass__txt a { overflow-wrap: anywhere }` allowed a break anywhere in a word.
+- **Fix:** names now break only between words. On 381–430 px tiles the icon sits above the name, so whole words fit.
+- **Regression tests (website):**
+  - W-words: no word of four or more letters is split, in any link, button, heading or menu item, on any page at 320–768 px. It failed before the fix and passes after.
+  - W-tilefit: every name fits inside its tile.
+
+### D18-08 · P3 · Fixed
+- **Product and viewport:** corporate home hero, phone.
+- **What was wrong:** the nine-stage evidence ladder stacked to about 900 px. Its stages and the product rail repeat later sections, and the hero ran to 2,476 px (about three screens).
+- **Fix:** on phones the ladder shows in two columns. Every stage and product stays. The hero is now 2,220 px.
+- **Regression test:** visual check plus W-words and W-tilefit. A height budget is still to be set in the mobile design system (#226).
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220
