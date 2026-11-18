@@ -198,8 +198,9 @@ async function seedScenario(pool: PgPool, router: Router, tenantId: string, peop
       if (d.cat === 'chairs') await invoke(router, designer, 'PATCH', `${D}/${d.id}`, seatAt(seat++));
       else if (FLAGSHIP_MODEL.heights[d.cat] != null) await invoke(router, designer, 'PATCH', `${D}/${d.id}`, { z: FLAGSHIP_MODEL.heights[d.cat] });
     }
-    for (; seat < SEAT_ROWS * SEAT_X.length; seat++) await invoke(router, designer, 'POST', D, { category: 'chairs', ...seatAt(seat) });
-    for (const d of FLAGSHIP_MODEL.add) await invoke(router, designer, 'POST', D, d);
+    // the rest in one request: each added as a single add would add it, the room analysed once (a sandbox opened in 24.5 s on staging)
+    const rest: Add[] = []; for (; seat < SEAT_ROWS * SEAT_X.length; seat++) rest.push({ category: 'chairs', ...seatAt(seat) } as Add);
+    await invoke(router, designer, 'POST', `${D}/batch`, { devices: [...rest, ...FLAGSHIP_MODEL.add] });
   }
   // what DESIGN_APPROVED approves is the latest saved revision: the theatre's equipment and seating are saved as revision 2 by its designer
   await invoke(router, designer, 'POST', `/v1/rooms/${hall}/revisions`, { reason: 'the theatre\u2019s own equipment and seating (synthetic)' });

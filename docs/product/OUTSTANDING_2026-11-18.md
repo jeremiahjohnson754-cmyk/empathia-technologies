@@ -117,7 +117,9 @@ What is thin or simulated there, each stated on the page or in ADR-0014:
 1b. **Sandbox opening time on staging (24.5 s)**: the scenario is about 120 API requests in-process, each its own transaction and
    audit row, on 0.5 CPU. Measure where the time goes on the staged instance, then shorten it without skipping a rule (one
    transaction per room, or the scenario seeded by the same routes in batches). Not a reason to buy a larger plan without the
-   founder's word.
+   founder's word. **First step taken (18 Nov)**: `POST /v1/rooms/{room}/devices/batch` adds the theatre's 55 seating blocks and
+   devices in one transaction, each exactly as a single add, the room analysed once (FM-06); locally a sandbox now opens in 1.3 to
+   1.7 s (was 1.8 to 3.0). The staging figure is measured when that commit is staged.
 1a. The ServiceHands pages of the demonstration still keep their records in the browser: move them to the server's work orders
     and incidents (the room page already reads and writes both: FL-24…25, FL-34…36).
 2. V3.9 rules not modelled (task 199): Pass with Exception and the exception record with its measured value; the Documentation and

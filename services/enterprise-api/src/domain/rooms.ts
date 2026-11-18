@@ -272,6 +272,33 @@ export async function addDevice(ctx: RequestContext, ref: string, body: { catego
   });
 }
 
+/**
+ * Add several planned devices in one transaction (founder, 18 Nov: the sandbox took 24.5 s to open on staging, most of it one full
+ * analysis per added device). Each device is added exactly as addDevice adds it, in order, with the same checks; the room is analysed
+ * once, at the end. All or nothing: one refused device refuses the batch.
+ */
+export async function addDevices(ctx: RequestContext, ref: string, body: { devices: Array<{ category: string; x?: number; y?: number; z?: number; mount?: string; rot?: number }> }) {
+  await ctx.require('room.design', 'add devices', { type: 'Room', id: ref });
+  const items = Array.isArray(body.devices) ? body.devices : [];
+  if (!items.length || items.length > 60) throw invalid('devices is a list of 1 to 60 devices');
+  for (const d of items) if (!C.categories[d.category]) throw invalid(`unknown equipment category ${d.category}`);
+  return ctx.tx(async (q) => {
+    const room = await findRoom(ctx, q, ref, true); await designEdit(q, room, 'add-device');
+    const b = { w: Math.max(...room.geometry.points.map((p) => p[0])), l: Math.max(...room.geometry.points.map((p) => p[1])) };
+    const added: Array<{ assetId: string; label: string }> = [];
+    for (const d of items) {
+      const L = await load(ctx, q, room.id); const code = await nextCode(q, 'asset', 'PA-');
+      const dev = newDevice(code, d.category, L.input.devices, { x: d.x ?? b.w / 2, y: d.y ?? b.l / 2, ...(d.z != null ? { z: heightIn(room, d.z) } : {}), ...(d.mount ? { mount: d.mount } : {}), ...(d.rot != null ? { rot: d.rot } : {}) }, 'added', C);
+      await insertDevice(ctx, q, room, dev); await proposeFor(ctx, q, room, code);
+      const rev = await bump(q, room);
+      await ctx.emit(q, 'room.device_added', { type: 'Room', id: room.code, rev }, { designId: room.code, assetId: code, category: d.category });
+      added.push({ assetId: code, label: dev.label });
+    }
+    const s = await analyze(ctx, q, room.id, `${added.length} devices added (${added[0]!.assetId}…${added[added.length - 1]!.assetId})`);
+    return { added, ...s };
+  });
+}
+
 export async function changeDevice(ctx: RequestContext, ref: string, assetCode: string, body: { x?: number; y?: number; z?: number; mount?: string; rot?: number; model?: string; expectedInstallation?: string; asset?: string }) {
   await ctx.require('room.design', 'change a device', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {

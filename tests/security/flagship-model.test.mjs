@@ -11,6 +11,7 @@
 //          kinds, the register lists every device, and a sandbox still opens well inside its limits
 //   FM-04  a height is part of where a device is: between the floor and the ceiling or refused; changing it is a move, under the
 //          same rule as any move (a draft only), and by the designer only
+//   FM-06  devices added in one request (POST …/devices/batch) are added as one at a time would add them, all or nothing, by the designer
 //   FM-05  the room view gives each position its footprint from the server's catalogue, so a page draws furniture as large as it is
 import test, { before, after } from 'node:test'; import assert from 'node:assert/strict';
 import { setup, client } from '../integration/harness.mjs';
@@ -118,4 +119,17 @@ test('FM-05 each position carries its footprint from the server’s catalogue', 
   assert.ok(hall.devices.every((d) => d.footprint && d.footprint.w > 0 && d.footprint.d > 0), 'every position has one');
   // the rows do not overlap one another at that size
   const seats = hall.devices.filter((d) => d.cat === 'chairs'); for (const a of seats) for (const b of seats) if (a.id < b.id) assert.ok(Math.abs(a.x - b.x) >= 2.4 || Math.abs(a.y - b.y) >= 1, `${a.id} and ${b.id} do not overlap`);
+});
+
+test('FM-06 devices added in one request are added exactly as one at a time, all or nothing, by the designer only', async () => {
+  const mk = await call(T.designer, 'POST', '/v1/rooms', { body: { name: 'Batch check huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 4 } }); assert.equal(mk.status, 201, J(mk.body)); const D = `/v1/rooms/${mk.body.code}`;
+  const n0 = (await call(T.designer, 'GET', D)).body.devices.length;
+  assert.equal((await call(T.installer, 'POST', `${D}/devices/batch`, { body: { devices: [{ category: 'speaker', x: 1, y: 1 }] } })).status, 403);
+  const tooHigh = await call(T.designer, 'POST', `${D}/devices/batch`, { body: { devices: [{ category: 'speaker', x: 1, y: 1 }, { category: 'speaker', x: 2, y: 1, z: 29 }] } }); assert.ok([400, 422].includes(tooHigh.status), J(tooHigh.body));
+  const unknown = await call(T.designer, 'POST', `${D}/devices/batch`, { body: { devices: [{ category: 'speaker', x: 1, y: 1 }, { category: 'teleporter', x: 2, y: 1 }] } }); assert.ok([400, 422].includes(unknown.status), J(unknown.body));
+  assert.equal((await call(T.designer, 'GET', D)).body.devices.length, n0, 'a refused batch adds nothing');
+  const ok = await call(T.designer, 'POST', `${D}/devices/batch`, { body: { devices: [{ category: 'speaker', x: 1, y: 1, z: 2.4 }, { category: 'amp', x: 0.5, y: 0.5 }] } }); assert.equal(ok.status, 201, J(ok.body));
+  const room = (await call(T.designer, 'GET', D)).body; assert.equal(room.devices.length, n0 + 2); assert.deepEqual(ok.body.added.map((x) => /^PA-\d{4,}$/.test(x.assetId)), [true, true]);
+  const spk = room.devices.find((d) => d.id === ok.body.added[0].assetId); assert.equal(spk.z, 2.4);
+  assert.ok(room.connections.some((k) => (k.from === ok.body.added[1].assetId && k.to === spk.id) || (k.to === ok.body.added[1].assetId && k.from === spk.id)), 'connections proposed as for a single add');
 });

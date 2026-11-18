@@ -1547,6 +1547,157 @@
         }
       }
     },
+    "/v1/rooms/{room}/devices/batch": {
+      "post": {
+        "tags": [
+          "devices"
+        ],
+        "summary": "Add 1 to 60 planned devices in one transaction: each exactly as a single add (canonical id, connections proposed, height between floor and ceiling), the room analysed once at the end; all or nothing",
+        "operationId": "postV1RoomsRoomDevicesBatch",
+        "x-authority": "room.design",
+        "x-authority-enforced": [
+          "room.design"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "devices"
+                ],
+                "properties": {
+                  "devices": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 60,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "category"
+                      ],
+                      "properties": {
+                        "category": {
+                          "type": "string",
+                          "maxLength": 20
+                        },
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        },
+                        "z": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 30
+                        },
+                        "mount": {
+                          "type": "string",
+                          "enum": [
+                            "wall",
+                            "ceiling",
+                            "floor",
+                            "table",
+                            "rack"
+                          ]
+                        },
+                        "rot": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "asset ids"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/rooms/{room}/devices": {
       "post": {
         "tags": [
