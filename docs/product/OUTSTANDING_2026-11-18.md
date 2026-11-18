@@ -34,8 +34,8 @@ This replaces `OUTSTANDING_2026-11-17.md` as the current list. Everything named 
 
 ## The flagship room: what is true of it now
 
-Lecture Theatre SCI-110 (`#/flagship`, connected builds only). One browser suite, `demo-flagship` FL-01…31, walks the whole of
-it and checks every step against the server: 31 passed, 0 failed in light and in dark. Open the room; drag the camera; submit;
+Lecture Theatre SCI-110 (`#/flagship`, connected builds only). One browser suite, `demo-flagship` FL-01…32, walks the whole of
+it and checks every step against the server: 32 passed, 0 failed in light and in dark. Open the room; drag the camera; submit;
 refused to its recorder; approved by someone else; register; start commissioning; measure reverberation at the bench; PASS refused
 on a value over the limit; FAIL and its deficiency; work order; Search Party; assignment; preflight; field evidence; verification;
 closing; correction; a retest that is a new measurement; handover documents; the remaining checks; verification; the acceptance
@@ -50,7 +50,9 @@ What is thin or simulated there, each stated on the page or in ADR-0014:
   checks arithmetic and provenance, not that a file was recorded in the room. The other four measured tests are still recorded as sent.
 - A note stands in for each handover document; the 71 other checks are recorded on one synthetic observation note.
 - The room's design is nine device positions for 180 seats (the auditorium template).
-- The sandbox has one technician: Search Party's answer is one person who passes; nobody is shown failing a gate.
+- The sandbox has two technicians (ADR-0017, ST-01…07, FL-32): the second is refused by the gates until the data steward verifies a
+  credential the service manager recorded, and a job is refused to whichever of them it was not assigned to. Two is still a small
+  pool: nobody is a vendor, on leave, out of capacity or without site access.
 - Only reverberation has a bench. Four other measured tests have metrics defined and no criterion, no bench.
 - The corrective work for excess reverberation is recorded as a general field job (the server's "break fix"); the work-type list has
   no acoustic treatment.

@@ -26,6 +26,9 @@ import { log } from '../log.js';
 
 /** The people a sandbox holds, one per role. Never the architect ("*"), the founder or the security administrator (the database refuses them too). */
 export const SANDBOX_ROLES = ['requestor', 'opslead', 'syseng', 'exec', 'finance', 'designer', 'dsp_eng', 'video_eng', 'control_eng', 'svcmgr', 'service', 'installer', 'cxeng', 'qa_reviewer', 'steward'];
+/** The people a sandbox opens with: one for each role, and a second service technician (0041). The technician is the only role that
+ *  holds work.accept, so with one of them the service pool had one member and nothing about assignment could be refused to anybody. */
+export const SANDBOX_PEOPLE = [...SANDBOX_ROLES, 'service'];
 export const NOTICE = 'A demonstration sandbox: every person, room, device and record in it is synthetic. It is yours alone until it expires or you reset it; nothing in it reaches a real organization, and nothing typed into it should be personal or confidential.';
 
 export interface DemoDeps { pool: PgPool; tokens: Hs256Tokens | null; cfg: Config['demo'] }
@@ -55,9 +58,10 @@ export async function assertBudget(pool: PgPool, tenantId: string, kind: 'read' 
 }
 
 const personas = (pool: PgPool, tenantId: string): Promise<Persona[]> => pool.tx({ tenantId }, async (q) =>
-  (await q.query<Persona>('SELECT m.person_id, m.role_key, p.display_name FROM app.membership m JOIN app.person p ON p.id = m.person_id WHERE m.revoked_at IS NULL AND NOT p.disabled ORDER BY m.role_key')).rows);
+  (await q.query<Persona>('SELECT m.person_id, m.role_key, p.display_name FROM app.membership m JOIN app.person p ON p.id = m.person_id WHERE m.revoked_at IS NULL AND NOT p.disabled ORDER BY m.role_key, length(p.email), p.email')).rows);   // within a role: the first person, then -2 (0041)
 // the ids are the sandbox's own synthetic people: a session needs one to assign a job or lend an authority to a colleague
-const describe = (ps: Persona[]) => ps.map((p) => ({ role: p.role_key, name: p.display_name, id: p.person_id }));
+// seat: which person of that role, from 1. A session names a role and, where the role has more than one person, a seat.
+const describe = (ps: Persona[]) => ps.map((p, i) => ({ role: p.role_key, name: p.display_name, id: p.person_id, seat: ps.slice(0, i).filter((x) => x.role_key === p.role_key).length + 1 }));
 
 /** Whether a connected demonstration is on offer here, and how full it is. No sandbox data. */
 export async function status(d: DemoDeps) {
@@ -117,6 +121,16 @@ async function seedScenario(pool: PgPool, router: Router, tenantId: string, peop
     const rec = await invoke(router, svcmgr, 'POST', '/v1/competencies', { personId: tech.person_id, competency, source: 'EXTERNAL_CERTIFICATE', issuer: 'Synthetic Credentialing Body', reference: `SYN-SERVICE-${competency.split('.')[1]!.toUpperCase()}`, issuedOn: day(-365), expiresOn: day(365) });
     await invoke(router, steward, 'POST', `/v1/competencies/${String(rec['id'])}/verify`, { note: 'checked against the issuer record (synthetic scenario)' });
   }
+  // the second technician (0041): a staff profile like any other, and the field certificate the work needs RECORDED by the service
+  // manager and left unverified. It counts for nothing until someone other than its recorder and its holder verifies it, so the
+  // dispatch gate refuses this person, with that reason, and "assign anyway" is refused. Verifying it is the visitor's to do.
+  const tech2 = people.filter((p) => p.role_key === 'service')[1];
+  if (tech2) {
+    await pool.tx({ tenantId, userId: svcmgr.p.personId }, (q) => q.query(
+      `INSERT INTO app.staff_profile (tenant_id, person_id, internal, building_key, sites, skills, certs, capacity_hours) VALUES ($1,$2,true,'ATL',$3,$4,'{}',24) ON CONFLICT (tenant_id, person_id) DO NOTHING`,
+      [tenantId, tech2.person_id, ['*'], JSON.stringify({ 'SK-SVC-1': { level: 'Working', n: 4 }, 'SK-AUD-1': { level: 'Working', n: 2 } })]));
+    await invoke(router, svcmgr, 'POST', '/v1/competencies', { personId: tech2.person_id, competency: 'cert.av_field', source: 'EXTERNAL_CERTIFICATE', issuer: 'Synthetic Credentialing Body', reference: 'SYN-SERVICE2-AV_FIELD', issuedOn: day(-30), expiresOn: day(700) });
+  }
   // the flagship room: its campus and building first (the sandbox's own records, written as its designer), then the room by the same routes
   await pool.tx({ tenantId, userId: designer.p.personId }, async (q) => {
     const site = (await q.query<{ id: string }>('INSERT INTO app.site (tenant_id, code, name) VALUES ($1,$2,$3) RETURNING id', [tenantId, FLAGSHIP.site.code, FLAGSHIP.site.name])).rows[0]!.id;
@@ -144,7 +158,7 @@ export async function open(d: DemoDeps, router: Router, remote: string, correlat
   const key = crypto.randomBytes(32).toString('base64url');
   let sb: Sandbox;
   try {
-    sb = (await d.pool.query<Sandbox>('SELECT * FROM app.demo_open_sandbox($1, $2, $3, $4, $5)', [sha(key), sha(`${d.cfg.remoteSalt}\n${remote}`), SANDBOX_ROLES, replace?.sandboxId ?? null, replace ? sha(replace.key) : null])).rows[0]!;
+    sb = (await d.pool.query<Sandbox>('SELECT * FROM app.demo_open_sandbox($1, $2, $3, $4, $5)', [sha(key), sha(`${d.cfg.remoteSalt}\n${remote}`), SANDBOX_PEOPLE, replace?.sandboxId ?? null, replace ? sha(replace.key) : null])).rows[0]!;
   } catch (e) {
     const code = (e as { code?: string }).code;
     if (code === 'EM012') throw new ApiError('not_found', 'demonstration sandboxes are not enabled for this database');
@@ -174,12 +188,13 @@ async function byKey(d: DemoDeps, sandboxId: string, key: string): Promise<Sandb
 }
 
 /** A session as one person of the sandbox the key opens: how a visitor comes back, and how they change role. */
-export async function signIn(d: DemoDeps, body: { sandboxId: string; key: string; role: string }) {
+export async function signIn(d: DemoDeps, body: { sandboxId: string; key: string; role: string; seat?: number }) {
   if (!d.cfg || !d.tokens) throw off();
   const sb = await byKey(d, body.sandboxId, body.key);
   const people = await personas(d.pool, sb.tenant_id);
-  const who = people.find((p) => p.role_key === body.role);
-  if (!who) throw invalid(`this sandbox has no ${body.role}: choose one of ${people.map((p) => p.role_key).join(', ')}`);
+  const ofRole = people.filter((p) => p.role_key === body.role); const who = ofRole[(body.seat ?? 1) - 1];
+  if (!ofRole.length) throw invalid(`this sandbox has no ${body.role}: choose one of ${[...new Set(people.map((p) => p.role_key))].join(', ')}`);
+  if (!who) throw invalid(`this sandbox has ${ofRole.length} ${body.role}: seat ${body.seat} is not one of them`);
   return { ...session(d, sb, who), sandbox: { id: sb.sandbox_id, tenant: sb.tenant_slug, expiresAt: sb.expires_at } };
 }
 

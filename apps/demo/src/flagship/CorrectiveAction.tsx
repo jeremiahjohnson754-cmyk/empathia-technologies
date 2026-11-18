@@ -18,6 +18,8 @@ export interface Issue { code: string; title: string; state: string; workflow: s
 export interface Deficiency { issueId: string; state: string; workflow: string; severity: string; ownerRole: string | null; targetDate: string | null; rootCause: string | null; correctiveAction: string | null; fixedBy: string | null;
   retest: { result: string; evidence: string } | null; closedBy: string | null; rootCauses?: string[] }
 interface Cand { id: string; name: string; hardFails: string[]; reasons: string[]; score: number }
+/** A credential as the server lists it to whoever is asking: everyone's for those who record or verify them, one's own otherwise. */
+export interface Cred { id: string; person: { id: string; name: string }; label: string; state: string; countsForDispatch: boolean; recordedBy: string; decidedBy: string | null }
 export interface WorkOrder { code: string; state: string; workType: string | null; severity: string | null; sla: { respond: string; restore: string } | null; assignee: { id: string; name: string } | null; triage: { scope?: string; risk?: string } | null;
   preflight: { ok: boolean; checks: Array<{ id: string; ok: boolean; label?: string; detail?: string }> } | null; evidenceCount: number; evidence: Array<{ kind: string; note: string }>; verification: { outcome: string } | null;
   customerPolicy: { needsCustomerConfirmation: boolean; confirmed: boolean }; need: { certs: string[]; experience: Record<string, string>; tools: string[]; parts: string[] };
@@ -39,7 +41,7 @@ function Step({ id, n, title, who, state, children }: { id: string; n: number; t
     <div><b>{title}</b> <span className="ui-muted">· {who}</span>{state === 'done' ? <span className="ui-visually-hidden"> (done)</span> : null}<div className="ca__body">{children}</div></div></li>;
 }
 
-export function CorrectiveAction({ issue, def, wo, t }: { issue: Issue; def: Deficiency | null; wo: WorkOrder | null; t: Tools }) {
+export function CorrectiveAction({ issue, def, wo, creds, t }: { issue: Issue; def: Deficiency | null; wo: WorkOrder | null; creds: Cred[]; t: Tools }) {
   const [severity, setSeverity] = useState('High'); const [workType, setWorkType] = useState(''); const [scope, setScope] = useState('Fit absorptive panels to the rear wall, within the AV package (synthetic)'); const [risk, setRisk] = useState('The room is in commissioning; acceptance waits on this (synthetic)');
   const [asked, setAsked] = useState<Qualified | null>(null); const [safety, setSafety] = useState(false); const [tools, setTools] = useState(false); const [access, setAccess] = useState('');
   const [evNote, setEvNote] = useState('Panels fitted to the rear wall; photographs taken (synthetic)'); const [confirmed, setConfirmed] = useState(false);
@@ -84,6 +86,7 @@ export function CorrectiveAction({ issue, def, wo, t }: { issue: Issue; def: Def
             </> : wo?.assignee ? <span data-testid="fl-wo-assignee">Assigned to {wo.assignee.name}.</span> : null}
           </Step>
           <Step id="work" n={4} title="Accept, preflight, do the work, hand over" who="the assigned technician" state={!wo || past(WO_ORDER, 'ASSIGNED', ws) ? 'later' : ['ASSIGNED', 'ACCEPTED', 'IN_PROGRESS'].includes(ws) ? 'now' : 'done'}>
+            {wo?.assignee && ['ASSIGNED', 'ACCEPTED', 'IN_PROGRESS'].includes(ws) ? <p className="ui-meta" data-testid="fl-wo-only">The job is {wo.assignee.name}’s. The server refuses each of these steps to anyone else, another technician included.</p> : null}
             {wo && ws === 'ASSIGNED' ? <p className="build__row">{btn('fl-wo-accept', `Accept the job as the ${t.person}`, () => void go('Accepting…', 'the acceptance', post(`${W}/accept`), { ok: true, title: 'The job is accepted.', text: 'Next is the preflight: the server does not let work start on a failed one.' }))}</p> : null}
             {wo && ws === 'ACCEPTED' ? <>
               <div className="ca__checks"><label><input type="checkbox" checked={safety} data-testid="fl-pf-safety" onChange={(e: { target: { checked: boolean } }) => setSafety(e.target.checked)} /> Safety brief given</label>
@@ -110,6 +113,12 @@ export function CorrectiveAction({ issue, def, wo, t }: { issue: Issue; def: Def
             {wo && ws === 'CLOSED' ? <span>Verified and closed.</span> : null}
           </Step>
         </ol>
+        {wo && creds.length ? <div className="ca__creds" data-testid="fl-creds" data-pending={creds.filter((k) => k.state === 'PENDING_VERIFICATION').length}>
+          <h5 className="fl__h4">Credentials the gates read</h5>
+          <ul className="fl__list">{creds.map((k) => <li key={k.id} data-cred={k.id} data-state={k.state} data-person={k.person.id}><span><b>{k.person.name}</b>: {k.label} <Tag tone={k.countsForDispatch ? 'ok' : 'warn'}>{k.countsForDispatch ? 'verified: counts' : k.state === 'PENDING_VERIFICATION' ? 'recorded, not verified: counts for nothing' : words(k.state)}</Tag> <span className="ui-muted">recorded by {k.recordedBy}{k.decidedBy ? `, decided by ${k.decidedBy}` : ''}</span></span>
+            {k.state === 'PENDING_VERIFICATION' ? btn('fl-cred-verify', `Verify it as the ${t.person}`, () => void go('Asking the server to verify the credential…', 'the verification of the credential', post(`/v1/competencies/${k.id}/verify`, { note: 'checked against the issuer record (synthetic)' }), { ok: true, title: 'The credential is verified.', text: 'It counts in the gates from now. Whoever may assign sees the candidates again with it.' }), false) : null}</li>)}</ul>
+          <p className="ui-meta">As the {t.person} you are shown {creds.length === 1 ? 'this one' : `these ${creds.length}`}: credentials are personal records, and only those who record or verify them see everyone’s. A credential counts once someone who neither recorded it nor holds it has verified it.</p>
+        </div> : null}
       </div>
       <div className="ca__col">
         <h4 className="fl__h4">The deficiency’s own record <Tag tone={dw === 'CLOSED' ? 'ok' : 'warn'}>{words(dw)}</Tag></h4>

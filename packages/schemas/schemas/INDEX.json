@@ -526,7 +526,7 @@
     {
       "file": "api/postV1DemoSessions.json",
       "$id": "https://schemas.empathia.invalid/api/postV1DemoSessions/0.1.0.json",
-      "sha256": "8fab5cf473272b7e271b7b81e7253f17fe5e8b9019f71519c1b5966c032f3628"
+      "sha256": "b556032d2bca5d40d22abe0530fec034c18de48ab631ab6619dbc8266f0b4043"
     },
     {
       "file": "api/postV1DemoSandboxesReset.json",

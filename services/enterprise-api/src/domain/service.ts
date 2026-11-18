@@ -5,7 +5,7 @@
  * work-order event, the audit record and the contract-validated domain event — in one transaction. Site scope reaches a
  * work order only through its room (RT-02). Closing a work order never passes a commissioning test.
  */
-import { SERVICE_TRANSITIONS, WORK_NEEDS, SLA, candidates as rankCandidates, preflight as runPreflight, serviceBlockers, type ServiceState, type Staff, type ServiceFacts, type Candidate } from '@empathia/service-engine';
+import { CERTS, SERVICE_TRANSITIONS, WORK_NEEDS, SLA, candidates as rankCandidates, preflight as runPreflight, serviceBlockers, type ServiceState, type Staff, type ServiceFacts, type Candidate } from '@empathia/service-engine';
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { invalid, notFound } from '../http/errors.js';
@@ -63,7 +63,7 @@ async function step(ctx: RequestContext, q: Queryable, w: WorkOrderRow, to: Serv
 }
 
 /** The staff pool the hard gates read: everyone in the tenant who may accept work, with a profile; without one they are ineligible for a stated reason. */
-async function pool(ctx: RequestContext, q: Queryable): Promise<Array<Staff & { profiled: boolean }>> {
+async function pool(ctx: RequestContext, q: Queryable): Promise<Array<Staff & { profiled: boolean; pending: Array<{ id: string; competency: string }> }>> {
   const rows = (await q.query<{ person_id: string; display_name: string; internal: boolean | null; org_name: string | null; building_key: string | null; sites: string[] | null; skills: Staff['skills'] | null; leave_from: string | null; leave_to: string | null; capacity_hours: number | null; agreement: Staff['agreement'] | null; open_jobs: number }>(
     `SELECT DISTINCT ON (m.person_id) m.person_id, p.display_name, s.internal, s.org_name, s.building_key, s.sites, s.skills, s.leave_from::text, s.leave_to::text, s.capacity_hours, s.agreement,
             (SELECT count(*) FROM app.work_order w WHERE w.assigned_to = m.person_id AND w.state IN ('ASSIGNED','ACCEPTED','IN_PROGRESS','VERIFYING')) AS open_jobs
@@ -71,17 +71,26 @@ async function pool(ctx: RequestContext, q: Queryable): Promise<Array<Staff & { 
       WHERE 'work.accept' = ANY(r.authorities) AND NOT p.disabled ORDER BY m.person_id`)).rows;
   // ADR-0009: certifications come only from verified competency records (independent verifier, not revoked); staff_profile.certs is not read
   const certs = await verifiedCerts(q, rows.map((x) => x.person_id));
+  // a credential that is recorded and not yet verified counts for nothing (ADR-0009); it is read here only so that the gate can say so,
+  // and so that whoever may verify it can find it from the candidate it is holding back
+  const waiting = new Map<string, Array<{ id: string; competency: string }>>();
+  for (const r of (await q.query<{ id: string; person_id: string; competency: string }>("SELECT id, person_id, competency FROM app.competency_record WHERE state = 'PENDING_VERIFICATION' AND person_id = ANY($1::uuid[]) ORDER BY recorded_at", [rows.map((x) => x.person_id)])).rows) waiting.set(r.person_id, [...(waiting.get(r.person_id) || []), { id: r.id, competency: r.competency }]);
   return rows.map((x) => ({ id: x.person_id, name: x.display_name, internal: x.internal ?? true, orgName: x.org_name || undefined, buildingKey: x.building_key, sites: x.sites || [], skills: x.skills || {}, certs: certs.get(x.person_id) || {},
-    leave: x.leave_from ? { from: x.leave_from, to: x.leave_to || x.leave_from } : null, capacity: { remaining: Math.max(0, (x.capacity_hours ?? 0) - Number(x.open_jobs) * 4) }, agreement: x.agreement || null, profiled: !!x.sites } as Staff & { profiled: boolean }));
+    leave: x.leave_from ? { from: x.leave_from, to: x.leave_to || x.leave_from } : null, capacity: { remaining: Math.max(0, (x.capacity_hours ?? 0) - Number(x.open_jobs) * 4) }, agreement: x.agreement || null, profiled: !!x.sites, pending: waiting.get(x.person_id) || [] } as Staff & { profiled: boolean; pending: Array<{ id: string; competency: string }> }));
 }
 
-function rank(ctx: RequestContext, staff: Array<Staff & { profiled: boolean }>, w: WorkOrderRow) {
+function rank(ctx: RequestContext, staff: Array<Staff & { profiled: boolean; pending: Array<{ id: string; competency: string }> }>, w: WorkOrderRow) {
   const today = new Date().toISOString().slice(0, 10);
   const out = rankCandidates(staff, { workType: w.work_type, scope: { roomId: w.room_code, buildingKey: w.building_key }, window: w.window_from ? { from: w.window_from, to: w.window_to || w.window_from } : null, excludeIds: [w.created_by] }, today);
   // a person without a staff profile fails on the facts, and the reason says so rather than hiding behind the gates
   const noProfile = new Set(staff.filter((s) => !s.profiled).map((s) => s.id));
   const mark = (c: Candidate) => (noProfile.has(c.id) ? { ...c, hardOk: false, hardFails: ['no staff profile on record (certifications, sites and capacity unknown)', ...c.hardFails] } : c);
-  return { need: out.need, eligible: out.eligible.filter((c) => !noProfile.has(c.id)), ineligible: [...out.ineligible.map(mark), ...out.eligible.filter((c) => noProfile.has(c.id)).map(mark)], none: out.eligible.filter((c) => !noProfile.has(c.id)).length === 0, whyNone: out.whyNone, today };
+  // "not held" is true of a credential nobody has verified, and it is not the whole of it: the record exists and waits for its verifier.
+  // The gate's outcome is the engine's and does not change here; the reason does, and the pending records are named so they can be found.
+  const label = (id: string) => (CERTS as Record<string, { label: string }>)[id]?.label || id;
+  const awaiting = (c: Candidate) => { const p = (staff.find((s) => s.id === c.id)?.pending || []).filter((x) => out.need.certs.includes(x.competency as never)); if (!p.length) return { ...c, pending: [] as Array<{ id: string; competency: string; label: string }> };
+    return { ...c, hardFails: c.hardFails.map((f) => { const hit = p.find((x) => f === `${label(x.competency)}: not held`); return hit ? `${label(hit.competency)}: recorded, not yet verified by someone other than its recorder and its holder (it counts for nothing until then)` : f; }), pending: p.map((x) => ({ ...x, label: label(x.competency) })) }; };
+  return { need: out.need, eligible: out.eligible.filter((c) => !noProfile.has(c.id)), ineligible: [...out.ineligible.map(mark), ...out.eligible.filter((c) => noProfile.has(c.id)).map(mark)].map(awaiting), none: out.eligible.filter((c) => !noProfile.has(c.id)).length === 0, whyNone: out.whyNone, today };
 }
 
 export const RECURRENCE_WINDOW_DAYS = 90;

@@ -45,8 +45,9 @@ finds out by asking. `tests/browser/demo-connected.test.mjs` CN-14…16.
 
 ## What a visitor does
 
-1. Opens `#/connected` and presses **Open my sandbox**. The server creates a synthetic organization for that visitor: fifteen people
-   (one per role), one site, one building, and a huddle room that has been designed, approved and installed by four of those people.
+1. Opens `#/connected` and presses **Open my sandbox**. The server creates a synthetic organization for that visitor: sixteen people
+   (one for each of the fifteen roles and, since 18 Nov 2026, a second service technician whose field certificate is recorded and not
+   yet verified), one site, one building, and a huddle room that has been designed, approved and installed by four of those people.
 2. Takes the room through nineteen steps. Each is made as the person whose work it is:
 
    | Step | Person |

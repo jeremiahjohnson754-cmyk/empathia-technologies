@@ -9,7 +9,7 @@
  *   SM-01  /health: the service is up in demonstration mode, on a named release, with its database reachable
  *   SM-02  sandboxes are on offer
  *   SM-03  nothing but the demonstration is served: no development sign-in, no public forms; no token and a made-up token get 401
- *   SM-04  a sandbox opens with a key, fifteen synthetic people and two installed rooms (the scenario room and the flagship lecture
+ *   SM-04  a sandbox opens with a key, sixteen synthetic people and two installed rooms (the scenario room and the flagship lecture
  *          theatre, UNI-SCI-110); its first session is the installer's
  *   SM-05  correct permissions: the installer records a mounting and a field move; the systems engineer approves the move
  *   SM-06  attempted unauthorized access by role: the designer cannot record a mounting, the installer cannot approve their own move
@@ -54,9 +54,11 @@ try {
   ok('SM-03', 'nothing but the demonstration is served; no token and a made-up token get 401', dev.status === 404 && leads.status === 404 && none.status === 401 && junk.status === 401, `sign-in ${dev.status} · public form ${leads.status} · no token ${none.status} · made-up token ${why(junk)}`);
 
   step = 'SM-04'; const A = await open(); const me = await call('GET', '/v1/me', { token: A.first }); const cur = await call('GET', '/v1/demo/sandbox', { token: A.first });
+  // 18 Nov 2026 (migration 0041): sixteen people, not fifteen — one for each of the fifteen roles and a second service technician, so
+  // that the dispatch gates and the assignment have somebody to refuse. A deployment still on 0040 or earlier opens fifteen and fails here.
   // 17 Nov 2026 (50/10 flagship): a sandbox opens with two rooms, the scenario room and the lecture theatre UNI-SCI-110, which is reached by that identifier
   const hall = await call('GET', '/v1/rooms/UNI-SCI-110', { token: A.first });
-  ok('SM-04', 'a sandbox opens with a key, fifteen synthetic people and two installed rooms, one of them the flagship lecture theatre by its canonical identifier; its first session is the installer’s', /^[A-Za-z0-9_-]{43}$/.test(A.key) && /^sbx-[0-9a-f]{16}$/.test(A.tenant) && A.personas.length === 15 && me.body?.role === 'installer' && me.body?.tenant === A.tenant
+  ok('SM-04', 'a sandbox opens with a key, sixteen synthetic people and two installed rooms, one of them the flagship lecture theatre by its canonical identifier; its first session is the installer’s', /^[A-Za-z0-9_-]{43}$/.test(A.key) && /^sbx-[0-9a-f]{16}$/.test(A.tenant) && A.personas.length === 16 && A.personas.filter((x) => x.role === 'service').length === 2 && me.body?.role === 'installer' && me.body?.tenant === A.tenant
     && cur.body?.rooms?.length === 2 && cur.body.rooms.every((r) => r.lifecycle === 'INSTALLED_UNVERIFIED') && hall.body?.room?.canonicalRef === 'UNI-SCI-110' && hall.body.room.code === cur.body.rooms[1].code, `${A.tenant} · ${A.personas.length} people · ${(cur.body?.rooms || []).map((r) => `${r.code} ${r.lifecycle}`).join(', ')} · UNI-SCI-110 is ${hall.body?.room?.code}`);
 
   step = 'SM-05'; const T = {}; for (const r of ['installer', 'syseng', 'designer', 'requestor', 'cxeng', 'exec']) T[r] = await as(A, r);

@@ -69,7 +69,8 @@ test('DS-02 a sandbox opens with its scenario; the key is shown once and stored 
   assert.match(A.key, /^[A-Za-z0-9_-]{43}$/); assert.match(A.tenant, /^sbx-[0-9a-f]{16}$/); assert.notEqual(A.tenant, B.tenant); assert.notEqual(A.key, B.key);
   assert.equal(h.asSuper(`SELECT key_hash FROM app.demo_sandbox WHERE id = '${A.id}'`), sha(A.key));
   assert.equal(n(`SELECT count(*) FROM app.demo_sandbox WHERE key_hash = '${A.key}' OR remote_hash LIKE '%127.0.0.1%'`), 0, 'neither the key nor the address is stored');
-  assert.equal(A.raw.personas.length, 15); assert.ok(A.raw.personas.every((p) => / \(synthetic\)$/.test(p.name))); assert.match(A.raw.notice, /synthetic/);
+  // 16 since migration 0041 (was 15): one person for each of the fifteen roles, and a second service technician
+  assert.equal(A.raw.personas.length, 16); assert.equal(A.raw.personas.filter((p) => p.role === 'service').length, 2); assert.equal(new Set(A.raw.personas.map((p) => p.role)).size, 15); assert.ok(A.raw.personas.every((p) => / \(synthetic\)$/.test(p.name))); assert.match(A.raw.notice, /synthetic/);
   const me = await call(A.first, 'GET', '/v1/me'); assert.equal(me.status, 200, J(me.body)); assert.deepEqual([me.body.role, me.body.tenant], ['installer', A.tenant]);
   const cur = await call(A.first, 'GET', '/v1/demo/sandbox'); assert.equal(cur.status, 200, J(cur.body));
   // 17 Nov 2026: a sandbox now opens with two rooms, the scenario room and the flagship lecture theatre (50/10 flagship; DS-17)
@@ -99,7 +100,8 @@ test('DS-03 isolation: a sandbox reads and writes its own rows only, and nobody 
   assert.equal((await call(a, 'DELETE', `/v1/rooms/${rb.id}/devices/PA-0001`)).status, 404); assert.equal(n(`SELECT count(*) FROM app.planned_asset WHERE tenant_id = '${tenantOf(B.tenant)}'`), before);
   assert.equal((await call(std.syseng, 'POST', `/v1/rooms/${ra.id}/lifecycle`, { body: { to: 'COMMISSIONING' } })).status, 404, 'a standard session cannot move a sandbox room');
   // people: a sandbox lists its own; the standard tenant's are not there
-  const comp = (await call(await as(A, 'svcmgr'), 'GET', '/v1/competencies')).body; assert.ok(comp.pool.length >= 1 && comp.items.length === 3);
+  const comp = (await call(await as(A, 'svcmgr'), 'GET', '/v1/competencies')).body; // 4 since migration 0041 (was 3): the first technician's three verified credentials, and the second technician's one that is recorded and not verified
+  assert.ok(comp.pool.length >= 1 && comp.items.length === 4 && comp.items.filter((x) => x.state === 'VERIFIED').length === 3 && comp.items.filter((x) => x.state === 'PENDING_VERIFICATION').length === 1, JSON.stringify(comp.items.map((x) => x.state)));
   assert.ok(comp.pool.every((p) => n(`SELECT count(*) FROM app.membership WHERE person_id = '${p.id}' AND tenant_id = '${tenantOf(A.tenant)}'`) === 1));
 });
 

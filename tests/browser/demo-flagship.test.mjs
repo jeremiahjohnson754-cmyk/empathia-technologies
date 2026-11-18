@@ -42,6 +42,9 @@
 //          a second person's browser, phone width
 //   FL-31  the server works the value out itself: the measurement carries the figure the server recomputed from the package; a loaded
 //          response file is analysed on the page, and the sandbox's server refuses to store it, so nothing is recorded from it
+//   FL-32  a second technician whose permissions are tested: listed as failing a gate with the reason (a credential recorded and not
+//          verified); "assign anyway" refused; the service manager who recorded the credential cannot verify it and the data steward
+//          can, after which the gates admit both; the job assigned to the first is refused to the second at acceptance and at the start
 //   node tests/browser/demo-flagship.test.mjs
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
@@ -307,7 +310,7 @@ let failedOn = null;
 const press = async (pg, id) => { await pg.getByTestId(id).click(); return saidOk(pg); };
 const issueOnServer = async () => (await srv('cxeng', '/thread')).stages.find((x) => x.key === 'commissioning').records.issues[0];
 const woOnServer = async (code) => (await api.call('GET', `/v1/work-orders/${code}`, { token: await as('svcmgr') })).body;
-const panel = p.getByTestId('fl-corrective'); let WO = '';
+const panel = p.getByTestId('fl-corrective'); let WO = ''; const second = {};   // FL-32 is checked across the two blocks below
 
 { const notMine = await press(p, 'fl-wo-raise'); const none = (await issueOnServer()).workOrders.length;                       // still the commissioning engineer
   await actAs(p, 'svcmgr'); const raised = await press(p, 'fl-wo-raise'); WO = (await issueOnServer()).workOrders[0];
@@ -315,16 +318,27 @@ const panel = p.getByTestId('fl-corrective'); let WO = '';
   await actAs(p, 'cxeng'); const hidden = await p.getByTestId('fl-candidates-hidden').count(); const cannot = await press(p, 'fl-sp-ask');
   await actAs(p, 'svcmgr'); const asked = await press(p, 'fl-sp-ask'); const answer = (await text(p, 'fl-sp-answer')).replace(/\s+/g, ' ');
   const shown = await p.locator('[data-testid=fl-candidates] li[data-eligible=yes]').evaluateAll((els) => els.map((e) => e.getAttribute('data-person'))); const reasons = await p.locator('[data-testid=fl-candidates] li[data-eligible=yes]').first().innerText();
-  const assigned = await press(p, 'fl-assign'); const after = await woOnServer(WO); await shot(p, 'flagship-assigned');
+  // FL-32, before anybody is assigned: the second technician is in the pool and the gates hold them back, for a stated reason
+  { const techs = (await api.call('GET', '/v1/demo/sandbox', { token: await as('svcmgr') })).body.personas.filter((x) => x.role === 'service'); second.id1 = techs[0].id; second.id2 = techs[1]?.id;
+    const row2 = p.locator(`[data-testid=fl-candidates] li[data-eligible=no][data-person="${second.id2}"]`); second.listed = await row2.count(); second.why = (await row2.innerText()).replace(/\s+/g, ' ');
+    second.anyway = await press(p, 'fl-assign-anyway'); second.stateAfterAnyway = (await woOnServer(WO)).state; second.pendingShown = await p.getByTestId('fl-creds').getAttribute('data-pending');
+    second.byRecorder = await press(p, 'fl-cred-verify');                                                                       // the service manager recorded it
+    await actAs(p, 'service2'); second.own = await p.locator('[data-testid=fl-creds] li').count(); second.hidden2 = await p.getByTestId('fl-candidates-hidden').count(); second.byHolder = await press(p, 'fl-cred-verify');
+    await actAs(p, 'steward'); second.bySteward = await press(p, 'fl-cred-verify'); second.cred = (await api.call('GET', `/v1/competencies?person=${second.id2}`, { token: await as('svcmgr') })).body.items[0];
+    await actAs(p, 'svcmgr'); second.eligibleNow = await p.locator('[data-testid=fl-candidates] li[data-eligible=yes]').evaluateAll((els) => els.map((e) => e.getAttribute('data-person'))); second.ineligibleNow = await p.locator('[data-testid=fl-candidates] li[data-eligible=no]').count(); await shot(p, 'flagship-two-technicians'); }
+  // two people pass now: the first technician's own row is the one pressed
+  await p.locator(`[data-testid=fl-candidates] li[data-person="${w.candidates.eligible[0].id}"]`).getByTestId('fl-assign').click(); const assigned = await saidOk(p); const after = await woOnServer(WO); await shot(p, 'flagship-assigned');
   ok('FL-24', 'the deficiency is handed to ServiceHands by the service manager (the commissioning engineer is refused); triage sets what the job needs; Search Party’s answer and the candidates are the server’s, with their reasons; who may not assign sees no ranking; the person assigned is one the gates admit',
     notMine.ok === 'no' && none === 0 && raised.ok === 'yes' && /^WO-/.test(WO) && triaged.ok === 'yes' && w.state === 'TRIAGED' && w.severity === 'High' && w.need.certs.every((k) => need.includes(k)) && hidden === 1
       && asked.ok === 'yes' && answer.includes(w.candidates.eligible[0].name) && /pass the hard gates/.test(answer) && /calendars are not connected/.test(answer) && JSON.stringify(shown) === JSON.stringify(w.candidates.eligible.map((k) => k.id)) && w.candidates.eligible[0].reasons.every((r) => reasons.includes(r))
       && assigned.ok === 'yes' && after.state === 'ASSIGNED' && after.assignee.id === w.candidates.eligible[0].id && (await text(p, 'fl-wo-assignee')).includes(after.assignee.name),
     `engineer raising: ${notMine.text.slice(0, 60)} · ${WO} ${w.state} ${w.severity}, needs ${w.need.certs.join('+')} · engineer asking Search Party: ${cannot.ok} “${cannot.text.slice(0, 70)}” · ${answer.slice(0, 150)} · ${shown.length} eligible shown of ${w.candidates.eligible.length} · assigned to ${after.assignee?.name} (${after.state})`); }
 
-{ const notTech = await press(p, 'fl-wo-accept'); await actAs(p, 'service'); const accepted = await press(p, 'fl-wo-accept');
+{ const notTech = await press(p, 'fl-wo-accept'); await actAs(p, 'service2'); second.accept = await press(p, 'fl-wo-accept'); second.stateAfterAccept = (await woOnServer(WO)).state; second.only = await text(p, 'fl-wo-only');
+  await actAs(p, 'service'); const accepted = await press(p, 'fl-wo-accept');
   const empty = await press(p, 'fl-wo-preflight'); const pf1 = await p.getByTestId('fl-pf-state').getAttribute('data-ok'); const blocked = await press(p, 'fl-wo-start'); const s1 = (await woOnServer(WO)).state;
   await p.getByTestId('fl-pf-safety').check(); await p.getByTestId('fl-pf-tools').check(); await p.getByTestId('fl-pf-access').fill('facilities desk (synthetic)'); const full = await press(p, 'fl-wo-preflight'); const pf2 = await p.getByTestId('fl-pf-state').getAttribute('data-ok');
+  await actAs(p, 'service2'); second.start = await press(p, 'fl-wo-start'); second.stateAfterStart = (await woOnServer(WO)).state; await actAs(p, 'service');   // the preflight passed, and the job is still not theirs to start
   const started = await press(p, 'fl-wo-start'); const early = await press(p, 'fl-wo-submit'); const s2 = (await woOnServer(WO)).state;
   const ev = await press(p, 'fl-wo-evidence'); const handed = await press(p, 'fl-wo-submit'); const own = await press(p, 'fl-wo-verify'); const s3 = (await woOnServer(WO)).state;
   await actAs(p, 'cxeng'); const verified = await press(p, 'fl-wo-verify'); await actAs(p, 'svcmgr'); const unconfirmed = await press(p, 'fl-wo-close'); const s4 = (await woOnServer(WO)).state;
@@ -332,7 +346,14 @@ const panel = p.getByTestId('fl-corrective'); let WO = '';
   ok('FL-25', 'the technician’s work, each gate held by the server: only the assignee accepts; a failed preflight is recorded and blocks the start; no hand-over without field evidence; the technician cannot verify their own work; closing needs the requester’s confirmation; and a closed job leaves the deficiency open and the test failed',
     notTech.ok === 'no' && accepted.ok === 'yes' && empty.ok === 'yes' && pf1 === 'no' && blocked.ok === 'no' && s1 === 'ACCEPTED' && full.ok === 'yes' && pf2 === 'yes' && started.ok === 'yes' && early.ok === 'no' && s2 === 'IN_PROGRESS' && ev.ok === 'yes' && handed.ok === 'yes'
       && own.ok === 'no' && s3 === 'VERIFYING' && verified.ok === 'yes' && unconfirmed.ok === 'no' && s4 === 'RESOLVED' && closed.ok === 'yes' && w.state === 'CLOSED' && w.evidenceCount === 1 && issue.state === 'OPEN' && /^FAIL/.test(row.result),
-    `manager accepting: ${notTech.text.slice(0, 50)} · empty preflight ${pf1}, start: ${blocked.text.slice(0, 60)} · full preflight ${pf2} · hand-over without evidence: ${early.text.slice(0, 50)} · own verification: ${own.text.slice(0, 50)} · close without confirmation: ${unconfirmed.text.slice(0, 50)} · ${WO} ${w.state}; ${issue.code} ${issue.state}; test ${row.result}`); }
+    `manager accepting: ${notTech.text.slice(0, 50)} · empty preflight ${pf1}, start: ${blocked.text.slice(0, 60)} · full preflight ${pf2} · hand-over without evidence: ${early.text.slice(0, 50)} · own verification: ${own.text.slice(0, 50)} · close without confirmation: ${unconfirmed.text.slice(0, 50)} · ${WO} ${w.state}; ${issue.code} ${issue.state}; test ${row.result}`);
+  ok('FL-32', 'a second technician whose permissions are tested against the server: listed as failing a gate, with the reason; “assign anyway” is refused and nothing is assigned; the credential is not verified by its recorder or its holder, and is by the data steward, after which the gates admit both; the job assigned to the first is refused to the second at acceptance and, with the preflight passed, at the start',
+    !!second.id2 && second.listed === 1 && /fails a gate/.test(second.why) && /recorded, not yet verified by someone other than its recorder and its holder/.test(second.why) && second.anyway.ok === 'no' && /fails a hard gate/.test(second.anyway.text) && second.stateAfterAnyway === 'TRIAGED' && second.pendingShown === '1'
+      && second.byRecorder.ok === 'no' && /403/.test(second.byRecorder.text) && second.own === 1 && second.hidden2 === 1 && second.byHolder.ok === 'no' && second.bySteward.ok === 'yes' && second.cred.state === 'VERIFIED' && second.cred.countsForDispatch === true
+      && second.eligibleNow.length === 2 && second.eligibleNow.includes(second.id1) && second.eligibleNow.includes(second.id2) && second.ineligibleNow === 0
+      && second.accept.ok === 'no' && /accepted by the technician it was assigned to/.test(second.accept.text) && second.stateAfterAccept === 'ASSIGNED' && /refuses each of these steps to anyone else/.test(second.only)
+      && second.start.ok === 'no' && /the assigned technician starts the work/.test(second.start.text) && second.stateAfterStart === 'ACCEPTED',
+    `listed: “${second.why.slice(0, 150)}” · assign anyway: ${second.anyway.text.slice(0, 90)} (${second.stateAfterAnyway}) · verify as its recorder: ${second.byRecorder.text.slice(0, 60)} · as its holder: ${second.byHolder.text.slice(0, 60)} · as the steward: ${second.bySteward.ok}, ${second.cred.state} · eligible now ${second.eligibleNow.length} · second accepting: ${second.accept.text.slice(0, 70)} · second starting: ${second.start.text.slice(0, 70)}`); }
 
 let retest = null;
 { await actAs(p, 'cxeng'); const started = await press(p, 'fl-def-start'); await actAs(p, 'service'); const fixed = await press(p, 'fl-def-fixed');

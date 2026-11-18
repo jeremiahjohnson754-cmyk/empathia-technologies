@@ -934,7 +934,7 @@ export interface Operations {
     };
     response: R<'postV1DemoSandboxesReset'>;
   };
-  /** POST /v1/demo/sessions — A session as one person of a sandbox (unauthenticated; the sandbox key is the credential). How a visitor returns, and how they change role: the role decides what the session may do */
+  /** POST /v1/demo/sessions — A session as one person of a sandbox (unauthenticated; the sandbox key is the credential). How a visitor returns, and how they change role: the role decides what the session may do. Where a role has more than one person (two service technicians), seat says which, from 1 */
   postV1DemoSessions: {
     method: 'POST'; path: '/v1/demo/sessions'; auth: false; idempotent: false;
     params: { };
@@ -943,6 +943,7 @@ export interface Operations {
       sandboxId: string;
       key: string;
       role: string;
+      seat?: number;
     };
     response: R<'postV1DemoSessions'>;
   };

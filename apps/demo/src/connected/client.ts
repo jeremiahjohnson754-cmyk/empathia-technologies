@@ -103,13 +103,15 @@ export class Connected {
   }
 
   /** A session as one person of the sandbox: asked for with the key, kept in memory, renewed shortly before it runs out. */
-  private async token(role: string): Promise<string> {
-    const have = this.tokens.get(role); if (have && have.until > this.now()) return have.token;
+  private async token(who: string): Promise<string> {
+    const have = this.tokens.get(who); if (have && have.until > this.now()) return have.token;
+    // "service2" is the second person of the service role (a role key has no digit): the server is asked for that seat
+    const m = /^([a-z_]+?)([2-9])$/.exec(who); const role = m ? m[1]! : who; const seat = m ? Number(m[2]) : undefined;
     const s = this.sandbox(); if (!s) throw new SandboxGone('there is no sandbox in this browser');
-    const a = await this.send<{ accessToken: string; expiresIn: number }>('POST', '/v1/demo/sessions', { sandboxId: s.id, key: s.key, role });
+    const a = await this.send<{ accessToken: string; expiresIn: number }>('POST', '/v1/demo/sessions', { sandboxId: s.id, key: s.key, role, ...(seat ? { seat } : {}) });
     if (a.status === 401) { this.forget(); throw new SandboxGone(a.detail); }
     if (!a.ok) throw new Error(a.detail);
-    this.tokens.set(role, { token: a.body.accessToken, until: this.now() + (a.body.expiresIn - 30) * 1000 });
+    this.tokens.set(who, { token: a.body.accessToken, until: this.now() + (a.body.expiresIn - 30) * 1000 });
     return a.body.accessToken;
   }
   /** Call the API as one person of the sandbox. A refusal is returned, with the server's own words, never thrown. */
