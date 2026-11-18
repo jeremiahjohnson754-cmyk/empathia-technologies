@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDevices/0.1.0.json",
   "title": "POST /v1/rooms/{room}/devices request body",
-  "description": "Add a planned device (gets a tenant-unique canonical asset id)",
+  "description": "Add a planned device (gets a tenant-unique canonical asset id). z is its designed height above the floor in metres, between 0 and the ceiling; without it the category’s usual height is used",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -18,6 +18,11 @@
     },
     "y": {
       "type": "number"
+    },
+    "z": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30
     },
     "mount": {
       "type": "string",

@@ -1,6 +1,6 @@
 /** Read-side queries. Every read runs inside a tenant-scoped transaction (row-level security) and respects site scope. */
 import { Graph, neighbourhood, impact, type Edge } from '@empathia/relationship-engine';
-import { resultCounts } from '@empathia/commissioning-engine';
+import { resultCounts, defaultCatalog } from '@empathia/commissioning-engine';
 import type { RequestContext } from '../auth/context.js';
 import { drawingStates, findRoom, load } from './rooms.js';
 import { roomInstallations, fact as installationFact } from './installations.js';
@@ -39,7 +39,8 @@ export async function getRoom(ctx: RequestContext, ref: string) {
     const places = await placementsOf(q, L.room.id);
     return {
       room: { code: L.room.code, canonicalRef: L.room.canonical_ref, id: L.room.id, name: L.room.name, lifecycle: L.room.lifecycle, template: L.room.template, intendedUse: L.room.intended_use, occupancy: L.room.occupancy, unit: L.room.unit, geometry: L.room.geometry, rev: L.room.rev, approvedRevision: L.room.approved_revision, classification: L.room.classification, approvedClassification: L.room.approved_class, liveHealth: 'NOT_MONITORED' },
-      devices: L.input.devices.map((d) => { const id = identityOf(d.id, inst.facts, inst.assets); return { ...d, placement: places.get(d.id) ?? null, modelHistory: L.assets.find((a) => a.code === d.id)?.model_history ?? [], position: id.position, asset: id.asset, identityState: id.identityState,
+      devices: L.input.devices.map((d) => { const id = identityOf(d.id, inst.facts, inst.assets); const size = defaultCatalog.categories[d.cat]?.size;   // the category's footprint on the plan (width across, depth), so a page draws a seating block as large as it is
+        return { ...d, footprint: size ? { w: size[0], d: size[1] } : null, placement: places.get(d.id) ?? null, modelHistory: L.assets.find((a) => a.code === d.id)?.model_history ?? [], position: id.position, asset: id.asset, identityState: id.identityState,
         installations: inst.rows.filter((r) => r.position === d.id).map((r) => ({ id: r.id, asset: r.asset, model: r.model, identityState: r.identity_state, installedAt: r.installed_at, basis: r.effective_basis, installReason: r.install_reason, removedAt: r.removed_at, removalReason: r.removal_reason, sentence: installationSentence(installationFact(r)) })) }; }), connections: L.input.connections, drawings, revisions, issues,
       commissioning: plan ? { planId: plan['id'], engineVersion: plan['engine_version'], ruleVersion: plan['rule_version'], library: plan['library_size'], applicable: plan['applicable'], context: plan['context'], compiledAt: plan['compiled_at'], counts, rows: withResult } : null,
     };

@@ -8,7 +8,7 @@
 import crypto from 'node:crypto';
 import {
   analyzeRoom, polygonCheck, outlineFor, parseLength, templateDevices, newDevice, proposeConnections, drawingInput, DRAWING_KINDS,
-  lifecycleBlockers, LIFECYCLE_AUTHORITY, defaultCatalog, area, ENGINE_VERSION, rerunTask, identityOf, revisionApprovalBlockers, designBindingTask, REVISION_APPROVAL,
+  lifecycleBlockers, LIFECYCLE_AUTHORITY, enterpriseCatalog, area, ENGINE_VERSION, rerunTask, identityOf, revisionApprovalBlockers, designBindingTask, REVISION_APPROVAL,
   type ChangeKind, type UnitChange, type DesignBinding, type DesignSnapshot, type RevisionBinding, type DesignEdit,
 } from '@empathia/commissioning-engine';
 import type { Connection, PlannedDevice, RecordedResult, RoomDesignInput, RoomLifecycle } from '@empathia/domain-types';
@@ -23,7 +23,7 @@ import { designEditFor, patchEdit } from './design-edits.js';
 export type { Substitution, Reverification };
 
 const sha256 = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
-const C = defaultCatalog;
+const C = enterpriseCatalog;   // the demonstrator's catalogue with the server's listed corrections (catalog.ts)
 
 // ------------------------------------------------------------------------------------------------ loading a design
 export interface RoomRow {
@@ -249,7 +249,10 @@ export async function createRoom(ctx: RequestContext, input: CreateRoom): Promis
 }
 
 // ------------------------------------------------------------------------------------------------ devices and connections
-export async function addDevice(ctx: RequestContext, ref: string, body: { category: string; x?: number; y?: number; mount?: string; rot?: number }) {
+/** A height is between the floor and the room's ceiling (the designed height of a device above the floor at its own position). */
+const heightIn = (room: RoomRow, z: number): number => { const h = Number(room.geometry.ceiling); if (!Number.isFinite(z) || z < 0 || (Number.isFinite(h) && z > h)) throw invalid(`z is a height in metres between the floor (0) and the ceiling (${h} m): ${z} is not`); return Math.round(z * 100) / 100; };
+
+export async function addDevice(ctx: RequestContext, ref: string, body: { category: string; x?: number; y?: number; z?: number; mount?: string; rot?: number }) {
   await ctx.require('room.design', 'add a device', { type: 'Room', id: ref });
   if (!C.categories[body.category]) throw invalid(`unknown equipment category ${body.category}`);
   return ctx.tx(async (q) => {
@@ -257,7 +260,7 @@ export async function addDevice(ctx: RequestContext, ref: string, body: { catego
     const L = await load(ctx, q, room.id);
     const b = { w: Math.max(...room.geometry.points.map((p) => p[0])), l: Math.max(...room.geometry.points.map((p) => p[1])) };
     const code = await nextCode(q, 'asset', 'PA-');
-    const dev = newDevice(code, body.category, L.input.devices, { x: body.x ?? b.w / 2, y: body.y ?? b.l / 2, ...(body.mount ? { mount: body.mount } : {}), ...(body.rot != null ? { rot: body.rot } : {}) }, 'added', C);
+    const dev = newDevice(code, body.category, L.input.devices, { x: body.x ?? b.w / 2, y: body.y ?? b.l / 2, ...(body.z != null ? { z: heightIn(room, body.z) } : {}), ...(body.mount ? { mount: body.mount } : {}), ...(body.rot != null ? { rot: body.rot } : {}) }, 'added', C);
     await insertDevice(ctx, q, room, dev);
     await proposeFor(ctx, q, room, code);
     const rev = await bump(q, room);
@@ -267,7 +270,7 @@ export async function addDevice(ctx: RequestContext, ref: string, body: { catego
   });
 }
 
-export async function changeDevice(ctx: RequestContext, ref: string, assetCode: string, body: { x?: number; y?: number; mount?: string; rot?: number; model?: string; expectedInstallation?: string; asset?: string }) {
+export async function changeDevice(ctx: RequestContext, ref: string, assetCode: string, body: { x?: number; y?: number; z?: number; mount?: string; rot?: number; model?: string; expectedInstallation?: string; asset?: string }) {
   await ctx.require('room.design', 'change a device', { type: 'Room', id: ref });
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref, true);
@@ -283,6 +286,7 @@ export async function changeDevice(ctx: RequestContext, ref: string, assetCode: 
     const sub = recom && body.model && body.model !== a.model ? await planSubstitution(ctx, q, room, assetCode, body.model, body) : null;
     const sets: string[] = []; const args: unknown[] = [a.id];
     for (const k of ['x', 'y', 'rot'] as const) if (body[k] != null) { if (!Number.isFinite(body[k])) throw invalid(`${k} must be a number`); args.push(Math.round(body[k]! * 100) / 100); sets.push(`${k} = $${args.length}`); }
+    if (body.z != null) { args.push(heightIn(room, body.z)); sets.push(`z = $${args.length}`); }   // a height is part of where a device is: changing it is a move, under the same rule
     if (body.mount) { if (!['wall', 'ceiling', 'floor', 'table', 'rack'].includes(body.mount)) throw invalid('mount is wall, ceiling, floor, table or rack'); args.push(body.mount); sets.push(`mount = $${args.length}`); }
     let event = 'room.device_moved'; let payload: Record<string, unknown> = { designId: room.code, assetId: assetCode };
     if (body.model && body.model !== a.model) {

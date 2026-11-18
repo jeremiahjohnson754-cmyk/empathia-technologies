@@ -13,6 +13,11 @@
     "y": {
       "type": "number"
     },
+    "z": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30
+    },
     "rot": {
       "type": "number"
     },

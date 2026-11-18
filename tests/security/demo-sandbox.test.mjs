@@ -36,7 +36,7 @@ let h, c, A, B, std, demoApp, onlyApp, snapshot; const J = (x) => JSON.stringify
 const api = path.join(repo, 'services/enterprise-api/dist/src');
 const sha = (s) => crypto.createHash('sha256').update(s).digest('hex');
 const n = (s) => Number(h.asSuper(s));
-const open = async () => { const r = await c.call('POST', '/v1/demo/sandboxes', { body: {} }); assert.equal(r.status, 201, J(r.body)); return { ...r.body.sandbox, room: r.body.scenario.room, hall: r.body.scenario.flagship.room, first: r.body.session.accessToken, raw: r.body }; };
+const open = async () => { const r = await c.call('POST', '/v1/demo/sandboxes', { body: {} }); assert.equal(r.status, 201, J(r.body)); return { ...r.body.sandbox, room: r.body.scenario.room, hall: r.body.scenario.flagship.room, suite: r.body.scenario.second.room, first: r.body.session.accessToken, raw: r.body }; };
 const as = async (sb, role) => { const r = await c.call('POST', '/v1/demo/sessions', { body: { sandboxId: sb.id, key: sb.key, role } }); assert.equal(r.status, 200, `${role}: ${J(r.body)}`); return r.body.accessToken; };
 const call = (token, method, p, o = {}) => c.call(method, p, { token, body: o.body, headers: o.headers, raw: o.raw });
 const tenantOf = (slug) => h.asSuper(`SELECT id FROM app.tenant WHERE slug = '${slug}'`);
@@ -74,7 +74,8 @@ test('DS-02 a sandbox opens with its scenario; the key is shown once and stored 
   const me = await call(A.first, 'GET', '/v1/me'); assert.equal(me.status, 200, J(me.body)); assert.deepEqual([me.body.role, me.body.tenant], ['installer', A.tenant]);
   const cur = await call(A.first, 'GET', '/v1/demo/sandbox'); assert.equal(cur.status, 200, J(cur.body));
   // 17 Nov 2026: a sandbox now opens with two rooms, the scenario room and the flagship lecture theatre (50/10 flagship; DS-17)
-  assert.deepEqual(cur.body.rooms.map((r) => [r.code, r.lifecycle]), [[A.room, 'INSTALLED_UNVERIFIED'], [A.hall, 'INSTALLED_UNVERIFIED']]); assert.equal(cur.body.sandbox.tenant, A.tenant);
+  // 18 Nov 2026: and a third, the second engineering room (Harbor 201, a session room of the convention centre, CNV-MR-H201)
+  assert.deepEqual(cur.body.rooms.map((r) => [r.code, r.lifecycle]), [[A.room, 'INSTALLED_UNVERIFIED'], [A.hall, 'INSTALLED_UNVERIFIED'], [A.suite, 'INSTALLED_UNVERIFIED']]); assert.equal(cur.body.sandbox.tenant, A.tenant);
   // the scenario has the history of a real room: designed, approved and installed by different people, each an audit row of this sandbox
   const who = h.asSuper(`SELECT string_agg(DISTINCT actor_role, ',' ORDER BY actor_role) FROM app.audit_event WHERE tenant_id = '${tenantOf(A.tenant)}' AND outcome = 'ALLOWED'`);
   for (const role of ['designer', 'installer', 'opslead', 'steward', 'svcmgr', 'syseng']) assert.ok(who.split(',').includes(role), `${role} in ${who}`);
@@ -86,11 +87,11 @@ test('DS-02 a sandbox opens with its scenario; the key is shown once and stored 
 
 test('DS-03 isolation: a sandbox reads and writes its own rows only, and nobody else reads or writes them', async () => {
   const a = await as(A, 'designer'); const b = await as(B, 'designer'); const aSys = await as(A, 'syseng');
-  assert.deepEqual((await call(a, 'GET', '/v1/rooms')).body.items.map((r) => r.code), [A.room, A.hall]);   // 17 Nov 2026: two rooms (DS-17)
+  assert.deepEqual((await call(a, 'GET', '/v1/rooms')).body.items.map((r) => r.code), [A.room, A.hall, A.suite]);   // 17 Nov 2026: two rooms (DS-17); 18 Nov 2026: three
   // room codes are per tenant (two tenants may both have an R-…-0001), so every cross-tenant attempt names the other tenant's room by its uuid
   const idOf = async (token, code) => (await call(token, 'GET', `/v1/rooms/${code}`)).body.room.id;
   const ra = { id: await idOf(a, A.room) }; const rb = { id: await idOf(b, B.room) }; const rs = { id: await idOf(std.designer, std.room) };
-  assert.equal(new Set([ra.id, rb.id, rs.id]).size, 3); assert.equal(A.room, B.room, 'the scenario is the same in every sandbox: the same code, two rooms');
+  assert.equal(new Set([ra.id, rb.id, rs.id]).size, 3); assert.equal(A.room, B.room, 'the scenario is the same in every sandbox: the same codes, three rooms');
   for (const [who, token, room] of [['sandbox A → the standard tenant', a, rs.id], ['sandbox A → sandbox B', a, rb.id], ['sandbox B → sandbox A', b, ra.id], ['the standard tenant → sandbox A', std.designer, ra.id]]) {
     assert.equal((await call(token, 'GET', `/v1/rooms/${room}`)).status, 404, who); assert.equal((await call(token, 'GET', `/v1/rooms/${room}/thread`)).status, 404, who);
     assert.equal((await call(token, 'POST', `/v1/rooms/${room}/devices`, { body: { category: 'micceil' } })).status, 404, who);
@@ -327,22 +328,25 @@ test('DS-16 storage is bounded: a ceiling on a sandbox’s recorded actions and 
   h.asSuper('UPDATE app.demo_config SET enabled = true, max_live = 200, per_remote_hour = 1000');
   const X = await open(); const tid = tenantOf(X.tenant); const rows = () => n(`SELECT count(*) FROM app.audit_event WHERE tenant_id = '${tid}'`);
   const inst = await as(X, 'installer'); const cx = await as(X, 'cxeng'); const note = (i) => call(inst, 'POST', `/v1/rooms/${X.room}/field-record/markups`, { body: { x: 1, y: 1, text: `note ${i} (synthetic)` } });
-  assert.ok(rows() < 100, `the scenario itself is ${rows()} audit rows`);
+  // 18 Nov 2026: the ceiling this test sets is 200 where it was 100, and reads stop at 250 where it was 125. The scenario grew (the
+  // lecture theatre's own equipment and seating, and a third room: 105 audit rows where it was 32), so a ceiling of 100
+  // was below what a sandbox holds when it opens. The rule tested is the same: writes stop exactly at the ceiling, reads a quarter above.
+  assert.ok(rows() < 200, `the scenario itself is ${rows()} audit rows`);
   // evidence notes first, while there is room for writes
   h.asSuper('UPDATE app.demo_config SET max_evidence = 1'); const up = (t) => call(cx, 'POST', '/v1/evidence', { raw: Buffer.from(t), headers: { 'content-type': 'text/plain', 'x-file-name': 'n.txt' } });
   assert.equal((await up('first synthetic note')).status, 201); const second = await up('second synthetic note'); assert.equal(second.status, 429, J(second.body)); assert.match(second.body.detail, /holds its 1 evidence notes/);
   assert.equal(n(`SELECT count(*) FROM app.evidence_object WHERE tenant_id = '${tid}'`), 1);
   // actions: writes stop exactly at the ceiling
-  h.asSuper('UPDATE app.demo_config SET max_writes = 100, max_evidence = 60'); let made = 0; let stop = null;
-  for (let i = 0; i < 120 && !stop; i += 1) { const r = await note(i); if (r.status === 201) made += 1; else stop = r; }
-  assert.ok(stop && stop.status === 429, J(stop?.body)); assert.match(stop.body.detail, /has recorded its 100 actions: reset it/); assert.equal(rows(), 100, 'not one row past the ceiling'); assert.ok(made > 0);
+  h.asSuper('UPDATE app.demo_config SET max_writes = 200, max_evidence = 60'); let made = 0; let stop = null;
+  for (let i = 0; i < 220 && !stop; i += 1) { const r = await note(i); if (r.status === 201) made += 1; else stop = r; }
+  assert.ok(stop && stop.status === 429, J(stop?.body)); assert.match(stop.body.detail, /has recorded its 200 actions: reset it/); assert.equal(rows(), 200, 'not one row past the ceiling'); assert.ok(made > 0);
   for (const r of [await note('x'), await call(inst, 'PUT', `/v1/rooms/${X.room}/field-record/mounting/PA-0001`, { body: { method: 'floor' } }), await call(await as(X, 'designer'), 'POST', '/v1/rooms', { body: { name: 'More (synthetic)', template: 'huddle' } })]) assert.equal(r.status, 429);
-  assert.equal(rows(), 100); assert.equal(n(`SELECT count(*) FROM app.room WHERE tenant_id = '${tid}'`), 2, 'the two rooms the sandbox opened with (17 Nov 2026: was one), and not the third just asked for');
+  assert.equal(rows(), 200); assert.equal(n(`SELECT count(*) FROM app.room WHERE tenant_id = '${tid}'`), 3, 'the three rooms the sandbox opened with (17 Nov 2026: was one; 18 Nov: was two), and not the one just asked for');
   // reads go on: the visitor can still see what they made
   assert.equal((await call(inst, 'GET', `/v1/rooms/${X.room}/thread`)).status, 200); assert.equal((await call(inst, 'GET', '/v1/demo/sandbox')).status, 200);
   // refused reads are audit rows too, so reading stops a quarter above the ceiling
-  let last = null; for (let i = 0; i < 40; i += 1) { last = await call(cx, 'GET', '/v1/people'); if (last.status === 429) break; assert.equal(last.status, 403); }
-  assert.equal(last.status, 429, J(last.body)); assert.equal(rows(), 125); assert.equal((await call(inst, 'GET', `/v1/rooms/${X.room}/thread`)).status, 429); assert.equal(rows(), 125, 'nothing more is written, whatever is asked');
+  let last = null; for (let i = 0; i < 80; i += 1) { last = await call(cx, 'GET', '/v1/people'); if (last.status === 429) break; assert.equal(last.status, 403); }
+  assert.equal(last.status, 429, J(last.body)); assert.equal(rows(), 250); assert.equal((await call(inst, 'GET', `/v1/rooms/${X.room}/thread`)).status, 429); assert.equal(rows(), 250, 'nothing more is written, whatever is asked');
   // other sandboxes and the standard tenant are not touched by this one's ceiling
   assert.equal((await call(await as(B, 'installer'), 'GET', `/v1/rooms/${B.room}/thread`)).status, 200); assert.equal((await call(std.designer, 'GET', `/v1/rooms/${std.room}`)).status, 200);
   // a reset is the way out, and it works at the ceiling
@@ -369,7 +373,7 @@ test('DS-17 (F-01) every sandbox holds the flagship room: the canon’s identifi
   assert.ok(byRef.body.devices.length >= 8, `${byRef.body.devices.length} devices from the same engine as every other room`); assert.ok(byRef.body.commissioning.rows.some((x) => x.applicable), 'it has a commissioning plan');
   const where = h.asSuper(`SELECT b.code || ' / ' || s.code FROM app.room r JOIN app.building b ON b.id = r.building_id JOIN app.site s ON s.id = b.site_id WHERE r.id = '${r.id}'`); assert.equal(where, 'UNI-SCI / UNI-N');
   assert.equal((await call(des, 'GET', '/v1/rooms/UNI-SCI-110/thread')).status, 200); assert.equal((await call(des, 'GET', '/v1/rooms/UNI-SCI-110/field-record')).status, 200);
-  assert.deepEqual((await call(des, 'GET', '/v1/rooms')).body.items.map((x) => [x.code, x.canonicalRef]), [[F.room, null], [F.hall, 'UNI-SCI-110']]);
+  assert.deepEqual((await call(des, 'GET', '/v1/rooms')).body.items.map((x) => [x.code, x.canonicalRef]), [[F.room, null], [F.hall, 'UNI-SCI-110'], [F.suite, 'CNV-MR-H201']]);   // 18 Nov 2026: and the second engineering room, by its own identifier
   // the scenario room is untouched by it: the connected demonstration's room keeps its code and has no canonical reference
   assert.equal(F.room, A.room); assert.equal((await call(des, 'GET', `/v1/rooms/${F.room}`)).body.room.canonicalRef, null);
 });
@@ -378,7 +382,7 @@ test('DS-18 (F-02) the identifier is one room per tenant, never changed or remov
   const F = await open(); const G = await open(); const des = await as(F, 'designer'); const other = await as(G, 'designer');
   // one estate record is one room: a second room claiming it is refused, and nothing is made
   const dup = await call(des, 'POST', '/v1/rooms', { body: { name: 'A second SCI-110 (synthetic)', template: 'auditorium', canonicalRef: 'UNI-SCI-110', buildingCode: 'UNI-SCI' } });
-  assert.equal(dup.status, 409, J(dup.body)); assert.match(dup.body.detail, /UNI-SCI-110 is already a room here/); assert.equal(n(`SELECT count(*) FROM app.room WHERE tenant_id = '${tenantOf(F.tenant)}'`), 2);
+  assert.equal(dup.status, 409, J(dup.body)); assert.match(dup.body.detail, /UNI-SCI-110 is already a room here/); assert.equal(n(`SELECT count(*) FROM app.room WHERE tenant_id = '${tenantOf(F.tenant)}'`), 3);   // 3 since 18 Nov 2026 (the second engineering room); the refused duplicate added none
   for (const bad of ['R-PLN-0009', 'uni-sci-110', 'UNI', 'UNI SCI 110', '110-SCI']) assert.equal((await call(des, 'POST', '/v1/rooms', { body: { name: 'x (synthetic)', template: 'huddle', canonicalRef: bad } })).status, 400, bad);
   // each tenant has its own UNI-SCI-110; the identifier reads the caller's, never the other's
   const mine = (await call(des, 'GET', '/v1/rooms/UNI-SCI-110')).body.room.id; const theirs = (await call(other, 'GET', '/v1/rooms/UNI-SCI-110')).body.room.id; assert.notEqual(mine, theirs);

@@ -56,8 +56,9 @@ function Decay({ a, label }: { a: Analysis; label: string }) {
   );
 }
 
-export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord }: { geometry: { widthM: number; lengthM: number }; test: BenchTest | null; lifecycle: string; person: string; busy: boolean; onRecord: (o: BenchOutput) => void }) {
+export function ReverbBench({ roomRef, geometry, test, lifecycle, person, busy, onRecord }: { roomRef: string; geometry: { widthM: number; lengthM: number }; test: BenchTest | null; lifecycle: string; person: string; busy: boolean; onRecord: (o: BenchOutput) => void }) {
   const W = geometry.widthM; const L = geometry.lengthM; const pad = 1.2;
+  const u = Math.max(1, 20 / Math.max(W, L));   // a small room is drawn larger, so that a receiver's mark does not cover it; every place stays in metres (as on the room's plan)
   const [pos, setPos] = useState<Pos[]>([]); const [rt, setRt] = useState(1.4); const [done, setDone] = useState<Done | null>(null); const [msg, setMsg] = useState<string | null>(null); const [show, setShow] = useState(0);
   const [chain, setChain] = useState<'CALIBRATED' | 'UNKNOWN'>('UNKNOWN'); const [instrument, setInstrument] = useState(''); const [due, setDue] = useState('');
   const synthetic = pos.some((p) => !p.file); const nextId = () => { for (let i = 1; i <= MAX; i++) if (!pos.some((p) => p.id === i)) return i; return 0; };
@@ -65,7 +66,7 @@ export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord 
   const add = (x: number, y: number) => { const id = nextId(); if (!id) { setMsg(`At most ${MAX} positions.`); return; } change([...pos, { id, x: r2(Math.min(W, Math.max(0, x))), y: r2(Math.min(L, Math.max(0, y))), file: null }].sort((a, b) => a.id - b.id)); };
   // four receiver positions spread over the seating: not on the centre line, not close to a wall
   const typical = () => change([[0.3, 0.38], [0.68, 0.5], [0.4, 0.68], [0.72, 0.84]].map(([fx, fy], i) => ({ id: i + 1, x: r2(W * fx!), y: r2(L * fy!), file: null })));
-  const onPlan = (e: { clientX: number; clientY: number; currentTarget: SVGSVGElement }) => { const m = e.currentTarget.getScreenCTM(); if (!m) return; const pt = e.currentTarget.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(m.inverse()); if (q.x < 0 || q.x > W || q.y < 0 || q.y > L) return; add(q.x, q.y); };
+  const onPlan = (e: { clientX: number; clientY: number; currentTarget: SVGSVGElement }) => { const m = e.currentTarget.getScreenCTM(); if (!m) return; const pt = e.currentTarget.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q0 = pt.matrixTransform(m.inverse()); const q = { x: q0.x / u, y: q0.y / u }; if (q.x < 0 || q.x > W || q.y < 0 || q.y > L) return; add(q.x, q.y); };
   const load = async (id: number, file: File | undefined) => {
     if (!file) return; setMsg(null);
     try { if (file.size > MAX_BYTES) throw new Error('the file is over 20 MB'); const buf = await file.arrayBuffer(); const ir = /\.csv$/i.test(file.name) ? readCsv(new TextDecoder().decode(buf)) : readWav(buf);
@@ -83,7 +84,7 @@ export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord 
     if (!done || done.value === null || !test) return null;
     const detail = { quantity: 'T30, mean of the 500 Hz and 1 kHz octave bands, averaged over the positions', positions: done.per.map((x) => ({ position: x.pos.id, x: x.pos.x, y: x.pos.y, source: x.pos.file ? `file ${x.pos.file.name}` : `synthetic reference, decay ${x.rt} s`,
       t30_500: fit(x.bands.find((a) => a.band === '500 Hz'), 'T30')?.seconds ?? null, t30_1k: fit(x.bands.find((a) => a.band === '1 kHz'), 'T30')?.seconds ?? null })), bands: done.means.map((m) => ({ band: m.band, edt: m.edt.mean, t20: m.t20.mean, t30: m.t30.mean })) };
-    const pkg = { kind: 'reverberation analysis package', room: 'UNI-SCI-110', test: test.test, metric: 't30_mid', unit: 's', value: done.value, synthetic,
+    const pkg = { kind: 'reverberation analysis package', room: roomRef, test: test.test, metric: 't30_mid', unit: 's', value: done.value, synthetic,
       statement: synthetic ? 'SYNTHETIC: one or more responses are reference signals of a chosen decay time, generated from the seed and decay listed. The server regenerates them from the same figures and works the value out itself. No room was measured.' : 'The responses are files, each uploaded as evidence and named here with its SHA-256 and the id the server gave it. The server reads them and works the value out itself.',
       analysis: 'Schroeder backward integration with noise subtraction and truncation; least-squares fit from 5 to 35 dB down (T30), 5 to 25 dB (T20), 0 to 10 dB (EDT); a figure is refused when the dynamic range cannot support it',
       positions: done.per.map((x) => ({ position: x.pos.id, x: x.pos.x, y: x.pos.y, response: x.pos.file ? { file: x.pos.file.name, sha256: x.pos.file.sha256, rate: x.pos.file.ir.rate, seconds: r2(x.pos.file.ir.seconds) } : { synthetic: true, decaySeconds: x.rt, seed: 7 + x.pos.id * 13, rate: RATE, floorDb: -80 },
@@ -92,7 +93,7 @@ export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord 
     return { value: done.value, provenance: synthetic ? 'SIMULATED' : 'FIELD_MEASURED', ...(synthetic ? {} : { instrumentId: instrument.trim(), calibrationStatus: chain, ...(chain === 'CALIBRATED' && due ? { calibrationDue: due } : {}) }),
       location: `${done.per.length} receiver positions: ${done.per.map((x) => `P${x.pos.id} (${x.pos.x}, ${x.pos.y})`).join(', ')}`.slice(0, 120), source: synthetic ? 'synthetic reference responses generated in the browser (no room was measured)' : `impulse response files: ${done.per.map((x) => x.pos.file!.name).join(', ')}`.slice(0, 200),
       method: 'ISO 3382-2 integrated impulse response, T30', detail, pkg, files: done.per.filter((x) => x.pos.file).map((x) => ({ position: x.pos.id, name: x.pos.file!.name, mediaType: x.pos.file!.mediaType, data: x.pos.file!.data })) };
-  }, [done, test, synthetic, instrument, chain, due]);
+  }, [done, test, synthetic, instrument, chain, due, roomRef]);
   const chainReady = synthetic || (instrument.trim().length >= 3 && (chain !== 'CALIBRATED' || !!due));
   const shown = done?.per[show]; const shownBand = shown?.bands.find((a) => a.band === '1 kHz');
 
@@ -106,9 +107,9 @@ export function ReverbBench({ geometry, test, lifecycle, person, busy, onRecord 
         <div>
           <h4 className="fl__h4">1 · Receiver positions</h4>
           <p className="ui-meta">Click the plan to put a receiver position where a listener sits, or use four typical ones. {pos.length} of {MAX} placed.</p>
-          <svg className="fb__plan" viewBox={`${-pad} ${-pad} ${W + 2 * pad} ${L + 2 * pad}`} role="group" aria-label={`Receiver positions on the plan: ${pos.length} placed`} data-testid="fl-bench-plan" onClick={onPlan}>
-            <rect className="fl__outline" x={0} y={0} width={W} height={L} /><text className="fl__dim" x={W / 2} y={-0.35} textAnchor="middle">front</text>
-            {pos.map((p) => <g key={p.id} className="fb__pos" data-pos={p.id} data-x={p.x} data-y={p.y} transform={`translate(${p.x} ${p.y})`}><circle r={0.55} /><text y={0.2} textAnchor="middle">{p.id}</text></g>)}
+          <svg className="fb__plan" viewBox={`${-pad} ${-pad} ${W * u + 2 * pad} ${L * u + 2 * pad}`} role="group" aria-label={`Receiver positions on the plan: ${pos.length} placed`} data-testid="fl-bench-plan" onClick={onPlan}>
+            <rect className="fl__outline" x={0} y={0} width={W * u} height={L * u} /><text className="fl__dim" x={(W * u) / 2} y={-0.35} textAnchor="middle">front</text>
+            {pos.map((p) => <g key={p.id} className="fb__pos" data-pos={p.id} data-x={p.x} data-y={p.y} transform={`translate(${p.x * u} ${p.y * u})`}><circle r={0.55} /><text y={0.2} textAnchor="middle">{p.id}</text></g>)}
           </svg>
           <p className="build__row"><button type="button" className="ui-btn ui-btn--sm" data-testid="fl-bench-typical" onClick={typical}>Use four typical positions</button>
             {pos.length ? <button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" data-testid="fl-bench-clear" onClick={() => change([])}>Remove all</button> : null}</p>

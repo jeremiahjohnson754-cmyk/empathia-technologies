@@ -6,8 +6,8 @@
 import { designEditRefusal, type DesignEdit } from '@empathia/commissioning-engine';
 
 /** The edit a device PATCH asks for: a model change alone is a model substitution; a change of position, rotation or mount — or no model — moves the device. */
-export const patchEdit = (body: { x?: number | null; y?: number | null; rot?: number | null; mount?: string | null; model?: string | null }): DesignEdit =>
-  (body.x != null || body.y != null || body.rot != null || body.mount != null || !body.model ? 'move-device' : 'substitute-model');
+export const patchEdit = (body: { x?: number | null; y?: number | null; z?: number | null; rot?: number | null; mount?: string | null; model?: string | null }): DesignEdit =>
+  (body.x != null || body.y != null || body.z != null || body.rot != null || body.mount != null || !body.model ? 'move-device' : 'substitute-model');
 
 /** Why the edit is refused for this room now (null: accepted). `recommissioning`: an accepted room under recommissioning (a CURRENT baseline). */
 export const designEditFor = (room: { code: string; lifecycle: string }, recommissioning: boolean, edit: DesignEdit): string | null =>

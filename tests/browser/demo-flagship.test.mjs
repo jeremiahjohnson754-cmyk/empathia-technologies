@@ -45,6 +45,10 @@
 //   FL-32  a second technician whose permissions are tested: listed as failing a gate with the reason (a credential recorded and not
 //          verified); "assign anyway" refused; the service manager who recorded the credential cannot verify it and the data steward
 //          can, after which the gates admit both; the job assigned to the first is refused to the second at acceptance and at the start
+//   FL-33  the same page on another room: chosen from the page, Harbor 201 of the convention centre is read from the server by its
+//          own identifier (its plan, its devices, its criterion, the seats its plan draws); its camera is moved and approved there and
+//          the lecture theatre's record does not change; the address keeps the room across a refresh; a room the sandbox does not
+//          have is said to be absent
 //   node tests/browser/demo-flagship.test.mjs
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
@@ -325,7 +329,9 @@ const panel = p.getByTestId('fl-corrective'); let WO = ''; const second = {};   
     second.byRecorder = await press(p, 'fl-cred-verify');                                                                       // the service manager recorded it
     await actAs(p, 'service2'); second.own = await p.locator('[data-testid=fl-creds] li').count(); second.hidden2 = await p.getByTestId('fl-candidates-hidden').count(); second.byHolder = await press(p, 'fl-cred-verify');
     await actAs(p, 'steward'); second.bySteward = await press(p, 'fl-cred-verify'); second.cred = (await api.call('GET', `/v1/competencies?person=${second.id2}`, { token: await as('svcmgr') })).body.items[0];
-    await actAs(p, 'svcmgr'); second.eligibleNow = await p.locator('[data-testid=fl-candidates] li[data-eligible=yes]').evaluateAll((els) => els.map((e) => e.getAttribute('data-person'))); second.ineligibleNow = await p.locator('[data-testid=fl-candidates] li[data-eligible=no]').count(); await shot(p, 'flagship-two-technicians'); }
+    await actAs(p, 'svcmgr'); second.eligibleNow = await p.locator('[data-testid=fl-candidates] li[data-eligible=yes]').evaluateAll((els) => els.map((e) => e.getAttribute('data-person'))); second.ineligibleNow = await p.locator('[data-testid=fl-candidates] li[data-eligible=no]').count();
+    // Search Party's earlier answer said one person passes; two do now, so it is withdrawn until asked again, and the new answer says two
+    second.stale = await p.getByTestId('fl-sp-stale').count(); second.oldAnswer = await p.getByTestId('fl-sp-answer').count(); await press(p, 'fl-sp-ask'); second.newAnswer = (await text(p, 'fl-sp-answer')).replace(/\s+/g, ' '); await shot(p, 'flagship-two-technicians'); }
   // two people pass now: the first technician's own row is the one pressed
   await p.locator(`[data-testid=fl-candidates] li[data-person="${w.candidates.eligible[0].id}"]`).getByTestId('fl-assign').click(); const assigned = await saidOk(p); const after = await woOnServer(WO); await shot(p, 'flagship-assigned');
   ok('FL-24', 'the deficiency is handed to ServiceHands by the service manager (the commissioning engineer is refused); triage sets what the job needs; Search Party’s answer and the candidates are the server’s, with their reasons; who may not assign sees no ranking; the person assigned is one the gates admit',
@@ -350,7 +356,7 @@ const panel = p.getByTestId('fl-corrective'); let WO = ''; const second = {};   
   ok('FL-32', 'a second technician whose permissions are tested against the server: listed as failing a gate, with the reason; “assign anyway” is refused and nothing is assigned; the credential is not verified by its recorder or its holder, and is by the data steward, after which the gates admit both; the job assigned to the first is refused to the second at acceptance and, with the preflight passed, at the start',
     !!second.id2 && second.listed === 1 && /fails a gate/.test(second.why) && /recorded, not yet verified by someone other than its recorder and its holder/.test(second.why) && second.anyway.ok === 'no' && /fails a hard gate/.test(second.anyway.text) && second.stateAfterAnyway === 'TRIAGED' && second.pendingShown === '1'
       && second.byRecorder.ok === 'no' && /403/.test(second.byRecorder.text) && second.own === 1 && second.hidden2 === 1 && second.byHolder.ok === 'no' && second.bySteward.ok === 'yes' && second.cred.state === 'VERIFIED' && second.cred.countsForDispatch === true
-      && second.eligibleNow.length === 2 && second.eligibleNow.includes(second.id1) && second.eligibleNow.includes(second.id2) && second.ineligibleNow === 0
+      && second.eligibleNow.length === 2 && second.eligibleNow.includes(second.id1) && second.eligibleNow.includes(second.id2) && second.ineligibleNow === 0 && second.stale === 1 && second.oldAnswer === 0 && /2 of 2 people in the service pool pass/.test(second.newAnswer)
       && second.accept.ok === 'no' && /accepted by the technician it was assigned to/.test(second.accept.text) && second.stateAfterAccept === 'ASSIGNED' && /refuses each of these steps to anyone else/.test(second.only)
       && second.start.ok === 'no' && /the assigned technician starts the work/.test(second.start.text) && second.stateAfterStart === 'ACCEPTED',
     `listed: “${second.why.slice(0, 150)}” · assign anyway: ${second.anyway.text.slice(0, 90)} (${second.stateAfterAnyway}) · verify as its recorder: ${second.byRecorder.text.slice(0, 60)} · as its holder: ${second.byHolder.text.slice(0, 60)} · as the steward: ${second.bySteward.ok}, ${second.cred.state} · eligible now ${second.eligibleNow.length} · second accepting: ${second.accept.text.slice(0, 70)} · second starting: ${second.start.text.slice(0, 70)}`); }
@@ -419,6 +425,28 @@ const count = async (re) => (await rowsOnServer()).filter((x) => re.test(x.resul
       && noMove === 0 && closedNote === 1 && vReload === '1' && theirV === '1' && theirBuilt.includes(move.move) && over <= 1 && !u.errs.length && !pageErrs().length,
     `baseline ${base1.version} on design revision ${base1.design_revision} (approved ${room.room.approvedRevision}) · camera designed (${bCam.designed.x}, ${bCam.designed.y}), as built (${bCam.asBuilt.x}, ${bCam.asBuilt.y}) ${bCam.asBuilt.move}; the design row still (${camServer.x}, ${camServer.y}) · measured “${measText.slice(0, 110)}” · three products: “${three.trim().slice(0, 60)}” · move offered ${noMove}, closed note ${closedNote} · reload v${vReload}, second browser v${theirV} · phone overflow ${over}px · ${[...u.errs, ...pageErrs()].slice(0, 2)}`);
   await u.close(); }
+
+{ const OTHER = 'CNV-MR-H201'; const other = async (role, path = '') => (await api.call('GET', `/v1/rooms/${OTHER}${path}`, { token: await as(role) })).body; const hallBefore = await srv('cxeng', '');
+  const options = await p.locator('[data-testid=fl-room] option').evaluateAll((els) => els.map((e) => e.value));
+  await p.getByTestId('fl-room').selectOption(OTHER); await p.waitForFunction((r) => location.hash === `#/flagship/${r}`, OTHER); await p.waitForFunction(() => document.querySelector('[data-testid=fl-plan]')?.getAttribute('data-length') === '22', null, { timeout: 120000 }); await settle(p);
+  const room = await other('cxeng'); const title = await p.locator('main h1').innerText(); const onPlan = await planIds(p); const upper = await p.getByTestId('fl-bench-criterion').getAttribute('data-upper'); const planCard = (await text(p, 'fl-plan-card')).replace(/\s+/g, ' ');
+  const seats = room.devices.reduce((n, d) => n + (d.furniture && d.props?.seats ? d.props.seats : 0), 0); const picked = await p.getByTestId('fl-room').inputValue();
+  const cam2 = room.devices.find((d) => d.cat === 'camera'); const m2 = p.locator(`[data-testid=fl-plan] .fl__dev[data-device="${cam2.id}"]`); const to = { x: Math.round((cam2.x + 0.8) * 100) / 100, y: cam2.y };
+  await actAs(p, 'installer'); await m2.click(); await p.getByTestId('fl-move').click(); await p.getByTestId('fl-move-panel').waitFor(); await p.getByTestId('fl-x').fill(String(to.x));
+  await p.getByTestId('fl-reason').selectOption('structural member'); await p.getByTestId('fl-note').fill('a beam is where the design puts the camera (synthetic)'); await p.getByTestId('fl-submit').click(); const proposed = await saidOk(p);
+  await actAs(p, 'syseng'); await p.getByTestId('fl-decision').fill('clear of the beam (synthetic)'); await p.getByTestId('fl-approve').click(); const approved = await saidOk(p);
+  const after = (await other('cxeng')).devices.find((d) => d.id === cam2.id).placement; const shownAt = await xy(m2); const hallAfter = await srv('cxeng', ''); await shot(p, 'flagship-second-room');
+  await p.reload(); await p.getByTestId('fl-bar').waitFor({ timeout: 120000 }); await settle(p); const kept = await p.locator('[data-testid=fl-plan]').getAttribute('data-length'); const keptAt = await xy(p.locator(`[data-testid=fl-plan] .fl__dev[data-device="${cam2.id}"]`));
+  await p.getByTestId('fl-room').selectOption('UNI-SCI-110'); await p.waitForFunction(() => location.hash === '#/flagship'); await p.waitForFunction(() => document.querySelector('[data-testid=fl-plan]')?.getAttribute('data-length') === '20', null, { timeout: 120000 }); await settle(p);
+  const backV = await p.getByTestId('fl-baseline').getAttribute('data-version'); const backTitle = await p.locator('main h1').innerText();
+  // up to here the page logged nothing but the refusals the earlier checks provoked; asking for a room that is not there is a 404, and that is all it adds
+  const clean = !pageErrs().length; await p.goto(`${base}#/flagship/NOPE-123`); await p.getByTestId('fl-back').waitFor({ timeout: 120000 }); const only404 = pageErrs().every((e) => /status of 404/.test(e)); const noPlan = await p.getByTestId('fl-plan').count(); const says = (await p.locator('main').innerText()).replace(/\s+/g, ' ');
+  ok('FL-33', 'the same page on another room: Harbor 201 of the convention centre, chosen on the page, is the server’s record of that room (its name, its devices, its own limit, the seats its plan draws); its camera is moved by the installer and approved by the systems engineer there; the lecture theatre’s record is exactly as it was; a refresh keeps the room; a room the sandbox does not have is said to be absent',
+    options.length === 3 && options.includes(OTHER) && options.includes('UNI-SCI-110') && picked === OTHER && /Harbor 201/.test(title) && room.room.canonicalRef === OTHER && JSON.stringify(onPlan) === JSON.stringify(room.devices.map((d) => d.id).sort()) && upper === '0.8'
+      && planCard.includes(`${seats} seats drawn of ${room.room.occupancy}`) && seats < room.room.occupancy && proposed.ok === 'yes' && approved.ok === 'yes' && after.basis === 'AS_BUILT' && after.asBuilt.x === to.x && after.designed.x === cam2.x && shownAt.x === to.x
+      && JSON.stringify(hallAfter.devices.map((d) => d.placement)) === JSON.stringify(hallBefore.devices.map((d) => d.placement)) && hallAfter.room.lifecycle === 'ACCEPTED' && hallAfter.room.rev === hallBefore.room.rev
+      && kept === '22' && keptAt.x === to.x && backV === '1' && /Lecture Theatre SCI-110/.test(backTitle) && noPlan === 0 && /has no room “NOPE-123”/.test(says) && clean && only404,
+    `rooms offered ${options.join(', ')} · “${title}” ${room.devices.length} positions, limit ${upper} s, ${planCard.slice(0, 110)} · camera ${cam2.id} (${cam2.x}, ${cam2.y}) → as built (${after.asBuilt?.x}, ${after.asBuilt?.y}) ${after.basis} · theatre ${hallAfter.room.lifecycle}, placements unchanged · after refresh ${kept} m long · back: “${backTitle}” baseline ${backV} · unknown: ${says.slice(-120)}`); }
 
 await h.app.stop();
 { const s = await open('#/flagship', { role: 'cxeng', sw: false, init: `localStorage.setItem('empathia.demo.sandbox.v1', ${JSON.stringify(JSON.stringify(stored))})` }); const r = s.page;

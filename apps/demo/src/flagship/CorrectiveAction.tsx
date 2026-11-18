@@ -49,8 +49,12 @@ export function CorrectiveAction({ issue, def, wo, creds, t }: { issue: Issue; d
   const W = wo ? `/v1/work-orders/${wo.code}` : ''; const D = `/v1/issues/${issue.code}/deficiency`; const ws = wo?.state || 'NONE'; const dw = def?.workflow || issue.workflow;
   const go = (label: string, what: string, run: () => Promise<Answer>, ok: Said) => t.act(label, async () => { const a = await run(); return a.ok ? ok : t.refused(a, what); });
   const post = (path: string, body: unknown = {}) => () => t.call('POST', path, body);
+  // who the gates admit and refuse right now, as the server lists them: an answer from Search Party is shown only while this is what it was
+  // when the answer was given. A credential verified since, or anything else that moves a gate, makes the answer an old one.
+  const gates = wo?.candidates ? `${wo.candidates.eligible.map((x) => x.id).join(',')}|${wo.candidates.ineligible.map((x) => x.id).join(',')}` : '';
+  const [askedAt, setAskedAt] = useState('');
   const ask = () => t.act('Asking Search Party who is qualified…', async () => { const a = await t.call<Qualified>('POST', '/v1/search/intent', { question: 'who is qualified to fix this', target: { type: 'RoomIssue', id: issue.code } });
-    if (!a.ok) { setAsked(null); return t.refused(a, 'the question'); } setAsked(a.body); return { ok: true, title: 'Search Party answered.', text: a.body.summary }; });
+    if (!a.ok) { setAsked(null); return t.refused(a, 'the question'); } setAsked(a.body); setAskedAt(gates); return { ok: true, title: 'Search Party answered.', text: a.body.summary }; });
   const btn = (id: string, label: string, onClick: () => void, primary = true, disabled = false) => <button type="button" className={`ui-btn ui-btn--sm${primary ? ' ui-btn--primary' : ''}`} data-testid={id} disabled={t.busy || disabled} onClick={onClick}>{label}</button>;
 
   return (
@@ -75,7 +79,8 @@ export function CorrectiveAction({ issue, def, wo, creds, t }: { issue: Issue; d
             {wo && ws === 'TRIAGED' ? <>
               <p className="ui-meta" data-testid="fl-wo-need">This job needs: {wo.need.certs.join(', ') || 'no certification'} · experience {Object.entries(wo.need.experience).map(([k, v]) => `${k} ${v}`).join(', ') || 'none named'} · tools {wo.need.tools.join(', ') || 'none named'}.</p>
               <p className="build__row">{btn('fl-sp-ask', `Ask Search Party who is qualified, as the ${t.person}`, () => void ask(), false)}</p>
-              {asked ? <div className="ca__answer" data-testid="fl-sp-answer" data-status={asked.status}><b>{asked.summary}</b>
+              {asked && askedAt !== gates && wo.candidates ? <p className="ui-meta" data-testid="fl-sp-stale">Search Party answered before the gates last changed (a credential was verified, or someone’s capacity moved). Its answer is not shown: ask again.</p> : null}
+              {asked && (askedAt === gates || !wo.candidates) ? <div className="ca__answer" data-testid="fl-sp-answer" data-status={asked.status}><b>{asked.summary}</b>
                 <ul className="fl__list">{asked.items.map((i) => <li key={i.label}>{i.label}: {i.via}</li>)}</ul>
                 <p className="ui-meta">{asked.items[0]?.provenance ? `From: ${asked.items[0].provenance}. ` : ''}{asked.uncertainty.length ? `Not known: ${asked.uncertainty.join('; ')}.` : ''}</p></div> : null}
               {wo.candidates ? <ul className="fl__list ca__cands" data-testid="fl-candidates">

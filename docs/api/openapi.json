@@ -1552,7 +1552,7 @@
         "tags": [
           "devices"
         ],
-        "summary": "Add a planned device (gets a tenant-unique canonical asset id)",
+        "summary": "Add a planned device (gets a tenant-unique canonical asset id). z is its designed height above the floor in metres, between 0 and the ceiling; without it the category’s usual height is used",
         "operationId": "postV1RoomsRoomDevices",
         "x-authority": "room.design",
         "x-authority-enforced": [
@@ -1603,6 +1603,11 @@
                   },
                   "y": {
                     "type": "number"
+                  },
+                  "z": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 30
                   },
                   "mount": {
                     "type": "string",
@@ -1737,6 +1742,11 @@
                   },
                   "y": {
                     "type": "number"
+                  },
+                  "z": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 30
                   },
                   "rot": {
                     "type": "number"

@@ -125,6 +125,12 @@ try {
   step('R-02', 'the deployment check passes against it: permissions, unauthorized access, isolation, persistence, cross-origin, reset', s1.status === 0 && sm.failed === 0 && sm.passed === 12, s1.status === 0 ? `${sm.passed} passed, ${sm.failed} failed` : (s1.stdout + s1.stderr).split('\n').filter((l) => /^FAIL/.test(l)).join(' | ').slice(0, 380));
 
   // R-03: a sandbox opened before a restart, with something recorded in it
+  // The deployment check above ran as a child and this process waited for it, its event loop stopped. A connection this process had
+  // left open to the service was closed by the service meanwhile (it closes an idle one after five seconds), and until the loop turns
+  // this process has not heard of it: its next request would go down a closed socket and fail before reaching the service. The check
+  // used to finish inside those five seconds; with three rooms to prepare for each sandbox it does not (18 Nov 2026). So: let the loop
+  // turn before the first request. Nothing about the service is different.
+  await new Promise((r) => setTimeout(r, 250));
   const j = async (method, p, { token, body } = {}) => { const r = await fetch(base + p, { method, headers: { ...(token ? { authorization: `Bearer ${token}` } : {}), ...(body ? { 'content-type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined }); return { status: r.status, body: await r.json().catch(() => null) }; };
   const o = await j('POST', '/v1/demo/sandboxes', { body: {} }); const fr = `/v1/rooms/${o.body.scenario.room}/field-record`; const dev = (await j('GET', fr, { token: o.body.session.accessToken })).body.devices[0].asset;
   await j('PUT', `${fr}/mounting/${dev}`, { token: o.body.session.accessToken, body: { method: 'floor', note: 'before the restart (synthetic)' } });
@@ -228,9 +234,10 @@ try {
     const tid = psql(DB, `SELECT tenant_id FROM app.demo_sandbox WHERE id = '${o.body.sandbox.id}'`).stdout.trim(); const kept0 = count(`SELECT count(*) FROM app.audit_event WHERE tenant_id = '${tid}'`);
     const aged = psql(DB, `UPDATE app.demo_sandbox SET expires_at = now() - interval '1 minute' WHERE id = '${o.body.sandbox.id}'`);
     const afterExpiry = await j('GET', '/v1/me', { token: viaKey.body?.accessToken }); const keyNow = await j('POST', '/v1/demo/sessions', { body: { sandboxId: o.body.sandbox.id, key: o.body.sandbox.key, role: 'exec' } });
-    step('R-12', 'an expired sandbox: its key opens nothing, a session issued before stops, the visitor is told why, and its records are kept', aged.status === 0 && afterExpiry.status === 401 && keyNow.status === 401 && /expired/.test(String(keyNow.body?.detail)) && count(`SELECT count(*) FROM app.audit_event WHERE tenant_id = '${tid}'`) >= kept0 && kept0 > 0 && count(`SELECT count(*) FROM app.room WHERE tenant_id = '${tid}'`) === 2 /* 17 Nov 2026: a sandbox opens with two rooms (the flagship lecture theatre joined the scenario room) */,
-      aged.status === 0 ? `session ${afterExpiry.status} · key ${keyNow.status} “${String(keyNow.body?.detail).slice(0, 80)}” · ${kept0} audit rows and the room still in the database` : aged.stderr.trim().slice(0, 200)); }
-} catch (e) { step('R-XX', 'the rehearsal could not be completed', false, (e && e.message) || String(e)); }
+    step('R-12', 'an expired sandbox: its key opens nothing, a session issued before stops, the visitor is told why, and its records are kept', aged.status === 0 && afterExpiry.status === 401 && keyNow.status === 401 && /expired/.test(String(keyNow.body?.detail)) && count(`SELECT count(*) FROM app.audit_event WHERE tenant_id = '${tid}'`) >= kept0 && kept0 > 0 && count(`SELECT count(*) FROM app.room WHERE tenant_id = '${tid}'`) === 3 /* 17 Nov 2026: a sandbox opens with two rooms (the flagship lecture theatre joined the scenario room); 18 Nov 2026: three (the second engineering room, Harbor 201) */,
+      aged.status === 0 ? `session ${afterExpiry.status} · key ${keyNow.status} “${String(keyNow.body?.detail).slice(0, 80)}” · ${kept0} audit rows and its three rooms still in the database` : aged.stderr.trim().slice(0, 200)); }
+} catch (e) { try { fs.mkdirSync(path.join(repo, '.local/logs'), { recursive: true }); fs.writeFileSync(path.join(repo, '.local/logs/rehearse-demo-last.log'), String(typeof log === 'string' ? log : '')); } catch { /* the log is a convenience */ }
+  step('R-XX', 'the rehearsal could not be completed', false, `${(e && e.message) || String(e)}${e && e.cause ? ` (${e.cause.code || e.cause.message || e.cause})` : ''} · the service log ends: ${String(typeof log === 'string' ? log : '').trim().split('\n').slice(-4).join(' | ').slice(-1500)}`); }
 finally { await stop(); try { clusterDown(); } catch { /* reported by the next run, which removes it first */ } fs.rmSync(objects, { recursive: true, force: true }); }
 
 const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07', 'R-08', 'R-09', 'R-10', 'R-11', 'R-12', 'R-13']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');

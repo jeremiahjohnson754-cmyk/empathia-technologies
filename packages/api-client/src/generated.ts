@@ -678,6 +678,7 @@ export interface Operations {
     body: {
       x?: number;
       y?: number;
+      z?: number;
       rot?: number;
       mount?: "wall" | "ceiling" | "floor" | "table" | "rack";
       model?: string;
@@ -1585,7 +1586,7 @@ export interface Operations {
     };
     response: R<'postV1RoomsRoomConnections'>;
   };
-  /** POST /v1/rooms/{room}/devices — Add a planned device (gets a tenant-unique canonical asset id) (authority: room.design) */
+  /** POST /v1/rooms/{room}/devices — Add a planned device (gets a tenant-unique canonical asset id). z is its designed height above the floor in metres, between 0 and the ceiling; without it the category’s usual height is used (authority: room.design) */
   postV1RoomsRoomDevices: {
     method: 'POST'; path: '/v1/rooms/{room}/devices'; auth: true; idempotent: true;
     params: { room: string };
@@ -1594,6 +1595,7 @@ export interface Operations {
       category: string;
       x?: number;
       y?: number;
+      z?: number;
       mount?: "wall" | "ceiling" | "floor" | "table" | "rack";
       rot?: number;
     };

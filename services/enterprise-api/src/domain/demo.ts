@@ -89,7 +89,7 @@ async function invoke(router: Router, ctx: RequestContext, method: string, path:
  * still to be filled — and a service technician whose credentials were recorded by the service manager and verified by the data steward.
  * Everything after that is the visitor's to do.
  */
-export interface Scenario { room: string; flagship: { room: string; canonicalRef: string; name: string } }
+export interface Scenario { room: string; flagship: { room: string; canonicalRef: string; name: string }; second: { room: string; canonicalRef: string; name: string } }
 /**
  * The flagship engineering room (founder, 17 Nov 2026: "make one University lecture hall the flagship engineering demonstration
  * before expanding all the tools across the estate… the same engine can power your enterprise rooms, stadium executive suites, and
@@ -99,6 +99,59 @@ export interface Scenario { room: string; flagship: { room: string; canonicalRef
  */
 export const FLAGSHIP = { criterion: { test: 'reverberation_rt60', metric: 't30_mid', upper: 1, source: 'Acoustic brief for SCI-110, speech use (synthetic)' }, canonicalRef: 'UNI-SCI-110', name: 'Lecture Theatre SCI-110 (synthetic)', template: 'auditorium', site: { code: 'UNI-N', name: 'Kestrel Valley University, North Campus (synthetic)' }, building: { code: 'UNI-SCI', name: 'Science Hall (synthetic)', floors: 4 },
   floor: 0, length: '20', width: '16', ceiling: '6.5', occupancy: 180, intendedUse: 'Lectures with capture and reinforcement: a raked theatre, 180 seats, six wheelchair positions at the rear cross-aisle' } as const;
+
+/**
+ * What the lecture theatre has beyond its template (founder, 17 Nov 2026, 19:05: "enrich SCI-110's physical model"). The auditorium
+ * template gives a 300-seat hall nine devices and two seating blocks; for 180 seats that was a sketch. These are added by the
+ * sandbox's designer through POST /v1/rooms/{room}/devices, the route anyone would use, before the drawings are generated and the
+ * design approved — so the design checks, the proposed connections, the commissioning plan and the register all see them.
+ *
+ * Positions are in metres: x across from the left wall, y from the front wall, z above the floor at the device (the floor is raked;
+ * the rake is not modelled, so z is a height above the flat floor of the plan). Every device is a class of device, generic, with
+ * the catalogue's own properties. It is a synthetic design for a fictional room: plausible, not a design for any real room.
+ *
+ *   seating      30 blocks of six in ten rows of three (two aisles): 180 seats, the room's stated occupancy
+ *   display      a relay display on each side wall at mid-depth, and a confidence display on the rear wall facing the lectern
+ *   cameras      an audience camera at the front and a second presenter camera at the rear, with the template's rear camera
+ *   microphones  four suspended over the seating for questions from the floor, one at the lectern, with the template's wireless system
+ *   loudspeakers six more, suspended in three pairs down the room behind the template's front pair: eight, four metres of coverage each
+ *   equipment    a second amplifier for them, a control processor, a video switcher and a stream encoder for lecture capture, a second
+ *                network switch (the devices need more ports than one has), a power distribution unit and the rack itself
+ *   control      a touch panel beside the lectern, a scheduling panel by the rear door, an occupancy sensor, the lighting control
+ */
+type Add = { category: string; x: number; y: number; z?: number; rot?: number };
+const SEAT_ROWS = 10; const SEAT_X = [3.2, 8, 12.8]; const seatAt = (i: number) => ({ x: SEAT_X[i % 3]!, y: Math.round((5 + Math.floor(i / 3) * 1.4) * 100) / 100 });
+export const FLAGSHIP_MODEL: { heights: Record<string, number>; add: Add[]; seats: number } = {
+  // the template's own devices, by category: the rear camera above the cross-aisle, the front loudspeakers suspended like the others
+  heights: { camera: 3.2, speaker: 5 },
+  add: [
+    // the second switch and the second amplifier first: the engine proposes each connection to the first switch with a free port and the
+    // first amplifier with a free channel, so they have to be there when the devices that need them arrive
+    { category: 'switch', x: 15.52, y: 11 }, { category: 'amp', x: 15.52, y: 7 },
+    { category: 'display', x: 0.15, y: 11, z: 3, rot: 90 }, { category: 'display', x: 15.85, y: 11, z: 3, rot: 270 }, { category: 'display', x: 10, y: 19.85, z: 2.6, rot: 180 },
+    { category: 'camera', x: 3, y: 0.3, z: 2.8, rot: 0 }, { category: 'camera', x: 5, y: 19.4, z: 3.2, rot: 180 },
+    { category: 'micceil', x: 5, y: 8, z: 4.5 }, { category: 'micceil', x: 11, y: 8, z: 4.5 }, { category: 'micceil', x: 5, y: 14, z: 4.5 }, { category: 'micceil', x: 11, y: 14, z: 4.5 }, { category: 'mictable', x: 8, y: 2.05, z: 1.1 },
+    { category: 'speaker', x: 4, y: 10, z: 5 }, { category: 'speaker', x: 12, y: 10, z: 5 }, { category: 'speaker', x: 4, y: 14, z: 5 }, { category: 'speaker', x: 12, y: 14, z: 5 }, { category: 'speaker', x: 4, y: 18, z: 5 }, { category: 'speaker', x: 12, y: 18, z: 5 },
+    { category: 'control', x: 15.52, y: 8 }, { category: 'switcher', x: 15.52, y: 9 }, { category: 'encoder', x: 15.52, y: 10 }, { category: 'pdu', x: 15.52, y: 12 }, { category: 'rack', x: 15.3, y: 13.2 },
+    { category: 'touch', x: 8.95, y: 2, z: 1.1 }, { category: 'scheduler', x: 15.9, y: 19, rot: 270 }, { category: 'occsensor', x: 8, y: 10, z: 6.5 }, { category: 'lighting', x: 0.1, y: 1.5, rot: 90 },
+  ],
+  seats: SEAT_ROWS * SEAT_X.length * 6,
+};
+
+/**
+ * A second engineering room, in another world (founder, 17 Nov 2026, 19:05: "demonstrate the same workflow in another room"; and
+ * earlier the same day: "the same engine can power your enterprise rooms, stadium executive suites, and convention center spaces
+ * without creating separate engineering systems for each world"). It is Harbor 201, a 220-seat session room of the convention
+ * centre as the canonical estate has it (apps/demo/src/estate/convention.ts: CNV-MR-H201, theatre layout, 22 × 16 × 5 m). The venue
+ * is fictional and the room is a server room like any other, made through the same routes by the same people: nothing about it is
+ * special-cased. It is the town-hall template as it comes (its seating blocks are a sketch of 220 seats, and the page says how many
+ * are drawn), with one reverberation criterion for speech. A session room and not a boardroom because the catalogue applies the
+ * reverberation test to assembly rooms only: in a boardroom there would be no acoustic acceptance of this kind to fail.
+ * Everything after "installed" is the visitor's to do, with the same page and the same rules as the lecture theatre.
+ */
+export const SECOND = { criterion: { test: 'reverberation_rt60', metric: 't30_mid', upper: 0.8, source: 'Acoustic brief for Harbor 201, speech and presentation use (synthetic)' }, canonicalRef: 'CNV-MR-H201', name: 'Harbor 201 (synthetic)', template: 'townhall',
+  site: { code: 'CNV', name: 'Larkspur Exchange Convention Centre (synthetic)' }, building: { code: 'CNV-V', name: 'Larkspur Exchange (synthetic)', floors: 2 },
+  floor: 2, length: '22', width: '16', ceiling: '5', occupancy: 220, intendedUse: 'Conference sessions with capture and reinforcement: theatre seating for 220' } as const;
 
 async function seedScenario(pool: PgPool, router: Router, tenantId: string, people: Persona[], correlationId: string): Promise<Scenario> {
   const as = async (role: string): Promise<RequestContext> => {
@@ -137,6 +190,17 @@ async function seedScenario(pool: PgPool, router: Router, tenantId: string, peop
     await q.query('INSERT INTO app.building (tenant_id, site_id, code, name, floors) VALUES ($1,$2,$3,$4,$5)', [tenantId, site, FLAGSHIP.building.code, FLAGSHIP.building.name, FLAGSHIP.building.floors]);
   });
   const hall = String((await invoke(router, designer, 'POST', '/v1/rooms', { name: FLAGSHIP.name, template: FLAGSHIP.template, canonicalRef: FLAGSHIP.canonicalRef, buildingCode: FLAGSHIP.building.code, floor: FLAGSHIP.floor, length: FLAGSHIP.length, width: FLAGSHIP.width, ceiling: FLAGSHIP.ceiling, occupancy: FLAGSHIP.occupancy, intendedUse: FLAGSHIP.intendedUse }))['code']);
+  // the theatre's own equipment and seating (FLAGSHIP_MODEL), added to the draft as its designer: the template's devices first get
+  // their heights and its two seating blocks their places in the rows, then the rest is added, one request each
+  { const D = `/v1/rooms/${hall}/devices`; const first = ((await invoke(router, designer, 'GET', `/v1/rooms/${hall}`))['devices'] as Array<{ id: string; cat: string; furniture?: boolean }>);
+    let seat = 0;
+    for (const d of first) {
+      if (d.cat === 'chairs') await invoke(router, designer, 'PATCH', `${D}/${d.id}`, seatAt(seat++));
+      else if (FLAGSHIP_MODEL.heights[d.cat] != null) await invoke(router, designer, 'PATCH', `${D}/${d.id}`, { z: FLAGSHIP_MODEL.heights[d.cat] });
+    }
+    for (; seat < SEAT_ROWS * SEAT_X.length; seat++) await invoke(router, designer, 'POST', D, { category: 'chairs', ...seatAt(seat) });
+    for (const d of FLAGSHIP_MODEL.add) await invoke(router, designer, 'POST', D, d);
+  }
   await invoke(router, designer, 'POST', `/v1/rooms/${hall}/drawings/generate`);
   await invoke(router, syseng, 'POST', `/v1/rooms/${hall}/drawings/plan/approve`);
   await invoke(router, syseng, 'POST', `/v1/rooms/${hall}/classification/approve`, {});
@@ -144,7 +208,18 @@ async function seedScenario(pool: PgPool, router: Router, tenantId: string, peop
   // what the lecture theatre has to meet for reverberation, set by the design authority through the same route anyone would use (0037).
   // It is the one criterion the scenario sets: the other measured tests have none until someone sets one.
   await invoke(router, syseng, 'PUT', `/v1/rooms/${hall}/criteria/${FLAGSHIP.criterion.test}`, { metric: FLAGSHIP.criterion.metric, upper: FLAGSHIP.criterion.upper, source: FLAGSHIP.criterion.source });
-  return { room, flagship: { room: hall, canonicalRef: FLAGSHIP.canonicalRef, name: FLAGSHIP.name } };
+  // the second engineering room: its venue first, then the room, by the same routes and the same people
+  await pool.tx({ tenantId, userId: designer.p.personId }, async (q) => {
+    const site = (await q.query<{ id: string }>('INSERT INTO app.site (tenant_id, code, name) VALUES ($1,$2,$3) RETURNING id', [tenantId, SECOND.site.code, SECOND.site.name])).rows[0]!.id;
+    await q.query('INSERT INTO app.building (tenant_id, site_id, code, name, floors) VALUES ($1,$2,$3,$4,$5)', [tenantId, site, SECOND.building.code, SECOND.building.name, SECOND.building.floors]);
+  });
+  const suite = String((await invoke(router, designer, 'POST', '/v1/rooms', { name: SECOND.name, template: SECOND.template, canonicalRef: SECOND.canonicalRef, buildingCode: SECOND.building.code, floor: SECOND.floor, length: SECOND.length, width: SECOND.width, ceiling: SECOND.ceiling, occupancy: SECOND.occupancy, intendedUse: SECOND.intendedUse }))['code']);
+  await invoke(router, designer, 'POST', `/v1/rooms/${suite}/drawings/generate`);
+  await invoke(router, syseng, 'POST', `/v1/rooms/${suite}/drawings/plan/approve`);
+  await invoke(router, syseng, 'POST', `/v1/rooms/${suite}/classification/approve`, {});
+  for (const [to, who] of [['DESIGN_APPROVED', syseng], ['INSTALLATION_PENDING', opslead], ['INSTALLED_UNVERIFIED', installer]] as const) await invoke(router, who, 'POST', `/v1/rooms/${suite}/lifecycle`, { to });
+  await invoke(router, syseng, 'PUT', `/v1/rooms/${suite}/criteria/${SECOND.criterion.test}`, { metric: SECOND.criterion.metric, upper: SECOND.criterion.upper, source: SECOND.criterion.source });
+  return { room, flagship: { room: hall, canonicalRef: FLAGSHIP.canonicalRef, name: FLAGSHIP.name }, second: { room: suite, canonicalRef: SECOND.canonicalRef, name: SECOND.name } };
 }
 
 function session(d: DemoDeps, sb: Sandbox, who: Persona) {

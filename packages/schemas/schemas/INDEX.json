@@ -556,12 +556,12 @@
     {
       "file": "api/postV1RoomsRoomDevices.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDevices/0.1.0.json",
-      "sha256": "b388e328e19aa335b3850d91cefb92152767b7687b4f25889f641dcc200b9517"
+      "sha256": "04071b56277959fafacd62052c056ae714c28865999abc31906696beed3fe468"
     },
     {
       "file": "api/patchV1RoomsRoomDevicesAsset.json",
       "$id": "https://schemas.empathia.invalid/api/patchV1RoomsRoomDevicesAsset/0.1.0.json",
-      "sha256": "c96b1c99aed52ebd9fbb7517afaeb53acf72b5fd8259afa6b46624d82e3478da"
+      "sha256": "618b42495a059eed9f5f2b4bd7e7f6bd5fe21c275925f49b28079f8b9749782a"
     },
     {
       "file": "api/postV1RoomsRoomPositionsPositionInstallation.json",

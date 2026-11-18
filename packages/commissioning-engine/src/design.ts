@@ -68,7 +68,8 @@ export const outlineFor = (shape: string, widthM: number, lengthM: number): Arra
   ((shapes as Record<string, (w: number, l: number) => Array<[number, number]>>)[shape] || shapes.rect)(widthM, lengthM).map(([x, y]) => [r3(x), r3(y)] as [number, number]);
 
 /**
- * The proposed-connection rules: networked device → switch; microphone → audio processor; amplifier/processor → loudspeaker;
+ * The proposed-connection rules: networked device → switch (the first with a free port; a further switch uplinks to the first);
+ * microphone → audio processor; amplifier/processor → loudspeaker (the first amplifier with a free channel);
  * processor → amplifier; camera → room compute; compute → display; compute ↔ processor; touch panel → controller.
  * Returns only the NEW connections (existing identical ones are not duplicated). `onlyId` limits the rules to one device.
  */
@@ -77,6 +78,16 @@ export function proposeConnections(d: Pick<RoomDesignInput, 'devices' | 'connect
   const first = (cats: string[]) => live.find((x) => cats.includes(x.cat));
   const sw = first(['switch']); const dsp = first(['dsp']); const comp = first(['compute']); const amp = first(['amp']); const swr = first(['switcher']);
   const all = [...d.connections]; const added: Connection[] = [];
+  // Capacity (18 Nov 2026): a switch has ports and an amplifier has channels. The rule was "the first switch" and "the first amplifier"
+  // whatever they already carried, so a room with two amplifiers put every loudspeaker on one and left the other idle. Now: the first
+  // one that still has room, and the first one when none has — which is what it always was for a room with one of each.
+  const ids = (cat: string) => new Set(live.filter((x) => x.cat === cat).map((x) => x.id));
+  const switches = ids('switch'); const amps = ids('amp'); const speakers = ids('speaker');
+  const ports = (id: string) => all.filter((c) => !c.removed && c.kind === 'network' && (c.from === id || c.to === id)).length;
+  const channels = (id: string) => all.filter((c) => !c.removed && c.kind === 'signal' && c.from === id && speakers.has(c.to)).length;
+  const roomy = (cat: string, usedOf: (id: string) => number, prop: string) => live.filter((x) => x.cat === cat).find((x) => usedOf(x.id) < (Number(x.props?.[prop]) || Infinity));
+  const onSwitch = (id: string) => all.some((c) => !c.removed && c.kind === 'network' && c.from === id && switches.has(c.to));
+  const driven = (id: string) => all.some((c) => !c.removed && c.kind === 'signal' && c.to === id && amps.has(c.from));
   const want = (from: PlannedDevice | undefined, to: PlannedDevice | undefined, kind: string, why: string) => {
     if (!from || !to || from.id === to.id) return;
     if (onlyId && from.id !== onlyId && to.id !== onlyId) return;
@@ -86,9 +97,10 @@ export function proposeConnections(d: Pick<RoomDesignInput, 'devices' | 'connect
   };
   for (const x of live) {
     const K = C.categories[x.cat]!;
-    if (K.net && sw && x.cat !== 'switch') want(x, sw, 'network', 'networked device → room switch');
+    if (K.net && sw && x.cat !== 'switch' && !onSwitch(x.id)) want(x, roomy('switch', ports, 'ports') || sw, 'network', 'networked device → room switch');
+    if (x.cat === 'switch' && sw && x.id !== sw.id && !onSwitch(x.id)) want(x, sw, 'network', 'switch uplink → room switch');
     if (['micceil', 'mictable', 'micwireless'].includes(x.cat)) want(x, dsp, 'signal', 'microphone → audio processor');
-    if (x.cat === 'speaker') want(amp || dsp, x, 'signal', `${amp ? 'amplifier' : 'audio processor'} → loudspeaker`);
+    if (x.cat === 'speaker' && !(amp && driven(x.id))) want((amp && (roomy('amp', channels, 'channels') || amp)) || dsp, x, 'signal', `${amp ? 'amplifier' : 'audio processor'} → loudspeaker`);
     if (x.cat === 'amp') want(dsp, x, 'signal', 'audio processor → amplifier');
     if (['camera', 'bar'].includes(x.cat)) want(x, comp || swr, 'signal', 'camera → room compute');
     if (['display', 'ledwall', 'projector'].includes(x.cat)) want(swr || comp, x, 'signal', 'room compute → display');

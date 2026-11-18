@@ -107,8 +107,8 @@ export function computeApplicability(d: RoomDesignInput, arch: string | null, su
   const facts = knownFacts(d);
   const approved = APPROVED.includes(d.lifecycle);
   const installed = INSTALLED.includes(d.lifecycle);
-  const devRefs = (T: TestDefinition) => {
-    const fam = T.family || DOMAIN_FAMILY[T.domain];
+  const devRefs = (T: TestDefinition, id: string) => {
+    const fam = T.family || C.testFamily?.[id] || DOMAIN_FAMILY[T.domain];   // C.testFamily: a catalogue's own corrections (enterpriseCatalog); the demonstrator's catalogue has none
     const key = fam === 'touch' ? 'touch_panel' : fam;
     return live.filter((x) => key && deviceFamily(x.cat) === key).map((x) => x.id);
   };
@@ -132,7 +132,7 @@ export function computeApplicability(d: RoomDesignInput, arch: string | null, su
       evidence: T.accepts,
       instrument: !!T.instrument,
       window: !!T.window,
-      devices: devRefs(T),
+      devices: devRefs(T, id),
       // R3-2: the machine-readable result is the same label every view and export shows — never a bare PASS.
       result: resultLabel((d.results || {})[id]),
     });

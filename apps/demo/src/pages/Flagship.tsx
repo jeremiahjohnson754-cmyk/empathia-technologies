@@ -32,7 +32,9 @@ interface Point { x: number; y: number }
 /** Where a device is, as the server answers it for every product (services/enterprise-api/src/domain/placement.ts). */
 interface Placement { designed: Point & { mount: string }; asBuilt: (Point & { move: string; decidedBy: string | null; decidedAt: string }) | null; proposed: (Point & { move: string; by: string; at: string }) | null; current: Point; basis: 'DESIGNED' | 'AS_BUILT';
   history: Array<{ move: string; state: string; from: Point; to: Point; metres: number; reason: string; by: string; at: string; decidedBy: string | null; decidedAt: string | null }> }
-interface Device { id: string; cat: string; label: string; role: string; model: string; modelName: string | null; x: number; y: number; z: number; rot: number; mount: string; furniture?: boolean; lifecycle: string; identityState: string | null; placement: Placement | null }
+interface Device { id: string; cat: string; label: string; role: string; model: string; modelName: string | null; x: number; y: number; z: number; rot: number; mount: string; furniture?: boolean; lifecycle: string; identityState: string | null; placement: Placement | null;
+  /** the category's footprint on the plan in metres, from the server's catalogue: furniture is drawn as large as it is */
+  footprint?: { w: number; d: number } | null; props?: Record<string, unknown> }
 interface FieldAnswer { room: { bounds: { w: number; l: number } }; writable: boolean; may: { record: boolean; decide: boolean };
   devices: Array<{ asset: string; asBuilt: Point & { moved: string | null }; recheck: Array<{ test: string; label: string; result: string | null }> }>;
   moves: Array<{ move: string; device: string; state: string; from: Point; to: Point; metres: number; reason: string; note: string; by: string; decidedBy: string | null; decision: string | null; mayDecide: boolean }>; catalogue: { moveReasons: string[] } }
@@ -43,6 +45,8 @@ interface Measured { id: string; metric: string; value: string | number; unit: s
   criterion_lower: string | null; criterion_upper: string | null; recorded_by_name: string; recorded_role: string; created_at: string; cited_by_result: string | null;
   /** 0040: how the server arrived at the value, when it worked it out itself from the evidence */
   validation: { sent: number; recomputed: number; synthetic: boolean; positions: unknown[] } | null }
+/** A room as the server lists it: the page offers each one of the sandbox, by its canonical identifier where it has one. */
+interface RoomListed { code: string; canonicalRef: string | null; name: string; lifecycle: string; building: string }
 interface RegisterAnswer { items: Array<{ asset: string | null; position: string; missing: string[] }> }
 interface Connection { id: string; from: string; to: string; kind: string; why: string }
 interface Row { test_id: string; label: string; pack: string; domain: string; phase: number; tier: number; applicable: boolean; why: string[]; personas: string[]; evidence: string[]; instrument: boolean; devices: string[]; result: string }
@@ -53,7 +57,7 @@ interface RoomAnswer {
   commissioning: { engineVersion: string; ruleVersion: string; library: number; applicable: number; counts: Record<string, number>; rows: Row[] } | null;
 }
 interface Thread { room: { code: string; lifecycle: string; revision: number }; complete?: boolean; missing?: string[]; stages: Array<{ key: string; product: string; records: Record<string, unknown> }> }
-interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; creds: Cred[]; people: Person[]; place: { building: string; buildingName: string; site: string; siteName: string } | null }
+interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; creds: Cred[]; people: Person[]; rooms: RoomListed[]; place: { building: string; buildingName: string; site: string; siteName: string } | null }
 type Said = { ok: boolean; warn?: boolean; title: string; text: string; reasons?: string[] };
 const at = (p: Point) => `${p.x} m across, ${p.y} m from the front`;
 const same = (a: Point, b: Point) => Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005;
@@ -81,45 +85,61 @@ const when = (iso: string) => { try { return new Date(iso).toLocaleTimeString(un
 function Plan({ room, devices, connections, selected, onSelect, showLinks, showFurniture, showDesigned, moving, draft, onDraft }: { room: RoomAnswer['room']; devices: Device[]; connections: Connection[]; selected: string | null; onSelect: (id: string | null) => void; showLinks: boolean; showFurniture: boolean; showDesigned: boolean;
   moving: string | null; draft: Point | null; onDraft: (p: Point) => void }) {
   const g = room.geometry; const pad = 1.6; const W = g.widthM; const L = g.lengthM; const svg = useRef<SVGSVGElement | null>(null); const dragging = useRef(false);
-  const shown = devices.filter((d) => showFurniture || !d.furniture); const byId = new Map(devices.map((d) => [d.id, d]));
+  // The marks (a device's circle, its letter, a label) are a fixed size on the drawing. In a twenty-metre theatre a metre is one unit of
+  // the drawing; in a room of eight metres or four the room is drawn larger, by u, so the same marks do not cover it. Every place stays
+  // in metres: only the drawing is scaled, and a pointer's place is scaled back.
+  const u = Math.max(1, 20 / Math.max(W, L)); const U = (v: number) => Math.round(v * u * 1000) / 1000; const step = Math.max(W, L) > 12 ? 4 : Math.max(W, L) > 6 ? 2 : 1;
+  // furniture first: it is drawn under the equipment, and a seating block's own target never lies over a loudspeaker above it
+  const shown = devices.filter((d) => showFurniture || !d.furniture).sort((a, b) => Number(!!b.furniture) - Number(!!a.furniture)); const byId = new Map(devices.map((d) => [d.id, d]));
+  // a device's target is as large as its neighbours allow: half the distance to the nearest other device, between 0.5 m and 1.1 m.
+  // Equipment along a wall is a metre apart; a fixed 1.1 m target put each one under its neighbour's, and a press chose the neighbour.
+  const reach = useMemo(() => { const marks = devices.filter((d) => !d.furniture).map((d) => ({ id: d.id, ...placeOf(d) })); const out = new Map<string, number>();
+    for (const a of marks) { let near = Infinity; for (const b of marks) if (b.id !== a.id) near = Math.min(near, Math.hypot(a.x - b.x, a.y - b.y) * u); out.set(a.id, Math.max(0.5, Math.min(1.1, near / 2))); }
+    return out; }, [devices, u]);
   const links = showLinks ? connections.filter((k) => byId.has(k.from) && byId.has(k.to)) : connections.filter((k) => selected && (k.from === selected || k.to === selected) && byId.has(k.from) && byId.has(k.to));
-  const ticks = Array.from({ length: Math.floor(W / 4) + 1 }, (_, i) => i * 4); const rows = Array.from({ length: Math.floor(L / 4) + 1 }, (_, i) => i * 4);
+  const ticks = Array.from({ length: Math.floor(W / step) + 1 }, (_, i) => i * step); const rows = Array.from({ length: Math.floor(L / step) + 1 }, (_, i) => i * step);
   // a pointer's place in the room, in metres, snapped to five centimetres and kept inside the walls
-  const toRoom = (e: { clientX: number; clientY: number }): Point | null => { const el = svg.current; const m = el?.getScreenCTM(); if (!el || !m) return null; const pt = el.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(m.inverse()); return { x: snap(q.x, W), y: snap(q.y, L) }; };
+  const toRoom = (e: { clientX: number; clientY: number }): Point | null => { const el = svg.current; const m = el?.getScreenCTM(); if (!el || !m) return null; const pt = el.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(m.inverse()); return { x: snap(q.x / u, W), y: snap(q.y / u, L) }; };
   const drop = (e: { clientX: number; clientY: number }) => { const p = toRoom(e); if (p) onDraft(p); };
   const mover = moving ? byId.get(moving) : undefined; const from = mover ? placeOf(mover) : null;
   return (
-    <svg ref={svg} className="fl__plan" viewBox={`${-pad} ${-pad} ${W + 2 * pad} ${L + 2 * pad}`} role="group" aria-label={`Plan of ${room.name}: ${W} by ${L} metres, ${shown.length} positions`} data-testid="fl-plan" data-width={W} data-length={L} data-moving={moving || ''}
+    <svg ref={svg} className="fl__plan" viewBox={`${-pad} ${-pad} ${U(W) + 2 * pad} ${U(L) + 2 * pad}`} data-scale={u} role="group" aria-label={`Plan of ${room.name}: ${W} by ${L} metres, ${shown.length} positions`} data-testid="fl-plan" data-width={W} data-length={L} data-moving={moving || ''}
       onPointerMove={(e: { clientX: number; clientY: number }) => { if (moving && dragging.current) drop(e); }} onPointerUp={() => { dragging.current = false; }} onPointerLeave={() => { dragging.current = false; }}>
-      <g className="fl__grid" aria-hidden="true">{ticks.map((x) => <line key={`x${x}`} x1={x} y1={0} x2={x} y2={L} />)}{rows.map((y) => <line key={`y${y}`} x1={0} y1={y} x2={W} y2={y} />)}</g>
-      <polygon className="fl__outline" points={g.points.map((p) => p.join(',')).join(' ')} onClick={(e: { clientX: number; clientY: number }) => { if (moving) drop(e); else onSelect(null); }} />
-      <text className="fl__dim" x={W / 2} y={-0.55} textAnchor="middle">front · {W} m</text>
-      <text className="fl__dim" x={-0.55} y={L / 2} textAnchor="middle" transform={`rotate(-90 ${-0.55} ${L / 2})`}>{L} m</text>
-      <g aria-hidden="true">{links.map((k) => { const a = placeOf(byId.get(k.from)!); const b = placeOf(byId.get(k.to)!); return <line key={k.id} className="fl__link" data-kind={k.kind} data-on={selected && (k.from === selected || k.to === selected) ? 'yes' : 'no'} x1={a.x} y1={a.y} x2={b.x} y2={b.y} />; })}</g>
+      <g className="fl__grid" aria-hidden="true">{ticks.map((x) => <line key={`x${x}`} x1={U(x)} y1={0} x2={U(x)} y2={U(L)} />)}{rows.map((y) => <line key={`y${y}`} x1={0} y1={U(y)} x2={U(W)} y2={U(y)} />)}</g>
+      <polygon className="fl__outline" points={g.points.map((p) => `${U(p[0]!)},${U(p[1]!)}`).join(' ')} onClick={(e: { clientX: number; clientY: number }) => { if (moving) drop(e); else onSelect(null); }} />
+      <text className="fl__dim" x={U(W) / 2} y={-0.55} textAnchor="middle">front · {W} m</text>
+      <text className="fl__dim" x={-0.55} y={U(L) / 2} textAnchor="middle" transform={`rotate(-90 ${-0.55} ${U(L) / 2})`}>{L} m</text>
+      <g aria-hidden="true">{links.map((k) => { const a = placeOf(byId.get(k.from)!); const b = placeOf(byId.get(k.to)!); return <line key={k.id} className="fl__link" data-kind={k.kind} data-on={selected && (k.from === selected || k.to === selected) ? 'yes' : 'no'} x1={U(a.x)} y1={U(a.y)} x2={U(b.x)} y2={U(b.y)} />; })}</g>
       {/* the designed place of a device that has moved: kept, and drawn as what it is */}
       {showDesigned ? shown.filter((d) => d.placement?.basis === 'AS_BUILT').map((d) => { const p = d.placement!; return <g key={`g${d.id}`} className="fl__ghost" data-ghost={d.id} aria-hidden="true">
-        <line x1={p.designed.x} y1={p.designed.y} x2={p.current.x} y2={p.current.y} /><circle cx={p.designed.x} cy={p.designed.y} r={0.48} /><text x={p.designed.x} y={p.designed.y + (p.current.y < p.designed.y ? 1.05 : -0.7)} textAnchor="middle">designed</text></g>; }) : null}
+        <line x1={U(p.designed.x)} y1={U(p.designed.y)} x2={U(p.current.x)} y2={U(p.current.y)} /><circle cx={U(p.designed.x)} cy={U(p.designed.y)} r={0.48} /><text x={U(p.designed.x)} y={U(p.designed.y) + (p.current.y < p.designed.y ? 1.05 : -0.7)} textAnchor="middle">designed</text></g>; }) : null}
       {/* a move waiting for a decision: a proposal, drawn as one */}
       {shown.filter((d) => d.placement?.proposed).map((d) => { const p = d.placement!; return <g key={`p${d.id}`} className="fl__proposed" data-proposed={d.id} aria-hidden="true">
-        <line x1={p.current.x} y1={p.current.y} x2={p.proposed!.x} y2={p.proposed!.y} /><circle cx={p.proposed!.x} cy={p.proposed!.y} r={0.48} /><text x={p.proposed!.x} y={p.proposed!.y + (p.current.y < p.proposed!.y ? 1.05 : -0.7)} textAnchor="middle">proposed</text></g>; })}
+        <line x1={U(p.current.x)} y1={U(p.current.y)} x2={U(p.proposed!.x)} y2={U(p.proposed!.y)} /><circle cx={U(p.proposed!.x)} cy={U(p.proposed!.y)} r={0.48} /><text x={U(p.proposed!.x)} y={U(p.proposed!.y) + (p.current.y < p.proposed!.y ? 1.05 : -0.7)} textAnchor="middle">proposed</text></g>; })}
       {shown.map((d) => { const f = familyOf(d.cat); const on = d.id === selected; const mv = d.id === moving; const here = mv && draft ? draft : placeOf(d);
-        return <g key={d.id} className="fl__dev" data-family={d.furniture ? 'furniture' : f.family} data-on={on ? 'yes' : 'no'} data-move={mv ? 'yes' : 'no'} data-device={d.id} data-x={here.x} data-y={here.y} transform={`translate(${here.x} ${here.y})`} role="button" tabIndex={0} aria-pressed={on}
+        return <g key={d.id} className="fl__dev" data-family={d.furniture ? 'furniture' : f.family} data-on={on ? 'yes' : 'no'} data-move={mv ? 'yes' : 'no'} data-device={d.id} data-x={here.x} data-y={here.y} transform={`translate(${U(here.x)} ${U(here.y)})`} role="button" tabIndex={0} aria-pressed={on}
           aria-label={mv ? `${d.label}: moving. Drag it, or use the arrow keys: a tenth of a metre a press, half a metre with Shift` : `${d.label}, ${d.furniture ? 'furniture' : f.family}, ${d.id}`}
           onClick={() => { if (!moving) onSelect(on ? null : d.id); }}
           onPointerDown={(e: { currentTarget: Element; pointerId: number; preventDefault: () => void }) => { if (mv) { dragging.current = true; e.preventDefault(); } }}
           onKeyDown={(e: { key: string; shiftKey: boolean; preventDefault: () => void }) => {
             if (mv && /^Arrow/.test(e.key)) { e.preventDefault(); const step = e.shiftKey ? 0.5 : 0.1; const b = draft || placeOf(d); onDraft({ x: snap(b.x + (e.key === 'ArrowRight' ? step : e.key === 'ArrowLeft' ? -step : 0), W), y: snap(b.y + (e.key === 'ArrowDown' ? step : e.key === 'ArrowUp' ? -step : 0), L) }); }
             else if (!moving && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onSelect(on ? null : d.id); } }}>
-          <circle className="fl__hit" r={1.1} />
-          {d.furniture ? <rect x={-0.55} y={-0.35} width={1.1} height={0.7} rx={0.12} /> : <circle r={0.48} />}
+          {d.furniture ? (() => { const w = Math.max(0.6, U(d.footprint?.w ?? 1.1)); const dp = Math.max(0.5, U(d.footprint?.d ?? 0.7));   // furniture at its own size, so thirty seating blocks read as rows and do not cover one another's targets
+            const turn = `rotate(${d.rot || 0})`; return <><rect className="fl__hit" transform={turn} x={-w / 2 - 0.1} y={-dp / 2 - 0.1} width={w + 0.2} height={dp + 0.2} /><rect transform={turn} x={-w / 2} y={-dp / 2} width={w} height={dp} rx={0.12} /></>; })()
+            : <><circle className="fl__hit" r={reach.get(d.id) ?? 1.1} /><circle r={0.48} /></>}
           {d.furniture ? null : <text y={0.2} textAnchor="middle">{f.letter}</text>}
         </g>; })}
-      {mover && from && draft && !same(from, draft) ? <g className="fl__draft" aria-hidden="true"><line x1={from.x} y1={from.y} x2={draft.x} y2={draft.y} /><circle cx={from.x} cy={from.y} r={0.3} /><text x={draft.x} y={draft.y + (from.y < draft.y ? 1.05 : -0.75)} textAnchor="middle">{dist(from, draft)} m</text></g> : null}
+      {mover && from && draft && !same(from, draft) ? <g className="fl__draft" aria-hidden="true"><line x1={U(from.x)} y1={U(from.y)} x2={U(draft.x)} y2={U(draft.y)} /><circle cx={U(from.x)} cy={U(from.y)} r={0.3} /><text x={U(draft.x)} y={U(draft.y) + (from.y < draft.y ? 1.05 : -0.75)} textAnchor="middle">{dist(from, draft)} m</text></g> : null}
     </svg>
   );
 }
 
-export function FlagshipPage() {
+/** The room the address names: `#/flagship` is the lecture theatre, `#/flagship/CNV-MR-H201` another room of the sandbox by its
+ *  canonical identifier or its server code. Nothing else about the page changes with the room: it is one page and one set of rules. */
+const refOf = (room?: string) => (room && /^[A-Za-z0-9][A-Za-z0-9-]{2,60}$/.test(room) ? room : FLAGSHIP_REF);
+
+export function FlagshipPage({ room }: { room?: string }) {
+  const ref = refOf(room); const flagship = ref === FLAGSHIP_REF;
   const c = useMemo(() => connected(), []);
   const [avail, setAvail] = useState<Availability | null>(null); const [sb, setSb] = useState<Sandbox | null>(() => c.sandbox());
   const [who, setWho] = useState('cxeng'); const [data, setData] = useState<Loaded | null>(null); const [busy, setBusy] = useState<string | null>(null); const [said, setSaid] = useState<Said | null>(null);
@@ -129,18 +149,20 @@ export function FlagshipPage() {
   const [moving, setMoving] = useState<string | null>(null); const [draft, setDraft] = useState<Point | null>(null); const [reason, setReason] = useState(''); const [note, setNote] = useState(''); const [decision, setDecision] = useState('');
   const alive = useRef(true); useEffect(() => () => { alive.current = false; }, []);
 
+  // a short tag for the synthetic names this page makes up (hostnames, serials, file names): the room's own identifier, so two rooms never share one
+  const tag = (data?.room.room.canonicalRef || data?.room.room.code || ref).toLowerCase().replace(/[^a-z0-9]/g, '').slice(-10);
   const read = useCallback(async (as: string, keep = false): Promise<void> => {
     if (!c.sandbox()) { setData(null); return; }
     setBusy('Reading the room from the server…'); if (!keep) setSaid(null);
     try {
-      const room = await c.call<RoomAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}`);
+      const room = await c.call<RoomAnswer>(as, 'GET', `/v1/rooms/${ref}`);
       if (!alive.current) return;
       if (room.status === 404) { setAbsent(true); setData(null); return; }
       if (!room.ok) { setData(null); setSaid({ ok: false, title: `The server answered ${room.status}.`, text: room.detail }); return; }
-      const [thread, list, sites, field, baseline] = await Promise.all([c.call<Thread>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/thread`), c.call<{ items: Array<{ code: string; building: string }> }>(as, 'GET', '/v1/rooms?limit=50'),
+      const [thread, list, sites, field, baseline] = await Promise.all([c.call<Thread>(as, 'GET', `/v1/rooms/${ref}/thread`), c.call<{ items: RoomListed[] }>(as, 'GET', '/v1/rooms?limit=50'),
         c.call<{ items: Array<{ code: string; name: string; buildings: Array<{ code: string; name: string }> }> }>(as, 'GET', '/v1/sites'),
-        c.call<FieldAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/field-record`), c.call<BaselineAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/baselines`)]);
-      const [criteria, measured, register, sandbox] = await Promise.all([c.call<CriteriaAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/criteria`), c.call<{ items: Measured[] }>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/measurements`), c.call<RegisterAnswer>(as, 'GET', `/v1/rooms/${FLAGSHIP_REF}/register`),
+        c.call<FieldAnswer>(as, 'GET', `/v1/rooms/${ref}/field-record`), c.call<BaselineAnswer>(as, 'GET', `/v1/rooms/${ref}/baselines`)]);
+      const [criteria, measured, register, sandbox] = await Promise.all([c.call<CriteriaAnswer>(as, 'GET', `/v1/rooms/${ref}/criteria`), c.call<{ items: Measured[] }>(as, 'GET', `/v1/rooms/${ref}/measurements`), c.call<RegisterAnswer>(as, 'GET', `/v1/rooms/${ref}/register`),
         c.call<{ personas: Person[] }>(as, 'GET', '/v1/demo/sandbox')]);
       const creds = await c.call<{ items: Cred[] }>(as, 'GET', '/v1/competencies');   // as this person sees them: their own, or everyone's for those who record or verify
       // each deficiency of the room with its own workflow record and, when one was raised, its work order
@@ -149,13 +171,13 @@ export function FlagshipPage() {
         service[i.code] = { def: d.ok ? d.body : null, wo: w && w.ok ? w.body : null }; }));
       if (!alive.current) return;
       const b = list.ok ? list.body.items.find((x) => x.code === room.body.room.code)?.building : undefined; const site = b && sites.ok ? sites.body.items.find((s) => s.buildings.some((x) => x.code === b)) : undefined;
-      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, creds: creds.ok ? creds.body.items : [], people: sandbox.ok ? sandbox.body.personas : [], place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
+      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, rooms: list.ok ? list.body.items : [], creds: creds.ok ? creds.body.items : [], people: sandbox.ok ? sandbox.body.personas : [], place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
       setSelected((s) => (s && room.body.devices.some((d) => d.id === s) ? s : null));
     } catch (e) {
       if (e instanceof SandboxGone) { setSb(null); setData(null); setSaid({ ok: false, title: 'The sandbox is no longer there.', text: `${e.message}. Open a new one to continue.` }); }
       else setSaid(e instanceof TypeError ? { ok: false, title: 'The server cannot be reached.', text: data ? 'What is shown is what it held when it last answered.' : 'Nothing can be shown until it answers: this page keeps no copy of the room.' } : { ok: false, title: 'The server did not answer.', text: (e as Error).message });
     } finally { if (alive.current) setBusy(null); }
-  }, [c, data]);
+  }, [c, data, ref]);
 
   useEffect(() => { let on = true; void (async () => { const a = await c.availability(); if (!on) return; setAvail(a); if (a.enabled && c.sandbox()) await read(who); })(); return () => { on = false; }; }, [c]);   // eslint-disable-line react-hooks/exhaustive-deps
   const open = async (fresh: boolean) => { setBusy(fresh ? 'Opening a new sandbox…' : 'Opening your sandbox…'); setSaid(null);
@@ -171,12 +193,16 @@ export function FlagshipPage() {
     finally { if (alive.current) setBusy(null); } };
   const startMove = (id: string) => { setMoving(id); setDraft(null); setReason(''); setNote(''); setSaid(null); };
   const stopMove = () => { setMoving(null); setDraft(null); };
+  // another room in the address: what is on the page belongs to the room that was there, so it goes, and the new room is read. A draft
+  // of a move is dropped with it (it was never sent). The first read is the availability effect's, above.
+  const shownRef = useRef(ref);
+  useEffect(() => { if (shownRef.current === ref) return; shownRef.current = ref; setData(null); setSelected(null); setAbsent(false); setSaid(null); stopMove(); if (avail?.enabled && c.sandbox()) void read(who); }, [ref]);   // eslint-disable-line react-hooks/exhaustive-deps
   const propose = (dev: Device, to: Point) => act('Sending the move to the server…', async () => {
-    const a = await c.call<{ move: string; state: string; from: Point; to: Point; metres: number }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/field-record/moves`, { device: dev.id, x: to.x, y: to.y, reason, note: note.trim() || undefined });
+    const a = await c.call<{ move: string; state: string; from: Point; to: Point; metres: number }>(who, 'POST', `/v1/rooms/${ref}/field-record/moves`, { device: dev.id, x: to.x, y: to.y, reason, note: note.trim() || undefined });
     if (!a.ok) return refused(a, 'the move');
     stopMove(); return { ok: true, title: `${a.body.move} is proposed.`, text: `${dev.label}: ${at(a.body.from)} to ${at(a.body.to)}, ${a.body.metres} m. It is a proposal until someone other than the ${person(who)} who holds design approval decides it. The design is not edited.` }; });
   const decide = (dev: Device, move: string, approve: boolean) => act(approve ? 'Sending the approval to the server…' : 'Sending the rejection to the server…', async () => {
-    const a = await c.call<{ state: string }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/field-record/moves/${move}/decide`, { approve, decision: decision.trim() || undefined });
+    const a = await c.call<{ state: string }>(who, 'POST', `/v1/rooms/${ref}/field-record/moves/${move}/decide`, { approve, decision: decision.trim() || undefined });
     if (!a.ok) return refused(a, approve ? 'the approval' : 'the rejection');
     setDecision(''); return approve ? { ok: true, title: `${move} is approved.`, text: `${dev.label} is now recorded where it was installed. The designed position is kept beside it, and the tests that name the device are listed to be looked at again.` }
       : { ok: true, title: `${move} is rejected.`, text: `${dev.label} stays where it was. The proposal is kept in the history.` }; });
@@ -185,11 +211,11 @@ export function FlagshipPage() {
   const fillRegister = () => act('Recording a serial, and a hostname and address where there is a network port, for every unit…', async () => {
     const todo = (data?.register?.items || []).filter((x) => x.asset && x.missing.length); const t = Math.random().toString(36).slice(2, 7); let n = 0;
     for (const x of todo) { n += 1;
-      if (x.missing.includes('hostname') || x.missing.includes('IP address')) { const a = await c.call(who, 'PUT', `/v1/assets/${x.asset}/register`, { hostname: `syn-sci110-${t}-${n}`, ip: `10.110.${Math.floor(Math.random() * 200) + 20}.${n + 10}` }); if (!a.ok) return refused(a, `the register entry of ${x.asset}`); }
-      if (x.missing.includes('serial')) { const a = await c.call(who, 'POST', `/v1/assets/${x.asset}/identity`, { state: 'DECLARED', serial: `SYN-SN-SCI110-${t}-${n}` }); if (!a.ok) return refused(a, `the serial of ${x.asset}`); } }
+      if (x.missing.includes('hostname') || x.missing.includes('IP address')) { const a = await c.call(who, 'PUT', `/v1/assets/${x.asset}/register`, { hostname: `syn-${tag}-${t}-${n}`, ip: `10.110.${Math.floor(Math.random() * 200) + 20}.${n + 10}` }); if (!a.ok) return refused(a, `the register entry of ${x.asset}`); }
+      if (x.missing.includes('serial')) { const a = await c.call(who, 'POST', `/v1/assets/${x.asset}/identity`, { state: 'DECLARED', serial: `SYN-SN-${tag.toUpperCase()}-${t}-${n}` }); if (!a.ok) return refused(a, `the serial of ${x.asset}`); } }
     return { ok: true, title: `${n} unit${n === 1 ? '' : 's'} registered.`, text: 'Synthetic serials, hostnames and addresses, one request for each. Commissioning can start once every unit is in the register.' }; });
   const startCommissioning = () => act('Asking the server to start commissioning…', async () => {
-    const a = await c.call(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/lifecycle`, { to: 'COMMISSIONING' }); if (!a.ok) return refused(a, 'the start of commissioning');
+    const a = await c.call(who, 'POST', `/v1/rooms/${ref}/lifecycle`, { to: 'COMMISSIONING' }); if (!a.ok) return refused(a, 'the start of commissioning');
     return { ok: true, title: 'The room is in commissioning.', text: 'Results and measurements can be recorded now, each by the role responsible for the test.' }; });
   const recordMeasurement = (o: BenchOutput) => act('Uploading the evidence and asking the server to work the value out and record it…', async () => {
     // each response file goes up first, so that the server can read it; the package then names it by the id the server gave it
@@ -197,14 +223,14 @@ export function FlagshipPage() {
     for (const f of o.files) { const up = await c.call<{ id: string }>(who, 'POST', '/v1/evidence', undefined, { data: f.data, mediaType: f.mediaType, fileName: f.name });
       if (!up.ok) return refused(up, `the response file ${f.name}, which the server has to read to work the value out itself. Nothing was recorded`); ids.set(f.position, up.body.id); }
     const pkg = { ...o.pkg, positions: o.pkg.positions.map((p) => (ids.has(p.position) ? { ...p, response: { ...p.response, evidenceId: ids.get(p.position) } } : p)) };
-    const ev = await c.call<{ id: string }>(who, 'POST', '/v1/evidence', undefined, { text: JSON.stringify(pkg, null, 1), fileName: `sci-110-reverberation-analysis-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.json` }); if (!ev.ok) return refused(ev, 'the evidence file');
-    const a = await c.call<{ id: string; within: boolean | null; says: string }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/measurements`, { testId: 'reverberation_rt60', metric: 't30_mid', unit: 's', value: o.value, method: o.method, measuredAt: new Date().toISOString(), location: o.location, source: o.source, provenance: o.provenance,
+    const ev = await c.call<{ id: string }>(who, 'POST', '/v1/evidence', undefined, { text: JSON.stringify(pkg, null, 1), fileName: `${tag}-reverberation-analysis-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.json` }); if (!ev.ok) return refused(ev, 'the evidence file');
+    const a = await c.call<{ id: string; within: boolean | null; says: string }>(who, 'POST', `/v1/rooms/${ref}/measurements`, { testId: 'reverberation_rt60', metric: 't30_mid', unit: 's', value: o.value, method: o.method, measuredAt: new Date().toISOString(), location: o.location, source: o.source, provenance: o.provenance,
       ...(o.instrumentId ? { instrumentId: o.instrumentId } : {}), ...(o.calibrationStatus ? { calibrationStatus: o.calibrationStatus } : {}), ...(o.calibrationDue ? { calibrationDue: o.calibrationDue } : {}), evidenceId: ev.body.id, detail: o.detail });
     if (!a.ok) return refused(a, 'the measurement');
     return { ok: true, warn: a.body.within === false, title: a.body.within === false ? 'Recorded. The server says it does not meet the criterion.' : a.body.within ? 'Recorded. The server says it meets the criterion.' : 'Recorded.', text: a.body.says }; });
   const recordResult = (m: Measured, state: 'PASS' | 'FAIL') => act(`Asking the server to record ${state} on this measurement…`, async () => {
     const kind = R?.commissioning?.rows.find((r) => r.test_id === m.test_id)?.evidence[0] || 'INSTRUMENT_MEASURED';
-    const a = await c.call<{ resultLabel: string }>(who, 'POST', `/v1/rooms/${FLAGSHIP_REF}/results`, { testId: m.test_id, state, evidenceId: m.evidence_id, evidenceKind: kind, instrument: m.instrument_id || `none: ${m.provenance.toLowerCase()} reference responses`, measurementId: m.id });
+    const a = await c.call<{ resultLabel: string }>(who, 'POST', `/v1/rooms/${ref}/results`, { testId: m.test_id, state, evidenceId: m.evidence_id, evidenceKind: kind, instrument: m.instrument_id || `none: ${m.provenance.toLowerCase()} reference responses`, measurementId: m.id });
     if (!a.ok) return refused(a, `${state} on this measurement`);
     return state === 'FAIL' ? { ok: true, warn: true, title: 'FAIL is recorded.', text: 'The server opened a deficiency that states what was measured against what. Acceptance is blocked until it is closed by a verified retest.' }
       : { ok: true, title: `${words(a.body.resultLabel)} is recorded.`, text: 'A pass waits for someone else to verify it: its recorder cannot.' }; });
@@ -212,6 +238,8 @@ export function FlagshipPage() {
   useEffect(() => { if (moving) (document.querySelector(`.fl__plan [data-device="${moving}"]`) as SVGGElement | null)?.focus(); }, [moving]);
 
   const R = data?.room; const rows = useMemo(() => (R?.commissioning?.rows || []).filter((r) => r.applicable), [R]);
+  // the seats the plan draws: what the server's seating blocks say they hold, beside the room's stated occupancy
+  const seatsDrawn = (R?.devices || []).reduce((n, d) => n + (d.furniture && typeof d.props?.['seats'] === 'number' ? (d.props['seats'] as number) : 0), 0);
   const phases = useMemo(() => [...new Set(rows.map((r) => r.phase))].sort((a, b) => a - b), [rows]);
   // the plan opens on its first phase: seventy-odd tests at once is a long page, and a phase is how the work is done
   const opened = useRef(false); useEffect(() => { if (!opened.current && phases.length) { opened.current = true; setPhase(phases[0]!); } }, [phases]);
@@ -236,9 +264,12 @@ export function FlagshipPage() {
   if (!c.configured) return <div className="ui-page" data-testid="flagship"><PageHero product="commissioning" icon="link" eyebrow="The flagship engineering room, on the server" title="Lecture Theatre SCI-110" lede="This build of the demonstration is not connected to a server, so there is no room to read." /></div>;
   return (
     <div className="ui-page" data-testid="flagship" data-loaded={data ? 'yes' : 'no'}>
-      <PageHero product="commissioning" icon="link" eyebrow="The flagship engineering room, on the server" title="Lecture Theatre SCI-110"
+      {flagship ? <PageHero product="commissioning" icon="link" eyebrow="The flagship engineering room, on the server" title="Lecture Theatre SCI-110"
         lede="One university lecture hall carries the engineering demonstration: the same room, the same record, for every tool that follows. This is its first panel set. Everything below was returned by the server for the person you choose; the page keeps no copy of the room."
         meta={[`Canonical identifier ${FLAGSHIP_REF}`, `Server ${c.origin}`, 'Synthetic records: a fictional university']} />
+        : <PageHero product="commissioning" icon="link" eyebrow="Another room, the same engineering record" title={data?.room.room.name || ref}
+          lede="The page, the server and the rules are the ones the lecture theatre uses. Only the room is different: its own design, its own criterion, its own people’s work. Everything below was returned by the server for the person you choose; the page keeps no copy of the room."
+          meta={[`Identifier ${data?.room.room.canonicalRef || ref}`, `Server ${c.origin}`, 'Synthetic records: a fictional venue']} />}
 
       {!avail ? <p role="status" data-testid="fl-asking"><Tag tone="warn">asking</Tag> Asking the server… One that has been idle can take about a minute to start.</p> : null}
       {avail && !avail.enabled ? <Notice tone="warn"><b>The server-backed demonstration is not available here.</b> {avail.reason} The room cannot be shown without it: this page keeps no copy.</Notice> : null}
@@ -246,7 +277,7 @@ export function FlagshipPage() {
         <p>A sandbox is a synthetic organization of your own on the server. It opens with the lecture theatre already designed, approved and installed, ready to be commissioned.</p>
         <p className="build__row"><button type="button" className="ui-btn ui-btn--primary" data-testid="fl-open" disabled={!!busy} onClick={() => void open(false)}>Open a sandbox</button> <a href="#/connected">I have a resume code</a></p>
       </Card> : null}
-      {avail?.enabled && sb && absent ? <Notice tone="warn"><b>This sandbox was opened before the lecture theatre existed on the server.</b> It has no room with the identifier {FLAGSHIP_REF}. A new sandbox has it; the old one stays on the server until it expires.{' '}
+      {avail?.enabled && sb && absent ? <Notice tone="warn">{flagship ? <><b>This sandbox was opened before the lecture theatre existed on the server.</b> It has no room with the identifier {FLAGSHIP_REF}.</> : <><b>This sandbox has no room “{ref}”.</b> <a href="#/flagship" data-testid="fl-back">Go to the lecture theatre</a>, or open a new sandbox: a sandbox opened before a room existed does not have it.</>} A new sandbox has it; the old one stays on the server until it expires.{' '}
         <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-new" disabled={!!busy} onClick={() => void open(true)}>Close this one and open a new one</button></Notice> : null}
       {busy ? <p role="status" data-testid="fl-busy"><Tag tone="warn">working</Tag> {busy}</p> : null}
       {said ? <div data-testid="fl-said" data-ok={said.ok ? 'yes' : 'no'}><Notice tone={!said.ok ? 'bad' : said.warn ? 'warn' : 'ok'}><b>{said.title}</b> {said.text}{said.reasons?.length ? <ul className="fl__list" data-testid="fl-said-reasons">{said.reasons.map((r) => <li key={r}>{r}</li>)}</ul> : null}</Notice></div> : null}
@@ -263,6 +294,8 @@ export function FlagshipPage() {
             <div><dt>Server’s code</dt><dd className="ui-mono" data-testid="fl-code">{R.room.code}</dd></div>
           </dl>
           <div className="fl__who">
+            {data.rooms.length > 1 ? <label className="kit-field">Room <select value={R.room.canonicalRef || R.room.code} data-testid="fl-room" disabled={!!busy} onChange={(e: { target: { value: string } }) => { window.location.hash = e.target.value === FLAGSHIP_REF ? '#/flagship' : `#/flagship/${e.target.value}`; }}>
+              {data.rooms.map((x) => <option key={x.code} value={x.canonicalRef || x.code}>{x.name} · {x.canonicalRef || x.code}</option>)}</select></label> : null}
             <label className="kit-field">Acting as <select value={who} data-testid="fl-who" disabled={!!busy} onChange={(e: { target: { value: string } }) => change(e.target.value)}>{PEOPLE.map(([k, n]) => <option key={k} value={k}>{n}</option>)}</select></label>
             <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-read" disabled={!!busy} onClick={() => void read(who)}>Read the server again</button>
             <span className="ui-meta" data-testid="fl-at" data-as={data.as}>read at {when(data.at)} as the {PEOPLE.find(([k]) => k === data.as)?.[1].toLowerCase()} · sandbox <span className="ui-mono">{sb.tenant}</span></span>
@@ -270,7 +303,7 @@ export function FlagshipPage() {
         </section>
 
         <div className="fl__work">
-          <Card icon="map" title="Plan" sub={`${R.devices.filter((d) => !d.furniture).length} device positions and ${R.devices.filter((d) => d.furniture).length} pieces of furniture, to scale`} testId="fl-plan-card">
+          <Card icon="map" title="Plan" sub={`${R.devices.filter((d) => !d.furniture).length} device positions and ${R.devices.filter((d) => d.furniture).length} pieces of furniture, to scale${seatsDrawn ? ` · ${seatsDrawn} seats drawn of ${R.room.occupancy}` : ''}`} testId="fl-plan-card">
             <p className="fl__toggles">
               <label><input type="checkbox" checked={showLinks} data-testid="fl-links" onChange={(e: { target: { checked: boolean } }) => setShowLinks(e.target.checked)} /> Every connection</label>
               <label><input type="checkbox" checked={showFurniture} data-testid="fl-furniture" onChange={(e: { target: { checked: boolean } }) => setShowFurniture(e.target.checked)} /> Furniture</label>
@@ -355,7 +388,7 @@ export function FlagshipPage() {
           <p className="ui-meta">The installer fills the register; the systems engineer starts commissioning. Asked as anyone else, the server refuses and its words are shown.</p>
         </Card> : null}
 
-        <ReverbBench geometry={R.room.geometry} test={bench} lifecycle={R.room.lifecycle} person={person(who)} busy={!!busy} onRecord={(o) => void recordMeasurement(o)} />
+        <ReverbBench key={R.room.code} roomRef={R.room.canonicalRef || R.room.code} geometry={R.room.geometry} test={bench} lifecycle={R.room.lifecycle} person={person(who)} busy={!!busy} onRecord={(o) => void recordMeasurement(o)} />
 
         <Card icon="chart" title="Measurements on the server" sub={`${data.measured.length} recorded for this room’s tests`} testId="fl-measured-card">
           {data.measured.length ? <ol className="fl__list fl__measured" data-testid="fl-measured">{data.measured.map((m, i) => <li key={m.id} data-measurement={m.id} data-within={m.within === null ? 'none' : m.within ? 'yes' : 'no'} data-cited={m.cited_by_result || ''}>
@@ -376,7 +409,7 @@ export function FlagshipPage() {
             : <p data-testid="fl-issues-none">No deficiency is open on this room. A failed result opens one.</p>}
         </Card>
 
-        <Finishing room={FLAGSHIP_REF} lifecycle={R.room.lifecycle} rows={rows} counts={{ recorded: R.commissioning?.counts['recorded'] ?? 0, verified: R.commissioning?.counts['verified'] ?? 0, applicable: R.commissioning?.applicable ?? 0 }}
+        <Finishing room={ref} lifecycle={R.room.lifecycle} rows={rows} counts={{ recorded: R.commissioning?.counts['recorded'] ?? 0, verified: R.commissioning?.counts['verified'] ?? 0, applicable: R.commissioning?.applicable ?? 0 }}
           measuredTests={(data.criteria?.tests || []).filter((x) => x.criterion).map((x) => x.test)} people={data.people} t={tools} />
 
         <BaselineCard baseline={B} revision={R.room.approvedRevision} names={Object.fromEntries((data.criteria?.tests || []).map((x) => [x.test, x.name]))} />

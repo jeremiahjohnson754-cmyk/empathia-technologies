@@ -40,7 +40,8 @@ refuse. The rules were in the server and tested with fixtures elsewhere. In the 
 `#/flagship` offers "Service technician 2" and "Data steward" among the people to act as. The candidates list shows the second
 technician failing a gate with the server's reason and an "Assign anyway" that the server refuses. A block under the work order
 lists the credentials as the acting person is allowed to see them (a technician sees their own; those who record or verify see
-everyone's) with a button to verify a pending one. Step four says whose job it is. Every outcome is the server's (FL-32).
+everyone's) with a button to verify a pending one. Step four says whose job it is. An answer Search Party gave before the gates last changed is withdrawn until it is asked again,
+so the page never shows "1 of 2 pass" above two people who pass. Every outcome is the server's (FL-32).
 
 ## Not decided here, and known limits
 

@@ -299,13 +299,13 @@ main details > summary { min-height: 24px; }
 .fl__link { stroke: var(--line2); stroke-width: 0.06; } .fl__link[data-kind=network] { stroke-dasharray: 0.25 0.18; } .fl__link[data-on=yes] { stroke: var(--accent); stroke-width: 0.12; }
 .fl__dev { cursor: pointer; } .fl__dev:focus { outline: none; }
 .fl__hit { fill: transparent; }
-.fl__dev > circle:not(.fl__hit), .fl__dev > rect { fill: var(--panel2); stroke: var(--info); stroke-width: 0.08; }
-.fl__dev[data-family=furniture] > rect { stroke: var(--line3); fill: var(--bg2); stroke-dasharray: 0.16 0.1; }
+.fl__dev > circle:not(.fl__hit), .fl__dev > rect:not(.fl__hit) { fill: var(--panel2); stroke: var(--info); stroke-width: 0.08; }
+.fl__dev[data-family=furniture] > rect:not(.fl__hit) { stroke: var(--line3); fill: var(--bg2); stroke-dasharray: 0.16 0.1; }
 .fl__dev[data-family=camera] > circle:not(.fl__hit) { stroke: var(--accent); } .fl__dev[data-family=microphone] > circle:not(.fl__hit), .fl__dev[data-family=loudspeaker] > circle:not(.fl__hit), .fl__dev[data-family=dsp] > circle:not(.fl__hit) { stroke: var(--warn); }
 .fl__dev[data-family=amplifier] > circle:not(.fl__hit) { stroke: var(--warn); } .fl__dev[data-family=network] > circle:not(.fl__hit), .fl__dev[data-family=control] > circle:not(.fl__hit) { stroke: var(--ok); }
 .fl__dev text { font-size: 0.52px; font-weight: 700; fill: var(--tx); pointer-events: none; }
-.fl__dev[data-on=yes] > circle:not(.fl__hit), .fl__dev[data-on=yes] > rect { fill: var(--accent); stroke: var(--tx); stroke-width: 0.12; } .fl__dev[data-on=yes] text { fill: var(--accent-ink); }
-.fl__dev:focus-visible > circle:not(.fl__hit), .fl__dev:focus-visible > rect { stroke: var(--tx); stroke-width: 0.16; }
+.fl__dev[data-on=yes] > circle:not(.fl__hit), .fl__dev[data-on=yes] > rect:not(.fl__hit) { fill: var(--accent); stroke: var(--tx); stroke-width: 0.12; } .fl__dev[data-on=yes] text { fill: var(--accent-ink); }
+.fl__dev:focus-visible > circle:not(.fl__hit), .fl__dev:focus-visible > rect:not(.fl__hit) { stroke: var(--tx); stroke-width: 0.16; }
 .fl__devs, .fl__list, .fl__stages { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .fl__devbtn { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; min-height: var(--target-min); padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg2); color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .fl__devbtn:hover, .fl__devbtn:focus-visible { border-color: var(--accent); }
@@ -329,7 +329,7 @@ main details > summary { min-height: 24px; }
 .fl__proposed text { fill: var(--tx); } .fl__ghost, .fl__proposed, .fl__draft { pointer-events: none; }
 .fl__draft line { stroke: var(--accent); stroke-width: 0.08; stroke-dasharray: 0.3 0.16; } .fl__draft circle { fill: none; stroke: var(--accent); stroke-width: 0.06; stroke-dasharray: 0.14 0.1; } .fl__draft text { fill: var(--tx); font-weight: 700; }
 .fl__dev[data-move=yes] { cursor: grab; } .fl__dev[data-move=yes]:active { cursor: grabbing; }
-.fl__dev[data-move=yes] > circle:not(.fl__hit), .fl__dev[data-move=yes] > rect { fill: var(--accent); stroke: var(--tx); stroke-width: 0.14; stroke-dasharray: 0.22 0.12; }
+.fl__dev[data-move=yes] > circle:not(.fl__hit), .fl__dev[data-move=yes] > rect:not(.fl__hit) { fill: var(--accent); stroke: var(--tx); stroke-width: 0.14; stroke-dasharray: 0.22 0.12; }
 .fl__legend { list-style: none; display: flex; flex-wrap: wrap; gap: 4px var(--sp-4); margin: var(--sp-2) 0; padding: 0; font-size: var(--fs-xs); color: var(--tx2); } .fl__legend li { display: inline-flex; align-items: center; gap: 6px; }
 .fl__key { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--info); background: var(--panel2); }
 .fl__key[data-key=designed] { border: 2px dashed var(--tx2); background: none; } .fl__key[data-key=proposed] { border-color: var(--warn); background: none; } .fl__key[data-key=draft] { border: 2px dashed var(--tx); background: var(--accent); }
