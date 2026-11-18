@@ -91,7 +91,7 @@ function Drawer({ open, onClose, products, current, at, onViewAs, role }: { open
         <span className="sheet__grab" aria-hidden="true" />
         <div className="sheet__head"><h2 id="drawer-h">Products <span className="drawer__count">{products.length}</span></h2><button type="button" className="sheet__x" onClick={onClose} aria-label="Close the menu"><Icon name="close" size={20} /></button></div>
         <button type="button" className="drawer__who" data-r={role} onClick={onViewAs}><span className="ava" aria-hidden="true">{r.initials}</span><span><b>View as</b> · {r.label}</span><Icon name="chevron-right" size={18} className="drawer__chev" /></button>
-        <a className="drawer__start" href="#/investor" onClick={onClose} aria-current={at?.page.id === 'investor' ? 'page' : undefined}><Icon name="spark" size={18} /><span><b>Investor start</b><span>Three ways in: build a room, a guided scenario, the problem each workflow solves</span></span>{at?.page.id === 'investor' && <span className="drawer__here" aria-hidden="true">You are here</span>}</a>
+        <a className="drawer__start" href="#/investor" onClick={onClose} aria-current={at?.page.id === 'investor' ? 'page' : undefined}><Icon name="spark" size={18} /><span><b>Investor start</b><span>Four ways in: build a room, a guided scenario, the problem each workflow solves, or a world</span></span>{at?.page.id === 'investor' && <span className="drawer__here" aria-hidden="true">You are here</span>}</a>
         <ul className="drawer__list">
           {products.map((p) => (
             <li key={p.id} className="drawer__product" data-p={p.id}>

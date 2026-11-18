@@ -65,9 +65,9 @@ export default function Landing({ role }: PageProps) {
     <div className="lnd">
       <section className="hero lnd__hero">
         <div className="lnd__top"><div>
-        <p className="kicker">Investor demonstration · </p>
+        <p className="kicker">Investor demonstration · synthetic estate</p>
         <h1>Every state here has a guard, an actor and an event behind it.</h1>
-        <p className="lead">Declared is not verified; modeled is not measured — and the product says so itself. Three ways in:</p>
+        <p className="lead">Declared is not verified; modeled is not measured — and the product says so itself. Four ways in:</p>
         </div>
         <figure className="lnd__art stage" data-stage="" aria-label="The living campus in 3D"><CampusMap tiles={tiles} onOpen={(b) => { location.hash = `#/campus/${b.key}`; }} /><figcaption className="stage__cap">The living campus: six buildings, each tinted by its modelled health. Select one to go inside.</figcaption></figure>
         </div>
