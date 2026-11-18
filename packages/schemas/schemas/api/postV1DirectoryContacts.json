@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1DirectoryContacts/0.1.0.json",
+  "title": "POST /v1/directory/contacts request body",
+  "description": "Record a contact of an organization: name, role, how to reach them; optionally the account they sign in with. Verified afterwards by a data steward who did not record it",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "org",
+    "name",
+    "role",
+    "channels"
+  ],
+  "properties": {
+    "org": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 120
+    },
+    "role": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 120
+    },
+    "channels": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "value"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "email",
+              "phone",
+              "queue",
+              "chat",
+              "radio"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      }
+    },
+    "personId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    }
+  }
+}

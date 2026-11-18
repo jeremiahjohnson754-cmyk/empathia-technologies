@@ -389,3 +389,10 @@ main details > summary { min-height: 24px; }
 .cn__stages dd, .cn__events li { overflow-wrap: anywhere; }
 .cn select { max-width: 100%; }
 @media (max-width: 900px) { .cn__stages { grid-template-columns: minmax(0, 1fr); } }
+
+/* who to call (0044) */
+.wc__paths > li { display: grid; gap: .35rem; }
+.wc__people { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.wc__who { display: grid; gap: .3rem; }
+.wc__acts { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.wc__acts .ui-meta { flex-basis: 100%; margin: 0; }

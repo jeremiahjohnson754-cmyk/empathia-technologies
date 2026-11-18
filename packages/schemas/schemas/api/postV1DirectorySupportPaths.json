@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1DirectorySupportPaths/0.1.0.json",
+  "title": "POST /v1/directory/support-paths request body",
+  "description": "Propose a support path for one site and one domain: a verified primary contact, a verified backup who is someone else, optionally an escalation contact, a vendor and a queue, and the hours",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "site",
+    "domain",
+    "primary",
+    "backup",
+    "hours"
+  ],
+  "properties": {
+    "site": {
+      "type": "string",
+      "maxLength": 24
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "audio",
+        "video",
+        "network",
+        "control",
+        "av_infrastructure",
+        "power_ups",
+        "lighting",
+        "signage",
+        "conferencing",
+        "integration"
+      ]
+    },
+    "primary": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "backup": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "escalation": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "vendor": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "queue": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "hours": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 120
+    }
+  }
+}

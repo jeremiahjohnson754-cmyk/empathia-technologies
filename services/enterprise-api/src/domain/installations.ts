@@ -344,29 +344,46 @@ export async function inventory(ctx: RequestContext) {
 
 // ------------------------------------------------------------------------------------------------ the device register (0031)
 const networked = (category: string) => !!(defaultCatalog.categories as Record<string, { net?: boolean }>)[category]?.net;
-interface EntryRow { asset_id: string; version: number; hostname: string | null; ip: string | null; mac: string | null; firmware: string | null; location: string | null; recorded_by: string; recorded_role: string; recorded_at: string }
-const ENTRY_SELECT = 'SELECT DISTINCT ON (asset_id) asset_id, version, hostname, host(ip) AS ip, mac::text AS mac, firmware, location, recorded_by, recorded_role, recorded_at FROM app.asset_register_entry';
-const entryOf = (r: EntryRow | undefined): RegisterEntry | null => (r ? { hostname: r.hostname, ip: r.ip, mac: r.mac, firmware: r.firmware, location: r.location } : null);
+interface EntryRow { asset_id: string; version: number; hostname: string | null; ip: string | null; mac: string | null; firmware: string | null; location: string | null; recorded_by: string; recorded_role: string; recorded_at: string;
+  vlan: number | null; addressing: string | null; prefix: number | null; gateway: string | null; switch_unit: string | null; switch_port: string | null; poe: string | null; warranty_until: string | null; support_until: string | null }
+const ENTRY_SELECT = `SELECT DISTINCT ON (e.asset_id) e.asset_id, e.version, e.hostname, host(e.ip) AS ip, e.mac::text AS mac, e.firmware, e.location, e.recorded_by, e.recorded_role, e.recorded_at,
+  e.vlan, e.addressing, e.prefix, host(e.gateway) AS gateway, sw.code AS switch_unit, e.switch_port, e.poe, to_char(e.warranty_until, 'YYYY-MM-DD') AS warranty_until, to_char(e.support_until, 'YYYY-MM-DD') AS support_until
+  FROM app.asset_register_entry e LEFT JOIN app.physical_asset sw ON sw.id = e.switch_asset`;
+const str = (v: number | string | null) => (v === null || v === undefined ? null : String(v));
+const entryOf = (r: EntryRow | undefined): RegisterEntry | null => (r ? { hostname: r.hostname, ip: r.ip, mac: r.mac, firmware: r.firmware, location: r.location, vlan: str(r.vlan), addressing: r.addressing, prefix: str(r.prefix),
+  gateway: r.gateway, switchUnit: r.switch_unit, switchPort: r.switch_port, poe: r.poe, warrantyUntil: r.warranty_until, supportUntil: r.support_until } : null);
 
-export interface RegisterBody { hostname?: string | null; ip?: string | null; mac?: string | null; firmware?: string | null; location?: string | null }
+export interface RegisterBody { hostname?: string | null; ip?: string | null; mac?: string | null; firmware?: string | null; location?: string | null; vlan?: string | null; addressing?: string | null; prefix?: string | null; gateway?: string | null; switchUnit?: string | null; switchPort?: string | null; poe?: string | null; warrantyUntil?: string | null; supportUntil?: string | null }
 /** Record what the installation team read on site about a unit (a new version of its register row; the newest is current). */
 export async function recordRegister(ctx: RequestContext, code: string, body: RegisterBody) {
   await ctx.require(IDENTITY_RECORD_AUTHORITIES, 'record a unit in the device register', { type: 'PhysicalAsset', id: code });
   return ctx.tx(async (q) => {
     const { asset: a } = await visibleAsset(ctx, q, code, true);
-    const cur = (await q.query<EntryRow>(`${ENTRY_SELECT} WHERE asset_id = $1 ORDER BY asset_id, version DESC`, [a.id])).rows[0];
-    const plan = planRegisterEntry(assetFact(a), networked(a.category), entryOf(cur), body || {});
+    const cur = (await q.query<EntryRow>(`${ENTRY_SELECT} WHERE e.asset_id = $1 ORDER BY e.asset_id, e.version DESC`, [a.id])).rows[0];
+    const input = Object.fromEntries(Object.entries(body || {}).map(([k, v]) => [k, v === null || v === undefined ? v : String(v)])) as Partial<Record<string, string | null>>;
+    const plan = planRegisterEntry(assetFact(a), networked(a.category), entryOf(cur), input);
     if (!plan.ok) return ctx.refuse('asset.register_recorded', { type: 'PhysicalAsset', id: a.code }, plan.why, { fields: Object.keys(body || {}) });
     const e = plan.plan;
+    // 0045: the switch is a unit of this organization whose category is a switch, not retired, not this unit
+    let switchId: string | null = null;
+    if (e.switchUnit) {
+      const sw = (await q.query<{ id: string; category: string; disposition: string }>('SELECT id, category, disposition FROM app.physical_asset WHERE code = $1', [e.switchUnit])).rows[0];
+      const why = !sw ? [`no unit ${e.switchUnit} in this organization`] : sw.category !== 'switch' ? [`${e.switchUnit} is a ${sw.category}, not a network switch`] : sw.disposition === 'RETIRED' ? [`${e.switchUnit} is retired`] : sw.id === a.id ? ['a switch is not patched to itself'] : [];
+      if (why.length) return ctx.refuse('asset.register_recorded', { type: 'PhysicalAsset', id: a.code }, why, { fields: Object.keys(body || {}) });
+      switchId = sw!.id;
+    }
     // another unit in service whose current entry carries the same hostname, address or MAC: one value, one unit
     const clash = (await q.query<{ code: string; what: string }>(`SELECT a.code, CASE WHEN lower(e.hostname) = lower($2) THEN 'hostname ' || e.hostname WHEN host(e.ip) = $3 THEN 'address ' || host(e.ip) ELSE 'MAC ' || e.mac::text END AS what
-      FROM (${ENTRY_SELECT} ORDER BY asset_id, version DESC) e JOIN app.physical_asset a ON a.id = e.asset_id
-      WHERE e.asset_id <> $1 AND a.disposition = 'IN_SERVICE' AND ((e.hostname IS NOT NULL AND lower(e.hostname) = lower($2)) OR (e.ip IS NOT NULL AND host(e.ip) = $3) OR (e.mac IS NOT NULL AND e.mac = $4)) LIMIT 1`.replace('host(ip) AS ip, mac::text AS mac', 'ip, mac'),
+      FROM (${ENTRY_SELECT} ORDER BY e.asset_id, e.version DESC) e JOIN app.physical_asset a ON a.id = e.asset_id
+      WHERE e.asset_id <> $1 AND a.disposition = 'IN_SERVICE' AND ((e.hostname IS NOT NULL AND lower(e.hostname) = lower($2)) OR (e.ip IS NOT NULL AND host(e.ip) = $3) OR (e.mac IS NOT NULL AND e.mac = $4)) LIMIT 1`.replace('host(e.ip) AS ip, e.mac::text AS mac', 'e.ip, e.mac'),
       [a.id, e.hostname, e.ip, e.mac])).rows[0];
     if (clash) { await ctx.audit(null, 'asset.register_recorded', 'DENIED', { type: 'PhysicalAsset', id: a.code }, { why: [`${clash.what} is already current on ${clash.code}`] }); throw new ApiError('conflict', `${clash.what} is already current on ${clash.code}: one value, one unit`); }
     const version = (cur?.version ?? 0) + 1;
-    await q.query('INSERT INTO app.asset_register_entry (tenant_id, asset_id, version, hostname, ip, mac, firmware, location, recorded_by, recorded_role, correlation_id) VALUES ($1,$2,$3,$4,$5::inet,$6::macaddr,$7,$8,$9,$10,$11)',
-      [ctx.p.tenantId, a.id, version, e.hostname, e.ip, e.mac, e.firmware, e.location, ctx.p.personId, ctx.p.role, ctx.correlationId]);
+    await q.query(`INSERT INTO app.asset_register_entry (tenant_id, asset_id, version, hostname, ip, mac, firmware, location, recorded_by, recorded_role, correlation_id,
+        vlan, addressing, prefix, gateway, switch_asset, switch_port, poe, warranty_until, support_until)
+      VALUES ($1,$2,$3,$4,$5::inet,$6::macaddr,$7,$8,$9,$10,$11,$12::int,$13,$14::int,$15::inet,$16,$17,$18,$19::date,$20::date)`,
+      [ctx.p.tenantId, a.id, version, e.hostname, e.ip, e.mac, e.firmware, e.location, ctx.p.personId, ctx.p.role, ctx.correlationId,
+        e.vlan ?? null, e.addressing ?? null, e.prefix ?? null, e.gateway ?? null, switchId, e.switchPort ?? null, e.poe ?? null, e.warrantyUntil ?? null, e.supportUntil ?? null]);
     await ctx.audit(q, 'asset.register_recorded', 'ALLOWED', { type: 'PhysicalAsset', id: a.code }, { version, ...e });
     return { asset: a.code, version, ...e, networked: networked(a.category) };
   });
@@ -391,16 +408,32 @@ export async function registerItems(q: Queryable, roomId: string) {
     const { rows } = await roomInstallations(q, room.id);
     const open = new Map(rows.filter((r) => !r.removed_at).map((r) => [r.position, r]));
     const assetIds = [...open.values()].map((r) => r.asset_id);
-    const entries = assetIds.length ? new Map((await q.query<EntryRow>(`${ENTRY_SELECT} WHERE asset_id = ANY($1::uuid[]) ORDER BY asset_id, version DESC`, [assetIds])).rows.map((e) => [e.asset_id, e])) : new Map<string, EntryRow>();
+    const entries = assetIds.length ? new Map((await q.query<EntryRow>(`${ENTRY_SELECT} WHERE e.asset_id = ANY($1::uuid[]) ORDER BY e.asset_id, e.version DESC`, [assetIds])).rows.map((e) => [e.asset_id, e])) : new Map<string, EntryRow>();
+    const baselines = await approvedFirmware(q); const today = new Date().toISOString().slice(0, 10);
     const items = pos.map((p) => {
       const i = open.get(p.code); const net = networked(p.category); const e = i ? entries.get(i.asset_id) : undefined;
       const a: AssetFact | null = i ? { code: i.asset, category: p.category, manufacturer: i.manufacturer, model: i.model, serial: i.serial, identityState: i.identity_state } : null;
       const missing = registerMissing(a, net, entryOf(e));
       return { position: p.code, label: p.label, category: p.category, networked: net, asset: i?.asset ?? null, serial: i?.serial ?? null, identityState: i?.identity_state ?? null,
-        entry: e ? { version: e.version, hostname: e.hostname, ip: e.ip, mac: e.mac, firmware: e.firmware, location: e.location, recordedRole: e.recorded_role, recordedAt: e.recorded_at } : null, missing, complete: !missing.length };
+        entry: e ? { version: e.version, hostname: e.hostname, ip: e.ip, mac: e.mac, firmware: e.firmware, location: e.location, recordedRole: e.recorded_role, recordedAt: e.recorded_at,
+          network: { vlan: e.vlan, addressing: e.addressing, prefix: e.prefix, gateway: e.gateway, switchUnit: e.switch_unit, switchPort: e.switch_port, poe: e.poe },
+          lifecycle: { warrantyUntil: e.warranty_until, supportUntil: e.support_until } } : null, missing, complete: !missing.length,
+        // 0045: the unit's firmware against its model's approved baseline, and whether its warranty or support contract has run out
+        firmware: firmwareStatus(i?.model ?? null, e?.firmware ?? null, baselines),
+        lapsed: e ? [...(e.warranty_until && e.warranty_until < today ? ['warranty'] : []), ...(e.support_until && e.support_until < today ? ['support contract'] : [])] : [] };
     });
     return items;
   }
+}
+
+// ------------------------------------------------------------------------------------------------ firmware baseline (0045)
+export async function approvedFirmware(q: Queryable): Promise<Map<string, string>> {
+  return new Map((await q.query<{ model: string; version: string }>("SELECT lower(model) AS model, version FROM app.firmware_baseline WHERE state = 'APPROVED'")).rows.map((r) => [r.model, r.version]));
+}
+/** A unit's firmware against its model's approved baseline: MATCHES, DIFFERS (with the baseline), NOT_RECORDED, or NO_BASELINE. */
+export function firmwareStatus(model: string | null, firmware: string | null, baselines: Map<string, string>) {
+  const b = model ? baselines.get(model.toLowerCase()) ?? null : null;
+  return { baseline: b, state: !b ? 'NO_BASELINE' : !firmware ? 'NOT_RECORDED' : firmware.trim() === b ? 'MATCHES' : 'DIFFERS' };
 }
 
 export type { UnitChange };

@@ -222,7 +222,35 @@ async function seedScenario(pool: PgPool, router: Router, tenantId: string, peop
   await invoke(router, syseng, 'POST', `/v1/rooms/${suite}/classification/approve`, {});
   for (const [to, who] of [['DESIGN_APPROVED', syseng], ['INSTALLATION_PENDING', opslead], ['INSTALLED_UNVERIFIED', installer]] as const) await invoke(router, who, 'POST', `/v1/rooms/${suite}/lifecycle`, { to });
   await invoke(router, syseng, 'PUT', `/v1/rooms/${suite}/criteria/${SECOND.criterion.test}`, { metric: SECOND.criterion.metric, upper: SECOND.criterion.upper, source: SECOND.criterion.source });
+  // the support directory (0044): who to call for audio and video at each site, with a backup who is someone else. Recorded by the
+  // service manager, verified and approved by the data steward. Every name, address and number is synthetic (example.org, 555-01xx).
+  await seedDirectory(router, svcmgr, steward, people, [FLAGSHIP.site.code, SECOND.site.code]);
   return { room, flagship: { room: hall, canonicalRef: FLAGSHIP.canonicalRef, name: FLAGSHIP.name }, second: { room: suite, canonicalRef: SECOND.canonicalRef, name: SECOND.name } };
+}
+
+export const DIRECTORY = {
+  orgs: [{ name: 'Larkspur University Facilities (synthetic)', kind: 'OWNER' }, { name: 'Northfield AV Integration (synthetic)', kind: 'INTEGRATOR' }, { name: 'Tessellate Audio Systems (synthetic)', kind: 'MANUFACTURER' }],
+  /** role: the sandbox person the contact signs in as, if any */
+  contacts: [
+    { org: 0, role: 'svcmgr', title: 'Service manager', channels: [{ kind: 'email', value: 'service.manager@larkspur.example.org' }, { kind: 'phone', value: '+1 555 0100' }] },
+    { org: 0, role: 'service', title: 'AV service technician', channels: [{ kind: 'email', value: 'av.technician@larkspur.example.org' }, { kind: 'phone', value: '+1 555 0101' }] },
+    { org: 1, name: 'Integrator on-call engineer (synthetic)', title: 'On-call AV engineer', channels: [{ kind: 'email', value: 'oncall@northfield-av.example.org' }, { kind: 'phone', value: '+1 555 0142' }, { kind: 'queue', value: 'NAV-ONCALL (synthetic)' }] },
+    { org: 2, name: 'Manufacturer support desk (synthetic)', title: 'Technical support', channels: [{ kind: 'email', value: 'support@tessellate-audio.example.org' }, { kind: 'phone', value: '+1 555 0177' }] },
+  ],
+} as const;
+
+async function seedDirectory(router: Router, svcmgr: RequestContext, steward: RequestContext, people: Persona[], sites: string[]) {
+  const orgs: string[] = []; for (const o of DIRECTORY.orgs) orgs.push(String((await invoke(router, svcmgr, 'POST', '/v1/directory/organizations', o))['code']));
+  const contacts: string[] = [];
+  for (const c of DIRECTORY.contacts) {
+    const who = 'role' in c ? people.find((p) => p.role_key === c.role) : undefined;
+    const code = String((await invoke(router, svcmgr, 'POST', '/v1/directory/contacts', { org: orgs[c.org], name: who ? who.display_name : (c as { name: string }).name, role: c.title, channels: c.channels, ...(who ? { personId: who.person_id } : {}) }))['code']);
+    await invoke(router, steward, 'POST', `/v1/directory/contacts/${code}/verify`); contacts.push(code);
+  }
+  for (const site of sites) for (const [domain, primary, backup] of [['audio', 1, 2], ['video', 0, 1]] as const) {
+    const p = String((await invoke(router, svcmgr, 'POST', '/v1/directory/support-paths', { site, domain, primary: contacts[primary], backup: contacts[backup], escalation: contacts[domain === 'audio' ? 3 : 2], vendor: orgs[domain === 'audio' ? 2 : 1], queue: 'AV service desk (synthetic)', hours: 'Weekdays 07:00–19:00, on call otherwise (synthetic)' }))['code']);
+    await invoke(router, steward, 'POST', `/v1/directory/support-paths/${p}/decide`, { decision: 'APPROVED' });
+  }
 }
 
 function session(d: DemoDeps, sb: Sandbox, who: Persona) {

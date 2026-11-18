@@ -157,8 +157,21 @@ export function inventoryOf(assets: readonly AssetFact[], installations: readonl
 }
 // ------------------------------------------------------------------------------------------------ the device register (0031)
 /** What the installation team reads on site about a unit, beside its identity: hostname, IPv4, MAC, firmware, location. */
-export interface RegisterEntry { hostname: string | null; ip: string | null; mac: string | null; firmware: string | null; location: string | null }
-export const REGISTER_FIELDS = ['hostname', 'ip', 'mac', 'firmware', 'location'] as const;
+/**
+ * A unit's register row. 0031: hostname, IPv4, MAC, firmware, location. 0045 (source reconciliation items 5 and 6): the network facts
+ * past the address — VLAN, addressing mode, prefix length, gateway, the switch unit and port it is patched to, PoE class — and the
+ * lifecycle dates of the unit — warranty end and support-contract end.
+ */
+export interface RegisterEntry { hostname: string | null; ip: string | null; mac: string | null; firmware: string | null; location: string | null;
+  vlan?: string | null; addressing?: string | null; prefix?: string | null; gateway?: string | null; switchUnit?: string | null; switchPort?: string | null; poe?: string | null;
+  warrantyUntil?: string | null; supportUntil?: string | null }
+export const REGISTER_FIELDS = ['hostname', 'ip', 'mac', 'firmware', 'location', 'vlan', 'addressing', 'prefix', 'gateway', 'switchUnit', 'switchPort', 'poe', 'warrantyUntil', 'supportUntil'] as const;
+export const NETWORK_FIELDS = ['vlan', 'addressing', 'prefix', 'gateway', 'switchUnit', 'switchPort', 'poe'] as const;
+export const ADDRESSING = ['DHCP', 'DHCP_RESERVATION', 'STATIC'] as const;
+export const POE = ['NONE', 'POE', 'POE_PLUS', 'POE_PLUS_PLUS'] as const;
+const ipNum = (ip: string) => ip.split('.').reduce((n, o) => n * 256 + Number(o), 0);
+/** Is `gw` in the same IPv4 subnet as `ip`/`prefix`? */
+export const sameSubnet = (ip: string, gw: string, prefix: number) => { const m = prefix === 0 ? 0 : (0xffffffff << (32 - prefix)) >>> 0; return ((ipNum(ip) & m) >>> 0) === ((ipNum(gw) & m) >>> 0); };
 const IPV4 = /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
 const HOSTNAME = /^[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?$/;
 const MAC = /^[0-9A-Fa-f]{2}([:-][0-9A-Fa-f]{2}){5}$/;
@@ -170,7 +183,7 @@ const FIRMWARE = /^[A-Za-z0-9][A-Za-z0-9._ -]{0,39}$/;
  */
 export function planRegisterEntry(a: AssetFact, networked: boolean, current: RegisterEntry | null, input: Partial<Record<(typeof REGISTER_FIELDS)[number], string | null>>): Planned<RegisterEntry> {
   if (a.disposition === 'RETIRED') return no(`${a.code} is retired: a retired unit takes no register entry`);
-  const why: string[] = []; const next: RegisterEntry = { hostname: current?.hostname ?? null, ip: current?.ip ?? null, mac: current?.mac ?? null, firmware: current?.firmware ?? null, location: current?.location ?? null };
+  const why: string[] = []; const next: RegisterEntry = { ...Object.fromEntries(REGISTER_FIELDS.map((k) => [k, current?.[k] ?? null])), hostname: current?.hostname ?? null, ip: current?.ip ?? null, mac: current?.mac ?? null, firmware: current?.firmware ?? null, location: current?.location ?? null };
   for (const k of REGISTER_FIELDS) { if (!(k in input)) continue; const v = (input[k] ?? '').toString().trim(); next[k] = v || null; }
   if (next.hostname && !HOSTNAME.test(next.hostname)) why.push('a hostname is one label of letters, digits and dashes (at most 63), not starting or ending with a dash');
   if (next.ip && !IPV4.test(next.ip)) why.push('an IP address is four numbers 0–255 separated by dots');
@@ -178,6 +191,21 @@ export function planRegisterEntry(a: AssetFact, networked: boolean, current: Reg
   if (next.firmware && !FIRMWARE.test(next.firmware)) why.push('a firmware version is up to 40 letters, digits, dots, dashes or spaces');
   if (next.location && next.location.length > 120) why.push('a location is at most 120 characters');
   if (!networked && (next.ip || next.hostname || next.mac)) why.push(`${a.category} is not a networked device class: it has no IP address, hostname or MAC`);
+  // 0045: the network facts and the lifecycle dates
+  if (!networked && NETWORK_FIELDS.some((k) => next[k])) why.push(`${a.category} is not a networked device class: it has no VLAN, addressing, gateway, switch port or PoE`);
+  if (next.vlan && !(/^\d{1,4}$/.test(next.vlan) && Number(next.vlan) >= 1 && Number(next.vlan) <= 4094)) why.push('a VLAN is a number from 1 to 4094');
+  if (next.addressing && !(ADDRESSING as readonly string[]).includes(next.addressing)) why.push(`addressing is one of ${ADDRESSING.join(', ')}`);
+  if (next.prefix && !(/^\d{1,2}$/.test(next.prefix) && Number(next.prefix) >= 8 && Number(next.prefix) <= 30)) why.push('a prefix length is a number from 8 to 30 (e.g. 24 for 255.255.255.0)');
+  if (next.gateway && !IPV4.test(next.gateway)) why.push('a gateway is an IPv4 address');
+  if (next.poe && !(POE as readonly string[]).includes(next.poe)) why.push(`PoE is one of ${POE.join(', ')}`);
+  if (next.switchPort && !/^[A-Za-z0-9][A-Za-z0-9/:._-]{0,19}$/.test(next.switchPort)) why.push('a switch port is up to 20 letters, digits and / : . _ - (e.g. Gi1/0/14)');
+  if (!!next.switchPort !== !!next.switchUnit && (next.switchPort || next.switchUnit)) why.push('a switch port is recorded with the switch it is on, and a switch with its port');
+  if (next.addressing === 'STATIC' && !(next.ip && next.prefix && next.gateway)) why.push('a static address is recorded with its IP address, prefix length and gateway');
+  if (next.ip && next.gateway && next.prefix && IPV4.test(next.ip) && IPV4.test(next.gateway) && /^\d+$/.test(next.prefix)) {
+    if (next.ip === next.gateway) why.push('the gateway is another address than the unit’s own');
+    else if (!sameSubnet(next.ip, next.gateway, Number(next.prefix))) why.push(`the gateway ${next.gateway} is not in the unit’s subnet ${next.ip}/${next.prefix}`);
+  }
+  for (const k of ['warrantyUntil', 'supportUntil'] as const) if (next[k] && !(/^\d{4}-\d{2}-\d{2}$/.test(next[k]!) && !Number.isNaN(Date.parse(`${next[k]}T00:00:00Z`)))) why.push(`${k === 'warrantyUntil' ? 'the warranty end' : 'the support-contract end'} is a date (YYYY-MM-DD)`);
   if (why.length) return { ok: false, conflict: false, why };
   if (current && REGISTER_FIELDS.every((k) => (current[k] ?? null) === (next[k] ?? null))) return no('nothing changed: the register already says this');
   if (next.mac) next.mac = next.mac.toLowerCase().replace(/-/g, ':');

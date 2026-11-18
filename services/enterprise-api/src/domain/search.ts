@@ -7,6 +7,7 @@
  * Nothing outside the catalogue can be reached: search, facets, neighbourhood, impact and path all run on the visible set only, so an
  * unauthorized caller cannot infer a protected record from a count, a suggestion or an adjacent node.
  */
+import { contactActions } from './directory.js';
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import { invalid, notFound } from '../http/errors.js';
@@ -154,6 +155,9 @@ export async function intent(ctx: RequestContext, body: { question: string; targ
     let target: NodeRef | null = body.target || null;
     if (target && !byKey.has(nodeKey(target))) throw notFound(`${target.type} ${target.id} in the graph`);
     if (!target) { const m = /\b(R-[A-Z0-9-]{3,32}|A-\d{4}|ISS-\d{4}|WO-[A-Z0-9-]{3,20})\b/i.exec(body.question); if (m) { const id = m[1]!.toUpperCase(); const hit = cat.nodes.find((n) => n.id === id); if (hit) target = { type: hit.type, id: hit.id }; } }
+    // the support directory (0044): a person who is also a verified contact offers the hand-offs of their channels (founder, 18 Nov)
+    const dirByPerson = new Map((await q.query<{ person_id: string; display_name: string; role_title: string; org_name: string; channels: Array<{ kind: string; value: string }> }>(
+      'SELECT c.person_id, c.display_name, c.role_title, o.name AS org_name, c.channels FROM app.contact c JOIN app.organization o ON o.id = c.org_id WHERE c.person_id IS NOT NULL AND c.verified_by IS NOT NULL AND c.retired_at IS NULL')).rows.map((r) => [r.person_id, r]));
     const facts: Facts = {
       approvals: (room) => {
         const r = cat.nodes.find((n) => n.type === 'Room' && n.id === room.id); if (!r) return [];
@@ -161,7 +165,10 @@ export async function intent(ctx: RequestContext, body: { question: string; targ
       },
       holders: (authority, tgt) => holdersCache ? holdersCache(authority, tgt) : null,
       baselines: (room) => baselinesByRoom.get(room.id) || [],
-      contact: (personId) => [{ label: `Copy reference for ${cat.people.get(personId) || personId}`, kind: 'copy', payload: `Person ${personId} (${cat.people.get(personId) || 'unknown'})`, available: true }, { label: 'Message in Teams', kind: 'teams', available: false, note: 'no Teams connector is configured (integration catalogue: NOT_CONFIGURED)' }, { label: 'Email', kind: 'mailto', available: false, note: 'email addresses are not exposed to this view' }],
+      contact: (personId) => { const d = dirByPerson.get(personId);
+        if (d) return contactActions(d).map((a) => (a.id === 'copy' ? { label: a.label, kind: 'copy' as const, payload: a.text, available: true, note: a.note }
+          : { label: a.label, kind: (a.id === 'mail.compose' ? 'mailto' : a.id === 'phone.call' ? 'navigate' : 'teams') as 'mailto' | 'navigate' | 'teams', href: a.href, available: true, note: a.note }));
+        return [{ label: `Copy reference for ${cat.people.get(personId) || personId}`, kind: 'copy', payload: `Person ${personId} (${cat.people.get(personId) || 'unknown'})`, available: true }, { label: 'Message in Teams', kind: 'teams', available: false, note: 'this person is not a verified contact in the support directory, so no address is known here' }, { label: 'Email', kind: 'mailto', available: false, note: 'this person is not a verified contact in the support directory' }]; },
     };
     // facts from records (only for the visible rooms)
     const approvalsOf = new Map<string, Array<{ what: string; by: string; at: string; provenance: string }>>();

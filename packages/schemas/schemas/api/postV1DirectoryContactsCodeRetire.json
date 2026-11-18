@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1DirectoryContactsCodeRetire/0.1.0.json",
+  "title": "POST /v1/directory/contacts/{code}/retire request body",
+  "description": "Retire a contact with the reason; refused while it is on an approved support path",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason"
+  ],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    }
+  }
+}

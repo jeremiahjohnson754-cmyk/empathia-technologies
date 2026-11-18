@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 98,
+    "api": 105,
     "entities": 4
   },
   "files": [
@@ -591,7 +591,7 @@
     {
       "file": "api/putV1AssetsAssetRegister.json",
       "$id": "https://schemas.empathia.invalid/api/putV1AssetsAssetRegister/0.1.0.json",
-      "sha256": "7eaba368fc82632298c09b246d891eb11eac8522df46398badb3ff21e6918433"
+      "sha256": "4a5b4c1cadaf764028e50b52bf6bfbb5a1c7a5c6af6208026d3d819467651301"
     },
     {
       "file": "api/putV1RoomsRoomFieldRecordMountingAsset.json",
@@ -672,6 +672,41 @@
       "file": "api/postV1MeasuredExceptionsCodeDecide.json",
       "$id": "https://schemas.empathia.invalid/api/postV1MeasuredExceptionsCodeDecide/0.1.0.json",
       "sha256": "6dd22a112c741baf4ab58773bfce7a27e0cb6df9ac897c2a33ddf74944077faa"
+    },
+    {
+      "file": "api/postV1FirmwareBaselines.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FirmwareBaselines/0.1.0.json",
+      "sha256": "8d54c9f340bf533912c3026f51d051638ec2eec7dc17773aa4043637d1b26c39"
+    },
+    {
+      "file": "api/postV1FirmwareBaselinesIdDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FirmwareBaselinesIdDecide/0.1.0.json",
+      "sha256": "fae41147a0391020d04346be57b9520ece93610ad05a333b6fb571ad760ca243"
+    },
+    {
+      "file": "api/postV1DirectoryOrganizations.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectoryOrganizations/0.1.0.json",
+      "sha256": "4d953605777b265cc3dacca674ee5e08b5e9ce38157777e725cf7357c3c4984e"
+    },
+    {
+      "file": "api/postV1DirectoryContacts.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectoryContacts/0.1.0.json",
+      "sha256": "e60df82b6c536d8d4da90830560a11395a776be370956f0ef592981a87506a10"
+    },
+    {
+      "file": "api/postV1DirectoryContactsCodeRetire.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectoryContactsCodeRetire/0.1.0.json",
+      "sha256": "68a5000407f9a6740ca4dcdd1d52122e8f226ea0cc83bf83e86c0e95b8cedd2e"
+    },
+    {
+      "file": "api/postV1DirectorySupportPaths.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectorySupportPaths/0.1.0.json",
+      "sha256": "abede47b2c8c8ef43147cef50535d0a3bbcab9ba9197f4079d9ac885600ca667"
+    },
+    {
+      "file": "api/postV1DirectorySupportPathsCodeDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectorySupportPathsCodeDecide/0.1.0.json",
+      "sha256": "e9b09d9d9162883cebdca4470d1d451987f114a408a262334172a7bb10a3ef90"
     },
     {
       "file": "api/postV1RoomsRoomDocumentationKind.json",

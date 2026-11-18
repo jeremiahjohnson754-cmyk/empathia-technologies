@@ -12,6 +12,9 @@
  *   DR-07  the register gates commissioning (founder, 14 Nov 2026): INSTALLED_UNVERIFIED → COMMISSIONING is refused (422) while any
  *          position still needs registering, with the positions named, audited as DENIED and nothing changed; the readiness names the
  *          gate and gives the installer the work; once every unit is registered the systems engineer starts commissioning
+ *   DR-08  network facts (0045): VLAN, addressing, prefix, gateway in the subnet, switch and port, PoE; refused with reasons, backed by the database
+ *   DR-09  lifecycle dates: warranty and support-contract end; a past date is reported as lapsed
+ *   DR-10  the firmware baseline of a model: proposed by a verifier, approved by someone else, superseded; the register compares
  *   node --test tests/security/device-register.test.mjs
  */
 import { test, before, after } from 'node:test';
@@ -39,6 +42,8 @@ before(async () => {
   assert.equal(r.status, 201, J(r.body)); R = r.body.code;
   assert.equal((await call('designer', 'POST', `/v1/rooms/${R}/devices`, { body: { category: 'table', x: 1, y: 1, mount: 'floor' } })).status, 201);
   assert.equal((await call('designer', 'POST', `/v1/rooms/${R}/devices`, { body: { category: 'speaker', x: 1.5, y: 1.5, mount: 'ceiling' } })).status, 201);   // a class that is not networked
+  // (added 18 Nov: a network switch, for DR-08's switch and port (0045))
+  assert.equal((await call('designer', 'POST', `/v1/rooms/${R}/devices`, { body: { category: 'switch', x: 0.5, y: 0.5, mount: 'rack' } })).status, 201);
   assert.equal((await call('designer', 'POST', `/v1/rooms/${R}/revisions`, { body: { reason: 'synthetic: the huddle as designed' } })).status, 201);
   assert.equal((await call('syseng', 'POST', `/v1/rooms/${R}/classification/approve`, { body: {} })).status, 200);
   for (const [to, who] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer']]) assert.equal((await call(who, 'POST', `/v1/rooms/${R}/lifecycle`, { body: { to } })).status, 200, `${R} → ${to}`);
@@ -124,4 +129,53 @@ test('DR-07 — the register gates commissioning: refused with the positions nam
   const rd2 = (await call('syseng', 'GET', `/v1/rooms/${R}/readiness`)).body;
   assert.ok(!rd2.next.blockers.some((b) => /device register/.test(b)) && rd2.register.missing.length === 0, J(rd2.next));
   const ok = await call('syseng', 'POST', `/v1/rooms/${R}/lifecycle`, { body: { to: 'COMMISSIONING' } }); assert.equal(ok.status, 200, J(ok.body));
+});
+
+// 0045 (source reconciliation items 5 and 6): network facts past the address, lifecycle dates, and the firmware baseline of a model
+test('DR-08 — network facts: VLAN, addressing, prefix, gateway in the subnet, switch and port, PoE; refused with reasons; the database backs each rule', async () => {
+  const items = (await reg()).items; const sw = items.find((x) => x.category === 'switch' && x.asset); const net = items.find((x) => x.networked && x.asset && x.category !== 'switch');
+  assert.ok(sw && net, `the huddle has a switch and another networked unit: ${J(items.map((x) => x.category))}`); rows.sw = sw; rows.net2 = net;
+  const bad = await call('installer', 'PUT', `/v1/assets/${net.asset}/register`, { body: { vlan: '5000', addressing: 'STATIC', ip: '10.20.30.40', prefix: '24', gateway: '10.20.31.1', switchPort: 'Gi1/0/7', poe: 'POE' } });
+  assert.equal(bad.status, 422, J(bad.body));
+  for (const re of [/VLAN is a number from 1 to 4094/, /not in the unit’s subnet 10\.20\.30\.40\/24/, /switch port is recorded with the switch/]) assert.match(J(bad.body), re);
+  const notSwitch = await call('installer', 'PUT', `/v1/assets/${net.asset}/register`, { body: { switchUnit: rows.plain.asset, switchPort: 'Gi1/0/7' } });
+  assert.equal(notSwitch.status, 422, J(notSwitch.body)); assert.match(J(notSwitch.body), /not a network switch|not a networked device class/);
+  const plain = await call('installer', 'PUT', `/v1/assets/${rows.plain.asset}/register`, { body: { vlan: '20' } }); assert.equal(plain.status, 422); assert.match(J(plain.body), /no VLAN, addressing, gateway, switch port or PoE/);
+  const ok = await call('installer', 'PUT', `/v1/assets/${net.asset}/register`, { body: { vlan: '120', addressing: 'STATIC', ip: '10.20.30.41', prefix: '24', gateway: '10.20.30.1', switchUnit: sw.asset, switchPort: 'Gi1/0/7', poe: 'POE_PLUS' } });
+  assert.equal(ok.status, 200, J(ok.body));
+  const row = (await reg()).items.find((x) => x.position === net.position);
+  assert.deepEqual(row.entry.network, { vlan: 120, addressing: 'STATIC', prefix: 24, gateway: '10.20.30.1', switchUnit: sw.asset, switchPort: 'Gi1/0/7', poe: 'POE_PLUS' });
+  const aid = h.asSuper(`SELECT id FROM app.physical_asset WHERE code = '${net.asset}'`);
+  const last = Number(h.asSuper(`SELECT max(version) FROM app.asset_register_entry WHERE asset_id = '${aid}'`));
+  const ins = (cols, vals) => asApp(ids.tenant, `INSERT INTO app.asset_register_entry (tenant_id, asset_id, version, recorded_by, recorded_role, correlation_id, ${cols}) VALUES ($1, $2, ${last + 1}, $3, 'installer', 'test', ${vals})`, [ids.tenant, aid, ids.installer]);
+  for (const [cols, vals, re] of [["ip, prefix, gateway", "'10.20.30.41', 24, '10.9.9.1'", /gateway_in_subnet/], ['addressing', "'STATIC'", /static_complete/], ['switch_port', "'Gi1/0/8'", /port_with_switch/],
+    ['switch_asset, switch_port', `'${h.asSuper(`SELECT id FROM app.physical_asset WHERE code = '${rows.plain.asset}'`)}', 'Gi1/0/8'`, /switch unit/]]) {
+    const r = await ins(cols, vals); assert.equal(r.ok, false, cols); assert.match(r.message, re);
+  }
+});
+
+test('DR-09 — lifecycle dates: warranty and support-contract end recorded; a date in the past is reported as lapsed', async () => {
+  const bad = await call('installer', 'PUT', `/v1/assets/${rows.net2.asset}/register`, { body: { warrantyUntil: '31/12/2027' } }); assert.equal(bad.status, 422); assert.match(J(bad.body), /warranty end is a date/);
+  const ok = await call('installer', 'PUT', `/v1/assets/${rows.net2.asset}/register`, { body: { warrantyUntil: '2024-06-30', supportUntil: '2031-06-30' } }); assert.equal(ok.status, 200, J(ok.body));
+  const row = (await reg()).items.find((x) => x.position === rows.net2.position);
+  assert.deepEqual(row.entry.lifecycle, { warrantyUntil: '2024-06-30', supportUntil: '2031-06-30' }); assert.deepEqual(row.lapsed, ['warranty']);
+});
+
+test('DR-10 — the firmware baseline of a model: proposed by a verifier, approved by a systems engineer who did not propose it, superseded by the next; the register compares', async () => {
+  T.cxeng = await c.login('cxeng');
+  const model = h.asSuper(`SELECT model FROM app.physical_asset WHERE code = '${rows.net2.asset}'`);
+  assert.equal((await call('installer', 'POST', '/v1/firmware-baselines', { body: { model, version: '3.1.0' } })).status, 403);
+  const none = await call('cxeng', 'POST', '/v1/firmware-baselines', { body: { model: 'No Such Model 9000', version: '1.0' } }); assert.equal(none.status, 422); assert.match(J(none.body), /no unit of model/);
+  const p1 = await call('cxeng', 'POST', '/v1/firmware-baselines', { body: { model, version: '3.1.0', note: 'synthetic' } }); assert.equal(p1.status, 201, J(p1.body));
+  const twice = await call('cxeng', 'POST', '/v1/firmware-baselines', { body: { model, version: '3.1.1' } }); assert.equal(twice.status, 422); assert.match(J(twice.body), /already awaiting a decision/);
+  assert.equal((await call('cxeng', 'POST', `/v1/firmware-baselines/${p1.body.id}/decide`, { body: { decision: 'APPROVED' } })).status, 403);
+  const d1 = await call('syseng', 'POST', `/v1/firmware-baselines/${p1.body.id}/decide`, { body: { decision: 'APPROVED' } }); assert.equal(d1.status, 200, J(d1.body));
+  await call('installer', 'PUT', `/v1/assets/${rows.net2.asset}/register`, { body: { firmware: '3.0.9' } });
+  assert.deepEqual((await reg()).items.find((x) => x.position === rows.net2.position).firmware, { baseline: '3.1.0', state: 'DIFFERS' });
+  const p2 = await call('cxeng', 'POST', '/v1/firmware-baselines', { body: { model, version: '3.0.9' } }); const d2 = await call('syseng', 'POST', `/v1/firmware-baselines/${p2.body.id}/decide`, { body: { decision: 'APPROVED' } });
+  assert.equal(d2.body.superseded, '3.1.0'); assert.deepEqual((await reg()).items.find((x) => x.position === rows.net2.position).firmware, { baseline: '3.0.9', state: 'MATCHES' });
+  const all = (await call('syseng', 'GET', '/v1/firmware-baselines')).body.items.filter((x) => x.model === model).map((x) => [x.version, x.state]); assert.deepEqual(all, [['3.1.0', 'SUPERSEDED'], ['3.0.9', 'APPROVED']]);
+  const up = await asApp(ids.tenant, "UPDATE app.firmware_baseline SET version = '9.9' WHERE id = $1", [p2.body.id]); assert.equal(up.ok, false); assert.match(up.message, /does not change/);
+  const p3 = await call('cxeng', 'POST', '/v1/firmware-baselines', { body: { model, version: '3.2.0' } }); assert.equal(p3.status, 201);
+  const self = await asApp(ids.tenant, "UPDATE app.firmware_baseline SET state = 'REJECTED', decided_by = proposed_by, decided_at = now() WHERE id = $1", [p3.body.id]); assert.equal(self.ok, false); assert.match(self.message, /not_self_decided/);
 });

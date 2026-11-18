@@ -26,6 +26,7 @@ import { connected, SandboxGone, type Availability, type Sandbox } from '../conn
 import { ReverbBench, type BenchOutput, type BenchTest } from '../flagship/ReverbBench.js';
 import { CorrectiveAction, type Cred, type Deficiency, type Exc, type Issue, type Tools, type WorkOrder } from '../flagship/CorrectiveAction.js';
 import { Finishing, BaselineCard, type Baseline, type Person, type DocMatrix } from '../flagship/Acceptance.js';
+import { WhoToCall, type Support } from '../flagship/WhoToCall.js';
 import { Incidents, type Catalogue, type Incident, type IncidentData, type Intelligence } from '../flagship/Incidents.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
@@ -48,7 +49,9 @@ interface Measured { id: string; metric: string; value: string | number; unit: s
   validation: { sent: number; recomputed: number; synthetic: boolean; positions: unknown[] } | null }
 /** A room as the server lists it: the page offers each one of the sandbox, by its canonical identifier where it has one. */
 interface RoomListed { code: string; canonicalRef: string | null; name: string; lifecycle: string; building: string }
-interface RegisterAnswer { items: Array<{ asset: string | null; position: string; missing: string[] }> }
+interface RegisterAnswer { items: Array<{ asset: string | null; position: string; missing: string[]; networked?: boolean;
+  entry?: { hostname: string | null; ip: string | null; firmware: string | null; network?: { vlan: number | null; addressing: string | null; prefix: number | null; gateway: string | null; switchUnit: string | null; switchPort: string | null; poe: string | null }; lifecycle?: { warrantyUntil: string | null; supportUntil: string | null } } | null;
+  firmware?: { baseline: string | null; state: string }; lapsed?: string[] }> }
 interface Connection { id: string; from: string; to: string; kind: string; why: string }
 interface Row { test_id: string; label: string; pack: string; domain: string; phase: number; tier: number; applicable: boolean; why: string[]; personas: string[]; evidence: string[]; instrument: boolean; devices: string[]; result: string }
 interface RoomAnswer {
@@ -58,7 +61,7 @@ interface RoomAnswer {
   commissioning: { engineVersion: string; ruleVersion: string; library: number; applicable: number; counts: Record<string, number>; rows: Row[] } | null;
 }
 interface Thread { room: { code: string; lifecycle: string; revision: number }; complete?: boolean; missing?: string[]; stages: Array<{ key: string; product: string; records: Record<string, unknown> }> }
-interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; creds: Cred[]; people: Person[]; rooms: RoomListed[]; incidents: IncidentData; docs: DocMatrix | null; excs: Exc[]; place: { building: string; buildingName: string; site: string; siteName: string } | null }
+interface Loaded { at: string; as: string; room: RoomAnswer; thread: Thread | null; field: FieldAnswer | null; baseline: BaselineAnswer | null; criteria: CriteriaAnswer | null; measured: Measured[]; register: RegisterAnswer | null; service: Record<string, { def: Deficiency | null; wo: WorkOrder | null }>; creds: Cred[]; people: Person[]; rooms: RoomListed[]; incidents: IncidentData; docs: DocMatrix | null; excs: Exc[]; support: Support | null; place: { building: string; buildingName: string; site: string; siteName: string } | null }
 type Said = { ok: boolean; warn?: boolean; title: string; text: string; reasons?: string[] };
 const at = (p: Point) => `${p.x} m across, ${p.y} m from the front`;
 const same = (a: Point, b: Point) => Math.abs(a.x - b.x) < 0.005 && Math.abs(a.y - b.y) < 0.005;
@@ -167,7 +170,8 @@ export function FlagshipPage({ room }: { room?: string }) {
         c.call<{ personas: Person[] }>(as, 'GET', '/v1/demo/sandbox')]);
       const creds = await c.call<{ items: Cred[] }>(as, 'GET', '/v1/competencies');
       const docs = await c.call<DocMatrix>(as, 'GET', `/v1/rooms/${ref}/documentation`);   // 0043: the documentation matrix and its signatures
-      const excs = await c.call<{ items: Exc[] }>(as, 'GET', `/v1/rooms/${ref}/measured-exceptions`);   // 0042: exception records of failed measured tests   // as this person sees them: their own, or everyone's for those who record or verify
+      const excs = await c.call<{ items: Exc[] }>(as, 'GET', `/v1/rooms/${ref}/measured-exceptions`);
+      const support = await c.call<Support>(as, 'GET', `/v1/rooms/${ref}/support`);   // 0044: who to call for this room's site   // 0042: exception records of failed measured tests   // as this person sees them: their own, or everyone's for those who record or verify
       // each deficiency of the room with its own workflow record and, when one was raised, its work order
       const found = thread.ok ? (((thread.body.stages.find((s) => s.key === 'commissioning')?.records as { issues?: Issue[] } | undefined)?.issues) || []) : []; const service: Loaded['service'] = {};
       await Promise.all(found.slice(0, 6).map(async (i) => { const [d, w] = await Promise.all([c.call<Deficiency>(as, 'GET', `/v1/issues/${i.code}/deficiency`), i.workOrders[0] ? c.call<WorkOrder>(as, 'GET', `/v1/work-orders/${i.workOrders[0]}`) : Promise.resolve(null)]);
@@ -181,7 +185,7 @@ export function FlagshipPage({ room }: { room?: string }) {
       }
       if (!alive.current) return;
       const b = list.ok ? list.body.items.find((x) => x.code === room.body.room.code)?.building : undefined; const site = b && sites.ok ? sites.body.items.find((s) => s.buildings.some((x) => x.code === b)) : undefined;
-      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, incidents, docs: docs.ok ? docs.body : null, excs: excs.ok ? excs.body.items : [], rooms: list.ok ? list.body.items : [], creds: creds.ok ? creds.body.items : [], people: sandbox.ok ? sandbox.body.personas : [], place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
+      setAbsent(false); setData({ at: new Date().toISOString(), as, room: room.body, thread: thread.ok ? thread.body : null, field: field.ok ? field.body : null, baseline: baseline.ok ? baseline.body : null, criteria: criteria.ok ? criteria.body : null, measured: measured.ok ? measured.body.items.filter((m) => m.test_id) : [], register: register.ok ? register.body : null, service, incidents, docs: docs.ok ? docs.body : null, excs: excs.ok ? excs.body.items : [], support: support.ok ? support.body : null, rooms: list.ok ? list.body.items : [], creds: creds.ok ? creds.body.items : [], people: sandbox.ok ? sandbox.body.personas : [], place: b && site ? { building: b, buildingName: site.buildings.find((x) => x.code === b)!.name, site: site.code, siteName: site.name } : null });
       setSelected((s) => (s && room.body.devices.some((d) => d.id === s) ? s : null));
     } catch (e) {
       if (e instanceof SandboxGone) { setSb(null); setData(null); setSaid({ ok: false, title: 'The sandbox is no longer there.', text: `${e.message}. Open a new one to continue.` }); }
@@ -219,9 +223,9 @@ export function FlagshipPage({ room }: { room?: string }) {
   // ---- commissioning: the register, the start, the bench's measurement and the result that rests on it. Each is one or more requests
   // to the server as the person chosen; the server decides, and what it decides is read back.
   const fillRegister = () => act('Recording a serial, and a hostname and address where there is a network port, for every unit…', async () => {
-    const todo = (data?.register?.items || []).filter((x) => x.asset && x.missing.length); const t = Math.random().toString(36).slice(2, 7); let n = 0;
+    const todo = (data?.register?.items || []).filter((x) => x.asset && x.missing.length); const t = Math.random().toString(36).slice(2, 7); let n = 0; const sub = Math.floor(Math.random() * 200) + 20; const inYears = (y: number) => { const d = new Date(); d.setUTCFullYear(d.getUTCFullYear() + y); return d.toISOString().slice(0, 10); };   // 0045: VLAN, a reservation in one /24 with its gateway, a warranty end (synthetic)
     for (const x of todo) { n += 1;
-      if (x.missing.includes('hostname') || x.missing.includes('IP address')) { const a = await c.call(who, 'PUT', `/v1/assets/${x.asset}/register`, { hostname: `syn-${tag}-${t}-${n}`, ip: `10.110.${Math.floor(Math.random() * 200) + 20}.${n + 10}` }); if (!a.ok) return refused(a, `the register entry of ${x.asset}`); }
+      if (x.missing.includes('hostname') || x.missing.includes('IP address')) { const a = await c.call(who, 'PUT', `/v1/assets/${x.asset}/register`, { hostname: `syn-${tag}-${t}-${n}`, ip: `10.110.${sub}.${n + 10}`, vlan: '110', addressing: 'DHCP_RESERVATION', prefix: '24', gateway: `10.110.${sub}.1`, warrantyUntil: inYears(3) }); if (!a.ok) return refused(a, `the register entry of ${x.asset}`); }
       if (x.missing.includes('serial')) { const a = await c.call(who, 'POST', `/v1/assets/${x.asset}/identity`, { state: 'DECLARED', serial: `SYN-SN-${tag.toUpperCase()}-${t}-${n}` }); if (!a.ok) return refused(a, `the serial of ${x.asset}`); } }
     return { ok: true, title: `${n} unit${n === 1 ? '' : 's'} registered.`, text: 'Synthetic serials, hostnames and addresses, one request for each. Commissioning can start once every unit is in the register.' }; });
   const startCommissioning = () => act('Asking the server to start commissioning…', async () => {
@@ -338,6 +342,13 @@ export function FlagshipPage({ room }: { room?: string }) {
                 {sel.placement?.proposed ? <div><dt>Proposed</dt><dd data-testid="fl-pos-proposed">{at(sel.placement.proposed)} <Tag tone="warn">waiting</Tag> <span className="ui-muted">{sel.placement.proposed.move}, recorded by {sel.placement.proposed.by}</span></dd></div> : null}
                 <div><dt>Model</dt><dd>{sel.modelName || (sel.model === 'generic' ? 'a class of device; no model chosen' : sel.model)}</dd></div>
                 <div><dt>Installed unit</dt><dd>{sel.furniture ? 'furniture: no unit to identify' : sel.identityState && !/unknown/i.test(sel.identityState) ? words(sel.identityState) : 'not identified yet: the device register is still to be filled'}</dd></div>
+                {(() => { const rg = data.register?.items.find((x) => x.position === sel.id); const e = rg?.entry; if (!rg || !rg.asset) return null; const n = e?.network;
+                  return <div><dt>Register</dt><dd data-testid="fl-detail-register" data-firmware={rg.firmware?.state || ''} data-lapsed={(rg.lapsed || []).join(',')}>
+                    {e ? <>{rg.asset}{e.hostname ? ` · ${e.hostname}` : ''}{e.ip ? ` · ${e.ip}${n?.prefix ? `/${n.prefix}` : ''}` : ''}{n?.vlan ? ` · VLAN ${n.vlan}` : ''}{n?.addressing ? ` · ${words(n.addressing)}` : ''}{n?.gateway ? ` · gateway ${n.gateway}` : ''}
+                      {n?.switchUnit ? ` · patched to ${n.switchUnit} ${n.switchPort}` : ''}{n?.poe && n.poe !== 'NONE' ? ` · ${n.poe.replace(/_PLUS/g, '+').replace('POE', 'PoE')}` : ''}
+                      {e.firmware ? <> · firmware {e.firmware} {rg.firmware?.state === 'MATCHES' ? <Tag tone="ok">baseline</Tag> : rg.firmware?.state === 'DIFFERS' ? <Tag tone="warn">{`baseline ${rg.firmware.baseline}`}</Tag> : <span className="ui-muted">(no approved baseline for this model)</span>}</> : null}
+                      {e.lifecycle?.warrantyUntil ? ` · warranty to ${e.lifecycle.warrantyUntil}` : ''}{e.lifecycle?.supportUntil ? ` · support to ${e.lifecycle.supportUntil}` : ''}{(rg.lapsed || []).length ? <> <Tag tone="bad">{`${rg.lapsed!.join(' and ')} lapsed`}</Tag></> : null}</>
+                      : <span className="ui-muted">{rg.asset}: nothing in the register yet</span>}</dd></div>; })()}
                 <div><dt>Connections</dt><dd data-testid="fl-detail-links">{selLinks.length ? <ul className="fl__list">{selLinks.map((k) => <li key={k.id}><Tag tone="muted">{k.kind}</Tag> {k.from === sel.id ? 'to' : 'from'} <button type="button" className="fl__linkbtn" onClick={() => setSelected(k.from === sel.id ? k.to : k.from)}>{label(k.from === sel.id ? k.to : k.from)}</button> <span className="ui-muted">· {k.why}</span></li>)}</ul> : 'none in the design'}</dd></div>
                 <div><dt>Tests naming it</dt><dd data-testid="fl-detail-tests">{naming(sel.id).length} of {rows.length} applicable{naming(sel.id).length ? <> · <button type="button" className="fl__linkbtn" data-testid="fl-only" onClick={() => { setOnlySelected(true); setPhase('all'); }}>show only these</button></> : null}</dd></div>
               </dl>
@@ -429,6 +440,7 @@ export function FlagshipPage({ room }: { room?: string }) {
           measuredTests={(data.criteria?.tests || []).filter((x) => x.criterion).map((x) => x.test)} people={data.people} matrix={data.docs} t={tools} />
 
         <BaselineCard baseline={B} revision={R.room.approvedRevision} names={Object.fromEntries((data.criteria?.tests || []).map((x) => [x.test, x.name]))} />
+        <WhoToCall support={data.support} />
         <Incidents room={{ code: R.room.code, name: R.room.name }} lifecycle={R.room.lifecycle} devices={R.devices} selected={selected} data={data.incidents} creds={data.creds} t={tools} />
 
         <Card icon="check" title="Commissioning plan" sub={R.commissioning ? `${R.commissioning.applicable} of ${R.commissioning.library} tests apply to this room · rules ${R.commissioning.ruleVersion}, engine ${R.commissioning.engineVersion}` : 'The server holds no plan for this room'} testId="fl-cx-card">

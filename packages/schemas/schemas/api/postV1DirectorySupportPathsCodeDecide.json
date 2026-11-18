@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1DirectorySupportPathsCodeDecide/0.1.0.json",
+  "title": "POST /v1/directory/support-paths/{code}/decide request body",
+  "description": "Approve or reject a proposed support path: a data steward, never its proposer, once; an approval supersedes the site’s approved path for that domain",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}

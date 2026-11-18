@@ -52,6 +52,7 @@
 //          confirm it and its reporter can; the reporter cannot close it and the service manager can
 //   FL-36  a second report of the same kind on the same device is marked a repeat by the database; a blocked incident's correction
 //          waits; an escalation is recorded once; what the records add up to is the server's count; phone width
+//   FL-39  who to call: the support paths of the room's site from the server, Teams/email/copy hand-offs (nothing sent)
 //   FL-38  Pass with Exception from the page: an exception record logged, refused to its logger, rejected with a reason by the systems engineer
 //   FL-37  documentation and submission (0043): the required documents submitted and approved by different people, and the packet
 //          signed for the integrator and the owner by two different people, before acceptance; refused to the wrong role each time
@@ -462,6 +463,19 @@ const count = async (re) => (await rowsOnServer()).filter((x) => re.test(x.resul
       && noMove === 0 && closedNote === 1 && vReload === '1' && theirV === '1' && theirBuilt.includes(move.move) && over <= 1 && !u.errs.length && !pageErrs().length,
     `baseline ${base1.version} on design revision ${base1.design_revision} (approved ${room.room.approvedRevision}) · camera designed (${bCam.designed.x}, ${bCam.designed.y}), as built (${bCam.asBuilt.x}, ${bCam.asBuilt.y}) ${bCam.asBuilt.move}; the design row still (${camServer.x}, ${camServer.y}) · measured “${measText.slice(0, 110)}” · three products: “${three.trim().slice(0, 60)}” · move offered ${noMove}, closed note ${closedNote} · reload v${vReload}, second browser v${theirV} · phone overflow ${over}px · ${[...u.errs, ...pageErrs()].slice(0, 2)}`);
   await u.close(); }
+
+// ------------------------------------------------------------------------------------------------ who to call (0044; founder, 18 Nov 2026)
+{ const card = p.getByTestId('fl-who-card'); await card.scrollIntoViewIfNeeded();
+  const domains = await p.locator('[data-testid=fl-who-paths] > li').evaluateAll((els) => els.map((e) => e.getAttribute('data-domain')));
+  const prim = await p.getByTestId('fl-who-audio-primary').getAttribute('data-contact'); const back = await p.getByTestId('fl-who-audio-backup').getAttribute('data-contact');
+  const acts = p.getByTestId('fl-who-video-primary-actions'); const chat = await acts.locator('[data-action="teams.chat"]').getAttribute('href'); const mail = await acts.locator('[data-action="mail.compose"]').getAttribute('href');
+  await acts.locator('[data-action="copy"]').click(); const said = await p.getByTestId('fl-who-video-primary-actions-said').textContent();
+  const server = await srv('service', '/support');
+  const J = (x) => JSON.stringify(x);
+  ok('FL-39', 'who to call: the theatre’s site has an approved audio and video path from the server, each with a primary and a backup who is someone else; a contact offers a Teams chat and an email that open the viewer’s own apps (links, nothing sent) and copies its contact info',
+    J(domains) === J(['audio', 'video']) && prim && back && prim !== back && /^https:\/\/teams\.microsoft\.com\/l\/chat\/0\/0\?users=.+%40.+example\.org$/.test(chat || '') && /^mailto:.+@.+example\.org$/.test(mail || '')
+      && /^(Copied\.|Copying was refused)/.test(said || '') && server.paths.length === 2,
+    `${J(domains)} · audio ${prim} / backup ${back} · ${chat} · ${mail} · copy: ${said}`); }
 
 // ------------------------------------------------------------------------------------------------ in service: incidents
 const incidentsOnServer = async (role = 'svcmgr') => (await api.call('GET', `/v1/incidents?room=${encodeURIComponent((await srv('cxeng', '')).room.code)}&limit=20`, { token: await as(role) })).body.items;
