@@ -73,6 +73,10 @@ await p.evaluate(() => { location.hash = '#/campus'; }); await p.waitForSelector
 await p.getByTestId('emap-q').fill('3.213'); await p.waitForTimeout(250); await p.getByTestId('emap-hit-R-ATL-3-213').click(); await p.waitForTimeout(400); await p.getByTestId('emap-j-replay').click(); await p.waitForSelector('[data-testid=replay], [data-testid=replay-home]', { timeout: 15000 }).catch(() => {});
 ok('MAP-23', 'the Core Replay jump from a designed room lands on that room’s replay, built from its record (D18-13: it was “Room not found”)', (await p.locator('[data-testid=replay]').count()) === 1 && !/Room not found/.test(await p.locator('main').innerText()), await p.evaluate(() => location.hash));
 await p.evaluate(() => { location.hash = '#/campus'; }); await p.waitForSelector('[data-testid=emap][data-ready=true]');
+await p.evaluate(() => { location.hash = '#/investor'; }); await p.waitForSelector('[data-testid=emap][data-ready=true]', { timeout: 30000 });
+const ov = await p.evaluate(() => { const a = document.querySelector('.emap__search')?.getBoundingClientRect(), b = document.querySelector('.emap__layers')?.getBoundingClientRect(); return a && b ? { overlap: a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom, w: Math.round(document.querySelector('.emap').getBoundingClientRect().width) } : null; });
+ok('MAP-24', `in a narrower map (the investor start, ${ov?.w} px wide) the search box stays clear of the layer buttons`, !!ov && !ov.overlap, JSON.stringify(ov));
+await p.evaluate(() => { location.hash = '#/campus'; }); await p.waitForSelector('[data-testid=emap][data-ready=true]');
 ok('MAP-15', `the map knows the graphics it runs on and says so (data-gpu=${await A(p, 'gpu')}): a software renderer gets no opening flight and standard resolution, a GPU the cinematic opening`, ['software', 'hardware'].includes(await A(p, 'gpu') || ''), await A(p, 'gpu'));
 ok('MAP-14', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
 await t.close();

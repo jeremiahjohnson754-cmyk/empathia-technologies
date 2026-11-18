@@ -140,6 +140,11 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
   - Nothing is invented. The four rooms with a deep history are unchanged. The replay index offers any of the 140 rooms.
 - **Regression test:** `demo-replay` RP-20…22 (30/30) and `demo-map` MAP-23 (25/25, light and dark). `demo-destructive` 164/164 and `demo-hardening` 38/38 still pass.
 
+### D18-14 · P3 · Fixed
+- **What was wrong:** the tours page said "Four tours" when there were six. In the investor start's narrower map (496 px), the search box ran under the layer buttons.
+- **Fix:** the heading counts the tours. The map's search area stops short of the layer buttons at every size.
+- **Regression test:** `demo-tours` TR-*-00 and `demo-map` MAP-24.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220

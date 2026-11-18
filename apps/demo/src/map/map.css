@@ -20,7 +20,7 @@
 .emap__iss { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #d64545; color: #fff; font-size: 11px; }
 .emap__rpin { min-height: 28px; padding: 2px 9px; font-size: 12px; }
 .emap__rpin i { width: 9px; height: 9px; border-radius: 3px; flex: none; }
-.emap__top { position: absolute; left: 12px; top: 12px; right: 140px; display: grid; gap: 8px; justify-items: start; pointer-events: none; }
+.emap__top { position: absolute; left: 12px; top: 12px; right: 196px; display: grid; gap: 8px; justify-items: start; pointer-events: none; }
 .emap__top > * { pointer-events: auto; }
 .emap__search { position: relative; width: min(360px, 100%); }
 .emap__search input { width: 100%; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid var(--em-line); background: var(--em-glass); color: var(--em-tx); font: inherit; font-size: 14.5px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }

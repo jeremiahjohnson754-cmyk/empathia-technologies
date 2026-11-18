@@ -66,11 +66,12 @@ export default function Landing({ role }: PageProps) {
       <section className="hero lnd__hero">
         <div className="lnd__top"><div>
         <p className="kicker">Investor demonstration · synthetic estate</p>
-        <h1>Every state here has a guard, an actor and an event behind it.</h1>
-        <p className="lead">Declared is not verified; modeled is not measured — and the product says so itself. Four ways in:</p>
+        <h1>Every room has a story. Every system has a history. Every decision has consequences.</h1>
+        <p className="lead">Follow the intelligence connecting spaces, technology, people, engineering and service. Declared is not verified and modeled is not measured — the product says so itself. Start with the life of one room, or choose your way in:</p>
         </div>
         <figure className="lnd__art stage" data-stage="" aria-label="The living campus in 3D"><CampusMap tiles={tiles} onOpen={(b) => { location.hash = `#/campus/${b.key}`; }} /><figcaption className="stage__cap">The living campus: six buildings, each tinted by its modelled health. Select one to go inside.</figcaption></figure>
         </div>
+        <a className="lnd__flag" href="#/tours/g" data-testid="life-of-a-room"><span className="lnd__flagk">The flagship tour</span><b>The Life of a Room</b><span>One boardroom from its request to service, a replaced camera, re-acceptance and the estate view: sixteen stops through the real product, every product reading the same record.</span></a>
         <div className="start">
           {build
             ? <a className="go launch" href={BUILD}><span className="go__ic" aria-hidden="true"><Icon name="cube" size={22} /></span><b>Launch interactive room builder</b><span>Design a room and watch it reach drawings, commissioning, Search Party and Pro.</span></a>

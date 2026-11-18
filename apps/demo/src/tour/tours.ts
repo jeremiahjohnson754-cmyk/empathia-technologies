@@ -11,10 +11,31 @@ export interface Stop { id: string; title: string; text: string; href: string; s
   ask?: { q: string; a: string };
   /** searches a visitor can run from this stop with one press (tour D's "search anything" stop) */
   tries?: string[] }
-export interface Tour { key: 'a' | 'b' | 'c' | 'd' | 'e' | 'f'; title: string; audience: string; goal: string; stops: Stop[] }
+export interface Tour { key: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g'; title: string; audience: string; goal: string; stops: Stop[] }
 
 const ROOM = `#/campus/ATL/4/${REFERENCE_ROOM_ID}`;
 export const TOURS: Tour[] = [
+  // Tour G (#230; founder 18 Nov 13:15 and 13:21): the flagship — one room's whole life, told through the real pages and the same records.
+  // Every id named here is the one each product shows: R-ATL-4-218, position PA-0007, assets AS-0097 → AS-0112, baselines v1 and v2.
+  { key: 'g', title: 'Tour G — The Life of a Room', audience: 'Investors and enterprise buyers; the flagship', goal: 'Follow one room from its request to service, change and re-acceptance, and see every product read the same record.', stops: [
+    { id: 'G1', title: 'Every room has a story', text: 'Atlas 4.218, an executive boardroom on a fictional campus. Core Replay plays its life from its records; each step says how sure it is. Watching never changes the room.', href: `#/replay/${REFERENCE_ROOM_ID}?at=request`, spot: 'rp-card' },
+    { id: 'G2', title: 'It begins with intent', text: 'Nine requirements, six of them must-have: every seat heard and seen at the far end, one-touch join, usable by a guest. Everything later is judged against these.', href: `#/replay/${REFERENCE_ROOM_ID}?at=requirements`, spot: 'rp-card' },
+    { id: 'G3', title: 'The room is designed', text: 'A boardroom template at 6.2 × 9.6 m, every device a numbered position. The commissioning engine already knows which tests will apply to this design.', href: `#/replay/${REFERENCE_ROOM_ID}?at=design`, spot: 'rp-card' },
+    { id: 'G4', title: 'The same room in Lite', text: 'Lite shows that design in 3D: the room, the furniture, the devices at their positions. Same room id, R-ATL-4-218; a different view of one record.', href: `#/lite/room/${REFERENCE_ROOM_ID}`, spot: 'lite-room' },
+    { id: 'G5', title: 'The design becomes real', text: 'Installed. The front camera position PA-0007 holds physical asset AS-0097. Position and asset are different things: remember both ids.', href: `#/replay/${REFERENCE_ROOM_ID}?at=build`, spot: 'rp-card' },
+    { id: 'G6', title: 'Commissioning proves it', text: 'Each applicable test recorded by its responsible role and verified by somebody else. A result nobody independently checked does not count.', href: `#/replay/${REFERENCE_ROOM_ID}?at=commissioning`, spot: 'rp-card' },
+    { id: 'G7', title: 'The commissioning record', text: 'The tests themselves: what was required, what was observed, by whom, and who verified it. Synthetic evidence, labelled as such.', href: `#/commissioning/room/${REFERENCE_ROOM_ID}` },
+    { id: 'G8', title: 'The accepted baseline', text: 'Baseline v1: what the room was proven to do. Everything afterwards is compared with it, and it is never overwritten.', href: `#/replay/${REFERENCE_ROOM_ID}?at=baseline1`, spot: 'rp-card' },
+    { id: 'G9', title: 'A failure becomes work', text: 'In use, things fail. A problem in this room is a ServiceHands job tied to the room and, where known, the device: the same ids again.', href: '#/servicehands', spot: 'jobs' },
+    { id: 'G10', title: 'Who can fix it', text: 'Search Party from the room: who supports it, who knows it, its relationships, each with where it comes from. From here, a problem goes straight to ServiceHands with the room filled in.', href: `#/search?focus=Room:${REFERENCE_ROOM_ID}`, spot: 'sp-room-acts' },
+    { id: 'G11', title: 'The exact device', text: 'Search for the replacement unit AS-0112: its position, its room, its history. Search Party, Lite and ServiceHands all resolve the same asset.', href: '#/search?q=AS-0112' },
+    { id: 'G12', title: 'A change reopens exactly what it touches', text: 'The camera at PA-0007 is replaced like-for-like: AS-0097 out, AS-0112 in. The engine reopens only the tests that name PA-0007; the old results stay as history and never count for the new unit.', href: `#/replay/${REFERENCE_ROOM_ID}?at=change`, spot: 'rp-card' },
+    { id: 'G13', title: 'Re-accepted, history kept', text: 'The reopened tests are run again and verified. Baseline v2 becomes current; v1 is preserved. Compare any two moments with the time layers.', href: `#/replay/${REFERENCE_ROOM_ID}?at=baseline2`, spot: 'rp-card' },
+    { id: 'G14', title: 'Assurance watches the baseline', text: 'Assurance holds the accepted state and its revisions, so a later difference shows as drift against a known baseline, not as a guess.', href: `#/assurance/room/${REFERENCE_ROOM_ID}` },
+    { id: 'G15', title: 'What leadership sees', text: 'The same records roll up into diagnosis and analytics. Every figure traces to the rooms and jobs it came from; nothing here is live telemetry.', href: '#/v25/apex' },
+    { id: 'G16', title: 'One room. Now the whole estate.', text: 'The failure map shows every building’s open issues, as counts and per 10 rooms, from the same records. Follow everything that happened to one room, then imagine that across the enterprise. (Turning a resolved fault into a reviewed lesson in Learn is designed, not built yet.)', href: '#/pro/issues', spot: 'pro-failure-map' },
+  ] },
+
   { key: 'a', title: 'Tour A — The Living Campus', audience: 'Anyone', goal: 'Understand the concept in a few minutes.', stops: [
     { id: 'A1', title: 'From the company site to the product', text: 'This is the investor demonstration. Everything in it is synthetic and runs in this browser; nothing is connected to a real building.', href: '#/tours' },
     { id: 'A2', title: 'An explorable campus', text: 'Six buildings on the campus map, and 140 rooms across the estate with its other sites. The glyph on a building counts its open issues, taken from the room records.', href: '#/campus', spot: 'campus-stage' },
