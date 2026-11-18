@@ -45,12 +45,12 @@ void main(){ vec4 w = uM * vec4(aPos,1.0); vWorld = w.xyz; vNor = normalize(mat3
 const FS = `#version 300 es
 precision mediump float;
 in vec3 vNor; in vec3 vCol; in vec3 vWorld; uniform vec3 uSun; uniform vec3 uEye; uniform vec3 uFog; uniform float uFogNear; uniform float uFogFar; uniform float uAlpha;
+uniform vec3 uSky; uniform vec3 uGround; uniform float uAmb; uniform vec3 uSunCol; uniform float uGlow;
 out vec4 o;
 void main(){
   vec3 n = normalize(vNor); float d = max(dot(n, uSun), 0.0);
-  vec3 sky = vec3(0.78,0.86,0.95), ground = vec3(0.45,0.42,0.36);
-  vec3 amb = mix(ground, sky, n.y*0.5+0.5) * 0.48;
-  vec3 c = vCol * (amb + vec3(1.0,0.96,0.88) * d * 0.72);
+  vec3 amb = mix(uGround, uSky, n.y*0.5+0.5) * uAmb;
+  vec3 c = mix(vCol * (amb + uSunCol * d), vCol, uGlow);
   float rim = pow(1.0 - max(dot(n, normalize(uEye - vWorld)), 0.0), 3.0) * 0.08; c += rim;
   float f = clamp((distance(uEye, vWorld) - uFogNear) / (uFogFar - uFogNear), 0.0, 1.0);
   o = vec4(mix(c, uFog, f*f), uAlpha);
@@ -69,14 +69,40 @@ export function boxVerts(b: Box, out: number[]) {
   for (const [n, q] of F) for (const i of [0, 1, 2, 0, 2, 3]) { const p = q[i]!; out.push(p[0], p[1], p[2], n[0], n[1], n[2], c[0], c[1], c[2]); }
 }
 
+/** an upright prism over any four-cornered footprint (x, z), from y0 to y1, coloured; faces lit by their own normals */
+export function prismVerts(pts: Array<[number, number]>, y0: number, y1: number, color: string | V3, out: number[], top = true) {
+  const c = typeof color === 'string' ? hex(color) : color; const n = pts.length; const push = (p: V3, nn: V3) => out.push(p[0], p[1], p[2], nn[0], nn[1], nn[2], c[0], c[1], c[2]);
+  let cx = 0, cz = 0; for (const p of pts) { cx += p[0] / n; cz += p[1] / n; }
+  for (let i = 0; i < n; i++) { const a = pts[i]!, b = pts[(i + 1) % n]!; let nx = b[1] - a[1], nz = -(b[0] - a[0]); const mx = (a[0] + b[0]) / 2 - cx, mz = (a[1] + b[1]) / 2 - cz; if (nx * mx + nz * mz < 0) { nx = -nx; nz = -nz; } const l = Math.hypot(nx, nz) || 1; const nn: V3 = [nx / l, 0, nz / l];
+    const q: V3[] = [[a[0], y0, a[1]], [b[0], y0, b[1]], [b[0], y1, b[1]], [a[0], y1, a[1]]]; const order = (b[0] - a[0]) * nn[2] - (b[1] - a[1]) * nn[0] > 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]; for (const k of order) push(q[k]!, nn); }
+  if (top) for (let i = 1; i < n - 1; i++) { const tri: V3[] = [[pts[0]![0], y1, pts[0]![1]], [pts[i]![0], y1, pts[i]![1]], [pts[i + 1]![0], y1, pts[i + 1]![1]]]; const cr = (tri[1]![0] - tri[0]![0]) * (tri[2]![2] - tri[0]![2]) - (tri[1]![2] - tri[0]![2]) * (tri[2]![0] - tri[0]![0]); const ord = cr < 0 ? [0, 1, 2] : [0, 2, 1]; for (const k of ord) push(tri[k]!, [0, 1, 0]); }
+}
+
+/** a seating step: its top and the riser facing the pitch (the edge pts[0]–pts[1]); the hidden faces are not drawn */
+export function stepVerts(pts: Array<[number, number]>, y0: number, y1: number, color: string | V3, out: number[], riserColor?: string | V3) {
+  const c = typeof color === 'string' ? hex(color) : color; const rc = riserColor === undefined ? c.map((x) => x * 0.8) as V3 : typeof riserColor === 'string' ? hex(riserColor) : riserColor;
+  const push = (p: V3, nn: V3, col: V3) => out.push(p[0], p[1], p[2], nn[0], nn[1], nn[2], col[0], col[1], col[2]);
+  const T: V3[] = pts.map((p) => [p[0], y1, p[1]]); const cr = (T[1]![0] - T[0]![0]) * (T[2]![2] - T[0]![2]) - (T[1]![2] - T[0]![2]) * (T[2]![0] - T[0]![0]);
+  for (const k of cr < 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]) push(T[k]!, [0, 1, 0], c);
+  const a = pts[0]!, b = pts[1]!; let nx = b[1] - a[1], nz = -(b[0] - a[0]); if (nx * -a[0] + nz * -a[1] < 0) { nx = -nx; nz = -nz; } const l = Math.hypot(nx, nz) || 1; const nn: V3 = [nx / l, 0, nz / l];
+  const q: V3[] = [[a[0], y0, a[1]], [b[0], y0, b[1]], [b[0], y1, b[1]], [a[0], y1, a[1]]]; for (const k of (b[0] - a[0]) * nn[2] - (b[1] - a[1]) * nn[0] > 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]) push(q[k]!, nn, rc);
+}
+/** a seated figure, as light as a crowd of thousands needs: one box of five faces (no underside), shirt on the sides, a head-coloured top */
+export function figureVerts(x: number, y: number, z: number, color: string, out: number[]) {
+  const c = hex(color); const skin: V3 = [0.78, 0.6, 0.47]; const x0 = x - 0.22, x1 = x + 0.22, z0 = z - 0.2, z1 = z + 0.2, y0 = y, y1 = y + 0.8;
+  const F: Array<[V3, V3[], V3]> = [[[0, 0, 1], [[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], c], [[0, 0, -1], [[x1, y0, z0], [x0, y0, z0], [x0, y1, z0], [x1, y1, z0]], c],
+    [[1, 0, 0], [[x1, y0, z1], [x1, y0, z0], [x1, y1, z0], [x1, y1, z1]], c], [[-1, 0, 0], [[x0, y0, z0], [x0, y0, z1], [x0, y1, z1], [x0, y1, z0]], c], [[0, 1, 0], [[x0, y1, z1], [x1, y1, z1], [x1, y1, z0], [x0, y1, z0]], skin]];
+  for (const [n, q, col] of F) for (const i of [0, 1, 2, 0, 2, 3]) { const p = q[i]!; out.push(p[0], p[1], p[2], n[0], n[1], n[2], col[0], col[1], col[2]); }
+}
+
 export interface Mesh { vao: WebGLVertexArrayObject; n: number }
 export class Renderer {
   gl: WebGL2RenderingContext; prog: WebGLProgram; u: Record<string, WebGLUniformLocation | null> = {}; unit: Mesh; disc: Mesh;
   constructor(public canvas: HTMLCanvasElement) {
-    const gl = canvas.getContext('webgl2', { antialias: true, alpha: false, powerPreference: 'high-performance' }); if (!gl) throw new Error('WebGL2 is not available in this browser');
+    const gl = canvas.getContext('webgl2', { antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: true }); if (!gl) throw new Error('WebGL2 is not available in this browser');
     this.gl = gl; const sh = (t: number, s: string) => { const x = gl.createShader(t)!; gl.shaderSource(x, s); gl.compileShader(x); if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(x) || 'shader'); return x; };
     const p = gl.createProgram()!; gl.attachShader(p, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(p); if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || 'link');
-    this.prog = p; for (const k of ['uVP', 'uM', 'uTint', 'uUseTint', 'uSun', 'uEye', 'uFog', 'uFogNear', 'uFogFar', 'uAlpha']) this.u[k] = gl.getUniformLocation(p, k);
+    this.prog = p; for (const k of ['uVP', 'uM', 'uTint', 'uUseTint', 'uSun', 'uEye', 'uFog', 'uFogNear', 'uFogFar', 'uAlpha', 'uSky', 'uGround', 'uAmb', 'uSunCol', 'uGlow']) this.u[k] = gl.getUniformLocation(p, k);
     gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
     const v: number[] = []; boxVerts({ min: [-0.5, -0.5, -0.5], max: [0.5, 0.5, 0.5], color: '#ffffff' }, v); this.unit = this.mesh(v);
     const d: number[] = []; const N = 20; for (let i = 0; i < N; i++) { const a = (i / N) * Math.PI * 2, b = ((i + 1) / N) * Math.PI * 2; d.push(0, 0, 0, 0, 1, 0, 0, 0, 0, Math.cos(b) * 0.5, 0, Math.sin(b) * 0.5, 0, 1, 0, 0, 0, 0, Math.cos(a) * 0.5, 0, Math.sin(a) * 0.5, 0, 1, 0, 0, 0, 0); } this.disc = this.mesh(d);
@@ -87,11 +113,16 @@ export class Renderer {
     gl.bindVertexArray(null); return { vao, n: v.length / 9 };
   }
   resize(dpr: number) { const c = this.canvas; const w = Math.max(1, Math.round(c.clientWidth * dpr)), h = Math.max(1, Math.round(c.clientHeight * dpr)); if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } this.gl.viewport(0, 0, w, h); }
+  /** the light of the scene: the defaults are Campus Life's daylight */
+  light: { sun: V3; sunCol: V3; sky: V3; ground: V3; amb: number } = { sun: norm([0.45, 0.8, 0.35]), sunCol: [0.72, 0.69, 0.63], sky: [0.78, 0.86, 0.95], ground: [0.45, 0.42, 0.36], amb: 0.48 };
   begin(vp: M4, eye: V3, fog: V3, near: number, far: number) {
-    const gl = this.gl; gl.clearColor(fog[0], fog[1], fog[2], 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); gl.useProgram(this.prog);
-    gl.uniformMatrix4fv(this.u['uVP']!, false, vp); gl.uniform3fv(this.u['uSun']!, norm([0.45, 0.8, 0.35])); gl.uniform3fv(this.u['uEye']!, eye); gl.uniform3fv(this.u['uFog']!, fog);
+    const gl = this.gl; gl.clearColor(fog[0], fog[1], fog[2], 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); gl.useProgram(this.prog); const L = this.light;
+    gl.uniformMatrix4fv(this.u['uVP']!, false, vp); gl.uniform3fv(this.u['uSun']!, L.sun); gl.uniform3fv(this.u['uEye']!, eye); gl.uniform3fv(this.u['uFog']!, fog);
+    gl.uniform3fv(this.u['uSky']!, L.sky); gl.uniform3fv(this.u['uGround']!, L.ground); gl.uniform1f(this.u['uAmb']!, L.amb); gl.uniform3fv(this.u['uSunCol']!, L.sunCol); gl.uniform1f(this.u['uGlow']!, 0);
     gl.uniform1f(this.u['uFogNear']!, near); gl.uniform1f(this.u['uFogFar']!, far); gl.uniform1f(this.u['uAlpha']!, 1); gl.disable(gl.BLEND);
   }
+  /** draw unlit (a lamp, a screen, a board), fully or partly */
+  glow(g: number) { this.gl.uniform1f(this.u['uGlow']!, g); }
   draw(m: Mesh, model: M4 = m4.ident(), tint?: V3, alpha = 1) {
     const gl = this.gl; gl.uniformMatrix4fv(this.u['uM']!, false, model); gl.uniform1f(this.u['uUseTint']!, tint ? 1 : 0); if (tint) gl.uniform3fv(this.u['uTint']!, tint);
     if (alpha < 1) { gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); } gl.uniform1f(this.u['uAlpha']!, alpha);

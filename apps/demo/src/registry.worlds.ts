@@ -14,6 +14,13 @@ const OPEN = { roles: ROLE_KEYS, why: 'the world-first entry (v1.8 ADR-022): a p
 
 export const WORLD_PAGES: readonly PageDef[] = [
   {
+    // task #182 (founder, 17 Nov 2026 10:20 and 13:40): Stadium LIVE, the bowl in 3D with the LIVE console
+    id: 'play.stadium', title: 'Stadium LIVE', purpose: 'Harborlight Stadium in 3D with the LIVE console: atmospheres from pregame to concert, cameras, crowd cheers and waves, synthesised sound (opt-in), modeled crowd levels and PA coverage, boards and ribbon, AV devices and a replayable event timeline', product: 'shell',
+    path: '/play/stadium', alias: ['/stadium/live', '/worlds/stadium/live'], authority: OPEN,
+    load: () => import('./play/StadiumLive.js'),
+    search: { keywords: 'stadium live 3d bowl crowd cheer wave atmosphere concert halftime scoreboard ribbon pa coverage dba heatmap audio mixer broadcast camera replay poll', aliases: ['stadium live', 'harborlight live', 'live console'] },
+  },
+  {
     // task #186 (founder, 17 Nov 2026 10:31 and 10:59): the first playable slice of Campus Life
     id: 'play.campus', title: 'Campus Life', purpose: 'Play a student at Kestrel Valley University: walk and run across the Quad, meet Professor Calder, open Science Hall, fix the circuit bench in SCI-110, find fact cards, earn experience; progress kept in this browser', product: 'shell',
     path: '/play/campus', alias: ['/play', '/campus-life', '/worlds/university/play'], authority: OPEN,
