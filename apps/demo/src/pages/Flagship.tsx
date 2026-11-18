@@ -28,7 +28,7 @@ import { CorrectiveAction, type Cred, type Deficiency, type Exc, type Issue, typ
 import { Finishing, BaselineCard, type Baseline, type Person, type DocMatrix } from '../flagship/Acceptance.js';
 import { WhoToCall, type Support } from '../flagship/WhoToCall.js';
 import { Incidents, type Catalogue, type Incident, type IncidentData, type Intelligence } from '../flagship/Incidents.js';
-import { SubjectJumps } from '../connected/Jumps.js';
+import { SubjectJumps } from '../connected/jumps.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
 interface Point { x: number; y: number }

@@ -57,6 +57,76 @@
     "file": "apps/demo/src/onboard/program.ts",
     "evidence": "credential-issuer",
     "note": "pathway examples"
+   },
+   {
+    "file": "apps/demo/src/certs/CertPage.tsx",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/certs/bank-cts.ts",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/certs/bank-ctsd.ts",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/certs/bank-ctsi.ts",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/certs/bank-more.ts",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/certs/exam.ts",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/certs/facts.ts",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/certs/gen.ts",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/certs/guide.ts",
+    "evidence": "credential-issuer",
+    "note": "unofficial study space for AVIXA’s CTS, CTS-D and CTS-I; exam facts from AVIXA’s 2026 handbooks, sourced and dated; not affiliated, endorsed or approved (disclaimer on every page)"
+   },
+   {
+    "file": "apps/demo/src/fieldtools/FieldTools.tsx",
+    "evidence": "credential-issuer",
+    "note": "Field Tools say which AVIXA credential’s domains a calculator belongs to; no affiliation implied"
+   },
+   {
+    "file": "apps/demo/src/fieldtools/calc.ts",
+    "evidence": "credential-issuer",
+    "note": "Field Tools say which AVIXA credential’s domains a calculator belongs to; no affiliation implied"
+   },
+   {
+    "file": "apps/demo/src/fieldtools/jobs.ts",
+    "evidence": "credential-issuer",
+    "note": "Field Tools say which AVIXA credential’s domains a calculator belongs to; no affiliation implied"
+   },
+   {
+    "file": "apps/demo/src/registry.shell.ts",
+    "evidence": "credential-issuer",
+    "note": "search keywords of the unofficial certification study spaces"
+   },
+   {
+    "file": "apps/website/src/products.ts",
+    "evidence": "credential-issuer",
+    "note": "Learn’s limits: the unofficial study spaces are not affiliated with or endorsed by AVIXA"
    }
   ],
   "Android": [
@@ -109,6 +179,11 @@
     "file": "apps/demo/src/knowledge/seed.universal.ts",
     "evidence": "standard-cited",
     "note": "IEEE 802.3, 802.1Q, 1588 named by number"
+   },
+   {
+    "file": "apps/demo/src/fieldtools/calc.ts",
+    "evidence": "standard-cited",
+    "note": "PoE budget calculator: IEEE 802.3af/at/bt class powers, cited as the standard’s published classes"
    }
   ],
   "IFC": [
@@ -168,6 +243,16 @@
     "file": "apps/demo/src/knowledge/ingest.ts",
     "evidence": "mock-tested-not-connected",
     "note": "GRAPH_MOCK: no real library has answered"
+   },
+   {
+    "file": "apps/demo/src/pages/ServerReports.tsx",
+    "evidence": "file-format",
+    "note": "the Power BI project is written to Microsoft’s published PBIP/PBIR JSON schemas; nothing is published to Power BI"
+   },
+   {
+    "file": "apps/demo/src/tour/tours.ts",
+    "evidence": "file-format",
+    "note": "Office file formats: the exported files open in Microsoft Office"
    }
   ],
   "OneDrive": [
@@ -192,6 +277,11 @@
     "file": "apps/demo/src/guides/chapters.ts",
     "evidence": "training-subject-cited",
     "note": "which app is for what"
+   },
+   {
+    "file": "apps/demo/src/connect/search.tsx",
+    "evidence": "documented-link-not-followed",
+    "note": "contact bar: an email opens in the person’s own mail program (Outlook or another); nothing is sent by Empathia"
    }
   ],
   "PMI": [
@@ -325,6 +415,26 @@
     "file": "apps/demo/src/guides/chapters.ts",
     "evidence": "training-subject-cited",
     "note": "which app is for what"
+   },
+   {
+    "file": "apps/demo/src/campus/scenarios.ts",
+    "evidence": "ordinary-word",
+    "note": "a room archetype named for its use (a meeting room for Teams calls); no integration"
+   },
+   {
+    "file": "apps/demo/src/connect/connect.css",
+    "evidence": "documented-link-not-followed",
+    "note": "a comment naming the contact bar’s Teams chip"
+   },
+   {
+    "file": "apps/demo/src/connect/search.tsx",
+    "evidence": "documented-link-not-followed",
+    "note": "contact bar: a Teams chat or call link the person opens in their own Teams app; nothing is sent by Empathia"
+   },
+   {
+    "file": "apps/demo/src/flagship/WhoToCall.tsx",
+    "evidence": "documented-link-not-followed",
+    "note": "who to call: a Teams chat or call link opened in the person’s own app"
    }
   ],
   "Windows": [

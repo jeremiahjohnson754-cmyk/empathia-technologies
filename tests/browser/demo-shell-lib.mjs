@@ -37,5 +37,5 @@ export async function harness(name) {
     fs.writeFileSync(path.join(out, `${name}-${scheme}.json`), JSON.stringify({ suite: name, scheme, at: new Date().toISOString(), results }, null, 1));
     console.log(`\n${results.length - failed} passed, ${failed} failed`); process.exit(failed ? 1 : 0);
   }
-  return { base, ok, open, main, done, scheme };
+  return { base, ok, open, main, done, scheme, browser };
 }

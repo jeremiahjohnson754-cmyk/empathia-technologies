@@ -14,6 +14,13 @@ const OPEN = { roles: ROLE_KEYS, why: 'the world-first entry (v1.8 ADR-022): a p
 
 export const WORLD_PAGES: readonly PageDef[] = [
   {
+    // task #186 (founder, 17 Nov 2026 10:31 and 10:59): the first playable slice of Campus Life
+    id: 'play.campus', title: 'Campus Life', purpose: 'Play a student at Kestrel Valley University: walk and run across the Quad, meet Professor Calder, open Science Hall, fix the circuit bench in SCI-110, find fact cards, earn experience; progress kept in this browser', product: 'shell',
+    path: '/play/campus', alias: ['/play', '/campus-life', '/worlds/university/play'], authority: OPEN,
+    load: () => import('./play/CampusLife.js'),
+    search: { keywords: 'play game campus life university student quad science hall walk run quest xp level classroom circuit npc', aliases: ['campus life', 'play', 'university game', 'play the campus'] },
+  },
+  {
     id: 'worlds', title: 'Choose a world', purpose: 'Four worlds — Enterprise, Stadium, University, Convention — each with a handful of everyday journeys', product: 'shell',
     path: '/worlds', authority: OPEN,
     load: () => import('./worlds/WorldsPage.js'),

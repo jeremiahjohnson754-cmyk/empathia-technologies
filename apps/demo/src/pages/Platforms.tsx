@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Notice, Tag } from '@empathia/ui';
 import { connected, SandboxGone, type Availability, type Sandbox } from '../connected/client.js';
-import { SubjectJumps, host } from '../connected/Jumps.js';
+import { SubjectJumps, host } from '../connected/jumps.js';
 import { PEOPLE } from './Flagship.js';
 
 interface Platform { key: string; name: string; vendor: string; category: string; for: string; at: string[]; defaultUrl?: { url: string; source: string }; configured: { url: string; label: string | null; enabled: boolean; setAt: string } | null; opens: string | null }
