@@ -14,8 +14,8 @@
 import { useState, type ReactNode } from 'react';
 import { Tag } from '@empathia/ui';
 
-export interface Issue { code: string; title: string; state: string; workflow: string; workOrders: string[] }
-export interface Deficiency { issueId: string; state: string; workflow: string; severity: string; ownerRole: string | null; targetDate: string | null; rootCause: string | null; correctiveAction: string | null; fixedBy: string | null;
+export interface Issue { code: string; title: string; state: string; workflow: string; workOrders: string[]; check?: string }
+export interface Deficiency { issueId: string; test?: string | null; state: string; workflow: string; severity: string; ownerRole: string | null; targetDate: string | null; rootCause: string | null; correctiveAction: string | null; fixedBy: string | null;
   retest: { result: string; evidence: string } | null; closedBy: string | null; rootCauses?: string[] }
 interface Cand { id: string; name: string; hardFails: string[]; reasons: string[]; score: number }
 /** A credential as the server lists it to whoever is asking: everyone's for those who record or verify them, one's own otherwise. */
@@ -136,7 +136,40 @@ export function ServiceWork({ issue, wo, creds, t, what = 'deficiency', start = 
   );
 }
 
-export function CorrectiveAction({ issue, def, wo, creds, t }: { issue: Issue; def: Deficiency | null; wo: WorkOrder | null; creds: Cred[]; t: Tools }) {
+/** A measured exception record as the server holds it (0042): the database's figures, why, cause, mitigation, decision. */
+export interface Exc { code: string; issue: string; test: string; state: string; measured: { value: number; metric: string; unit: string }; limit: { lower: number | null; upper: number | null; criterionVersion: number };
+  whyPoor: string; rootCause: string; mitigation: string; decisionNote: string | null; words: string }
+
+/**
+ * Pass with Exception (0042, ADR-0020): the other way a failed measured test can end. Logged with why the value is poor, the root
+ * cause and the mitigation; the database copies the measured value and the limit; someone other than its logger approves or rejects
+ * it; approved, the deficiency is excepted on it, and acceptance counts the test as PASS WITH EXCEPTION, never as a pass.
+ */
+function ExceptionRecord({ issue, records, dw, t }: { issue: Issue; records: Exc[]; dw: string; t: Tools }) {
+  const [why, setWhy] = useState('Hard parallel side walls give a long decay at 500 Hz and 1 kHz; speech at the back is less clear (synthetic).');
+  const [cause, setCause] = useState('untreated side walls (synthetic)'); const [mit, setMit] = useState('Voice lift and captioning on the LED wall until absorption is fitted (synthetic).');
+  const [note, setNote] = useState(''); const { go, post, btn } = kit(t);
+  const live = records.filter((r) => r.state !== 'REJECTED').slice(-1)[0]; const closed = ['CLOSED', 'ACCEPTED_EXCEPTION'].includes(dw);
+  return (
+    <details className="ca__exc" data-testid="fl-exc" data-state={live?.state || 'NONE'} open={!!records.length}>
+      <summary>Or accept it with an exception (Pass with Exception: never a pass)</summary>
+      {records.length ? <ul className="fl__list" data-testid="fl-exc-list">{records.map((r) => <li key={r.code} data-exc={r.code} data-state={r.state}>
+        <span><b className="ui-mono">{r.code}</b> measured {r.measured.value} {r.measured.unit} against {r.limit.upper != null ? `at most ${r.limit.upper}` : `at least ${r.limit.lower}`} {r.measured.unit} (criterion version {r.limit.criterionVersion}) — {r.rootCause}; mitigation: {r.mitigation}{r.decisionNote ? <span className="ui-muted"> · {r.decisionNote}</span> : null}</span>
+        <Tag tone={r.state === 'APPROVED' ? 'ok' : r.state === 'REJECTED' ? 'bad' : 'warn'}>{words(r.state)}</Tag></li>)}</ul> : null}
+      {!live && !closed ? <><label className="kit-field">Why the value is poor <input type="text" value={why} maxLength={2000} data-testid="fl-exc-why" onChange={(e: { target: { value: string } }) => setWhy(e.target.value)} /></label>
+        <div className="ca__row"><label className="kit-field">Root cause <input type="text" value={cause} maxLength={1000} data-testid="fl-exc-cause" onChange={(e: { target: { value: string } }) => setCause(e.target.value)} /></label>
+          <label className="kit-field">Mitigation <input type="text" value={mit} maxLength={2000} data-testid="fl-exc-mitigation" onChange={(e: { target: { value: string } }) => setMit(e.target.value)} /></label></div>
+        <p className="build__row">{btn('fl-exc-log', `Log the exception record as the ${t.person}`, () => void go('Logging the exception record…', 'the exception record', post(`/v1/issues/${issue.code}/measured-exception`, { whyPoor: why, rootCause: cause, mitigation: mit }), { ok: true, title: 'Exception record logged.', text: 'The measured value and the limit were copied by the server from the measurement. Someone other than you decides it.' }))}</p></> : null}
+      {live?.state === 'REQUESTED' ? <><label className="kit-field">Decision note <input type="text" value={note} maxLength={2000} data-testid="fl-exc-note" onChange={(e: { target: { value: string } }) => setNote(e.target.value)} /></label>
+        <p className="build__row">{btn('fl-exc-approve', `Approve as the ${t.person}`, () => void go('Deciding…', 'the decision', post(`/v1/measured-exceptions/${live.code}/decide`, { decision: 'APPROVED', note: note || undefined }), { ok: true, title: `${live.code} approved.`, text: 'The deficiency can now be excepted on it.' }))}
+          {btn('fl-exc-reject', `Reject as the ${t.person}`, () => void go('Deciding…', 'the decision', post(`/v1/measured-exceptions/${live.code}/decide`, { decision: 'REJECTED', note }), { ok: true, title: `${live.code} rejected.`, text: 'The deficiency stays open: correct it and measure again, or log a new record.' }))}</p></> : null}
+      {live?.state === 'APPROVED' && !closed ? <p className="build__row">{btn('fl-exc-except', `Except the deficiency on ${live.code} as the ${t.person}`, () => void go('Excepting the deficiency…', 'the exception', post(`/v1/issues/${issue.code}/deficiency`, { step: 'except', exceptionRef: live.code }), { ok: true, title: 'Excepted.', text: 'Acceptance counts the test as PASS WITH EXCEPTION. The result stays FAIL.' }))}</p> : null}
+      <p className="ui-meta">The server refuses a record for a test without a criterion, a decision by the record’s logger, and an exception on anything but an approved record.</p>
+    </details>
+  );
+}
+
+export function CorrectiveAction({ issue, def, wo, creds, excs = [], measured = false, t }: { issue: Issue; def: Deficiency | null; wo: WorkOrder | null; creds: Cred[]; excs?: Exc[]; measured?: boolean; t: Tools }) {
   const [owner, setOwner] = useState('service'); const [due, setDue] = useState(inDays(10)); const [cause, setCause] = useState('ACOUSTICS'); const [action, setAction] = useState('Absorptive panels fitted to the rear wall, as the acoustic brief allows (synthetic)');
   const D = `/v1/issues/${issue.code}/deficiency`; const ws = wo?.state || 'NONE'; const dw = def?.workflow || issue.workflow; const { go, post, btn } = kit(t);
 
@@ -167,6 +200,7 @@ export function CorrectiveAction({ issue, def, wo, creds, t }: { issue: Issue; d
             {dw !== 'CLOSED' && def?.retest ? <p className="build__row">{btn('fl-def-verify', `Verify as the ${t.person}`, () => void go('Verifying the retest…', 'the verification of the retest', post(D, { step: 'verify' }), { ok: true, title: 'The deficiency is closed.', text: 'By its verified retest, and by nothing else.' }))}</p> : dw === 'CLOSED' ? <span>Closed by its verified retest.</span> : null}
           </Step>
         </ol>
+        {measured ? <ExceptionRecord issue={issue} records={excs.filter((x) => x.issue === issue.code)} dw={dw} t={t} /> : null}
       </div>
     </div>
   );

@@ -52,6 +52,7 @@
 //          confirm it and its reporter can; the reporter cannot close it and the service manager can
 //   FL-36  a second report of the same kind on the same device is marked a repeat by the database; a blocked incident's correction
 //          waits; an escalation is recorded once; what the records add up to is the server's count; phone width
+//   FL-38  Pass with Exception from the page: an exception record logged, refused to its logger, rejected with a reason by the systems engineer
 //   FL-37  documentation and submission (0043): the required documents submitted and approved by different people, and the packet
 //          signed for the integrator and the owner by two different people, before acceptance; refused to the wrong role each time
 //   FL-33  the same page on another room: chosen from the page, Harbor 201 of the convention centre is read from the server by its
@@ -324,6 +325,19 @@ const press = async (pg, id) => { await pg.getByTestId(id).click(); return saidO
 const issueOnServer = async () => (await srv('cxeng', '/thread')).stages.find((x) => x.key === 'commissioning').records.issues[0];
 const woOnServer = async (code) => (await api.call('GET', `/v1/work-orders/${code}`, { token: await as('svcmgr') })).body;
 const panel = p.getByTestId('fl-corrective'); let WO = ''; const second = {};   // FL-32 is checked across the two blocks below
+
+// Pass with Exception (0042): the commissioning engineer logs an exception record for the failed reverberation; the server copies the
+// measured value and the limit; the logger cannot decide it; the systems engineer rejects it with a reason, and the deficiency goes on
+// to be corrected (the approval and the exception itself are covered by tests/security/measured-exception ME-01…08)
+{ await p.getByTestId('fl-exc').locator('summary').click(); const logged = await press(p, 'fl-exc-log');
+  const recs = async () => (await srv('cxeng', '/measured-exceptions')).items;
+  const r0 = (await recs())[0]; const self = await press(p, 'fl-exc-approve');
+  await actAs(p, 'syseng'); await p.getByTestId('fl-exc-note').fill('Correct it: absorption on the rear wall is within the brief (synthetic).'); const no = await press(p, 'fl-exc-reject');
+  const r1 = (await recs())[0]; const state = await p.getByTestId('fl-exc').getAttribute('data-state');
+  ok('FL-38', 'Pass with Exception: an exception record logged from the page carries the server’s measured value and limit; its logger cannot decide it; the systems engineer rejects it with a reason; the deficiency stays open to be corrected',
+    logged.ok === 'yes' && r0?.measured?.value > r0?.limit?.upper && self.ok === 'no' && no.ok === 'yes' && r1.state === 'REJECTED' && state === 'NONE' && (await issueOnServer()).state === 'OPEN',
+    `log: ${logged.text.slice(0, 60)} · ${r0?.code} ${r0?.measured?.value} ${r0?.measured?.unit} vs ≤ ${r0?.limit?.upper} · by its logger: ${self.text.slice(0, 60)} · rejected: ${r1?.state}`);
+  await actAs(p, 'cxeng'); }
 
 { const notMine = await press(p, 'fl-wo-raise'); const none = (await issueOnServer()).workOrders.length;                       // still the commissioning engineer
   await actAs(p, 'svcmgr'); const raised = await press(p, 'fl-wo-raise'); WO = (await issueOnServer()).workOrders[0];
