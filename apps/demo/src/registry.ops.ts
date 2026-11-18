@@ -22,6 +22,12 @@ const SERVER_THREAD: PageDef[] = process.env.DEMO_API_URL ? [{
   path: '/flagship', alias: ['/flagship/:room'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the engineering record of one room on the server: everyone who works on a room or answers for it' },
   load: adapt(() => import('./pages/Flagship.js'), (m, p) => h(m.FlagshipPage, { room: p.params['room'] })),   // #/flagship/CNV-MR-H201: another room of the sandbox, same page
   search: { keywords: 'flagship lecture theatre hall university UNI-SCI-110 SCI-110 engineering workstation plan devices commissioning plan server', aliases: ['lecture hall', 'flagship room', 'UNI-SCI-110', 'Harbor 201', 'CNV-MR-H201'] },
+}, {
+  // OUTSTANDING 1a (18 Nov 2026): the ServiceHands queue worked on the server's records, not the browser's
+  id: 'servicehands.queue', title: 'ServiceHands on the server', purpose: 'The sandbox’s work orders and incidents across its rooms, read from the server, each worked one governed step at a time', product: 'servicehands',
+  path: '/servicehands/queue', alias: ['/service/queue'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the service record of the sandbox’s rooms, as the connected thread: the roles whose work it is (18 Nov 2026)' },
+  load: adapt(() => import('./pages/ServiceQueue.js'), (m) => h(m.ServiceQueuePage, {})),
+  search: { keywords: 'servicehands server queue work orders incidents triage assign accept preflight evidence verify close sandbox', aliases: ['service queue', 'work orders on the server', 'servicehands queue'] },
 }] : [];
 export const OPS_PAGES: readonly PageDef[] = [
   {

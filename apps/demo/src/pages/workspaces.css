@@ -86,3 +86,13 @@ a.wk-card:hover { border-color: var(--accent); } a.wk-card:focus-visible { outli
 .as-signals > li { border: 1px solid var(--kit-line, var(--line)); border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; }
 .as-signal__h { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .as-signal__ev { margin: 0; padding-left: 1.2em; }
+/* ServiceHands on the server (pages/ServiceQueue.tsx) */
+.sq-bar { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: flex-end; }
+.sq-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin: var(--sp-2) 0; }
+.sq-tabs button { min-height: 44px; padding: 0 14px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--tx2); font: inherit; cursor: pointer; }
+.sq-tabs button[aria-selected="true"] { color: var(--tx); border-bottom-color: var(--p-servicehands); font-weight: 600; }
+.sq-grid { display: grid; gap: var(--sp-3); grid-template-columns: minmax(0, 1fr); } @media (min-width: 1100px) { .sq-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); } }
+.sq-states { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--sp-2); } .sq-states span { color: var(--tx3); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.sq-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 70vh; overflow-y: auto; }
+.sq-items a { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--r-sm); border: 1px solid var(--line); color: var(--tx); text-decoration: none; font-size: var(--fs-sm); }
+.sq-items li.on a, .sq-items a:hover { border-color: var(--p-servicehands); } .sq-items a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }

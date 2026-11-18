@@ -788,3 +788,19 @@ p { text-wrap: pretty; }
 .booklet__t h3 { margin: 0 0 6px; } .booklet__t p { margin: 0 0 10px; } .booklet__meta { font-size: .875rem; color: var(--tx2, inherit); opacity: .85; }
 @media (prefers-reduced-motion: reduce) { .booklet__cover { transition: none; } }
 @media (max-width: 520px) { .booklet { grid-template-columns: minmax(0, 110px) minmax(0, 1fr); gap: 14px; } }
+
+/* Shorter phone pages (task 192, 18 Nov 2026): on a phone the nine product tiles, the four chapters of the journey, the four-card rows
+   and the six evidence words sit in a row that
+   scrolls sideways inside the page, one card and the edge of the next in view, instead of a column eight screens long. Nothing is
+   removed; every card is still a link or a chapter in reading order, focus scrolls it into view, and the page itself never scrolls
+   sideways. */
+@media (max-width: 720px) {
+  .tiles, .chapters, .cards--4, dl.states { display: grid; grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 84%; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; gap: 14px; padding-bottom: 12px; scrollbar-width: thin; }
+  .tiles > li, .chapters > li, .cards--4 > *, dl.states > * { scroll-snap-align: start; min-width: 0; }
+  .cards--4, dl.states { grid-auto-columns: 78%; }
+  .chapter { gap: 16px; align-content: start; }
+  .rail-hint { display: block; margin: 0 0 10px; font-size: 13px; color: var(--w-ink3, inherit); }
+}
+@media (min-width: 721px) { .rail-hint { display: none; } }
+@media (prefers-reduced-motion: no-preference) { .tiles, .chapters, .cards--4, dl.states { scroll-behavior: smooth; } }

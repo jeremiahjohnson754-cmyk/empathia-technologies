@@ -283,7 +283,8 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   const c320 = await newCtx({ viewport: { width: 320, height: 720 } }); const p320 = await c320.newPage();
   for (const p of ['/', '/products/lite', '/founder', '/contact']) {
     await p320.goto(base + p); await p320.waitForTimeout(100);
-    const r = await p320.evaluate(() => { const over = document.documentElement.scrollWidth - document.documentElement.clientWidth; const card = document.querySelector('.stage__card'); const cap = document.querySelector('.stage .shot figcaption'); let hit = false; if (card && cap) { const a = card.getBoundingClientRect(), b = cap.getBoundingClientRect(); hit = a.top < b.bottom - 1 && a.bottom > b.top + 1; } const wide = Array.from(document.querySelectorAll('main h1, main h2, main h3, main p, main .btn')).filter((e) => e.getBoundingClientRect().right > innerWidth + 1).length; return { over, hit, wide }; });
+    const r = await p320.evaluate(() => { const over = document.documentElement.scrollWidth - document.documentElement.clientWidth; const card = document.querySelector('.stage__card'); const cap = document.querySelector('.stage .shot figcaption'); let hit = false; if (card && cap) { const a = card.getBoundingClientRect(), b = cap.getBoundingClientRect(); hit = a.top < b.bottom - 1 && a.bottom > b.top + 1; } const inRail = (e) => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { const o = getComputedStyle(a).overflowX; if (o === 'auto' || o === 'scroll') return true; } return false; };   /* 18 Nov 2026: a card in a sideways rail (task 192) is reached by scrolling the rail, not cut off by the page edge */
+      const wide = Array.from(document.querySelectorAll('main h1, main h2, main h3, main p, main .btn')).filter((e) => e.getBoundingClientRect().right > innerWidth + 1 && !inRail(e)).length; return { over, hit, wide }; });
     ok(`W-uplift-320-${p}`, `${p} at 320 px: no sideways scroll, no text or button past the edge, the record card never covers the caption`, r.over <= 0 && !r.wide && !r.hit, JSON.stringify(r));
   }
   await c320.close();
@@ -586,6 +587,17 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   const b = { home: m['index.html'].bytes, js: m['site.js'].bytes, theme: m['theme-init.js'].bytes, faces: pre.length, fonts: pre.reduce((a, f) => a + (m[`fonts/${f}`]?.bytes || 1e9), 0), captures: sum(/^media\/product\//), maxCapture: Math.max(0, ...Object.entries(m).filter(([f]) => /^media\/product\//.test(f)).map(([, v]) => v.bytes)) };
   ok('W-budgets', 'home ≤ 48 KB, site.js ≤ 8 KB, theme-init.js ≤ 512 B, three preloaded Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB', b.home <= 48 * 1024 && b.js <= 8192 && b.theme <= 512 && b.faces === 3 && b.fonts <= 88 * 1024 && b.captures <= 1400 * 1024 && b.maxCapture <= 80 * 1024, JSON.stringify(b));
 }
+
+// Shorter phone pages (task 192, 18 Nov 2026): the nine product tiles, the journey's chapters, the four-card rows and the six evidence
+// words are sideways rails on a phone; every card is still in the page and reachable; the home page is under twenty screens.
+{ const c = await newCtx({ viewport: { width: 390, height: 844 } }); const p = await c.newPage(); await p.goto(`${base}/`);
+  const r = await p.evaluate(() => { const rail = (sel) => { const e = document.querySelector(sel); if (!e) return null; const cs = getComputedStyle(e); return { scroll: cs.overflowX, kids: e.children.length, wider: e.scrollWidth > e.clientWidth }; };
+    return { tiles: rail('.tiles'), chapters: rail('.chapters'), states: rail('dl.states'), screens: +(document.documentElement.scrollHeight / innerHeight).toFixed(1), over: document.documentElement.scrollWidth - document.documentElement.clientWidth, hint: !!document.querySelector('.rail-hint') && getComputedStyle(document.querySelector('.rail-hint')).display !== 'none' }; });
+  const lastTile = p.locator('.tiles > li').last().locator('a').first(); await lastTile.focus(); await p.waitForTimeout(800);   /* the rail scrolls smoothly when motion is allowed */ const seen = await lastTile.evaluate((a) => { const b = a.getBoundingClientRect(); return b.left >= 0 && b.right <= innerWidth + 1; });
+  ok('W-rails-390', 'at 390 px the product tiles, chapters and evidence words are sideways rails with every card in them, the last tile scrolls into view on focus, the page never scrolls sideways and the home page is under twenty screens',
+    r.tiles?.scroll === 'auto' && r.tiles.kids === 9 && r.tiles.wider && r.chapters?.scroll === 'auto' && r.chapters.kids === 4 && r.states?.scroll === 'auto' && r.hint && seen && r.over <= 0 && r.screens < 20, JSON.stringify({ ...r, seen }));
+  await p.setViewportSize({ width: 1280, height: 900 }); await p.goto(`${base}/`); const wide = await p.evaluate(() => ({ tiles: getComputedStyle(document.querySelector('.tiles')).overflowX, hint: getComputedStyle(document.querySelector('.rail-hint')).display }));
+  ok('W-rails-desk', 'on a desktop the same lists are grids again and the swipe hint is hidden', wide.tiles !== 'auto' && wide.hint === 'none', JSON.stringify(wide)); await c.close(); }
 
 await browser.close(); srv.kill();
 // CHANGED 2026-11-10: a check can now be NOT_RUN (the film's playback, in a browser without an H.264 decoder). It is counted apart and

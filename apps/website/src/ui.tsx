@@ -175,7 +175,7 @@ export const Shot = ({ p, cap, eager, file, alt, cta }: { p: Product; cap?: Capt
 
 /** The nine products as image-led tiles, in the canonical order (D37/D40), each in its own colour. */
 export const ProductTiles = ({ captures, exclude, compact }: { captures: Record<string, Capture>; exclude?: string; compact?: boolean }) => (
-  <ul className="tiles" aria-label="The nine products">{PRODUCTS.filter((p) => p.id !== exclude).map((p) => {
+  <><p className="rail-hint" aria-hidden="true">Swipe for each product →</p><ul className="tiles" aria-label="The nine products">{PRODUCTS.filter((p) => p.id !== exclude).map((p) => {
     const n = CANON.findIndex((c) => c.id === p.id) + 1; const cap = captures[p.id];
     return (
       <li key={p.id} className="tile" data-p={p.id} data-product={p.id}>
@@ -186,7 +186,7 @@ export const ProductTiles = ({ captures, exclude, compact }: { captures: Record<
         <div className="tile__body"><h3><a href={`/products/${p.slug}`}>{p.name}</a></h3><p>{p.purpose}</p>{p.apps.length ? <p className="tile__apps">Includes {p.apps.join(' and ')}</p> : null}{compact ? null : <Tag s={DEMO_STATE[p.demoState].s}>{DEMO_STATE[p.demoState].text}</Tag>}</div>
       </li>
     );
-  })}</ul>
+  })}</ul></>
 );
 
 export const ExtIcon = () => <svg className="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 2h5v5M14 2 7 9" /></svg>;
@@ -251,7 +251,7 @@ export const Counts = ({ counts, under }: { counts: { n: number; label: string }
 export interface ChapterItem { p: Product; title: string; body: string; points: string[]; also?: Product; shot?: { file: string; alt: string } }
 /** The home page's story: each stage of the lifecycle told with the product's own screen (a dark capture, D43), in lifecycle order. */
 export const Chapters = ({ items, captures }: { items: ChapterItem[]; captures: Record<string, Capture> }) => (
-  <ol className="chapters">{items.map((c, i) => (
+  <><p className="rail-hint" aria-hidden="true">Swipe through the four stages →</p><ol className="chapters">{items.map((c, i) => (
     <li key={c.p.id} className="chapter" data-p={c.p.id}>
       <div className="chapter__media"><span className="chapter__glow" aria-hidden="true" /><Shot p={c.p} cap={captures[c.shot && captures[c.shot.file] ? c.shot.file : c.p.id]} file={c.shot && captures[c.shot.file] ? c.shot.file : undefined} alt={c.shot && captures[c.shot.file] ? c.shot.alt : undefined} /></div>
       <div className="chapter__text">
@@ -261,7 +261,7 @@ export const Chapters = ({ items, captures }: { items: ChapterItem[]; captures: 
         <p className="chapter__go"><a href={`/products/${c.p.slug}`}>{c.p.name}<span className="sr">: the product page</span><span aria-hidden="true"> →</span></a>{c.also ? <a href={`/products/${c.also.slug}`} data-p={c.also.id}>{c.also.name}<span className="sr">: the product page</span><span aria-hidden="true"> →</span></a> : null}</p>
       </div>
     </li>
-  ))}</ol>
+  ))}</ol></>
 );
 
 /** One drawn line icon per product (24 px grid, currentColor): the glass rail's signifier; the name beside it carries the meaning. */

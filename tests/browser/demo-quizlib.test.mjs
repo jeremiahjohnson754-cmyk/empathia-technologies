@@ -20,6 +20,13 @@ ok('QL-05', 'the best score is kept in this browser', /best \d+ of \d+/.test(awa
 await p.click('.ln-kind[data-kind="ux"]'); await p.selectOption('[data-testid="ql-season"]', '0'); await p.fill('[data-testid="ql-search"]', 'alarm');
 ok('QL-06', 'words narrow the list', (await p.$$('[data-testid="ql-list"] a[data-quiz]')).length >= 1);
 ok('QL-07', 'no console errors, nothing off the origin', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | '));
+// glossary marks in the lesson cards (18 Nov 2026): the first use of a term is a button that opens the story's own pop-over
+{ let marked = 0, opened = false, closed = false; const lessons = p.locator('[data-testid=library-lessons] details');
+  for (let i = 0; i < (await lessons.count()) && !marked; i++) { await lessons.nth(i).locator('summary').click(); const rows = lessons.nth(i).locator('button, a').filter({ hasNotText: /^$/ });
+    for (let j = 0; j < Math.min(3, await rows.count()) && !marked; j++) { await rows.nth(j).click(); await p.waitForTimeout(400); marked = await p.locator('[data-testid=lesson] .ln-gl').count(); } }
+  if (marked) { const first = p.locator('[data-testid=lesson] .ln-gl').first(); await first.focus(); await p.keyboard.press('Enter'); opened = await p.locator('[data-testid=story-glpop]').count() === 1; await p.keyboard.press('Escape'); closed = await p.locator('[data-testid=story-glpop]').count() === 0; }
+  const terms = await p.locator('[data-testid=lesson] .ln-gl').allInnerTexts(); const unique = new Set(terms.map((x) => x.toLowerCase())).size;
+  ok('QL-09', 'a lesson’s cards mark each glossary term at its first use; the mark opens the story’s pop-over by keyboard and Escape closes it', marked > 0 && opened && closed && unique === terms.length, `${marked} marks, opened ${opened}, closed ${closed}`); }
 await t.close();
 const m = await open('#/learn/library', { role: 'installer', w: 390, h: 844, colorScheme: 'dark' }); await m.page.waitForSelector('[data-testid="quiz-library"]').catch(() => undefined);
 const sw = await m.page.evaluate(() => document.documentElement.scrollWidth); ok('QL-08', '390 px dark: no sideways scroll', sw <= 390, sw); await m.close();

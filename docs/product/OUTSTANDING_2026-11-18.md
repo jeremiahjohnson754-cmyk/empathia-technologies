@@ -38,6 +38,19 @@ This replaces `OUTSTANDING_2026-11-17.md` as the current list. Everything named 
 Not checked on staging: the whole flagship journey in a browser against the deployed site (it is checked against a local server by
 `demo-flagship`, and was part of the regression). A person walking it on the staging address is the remaining check.
 
+## Built since `81276b2`, not staged (18 Nov 2026, after 09:05 UTC)
+
+The founder's 05:14 direction: finish the product work first, then one exact-commit regression of the final combined commit and one
+staging. Every slice below is committed and pushed with its own suites run; none is staged yet.
+
+| Commit | What | Suites run for it |
+|---|---|---|
+| `0d40c12` … `71999b5` | Pass with Exception (0042), Documentation & Submission (0043), support directory and contact hand-offs (0044), register network and lifecycle facts and firmware baselines (0045), workbook vocabulary (0046), batch device add | base 140/0; flagship, connected, connect, enterprise-web |
+| `1ef09ed`, `b5e635f` | **Field Tools** (`#/field-tools`): 39 site calculators with their working, ten live drawings, links that carry inputs, jobs on the device; the header jump for field roles; each links where it is studied | `field-tools` 9/9; `demo-fieldtools` 35/35 |
+| `ce3ca01` | **CTS, CTS-D and CTS-I study spaces** (`#/learn/certifications`, `#/learn/cts`, `#/learn/cts-d`, `#/learn/cts-i`): facts and outlines from AVIXA's 2026 handbooks, sourced and dated; 273 original questions; 19 drill templates; timed practice in the outline's proportions; study guides, math and physics, strategy; unofficial and not affiliated | `certs` 7/7; `demo-certs` 28/28 |
+| `af41f92` … `4dfe43a` | **SIGNAL parity**: all 693 quizzes reachable in the Learn library; the field calculator (🧮); arrow keys between options and the enlarged-picture viewer; all thirteen challenge drawings | `field-calc` 4/4; `demo-quizlib` 8/8; `demo-fieldcalc` 13/13; `demo-story-keys` 11/11; `demo-chal-drawings` 11/11; story, learn, boss, cinematic and SIGNAL suites rerun |
+| (this commit) | **ServiceHands on the server** (`#/servicehands/queue`, connected builds): the sandbox's work orders and incidents across rooms, each worked with the room page's ServiceWork panel; the browser's ServiceHands workspace says where it is. **Shorter phone pages** on the corporate site (home 24.9 → 16.3 screens; products 7.4 → 3.8) by sideways rails; Field Tools and the study spaces named on the product pages with their limits | `demo-flagship` FL-41, FL-42; `website` |
+
 ## Regressions
 
 - **`a05fdcb`**: NOT COMPLETE, never staged. Build, studio provisioning, base suites (127/0) and 106/106 browser suites in light
@@ -121,7 +134,9 @@ What is thin or simulated there, each stated on the page or in ADR-0014:
    devices in one transaction, each exactly as a single add, the room analysed once (FM-06); locally a sandbox now opens in 1.3 to
    1.7 s (was 1.8 to 3.0). The staging figure is measured when that commit is staged.
 1a. The ServiceHands pages of the demonstration still keep their records in the browser: move them to the server's work orders
-    and incidents (the room page already reads and writes both: FL-24…25, FL-34…36).
+    and incidents (the room page already reads and writes both: FL-24…25, FL-34…36). **Since 18 Nov** the server's queue has its own
+    page (`#/servicehands/queue`, FL-41…42) and the browser workspace points to it; the workspace's own dispatch board, analytics and
+    import still read the browser's records.
 2. V3.9 rules not modelled (task 199): Pass with Exception and the exception record with its measured value; the Documentation and
    Submission gate; sequential phases; an API-bypass test per gate.
 3. The flagship's thin places above: a bench and a criterion for a second measured test; Harbor 201 given the theatre's treatment;

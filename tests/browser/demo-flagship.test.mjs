@@ -53,6 +53,9 @@
 //   FL-36  a second report of the same kind on the same device is marked a repeat by the database; a blocked incident's correction
 //          waits; an escalation is recorded once; what the records add up to is the server's count; phone width
 //   FL-40  the user impact of a deficiency recorded from the page, with why (0046)
+//   FL-41  ServiceHands on the server (#/servicehands/queue): the deficiency's work order listed with its state, room and issue; opened,
+//          its next governed steps from the same panel; the ServiceHands workspace says where the server's queue is
+//   FL-42  the incidents tab lists the room's incidents with their status and work orders, linking the room
 //   FL-39  who to call: the support paths of the room's site from the server, Teams/email/copy hand-offs (nothing sent)
 //   FL-38  Pass with Exception from the page: an exception record logged, refused to its logger, rejected with a reason by the systems engineer
 //   FL-37  documentation and submission (0043): the required documents submitted and approved by different people, and the packet
@@ -370,6 +373,18 @@ const panel = p.getByTestId('fl-corrective'); let WO = ''; const second = {};   
       && assigned.ok === 'yes' && after.state === 'ASSIGNED' && after.assignee.id === w.candidates.eligible[0].id && (await text(p, 'fl-wo-assignee')).includes(after.assignee.name),
     `engineer raising: ${notMine.text.slice(0, 60)} · ${WO} ${w.state} ${w.severity}, needs ${w.need.certs.join('+')} · engineer asking Search Party: ${cannot.ok} “${cannot.text.slice(0, 70)}” · ${answer.slice(0, 150)} · ${shown.length} eligible shown of ${w.candidates.eligible.length} · assigned to ${after.assignee?.name} (${after.state})`); }
 
+{ // FL-41: the same sandbox, a second tab of this browser (it shares the sandbox's key), the queue page read as the service manager
+  const q = await t.ctx.newPage(); await q.goto(p.url().replace(/#.*/, '#/servicehands/queue')); await q.waitForSelector('[data-testid=sq-list]', { timeout: 60000 }).catch(() => undefined);
+  await q.waitForFunction(() => !document.querySelector('[data-testid=sq-busy]'), null, { timeout: 60000 }).catch(() => undefined); await q.getByTestId('sq-who').selectOption('svcmgr'); await q.waitForFunction(() => !document.querySelector('[data-testid=sq-busy]'), null, { timeout: 60000 }).catch(() => undefined);
+  const row = q.locator(`[data-testid=sq-list] a[data-wo="${WO}"]`); const rowText = (await row.count()) ? (await row.innerText()).replace(/\s+/g, ' ') : '';
+  await row.click().catch(() => undefined); await q.waitForSelector('[data-testid=sq-detail]', { timeout: 60000 }).catch(() => undefined);
+  const detail = (await q.getByTestId('sq-detail').count()) ? (await q.getByTestId('sq-detail').innerText()).replace(/\s+/g, ' ') : '';
+  const was = await q.evaluate(() => localStorage.getItem('empathia.demo.perspective')); await q.evaluate(() => { try { localStorage.setItem('empathia.demo.perspective', 'svcmgr'); } catch { /* storage refused */ } }); await q.goto(p.url().replace(/#.*/, '#/v25/service')); await q.reload(); await q.waitForSelector('[data-testid=incidents], [data-testid=servicehands]', { timeout: 30000 }).catch(() => undefined);   /* ServiceHands (#/v25/service) is the service manager's (V2.5.3 area) */ const note = await q.getByTestId('sh-server-note').count(); await q.evaluate((r) => { try { if (r) localStorage.setItem('empathia.demo.perspective', r); } catch { /* storage refused */ } }, was);   /* the main tab's role is left as it was */
+  ok('FL-41', 'ServiceHands on the server lists the deficiency’s work order with its state and room, opens it with its governed steps, and the browser’s ServiceHands workspace says where the server’s queue is',
+    rowText.includes(WO) && /assigned/i.test(rowText) && /Theatre|SCI-110/i.test(rowText) && detail.includes(WO) && note === 1, `${rowText.slice(0, 120)} · detail ${detail.slice(0, 80)} · note ${note}`);
+  await q.close(); }
+
+
 { const notTech = await press(p, 'fl-wo-accept'); await actAs(p, 'service2'); second.accept = await press(p, 'fl-wo-accept'); second.stateAfterAccept = (await woOnServer(WO)).state; second.only = await text(p, 'fl-wo-only');
   await actAs(p, 'service'); const accepted = await press(p, 'fl-wo-accept');
   const empty = await press(p, 'fl-wo-preflight'); const pf1 = await p.getByTestId('fl-pf-state').getAttribute('data-ok'); const blocked = await press(p, 'fl-wo-start'); const s1 = (await woOnServer(WO)).state;
@@ -532,6 +547,13 @@ let INC1 = '', INC2 = '', SPK = '';
       && esc.ok === 'yes' && twice.ok === 'no' && /escalated already/.test(twice.text) && unblocked.ok === 'yes' && z.status === 'IN_PROGRESS' && !!z.escalated && z.blocked === null && intel.totals.incidents === 2 && intel.totals.open === 1 && intel.totals.repeats === 1 && intel.totals.escalated === 1
       && /No audio 2 1 1 1/.test(rowText) && roomNow === 'DEGRADED' && /not a measurement of the room/.test(basis) && over <= 1 && !pageErrs().length,
     `${sent.text.slice(0, 90)} · page: “${repeatShown.slice(0, 80)}” · blocked ${st1}; technician: ${waits.text.slice(0, 70)} · escalated ${esc.ok}, again: ${twice.text.slice(0, 50)} · ${z.incident} ${z.status} · totals ${intel.totals.incidents} incidents, ${intel.totals.open} open, ${intel.totals.repeats} repeat, ${intel.totals.escalated} escalated · kinds row “${rowText}” · room ${roomNow} · overflow ${over}px`); }
+
+{ const q = await t.ctx.newPage(); await q.goto(p.url().replace(/#.*/, '#/servicehands/queue')); await q.waitForSelector('[data-testid=sq-tab-incidents]', { timeout: 60000 }).catch(() => undefined);
+  await q.waitForFunction(() => !document.querySelector('[data-testid=sq-busy]'), null, { timeout: 60000 }).catch(() => undefined); await q.getByTestId('sq-who').selectOption('svcmgr'); await q.waitForFunction(() => !document.querySelector('[data-testid=sq-busy]'), null, { timeout: 60000 }).catch(() => undefined);
+  await q.getByTestId('sq-tab-incidents').click(); const li = q.locator(`[data-testid=sq-incidents] li[data-incident="${INC1}"]`); const txt = (await li.count()) ? (await li.innerText()).replace(/\s+/g, ' ') : ''; const href = (await li.count()) ? await li.locator('a').getAttribute('href') : '';
+  ok('FL-42', 'the queue’s incidents tab lists the room’s incident with its status and work order, linking the room', txt.includes(INC1) && /WO-/.test(txt) && /^#\/flagship\//.test(href || ''), `${txt.slice(0, 120)} · ${href}`);
+  await q.close(); }
+
 
 { const OTHER = 'CNV-MR-H201'; const other = async (role, path = '') => (await api.call('GET', `/v1/rooms/${OTHER}${path}`, { token: await as(role) })).body; const hallBefore = await srv('cxeng', '');
   const options = await p.locator('[data-testid=fl-room] option').evaluateAll((els) => els.map((e) => e.value));

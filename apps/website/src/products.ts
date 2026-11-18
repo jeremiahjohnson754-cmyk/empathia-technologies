@@ -64,13 +64,13 @@ const STORY: Record<string, Story> = {
   },
   field: {
     body: 'Every observation is labelled declared, observed, verified, modeled, unknown or unavailable. A device that answers is not a room that works; the plan keeps every pair untested until evidence arrives.',
-    showsAs: ['declared', 'simulated', 'simulated'], shows: ['Collector facts as declared, with their limits', 'Plan versus executed, with nothing filled in', 'An optional physical-validation flow, simulated'],
+    showsAs: ['declared', 'simulated', 'simulated', 'modeled'], shows: ['Collector facts as declared, with their limits', 'Plan versus executed, with nothing filled in', 'An optional physical-validation flow, simulated', 'Field Tools: 39 calculators for the site walk, each showing its formula and working'],
     limits: 'No collector is connected in the public demonstration; physical validation is simulated.', demoState: 'native', film: 'IE', demo: { href: '#/v25/fi', label: 'Open Field Intelligence' },
   },
   learn: {
     body: 'A case needs permission, de-identification, a subject-matter review and approval before it teaches anyone. Lessons, labs and the SIGNAL story link to competencies, and training never grants authority.',
-    showsAs: ['declared', 'declared', 'modeled'], shows: ['Reviewed cases linked to lessons and competencies', 'SIGNAL lessons, labs and drills', 'Three flagship practice labs: mix a church live stream on a 32-channel desk, light the stage, shoot the service'],
-    limits: 'The full SIGNAL corpus is not yet produced as playable media, and narration is not yet cleared for public use. The flagship labs are models for practice: a passing score proves nothing about a real room.', demoState: 'partial', demo: { href: '#/v25/learn', label: 'Open Learn' },
+    showsAs: ['declared', 'declared', 'modeled', 'declared'], shows: ['Reviewed cases linked to lessons and competencies', 'SIGNAL lessons, labs and drills', 'Three flagship practice labs: mix a church live stream on a 32-channel desk, light the stage, shoot the service', 'Unofficial CTS, CTS-D and CTS-I study spaces: original practice exams, calculation drills and the math behind them'],
+    limits: 'The full SIGNAL corpus is not yet produced as playable media, and narration is not yet cleared for public use. The flagship labs are models for practice: a passing score proves nothing about a real room. The certification study spaces are not affiliated with or endorsed by AVIXA, and a practice score is not a credential.', demoState: 'partial', demo: { href: '#/v25/learn', label: 'Open Learn' },
   },
 };
 
