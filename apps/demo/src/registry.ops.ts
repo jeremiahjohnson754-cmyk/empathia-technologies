@@ -34,6 +34,12 @@ const SERVER_THREAD: PageDef[] = process.env.DEMO_API_URL ? [{
   path: '/platforms', alias: ['/jumps', '/connected/platforms'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'where the organization’s own tools are, for everyone who works on its rooms; setting an address is the server’s decision (18 Nov 2026)' },
   load: adapt(() => import('./pages/Platforms.js'), (m) => h(m.PlatformsPage, {})),
   search: { keywords: 'platform jump portal xio cloud utelogy teams rooms pro microsoft 365 m365 sharepoint xyte q-sys qsys reflect dante appspace signage sennheiser autodesk servicenow open in link', aliases: ['jumps', 'open in', 'portals', 'xio cloud', 'q-sys reflect', 'servicenow'] },
+}, {
+  // founder, 18 Nov 2026, 07:49: data reports as PDF only, and a Power BI project for the customer's own Power BI; role protected on the server
+  id: 'reports.server', title: 'Reports from the server', purpose: 'The estate data report as a PDF and a Power BI project of the organization’s records, made by the server for the people who answer for the figures, each recorded in the audit history', product: 'mission-control',
+  path: '/reports/server', alias: ['/powerbi', '/reports/powerbi'], authority: { roles: ['exec', 'ops', 'svcmgr', 'architect', 'syseng', 'cxeng', 'steward'], why: 'the organization’s figures; the server decides who may export them and records refusals (18 Nov 2026)' },
+  load: adapt(() => import('./pages/ServerReports.js'), (m) => h(m.ServerReportsPage, {})),
+  search: { keywords: 'report pdf power bi powerbi pbip tmdl dax dashboard export estate figures kpi analytics', aliases: ['power bi', 'pdf report', 'estate report', 'data report'] },
 }] : [];
 export const OPS_PAGES: readonly PageDef[] = [
   {

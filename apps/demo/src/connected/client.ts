@@ -114,6 +114,15 @@ export class Connected {
     this.tokens.set(who, { token: a.body.accessToken, until: this.now() + (a.body.expiresIn - 30) * 1000 });
     return a.body.accessToken;
   }
+  /** Fetch a file the server makes (a PDF report, a Power BI project) as one person of the sandbox: its bytes and the server's name and
+   *  hash for it, or the server's refusal in its own words. */
+  async download(role: string, path: string): Promise<{ ok: true; bytes: ArrayBuffer; type: string; name: string; sha: string } | { ok: false; status: number; detail: string }> {
+    const go = async () => this.d.fetch(this.d.base + path, { method: 'GET', headers: { authorization: `Bearer ${await this.token(role)}` } });
+    let r = await go(); if (r.status === 401) { this.tokens.delete(role); r = await go(); if (r.status === 401) { this.forget(); throw new SandboxGone('the sandbox session ended'); } }
+    if (!r.ok) { let detail = `${r.status}`; try { const j = await r.json() as { detail?: string }; detail = j.detail || detail; } catch { /* not JSON */ } return { ok: false, status: r.status, detail }; }
+    const name = /filename="([^"]+)"/.exec(r.headers.get('content-disposition') || '')?.[1] || path.split('/').pop() || 'download';
+    return { ok: true, bytes: await r.arrayBuffer(), type: r.headers.get('content-type') || 'application/octet-stream', name, sha: r.headers.get('x-empathia-file-sha256') || '' };
+  }
   /** Call the API as one person of the sandbox. A refusal is returned, with the server's own words, never thrown. */
   async call<T = unknown>(role: string, method: string, path: string, body?: unknown, note?: { text?: string; data?: ArrayBuffer; mediaType?: string; fileName: string }): Promise<Answer<T>> {
     const go = async () => this.send<T>(method, path, note ? undefined : body, { authorization: `Bearer ${await this.token(role)}`, ...(note ? { 'content-type': note.mediaType || 'text/plain', 'x-file-name': note.fileName } : {}) }, note ? note.data ?? note.text ?? '' : undefined);

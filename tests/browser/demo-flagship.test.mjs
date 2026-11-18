@@ -60,6 +60,8 @@
 //          organization's XiO Cloud address and it is what the jump opens; the vendor-documented default stands where nothing is set
 //          and an unset platform is no link; an installer records the room's own Q-SYS Reflect address and its jump opens it in a new
 //          tab with no opener; the room page carries the same jumps
+//   FL-44  reports from the server (#/reports/server): the requestor is refused both exports in the server's words; the executive saves
+//          the estate report as a PDF and the Power BI project as a zip, each named by the server, with the hash the server gave
 //   FL-39  who to call: the support paths of the room's site from the server, Teams/email/copy hand-offs (nothing sent)
 //   FL-38  Pass with Exception from the page: an exception record logged, refused to its logger, rejected with a reason by the systems engineer
 //   FL-37  documentation and submission (0043): the required documents submitted and approved by different people, and the packet
@@ -69,7 +71,7 @@
 //          the lecture theatre's record does not change; the address keeps the room across a refresh; a room the sandbox does not
 //          have is said to be absent
 //   node tests/browser/demo-flagship.test.mjs
-import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
+import { execFileSync } from 'node:child_process'; import crypto from 'node:crypto'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { repo } from './demo-shell-lib.mjs';
 import { setup, client } from '../integration/harness.mjs';
 import { syntheticIR, writeWav16 } from '@empathia/commissioning-engine/acoustics';
@@ -580,6 +582,21 @@ let INC1 = '', INC2 = '', SPK = '';
     techEdits === 0 && saved === 'true' && xio === 'https://xio.example.com/estate' && teams === 'https://portal.rooms.microsoft.com/' && sn === '' && snLinks === 0 && /not an integration/.test(note)
     && jhref === 'https://reflect.example.com/sites/7' && jt === '_blank' && /noopener/.test(jrel || '') && /noreferrer/.test(jrel || '') && onRoom === 1,
     `tech edits ${techEdits} · saved ${saved} · xio ${xio} · teams ${teams} · sn ${sn}/${snLinks} · jump ${jhref} ${jt} ${jrel} · room ${onRoom}`);
+  await q.close(); }
+
+
+{ // FL-44: the server's exports, a second tab of the same sandbox
+  const q = await t.ctx.newPage(); await q.goto(p.url().replace(/#.*/, '#/reports/server')); await q.waitForSelector('[data-testid=srv-who]', { timeout: 60000 }).catch(() => undefined);
+  await q.getByTestId('srv-who').selectOption('requestor'); await q.getByTestId('srv-get-pdf').click(); await q.waitForSelector('[data-testid=srv-said-pdf]', { timeout: 30000 }).catch(() => undefined);
+  const refused = [await q.getByTestId('srv-said-pdf').getAttribute('data-ok').catch(() => null), (await q.getByTestId('srv-said-pdf').innerText().catch(() => '')).replace(/\s+/g, ' ')];
+  await q.getByTestId('srv-who').selectOption('exec');
+  const [dp] = await Promise.all([q.waitForEvent('download', { timeout: 60000 }), q.getByTestId('srv-get-pdf').click()]); const pdf = fs.readFileSync(await dp.path());
+  const [dz] = await Promise.all([q.waitForEvent('download', { timeout: 60000 }), q.getByTestId('srv-get-pbi').click()]); const zipb = fs.readFileSync(await dz.path());
+  await q.waitForSelector('[data-testid=srv-said-pbi][data-ok=true]', { timeout: 30000 }).catch(() => undefined);
+  const shownPdf = await q.getByTestId('srv-said-pdf').innerText().catch(() => ''); const shaPdf = crypto.createHash('sha256').update(pdf).digest('hex');
+  ok('FL-44', 'reports from the server: refused to the requestor in the server’s words; the executive saves the estate PDF and the Power BI project, each named by the server, the page showing the file’s own hash',
+    refused[0] === 'false' && /403/.test(refused[1]) && pdf.subarray(0, 5).toString() === '%PDF-' && /^empathia-estate-report-.+\.pdf$/.test(dp.suggestedFilename()) && zipb.readUInt32LE(0) === 0x04034b50 && /^empathia-powerbi-.+\.zip$/.test(dz.suggestedFilename()) && shownPdf.includes(shaPdf.slice(0, 16)),
+    `refused ${refused.join(' ')} · ${dp.suggestedFilename()} ${pdf.length} · ${dz.suggestedFilename()} ${zipb.length} · shown ${shownPdf.slice(0, 80)}`);
   await q.close(); }
 
 
