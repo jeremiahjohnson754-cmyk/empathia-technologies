@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 89,
+    "api": 93,
     "entities": 4
   },
   "files": [
@@ -827,6 +827,26 @@
       "file": "api/postV1BaselineExceptionsIdDecide.json",
       "$id": "https://schemas.empathia.invalid/api/postV1BaselineExceptionsIdDecide/0.1.0.json",
       "sha256": "826f8af547f8eb6a4e9eecdfb1a02bfbafc8c41799a374cd532a2d89b773a038"
+    },
+    {
+      "file": "api/postV1RoomsRoomIncidents.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomIncidents/0.1.0.json",
+      "sha256": "bc00c6aa7abe30920c9d6d232ffc7db823d2eeb6add2dff5b835d53554dbd134"
+    },
+    {
+      "file": "api/postV1IncidentsIncidentSteps.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentSteps/0.1.0.json",
+      "sha256": "1bf32eb57f7cf8634fae85578954aba84a6e413c369d6df5f4717ce71fc0ce74"
+    },
+    {
+      "file": "api/postV1IncidentsIncidentBlock.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentBlock/0.1.0.json",
+      "sha256": "014358d0be3b798cd418b2498341ee46c0ddae859e9052737a94d4cfbe7f19de"
+    },
+    {
+      "file": "api/postV1IncidentsIncidentEscalate.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentEscalate/0.1.0.json",
+      "sha256": "5a5218fa574ec115799820b5b5a00536db01bcfa92d4dbf96ecdb7e41bebed2f"
     },
     {
       "file": "api/putV1RoomsRoomCriteriaTest.json",

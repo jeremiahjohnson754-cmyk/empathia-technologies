@@ -9,6 +9,7 @@
  */
 import { step, ROOT_CAUSES, type Deficiency, type DeficiencyAction, type DeficiencyState } from '@empathia/commissioning-engine';
 import type { RequestContext } from '../auth/context.js';
+import type { Queryable } from '../db/pg.js';
 import { findRoom } from './rooms.js';
 import { invalid, notFound } from '../http/errors.js';
 import { retestOnMeasurement } from './criteria.js';
@@ -23,12 +24,12 @@ export const ANY_STEP_AUTHORITY = [...new Set(Object.values(STEP_AUTHORITY).flat
 const KINDS = Object.keys(STEP_AUTHORITY) as Array<DeficiencyAction['kind']>;
 
 interface Row {
-  id: string; code: string; room_id: string; title: string; check_name: string; severity: 'Critical' | 'High' | 'Medium' | 'Low'; state: string; workflow: DeficiencyState;
+  id: string; code: string; room_id: string; category: string; title: string; check_name: string; severity: 'Critical' | 'High' | 'Medium' | 'Low'; state: string; workflow: DeficiencyState;
   owner_role: string | null; target_date: string | null; root_cause: string | null; corrective_action: string | null; fixed_by: string | null;
   retest: Deficiency['retest']; exception_ref: string | null; exception_requested_by: string | null; exception_approved_by: string | null;
   deferral: Deficiency['deferral']; closed_by: string | null; created_at: string; resolution: unknown;
 }
-const COLS = `id, code, room_id, title, check_name, severity, state, workflow, owner_role, to_char(target_date, 'YYYY-MM-DD') AS target_date, root_cause, corrective_action,
+const COLS = `id, code, room_id, category, title, check_name, severity, state, workflow, owner_role, to_char(target_date, 'YYYY-MM-DD') AS target_date, root_cause, corrective_action,
   fixed_by, retest, exception_ref, exception_requested_by, exception_approved_by, deferral, closed_by, created_at, resolution`;
 
 /** what a deficiency is against decides whether it may be excepted: safety, security, evidence, tenant isolation and separation of duties
@@ -64,11 +65,26 @@ function actionOf(body: Record<string, unknown>): DeficiencyAction {
 export async function deficiencyStep(ctx: RequestContext, issueCode: string, body: Record<string, unknown>) {
   const a = actionOf(body || {}); const target = { type: 'RoomIssue', id: issueCode };
   await ctx.require(STEP_AUTHORITY[a.kind], `deficiency.${a.kind}`, target);
+  return runStep(ctx, issueCode, a, { incident: false });
+}
+
+/** What an operational incident adds to a step (0039): its own checks before the step, and its own record after it. */
+export interface StepHooks { incident: boolean; before?: (q: Queryable, issue: { id: string; workflow: string }) => Promise<string[]>; after?: (q: Queryable, issue: { id: string; from: string; to: string }) => Promise<void> }
+
+/**
+ * One step of the workflow, for a deficiency or for an operational incident: the same engine, the same database guard, the same
+ * history. The caller has already decided who may take the step; a deficiency is not stepped through the incident door, nor an
+ * incident through the deficiency door, because the two doors admit different people.
+ */
+export async function runStep(ctx: RequestContext, issueCode: string, a: DeficiencyAction, hooks: StepHooks) {
+  const target = { type: 'RoomIssue', id: issueCode };
   return ctx.tx(async (q) => {
     const r = (await q.query<Row>(`SELECT ${COLS} FROM app.room_issue WHERE code = $1 FOR UPDATE`, [issueCode])).rows[0];
-    if (!r) throw notFound(`issue ${issueCode}`);
+    if (!r || (hooks.incident && r.category !== 'OPERATIONAL_INCIDENT')) throw notFound(hooks.incident ? `incident ${issueCode}` : `issue ${issueCode}`);
     await findRoom(ctx, q, r.room_id);                                   // site scope applies to issues through their room
     const why: string[] = [];
+    if (!hooks.incident && r.category === 'OPERATIONAL_INCIDENT') why.push(`${issueCode} is an operational incident: it is worked through /v1/incidents/${issueCode}, where its reporter confirms it and the service desk closes it`);
+    if (hooks.before) why.push(...await hooks.before(q, { id: r.id, workflow: r.workflow }));
     if (a.kind === 'start' && !(await q.query('SELECT 1 FROM app.role WHERE key = $1', [a.owner])).rowCount) throw invalid(`unknown role ${a.owner}`);
     if (a.kind === 'except') {
       if (!/^[0-9a-f-]{36}$/.test(a.requestedBy) || !(await q.query('SELECT 1 FROM app.person WHERE id = $1', [a.requestedBy])).rowCount) throw invalid('requestedBy is the person who asked for the exception');
@@ -101,6 +117,7 @@ export async function deficiencyStep(ctx: RequestContext, issueCode: string, bod
       const room = await findRoom(ctx, q, r.room_id);
       await ctx.emit(q, 'issue.created_or_updated', { type: 'RoomIssue', id: r.code, rev: 2 }, { issueId: r.code, status: closing ? 'RESOLVED' : 'OPEN', change: closing ? 'resolved' : 'reopened', roomId: room.code });
     }
+    if (hooks.after) await hooks.after(q, { id: r.id, from: r.workflow, to: n.state });
     await ctx.audit(q, `deficiency.${a.kind}`, 'ALLOWED', target, { from: r.workflow, to: n.state });
     return view(u);
   });

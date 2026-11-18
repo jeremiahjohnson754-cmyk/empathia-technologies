@@ -189,7 +189,8 @@ export async function createWorkOrder(ctx: RequestContext, issueCode: string, bo
     const i = (await q.query<{ id: string; state: string; category: string; room_id: string }>('SELECT id, state, category, room_id FROM app.room_issue WHERE code = $1 FOR UPDATE', [issueCode])).rows[0];
     if (!i) throw notFound(`issue ${issueCode}`);
     const room = await findRoom(ctx, q, i.room_id);
-    if (i.category !== 'INSTALLATION_COMMISSIONING_DEFICIENCY') throw refused(['a design deficiency on a planned room gets a design change, not a field work order']);
+    // field work is raised on a deficiency of commissioning or on an operational incident (0039); a design deficiency gets a design change
+    if (i.category === 'DESIGN_DEFICIENCY') throw refused(['a design deficiency on a planned room gets a design change, not a field work order']);
     if (i.state !== 'OPEN') throw refused(['the issue is not open']);
     // one active job per issue: a second work order while one is still in progress would split the evidence and the verification
     const active = (await q.query<{ code: string; state: string }>("SELECT code, state FROM app.work_order WHERE issue_id = $1 AND state NOT IN ('CLOSED','CANCELLED') ORDER BY created_at LIMIT 1", [i.id])).rows[0];

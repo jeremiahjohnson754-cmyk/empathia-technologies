@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentBlock/0.1.0.json",
+  "title": "POST /v1/incidents/{incident}/block request body",
+  "description": "Say what an incident’s work is waiting on, or that it no longer is. A blocked incident’s correction, confirmation and closing wait until it is unblocked",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "blocked"
+  ],
+  "properties": {
+    "blocked": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}

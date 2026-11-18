@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentSteps/0.1.0.json",
+  "title": "POST /v1/incidents/{incident}/steps request body",
+  "description": "One step of an incident (start · fixed · confirm · close · defer · resume · reopen) through the same engine and database guard as a deficiency. Confirmation that the room works again is the reporter’s, or someone holding the authority; closing is by someone who neither fixed nor confirmed it; a blocked incident waits",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "step"
+  ],
+  "properties": {
+    "step": {
+      "type": "string",
+      "enum": [
+        "start",
+        "fixed",
+        "confirm",
+        "close",
+        "defer",
+        "resume",
+        "reopen"
+      ]
+    },
+    "ownerRole": {
+      "type": "string",
+      "pattern": "^[a-z_]{2,40}$"
+    },
+    "targetDate": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "rootCause": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "action": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "resolutionType": {
+      "type": "string",
+      "enum": [
+        "configuration_fix",
+        "hardware_replacement",
+        "firmware_update",
+        "software_patch",
+        "training",
+        "design_change",
+        "escalation_to_vendor",
+        "workaround",
+        "no_action_required"
+      ]
+    },
+    "restored": {
+      "type": "boolean"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 400
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "until": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  }
+}

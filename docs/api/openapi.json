@@ -14163,6 +14163,838 @@
         }
       }
     },
+    "/v1/rooms/{room}/incidents": {
+      "post": {
+        "tags": [
+          "service"
+        ],
+        "summary": "Report an operational incident (or an engineering observation) on a room in service: what is wrong, how it was found, who it affects. Anyone who can see the room may. The database works out whether it repeats an earlier incident of the same kind in the room",
+        "operationId": "postV1RoomsRoomIncidents",
+        "x-authority": "any member who can see the room (site scope applies)",
+        "x-authority-enforced": [],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "issueType",
+                  "domain",
+                  "severity",
+                  "title",
+                  "description",
+                  "detectedDuring",
+                  "userImpact"
+                ],
+                "properties": {
+                  "entryType": {
+                    "type": "string",
+                    "enum": [
+                      "OPERATIONAL_INCIDENT",
+                      "ENGINEERING_OBSERVATION"
+                    ]
+                  },
+                  "issueType": {
+                    "type": "string",
+                    "enum": [
+                      "no_audio",
+                      "low_audio",
+                      "echo_aec_failure",
+                      "video_no_signal",
+                      "camera_tracking_failure",
+                      "control_system_failure",
+                      "network_connectivity",
+                      "device_offline",
+                      "firmware_issue",
+                      "ui_ux_issue",
+                      "documentation_missing",
+                      "installation_defect",
+                      "design_gap",
+                      "vendor_performance",
+                      "standards_violation",
+                      "improvement_opportunity",
+                      "user_error",
+                      "other"
+                    ]
+                  },
+                  "domain": {
+                    "type": "string",
+                    "enum": [
+                      "audio",
+                      "video",
+                      "network",
+                      "control",
+                      "av_infrastructure",
+                      "power_ups",
+                      "lighting",
+                      "signage",
+                      "conferencing",
+                      "design",
+                      "vendor",
+                      "integration"
+                    ]
+                  },
+                  "severity": {
+                    "type": "string",
+                    "enum": [
+                      "Critical",
+                      "High",
+                      "Medium",
+                      "Low"
+                    ]
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 160
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 4000
+                  },
+                  "detectedDuring": {
+                    "type": "string",
+                    "enum": [
+                      "user_report",
+                      "support_round",
+                      "scheduled_maintenance",
+                      "production",
+                      "monitoring"
+                    ]
+                  },
+                  "userImpact": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "minor_annoyance",
+                      "moderate_disruption",
+                      "major_disruption",
+                      "executive_impact"
+                    ]
+                  },
+                  "device": {
+                    "type": "string",
+                    "pattern": "^PA-[0-9]{4,10}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "the incident, and the earlier one it repeats if any"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/incidents": {
+      "get": {
+        "tags": [
+          "service"
+        ],
+        "summary": "Operational incidents the caller may see, newest first, with their status (OPEN, IN_PROGRESS, BLOCKED, AWAITING_CONFIRMATION, CLOSED, DEFERRED), and the vocabulary",
+        "operationId": "getV1Incidents",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 30
+            }
+          },
+          {
+            "name": "room",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{1,3}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "incidents"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/incidents/intelligence": {
+      "get": {
+        "tags": [
+          "service"
+        ],
+        "summary": "What the incident records add up to over a period: counts by status, kind, domain, how found, root cause and resolution; time from report to resolution; repeats; and a status per room in service derived from its open incidents. Counted from records; nothing measured or estimated",
+        "operationId": "getV1IncidentsIntelligence",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{1,3}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "intelligence"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/incidents/{incident}": {
+      "get": {
+        "tags": [
+          "service"
+        ],
+        "summary": "One incident: what was reported, where it is, what it is waiting on, how it was resolved, the incident it repeats, its work orders and its history",
+        "operationId": "getV1IncidentsIncident",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "incident",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "incident"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/incidents/{incident}/steps": {
+      "post": {
+        "tags": [
+          "service"
+        ],
+        "summary": "One step of an incident (start · fixed · confirm · close · defer · resume · reopen) through the same engine and database guard as a deficiency. Confirmation that the room works again is the reporter’s, or someone holding the authority; closing is by someone who neither fixed nor confirmed it; a blocked incident waits",
+        "operationId": "postV1IncidentsIncidentSteps",
+        "x-authority": "by step: start service.triage|issue.assign · fixed work.evidence|service.triage · confirm the reporter, or issue.assign|tests.verify.all|test.verify · close service.close|tests.verify.all|baseline.approve · defer issue.assign|baseline.approve · resume service.triage|issue.assign · reopen service.reopen|issue.assign",
+        "x-authority-enforced": [],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "incident",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "step"
+                ],
+                "properties": {
+                  "step": {
+                    "type": "string",
+                    "enum": [
+                      "start",
+                      "fixed",
+                      "confirm",
+                      "close",
+                      "defer",
+                      "resume",
+                      "reopen"
+                    ]
+                  },
+                  "ownerRole": {
+                    "type": "string",
+                    "pattern": "^[a-z_]{2,40}$"
+                  },
+                  "targetDate": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "rootCause": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "action": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "resolutionType": {
+                    "type": "string",
+                    "enum": [
+                      "configuration_fix",
+                      "hardware_replacement",
+                      "firmware_update",
+                      "software_patch",
+                      "training",
+                      "design_change",
+                      "escalation_to_vendor",
+                      "workaround",
+                      "no_action_required"
+                    ]
+                  },
+                  "restored": {
+                    "type": "boolean"
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 400
+                  },
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 1000
+                  },
+                  "until": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "the incident after the step"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/incidents/{incident}/block": {
+      "post": {
+        "tags": [
+          "service"
+        ],
+        "summary": "Say what an incident’s work is waiting on, or that it no longer is. A blocked incident’s correction, confirmation and closing wait until it is unblocked",
+        "operationId": "postV1IncidentsIncidentBlock",
+        "x-authority": [
+          "service.triage",
+          "issue.assign"
+        ],
+        "x-authority-enforced": [
+          "service.triage",
+          "issue.assign"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "incident",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "blocked"
+                ],
+                "properties": {
+                  "blocked": {
+                    "type": "boolean"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "the incident"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/incidents/{incident}/escalate": {
+      "post": {
+        "tags": [
+          "service"
+        ],
+        "summary": "Record that an incident was escalated, once, with the reason",
+        "operationId": "postV1IncidentsIncidentEscalate",
+        "x-authority": [
+          "service.triage",
+          "issue.assign"
+        ],
+        "x-authority-enforced": [
+          "service.triage",
+          "issue.assign"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "incident",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 500
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "the incident"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/rooms/{room}/criteria": {
       "get": {
         "tags": [
