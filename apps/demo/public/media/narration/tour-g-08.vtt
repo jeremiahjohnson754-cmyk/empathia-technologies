@@ -1,0 +1,15 @@
+WEBVTT
+
+NOTE AI-generated voice (synthetic, not a real person). ElevenLabs premade voice Brian, eleven_v4. The first take generated for the line, chosen without listening (see docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md). Cue boundaries at the measured pauses (silencedetect -45 dB) nearest each sentence end.
+
+1
+00:00:00.000 --> 00:00:02.322
+The room is no longer just installed.
+
+2
+00:00:02.322 --> 00:00:05.211
+Its accepted condition is now documented.
+
+3
+00:00:05.211 --> 00:00:10.449
+Baseline one is what this room was proven to do, and it is never overwritten.

@@ -2,7 +2,7 @@
 // Tours A, B and C end to end at 390 / 768 / 1440 in light and dark, plus reduced motion: each stop lands on its route, the panel is
 // announced and focusable without trapping, ←/→ and Esc work, pause/resume/skip/exit, the spotlighted element exists and is visible
 // when the stop names one, reload resumes the tour, the narration at A5 is not autoplayed and has captions and a transcript; free
-// exploration never needs a tour.
+// exploration never needs a tour. Tour G's narrated stops (TR-g-narr-*) are checked the same way.
 //   node tests/browser/demo-tours.test.mjs
 import { harness, VIEWPORTS, SCHEMES } from './demo-spaces-lib.mjs';
 const { ok, open, done, base } = await harness('demo-tours');
@@ -71,6 +71,27 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
 { const t = await open([1440, 900], SCHEMES[0], { hash: '#/tours/a', reducedMotion: 'reduce' }); await t.page.waitForTimeout(600); await t.page.click('[data-testid="guided"] button:has-text("Next")'); await t.page.waitForTimeout(500);
   const tr = await t.page.evaluate(() => { const s = document.querySelector('.tour-spot'); return s ? getComputedStyle(s).transitionDuration : 'none'; });
   ok('TR-reduced-motion', 'under reduced motion the spotlight has no transition', /^(0s|none)/.test(tr) && !t.errs.length, tr); await t.close(); }
+// Tour G narration (18 Nov 2026, Brian, eleven_v4): exactly the stops with a shipped take offer it; none autoplays; each has captions,
+// a transcript and the AI-voice label; every take and caption file is served, and every take decodes and plays (muted, headless).
+// G9, G12, G13, G15 and G16 have no take (ElevenLabs refused them when the credits ran out) and must show no audio at all.
+for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
+  const t = await open(vp, SCHEMES[0], { hash: '#/tours' }); await t.go('#/tours/g', 600);
+  const WITH = new Set([1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 14]); const bad = [];
+  for (let i = 1; i <= COUNTS.g; i += 1) {
+    const v = await t.page.evaluate(() => { const n = document.querySelector('[data-testid="guided"] [data-testid="narration"]'); const a = n?.querySelector('audio'); return { has: !!n, paused: a ? a.paused : null, auto: a ? a.autoplay : null, track: !!a?.querySelector('track[kind="captions"]'), tr: !!n?.querySelector('details'), label: /AI-generated voice \(synthetic, not a real person\) · ElevenLabs premade voice Brian/.test(n?.textContent || ''), src: a?.getAttribute('src') || '' }; });
+    if (v.has !== WITH.has(i)) bad.push(`G${i}: narration ${v.has ? 'shown' : 'missing'}`);
+    if (v.has && (!v.paused || v.auto || !v.track || !v.tr || !v.label || v.src !== `media/narration/tour-g-${String(i).padStart(2, '0')}.mp3`)) bad.push(`G${i}: ${JSON.stringify(v)}`);
+    if (i < COUNTS.g) { await t.page.click('[data-testid="guided"] button:has-text("Next")'); await t.page.waitForTimeout(450); }
+  }
+  ok(`TR-g-narr-${vp[2]}`, 'Tour G: the eleven stops with a take offer it (not autoplayed, captions, transcript, AI-voice label); the five without show none', !bad.length, bad.slice(0, 3).join(' | '));
+  if (vp[2] === 'desktop') {
+    const files = await t.page.evaluate(async (ids) => Promise.all(ids.map(async (n) => { const k = `tour-g-${String(n).padStart(2, '0')}`; const m = await fetch(`media/narration/${k}.mp3`); const c = await fetch(`media/narration/${k}.vtt`); const vt = await c.text(); const a = new Audio(`media/narration/${k}.mp3`); a.muted = true; a.preload = 'auto'; const meta = await new Promise((r) => { a.addEventListener('loadedmetadata', () => r(true), { once: true }); a.addEventListener('error', () => r(false), { once: true }); setTimeout(() => r(false), 8000); }); let played = false; try { await a.play(); await new Promise((r) => setTimeout(r, 500)); played = a.currentTime > 0.1; a.pause(); } catch { played = false; } return { k, mp3: m.status, type: m.headers.get('content-type'), vtt: c.status, cues: (vt.match(/-->/g) || []).length, head: vt.startsWith('WEBVTT'), dur: a.duration, meta, played }; })), [...WITH]);
+    const fb = files.filter((f) => f.mp3 !== 200 || !/audio\/mpeg/.test(f.type || '') || f.vtt !== 200 || !f.head || f.cues < 1 || !f.meta || !(f.dur > 6) || !f.played);
+    ok('TR-g-narr-files', 'Tour G: all eleven takes and caption files are served with the right types, and every take decodes and plays (muted)', !fb.length, JSON.stringify(fb.slice(0, 2)));
+  }
+  ok(`TR-g-narr-${vp[2]}-clean`, 'no page error while stepping through Tour G', !t.errs.length, t.errs.join(' | '));
+  await t.close();
+}
 // destructive: the narration fails to load (network lost) → the transcript stands in; rapid double-taps on Next never overshoot
 { const t = await open([390, 844], SCHEMES[0], { hash: '#/tours', sw: false /* an injected failure needs a page the offline worker does not answer */ }); await t.page.route('**/media/narration/**', (r) => r.abort());
   await t.go('#/tours/a?stop=5', 700); await t.page.evaluate(() => document.querySelector('[data-testid="narration"] audio')?.play().catch(() => {})); await t.page.waitForTimeout(800);
