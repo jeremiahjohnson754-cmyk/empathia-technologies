@@ -1,5 +1,5 @@
 {
- "at": "2026-11-14T12:21:47.344Z",
+ "at": "2026-11-18T23:04:14.098Z",
  "pass": 110,
  "fail": 0,
  "tests": 110,
@@ -56,7 +56,7 @@
    "id": "B-03",
    "name": "the room is created from the template with declared and modeled dimensions labelled, devices placed and connections proposed",
    "result": "PASS",
-   "detail": "Build a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Designer / CAD / Revit (perspective designer). The rules are the product's own engine; a refusal here is the refusal the"
+   "detail": "Back to Report a problem\n\nBuild a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Designer / CAD / Revit (perspective designer). The rules are the product's own engine; a refus"
   },
   {
    "id": "B-03b",
@@ -80,7 +80,7 @@
    "id": "B-05",
    "name": "the systems engineer approves the classification",
    "result": "PASS",
-   "detail": "Build a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Systems Engineer (pe"
+   "detail": "Back to No such room on record\n\nBuild a Room · interactive demonstration\n\nHarbour Huddle (synthetic)"
   },
   {
    "id": "B-06",
@@ -236,7 +236,7 @@
    "id": "S-01",
    "name": "Search Party opens on the access switch with its neighbourhood graph and the downstream impact: three rooms and their networked devices",
    "result": "PASS",
-   "detail": "Search\nRelationships\nPeople and expertise\nProject map\nOrganizations\nActivity\nEvidence and artifacts\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nAsset (1512)\nBuilding (20)\nCommissioning baseline (1)\nNetwork node (2)\nPerson "
+   "detail": "Back to Report a problem\nSearch\nRelationships\nPeople and expertise\nProject map\nOrganizations\nActivity\nEvidence and artifacts\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nAsset (1512)\nBuilding (20)\nCommissioning baseline (1)"
   },
   {
    "id": "S-02",
@@ -344,7 +344,7 @@
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-15T10:20 → 2026-11-15T12:20\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-19T21:03 → 2026-11-19T23:03\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
@@ -416,7 +416,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-11-14 12:21 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-18 23:03 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "A-04",
@@ -428,7 +428,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-14 12:21 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-18 23:03 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -524,7 +524,7 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-16 12:21 → 2026-11-14 12:21\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-20 23:03 → 2026-11-18 23:03\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",

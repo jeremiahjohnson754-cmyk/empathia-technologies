@@ -15,6 +15,20 @@ interface Run { tour: Tour['key']; i: number; paused: boolean }
 const load = (): Run | null => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || 'null') as Run | null; const t = v && typeof v === 'object' ? tourByKey(v.tour) : undefined; return t && Number.isInteger(v!.i) && v!.i >= 0 && v!.i < t.stops.length ? v : null; } catch { return null; } };   // a stop outside the tour is no tour (SA-09)
 const save = (r: Run | null) => { try { if (r) sessionStorage.setItem(KEY, JSON.stringify(r)); else sessionStorage.removeItem(KEY); } catch { /* storage unavailable: the tour lasts the page */ } };
 export const stopNative = (href: string) => !!resolve(href) || NATIVE.has(areaKey(href));
+/** Bring the stop's element into the part of the screen the panel leaves free: below the shell bar and the panel where the panel sticks
+ *  to the top (wide screens), above the panel where it is docked at the bottom (phones). scrollIntoView knew about neither, so on a
+ *  phone the spotlit element could sit entirely under the panel (found 18 Nov in a first-time-viewer pass of Tour G). */
+function place(el: Element, p: HTMLElement | null) {
+  const bar = document.querySelector('.shell__bar')?.getBoundingClientRect().bottom ?? 0;
+  const docked = !!p && getComputedStyle(p).position === 'fixed';
+  const ph = p ? p.getBoundingClientRect().height : 0;
+  const top = docked || !p ? bar : Math.max(bar, (parseFloat(getComputedStyle(p).top) || 0) + ph);
+  const bottom = docked && p ? p.getBoundingClientRect().top : innerHeight;
+  const r = el.getBoundingClientRect();
+  if (r.top >= top + 8 && (r.bottom <= bottom - 8 || r.top <= top + 40)) return;   // already where it can be seen
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  scrollTo({ top: Math.max(0, scrollY + r.top - top - 12), behavior: reduce ? 'auto' : 'smooth' });
+}
 
 export function GuidedPanel({ hash }: { hash: string }) {
   const [run, setRun] = useState<Run | null>(load);
@@ -28,7 +42,7 @@ export function GuidedPanel({ hash }: { hash: string }) {
   useEffect(() => {
     if (!s?.spot || run?.paused) return;
     let n = 0; let el: Element | null = null;
-    const tick = setInterval(() => { el = document.querySelector(`[data-testid="${s.spot}"]`); if (el || ++n > 20) { clearInterval(tick); if (el) { el.classList.add('tour-spot'); const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; el.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' }); } } }, 100);
+    const tick = setInterval(() => { el = document.querySelector(`[data-testid="${s.spot}"]`); if (el || ++n > 20) { clearInterval(tick); if (el) { el.classList.add('tour-spot'); place(el, panel.current); } } }, 100);
     return () => { clearInterval(tick); document.querySelectorAll('.tour-spot').forEach((x) => x.classList.remove('tour-spot')); };
   }, [s?.spot, s?.id, run?.paused, hash]);
   if (!run || !t || !s) return null;
@@ -44,7 +58,7 @@ export function GuidedPanel({ hash }: { hash: string }) {
         {!native && <p className="ui-meta">This stop’s address has no page of its own; it lands on the address map instead of pretending.</p>}
         {s.tries && <ul className="tour__tries" aria-label="Searches to try" data-testid="tour-tries">{s.tries.map((q) => <li key={q}><a className="ui-btn ui-btn--sm" href={`#/search?q=${encodeURIComponent(q)}`}>{q}</a></li>)}</ul>}
         {s.ask && <details key={s.id} className="tour__ask" data-testid="tour-ask"><summary>{s.ask.q}</summary><p>{s.ask.a}</p></details>}
-        {take && <Narration id={s.narration!} />}
+        {take && <Narration key={s.narration} id={s.narration!} />}
       </>}
       <div className="tour__acts">
         <Button small onClick={() => goto({ ...run, i: run.i - 1, paused: false })} disabled={run.i === 0}>Previous</Button>
@@ -57,14 +71,32 @@ export function GuidedPanel({ hash }: { hash: string }) {
   );
 }
 
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+/** A compact player (one row, so the panel leaves room for the page): Listen / Pause, progress, time, and the caption of the moment
+ *  shown as text while it plays — an <audio> element draws no captions of its own, so before 18 Nov the captions file was never seen.
+ *  Nothing plays until the visitor presses Listen. */
 function Narration({ id }: { id: string }) {
-  const n = NARRATION[id]!; const [failed, setFailed] = useState(false);
+  const n = NARRATION[id]!; const a = useRef<HTMLAudioElement>(null);
+  const [failed, setFailed] = useState(false); const [playing, setPlaying] = useState(false); const [at, setAt] = useState(0); const [cue, setCue] = useState('');
+  useEffect(() => {
+    const tr = a.current?.textTracks[0]; if (!tr) return undefined;
+    tr.mode = 'hidden'; const on = () => { const c = tr.activeCues && tr.activeCues.length ? (tr.activeCues[0] as VTTCue) : null; setCue(c ? c.text : ''); };
+    tr.addEventListener('cuechange', on); return () => tr.removeEventListener('cuechange', on);
+  }, [id, failed]);
+  const toggle = () => { const el = a.current; if (!el) return; if (el.paused) el.play().catch(() => setFailed(true)); else el.pause(); };
   return (
     <div className="narr" data-testid="narration">
-      {failed ? <p className="ui-meta">The narration audio could not be loaded; the transcript below is the same words.</p> :
-        <audio controls preload="none" src={n.src} onError={() => setFailed(true)} aria-label="Narration of this stop"><track kind="captions" src={n.captions} srcLang="en" label="English" default /></audio>}
-      <details><summary>Transcript</summary><p>{n.transcript}</p></details>
-      <p className="ui-meta">{n.voice}</p>
+      {failed ? <p className="ui-meta">The narration audio could not be loaded; the transcript below is the same words.</p> : <>
+        <div className="narr__row">
+          <button type="button" className="narr__play" onClick={toggle} aria-pressed={playing} data-testid="narr-play">{playing ? 'Pause narration' : 'Listen'}</button>
+          <span className="narr__bar" aria-hidden="true"><i style={{ width: `${Math.min(100, (at / n.seconds) * 100)}%` }} /></span>
+          <span className="narr__t ui-meta">{mmss(at)} / {mmss(n.seconds)}</span>
+        </div>
+        <audio ref={a} preload="none" src={n.src} aria-label="Narration of this stop" onError={() => setFailed(true)} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
+          onEnded={() => { setPlaying(false); setAt(0); setCue(''); }} onTimeUpdate={(e: { currentTarget: HTMLAudioElement }) => setAt(e.currentTarget.currentTime)}><track kind="captions" src={n.captions} srcLang="en" label="English" default /></audio>
+        {playing && cue && <p className="narr__cue" data-testid="narr-cue">{cue}</p>}
+      </>}
+      <div className="narr__foot"><details><summary>Transcript</summary><p>{n.transcript}</p></details><p className="ui-meta narr__who">{n.voice}</p></div>
     </div>
   );
 }
