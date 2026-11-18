@@ -9,7 +9,7 @@
  * authorization of any kind.
  */
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { Icon } from '@empathia/ui';
+import { Icon, FieldCalculator } from '@empathia/ui';
 import { CERTS, CERT_IDS, COMPARE, SOURCES, READ_ON, type CertId, type Cert } from './facts.js';
 import { GUIDES, MATH, STRATEGY, DIFFERENCES, type Section } from './guide.js';
 import { BANKS, assemble, score, allocation, capacity, loadProgress, saveProgress, record, type Session, type Mode, type Score, type Progress } from './exam.js';
@@ -93,7 +93,7 @@ function Practice({ c, progress, setProgress }: { c: Cert; progress: Progress; s
       {k === i && <QuestionView q={x} chosen={a} reveal onPick={() => undefined} />}</li>; })}</ol>
   </div>; }
 
-  return <div className="ct-practice" data-testid="ct-runner" data-mode={s.mode}>
+  return <div className="ct-practice" data-testid="ct-runner" data-mode={s.mode}><FieldCalculator />
     <div className="ct-runbar">
       <span>Question {i + 1} of {s.questions.length}</span>
       {left !== null && <span className="ct-timer" data-low={left < 300 ? '1' : undefined} role="timer" aria-live="off">{Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')} left</span>}

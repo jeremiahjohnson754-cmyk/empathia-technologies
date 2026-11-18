@@ -11,6 +11,8 @@ export * as Challenges from './challenges/index.js';
 export * as Bosses from './boss.js';
 export * from './MeltdownRunner.js';
 export * from './LabRunner.js';
+export * from './fieldcalc.js';
+export * from './FieldCalculator.js';
 export * from './ChallengeRunner.js';
 export * from './BossRunner.js';
 export * from './Bench.js';

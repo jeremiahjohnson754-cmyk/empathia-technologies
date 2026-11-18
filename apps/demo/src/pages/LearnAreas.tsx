@@ -8,6 +8,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { QuizLibrary } from '../learn/QuizLibrary.js';
+import { FieldCalculator } from '@empathia/ui';
 import { PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, Notice, Button, Tag, ProgressBar, EmptyState, ScoreRing, QuizRunner, DrillRunner, DRILL_KINDS, IncidentRunner, Incidents, type Quiz, type Drill, type IconName } from '@empathia/ui';
 import { V, fill, trainingCases, caseById, loadProgress, record, minutesOf, RESPONSES, RULES, score, readinessOf, competencyEvidence, roomsFor, archetypesIn, hopsOf, type TrainingCase, type Progress, type Episode, type Scene } from '../learn/model.js';
 import { loadLabs } from '../learn/store.js';
@@ -284,7 +285,7 @@ export function PracticePage({ perspective }: { perspective: string }) {
   const kinds = [['evidence', 'Name the evidence'], ['signal', 'Follow the signal'], ['proves', 'Which check proves it?']] as const;
   const pick = RD.find((d) => d.key === room);
   return (
-    <section className="wk ln" data-native="workspace" data-testid="learn-practice">
+    <section className="wk ln" data-native="workspace" data-testid="learn-practice"><FieldCalculator />
       <Head role={perspective} current="#/learn/practice" title="Practice" lede="Short drills. Every statement, path and requirement in them is a record in Core." />
       <LibGate lib={lib} err={err}>{(l) => (
         <Card icon="spark" tone="violet" title="SIGNAL drills" sub={`SIGNAL world · fiction · ${new Set(w.training.filter((t) => t.by === persona && t.correct).map((t) => t.drillId)).size} of ${l.drillOrder.length} passed · timed and failable`} testId="practice-kinds">
@@ -309,7 +310,7 @@ interface SignalAction { id: string; label: string; cost: number; text: string; 
 export function ServiceModePage({ perspective }: { perspective: string }) {
   const { w } = useWorkspace(); const { lib, err } = useLib(); const [p] = useProgress(); const cases = trainingCases(w);
   return (
-    <section className="wk ln" data-native="workspace" data-testid="learn-service">
+    <section className="wk ln" data-native="workspace" data-testid="learn-service"><FieldCalculator />
       <Head role={perspective} current="#/learn/service" title="Service Mode" lede="A call, a clock and ten things you can do. The room, the fault and the evidence are a room’s records in Core." />
       <LibGate lib={lib} err={err}>{(l) => { const order = l.incidentOrder || []; const inc = l.incidents || {}; const doms = [...new Set(order.map((id) => inc[id]!.domain))]; return (
         <Card icon="spark" tone="violet" title="SIGNAL incidents" sub={`SIGNAL world · fiction · ${Object.values(p.incidents).filter((x) => x === 'proven').length} of ${order.length} proven · each one on a clock`} testId="service-signal">
@@ -363,7 +364,7 @@ function CaseRun({ perspective, c }: { perspective: string; c: TrainingCase }) {
     setP(record(persona, 'training.service_case', c.roomId, `Service Mode ${c.short}: overall ${run.overall} (${run.overall >= V.SCORE_PASS ? 'proven' : 'not proven'})`, (x) => { const prev = x.runs[c.id]; x.runs[c.id] = { first: prev?.first || run, best: !prev || run.overall > prev.best.overall ? run : prev.best, attempts: (prev?.attempts || 0) + 1 }; })); };
   const reset = () => { setLog([]); setCause(null); setResp(null); setDone(null); setStarted(true); };
   return (
-    <section className="wk ln" data-native="workspace" data-testid="learn-case-run">
+    <section className="wk ln" data-native="workspace" data-testid="learn-case-run"><FieldCalculator />
       <Head role={perspective} current="#/learn/service" crumbs={[['Empathia Learn', '#/learn'], ['Service Mode', '#/learn/service'], [c.short]]} title={c.short} lede={<>“{c.complaint}”</>}
         aside={<ScoreRing value={Math.max(0, left)} max={V.SERVICE_WINDOW} label={`${Math.max(0, left)} of ${V.SERVICE_WINDOW} minutes left`} caption={<><b>{Math.max(0, left)} min</b><br />left of {V.SERVICE_WINDOW}</>} band={left < 0 ? 'action' : left < 15 ? 'monitor' : 'healthy'} />} />
       <div className="wk-g2 wk-g2--wide">
@@ -398,7 +399,7 @@ function IncidentRun({ perspective, inc }: { perspective: string; inc: SignalInc
   // Since 11 Nov 2026 the shared runner on the reference's rules (packages/ui/src/incidents.ts), as the story uses it.
   const persona = personaOf(perspective); const [, setP] = useProgress(); const RANK = { fail: 0, partial: 1, proven: 2 } as const;
   return (
-    <section className="wk ln" data-native="workspace" data-testid="learn-incident">
+    <section className="wk ln" data-native="workspace" data-testid="learn-incident"><FieldCalculator />
       <Head role={perspective} current="#/learn/service" crumbs={[['Empathia Learn', '#/learn'], ['Service Mode', '#/learn/service'], [inc.id]]} title={inc.title} lede={inc.page} meta={[FICTION, <Chip key="p" small tone="warn">{inc.priority}</Chip>, <Chip key="d" small tone="muted">{inc.domain}</Chip>]} />
       <IncidentRunner inc={{ ...inc } as unknown as Incidents.Incident} factor={1} onEnd={(o) => setP(record(persona, 'training.signal_incident', inc.id, `SIGNAL incident ${inc.id} “${inc.title}”: ${o}`, (x) => { const prev = x.incidents[inc.id]; x.incidents[inc.id] = prev && RANK[prev] > RANK[o] ? prev : o; }))} />
     </section>
@@ -418,7 +419,7 @@ const GENERALIZED: Array<[string, number]> = [['Find the echo', 3], ['Chase the 
 export function CaseFilesPage({ perspective }: { perspective: string }) {
   const { w } = useWorkspace(); const [p] = useProgress(); const { lib, err } = useLib(); const cases = trainingCases(w);
   return (
-    <section className="wk ln" data-native="workspace" data-testid="learn-cases">
+    <section className="wk ln" data-native="workspace" data-testid="learn-cases"><FieldCalculator />
       <Head role={perspective} current="#/learn/cases" title="Case Files" lede="Every room with an issue on its record has one. It is not written by hand: it is the room’s records, read as something to learn from." />
       <Card icon="route" title="Operations become learning"><Chain /></Card>
       <Card icon="room" title="Learn from a room" sub={plural(cases.length, 'room')}><List label="Rooms">{cases.map((c) => <CaseRow key={c.id} c={c} p={p} href={`#/learn/cases/${c.id}`} />)}</List></Card>
@@ -504,7 +505,7 @@ export function CaseFilePage({ perspective, params }: { perspective: string; par
   const r = c.room; const cur = r.baselines.find((b) => b.state === 'CURRENT'); const pend = r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE');
   const drills = roomDrills(c); const kf = V.KNOWN_FIXES.find((k) => V.ROOT_CAUSES[k[1]]?.[0].toLowerCase().includes(c.domain === 'Audio' ? 'configuration' : c.domain === 'Network' ? 'network' : c.domain === 'Power' ? 'power' : 'firmware'));
   return (
-    <section className="wk ln" data-native="workspace" data-testid="learn-casefile">
+    <section className="wk ln" data-native="workspace" data-testid="learn-casefile"><FieldCalculator />
       <Head role={perspective} current="#/learn/cases" crumbs={[['Empathia Learn', '#/learn'], ['Case Files', '#/learn/cases'], [c.short]]} title={`Learn from ${c.short}`} lede={<>The learner receives: <b>“{c.complaint}.”</b></>}
         actions={<><a className="ui-btn ui-btn--primary" href={`#/learn/service/${c.id}`}>Service Mode · {c.minutes} minutes</a><a className="ui-btn" href={`#/learn/story/${c.roomId}`}>Story, with three decisions</a></>} />
       <nav className="wk-v25nav" aria-label={`${c.short} in`}>{[['Room', roomHref(r.outline)], ['Assurance', `#/assurance/room/${c.roomId}`], ['Commissioning', `#/commissioning/room/${c.roomId}`], ['Replay', `#/replay/${c.roomId}`]].filter(([, h]) => openable(perspective, h!)).map(([l, h]) => <Chip key={l} href={h} small icon="arrow-right">{l}</Chip>)}</nav>

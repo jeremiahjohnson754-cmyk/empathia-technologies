@@ -193,3 +193,28 @@
   .kit-legend__sw { background: CanvasText; }
 }
 .kit-seg__opt:disabled { opacity: .5; cursor: default; }
+
+/* SIGNAL's field calculator (FieldCalculator.tsx), restored 18 Nov 2026 in the standalone's own look: a deliberately single dark
+   instrument (night panel, amber edge, green answer) in either theme, as the reference draws it. 44 px targets; reduced motion respected. */
+.fcalc-fab { position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); z-index: 90; width: 52px; height: 52px; border-radius: 50%; border: 2px solid #FBBF24; background: #0B1220; color: #FBBF24; font-size: 24px; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, .45); }
+@media (min-width: 900px) { .fcalc-fab { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); } }
+.fcalc-fab:focus-visible, .fcalc button:focus-visible, .fcalc input:focus-visible { outline: 2px solid #FBBF24; outline-offset: 2px; }
+.fcalc { position: fixed; right: calc(12px + env(safe-area-inset-right, 0px)); bottom: calc(148px + env(safe-area-inset-bottom, 0px)); z-index: 91; width: min(360px, calc(100vw - 24px)); max-height: min(70vh, 640px); overflow: auto; background: #0B1220; color: #F4F1E8; border: 2px solid #FBBF24; border-radius: 14px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); color-scheme: dark; }
+@media (min-width: 900px) { .fcalc { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); } }
+.fcalc__top { display: flex; justify-content: space-between; align-items: center; font: 800 12px var(--font-mono, ui-monospace, monospace); letter-spacing: .12em; color: #FBBF24; }
+.fcalc__x { margin-left: auto; background: none; border: none; color: #F4F1E8; font-size: 20px; min-width: 40px; min-height: 40px; cursor: pointer; }
+.fcalc__in { width: 100%; box-sizing: border-box; margin: 8px 0 4px; background: #05070C; color: #F4F1E8; border: 1.5px solid #475569; border-radius: 8px; padding: 10px; font: 600 17px var(--font-mono, ui-monospace, monospace); }
+.fcalc__out { font: 800 24px/1.2 var(--font-mono, ui-monospace, monospace); text-align: right; color: #34D399; margin: 2px 0 8px; word-break: break-all; }
+.fcalc__keys { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.fcalc__keys button { min-height: 44px; border-radius: 8px; border: 1px solid #334155; background: #111A2E; color: #F4F1E8; font: 700 15px var(--font-mono, ui-monospace, monospace); cursor: pointer; }
+.fcalc__keys button:hover { border-color: #FBBF24; } .fcalc__keys button.eq { background: #FBBF24; color: #0B1220; border-color: #FBBF24; }
+.fcalc__more { margin-top: 10px; } .fcalc__more summary { cursor: pointer; min-height: 36px; display: flex; align-items: center; color: #CBD5E1; font-size: 13px; }
+.fcalc__hrow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 0; font-size: 12.5px; }
+.fcalc__hrow b { flex: 1 1 100%; color: #CBD5E1; font-weight: 600; }
+.fcalc__hrow input { width: 6.5em; min-height: 36px; background: #05070C; color: #F4F1E8; border: 1px solid #475569; border-radius: 6px; padding: 0 6px; font: 600 13px var(--font-mono, ui-monospace, monospace); }
+.fcalc__hrow button { min-width: 36px; min-height: 36px; border-radius: 6px; border: 1px solid #FBBF24; background: transparent; color: #FBBF24; font-weight: 800; cursor: pointer; }
+.fcalc__hres { font: 700 13px var(--font-mono, ui-monospace, monospace); color: #34D399; }
+.fcalc__note { font-size: 11.5px; color: #94A3B8; margin: 8px 0; }
+.fcalc__hist { padding-left: 18px; font: 600 12px var(--font-mono, ui-monospace, monospace); margin: 0; }
+.fcalc__hist button { background: none; border: 0; color: #CBD5E1; font: inherit; cursor: pointer; text-align: left; min-height: 28px; padding: 0; }
+.fcalc__hist button:hover { color: #FBBF24; }

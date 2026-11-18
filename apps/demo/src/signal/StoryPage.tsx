@@ -14,6 +14,7 @@ import { chapterPop, doneKeys, gatePop, type PopBody } from './pops.js';
 import { objectiveDone, type MissionIndex } from './mission.js';
 import { buildRx, chapterMarks, needs, type GlossaryIndex, type GlRx, type Seg, type Term } from './glossary.js';
 import { BossRunner, Bosses, DrillRunner, IncidentRunner, LabRunner, MeltdownRunner, LAB_KINDS_PLAYABLE, Meltdowns, type Drill, type Formula, type Incidents, type LabData } from '@empathia/ui';
+import { FieldCalculator } from '@empathia/ui';
 import { Block, Crumbs, Pick } from '../worlds/kit.js';
 import { Cinematic } from './CinematicPlayer.js';
 import { cinematicFor, sceneOf } from './cinematic.js';
@@ -208,7 +209,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
   if (ch.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() ? <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, open without a connection. Your progress is untouched.</p> : <p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
   let panelNo = -1;
   return (
-    <article className="sg sg-read" data-testid="story-reader" data-still={still} data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}>
+    <article className="sg sg-read" data-testid="story-reader" data-still={still} data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}><FieldCalculator showWhen=".lab" />
       <Crumbs items={[{ label: 'Learn', href: '#/learn' }, { label: 'SIGNAL', href: '#/story' }, { label: ref.season ? `Season ${ref.season}` : 'Prologue', href: '#/story' }, { label: ref.title }]} />
       {failed != null && <div className="sg-banner" role="status" data-testid="story-gameover-banner"><b>✕ Game over · Season {failed} review failed (Story Score {progress.reviews[`S${failed}`]!.score}).</b> <button type="button" className="ui-btn" onClick={() => retry(failed)}>↺ Retry Season {failed}</button> <button type="button" className="ui-btn ui-btn--quiet" onClick={restart}>⟲ Restart</button></div>}
       <p className="kicker">{ref.kicker} <Draft /></p>
