@@ -96,9 +96,27 @@ export function figureVerts(x: number, y: number, z: number, color: string, out:
   for (const [n, q, col] of F) for (const i of [0, 1, 2, 0, 2, 3]) { const p = q[i]!; out.push(p[0], p[1], p[2], n[0], n[1], n[2], col[0], col[1], col[2]); }
 }
 
+/** one triangle, wound so that its front faces the way `n` points (the back is culled) */
+function tri(out: number[], a: [V3, V3], b: [V3, V3], c: [V3, V3], col: V3) {
+  const u = sub(b[0], a[0]), v = sub(c[0], a[0]); const f = cross(u, v); const n: V3 = [a[1][0] + b[1][0] + c[1][0], a[1][1] + b[1][1] + c[1][1], a[1][2] + b[1][2] + c[1][2]];
+  const order = dot(f, n) >= 0 ? [a, b, c] : [a, c, b]; for (const [p, nn] of order) out.push(p[0], p[1], p[2], nn[0], nn[1], nn[2], col[0], col[1], col[2]);
+}
+/** a sphere (an ellipsoid when the radii differ), lit smoothly: latitude by longitude, baked into a static buffer */
+export function sphereVerts(c: V3, r: V3, color: string | V3, out: number[], seg = 12, rings = 8) {
+  const col = typeof color === 'string' ? hex(color) : color; const pt = (i: number, j: number): [V3, V3] => { const th = (i / seg) * Math.PI * 2, ph = (j / rings) * Math.PI; const n: V3 = [Math.sin(ph) * Math.cos(th), Math.cos(ph), Math.sin(ph) * Math.sin(th)]; return [[c[0] + n[0] * r[0], c[1] + n[1] * r[1], c[2] + n[2] * r[2]], norm([n[0] / r[0], n[1] / r[1], n[2] / r[2]])]; };
+  for (let i = 0; i < seg; i++) for (let j = 0; j < rings; j++) { const q = [pt(i, j), pt(i + 1, j), pt(i + 1, j + 1), pt(i, j + 1)]; if (j > 0) tri(out, q[0]!, q[1]!, q[2]!, col); if (j < rings - 1) tri(out, q[0]!, q[2]!, q[3]!, col); }
+}
+/** an upright cylinder (an elliptic one when the radii differ) from y0 to y1, its top closed, lit smoothly round its side */
+export function cylinderVerts(x: number, z: number, rx: number, rz: number, y0: number, y1: number, color: string | V3, out: number[], seg = 12, top = true) {
+  const col = typeof color === 'string' ? hex(color) : color; const P = (i: number): [number, number, V3] => { const a = (i / seg) * Math.PI * 2; return [x + Math.cos(a) * rx, z + Math.sin(a) * rz, norm([Math.cos(a) / rx, 0, Math.sin(a) / rz])]; };
+  for (let i = 0; i < seg; i++) { const [ax, az, an] = P(i), [bx, bz, bn] = P(i + 1); const q: Array<[V3, V3]> = [[[ax, y0, az], an], [[bx, y0, bz], bn], [[bx, y1, bz], bn], [[ax, y1, az], an]];
+    tri(out, q[0]!, q[1]!, q[2]!, col); tri(out, q[0]!, q[2]!, q[3]!, col);
+    if (top) { const up: V3 = [0, 1, 0]; tri(out, [[x, y1, z], up], [[ax, y1, az], up], [[bx, y1, bz], up], col); } }
+}
+
 export interface Mesh { vao: WebGLVertexArrayObject; n: number }
 export class Renderer {
-  gl: WebGL2RenderingContext; prog: WebGLProgram; u: Record<string, WebGLUniformLocation | null> = {}; unit: Mesh; disc: Mesh;
+  gl: WebGL2RenderingContext; prog: WebGLProgram; u: Record<string, WebGLUniformLocation | null> = {}; unit: Mesh; disc: Mesh; ball: Mesh; tube: Mesh;
   constructor(public canvas: HTMLCanvasElement) {
     const gl = canvas.getContext('webgl2', { antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: true }); if (!gl) throw new Error('WebGL2 is not available in this browser');
     this.gl = gl; const sh = (t: number, s: string) => { const x = gl.createShader(t)!; gl.shaderSource(x, s); gl.compileShader(x); if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(x) || 'shader'); return x; };
@@ -106,6 +124,7 @@ export class Renderer {
     this.prog = p; for (const k of ['uVP', 'uM', 'uTint', 'uUseTint', 'uSun', 'uEye', 'uFog', 'uFogNear', 'uFogFar', 'uAlpha', 'uSky', 'uGround', 'uAmb', 'uSunCol', 'uGlow', 'uGrad', 'uTint2']) this.u[k] = gl.getUniformLocation(p, k);
     gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE);
     const v: number[] = []; boxVerts({ min: [-0.5, -0.5, -0.5], max: [0.5, 0.5, 0.5], color: '#ffffff' }, v); this.unit = this.mesh(v);
+    const sb: number[] = []; sphereVerts([0, 0, 0], [0.5, 0.5, 0.5], '#ffffff', sb, 14, 10); this.ball = this.mesh(sb); const tb: number[] = []; cylinderVerts(0, 0, 0.5, 0.5, -0.5, 0.5, '#ffffff', tb, 12); this.tube = this.mesh(tb);
     const d: number[] = []; const N = 20; for (let i = 0; i < N; i++) { const a = (i / N) * Math.PI * 2, b = ((i + 1) / N) * Math.PI * 2; d.push(0, 0, 0, 0, 1, 0, 0, 0, 0, Math.cos(b) * 0.5, 0, Math.sin(b) * 0.5, 0, 1, 0, 0, 0, 0, Math.cos(a) * 0.5, 0, Math.sin(a) * 0.5, 0, 1, 0, 0, 0, 0); } this.disc = this.mesh(d);
   }
   mesh(v: number[]): Mesh {

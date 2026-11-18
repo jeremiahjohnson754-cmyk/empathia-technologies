@@ -30,11 +30,12 @@ const press = async (p, key) => { await p.keyboard.press(key); await p.waitForTi
   const s0 = await at(p);
   ok('CL-01', 'launch and spawn: the scene draws (WebGL2), the student stands at the south gate of the Quad facing Science Hall, level 1, no XP, the quest says where to start', !(await p.getByTestId('cl-err').count()) && s0.x === 0 && s0.z === 20 && s0.level === 1 && s0.xp === 0 && s0.stage === 'start' && /Find Professor Calder/.test(await p.getByTestId('cl-quest').innerText()), JSON.stringify(s0));
 
-  // walk, then run: the same time held covers about twice the ground
-  const a = await at(p); await hold(p, ['w'], () => false, 1000); const b = await at(p); await hold(p, ['s'], () => false, 1000); const c = await at(p);
-  await hold(p, ['Shift', 'w'], () => false, 1000); const d = await at(p);
+  // walk, then run: the speed while the keys are held (frame-rate independent), and the ground covered each time
+  const a = await at(p); await p.keyboard.down('w'); await p.waitForTimeout(1000); const walking = (await at(p)).speed; await p.keyboard.up('w'); await p.waitForTimeout(300); const b = await at(p);
+  await hold(p, ['s'], () => false, 1000); const c = await at(p);
+  await p.keyboard.down('Shift'); await p.keyboard.down('w'); await p.waitForTimeout(1000); const running = (await at(p)).speed; await p.keyboard.up('w'); await p.keyboard.up('Shift'); await p.waitForTimeout(300); const d = await at(p);
   const walked = a.z - b.z, ran = c.z - d.z;
-  ok('CL-02', 'walk and run with real keys: W moves north, S comes back, Shift makes the same second cover clearly more ground', walked > 1.5 && Math.abs(c.z - a.z) < 1.2 && ran > walked * 1.5, `walk ${walked.toFixed(2)} m · back to ${c.z.toFixed(2)} · run ${ran.toFixed(2)} m`);
+  ok('CL-02', 'walk and run with real keys: W moves north at a walking pace (about 3.2 m/s), S comes back, Shift runs at about twice the pace', walked > 1.5 && Math.abs(walking - 3.2) < 0.4 && running > walking * 1.7 && ran > walked, `walk ${walking} m/s (${walked.toFixed(2)} m) · run ${running} m/s (${ran.toFixed(2)} m)`);
 
   // rotate the camera: arrow keys and a drag; then put it back facing north for the rest of the journey
   const y0 = (await at(p)).yaw; await hold(p, ['ArrowLeft'], () => false, 500); const y1 = (await at(p)).yaw;

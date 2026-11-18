@@ -6,7 +6,9 @@
  * Solids are what a person cannot walk through (walls, furniture, trees, the closed door); `roof` boxes are hidden while the player is
  * inside, so the camera sees in. The world's edge is a hedge and a hard boundary.
  */
-import type { Box, V3 } from './gl.js';
+import { cylinderVerts, sphereVerts, type Box, type V3 } from './gl.js';
+/** round things (trees, lamps, the fountain) baked as smooth geometry beside the boxes */
+export const round: number[] = [];
 
 export interface Solid { min: V3; max: V3; id: string }
 export interface Thing { id: string; kind: 'npc' | 'card' | 'bench' | 'door' | 'screen' | 'sign'; at: [number, number]; r: number; label: string; prompt: string }
@@ -32,7 +34,7 @@ add([-22, 0.015, -16], [22, 0.035, -14], C.path); add([-22, 0.015, 14], [22, 0.0
 add([-4, 0.02, -24], [4, 0.04, -20], C.stone);   // the Science Hall forecourt
 // the fountain at the Quad's centre: a ring of stone and still water
 add([-3, 0, -3], [3, 0.6, -2.4], C.stone, { solid: 'fountain' }); add([-3, 0, 2.4], [3, 0.6, 3], C.stone, { solid: 'fountain' }); add([-3, 0, -2.4], [-2.4, 0.6, 2.4], C.stone, { solid: 'fountain' }); add([2.4, 0, -2.4], [3, 0.6, 2.4], C.stone, { solid: 'fountain' });
-add([-2.4, 0, -2.4], [2.4, 0.4, 2.4], '#4E8FB0', { solid: 'fountain' }); add([-0.4, 0, -0.4], [0.4, 1.8, 0.4], C.stone, { solid: 'fountain' });
+add([-2.4, 0, -2.4], [2.4, 0.4, 2.4], '#4E8FB0', { solid: 'fountain' }); solids.push({ min: [-0.4, 0, -0.4], max: [0.4, 1.8, 0.4], id: 'fountain' }); cylinderVerts(0, 0, 0.35, 0.35, 0, 1.6, C.stone, round, 12); cylinderVerts(0, 0, 1.0, 1.0, 1.4, 1.55, C.stone, round, 16); sphereVerts([0, 1.85, 0], [0.3, 0.3, 0.3], C.stone, round);
 
 // Science Hall: walls with a doorway in the front, a lobby, an inner wall with an open way into SCI-110
 const H = HALL; const t = 0.4;
@@ -52,7 +54,7 @@ add([2.5, 3.0, H.inner - 0.2], [5.5, 4.2, H.inner + 0.2], C.wall, { solid: 'inne
 // SCI-110, the lecture theatre: carpet, rows of desks and seats, the lectern, the projection screen, loudspeakers and a camera, the circuit bench
 add([H.x0 + t, 0.05, H.z0 + t], [H.x1 - t, 0.07, H.inner - 0.2], C.carpet);
 for (let row = 0; row < 4; row++) { const z = -32.5 - row * 1.7 + 0; for (const [a, b] of [[-11, -2.5], [1.5, 8]] as Array<[number, number]>) {
-  add([a, 0, z - 0.35], [b, 0.75, z + 0.1], C.desk, { solid: 'desk' }); for (let x = a + 0.6; x < b; x += 1.1) add([x - 0.25, 0, z + 0.25], [x + 0.25, 0.48, z + 0.7], C.seat);
+  add([a, 0, z - 0.35], [b, 0.75, z + 0.1], C.desk, { solid: 'desk' }); for (let x = a + 0.6; x < b; x += 1.1) { add([x - 0.24, 0.38, z + 0.22], [x + 0.24, 0.48, z + 0.66], C.seat); add([x - 0.24, 0.48, z + 0.6], [x + 0.24, 1.0, z + 0.7], C.seat); add([x - 0.03, 0, z + 0.4], [x + 0.03, 0.38, z + 0.46], C.metal); }
 } }
 add([-1.2, 0, -39.4], [0.4, 1.1, -38.6], C.bench, { solid: 'lectern' });
 add([-5, 1.4, -41.5], [5, 4.4, -41.45], C.screen); add([-4.6, 1.7, -41.45], [4.6, 4.1, -41.42], '#E9F1F4'); add([-4.2, 3.4, -41.42], [1.2, 3.7, -41.4], '#0A7268'); add([-4.2, 2.0, -41.42], [-0.6, 3.1, -41.4], '#C7D7DE'); add([0.0, 2.0, -41.42], [3.8, 3.1, -41.4], '#F2D58A'); add([-5.2, 1.3, -41.55], [5.2, 4.5, -41.5], C.metal);
@@ -79,17 +81,18 @@ signs.push({ at: [0, 7.9, -23.6], text: 'Science Hall', sub: 'SCI-110 lecture th
   { at: [0, 8.6, 27.6], text: 'Student Union', sub: 'dining · societies · shuttle' }, { at: [-31.6, 6, 22], text: 'Arts Hall', sub: 'opens in a later release' }, { at: [31.6, 8, 25], text: 'Residence Court', sub: 'opens in a later release' });
 
 // trees, benches and lamps around the Quad; the hedge at the edge
-const tree = (x: number, z: number, s = 1) => { add([x - 0.25, 0, z - 0.25], [x + 0.25, 2.2 * s, z + 0.25], C.trunk, { solid: 'tree' }); add([x - 1.6 * s, 2 * s, z - 1.6 * s], [x + 1.6 * s, 3.6 * s, z + 1.6 * s], C.leaf); add([x - 1.1 * s, 3.5 * s, z - 1.1 * s], [x + 1.1 * s, 4.6 * s, z + 1.1 * s], C.leaf2); };
+const tree = (x: number, z: number, s = 1) => { solids.push({ min: [x - 0.25, 0, z - 0.25], max: [x + 0.25, 2.2 * s, z + 0.25], id: 'tree' }); cylinderVerts(x, z, 0.22 * s, 0.22 * s, 0, 2.6 * s, C.trunk, round, 10, false);
+  const k = ((x * 7 + z * 13) % 3 + 3) % 3; sphereVerts([x, 3.4 * s, z], [1.9 * s, 1.5 * s, 1.9 * s], k ? C.leaf : C.leaf2, round); sphereVerts([x + 0.7 * s, 4.2 * s, z - 0.4 * s], [1.3 * s, 1.1 * s, 1.3 * s], k ? C.leaf2 : C.leaf, round); sphereVerts([x - 0.8 * s, 3.9 * s, z + 0.6 * s], [1.1 * s, 0.95 * s, 1.1 * s], '#6AA857', round); };
 for (const [x, z] of [[-18, -10], [-18, 10], [18, -10], [18, 10], [-8, -11], [8, 11], [-26, 20], [26, -22], [-26, -24], [24, 22], [-40, 40], [40, 40], [-52, -40], [52, -40], [14, -30], [-20, -30]] as Array<[number, number]>) tree(x, z, 0.9 + ((x * 7 + z * 13) % 5 + 5) % 5 * 0.06);
 const benchAt = (x: number, z: number, along: 'x' | 'z') => along === 'x' ? add([x - 1, 0, z - 0.3], [x + 1, 0.5, z + 0.3], C.bench, { solid: 'bench-seat' }) : add([x - 0.3, 0, z - 1], [x + 0.3, 0.5, z + 1], C.bench, { solid: 'bench-seat' });
 benchAt(-8, -5, 'x'); benchAt(8, 5, 'x'); benchAt(-12, 6, 'z'); benchAt(12, -6, 'z');
-for (const [x, z] of [[-3, -18], [3, -18], [-3, 10], [3, 10], [-14, 3], [14, -3]] as Array<[number, number]>) { add([x - 0.08, 0, z - 0.08], [x + 0.08, 3.6, z + 0.08], C.metal, { solid: 'lamp' }); add([x - 0.25, 3.6, z - 0.25], [x + 0.25, 3.9, z + 0.25], '#F2E7C4'); }
+for (const [x, z] of [[-3, -18], [3, -18], [-3, 10], [3, 10], [-14, 3], [14, -3]] as Array<[number, number]>) { solids.push({ min: [x - 0.08, 0, z - 0.08], max: [x + 0.08, 3.6, z + 0.08], id: 'lamp' }); cylinderVerts(x, z, 0.07, 0.07, 0, 3.6, C.metal, round, 8); cylinderVerts(x, z, 0.16, 0.16, 0, 0.35, C.metal, round, 8); sphereVerts([x, 3.85, z], [0.26, 0.26, 0.26], '#F7EED2', round); }
 add([WORLD.minX, 0, WORLD.minZ - 1], [WORLD.maxX, 1.1, WORLD.minZ], C.hedge, { solid: 'edge' }); add([WORLD.minX, 0, WORLD.maxZ], [WORLD.maxX, 1.1, WORLD.maxZ + 1], C.hedge, { solid: 'edge' });
 add([WORLD.minX - 1, 0, WORLD.minZ], [WORLD.minX, 1.1, WORLD.maxZ], C.hedge, { solid: 'edge' }); add([WORLD.maxX, 0, WORLD.minZ], [WORLD.maxX + 1, 1.1, WORLD.maxZ], C.hedge, { solid: 'edge' });
 
 /** the Science Hall door: two leaves that slide apart; solid while closed */
 export const DOOR = { x0: H.door[0], x1: H.door[1], z: H.z1 - t / 2, h: 3.2, color: '#2C4E57' };
-export const NPC = { x: 3.2, z: -18.5, yaw: Math.PI * 0.85, name: 'Professor Ines Calder', role: 'Circuits and Signals, Science Hall', colors: { body: '#7A3E5C', legs: '#2E3440', skin: '#B98A6B', hair: '#2B2321' } };
+export const NPC = { x: 4.0, z: -19.0, yaw: Math.PI * 0.85, name: 'Professor Ines Calder', role: 'Circuits and Signals, Science Hall', colors: { body: '#7A3E5C', legs: '#2E3440', skin: '#B98A6B', hair: '#2B2321' } };
 export const CARDS: Array<{ id: string; at: [number, number]; title: string; fact: string }> = [
   { id: 'fountain', at: [0, 5.5], title: 'The Quad fountain', fact: 'Kestrel Valley’s fountain is fed by rainwater from the Science Hall roof. (A fictional campus fact.)' },
   { id: 'oak', at: [-19.5, -7.5], title: 'The founders’ trees', fact: 'Each tree on the Quad was planted by a graduating class. The oldest stands by the library path. (Fictional.)' },

@@ -156,15 +156,15 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "f7e15f5",
-   "capturedAt": "2026-11-18T17:20:56.990Z",
+   "commit": "7375347",
+   "capturedAt": "2026-11-18T17:52:14.679Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,
    "height": 800,
    "files": {
-    "exp-campus-1280.webp": "d6f0d30c6add734a48cff941e8d7083ab59a9d00c687e00a9138a0c89ab07168",
-    "exp-campus-640.webp": "963dc4024546500812317e71e40a823ff85b946af1ef3dace4388878b3d7bc46"
+    "exp-campus-1280.webp": "a57198e1609b141f582290a6ce72ae3f64539e27bc4f7bce3ba5a1592d3eeb0c",
+    "exp-campus-640.webp": "085829e1cd357fe9e2aad1208bbc6c20a1e5e97f63d86dc128c34b17a70ee7fc"
    }
   },
   "exp-stadium": {
@@ -172,8 +172,8 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "f7e15f5",
-   "capturedAt": "2026-11-18T17:21:03.595Z",
+   "commit": "7375347",
+   "capturedAt": "2026-11-18T17:52:21.400Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,
@@ -188,8 +188,8 @@
    "viewport": "1280x800",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "f7e15f5",
-   "capturedAt": "2026-11-18T17:21:11.265Z",
+   "commit": "7375347",
+   "capturedAt": "2026-11-18T17:52:29.530Z",
    "data": "synthetic demonstration data",
    "venues": "fictional",
    "width": 1280,

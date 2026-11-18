@@ -10,7 +10,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as RPE, type ReactElement } from 'react';
 import { Renderer, boxVerts, hex, m4, type M4, type V3 } from './gl.js';
-import { boxes, CARDS, DOOR, HALL, NPC, BENCH, signs, WORLD, inHall } from './world.js';
+import { boxes, round, CARDS, DOOR, HALL, NPC, BENCH, signs, WORLD, inHall } from './world.js';
 import { act, camera, fresh, fromSave, level, reach, solved, step, STAGES, toSave, type Input, type Reach, type State } from './sim.js';
 import { QUEST } from '../worlds/university/data.public.js';
 
@@ -28,18 +28,22 @@ const WALKERS: Array<{ loop: Array<[number, number]>; speed: number; phase: numb
 
 function person(r: Renderer, x: number, z: number, yaw: number, walk: number, speed: number, col: Record<string, string>, reduced: boolean, alpha = 1) {
   const sw = reduced ? 0 : Math.sin(walk) * Math.min(0.75, speed / 5); const bob = reduced ? 0 : Math.abs(Math.sin(walk)) * 0.04 * Math.min(1, speed / 3);
-  const fwd = (d: number): V3 => [x + Math.sin(yaw) * d, 0, z + Math.cos(yaw) * d]; const side = (d: number, y: number): V3 => [x + Math.cos(yaw) * d, y + bob, z - Math.sin(yaw) * d];
-  void fwd;
-  r.draw(r.unit, m4.trs([x, 1.18 + bob, z], yaw, [0.46, 0.56, 0.26]), hex(col['body']!), alpha);
-  r.draw(r.unit, m4.trs([x, 0.9 + bob, z], yaw, [0.42, 0.12, 0.24]), hex(col['legs']!), alpha);
-  r.draw(r.unit, m4.trs([x, 1.62 + bob, z], yaw, [0.27, 0.28, 0.27]), hex(col['skin']!), alpha);
-  r.draw(r.unit, m4.trs([x - Math.sin(yaw) * 0.02, 1.79 + bob, z - Math.cos(yaw) * 0.02], yaw, [0.29, 0.08, 0.29]), hex(col['hair']!), alpha);
-  if (col['bag']) r.draw(r.unit, m4.trs([x - Math.sin(yaw) * 0.19, 1.2 + bob, z - Math.cos(yaw) * 0.19], yaw, [0.34, 0.4, 0.12]), hex(col['bag']!), alpha);
-  for (const s of [-1, 1]) {
-    r.draw(r.unit, m4.limb(side(0.11 * s, 0.86), yaw, sw * s, [0.15, 0.84, 0.17]), hex(col['legs']!), alpha);
-    r.draw(r.unit, m4.limb(side(0.3 * s, 1.43), yaw, -sw * s * 0.8, [0.12, 0.56, 0.13]), hex(col['body']!), alpha);
-  }
-  r.draw(r.disc, m4.trs([x, 0.025, z], 0, [1.0, 1, 1.0]), [0.12, 0.14, 0.12], 0.3);
+  const side = (d: number, y: number): V3 => [x + Math.cos(yaw) * d, y + bob, z - Math.sin(yaw) * d]; const fwd = (d: number, y: number): V3 => [x + Math.sin(yaw) * d, y + bob, z + Math.cos(yaw) * d];
+  const body = hex(col['body']!), legs = hex(col['legs']!), skin = hex(col['skin']!), hair = hex(col['hair']!);
+  // legs and shoes, swinging from the hips
+  for (const s of [-1, 1]) { const hip = side(0.1 * s, 0.9); r.draw(r.tube, m4.limb(hip, yaw, sw * s, [0.15, 0.84, 0.16]), legs, alpha);
+    const foot: V3 = [hip[0] - Math.sin(yaw) * Math.sin(sw * s) * 0.84, 0.06, hip[2] - Math.cos(yaw) * Math.sin(sw * s) * 0.84]; r.draw(r.ball, m4.trs([foot[0] + Math.sin(yaw) * 0.05, 0.06, foot[2] + Math.cos(yaw) * 0.05], yaw, [0.15, 0.1, 0.26]), [0.16, 0.16, 0.18], alpha); }
+  // the torso: hips, a rounded body, shoulders
+  r.draw(r.ball, m4.trs(side(0, 0.93), yaw, [0.38, 0.2, 0.25]), legs, alpha);
+  r.draw(r.tube, m4.trs(side(0, 1.2), yaw, [0.42, 0.5, 0.27]), body, alpha); r.draw(r.ball, m4.trs(side(0, 1.44), yaw, [0.46, 0.18, 0.28]), body, alpha);
+  if (col['bag']) r.draw(r.ball, m4.trs(fwd(-0.18, 1.22), yaw, [0.34, 0.42, 0.16]), hex(col['bag']), alpha);
+  // arms with hands, swinging opposite the legs
+  for (const s of [-1, 1]) { const sh = side(0.25 * s, 1.43); r.draw(r.tube, m4.limb(sh, yaw, -sw * s * 0.8, [0.11, 0.56, 0.12]), body, alpha);
+    const hand: V3 = [sh[0] + Math.sin(yaw) * Math.sin(sw * s * 0.8) * 0.6, 1.43 + bob - Math.cos(sw * 0.8) * 0.6, sh[2] + Math.cos(yaw) * Math.sin(sw * s * 0.8) * 0.6]; r.draw(r.ball, m4.trs(hand, yaw, [0.1, 0.11, 0.1]), skin, alpha); }
+  // neck, head, hair
+  r.draw(r.tube, m4.trs(side(0, 1.55), yaw, [0.11, 0.1, 0.11]), skin, alpha); r.draw(r.ball, m4.trs(side(0, 1.7), yaw, [0.25, 0.28, 0.25]), skin, alpha);
+  r.draw(r.ball, m4.trs(fwd(-0.025, 1.77), yaw, [0.27, 0.2, 0.27]), hair, alpha);
+  r.draw(r.disc, m4.trs([x, 0.025, z], 0, [1.0, 1, 1.0]), [0.12, 0.14, 0.12], 0.3 * alpha);
 }
 
 export default function CampusLife() { return <CampusLifePage />; }
@@ -80,10 +84,10 @@ export function CampusLifePage() {
   // the loop
   useEffect(() => {
     let r: Renderer; try { r = new Renderer(canvas.current!); } catch (e) { setErr((e as Error).message); return; }
-    const world: number[] = [], roof: number[] = []; for (const b of boxes) boxVerts(b, b.tag === 'roof' ? roof : world);
+    const world: number[] = [], roof: number[] = []; for (const b of boxes) boxVerts(b, b.tag === 'roof' ? roof : world); for (const v of round) world.push(v);
     const W = r.mesh(world), RF = r.mesh(roof); let raf = 0; let last = performance.now(); let hudAt = 0; let frames = 0, fpsAt = last, fps = 0;
     const loop = (now: number) => {
-      raf = requestAnimationFrame(loop); const dt = Math.min(0.05, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { fps = Math.round(frames * 1000 / (now - fpsAt)); frames = 0; fpsAt = now; }
+      raf = requestAnimationFrame(loop); const dt = Math.min(0.1, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { fps = Math.round(frames * 1000 / (now - fpsAt)); frames = 0; fpsAt = now; }
       const k = keys.current; const inp: Input = { fwd: 0, right: 0, run: k.has('Shift') || runToggle.current, turn: 0, tilt: 0 };
       if (!frozenRef.current) {
         inp.fwd = (k.has('w') || k.has('ArrowUp') ? 1 : 0) - (k.has('s') || k.has('ArrowDown') ? 1 : 0); inp.right = (k.has('d') ? 1 : 0) - (k.has('a') ? 1 : 0);
@@ -108,7 +112,7 @@ export function CampusLifePage() {
       const bobT = reducedRef.current ? 0 : Math.sin(now / 400) * 0.12;
       for (const c of CARDS) if (!s.cards.includes(c.id)) r.draw(r.unit, m4.trs([c.at[0], 1.0 + bobT, c.at[1]], reducedRef.current ? 0.6 : now / 700, [0.45, 0.6, 0.06]), [0.98, 0.78, 0.22]);
       const target: V3 | null = s.stage === 'start' || s.stage === 'solved' ? [NPC.x, 2.35, NPC.z] : s.stage === 'met' ? [0, 3.8, DOOR.z + 0.6] : s.stage === 'inside' || s.stage === 'bench' ? [BENCH.x, 2.1, BENCH.z] : null;
-      if (target) r.draw(r.unit, m4.trs([target[0], target[1] + bobT, target[2]], reducedRef.current ? 0.78 : now / 500, [0.32, 0.32, 0.32]), [0.06, 0.62, 0.55]);
+      if (target) { r.glow(0.6); r.draw(r.ball, m4.trs([target[0], target[1] + bobT, target[2]], reducedRef.current ? 0.78 : now / 500, [0.26, 0.42, 0.26]), [0.06, 0.72, 0.62]); r.glow(0); }
       if (now - hudAt > 100) { hudAt = now;
         const proj = (p: V3) => { const v = [p[0], p[1], p[2], 1]; const o = [0, 0, 0, 0]; for (let i = 0; i < 4; i++) o[i] = vp[i]! * v[0]! + vp[4 + i]! * v[1]! + vp[8 + i]! * v[2]! + vp[12 + i]! * v[3]!; if (o[3]! <= 0.1) return null; const x = (o[0]! / o[3]! + 1) / 2 * cv.clientWidth, y = (1 - o[1]! / o[3]!) / 2 * cv.clientHeight; return x < -50 || x > cv.clientWidth + 50 || y < -20 || y > cv.clientHeight + 20 ? null : { x, y, d: Math.hypot(p[0] - cam.eye[0], p[2] - cam.eye[2]) }; };
         const L: Array<{ x: number; y: number; text: string; sub?: string; kind: string }> = [];
