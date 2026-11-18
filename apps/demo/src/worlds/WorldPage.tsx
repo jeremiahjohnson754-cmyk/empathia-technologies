@@ -32,6 +32,13 @@ export function UnknownWorld({ what }: { what: string }) {
   );
 }
 
+/** the world in 3D: the playable or explorable experience of each world (18 Nov 2026) */
+const PLAY: Partial<Record<string, { href: string; label: string; note: string }>> = {
+  university: { href: '#/play/campus', label: 'Play Campus Life', note: 'walk the Quad, meet Professor Calder, fix the circuit bench in SCI-110' },
+  stadium: { href: '#/play/stadium', label: 'Open Stadium LIVE', note: 'the bowl in 3D with the LIVE console' },
+  convention: { href: '#/play/expo', label: 'Walk the Expo hall', note: 'Hall A in 3D: booths, sessions, polls' },
+};
+
 export default function WorldPage({ role, params, query }: PageProps) {
   const w = params.world;
   if (!isWorld(w)) return <UnknownWorld what="This world is not part of the demonstration" />;
@@ -72,6 +79,7 @@ function WorldView({ world, config, role, asked, panel: firstPanel }: { world: W
           <p className="kicker w-kicker">World · {world.place} (fictional) <Synthetic /></p>
           <h1 tabIndex={-1}>{world.name}</h1>
           <p className="lead">{world.about}</p>
+          {PLAY[world.key] ? <p className="w-play"><a className="ui-btn ui-btn--primary" href={PLAY[world.key]!.href} data-testid="world-play">{PLAY[world.key]!.label}</a> <span className="ui-meta">{PLAY[world.key]!.note}</span></p> : null}
           <p className="w-as" data-testid="world-as">Viewing as <b>{viewing}</b> <span className="ui-meta">{ent ? 'the View-as role; the access policy decides what it opens' : 'a presentation choice: it grants nothing'}</span></p>
         </div>
       </header>
