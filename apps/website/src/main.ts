@@ -76,3 +76,16 @@ if (scenes.length && !matchMedia('(prefers-reduced-motion: reduce)').matches && 
 // a link to a closed <details> (FieldLink's "View specifications") opens it, so the address leads to readable content
 const openTarget = () => { const id = decodeURIComponent(location.hash.slice(1)); const t = id ? document.getElementById(id) : null; if (t instanceof HTMLDetailsElement && !t.open) { t.open = true; t.scrollIntoView({ block: 'start' }); } };
 window.addEventListener('hashchange', openTarget); openTarget();
+
+// "Follow one device" (/platform#follow): the five stages become a stepper on one stage (tabs, arrow keys, Home/End). A link to a stage
+// (#follow-lite, the demonstration's way back) selects it. Without this script every stage is simply shown in turn.
+const fol = document.querySelector<HTMLElement>('[data-follow]');
+if (fol) {
+  const tabs = Array.from(fol.querySelectorAll<HTMLButtonElement>('[role=tab]')); const panes = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls') || '')!);
+  const pick = (i: number, focus?: boolean) => { tabs.forEach((t, k) => { const on = k === i; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; panes[k]!.hidden = !on; }); if (focus) tabs[i]!.focus(); };
+  panes.forEach((p, k) => { p.setAttribute('role', 'tabpanel'); p.setAttribute('aria-labelledby', tabs[k]!.id); p.tabIndex = 0; });
+  fol.classList.add('follow--js'); fol.querySelector<HTMLElement>('.follow__nav')!.hidden = false;
+  tabs.forEach((t, i) => { t.addEventListener('click', () => pick(i)); t.addEventListener('keydown', (e) => { const n = tabs.length; const k = e.key === 'ArrowRight' ? (i + 1) % n : e.key === 'ArrowLeft' ? (i + n - 1) % n : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : -1; if (k >= 0) { e.preventDefault(); pick(k, true); } }); });
+  const fromHash = () => { const k = panes.findIndex((p) => '#' + p.id === location.hash); if (k >= 0) { pick(k); fol.scrollIntoView({ block: 'start' }); } };
+  pick(0); fromHash(); window.addEventListener('hashchange', fromHash);
+}

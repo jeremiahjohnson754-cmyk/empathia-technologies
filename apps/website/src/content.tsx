@@ -10,6 +10,8 @@ import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './pr
 import { TALLY_FORM } from './enquiry.js';
 import { commercialPages } from './commercial.js';
 import { fieldlinkPage } from './fieldlink.js';
+import { Follow } from './follow.js';
+import { PRODUCT_LAUNCHES, launchHref } from '../../../packages/ui/src/launches.ts';
 import { FounderReveal, SearchPartyStory, SearchPartyOrigin, BeforeTheExplanation } from './founderStory.js';   // the founder page's plate and the Search Party founding story   // v18/pilot: /pricing and /pilots
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; /** a small script of the page's own loaded in <head>, before first paint (the founder page's introduction must start from its opening frame) */ headScript?: string; }
@@ -75,6 +77,8 @@ const STORY: ChapterItem[] = [
 export function buildPages(ctx: SiteContext): Page[] {
   const film = (key: string, lead?: boolean) => { const f = ctx.films.find((x) => x.key === key); return f ? <FilmPlayer film={f} transcript={ctx.transcripts[key] || []} cues={ctx.cues?.[key]} lead={lead} /> : null; };
   const demo = (href = '#/investor') => ctx.demoUrl + '/' + href;
+  // #232: a product's own demonstration, as a typed launch (its perspective, and the way back to the page that opened it)
+  const go = (id: string, back: string) => { const l = PRODUCT_LAUNCHES[id]; return l ? launchHref(ctx.demoUrl, l, back) : demo(); };
   // /films lists the films of the Living Campus; a film marked `exclusive` (Collabora-SING's) belongs to its own section and is not listed there
   const indexFilms = ctx.films.filter((f) => !f.exclusive);
   const hasFilms = indexFilms.length > 0;
@@ -126,23 +130,23 @@ export function buildPages(ctx: SiteContext): Page[] {
     <div data-p={p.id}>
       <section className="hero hero--product hero--split"><div className="hero__band" aria-hidden="true" /><div className="wrap hero__grid">
         <div className="hero__copy"><p className="label"><span className="dot" aria-hidden="true" />Product {String(PRODUCTS.indexOf(p) + 1).padStart(2, '0')} of 9</p><h1>{p.name}</h1><p className="hero__sub">{p.purpose}</p><p className="lede">{p.body}</p>
-          <Actions>{p.demo ? <a className="btn btn--primary" href={demo(p.demo.href)}>{p.demo.label}</a> : null}<a className="btn" href="/request-demo">Request a demonstration</a>{p.id === 'lite' ? <a className="btn btn--quiet" href="#scouter">Scouter, inside Lite</a> : null}</Actions>
+          <Actions>{p.demo ? <a className="btn btn--primary" href={go(p.id, `/products/${p.slug}`)}>{p.demo.label}</a> : null}<a className="btn" href="/request-demo">Request a demonstration</a>{p.id === 'lite' ? <a className="btn btn--quiet" href="#scouter">Scouter, inside Lite</a> : null}</Actions>
           <p className="status-line"><Tag s={DEMO_STATE[p.demoState].s}>{DEMO_STATE[p.demoState].text}</Tag></p></div>
-        <div className="hero__aside"><Shot p={p} cap={ctx.captures[p.id]} eager cta={p.demo ? { href: demo(p.demo.href), label: 'Open the interactive demonstration' } : undefined} />
+        <div className="hero__aside"><Shot p={p} cap={ctx.captures[p.id]} eager cta={p.demo ? { href: go(p.id, `/products/${p.slug}`), label: 'Open the interactive demonstration' } : undefined} />
           <ul className="claims" aria-label="What the demonstration shows, with its evidence label">{p.shows.map((t, i) => <li key={t}><Tag s={p.showsAs[i] || 'declared'} /><span>{t}</span></li>)}</ul></div>
       </div></section>
       {film(`P-${p.slug}`) ? <Section title="See it work" lead="Recorded from the demonstration itself: every step in it was checked before its words appeared.">{film(`P-${p.slug}`)}</Section> : null}
       {p.film && film(p.film) ? <Section title="Watch it">{film(p.film)}</Section> : null}
       <section className="section"><div className="wrap"><div className="facts">
-        <div className="facts__shows"><p className="eyebrow">Try it</p><h2>Open it in the demonstration</h2><p>{DEMO_STATE[p.demoState].text}, on synthetic data in your browser. Every value on its screens carries its evidence label; nothing is connected to a live system.</p>
-          <Actions>{p.demo ? <a className="btn btn--primary" href={demo(p.demo.href)}>{p.demo.label}</a> : null}<a className="btn" href="/request-demo">Request a guided demonstration</a></Actions></div>
+        <div className="facts__shows"><p className="eyebrow">Try it</p><h2>Open it in the demonstration</h2><p>{DEMO_STATE[p.demoState].text}, on synthetic data in your browser. Every value on its screens carries its evidence label; nothing is connected to a live system.{PRODUCT_LAUNCHES[p.id] ? ` It opens as the ${PRODUCT_LAUNCHES[p.id]!.perspectiveLabel}, with a way back to this page.` : ''}</p>
+          <Actions>{p.demo ? <a className="btn btn--primary" href={go(p.id, `/products/${p.slug}`)}>{p.demo.label}</a> : null}<a className="btn" href="/request-demo">Request a guided demonstration</a></Actions></div>
         <div className="facts__limits"><p className="eyebrow">Limits</p><h2>Limits, stated</h2><p>{p.limits}</p></div>
       </div></div></section>
       {p.id === 'search-party' ? <SearchPartyOrigin /> : null}
       {p.id === 'lite' ? <section className="section" id="scouter" aria-labelledby="scouter-h"><div className="wrap"><div className="scouter">
         <div><p className="label">Part of Lite</p><h2 id="scouter-h">Scouter</h2><p>Ask Scouter whether a device suits a room before anyone buys it. It proposes equipment from comparable rooms and checks each proposal against the room’s recorded requirements, not against other products.</p><p>Every proposal states its limits and goes to the discipline engineer, who decides. Nothing is adopted by Scouter itself.</p></div>
         <div><ul className="ticks"><li>Proposals from comparable rooms, with the comparison stated</li><li>Each check against the requirement, with its source</li><li>Engineer review before anything is adopted</li></ul>
-          <Actions><a className="btn btn--primary" href={demo('#/v25/build')}>Open Lite in the demonstration</a></Actions></div>
+          <Actions><a className="btn btn--primary" href={go('lite', '/products/lite#scouter')}>Open Lite in the demonstration</a></Actions></div>
       </div></div></section> : null}
       <Section title="Where it sits in the lifecycle" tone="deep"><EvidenceLine /></Section>
       <Section title="The other products"><ProductTiles captures={ctx.captures} exclude={p.id} compact /></Section>
@@ -156,6 +160,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Hero label="Platform" action={{ href: demo(), label: 'See the record in the live demo' }} title="One record. One governed lifecycle." lead="One canonical identity for every room, device, person, project and standard; one governed lifecycle that every product reads from and writes to; one audit record of who did what, with which evidence." />
         {film('FA') ? <Section title="The platform in two minutes">{film('FA')}</Section> : null}
         <Section title="The lifecycle"><EvidenceLine /></Section>
+        <Follow demoUrl={ctx.demoUrl} captures={ctx.captures} />
         <Strip id="flow" eyebrow="The workflow" title="Five moves of one record" items={FLOW} flow />
         <Section title="The products"><ProductTiles captures={ctx.captures} /></Section>
         <Section title="The demonstration campus" tone="deep"><Campus /></Section>
@@ -256,7 +261,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     { path: '/founder', title: 'Jeremiah Johnson, founder — Empathia Technologies', description: 'Jeremiah Johnson founded Empathia Technologies. CTS (AVIXA), CAPM (PMI), CompTIA Network+.', nav: 'Founder', headScript: 'founder.js', body: (
       <>
         <section className="hero hero--founder"><div className="wrap"><FounderBlock page="founder" portrait={<FounderReveal />} /></div></section>
-        <SearchPartyStory sp={byId('search-party')} cap={ctx.captures['search-party']} demoHref={demo(byId('search-party').demo?.href)} />
+        <SearchPartyStory sp={byId('search-party')} cap={ctx.captures['search-party']} demoHref={go('search-party', '/founder')} />
         <BeforeTheExplanation />
         <Section title="The thinking behind the company" lead="A workplace’s technology is designed, installed, tested, accepted and serviced by different people, and its record is usually scattered across suppliers, spreadsheets and memory. Empathia is built so that record stays whole, and stays honest about what is known." />
         <Section title="The principles Empathia is built on" tone="deep"><Cards cols={3} items={PRINCIPLES} /></Section>

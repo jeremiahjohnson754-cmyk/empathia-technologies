@@ -93,7 +93,7 @@ for (const f of fs.readdirSync(path.join(mediaSrc, 'keepsake'))) copy(path.join(
 // FieldLink concept renders (founder 18 Nov 2026 17:25), resized from the packet's clean render; PROVENANCE.json says what they are
 for (const f of fs.readdirSync(path.join(mediaSrc, 'fieldlink')).filter((x) => /\.(webp|jpg)$/.test(x))) copy(path.join(mediaSrc, 'fieldlink', f), path.join(dist, 'media/fieldlink', f));
 for (const f of films) for (const x of filesOf(f)) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
-const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`, `/* apps/website/src/styles/founder.css */\n${fs.readFileSync(path.join(app, 'src/styles/founder.css'), 'utf8')}`, `/* apps/website/src/styles/fieldlink.css */\n${fs.readFileSync(path.join(app, 'src/styles/fieldlink.css'), 'utf8')}`].join('\n');
+const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`, `/* apps/website/src/styles/founder.css */\n${fs.readFileSync(path.join(app, 'src/styles/founder.css'), 'utf8')}`, `/* apps/website/src/styles/fieldlink.css */\n${fs.readFileSync(path.join(app, 'src/styles/fieldlink.css'), 'utf8')}`, `/* apps/website/src/styles/follow.css */\n${fs.readFileSync(path.join(app, 'src/styles/follow.css'), 'utf8')}`].join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);
 // the Proof Registry's public projection, as data (v1.8 A): the same file the demonstration ships, so the two can be compared
 { const { SEED_CLAIMS, publicProjection } = await import('@empathia/proof-registry');

@@ -18,6 +18,7 @@ export * from './BossRunner.js';
 export * from './Bench.js';
 export * from './theme.js';
 export * from './products.js';
+export * from './launches.js';
 export * from './kit.js';
 export * from './icons.js';
 export * from './Axes.js';

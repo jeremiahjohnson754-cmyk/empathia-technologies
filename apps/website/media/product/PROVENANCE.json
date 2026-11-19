@@ -198,6 +198,83 @@
     "exp-expo-1280.webp": "d4c065972f732205151f2367f12f4ce8670d12a228abf8219346c96615f93bb7",
     "exp-expo-640.webp": "61b19a6ede8cb510808fd950353b803466f22402212deb11a5129348e8aa0802"
    }
+  },
+  "follow-lite": {
+   "route": "#/lite/room/R-ATL-4-218?mode=engineer&device=A-0104",
+   "framing": "scrolled to [data-testid=lite-room-3d]",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "d836752",
+   "capturedAt": "2026-11-19T00:48:00.708Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-lite-1280.webp": "21de4ec320fb4e6e8c16ed8810a949d242c285a82ef64cee93ee0dc33273daca",
+    "follow-lite-640.webp": "a69ef15f10a19bf65248c7866d79ef92642f48e7d70db0e21c576f9333aeb0d7"
+   }
+  },
+  "follow-commissioning": {
+   "route": "#/commissioning/room/R-ATL-4-218",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "d836752",
+   "capturedAt": "2026-11-19T00:47:12.134Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-commissioning-1280.webp": "e62449d223d472441807f51fdaa241714423d50b26f1e8f754539575d10810a8",
+    "follow-commissioning-640.webp": "4b5387cea169ba8192d277439c1a1a72299282b9d2bfd962d6e4146adf7594cc"
+   }
+  },
+  "follow-assurance": {
+   "route": "#/assurance/room/R-ATL-4-218",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "d836752",
+   "capturedAt": "2026-11-19T00:47:14.670Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-assurance-1280.webp": "e2340af1e38fabaeb3efa0a1e06951533312bca9192fb7253b568f66241f1175",
+    "follow-assurance-640.webp": "17115af58955e294aa5c2605ac51c444732d9ebd198bb5980c6207f2e05262d2"
+   }
+  },
+  "follow-support": {
+   "route": "#/search?focus=Room:R-ATL-4-218",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "d836752",
+   "capturedAt": "2026-11-19T00:47:17.124Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-support-1280.webp": "b70076555288fb1757591ab82df3201e028928e7155c7deb377c338e9e905b93",
+    "follow-support-640.webp": "4a373bf34645585067b0c29e572eaad3d264cf273d0906098e64b938e5c1fb77"
+   }
+  },
+  "follow-replay": {
+   "route": "#/replay/R-ATL-4-218?at=change",
+   "framing": "scrolled to [data-testid=rp-card]",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "d836752",
+   "capturedAt": "2026-11-19T00:48:04.045Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-replay-1280.webp": "9a3551fdcd54ea894c110ce140e0d46b6dec490b5b8fecf19fcecd7ad477101e",
+    "follow-replay-640.webp": "92463eb8c9f10dd1a2b007c4b57e7eb8728c5ca65bb12fac49c258fba60e7160"
+   }
   }
  }
 }

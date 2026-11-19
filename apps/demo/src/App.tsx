@@ -23,6 +23,7 @@ import { TourPanel } from './tour/Tour.js';
 import { ContactLinks } from './enquiry/WorkWith.js';
 import { ENQUIRY } from './enquiry.js';
 import { OfflineStrip } from './offline/Strip.js';
+import { LaunchStrip } from './shell/LaunchStrip.js';
 import { Shortcuts } from './start/ShortcutSheet.js';
 import { installScrollMemory, settleScroll, notePage, ReturnChip } from './shell/trail.js';
 
@@ -115,7 +116,7 @@ export function App() {
       <div className="demo" data-r={role}>
         <Shell role={role} hash={route} at={d.kind === 'page' ? d.at : null} onViewAs={() => setSheet(true)} onRole={(r) => switchTo(r)}>
           <TourPanel hash={hash} onPerspective={(p) => { if (ROLE_KEYS.includes(p as RoleKey)) switchTo(p as RoleKey, { tour: true }); }} />
-          <div className="wrap"><OfflineStrip /><ReturnChip route={route} allowed={(h) => { const x = decide(role, routeOf(h)); return x.kind !== 'missing' && x.allowed; }} />{body}</div>
+          <div className="wrap"><OfflineStrip /><LaunchStrip route={route} role={role} onPerspective={(r) => switchTo(r, { tour: true })} /><ReturnChip route={route} allowed={(h) => { const x = decide(role, routeOf(h)); return x.kind !== 'missing' && x.allowed; }} />{body}</div>
         </Shell>
         <ViewAsSheet open={sheet} role={role} onPick={(r) => switchTo(r)} onClose={() => setSheet(false)} />
         <RoleVeil show={veil} />
