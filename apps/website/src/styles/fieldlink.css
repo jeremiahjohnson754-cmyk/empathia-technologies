@@ -79,3 +79,16 @@
   .fl-card__img { height: 200px; }
   .fl-spec__dl > div { grid-template-columns: 1fr; gap: 2px; }
 }
+/* Turn the concepts (17:25 §10, Version D): the enclosure on the same dark product stage as the hero, in both themes */
+.fl-turn { margin: 24px 0 0; display: grid; gap: 14px; }
+.fl-turn__stage { background: radial-gradient(600px 300px at 60% 30%, rgb(25 179 166 / .14), transparent 65%), var(--fl-stage); border-radius: 18px; padding: 8px; }
+.fl-turn svg { display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto; touch-action: none; cursor: grab; border-radius: 12px; }
+.fl-turn svg:active { cursor: grabbing; }
+.fl-turn svg:focus-visible { outline: 2px solid var(--fl-teal); outline-offset: 4px; }
+.fl-turn svg polygon { stroke: rgb(255 255 255 / .07); stroke-width: .6; stroke-linejoin: round; }
+.fl-turn__controls { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
+.fl-turn__controls[hidden] { display: none; }
+.fl-turn__devs, .fl-turn__acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.fl-turn__devs .btn[aria-pressed=true] { border-color: var(--fl-teal); box-shadow: inset 0 0 0 1px var(--fl-teal); }
+.fl-turn figcaption { color: var(--w-tx2); font-size: 15px; line-height: 1.5; }
+.fl-turn figcaption [data-turn-env] { color: var(--w-tx); font-weight: 600; }

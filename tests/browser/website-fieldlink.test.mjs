@@ -7,7 +7,8 @@
 // - every specification value carries its dossier class (V, C or T);
 // - "View specifications" opens that device's specifications; the comparison is a real table;
 // - the products and about pages link to it, and the sitemap lists it;
-// - phone and desktop: no sideways scroll, readable text, 44 px targets; no console error, CSP intact, nothing off-origin.
+// - phone and desktop: no sideways scroll, readable text, 44 px targets; no console error, CSP intact, nothing off-origin;
+// - the concept enclosures turn (17:25 §10, Version D), envelope only, with or without the script.
 // Run it in both schemes: PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/website-fieldlink.test.mjs
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -55,6 +56,20 @@ try {
   ok('FL-10', 'no bill-of-materials, cost-of-goods, margin or supplier figure appears anywhere on the built site', !leak.length, leak.map((f) => path.relative(dist, f)).join(', '));
   const prov = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media/fieldlink/PROVENANCE.json'), 'utf8'));
   ok('FL-11', 'every FieldLink image shipped is listed in its provenance file, which says it is an AI-generated concept render', Object.keys(prov.files).every((f) => fs.existsSync(path.join(dist, 'media/fieldlink', f))) && /AI-generated industrial-design concept render/.test(prov.nature) && fs.readdirSync(path.join(dist, 'media/fieldlink')).every((f) => f in prov.files));
+  // Turn the concepts (17:25 §10, Version D): the envelope only, at its target dimensions; turned by buttons, keys or a drag; drawn without script too
+  { const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: scheme }); const page = await ctx.newPage(); const errs = []; watch(page, errs, []);
+    await page.goto(base + '/fieldlink#turn', { waitUntil: 'load' }); await page.waitForTimeout(300);
+    const label = () => page.evaluate(() => document.querySelector('[data-turn] svg').getAttribute('aria-label'));
+    const a = await label(); await page.click('[data-turn-dev=pulse]'); const b = await label(); const env = await page.textContent('[data-turn-env]');
+    await page.locator('[data-turn] svg').focus(); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowDown'); const c = await label();
+    await page.click('[data-turn-act=reset]'); const d = await label();
+    const geo = await page.evaluate(() => ({ polys: document.querySelectorAll('[data-turn] polygon').length, small: [...document.querySelectorAll('[data-turn] button')].filter((x) => x.getBoundingClientRect().height < 44).length, over: document.documentElement.scrollWidth - innerWidth, cap: document.querySelector('[data-turn] figcaption').textContent }));
+    ok('FL-13', 'the enclosures turn by button, key and reset: the drawing and its description change with them; only the target envelope is drawn, and the caption says it is a concept', /^FieldLink Edge, concept enclosure/.test(a) && /^FieldLink Pulse, concept enclosure, turned \d+ degrees and tilted \d+ degrees$/.test(b) && /86 mm across, 28 mm high/.test(env) && c !== b && d === b.replace(/^FieldLink Pulse/, 'FieldLink Pulse') && geo.polys > 10 && !geo.small && geo.over <= 0 && /not a finished design/.test(geo.cap) && !errs.length, JSON.stringify({ a, b, c, d, env, geo, errs }));
+    await ctx.close(); }
+  { const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme, javaScriptEnabled: false }); const page = await ctx.newPage();
+    await page.goto(base + '/fieldlink', { waitUntil: 'load' });
+    const r = await page.evaluate(() => ({ polys: document.querySelectorAll('[data-turn] polygon').length, controls: document.querySelector('[data-turn-controls]')?.hidden }));
+    ok('FL-14', 'without the script the Edge concept is still drawn, and no dead controls are offered', r.polys >= 3 && r.controls === true, JSON.stringify(r)); await ctx.close(); }
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme }); const page = await ctx.newPage();
   await page.goto(base + '/products', { waitUntil: 'load' }); const p1 = await page.locator('main a[href="/fieldlink"]').count();
   await page.goto(base + '/about', { waitUntil: 'load' }); const p2 = await page.locator('main a[href="/fieldlink"]').count();

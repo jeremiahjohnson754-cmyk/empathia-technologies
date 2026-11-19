@@ -18,6 +18,8 @@ await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true
 // the founder page's introduction is its own small script, loaded in <head> on /founder only (src/reveal.ts; site.js keeps its 8 KB budget)
 await esbuild.build({ entryPoints: [path.join(app, 'src/reveal.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'founder.js'), legalComments: 'linked', logLevel: 'warning' });
 // v18/pilot: the Pilot Readiness check is its own script, loaded on /pilots only (site.js keeps its 8 KB budget)
+// FieldLink's concept enclosures you can turn (17:25 §10, Version D): its own script, on /fieldlink only
+await esbuild.build({ entryPoints: [path.join(app, 'src/viewer.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'fieldlink.js'), legalComments: 'linked', logLevel: 'warning' });
 await esbuild.build({ entryPoints: [path.join(app, 'src/pilot.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'pilot.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
 
 // source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/
@@ -122,5 +124,6 @@ const capBytes = Object.entries(manifest.files).filter(([f]) => f.startsWith('me
 { const hb = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/hero/')).reduce((a, [, v]) => a + v.bytes, 0); if (hb > 400 * 1024) { console.error(`BUDGET EXCEEDED: home opening frames ${hb} B (limit 409600)`); process.exit(1); } }   // six frames, two sizes
 if (home > 48 * 1024 || js > 8 * 1024 || themeJs > 512 || fonts > 88 * 1024 || capBytes > 1400 * 1024) { console.error(`BUDGET EXCEEDED: index.html ${home} B (limit 49152), site.js ${js} B (limit 8192), theme-init.js ${themeJs} B (limit 512), fonts ${fonts} B (limit 90112, D38), captures ${capBytes} B (limit 1433600)`); process.exit(1); }
 { const fj = manifest.files['founder.js'].bytes; if (fj > 4 * 1024) { console.error(`BUDGET EXCEEDED: founder.js ${fj} B (limit 4096)`); process.exit(1); } }   // the founder page's introduction
+{ const fj = manifest.files['fieldlink.js'].bytes; if (fj > 4 * 1024) { console.error(`BUDGET EXCEEDED: fieldlink.js ${fj} B (limit 4096)`); process.exit(1); } }   // FieldLink's concept viewer
 { const pj = manifest.files['pilot.js'].bytes; if (pj > 16 * 1024) { console.error(`BUDGET EXCEEDED: pilot.js ${pj} B (limit 16384)`); process.exit(1); } }   // v18/pilot
 console.log(`website built: ${PATHS.length} pages, films ${filmsMode}: ${films.map((f) => f.key).join(', ') || 'none'} (excluded: ${excluded.map((e) => `${e.key} ${e.status}`).join(', ') || 'none'}), index.html ${(home / 1024).toFixed(1)} KiB, site.js ${(js / 1024).toFixed(1)} KiB, site.css ${(manifest.files['site.css'].bytes / 1024).toFixed(1)} KiB`);

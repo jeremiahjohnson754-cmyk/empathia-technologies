@@ -4,6 +4,7 @@
 // T target or provisional selection. Never on this page: the dossier's cost-of-goods, margins or supplier assumptions, any claim that a
 // named vendor's interface is available, or anything that implies Empathia needs this hardware.
 import React from 'react';
+import { SOLIDS, POSE, project, fillOf } from './fieldlink-geom.js';
 
 type Cls = 'V' | 'C' | 'T';
 const CLS: Record<Cls, string> = { V: 'Vendor-documented constraint', C: 'Calculated for stated assumptions', T: 'Target or provisional selection' };
@@ -67,7 +68,7 @@ const LIFE: { step: string; body: string; kind: string }[] = [
 ];
 
 export const fieldlinkPage = (demo: (href?: string) => string) => ({
-  path: '/fieldlink', title: 'FieldLink, optional hardware (concept) — Empathia Technologies',
+  path: '/fieldlink', title: 'FieldLink, optional hardware (concept) — Empathia Technologies', script: 'fieldlink.js',
   description: 'FieldLink Nano, Edge and Pulse: a concept family of optional devices that would let Empathia observe and verify more of a room locally. Empathia is complete without them. Concept reference design, Rev 0.9; prices proposed and illustrative.',
   body: (
     <div data-fieldlink>
@@ -108,6 +109,25 @@ export const fieldlinkPage = (demo: (href?: string) => string) => ({
             <p className="fl-card__state">Status: concept reference design</p>
             <a className="btn" href={`#spec-${d.id}`}>View specifications</a>
           </div></li>)}</ul>
+      </div></section>
+
+      <section className="section fl-turn-s" id="turn" aria-labelledby="fl-turn"><div className="wrap">
+        <p className="label">Turn the concepts</p><h2 id="fl-turn">The enclosures, from every side</h2>
+        <p className="lede">Only the outer envelope each concept specifies, at its target dimensions. No port, vent, button or interior is drawn, because none is designed yet.</p>
+        <figure className="fl-turn" data-turn="">
+          <div className="fl-turn__stage">
+            <svg viewBox="0 0 400 280" role="img" tabIndex={0} aria-label="FieldLink Edge, concept enclosure" aria-describedby="fl-turn-how"><g>{project(SOLIDS[1]!, POSE.yaw, POSE.pitch).map((f, i) => <polygon key={i} points={f.pts} fill={fillOf(f.shade)} />)}</g></svg>
+          </div>
+          <div className="fl-turn__controls" data-turn-controls="" hidden>
+            <div className="fl-turn__devs" role="group" aria-label="Enclosure">{SOLIDS.map((x) => <button key={x.id} type="button" className="btn" data-turn-dev={x.id} aria-pressed={x.id === 'edge'}>{x.name.replace('FieldLink ', '')}</button>)}</div>
+            <div className="fl-turn__acts" role="group" aria-label="Turn">
+              <button type="button" className="btn" data-turn-act="left">Turn left</button><button type="button" className="btn" data-turn-act="right">Turn right</button>
+              <button type="button" className="btn" data-turn-act="up">Tilt up</button><button type="button" className="btn" data-turn-act="down">Tilt down</button>
+              <button type="button" className="btn btn--quiet" data-turn-act="reset">Reset</button>
+            </div>
+          </div>
+          <figcaption><span data-turn-env="">FieldLink Edge: {SOLIDS[1]!.envelope}</span> <span id="fl-turn-how">Drag it, or focus it and use the arrow keys. A concept envelope, not a finished design.</span> <span className="sr" aria-live="polite" data-turn-said=""></span></figcaption>
+        </figure>
       </div></section>
 
       <section className="section" id="why" aria-labelledby="fl-why"><div className="wrap">
