@@ -1,0 +1,45 @@
+WEBVTT
+
+NOTE
+Captions of "Core Replay: the life of a room". The film is silent: these are the words shown on screen, one per step, written by the recorder
+(scripts/media/record-product-film.mjs) above the demonstration; each step was verified by its proof before its words appeared.
+
+1
+00:00:00.000 --> 00:00:03.930
+Every room has a story. This one starts as a request.
+
+2
+00:00:03.930 --> 00:00:07.380
+Nine requirements, six of them must-haves. Everything later is judged against them.
+
+3
+00:00:07.380 --> 00:00:10.030
+Designed: every device a numbered position.
+
+4
+00:00:10.030 --> 00:00:14.990
+The same room in Lite: one record, another view.
+
+5
+00:00:14.990 --> 00:00:18.370
+Installed: position PA-0007 holds asset AS-0097.
+
+6
+00:00:18.370 --> 00:00:21.010
+Each test recorded, then verified by someone else.
+
+7
+00:00:21.010 --> 00:00:23.670
+Baseline v1: what the room was proven to do.
+
+8
+00:00:23.670 --> 00:00:27.310
+AS-0097 out, AS-0112 in. Only the tests that name PA-0007 reopen.
+
+9
+00:00:27.310 --> 00:00:29.940
+Re-accepted: baseline v2 is current, and v1 is kept.
+
+10
+00:00:29.940 --> 00:00:34.310
+From here on, Assurance watches the room against that baseline.

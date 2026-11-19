@@ -1,0 +1,106 @@
+{
+  "key": "F-LIFE",
+  "title": "Core Replay: the life of a room",
+  "product": "mission-control",
+  "recordedAt": "2026-11-19T01:30:02.198Z",
+  "duration": 34.31,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "syseng",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T01:29:14.897Z"
+  },
+  "git": "a1edaa0",
+  "steps": [
+    {
+      "at": 0,
+      "until": 3.93,
+      "say": "Every room has a story. This one starts as a request.",
+      "proof": ".ops-strip li.on:has-text(\"Request\")",
+      "url": "/#/replay/R-ATL-4-218?at=request"
+    },
+    {
+      "at": 3.93,
+      "until": 7.38,
+      "say": "Nine requirements, six of them must-haves. Everything later is judged against them.",
+      "proof": ".ops-strip li.on:has-text(\"Requirements\")",
+      "url": "/#/replay/R-ATL-4-218?at=requirements"
+    },
+    {
+      "at": 7.38,
+      "until": 10.03,
+      "say": "Designed: every device a numbered position.",
+      "proof": ".ops-strip li.on:has-text(\"Design\")",
+      "url": "/#/replay/R-ATL-4-218?at=design"
+    },
+    {
+      "at": 10.03,
+      "until": 14.99,
+      "say": "The same room in Lite: one record, another view.",
+      "proof": "[data-testid=lite-room-3d]",
+      "url": "/#/lite/room/R-ATL-4-218"
+    },
+    {
+      "at": 14.99,
+      "until": 18.37,
+      "say": "Installed: position PA-0007 holds asset AS-0097.",
+      "proof": ".ops-strip li.on:has-text(\"Build\")",
+      "url": "/#/replay/R-ATL-4-218?at=build"
+    },
+    {
+      "at": 18.37,
+      "until": 21.01,
+      "say": "Each test recorded, then verified by someone else.",
+      "proof": ".ops-strip li.on:has-text(\"Commissioning\")",
+      "url": "/#/replay/R-ATL-4-218?at=commissioning"
+    },
+    {
+      "at": 21.01,
+      "until": 23.67,
+      "say": "Baseline v1: what the room was proven to do.",
+      "proof": ".ops-strip li.on:has-text(\"Baseline v1\")",
+      "url": "/#/replay/R-ATL-4-218?at=baseline1"
+    },
+    {
+      "at": 23.67,
+      "until": 27.31,
+      "say": "AS-0097 out, AS-0112 in. Only the tests that name PA-0007 reopen.",
+      "proof": "[data-testid=reopened]",
+      "url": "/#/replay/R-ATL-4-218?at=change"
+    },
+    {
+      "at": 27.31,
+      "until": 29.94,
+      "say": "Re-accepted: baseline v2 is current, and v1 is kept.",
+      "proof": ".ops-strip li.on:has-text(\"Baseline v2\")",
+      "url": "/#/replay/R-ATL-4-218?at=baseline2"
+    },
+    {
+      "at": 29.94,
+      "until": 34.31,
+      "say": "From here on, Assurance watches the room against that baseline.",
+      "proof": "main h1",
+      "url": "/#/assurance/room/R-ATL-4-218"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 918033,
+      "sha256": "b4b2bc5a79047077147041fb05bf7f6a4a1b53115f019d3c4bd9bab68b8da3e2"
+    },
+    "poster.webp": {
+      "bytes": 66330,
+      "sha256": "8fab6fb05022c9163bbd8ed7331fca39d19f9b6883eb98d2c3de760ab72d7a09"
+    },
+    "poster.jpg": {
+      "bytes": 123259,
+      "sha256": "124aa57fe75927733831a7ee136576966a31b42d9b8a810235263c39515d2d44"
+    },
+    "captions.vtt": {
+      "bytes": 1173,
+      "sha256": "1aff1e6a45b52a75970d800d0bf531e0f8836464f5afa97b09d907599616d0c1"
+    }
+  }
+}

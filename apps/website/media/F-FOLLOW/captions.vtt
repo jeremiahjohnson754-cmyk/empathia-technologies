@@ -1,0 +1,29 @@
+WEBVTT
+
+NOTE
+Captions of "Follow one microphone through five products". The film is silent: these are the words shown on screen, one per step, written by the recorder
+(scripts/media/record-product-film.mjs) above the demonstration; each step was verified by its proof before its words appeared.
+
+1
+00:00:00.000 --> 00:00:05.940
+Ceiling microphone A-0104, asset AS-0103, in the boardroom it serves: Lite, as a Systems Engineer.
+
+2
+00:00:05.940 --> 00:00:11.530
+Its own record: the position, the unit installed there, and the checks that name it.
+
+3
+00:00:11.530 --> 00:00:18.030
+Its room’s commissioning record: what was required, what was observed, who verified it.
+
+4
+00:00:18.030 --> 00:00:23.270
+Assurance: the accepted baseline the room is checked against.
+
+5
+00:00:23.270 --> 00:00:28.910
+Search Party: who supports the room, who knows it, and where each fact comes from.
+
+6
+00:00:28.910 --> 00:00:34.280
+Core Replay: the room’s life, stopped where a change reopens only the tests it touches.

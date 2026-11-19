@@ -320,6 +320,30 @@
         ],
         "ownerChannelAuthorization": "founder, 2026-11-10: \"The 35 second video with the piano player is for Collabora-SING, an in-development product, just for the corporate website section for Collabora-SING.\""
       } }
+    },
+    {
+      "key": "F-LIFE",
+      "title": "Core Replay: the life of a room",
+      "runtime": "0:34",
+      "placement": ["/how-it-works"],
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: one boardroom from its request, requirements and design, through its build and tests, to baseline v1, a like-for-like camera change that reopens only the tests it touches, baseline v2, and Assurance.",
+      "source": {"video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, F-LIFE); apps/website/media/F-LIFE/RECORDING.json holds every step, its proof and the hashes"},
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {"website": {"status": "VERIFIED", "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-18 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-18 17:25 CT, §13: \"Core Replay — The Life of a Room\")"}}
+    },
+    {
+      "key": "F-FOLLOW",
+      "title": "Follow one microphone through five products",
+      "runtime": "0:34",
+      "placement": ["/platform"],
+      "sound": "none",
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: ceiling microphone A-0104 in Lite, its room's commissioning record, Assurance, Search Party and Core Replay, each opened the way the website opens it, as its own perspective.",
+      "source": {"video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, F-FOLLOW); apps/website/media/F-FOLLOW/RECORDING.json holds every step, its proof and the hashes"},
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. No sound.",
+      "rights": {"website": {"status": "VERIFIED", "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-18 with synthetic data; no third-party voice, music or imagery (founder, 2026-11-18 17:25 CT, §6: \"Open This Exact Demonstration\")"}}
     }
   ]
 }

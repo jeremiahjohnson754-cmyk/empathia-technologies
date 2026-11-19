@@ -1,0 +1,78 @@
+{
+  "key": "F-FOLLOW",
+  "title": "Follow one microphone through five products",
+  "product": "lite",
+  "recordedAt": "2026-11-19T01:32:32.361Z",
+  "duration": 34.28,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "visitor",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T01:29:14.897Z"
+  },
+  "git": "a1edaa0",
+  "steps": [
+    {
+      "at": 0,
+      "until": 5.94,
+      "say": "Ceiling microphone A-0104, asset AS-0103, in the boardroom it serves: Lite, as a Systems Engineer.",
+      "proof": "[data-testid=lite-room-3d]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&device=A-0104&from=site&li=follow-lite&back=%2Fplatform%23follow-lite"
+    },
+    {
+      "at": 5.94,
+      "until": 11.53,
+      "say": "Its own record: the position, the unit installed there, and the checks that name it.",
+      "proof": "[data-testid=lite-device]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&device=A-0104&from=site&li=follow-lite&back=%2Fplatform%23follow-lite"
+    },
+    {
+      "at": 11.53,
+      "until": 18.03,
+      "say": "Its room’s commissioning record: what was required, what was observed, who verified it.",
+      "proof": "main h1:has-text(\"Commissioning: Atlas 4.218\")",
+      "url": "/#/commissioning/room/R-ATL-4-218?from=site&li=follow-commissioning&back=%2Fplatform%23follow-commissioning"
+    },
+    {
+      "at": 18.03,
+      "until": 23.27,
+      "say": "Assurance: the accepted baseline the room is checked against.",
+      "proof": "main h1:has-text(\"Assurance: Atlas 4.218\")",
+      "url": "/#/assurance/room/R-ATL-4-218?from=site&li=follow-assurance&back=%2Fplatform%23follow-assurance"
+    },
+    {
+      "at": 23.27,
+      "until": 28.91,
+      "say": "Search Party: who supports the room, who knows it, and where each fact comes from.",
+      "proof": "main h1:has-text(\"Atlas 4.218 Boardroom\")",
+      "url": "/#/search?focus=Room:R-ATL-4-218&from=site&li=follow-support&back=%2Fplatform%23follow-support"
+    },
+    {
+      "at": 28.91,
+      "until": 34.28,
+      "say": "Core Replay: the room’s life, stopped where a change reopens only the tests it touches.",
+      "proof": "[data-testid=reopened]",
+      "url": "/#/replay/R-ATL-4-218?at=change&from=site&li=follow-replay&back=%2Fplatform%23follow-replay"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1412381,
+      "sha256": "271eace96aa0811632e2ef1b98b1bb2fb3fb886d7ed9282eeac26a1d0f0e90fa"
+    },
+    "poster.webp": {
+      "bytes": 55190,
+      "sha256": "722af81a64bc7379ddfb2523c69cad0410476d4db92147a70444cb835052e81d"
+    },
+    "poster.jpg": {
+      "bytes": 106151,
+      "sha256": "772a476b0f38cf29ae0a0e457540f7b9c5c896e03f3fd20b1bf76f975a1ff26c"
+    },
+    "captions.vtt": {
+      "bytes": 1002,
+      "sha256": "8e2aa60f71c7a4853bae1aa706cedce8afe0e939570d9c620b4f36b983a5f28d"
+    }
+  }
+}

@@ -61,6 +61,9 @@ apps/website/media/*
 !apps/website/media/W2/
 # the product demonstration films, recorded from the demonstration (scripts/media/record-product-film.mjs)
 !apps/website/media/P-*/
+# the recorded films of 18 Nov 2026 (scripts/media/product-films.mjs: F-LIFE, F-FOLLOW; RECORDING.json holds the proofs and hashes)
+!apps/website/media/F-LIFE/
+!apps/website/media/F-FOLLOW/
 # the guides as printed booklets (scripts/media/make-booklets.mjs; hashes in BOOKLETS.json)
 !apps/website/media/booklets/
 # the founder's keepsake photograph (founder page, 2026-11-13)
