@@ -1,4 +1,42 @@
-# Session handoff — 18 Nov 2026, 16:40 America/Chicago (read this first)
+# Session handoff — 18 Nov 2026, 18:10 America/Chicago (read this first)
+
+**Branch** `v18/continuation` (pushed). **Staging still `81276b2`**. The plan, per the founder's 16:41 directive ("this run up and live for actual real-life human testing"):
+1. One exact-commit regression on the combined commit. `node scripts/test.mjs --browser --part=N/M` runs it in parts of under two hours each; `--merge=M` joins them and refuses parts from another commit or a changed tree.
+2. Push that commit to `phase3/legendary-experience`, and to `staging/demo-api` if its diff rule holds (`docs/operations/RENDER_DEMO_STAGING.md`).
+3. Verify on Render.
+
+Production is untouched; it needs the founder's word.
+
+**Directives since 16:40** (verbatim in `.local/directives/`):
+- **1623, media generation approved.** Brian narration for Tour G: 11 takes. The founder picked ten by ear (16:53, files matched by SHA-256). The ElevenLabs credits then ran out.
+- **1641.** "Use every connector … finish both websites … the full signal story mode directive … you made a bunch of videos and never used them for the story mode … forget the other 5 lines … silent with captions … up and live for real-life human testing". The five unvoiced Tour G stops are captions-only "Read along".
+- **1725, FieldLink and cinematic corporate website.** Task #237. The packet is private in `.local/reference/2026-11-18-fieldlink/`; BOM costs and margins are never public.
+
+**Done since 16:40 (committed, tested):**
+- **Unit sweep.** All 90 unit files pass (two had regressed).
+- **Tour G narration.** Founder's picks. Captions are shown while a take plays. Captions-only for G9/12/13/15/16.
+- **Tour panel.** It no longer hides the spotlit element on phones.
+- **SIGNAL Story Director, `#/film/<chapter>`.** Every chapter is an interactive film: footage, AI voices, decisions in the frame, ladder, timed calls with replay, conversations, credits, and a sandbox replay.
+  - Ten Seats has five playable investigation scenes, built on acoustics that reproduce the canon's numbers.
+  - All 35 Season 1 footage clips and the recorded takes are placed.
+  - Suites: `demo-signal-film` (35, light and dark) and unit `signal-film`.
+  - Ledger: `docs/SIGNAL_MEDIA_ASSET_LEDGER.md`.
+
+**Next after staging:**
+1. #237: the FieldLink page and the cinematic corporate site.
+2. #232: typed deep links (SIGNAL → `#/film/s01e01`).
+3. SIGNAL beyond Ten Seats: playable scenes for more chapters; Campus Life RPG (#218).
+4. Search Party parity and presence (#219, #220).
+5. Two destructive QA cycles (#225).
+6. Heatmap metrics (#236).
+
+Known intermittent: `demo-story` ST-17 (O18-02).
+
+---
+
+## Earlier handoff (16:40)
+
+(16:40 state, superseded)
 
 **Branch** `v18/continuation`, HEAD **`5edfcb6`** (pushed). The container restarted once at ~16:05 (a test run was killed, exit 137); nothing was lost. **Staging still `81276b2`** (not restaged; the plan is ONE exact-commit
 regression on the final combined commit, then stage, then verify). Production untouched (founder's word required).

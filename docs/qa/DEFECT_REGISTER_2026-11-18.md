@@ -145,6 +145,50 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **Fix:** the heading counts the tours. The map's search area stops short of the layer buttons at every size.
 - **Regression test:** `demo-tours` TR-*-00 and `demo-map` MAP-24.
 
+### D18-15 · P1 (founder 16:41: "you made a bunch of videos and never used them for the story mode") · Built
+- **What was wrong:**
+  - Season 1's 35 reviewed footage clips and its recorded takes played only behind a secondary "Watch as a scene" button inside the written story.
+  - The played-scenes page said "There is no recorded voice or generated video in this build yet", which was no longer true.
+  - Nothing in the story offered a cinematic, interactive chapter.
+- **Fix:**
+  - **The SIGNAL Story Director (`#/film/<chapter>`).** It plays every chapter as an interactive film:
+    - title card, act cards, footage, art under a camera move, voiced lines and subtitles;
+    - decisions in the frame, with the canon's results and the ladder;
+    - timed calls on the story's clock, with replay;
+    - conversations;
+    - credits with the calls, the evidence and the voices.
+  - **Shared record.** Choices are the story engine's own record, so the film, the scenes and the comic agree.
+  - **Replay.** A replay is a sandbox and changes nothing saved.
+  - **Ten Seats playable scenes.** Five scenes stand where the canon investigates: measure the ten seats, plot the cards, four explanations, the fill test, and measure again after the re-aim.
+    - The acoustics reproduce the canon's numbers.
+    - A wrong first call changes what the measurement records.
+  - **Entry points.** The SIGNAL library offers the film; the scenes page links to it truthfully.
+- **Regression tests:** `demo-signal-film` FM-01…35 (light and dark), and the `signal-film` unit test (every chapter a valid film graph; Season 1 media placed).
+
+### D18-16 · P2 · Fixed (found by FM-23)
+- **What was wrong:** the analyzer drew the balcony front's first notch at an infinite frequency, logging an SVG error.
+- **Root cause:** the balcony has no reflection path, so its path difference was 0.
+- **Fix:** the balcony reads as a level, never as a comb.
+- **Regression test:** FM-23 (no page error in the whole episode).
+
+### D18-17 · P2 · Fixed (found by FM-29)
+- **What was wrong:** on a 390 px phone the measurable seats overlapped (23 overlaps), so a tap could hit the wrong seat.
+- **Fix:** the seating plan was re-spaced.
+- **Regression test:** FM-29 (no overlap, every seat at least 24 px).
+
+### D18-18 · P2 · Fixed (first-time-viewer pass of Tour G)
+- **What was wrong:**
+  - On a phone the tour panel docked over the spotlit element.
+  - The narration's caption files were never visible, because an `<audio>` element draws no captions.
+- **Fix:** the spot is placed in the part of the screen the panel leaves free. A compact player shows the caption of the moment while it plays.
+- **Regression tests:** `demo-tours` TR-g-spot-*, TR-g-cue-*.
+
+### D18-19 · P2 · Fixed (unit sweep)
+- **What was wrong:** two unit suites failed after the day's slices, and the browser runs had not covered them:
+  - `demo-spaces`: Tour G's count, and the word "live" in the stop text;
+  - `vendor-claims`: Google named in a comment, and "Zoom" in the zoom buttons' labels.
+- **Fix:** see commit e9f987f. All 90 unit files pass.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220
@@ -152,3 +196,8 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **What was seen:** the "Working now" badges suggest live availability.
 - **Why it matters:** this has to be checked against the directive's rule: "do not invent live availability".
 - **Next:** the presence work in #220 decides how these badges are labelled, for example as synthetic or schedule-derived.
+
+### O18-02 · demo-story ST-17 (intermittent)
+- **What was seen:** "progress survives a reload" failed once in two runs on 18 Nov. The reached count differed after the reload, and it passed on the rerun (99/99).
+- **Status:** not yet reproduced deliberately. The change made the same day only added links to the story page.
+- **Next:** stress it 10 times and find the race.

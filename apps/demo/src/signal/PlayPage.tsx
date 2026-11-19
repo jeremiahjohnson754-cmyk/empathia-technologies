@@ -2,7 +2,7 @@
  * SIGNAL played as scenes (#/play/<chapter id>): the same canon chapter as #/story/<id>, performed. Each panel is a shot with a camera
  * move and its lines timed as captions; conversations are close shots; decisions and replies appear inside the frame and hold the
  * scene; the canon's discoveries are hidden in the picture to be found and taken; notes, quests and twists are cards between shots.
- * Staging comes from scene.ts; every word is the canon's. There is no recorded voice or generated video yet, and the page says so.
+ * Staging comes from scene.ts; every word is the canon's. This page plays no voice or video; the chapter's recorded voices and footage play in the interactive film (#/film/<id>), and the page says so.
  * Choices, trust and what is found are the same record the reader uses, so the two ways of reading never disagree.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -10,6 +10,7 @@ import type { PageProps } from '../registry.types.js';
 import { Block, Crumbs } from '../worlds/kit.js';
 import { answerTalk, chapterVerdict, choose, emptyChapter, find, load, nextOf, replayDecision, save, tally, timeOut, type Chapter, type ChapterState, type Item, type Progress, type StoryIndex } from './story.js';
 import { buildScene, frontier, hotspotsAt, lineAt, mayPass, recap, type Shot } from './scene.js';
+import { TAKES, FOOTAGE } from './cinematic.js';
 import { Draft, Face, ItemView, getJson, loadDefs, loadIndex, notKept, useLoaded } from './StoryPage.js';
 
 const POS = 'empathia.signal.play.v1';
@@ -77,7 +78,7 @@ function Player({ ix, id }: { ix: StoryIndex; id: string }) {
         <p className="sg-acts">{next && <a className="ui-btn ui-btn--primary" href={`#/play/${next.id}`} data-testid="play-nextchapter">Play the next chapter: {next.title}</a>}<button type="button" className="ui-btn" onClick={() => go(0)}>Play it again from the start</button></p>
       </Block>}
       <p className="sg-acts"><a className="ui-btn" href={`#/story/${id}`}>Read this chapter as panels</a><a className="ui-btn" href="#/story">Library</a></p>
-      <p className="ui-meta">Staged from the author’s draft: pictures, words, choices and discoveries are the canon’s; the camera moves and timings are added. There is no recorded voice or generated video in this build yet. Reduced-motion settings stop the camera.</p>
+      <p className="ui-meta">Staged from the author’s draft: pictures, words, choices and discoveries are the canon’s; the camera moves and timings are added. {(TAKES[id]?.length || FOOTAGE[id]?.length) ? <>This page plays no voice or video; this chapter’s recorded voices and generated footage play in <a href={`#/film/${id}`} data-testid="play-to-film">the interactive film</a>.</> : <>No voice or video is recorded for this chapter yet; <a href={`#/film/${id}`} data-testid="play-to-film">the interactive film</a> plays it with captions.</>} Reduced-motion settings stop the camera.</p>
     </div>
   );
 }

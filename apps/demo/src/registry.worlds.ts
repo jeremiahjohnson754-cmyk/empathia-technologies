@@ -79,6 +79,14 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'video lab camera shutter frame rate banding flicker led wall refresh iris iso nd white balance switcher program preview cut mix key lyrics lip sync stream', aliases: ['shoot the service', 'video lab'] },
   },
   {
+    // Founder directive 18 Nov 2026 11:59 (SIGNAL Story Director) and 16:41 ("actually done this time"): a chapter as an interactive
+    // film — footage, voiced lines, decisions in the frame, playable scenes, credits — on the same story record as the written story.
+    id: 'film', title: 'SIGNAL film', purpose: 'A SIGNAL chapter as an interactive film: footage, voices, choices inside the frame, playable investigation scenes and consequences', product: 'learn',
+    path: '/film/:chapter', alias: ['/film'], authority: OPEN,
+    load: () => import('./signal/film/FilmPage.js'),
+    search: { keywords: 'signal film interactive cinematic story chapter ten seats maya ray decisions investigation measure seats comb filter', aliases: ['signal film', 'interactive film', 'cinematic story'] },
+  },
+  {
     id: 'play', title: 'SIGNAL played', purpose: 'A SIGNAL chapter performed as scenes: camera, timed lines, choices inside the frame and things to find', product: 'learn',
     path: '/play/:chapter', authority: OPEN,
     load: () => import('./signal/PlayPage.js'),

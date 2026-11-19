@@ -122,6 +122,8 @@ function Library({ ix, progress, commit }: { ix: StoryIndex; progress: Progress;
           <p className="tp-time">{TITLE_PAGE.time}</p>
           <p className="tp-intro">{TITLE_PAGE.intro}</p>
           <p className="tp-cta sg-acts"><a className="tp-btn tp-btn--primary" href={`#/story/${next.id}`} data-testid="story-continue">{started ? `▶ Continue: ${next.title}` : '▶ Begin the story'}</a>
+            <a className="tp-btn tp-btn--primary" href={`#/film/${next.id}`} data-testid="story-film-start">{started ? '▶ Continue as a film' : '▶ Watch and play it as a film'}</a>
+            <a className="tp-btn" href="#/film/s01e01" data-testid="story-film-flagship">Ten Seats: the interactive film</a>
             <a className="tp-btn tp-btn--ghost" href="#/story" onClick={(e) => { e.preventDefault(); document.getElementById('sg-contents')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>Contents</a>
             {started && <button type="button" className="tp-btn" data-testid="story-reset" onClick={() => commit({ ...progress, chapters: {}, last: null })}>Forget my progress</button>}</p>
           <div className="tp-cast" data-testid="story-cast">{TITLE_PAGE.cast.map((c) => <div className="tp-card" key={c.name}><span className="tp-por" aria-hidden="true" dangerouslySetInnerHTML={{ __html: c.svg }} /><div><p className="tp-name">{c.name}</p><p className="tp-role">{c.role}</p></div></div>)}</div>
@@ -202,7 +204,8 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
       <div className="sg-bar">
         <Pick label="Decision clock" value={progress.clock} options={[['on', 'Clock on'], ['extended', 'Double time'], ['off', 'No clock']] as const} onChange={(c: Clock) => commit({ ...progress, clock: c })} />
         <label className="sg-check"><input type="checkbox" checked={still} onChange={(e) => { setStill(e.target.checked); try { localStorage.setItem('signal-still', e.target.checked ? '1' : '0'); } catch { /* */ } }} data-testid="story-still" /> Still art</label>
-        {cinematicFor(id) && ch.data && !locked && <button type="button" className="ui-btn ui-btn--primary" onClick={() => setCine(true)} data-testid="story-cine">▶ Watch as a scene</button>}
+        {ch.data && !locked && <a className="ui-btn ui-btn--primary" href={`#/film/${id}`} data-testid="story-film">▶ Watch the interactive film</a>}
+        {cinematicFor(id) && ch.data && !locked && <button type="button" className="ui-btn" onClick={() => setCine(true)} data-testid="story-cine">Watch as a scene, here</button>}
         <label className="sg-check"><input type="checkbox" checked={!progress.gates} onChange={(e) => commit({ ...progress, gates: !e.target.checked })} data-testid="story-gates" /> Show the whole chapter without waiting for decisions</label>
       </div>
       {ch.data && ch.data.chapter.flags.length > 0 && (

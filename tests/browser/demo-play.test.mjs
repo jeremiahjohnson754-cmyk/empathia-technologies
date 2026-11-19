@@ -10,7 +10,9 @@ const at = (p) => p.evaluate(() => { const r = document.querySelector('[data-tes
 { const t = await open('#/play/s01e00'); const p = t.page; await p.waitForSelector('[data-testid=play-stage] .pl-art svg');
   const a = await at(p); const cam = await p.locator('[data-testid=play-stage]').getAttribute('data-camera');
   ok('PL-01', 'the chapter opens on its first shot, drawn from the canon art, every sprite resolved', a.shot === 0 && a.shots > 60 && await p.evaluate(() => [...document.querySelectorAll('.pl-art use')].every((u) => document.getElementById(u.getAttribute('href').slice(1)))));
-  ok('PL-02', 'it says plainly what is canon and what is staging, and that no voice or generated video is in this build', /camera moves and timings are added/.test(await main(p)) && /no recorded voice or generated video/.test(await main(p)) && await p.locator('[data-testid=story-draft]').count() === 1);
+  // 18 Nov 2026: Season 1's recorded voices and generated footage now play in the interactive film (#/film/<id>); this page says so and
+  // links there, instead of saying no voice or video exists (which was no longer true for Season 1)
+  ok('PL-02', 'it says plainly what is canon and what is staging, that this page plays no voice or video, and where the voices and footage play', /camera moves and timings are added/.test(await main(p)) && /(plays no voice or video|No voice or video is recorded for this chapter yet)/.test(await main(p)) && /^#\/film\//.test(await p.locator('[data-testid=play-to-film]').getAttribute('href') || '') && await p.locator('[data-testid=story-draft]').count() === 1);
   ok('PL-02b', 'the chapter begins on its introduction card, inside the frame', a.kind === 'card' && await p.locator('[data-testid=play-over] .sg-note, [data-testid=play-over] .sg-quest, [data-testid=play-over] .sg-h').count() >= 1);
   for (let i = 0; i < 12 && (await at(p)).kind === 'card'; i += 1) await p.click('[data-testid=play-continue]');
   const first = (await at(p)).shot;

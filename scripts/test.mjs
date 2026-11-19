@@ -16,6 +16,12 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const has = (f) => process.argv.includes(f);
+// --part=N/M runs every M-th suite starting at the N-th (1-based), so a full browser regression can run as M shorter parts (a single
+// background run on this workstation is limited to two hours); each part writes TEST_RESULTS.part-N-of-M.json, and
+// `node scripts/test.mjs --merge=M` joins the parts into TEST_RESULTS.json/.md — failing if any part is missing or ran another commit.
+const partArg = /^--part=(\d+)\/(\d+)$/.exec(process.argv.find((a) => a.startsWith('--part=')) || ''); const PART = partArg ? { n: Number(partArg[1]), of: Number(partArg[2]) } : null;
+const mergeArg = /^--merge=(\d+)$/.exec(process.argv.find((a) => a.startsWith('--merge=')) || '');
+let seq = 0;
 const suites = [];
 const tap = (out) => ({ tests: Number(/^# tests (\d+)/m.exec(out)?.[1] ?? NaN), pass: Number(/^# pass (\d+)/m.exec(out)?.[1] ?? NaN), fail: Number(/^# fail (\d+)/m.exec(out)?.[1] ?? NaN) });
 const custom = (out) => {
@@ -27,6 +33,7 @@ const custom = (out) => {
 const unittest = (out) => { const n = Number(/^Ran (\d+) test/m.exec(out)?.[1] ?? NaN); const f = /FAILED \((?:failures=(\d+))?(?:, )?(?:errors=(\d+))?/.exec(out); const fail = f ? Number(f[1] || 0) + Number(f[2] || 0) : 0; return { tests: n, pass: n - fail, fail }; };
 
 function suite(name, kind, cmd, args, parse, opts = {}) {
+  seq += 1; if (mergeArg || (PART && (seq - PART.n) % PART.of !== 0)) return;
   if (opts.skip) { suites.push({ suite: name, kind, result: 'NOT_RUN', why: opts.skip }); console.log(`NOT_RUN  ${name} — ${opts.skip}`); return; }
   const t0 = Date.now();
   const r = spawnSync(cmd, args, { cwd: opts.cwd || root, encoding: 'utf8', maxBuffer: 256 << 20, timeout: opts.timeout || 600000, env: { ...process.env, LOG_LEVEL: 'error' } });
@@ -88,7 +95,7 @@ for (const [n, f] of [['dispatch', 'demo-dispatch'], ['ServiceHands', 'demo-serv
   suite(`browser: investor demo ${n}`, 'browser', node, [`tests/browser/${f}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 // uplift/parity-areas: the fifteen V2.5.3 areas the rebuild lacked, the Control Tower, and the repo-wide no-placeholder check
 suite('browser: demo-parity-areas', 'browser', node, ['tests/browser/demo-parity-areas.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1200000 } : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
-for (const s of ['demo-access', 'demo-viewas', 'demo-phoneshell', 'demo-scouter', 'demo-rolemotion', 'demo-searchparty-bar', 'demo-boundaries', 'demo-training-isolation', 'demo-fieldtools', 'demo-certs', 'demo-quizlib', 'demo-fieldcalc', 'demo-story-keys', 'demo-chal-drawings', 'demo-campus-life', 'demo-stadium-live', 'demo-expo-live', 'demo-return-trail', 'demo-map']) suite(`browser: ${s}`, 'browser', node, [`tests/browser/${s}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
+for (const s of ['demo-access', 'demo-viewas', 'demo-phoneshell', 'demo-scouter', 'demo-rolemotion', 'demo-searchparty-bar', 'demo-boundaries', 'demo-training-isolation', 'demo-fieldtools', 'demo-certs', 'demo-quizlib', 'demo-fieldcalc', 'demo-story-keys', 'demo-chal-drawings', 'demo-campus-life', 'demo-stadium-live', 'demo-expo-live', 'demo-return-trail', 'demo-map', 'demo-signal-film']) suite(`browser: ${s}`, 'browser', node, [`tests/browser/${s}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 // rebuild/demo-spaces: campus, rooms, tours, search bar, Search Party scenarios (unit + browser, light and dark in one run)
 suite('unit: demo spaces (campus records, search, scenarios, tours)', 'unit', node, ['--test', 'tests/unit/demo-spaces.test.mjs'], tap);
 suite('unit: demo Lite (45 rooms, lenses, coverage overlays, four states, wayfinding, QR)', 'unit', node, ['--test', 'tests/unit/demo-lite.test.mjs'], tap);
@@ -97,6 +104,7 @@ suite('unit: demo estates (one model, University 38 classrooms / 4 dormitories /
 suite('unit: Space Optimizer engine (nine dimensions, options A/B/C, stated rules, every world)', 'unit', node, ['--test', 'tests/unit/demo-optimizer.test.mjs'], tap);
 suite('unit: SIGNAL canon (hash manifest, 133 chapters / 1,610 panels / 387 decisions, engine rules, every chapter readable)', 'unit', node, ['--test', 'tests/unit/signal-canon.test.mjs'], tap);
 suite('unit: SIGNAL content bundle (lessons, quizzes, drills, labs, incidents, gates; held by hash)', 'unit', node, ['--test', 'tests/unit/signal-library.test.mjs'], tap);
+suite('unit: SIGNAL interactive film (every chapter a valid film; Season 1 footage and takes placed; Ten Seats acoustics match the canon)', 'unit', node, ['--test', 'tests/unit/signal-film.test.mjs'], tap);
 suite('unit: SIGNAL story engine (decisions recorded as the reference does, clock, echoes, gates, quiz records)', 'unit', node, ['--test', 'tests/unit/signal-story.test.mjs'], tap);
 suite('unit: SIGNAL drills (six kinds on the reference rules, all 146 drills)', 'unit', node, ['--test', 'tests/unit/signal-drills.test.mjs'], tap);
 suite('unit: SIGNAL live incidents (the reference rules; all 121 solver paths end proven inside the clock)', 'unit', node, ['--test', 'tests/unit/signal-incidents.test.mjs'], tap);
@@ -167,7 +175,14 @@ suite('browser: website pricing and pilot readiness', 'browser', node, ['tests/b
 suite('browser: website first screen (90-1)', 'browser', node, ['tests/browser/website-fold.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/pilot.js')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 
 const out = path.join(root, 'tests/evidence'); fs.mkdirSync(out, { recursive: true });
-const sum = { at: new Date().toISOString(), node: process.version, pass: suites.filter((s) => s.result === 'PASS').length, fail: suites.filter((s) => s.result === 'FAIL').length, notRun: suites.filter((s) => s.result === 'NOT_RUN').length, suites };
+const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();
+const dirty = spawnSync('git', ['status', '--porcelain', '--untracked-files=no', '--', '.', ':!tests/evidence'], { cwd: root, encoding: 'utf8' }).stdout.trim() !== '';
+if (PART) { fs.writeFileSync(path.join(out, `TEST_RESULTS.part-${PART.n}-of-${PART.of}.json`), JSON.stringify({ at: new Date().toISOString(), commit: head, dirty, part: PART, suites }, null, 2)); console.log(`\npart ${PART.n} of ${PART.of} on ${head.slice(0, 7)}${dirty ? ' (working tree changed)' : ''}: PASS ${suites.filter((x) => x.result === 'PASS').length} · FAIL ${suites.filter((x) => x.result === 'FAIL').length} · NOT_RUN ${suites.filter((x) => x.result === 'NOT_RUN').length}`); process.exit(suites.some((x) => x.result === 'FAIL') ? 1 : 0); }
+if (mergeArg) { const M = Number(mergeArg[1]); const parts = Array.from({ length: M }, (_, i) => { const f = path.join(out, `TEST_RESULTS.part-${i + 1}-of-${M}.json`); return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null; });
+  const bad = parts.map((x, i) => (!x ? `part ${i + 1} missing` : x.commit !== head ? `part ${i + 1} ran ${x.commit.slice(0, 7)}, not ${head.slice(0, 7)}` : x.dirty ? `part ${i + 1} ran on a changed working tree` : '')).filter(Boolean);
+  if (bad.length) { console.error(`cannot merge: ${bad.join('; ')}`); process.exit(2); }
+  suites.push(...parts.flatMap((x) => x.suites)); }
+const sum = { at: new Date().toISOString(), node: process.version, commit: head, pass: suites.filter((s) => s.result === 'PASS').length, fail: suites.filter((s) => s.result === 'FAIL').length, notRun: suites.filter((s) => s.result === 'NOT_RUN').length, suites };
 fs.writeFileSync(path.join(out, 'TEST_RESULTS.json'), JSON.stringify(sum, null, 2));
 fs.writeFileSync(path.join(out, 'TEST_RESULTS.md'), ['# Test results', '', `Run ${sum.at} on Node ${sum.node}. PASS ${sum.pass} · FAIL ${sum.fail} · NOT_RUN ${sum.notRun} suites.`, '', '| Suite | Kind | Result | Passed / tests | Seconds | Why not run |', '|---|---|---|---|---|---|',
   ...suites.map((s) => `| ${s.suite} | ${s.kind} | ${s.result} | ${s.result === 'NOT_RUN' ? '—' : `${s.pass}/${s.tests}`} | ${s.seconds ?? '—'} | ${s.why ?? ''} |`)].join('\n') + '\n');

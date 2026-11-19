@@ -69,8 +69,8 @@ const STORY: Record<string, Story> = {
   },
   learn: {
     body: 'A case needs permission, de-identification, a subject-matter review and approval before it teaches anyone. Lessons, labs and the SIGNAL story link to competencies, and training never grants authority.',
-    showsAs: ['declared', 'declared', 'modeled', 'declared'], shows: ['Reviewed cases linked to lessons and competencies', 'SIGNAL lessons, labs and drills', 'Three flagship practice labs: mix a church live stream on a 32-channel desk, light the stage, shoot the service', 'Unofficial CTS, CTS-D and CTS-I study spaces: original practice exams, calculation drills and the math behind them'],
-    limits: 'The full SIGNAL corpus is not yet produced as playable media, and narration is not yet cleared for public use. The flagship labs are models for practice: a passing score proves nothing about a real room. The certification study spaces are not affiliated with or endorsed by AVIXA, and a practice score is not a credential.', demoState: 'partial', demo: { href: '#/v25/learn', label: 'Open Learn' },
+    showsAs: ['declared', 'declared', 'modeled', 'declared'], shows: ['Reviewed cases linked to lessons and competencies', 'SIGNAL lessons, labs and drills, and Season 1 as an interactive film: generated footage, AI voices, choices inside the frame and playable investigation scenes', 'Three flagship practice labs: mix a church live stream on a 32-channel desk, light the stage, shoot the service', 'Unofficial CTS, CTS-D and CTS-I study spaces: original practice exams, calculation drills and the math behind them'],
+    limits: 'Season 1 of SIGNAL plays as an interactive film with generated footage of fictional places and AI-generated stock voices; Seasons 2 to 12 play their art with subtitles, and the voices are not yet cleared for public commercial use. The flagship labs are models for practice: a passing score proves nothing about a real room. The certification study spaces are not affiliated with or endorsed by AVIXA, and a practice score is not a credential.', demoState: 'partial', demo: { href: '#/film/s01e01', label: 'Play SIGNAL: Ten Seats' },
   },
 };
 
