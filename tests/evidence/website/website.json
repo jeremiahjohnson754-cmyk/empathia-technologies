@@ -1,10 +1,10 @@
 {
- "at": "2026-11-19T00:51:25.246Z",
+ "at": "2026-11-19T02:42:16.119Z",
  "scheme": "light",
- "pass": 260,
+ "pass": 261,
  "fail": 0,
  "notRun": 0,
- "tests": 260,
+ "tests": 261,
  "results": [
   {
    "id": "W-00",
@@ -16,7 +16,7 @@
    "id": "W-desktop-/",
    "name": "/ answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Technology. Space. Intelligence. Experience. Connected.\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/platform",
@@ -220,7 +220,7 @@
    "id": "W-tablet-/",
    "name": "/ answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Technology. Space. Intelligence. Experience. Connected.\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-tablet-/platform",
@@ -424,7 +424,7 @@
    "id": "W-phone-/",
    "name": "/ answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Every room. Every device. Every decision. With its evidence.\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Technology. Space. Intelligence. Experience. Connected.\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/platform",
@@ -865,6 +865,12 @@
    "detail": "[[\"website-demo\",\"https://tally.so/r/VpG0Vy?source=website-demo\",\"_blank\",\"noopener noreferrer\"],[\"website-pilot\",\"https://tally.so/r/VpG0Vy?source=website-pilot\",\"_blank\",\"noopener noreferrer\"],[\"website-partner\",\"https://tally.so/r/VpG0Vy?source=website-partner\",\"_blank\",\"noopener noreferrer\"],[\"website-investor\",\"https://tally.so/r/VpG0Vy?source=website-investor\",\"_blank\",\"noopener noreferrer\"]"
   },
   {
+   "id": "W-enquiry-/fieldlink",
+   "name": "/fieldlink: each enquiry opens the hosted form in a new tab with its source, says so, and carries the disclosure",
+   "result": "PASS",
+   "detail": "[[\"website-fieldlink\",\"https://tally.so/r/VpG0Vy?source=website-fieldlink\",\"_blank\",\"noopener noreferrer\"]]"
+  },
+  {
    "id": "W-enquiry-source",
    "name": "the website and the demonstration name the same hosted form",
    "result": "PASS",
@@ -880,7 +886,7 @@
    "id": "W-founder-1440",
    "name": "founder section at 1440: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:38437/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:46877/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-click",
@@ -898,13 +904,13 @@
    "id": "W-founder-768",
    "name": "founder section at 768: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:38437/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:46877/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-390",
    "name": "founder section at 390: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point, stacked",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:38437/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:46877/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-rooms-/",
@@ -1138,7 +1144,7 @@
    "id": "W-films-page",
    "name": "/films exists in every build: cleared films play, every other film is listed by title only with the reason, no uncleared film is shipped, and a film exclusive to another section is not here",
    "result": "PASS",
-   "detail": "{\"h1\":\"Watch the record being made\",\"pending\":0,\"videos\":7,\"srcs\":[\"/media/M2/720.mp4\",\"/media/FA/720.mp4\",\"/media/F02P/720.mp4\",\"/media/IE/720.mp4\",\"/media/F01/720.mp4\",\"/media/V141R/720.mp4\",\"/media/W2/720.mp4\"],\"scenes\":[{\"key\":\"B01\",\"hidden\":true,\"muted\":true,\"auto\":false,\"controls\":false},{\"key\":\"B02\",\"hidden\":true,\"muted\":true,\"auto\":false,\"controls\":false},{\"key\":\"B03\",\"hidden\":true,\"muted\""
+   "detail": "{\"h1\":\"Watch the record being made\",\"pending\":0,\"videos\":9,\"srcs\":[\"/media/M2/720.mp4\",\"/media/FA/720.mp4\",\"/media/F02P/720.mp4\",\"/media/IE/720.mp4\",\"/media/F01/720.mp4\",\"/media/V141R/720.mp4\",\"/media/W2/720.mp4\",\"/media/F-LIFE/720.mp4\",\"/media/F-FOLLOW/720.mp4\"],\"scenes\":[{\"key\":\"B01\",\"hidden\":true,\"muted\":true,\"auto\":false,\"controls\":false},{\"key\":\"B02\",\"hidden\":true,\"muted\":true,\"auto\":false,\"c"
   },
   {
    "id": "W-concept-320-/",
@@ -1264,7 +1270,7 @@
    "id": "WC-play",
    "name": "pressing play plays the 1280 × 776, 35-second film from this site, with no sound decoded, and it can be sought to its last scene",
    "result": "PASS",
-   "detail": "{\"can\":true,\"t\":1.809397,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.243118}"
+   "detail": "{\"can\":true,\"t\":1.806949,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.165444}"
   },
   {
    "id": "WC-label",
@@ -1324,7 +1330,7 @@
    "id": "WF-portrait-/founder-1440",
    "name": "/founder at 1440 px shows the founder's picture once, loaded from this site, whole (square, as supplied), with its intrinsic width and height stated and the alternative text \"Jeremiah Johnson, founder of Empathia Technologies\"",
    "result": "PASS",
-   "detail": "{\"n\":1,\"alt\":\"Jeremiah Johnson, founder of Empathia Technologies\",\"wAttr\":\"960\",\"hAttr\":\"960\",\"loaded\":true,\"nw\":480,\"nh\":480,\"cur\":\"/media/founder/640.webp\",\"boxW\":432.578125,\"boxH\":432.578125,\"fit\":\"cover\",\"srcset\":\"/media/founder/320.jpg 320w, /media/founder/640.jpg 640w, /media/founder/960.jpg 960w\",\"webp\":\"/media/founder/320.webp 320w, /media/founder/640.webp 640w, /media/founder/960.webp 960"
+   "detail": "{\"n\":1,\"alt\":\"Jeremiah Johnson, founder of Empathia Technologies\",\"wAttr\":\"960\",\"hAttr\":\"960\",\"loaded\":true,\"nw\":480,\"nh\":480,\"cur\":\"/media/founder/640.webp\",\"boxW\":432.578125,\"boxH\":432.5781555175781,\"fit\":\"cover\",\"srcset\":\"/media/founder/320.jpg 320w, /media/founder/640.jpg 640w, /media/founder/960.jpg 960w\",\"webp\":\"/media/founder/320.webp 320w, /media/founder/640.webp 640w, /media/founder/960.w"
   },
   {
    "id": "WF-portrait-/founder-390",
@@ -1486,7 +1492,7 @@
    "id": "WR-ten-seconds",
    "name": "the sequence lasts ten seconds (9.6 to 10.6 s measured) and then settles to the resting composition by itself: no attribute, no animation left, only Replay offered",
    "result": "PASS",
-   "detail": "{\"ms\":10153,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
+   "detail": "{\"ms\":10112,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
   },
   {
    "id": "WR-no-shift",
@@ -1504,13 +1510,13 @@
    "id": "WR-replay",
    "name": "Replay starts the sequence again from its beginning",
    "result": "PASS",
-   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1416.6869999997225}"
+   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1416.7069999997448}"
   },
   {
    "id": "WR-pause",
    "name": "Pause freezes it (the clock stands still and two screenshots half a second apart are identical) and the button becomes Play; Play, from the keyboard, carries on from the same moment",
    "result": "PASS",
-   "detail": "{\"pa\":\"paused\",\"t1\":1466.6309999997225,\"t2\":1466.6309999997225,\"t3\":1700.0440000001777,\"same\":true}"
+   "detail": "{\"pa\":\"paused\",\"t1\":1466.588999999745,\"t2\":1466.588999999745,\"t3\":1716.6259999997528,\"same\":true}"
   },
   {
    "id": "WR-once",
@@ -1540,13 +1546,13 @@
    "id": "W-budgets",
    "name": "home ≤ 48 KB, site.js ≤ 8 KB, theme-init.js ≤ 512 B, three preloaded Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB",
    "result": "PASS",
-   "detail": "{\"home\":49132,\"js\":5148,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":1315162,\"maxCapture\":70974}"
+   "detail": "{\"home\":49078,\"js\":6213,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":1322364,\"maxCapture\":70974}"
   },
   {
    "id": "W-rails-390",
    "name": "at 390 px the product tiles, chapters and evidence words are sideways rails with every card in them, the last tile scrolls into view on focus, the page never scrolls sideways and the home page is under twenty screens",
    "result": "PASS",
-   "detail": "{\"tiles\":{\"scroll\":\"auto\",\"kids\":9,\"wider\":true},\"chapters\":{\"scroll\":\"auto\",\"kids\":4,\"wider\":true},\"states\":{\"scroll\":\"auto\",\"kids\":6,\"wider\":true},\"screens\":16,\"over\":0,\"hint\":true,\"seen\":true}"
+   "detail": "{\"tiles\":{\"scroll\":\"auto\",\"kids\":9,\"wider\":true},\"chapters\":{\"scroll\":\"auto\",\"kids\":4,\"wider\":true},\"states\":{\"scroll\":\"auto\",\"kids\":6,\"wider\":true},\"screens\":16.7,\"over\":0,\"hint\":true,\"seen\":true}"
   },
   {
    "id": "W-rails-desk",
