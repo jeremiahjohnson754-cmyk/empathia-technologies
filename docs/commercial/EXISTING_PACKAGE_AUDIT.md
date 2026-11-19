@@ -69,7 +69,7 @@ education, houses of worship and non-profit terms, volume discounts beyond bundl
 | D-01 | **Decided.** The 19:39 room tiers replace the v1.5 Pro room everywhere: standard $39.99, large $74.99 a room a month. The v1.5 $19.99 becomes the proposed price of a pilot: Pro plus one more product, included. | `PRICE_BOOK.rooms`; `PRICE_BOOK.superseded`; `PRICE_BOOK.pilots[PILOT-PRO-PLUS]` (price founder-suggested; terms drafted, pending approval) |
 | D-02 | **Decided.** The banded annual platform fee replaces Core Starter and Core Enterprise. | `PRICE_BOOK.platform` |
 | D-03 | Follows D-01/D-02: one licensed-user line at $9.99; the v1.5 named-user SKU is replaced so nobody is charged twice. | `PRICE_BOOK.user`; `superseded` |
-| D-04 | **Kept as directed.** $15,000 from 25 rooms, shown as a starting figure, with the step named on every estimate between 20 and 30 rooms. Transition options are modelled for review only. | `estimate()` notes |
+| D-04 | **Decided 19 Nov 2026, 03:47** (the founder approved the 03:36 recommendation): from 25 rooms, $4,999 + $499 a year for each room past 24, reaching the enterprise fee of $15,000 at 45 rooms. For estates that started at 24 rooms or fewer, growing to 30 adds at most $1,399, then $499 a room again. No added room raises the fee by more than $499. Nothing is charged up automatically: the customer is told first. The fee pays for operational services outside the platform and the engineering larger estates need. | `PRICE_BOOK.growth`; `platformFee()` |
 | D-05 | Not answered: the proposed device rule is used and marked pending approval. | `PRICE_BOOK.roomRule` |
 | D-06…D-10 | Unchanged: as proposed above; anything without an approved price is Pricing Pending Approval or Custom Quote. | — |
 

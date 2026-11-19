@@ -11,7 +11,7 @@
  * place. Lines v2 replaces (the v1.5 Pro room, Core and named-user seat) are refused, so nothing is charged twice. Bundle discounts are
  * not applied: in v2 they wait for the founder's approval. Integer cents throughout; every figure is before any applicable tax.
  */
-import { PRICE_BOOK, platformBand, isSuperseded, type PlatformBand, type RateStatus } from './pricebook.js';
+import { PRICE_BOOK, platformFee, isSuperseded, type PlatformFee, type RateStatus } from './pricebook.js';
 import { quote } from './quote.js';
 import { SKUS } from './generated/catalog.js';
 import { usd } from './money.js';
@@ -25,11 +25,14 @@ export interface EstimateInput {
   hardware?: Partial<Record<HardwareKey, number>>;
   /** devices across the estate, used only for the per-device figure */
   devices?: number;
+  /** the estate started with 24 rooms or fewer: its growth band applies (founder 19 Nov 03:47) */
+  startedSmall?: boolean;
 }
 export interface EstimateLine { id: string; label: string; quantity: number; unitCents: number; per: string; cents: number; status: RateStatus; note?: string }
 export interface Estimate {
   rooms: number;
-  band: PlatformBand;
+  /** the platform fee and the rule that set it */
+  band: PlatformFee;
   /** each recurring line as a year's amount */
   recurring: EstimateLine[];
   oneTime: EstimateLine[];
@@ -61,10 +64,11 @@ export function estimate(input: EstimateInput): Estimate {
   const rooms = std + lrg;
   if (rooms < 1) throw new Error('An estimate needs at least one room');
   if (rooms > MAX_ROOMS) throw new Error(`More than ${MAX_ROOMS.toLocaleString('en-US')} rooms is a custom quote`);
-  const band = platformBand(rooms);
+  if (input.startedSmall !== undefined && typeof input.startedSmall !== 'boolean') throw new Error('startedSmall is yes or no');
+  const band = platformFee(rooms, input.startedSmall === true);
   const { standard, large } = PRICE_BOOK.rooms; const u = PRICE_BOOK.user;
   const recurring: EstimateLine[] = [
-    { id: band.id, label: band.startingAt ? 'Annual platform fee (enterprise, from)' : `Annual platform fee (${band.from}–${band.to} rooms)`, quantity: 1, unitCents: band.cents, per: 'per year', cents: band.cents, status: band.status },
+    { id: band.id, label: band.label, quantity: 1, unitCents: band.cents, per: 'per year', cents: band.cents, status: band.status },
   ];
   if (std) recurring.push({ id: standard.id, label: `${std.toLocaleString('en-US')} standard room${std === 1 ? '' : 's'}`, quantity: std, unitCents: standard.cents, per: standard.unit, cents: std * standard.cents * 12, status: standard.status });
   if (lrg) recurring.push({ id: large.id, label: `${lrg.toLocaleString('en-US')} large room${lrg === 1 ? '' : 's'}`, quantity: lrg, unitCents: large.cents, per: large.unit, cents: lrg * large.cents * 12, status: large.status });
@@ -100,7 +104,7 @@ export function estimate(input: EstimateInput): Estimate {
   const monthlyCents = recurring.filter((l) => l.id !== band.id).reduce((a, l) => a + l.cents, 0) / 12;   // every month-billed line is a whole month × 12
   const devices = input.devices === undefined ? null : whole(input.devices, 'Devices', MAX_ROOMS * 1000);
 
-  if (rooms >= 20 && rooms <= 30) { const [below, ent] = [platformBand(24), platformBand(25)]; notes.push(`At 25 rooms the platform fee moves from ${usd(below.cents)} to the enterprise fee, from ${usd(ent.cents)} a year. That step is shown as the founder set it and is under review.`); }
+  if (rooms >= 20 && !band.startingAt) { const g = PRICE_BOOK.growth; notes.push(`From ${g.from} rooms the platform fee grows ${usd(g.perRoomCents)} a year for each room past ${g.from - 1}, and stops at ${usd(g.enterpriseCents)}. An estate that started with ${g.grace.startedAtOrBelow} rooms or fewer pays at most ${usd(g.grace.capCents)} more until it passes ${g.grace.throughRooms} rooms. ${g.notice} ${g.explains}`); }
   if (band.startingAt) notes.push('The enterprise platform fee is a starting figure; the fee for this estate is confirmed in a quote.');
   if (oneTime.length) notes.push('FieldLink is optional hardware at proposed concept prices: no unit has been built, and Empathia works without it.');
   notes.push('Totals over three and five years use today’s list prices, with no escalation, renewal change or discount.');

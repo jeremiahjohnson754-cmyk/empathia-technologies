@@ -18,14 +18,15 @@ if (root) {
 
   function paint(push: boolean) {
     s.large = clamp(s.large, 0, s.rooms);
-    for (const k of ['rooms', 'large', 'users'] as const) {
+    for (const k of ['rooms', 'large', 'users', 'devices'] as const) {
       const v = s[k]; const n = num(k); if (document.activeElement !== n) n.value = String(v);
-      const r = rng(k); if (k === 'rooms' && v > Number(r.max)) r.max = String(v); if (k === 'large') r.max = String(Math.max(1, s.rooms)); if (k === 'users' && v > Number(r.max)) r.max = String(v); r.value = String(v);
+      const r = rng(k); if (k === 'rooms' && v > Number(r.max)) r.max = String(v); if (k === 'large') r.max = String(Math.max(1, s.rooms)); if ((k === 'users' || k === 'devices') && v > Number(r.max)) r.max = String(v); r.value = String(v);
     }
     num('large').max = String(s.rooms);
     for (const k of ['nano', 'edge', 'pulse'] as const) $<HTMLOutputElement>(`[data-by-out="${k}"]`)!.value = String(s[k]);
     for (const b of $$<HTMLButtonElement>('[data-by-step]')) { const k = b.dataset.byStep as 'nano' | 'edge' | 'pulse'; if (b.dataset.d === '-1') b.disabled = s[k] === 0; }
     for (const c of $$<HTMLInputElement>('[data-by-add]')) c.checked = s.addons.includes(c.dataset.byAdd as AddonSku);
+    const sm = $<HTMLInputElement>('[data-by-small]'); if (sm) { sm.checked = s.small; sm.closest('label')!.hidden = s.rooms < 25 || s.rooms > 47; }
     for (const b of $$<HTMLButtonElement>('[data-preset]')) { const p = PROFILES[Number(b.dataset.preset)]!; b.setAttribute('aria-pressed', String(p.rooms === s.rooms && p.large === s.large && p.users === s.users)); }
     try { receipt.innerHTML = receiptHtml(compute(s)); receipt.removeAttribute('data-error'); const m = $<HTMLElement>('[data-by-mini-annual]'); if (m) m.textContent = receipt.querySelector('[data-total=annual]')!.textContent; }
     catch (err) { receipt.setAttribute('data-error', ''); const p = receipt.querySelector('.by-r__err') || receipt.insertBefore(document.createElement('p'), receipt.firstChild); p.className = 'by-r__err'; p.textContent = `${(err as Error).message}. Change the numbers above to see an estimate.`; }
@@ -33,8 +34,9 @@ if (root) {
   }
   const whole = (v: string, max: number) => { const x = Math.floor(Number(v)); return Number.isFinite(x) ? clamp(x, 0, max) : 0; };
   form.addEventListener('input', (ev) => {
-    const t = ev.target as HTMLInputElement; const k = (t.dataset.by || t.dataset.byRange) as 'rooms' | 'large' | 'users' | undefined;
-    if (k) { if (t.value === '') return; s[k] = whole(t.value, k === 'users' ? 1000000 : 100000); if (k === 'rooms') s.rooms = Math.max(1, s.rooms); paint(true); return; }
+    const t = ev.target as HTMLInputElement; const k = (t.dataset.by || t.dataset.byRange) as 'rooms' | 'large' | 'users' | 'devices' | undefined;
+    if (k) { if (t.value === '') return; s[k] = whole(t.value, k === 'users' ? 1000000 : k === 'devices' ? 100000000 : 100000); if (k === 'rooms') s.rooms = Math.max(1, s.rooms); paint(true); return; }
+    if (t.dataset.bySmall !== undefined) { s.small = t.checked; paint(true); return; }
     if (t.dataset.byAdd) { const a = t.dataset.byAdd as AddonSku; s.addons = t.checked ? ADDONS.map((x) => x.sku).filter((x) => x === a || s.addons.includes(x)) : s.addons.filter((x) => x !== a); paint(true); }
   });
   // a field being typed in keeps what is typed; on leaving it, it shows the value used (an empty field, 0 rooms or more large rooms than rooms)

@@ -14,15 +14,20 @@
  * Public fields only. Hardware unit costs, margins and supplier figures are never written in this repository (FL-10 guards the site).
  * Money is integer cents.
  */
+import { usd } from './money.js';
+
 export type RateStatus = 'founder-directed' | 'founder-suggested' | 'list-v1.5' | 'proposed-concept' | 'custom-quote' | 'pending-approval';
 
 export interface Rate { id: string; name: string; cents: number; unit: string; status: RateStatus; source: string; note?: string }
 export interface PlatformBand { id: string; from: number; to: number | null; cents: number; startingAt: boolean; status: RateStatus; source: string }
+/** the platform fee one estate pays, with the rule that produced it */
+export interface PlatformFee { id: string; label: string; cents: number; startingAt: boolean; grace: boolean; status: RateStatus; source: string }
 export interface Superseded { sku: string; by: string; note: string }
 export interface PilotOffer { id: string; name: string; cents: number; unit: string; priceStatus: RateStatus; termsStatus: RateStatus; source: string; includes: string; complementaryChoices: readonly string[]; proposedTerms: readonly string[] }
 
 const S1939 = 'Founder directive, 18 Nov 2026 19:39 (60/10 pricing baseline); adopted 20:51';
 const S2051 = 'Founder, 18 Nov 2026 20:51: "maybe the $19.99 price can be a pilot package price for just pro and another complimentary product item"';
+const S0347 = 'Founder, 19 Nov 2026 03:36 (the growth band) and 03:47 ("go with those figures you mentioned"): $499 a room past 24 up to $15,000; $1,399 cap to 30 rooms for estates that started at 24 or fewer';
 
 export const PRICE_BOOK = {
   id: 'EMPATHIA-PB-2',
@@ -42,13 +47,26 @@ export const PRICE_BOOK = {
     standard: { id: 'ROOM-STD', name: 'Standard room (up to 19 devices)', cents: 3999, unit: 'per room, per month', status: 'founder-directed', source: S1939 } satisfies Rate,
     large: { id: 'ROOM-LRG', name: 'Large room (20 or more devices)', cents: 7499, unit: 'per room, per month', status: 'founder-directed', source: S1939 } satisfies Rate,
   },
-  /** annual platform fee by the estate's room count; the enterprise fee is a starting figure confirmed in a quote */
+  /** annual platform fee below 25 rooms, by band (founder 19:39) */
   platform: [
     { id: 'PLATFORM-1-9', from: 1, to: 9, cents: 249900, startingAt: false, status: 'founder-directed', source: S1939 },
     { id: 'PLATFORM-10-19', from: 10, to: 19, cents: 349900, startingAt: false, status: 'founder-directed', source: S1939 },
     { id: 'PLATFORM-20-24', from: 20, to: 24, cents: 499900, startingAt: false, status: 'founder-directed', source: S1939 },
-    { id: 'PLATFORM-ENTERPRISE', from: 25, to: null, cents: 1500000, startingAt: true, status: 'founder-directed', source: S1939 },
   ] as readonly PlatformBand[],
+  /**
+   * From 25 rooms (founder 19 Nov 03:47, replacing the jump from $4,999 to $15,000 at 25 rooms): the fee grows $499 a year for each room
+   * past 24 until it reaches the enterprise fee, $15,000 (at 45 rooms), which stays a starting figure confirmed in a quote. An estate that
+   * started with 24 rooms or fewer pays at most $1,399 more until it passes 30 rooms, then $499 a room again from there. Nothing is charged
+   * up automatically: the customer is told first. The fee pays for operational services outside the platform and the engineering larger
+   * estates need.
+   */
+  growth: {
+    from: 25, baseCents: 499900, perRoomCents: 49900, enterpriseCents: 1500000,
+    grace: { startedAtOrBelow: 24, throughRooms: 30, capCents: 139900 },
+    status: 'founder-directed' as RateStatus, source: S0347,
+    explains: 'The platform fee pays for the operational services outside the Empathia platform and the engineering that larger estates need.',
+    notice: 'Nothing is charged up automatically: you are told before your fee changes.',
+  },
   hardware: [
     { id: 'FIELDLINK-NANO', name: 'FieldLink Nano', cents: 24900, unit: 'per device, once', status: 'proposed-concept', source: S1939, note: 'Concept; no unit has been built. Optional: Empathia works without FieldLink.' },
     { id: 'FIELDLINK-EDGE', name: 'FieldLink Edge', cents: 149900, unit: 'per device, once', status: 'proposed-concept', source: S1939, note: 'Concept; no unit has been built. Optional; not one per room.' },
@@ -79,10 +97,19 @@ export function roomTier(devicesInService: number): 'standard' | 'large' {
   return devicesInService >= PRICE_BOOK.roomRule.largeFromDevices ? 'large' : 'standard';
 }
 
-/** The platform band for an estate of this many rooms (at least one). */
-export function platformBand(rooms: number): PlatformBand {
+/** The annual platform fee for an estate of this many rooms (at least one); `startedSmall` = it started with 24 rooms or fewer. */
+export function platformFee(rooms: number, startedSmall = false): PlatformFee {
   if (!Number.isInteger(rooms) || rooms < 1) throw new Error('an estate has at least one room');
-  return PRICE_BOOK.platform.find((b) => rooms >= b.from && (b.to === null || rooms <= b.to))!;
+  const band = PRICE_BOOK.platform.find((b) => rooms >= b.from && b.to !== null && rooms <= b.to);
+  if (band) return { id: band.id, label: `Annual platform fee (${band.from}–${band.to} rooms)`, cents: band.cents, startingAt: false, grace: false, status: band.status, source: band.source };
+  const g = PRICE_BOOK.growth; const past = rooms - (g.from - 1);
+  const ramp = g.baseCents + g.perRoomCents * past;
+  const graced = startedSmall ? g.baseCents + Math.min(g.perRoomCents * (Math.min(rooms, g.grace.throughRooms) - g.grace.startedAtOrBelow), g.grace.capCents) + g.perRoomCents * Math.max(0, rooms - g.grace.throughRooms) : ramp;
+  const cents = Math.min(g.enterpriseCents, graced);
+  if (cents === g.enterpriseCents) return { id: 'PLATFORM-ENTERPRISE', label: 'Annual platform fee (enterprise, from)', cents, startingAt: true, grace: false, status: g.status, source: g.source };
+  const plus = cents - g.baseCents;
+  if (startedSmall && graced < ramp) return { id: 'PLATFORM-GROWTH-BAND', label: `Annual platform fee (${rooms} rooms, growth band: ${usd(g.baseCents)} + ${usd(plus)}${rooms <= g.grace.throughRooms ? `, capped at ${usd(g.grace.capCents)} to ${g.grace.throughRooms} rooms` : ''})`, cents, startingAt: false, grace: true, status: g.status, source: g.source };
+  return { id: 'PLATFORM-GROWTH', label: `Annual platform fee (${rooms} rooms: ${usd(g.baseCents)} + ${past} × ${usd(g.perRoomCents)})`, cents, startingAt: false, grace: false, status: g.status, source: g.source };
 }
 
 const SUPERSEDED = new Set(PRICE_BOOK.superseded.map((s) => s.sku));

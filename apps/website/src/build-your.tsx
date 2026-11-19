@@ -4,7 +4,7 @@
 // Pre-rendered with the founder's own 50-room illustration, so the page reads complete without its script; the controls are added by
 // src/build.ts (dist/build.js) and are hidden until it runs, so nothing on the page is a dead control.
 import React from 'react';
-import { PRICE_BOOK, usd, platformBand } from '../../../packages/commercial/src/index.ts';
+import { PRICE_BOOK, usd, platformFee } from '../../../packages/commercial/src/index.ts';
 import { PRODUCT_LAUNCHES, launchHref } from '../../../packages/ui/src/launches.ts';
 import { EnquiryLink } from './ui.js';
 import { PROFILES, ADDONS, addonInfo, DEFAULT_STATE, compute, receiptHtml, stateHash } from './build-view.js';
@@ -47,6 +47,8 @@ export function BuildYour({ demoUrl }: { demoUrl: string }) {
             <Qty id="rooms" label="Rooms" hint="Every room Empathia looks after" min={1} max={1000} value={DEFAULT_STATE.rooms} />
             <Qty id="large" label="Large rooms" hint={`${PRICE_BOOK.roomRule.largeFromDevices} or more devices in service`} min={0} max={1000} value={DEFAULT_STATE.large} />
             <Qty id="users" label="Licensed users" hint="Named staff; guests are never charged" min={0} max={2000} value={DEFAULT_STATE.users} />
+            <label className="by__small" hidden><input type="checkbox" data-by-small /><span><b>We started with 24 rooms or fewer</b><small>Growing to 30 rooms then adds at most {usd(PRICE_BOOK.growth.grace.capCents)} a year to the platform fee</small></span></label>
+            <Qty id="devices" label="Devices (optional)" hint="For the cost per device and Search Party, priced per device" min={0} max={20000} value={DEFAULT_STATE.devices} />
             <fieldset className="by__adds"><legend>Add products <small>v1.5 list prices</small></legend>
               {ADDONS.map((a) => { const i = addonInfo(a.sku); return <label key={a.sku} className="by__add"><input type="checkbox" data-by-add={a.sku} /><span><b>{i.name}</b><small>{usd(i.cents)} {i.unit}</small></span></label>; })}
             </fieldset>
@@ -100,13 +102,16 @@ export function FourEstates() {
 
 /** What makes up the price: the platform fee bands, the two room rates, the user rate, hardware and implementation. */
 export function PriceParts() {
-  const b = PRICE_BOOK; const band = (r: number) => platformBand(r);
+  const b = PRICE_BOOK; const g = b.growth;
   return (
     <div className="by-parts">
       <article className="card" data-part="platform"><h3>Platform fee, once a year</h3>
         <div className="tablewrap" role="region" aria-label="Platform fee by estate size" tabIndex={0}><table className="terms"><thead><tr><th scope="col">Rooms</th><th scope="col">A year</th></tr></thead>
-          <tbody>{b.platform.map((p) => <tr key={p.id} data-band={p.id}><th scope="row">{p.to === null ? `${p.from} or more` : `${p.from}–${p.to}`}</th><td><b>{p.startingAt ? `from ${usd(p.cents)}` : usd(p.cents)}</b></td></tr>)}</tbody></table></div>
-        <p>At 25 rooms the fee moves from {usd(band(24).cents)} to the enterprise fee, from {usd(band(25).cents)}. That step is shown as the founder set it and is under review; the enterprise fee for a given estate is confirmed in a quote.</p></article>
+          <tbody>{b.platform.map((p) => <tr key={p.id} data-band={p.id}><th scope="row">{`${p.from}–${p.to}`}</th><td><b>{usd(p.cents)}</b></td></tr>)}
+            <tr data-band="PLATFORM-GROWTH"><th scope="row">{g.from}–{g.from + Math.ceil((g.enterpriseCents - g.baseCents) / g.perRoomCents) - 2}</th><td><b>{usd(g.baseCents)} + {usd(g.perRoomCents)}</b> for each room past {g.from - 1}</td></tr>
+            <tr data-band="PLATFORM-ENTERPRISE"><th scope="row">{g.from + Math.ceil((g.enterpriseCents - g.baseCents) / g.perRoomCents) - 1} or more</th><td><b>from {usd(g.enterpriseCents)}</b></td></tr></tbody></table></div>
+        <p>No room added past 24 raises the fee by more than {usd(g.perRoomCents)} a year. If you started with {g.grace.startedAtOrBelow} rooms or fewer, growing to {g.grace.throughRooms} adds at most {usd(g.grace.capCents)} (so {usd(platformFee(g.grace.throughRooms, true).cents)} at {g.grace.throughRooms} rooms), then {usd(g.perRoomCents)} a room again. {g.notice}</p>
+        <p>{g.explains} The enterprise fee for a given estate is confirmed in a quote.</p></article>
       <article className="card" data-part="rooms"><h3>Rooms, by the month</h3>
         <ul className="prices"><li data-rate={b.rooms.standard.id}><div className="prices__what"><h4>Standard room</h4><p>Up to {b.roomRule.largeFromDevices - 1} devices in service.</p></div><div className="price"><b>{usd(b.rooms.standard.cents)}</b><span>{b.rooms.standard.unit}</span></div></li>
           <li data-rate={b.rooms.large.id}><div className="prices__what"><h4>Large room</h4><p>{b.roomRule.largeFromDevices} or more devices in service.</p></div><div className="price"><b>{usd(b.rooms.large.cents)}</b><span>{b.rooms.large.unit}</span></div></li></ul>
