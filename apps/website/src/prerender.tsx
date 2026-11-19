@@ -7,6 +7,12 @@ import { Shell } from './site.js';
 import TOKENS from '../../../packages/design-tokens/tokens.json';
 export interface RenderOpts { api?: string | null; base?: string }
 // theme-init, the three Inter preloads (D38) and the icon links are put into every <head> by the shared helper (build.mjs → shipBrandAndType)
+/** Link-preview tags (founder 06:08: "so we can send and share this all"): the image and the page's own address need the public base,
+ *  which a Render build has; a local build without one writes the large card only when it can name the image absolutely. */
+const shareTags = (base: string | undefined, p: string, title: string) => {
+  const b = /^https:\/\//.test(base || '') ? (base as string).replace(/\/$/, '') : '';
+  return b ? `<meta property="og:url" content="${esc(b + p)}"><meta property="og:image" content="${esc(`${b}/brand/share-website.jpg`)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${esc(title)}"><meta name="twitter:card" content="summary_large_image">` : '<meta name="twitter:card" content="summary">';
+};
 export function renderAll(ctx: SiteContext, opts: RenderOpts = {}): { path: string; html: string; title: string }[] {
   const pages = buildPages({ ...ctx, api: !!opts.api });
   const doc = (page: Page, notFound = false) => {
@@ -21,7 +27,7 @@ export function renderAll(ctx: SiteContext, opts: RenderOpts = {}): { path: stri
 <meta name="description" content="${esc(page.description)}">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="${TOKENS.theme.dark.meta}" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="${TOKENS.theme.light.meta}" media="(prefers-color-scheme: light)">
-${notFound ? '<meta name="robots" content="noindex">\n' : `<link rel="canonical" href="${esc(canonical)}">\n`}<meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:type" content="website">
+${notFound ? '<meta name="robots" content="noindex">\n' : `<link rel="canonical" href="${esc(canonical)}">\n`}<meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:type" content="website"><meta property="og:site_name" content="Empathia Technologies">${shareTags(opts.base, page.path, page.title)}
 ${ctx.preview ? '<meta name="robots" content="noindex, nofollow">\n' : ''}<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="stylesheet" href="/site.css">
 ${page.headScript ? `<script src="/${esc(page.headScript)}"></script>\n` : ''}<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Empathia Technologies', url: opts.base || undefined, founder: { '@type': 'Person', name: 'Jeremiah Johnson' }, description: 'Empathia Living Campus: an operating platform for enterprise AV, collaboration and workplace technology.' }).replace(/</g, '\\u003c')}</script>

@@ -18,7 +18,20 @@ export const BRAND = Object.freeze({
   originalMark: 'original-mark.svg', // the original V2.5.3 mark, kept unchanged (single-colour glyph)
   favicon: 'favicon.svg', favicon32: 'favicon-32.png', appleTouch: 'apple-touch-icon.png', icon192: 'icon-192.png', icon512: 'icon-512.png',
   social: 'emblem-1024.png',         // large raster for social cards; never loaded by a page
+  shareWebsite: 'share-website.jpg', // 1200 × 630 link preview of the corporate site (make-share-cards.mjs); fetched by link previews only
+  shareDemo: 'share-demo.jpg',       // 1200 × 630 link preview of the Living Campus demonstration
 });
+/**
+ * The link-preview tags a shared address needs (Open Graph and the large card). The image needs an absolute address, so it is only
+ * written when the site knows its public base (a Render build does: RENDER_EXTERNAL_URL).
+ */
+export const shareMeta = ({ base = '', image, title, description, url = '', siteName = 'Empathia Technologies' }) => {
+  const e = (v) => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  const abs = /^https:\/\//.test(base) ? base.replace(/\/$/, '') : '';
+  return [`<meta property="og:site_name" content="${e(siteName)}">`, title ? `<meta property="og:title" content="${e(title)}">` : '', description ? `<meta property="og:description" content="${e(description)}">` : '',
+    abs && url !== null ? `<meta property="og:url" content="${e(abs + url)}">` : '', abs ? `<meta property="og:image" content="${e(`${abs}/brand/${image}`)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(title || siteName)}">` : '',
+    `<meta name="twitter:card" content="${abs ? 'summary_large_image' : 'summary'}">`].join('');
+};
 /** What a page may link (everything but the social raster, which only social cards fetch). */
 export const PAGE_ROLES = Object.freeze(['emblem', 'emblemSmall', 'appTile', 'owl', 'originalMark', 'favicon', 'favicon32', 'appleTouch', 'icon192', 'icon512']);
 

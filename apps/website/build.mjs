@@ -67,6 +67,7 @@ const cues = Object.fromEntries(films.filter((f) => f.textTrack === 'description
 // decorate() puts theme-init (blocking, before first paint), the three website preloads and the icon links into every page's <head>
 const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
 const decorate = shipBrandAndType(dist, { base: '/', preload: 'website', themeInit: true });
+{ const { copyBrand } = await import(path.join(repo, 'packages/design-tokens/brand.mjs')); copyBrand(dist, ['shareWebsite']); }   // the link-preview image (prerender's og:image)
 // product captures of the investor demonstration (dark, D43): only those listed with their hashes in PROVENANCE.json enter the site
 const capDir = path.join(mediaSrc, 'product'); const prov = fs.existsSync(path.join(capDir, 'PROVENANCE.json')) ? JSON.parse(fs.readFileSync(path.join(capDir, 'PROVENANCE.json'), 'utf8')) : { captures: {} };
 const captures = {};

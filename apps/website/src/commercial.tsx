@@ -36,7 +36,7 @@ const ProPilot = () => (
 function pricingPage(demoUrl: string): Page {
   return { path: '/pricing', nav: 'Pricing', script: 'build.js', title: 'Pricing: build your Empathia — Empathia Technologies', description: 'Choose your rooms, people and options and see the proposed list price every year, once, and over three and five years, line by line; four estates side by side; the pilots.', body: (
     <>
-      <Hero label="Pricing" title="See what Empathia costs before you talk to anyone" lead="A platform fee once a year, a licence for each room and each person by the month, and optional hardware once. Choose your estate and every line is added up in front of you.">
+      <Hero label="Pricing" title="See what Empathia costs before you talk to anyone" lead="A platform fee once a year, a licence for each room (its first 8 or 20 devices included) and each person by the month, and optional hardware once. Choose your estate and every line is added up in front of you.">
         <ListPrice3 />
         <Actions><a className="btn btn--primary btn--lg" href="#build">Build your Empathia</a><a className="btn btn--lg" href="#four">Four estates side by side</a></Actions>
       </Hero>
