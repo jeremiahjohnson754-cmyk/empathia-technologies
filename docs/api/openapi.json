@@ -6300,7 +6300,7 @@
         "tags": [
           "issues"
         ],
-        "summary": "Log the exception record of a deficiency opened by a failed measured test with a criterion: why the value is poor, the root cause, the mitigation and evidence. The measured value, metric and limits are copied by the database from the measurement the current FAIL rests on",
+        "summary": "Log the exception record of a deficiency opened by a failed measured test with a criterion, or by a speech transmission index at or below the commissioning standard’s 0.40: why the value is poor, the root cause, the mitigation and evidence. The measured value, metric and limits are copied by the database from the measurement the current FAIL rests on",
         "operationId": "postV1IssuesIssueMeasuredException",
         "x-authority": [
           "test.verify",
