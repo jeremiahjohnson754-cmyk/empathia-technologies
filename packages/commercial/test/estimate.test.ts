@@ -8,6 +8,8 @@
 // became a firm $15,000 (no "from"); discounts (volume tranches and the seven bundles) are applied as lines of their own; Search Party is
 // counted by the price book. The price book 2 illustration ($52,185.00 at 50 rooms) no longer applies and is replaced by the archetype
 // estates below; the platform schedule tests carry over unchanged, and every refusal is kept.
+// Changed 19 Nov 2026 06:08 (founder): a bundle's discount needs the complete bundle. The Unified Estate platform-fee check now buys the
+// bundle whole; a new test proves one product, or none, is at list price. Nothing else changed.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { estimate, PRICE_BOOK, platformFee, roomTier, roomMonthlyCents, groupsOf, checkGroups, searchPartyAssets, volumeDiscount, isSuperseded, usd, SKUS, BUNDLES, MAX_ROOMS, type RoomGroups } from '../src/index.js';
@@ -54,7 +56,8 @@ test('the price book holds the approved rates, each with its status and source; 
   const g = PRICE_BOOK.growth; assert.deepEqual([g.from, g.baseCents, g.perRoomCents, g.enterpriseCents, g.grace.startedAtOrBelow, g.grace.throughRooms, g.grace.capCents], [25, 499900, 49900, 1500000, 24, 30, 139900]); assert.match(g.source, /03:47/); assert.match(g.source, /04:30/);
   assert.deepEqual(PRICE_BOOK.volume.tranches.map((t) => [t.from, t.to, t.pct]), [[101, 250, 5], [251, 500, 10], [501, null, 15]]); assert.match(PRICE_BOOK.volume.source, /04:30/);
   assert.match(PRICE_BOOK.searchParty.source, /04:45/); assert.match(PRICE_BOOK.searchParty.counts, /except the devices a room already charges per device/);
-  assert.equal(PRICE_BOOK.protection.terms.length, 5); assert.ok(PRICE_BOOK.protection.terms.some((t) => /10 % a year/.test(t)) && PRICE_BOOK.protection.terms.some((t) => /never retroactive/.test(t)));
+  // 6 terms since 06:08 (the founder's "Existing customers: Honor contracted pricing" is the sixth)
+  assert.equal(PRICE_BOOK.protection.terms.length, 6); assert.match(PRICE_BOOK.bundleRule.source, /06:08/); assert.ok(PRICE_BOOK.protection.terms.some((t) => /10 % a year/.test(t)) && PRICE_BOOK.protection.terms.some((t) => /never retroactive/.test(t)));
   assert.deepEqual(PRICE_BOOK.hardware.map((h) => [h.id, h.cents, h.status]), [['FIELDLINK-NANO', 24900, 'proposed-concept'], ['FIELDLINK-EDGE', 149900, 'proposed-concept'], ['FIELDLINK-PULSE', 49900, 'proposed-concept']]);
   assert.equal(PRICE_BOOK.implementation.status, 'custom-quote');
   assert.doesNotMatch(JSON.stringify(PRICE_BOOK), /\bcost|margin|\bbom\b|supplier|landed/i);
@@ -160,8 +163,38 @@ test('all seven bundles keep every product: each bought whole, each eligible lin
     assert.ok(withB.notes.some((n) => n.includes(b.rule)));
   }
   assert.throws(() => estimate({ rooms: groups, users: 0, bundle: 'NOPE' }), /unknown bundle/);
-  // the platform fee in Unified Estate: $15,000 less 8 %
-  const ue = estimate({ rooms: groups, users: 0, bundle: 'FOUR-WORLD-OPERATIONS' }); assert.match(ue.recurring.find((l) => l.id === 'DISCOUNT-BUNDLE')!.note!, /platform fee \$1,200\.00/);
+  // the platform fee in Unified Estate: $15,000 less 8 % (changed 06:08: bought whole, as every bundle now must be for its discount)
+  const ueAll = BUNDLES.find((b) => b.id === 'FOUR-WORLD-OPERATIONS')!.skus.filter((s) => !isSuperseded(s)).map((sku) => ({ sku, ...(qty[sku] ? { quantity: qty[sku] } : {}) }));
+  const ue = estimate({ rooms: groups, users: 0, addOns: ueAll, bundle: 'FOUR-WORLD-OPERATIONS' }); assert.match(ue.recurring.find((l) => l.id === 'DISCOUNT-BUNDLE')!.note!, /platform fee \$1,200\.00/);
+});
+
+// founder 19 Nov 06:08: "A customer should receive the full 5–8% bundle discount when purchasing the complete bundle, not simply because
+// they selected one product that happens to belong to it ... Existing customers: Honor contracted pricing."
+test('a bundle’s discount is for the complete bundle: one product, or none, is at list; the v1.5 quote engine keeps its own rule', () => {
+  const groups: RoomGroups = { small: 30, smallDevices: 180, mid: 18, midDevices: 270, large: 2, largeDevices: 50 };
+  const list = (addOns: { sku: string }[]) => estimate({ rooms: groups, users: 65, addOns }).annualRecurringCents;
+  for (const b of BUNDLES.filter((x) => x.skus.includes('PRO-ROOM'))) {
+    const products = b.skus.filter((s) => !isSuperseded(s)); const qty = (sku: string) => (sku === 'LITE' ? { quantity: 2 } : {});
+    // nothing of it, then each product alone, then all but one: never a discount, the same total as with no bundle, and the note names what is missing
+    const tries = [[], ...products.map((p) => [p]), ...products.map((p) => products.filter((x) => x !== p))];
+    for (const t of tries) {
+      const addOns = t.map((sku) => ({ sku, ...qty(sku) }));
+      const e = estimate({ rooms: groups, users: 65, addOns, bundle: b.id });
+      assert.ok(!e.recurring.some((l) => l.id === 'DISCOUNT-BUNDLE'), `${b.id} with ${t.join('+') || 'nothing'}: no bundle discount`);
+      assert.equal(e.annualRecurringCents, estimate({ rooms: groups, users: 65, addOns }).annualRecurringCents, `${b.id} with ${t.join('+') || 'nothing'}: list price`);
+      assert.deepEqual(e.bundle, { id: b.id, complete: false, missing: products.filter((p) => !t.includes(p)) });
+      assert.ok(e.notes.some((n) => n.startsWith(`${b.name} takes ${b.discount} off when all ${b.skus.length} of its products are on the order. Still to add:`)));
+    }
+    // complete: the discount, as a line of its own
+    const all = products.map((sku) => ({ sku, ...qty(sku) })); const e = estimate({ rooms: groups, users: 65, addOns: all, bundle: b.id });
+    assert.deepEqual(e.bundle, { id: b.id, complete: true, missing: [] }); assert.ok(e.recurring.find((l) => l.id === 'DISCOUNT-BUNDLE')!.cents < 0);
+    assert.ok(e.annualRecurringCents < estimate({ rooms: groups, users: 65, addOns: all }).annualRecurringCents);
+  }
+  assert.equal(list([]), estimate({ rooms: groups, users: 65 }).annualRecurringCents);
+  assert.equal(estimate({ rooms: groups, users: 65 }).bundle, null);
+  // the price book says so, and an existing customer's contracted pricing is honoured
+  assert.equal(PRICE_BOOK.bundleRule.requires, 'complete');
+  assert.ok(PRICE_BOOK.protection.terms.some((t) => /Contracted prices are honoured/.test(t) && /v1\.5 bundle discount on part of a bundle/.test(t)));
 });
 
 test('Search Party (1B), the per-asset line and the minimum, and a quantity that disagrees is refused', () => {

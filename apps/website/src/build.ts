@@ -4,13 +4,13 @@
  * address (#build?sr=…) so an estimate can be shared, and copies a plain-text summary for the enquiry form. It sends nothing
  * anywhere and stores nothing. Price Book 3: three room groups with their devices, a bundle, and Search Party's outside assets.
  */
-import { PROFILES, DEFAULT_STATE, ADDONS, compute, receiptHtml, stateHash, parseHash, summaryText, normalize, deviceRange, rangeText, roomsOf, type BuildState, type AddonSku } from './build-view.js';
+import { PROFILES, DEFAULT_STATE, ADDONS, compute, receiptHtml, stateHash, parseHash, summaryText, normalize, deviceRange, rangeText, roomsOf, bundleAddons, type BuildState, type AddonSku } from './build-view.js';
 
 type Kind = 'small' | 'mid' | 'large';
-type NumKey = 'smallRooms' | 'smallDevices' | 'midRooms' | 'midDevices' | 'largeRooms' | 'largeDevices' | 'users' | 'outside';
-const NUMS: NumKey[] = ['smallRooms', 'smallDevices', 'midRooms', 'midDevices', 'largeRooms', 'largeDevices', 'users', 'outside'];
+type NumKey = 'smallRooms' | 'smallDevices' | 'midRooms' | 'midDevices' | 'largeRooms' | 'largeDevices' | 'users' | 'outside' | 'buildings';
+const NUMS: NumKey[] = ['smallRooms', 'smallDevices', 'midRooms', 'midDevices', 'largeRooms', 'largeDevices', 'users', 'outside', 'buildings'];
 const KINDS: Kind[] = ['small', 'mid', 'large'];
-const MAX: Record<NumKey, number> = { smallRooms: 100000, midRooms: 100000, largeRooms: 100000, smallDevices: 100000000, midDevices: 100000000, largeDevices: 100000000, users: 1000000, outside: 100000000 };
+const MAX: Record<NumKey, number> = { smallRooms: 100000, midRooms: 100000, largeRooms: 100000, smallDevices: 100000000, midDevices: 100000000, largeDevices: 100000000, users: 1000000, outside: 100000000, buildings: 9999 };
 
 const root = document.querySelector<HTMLElement>('[data-build]');
 if (root) {
@@ -38,7 +38,7 @@ if (root) {
     for (const k of ['nano', 'edge', 'pulse'] as const) $<HTMLOutputElement>(`[data-by-out="${k}"]`)!.value = String(v[k]);
     for (const b of $$<HTMLButtonElement>('[data-by-step]')) { const k = b.dataset.byStep as 'nano' | 'edge' | 'pulse'; if (b.dataset.d === '-1') b.disabled = v[k] === 0; }
     for (const c of $$<HTMLInputElement>('[data-by-add]')) c.checked = v.addons.includes(c.dataset.byAdd as AddonSku);
-    $<HTMLElement>('[data-by-outside]')!.hidden = !v.addons.includes('SEARCH');
+    $<HTMLElement>('[data-by-outside]')!.hidden = !v.addons.includes('SEARCH'); $<HTMLElement>('[data-by-buildings]')!.hidden = !v.addons.includes('LITE');
     const n = roomsOf(v); const sm = $<HTMLInputElement>('[data-by-small]'); if (sm) { sm.checked = v.startedSmall; sm.closest('label')!.hidden = n < 25 || n > 47; }
     for (const b of $$<HTMLButtonElement>('[data-preset]')) { const p = PROFILES[Number(b.dataset.preset)]!; b.setAttribute('aria-pressed', String(KINDS.every((k) => p[R(k)] === v[R(k)] && p[D(k)] === v[D(k)]) && p.users === v.users)); }
     try { receipt.innerHTML = receiptHtml(compute(v)); receipt.removeAttribute('data-error'); const m = $<HTMLElement>('[data-by-mini-annual]'); if (m) m.textContent = receipt.querySelector('[data-total=annual]')!.textContent; }
@@ -54,7 +54,9 @@ if (root) {
     if (t.dataset.bySmall !== undefined) { s.startedSmall = t.checked; paint(true); return; }
     if (t.dataset.byAdd) { const a = t.dataset.byAdd as AddonSku; s.addons = t.checked ? ADDONS.map((x) => x.sku).filter((x) => x === a || s.addons.includes(x)) : s.addons.filter((x) => x !== a); paint(true); }
   });
-  bundle.addEventListener('change', () => { s.bundle = bundle.value; paint(true); });
+  // a bundle's discount is for the whole bundle (founder 06:08), so choosing one adds its products; unticking one leaves the bundle chosen
+  // and the receipt says what is still to add
+  bundle.addEventListener('change', () => { s.bundle = bundle.value; const add = bundleAddons(s.bundle); s.addons = ADDONS.map((x) => x.sku).filter((x) => add.includes(x) || s.addons.includes(x)); paint(true); });
   // on leaving a field, the estate becomes what was used: an empty field, no rooms, or devices the rooms cannot hold
   form.addEventListener('focusout', (ev) => { if ((ev.target as HTMLElement).dataset.by) setTimeout(() => { s = normalize(s); paint(false); }, 0); });
   form.addEventListener('submit', (ev) => ev.preventDefault());

@@ -115,8 +115,24 @@ licence of the rooms in it, standard rooms first, and device charges take no vol
 bill. The tranches and rates are the approved ones. The founder is told of the correction and its effect; if device charges should be
 volume-discounted too, a method that keeps the same guarantee is modelled and brought back before any change.
 
-**Open, for the founder:** a bundle's discount applies to whichever of its products are on the estimate, as in v1.5 (`quote()` did the
-same). Whether a bundle should require all of its products before its discount applies has not been decided.
+### Decision (founder, 19 Nov 2026 06:08): a bundle's discount is for the complete bundle
+
+"A customer should receive the full 5–8% bundle discount when purchasing the complete bundle, not simply because they selected one
+product that happens to belong to it." The structure:
+
+| Purchase | Price |
+|---|---|
+| An individual product | its list price |
+| A complete bundle (every product in it; the platform fee and the room licences stand in for Core and the Pro room) | the published bundle discount, as a line of its own |
+| A large deployment | the approved volume discount on room licences |
+| A bundle and volume together | the better eligible discount on room licences, never both |
+| An existing customer | its contracted pricing, honoured for the signed term |
+
+The financial comparison was made before the change and reported privately (it includes margins). Where it lives:
+`PRICE_BOOK.bundleRule`; `estimate()` (an incomplete bundle gives no discount, and the estimate names the products still to add);
+the sixth protection term (contracted prices, including a v1.5 discount on part of a bundle, hold for their signed term); `quote()`,
+the v1.5 engine, is unchanged so a v1.5 quote reads as it did. The builder on `/pricing` adds a bundle's products when the bundle is
+chosen, and now offers Lite, Scouter, Procurement and Green so that all three room bundles can be bought whole there.
 
 ## 4. Next steps (each its own commit)
 

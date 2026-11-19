@@ -35,6 +35,7 @@ const S0347 = 'Founder, 19 Nov 2026 03:36 (the growth band) and 03:47 ("go with 
 const S0404 = 'Founder, 19 Nov 2026 04:04 (per-device room rates), approved 04:30 ("approve the commercial direction") with the rule "20 or more devices = large" and the firm $15,000 fee';
 const S0430 = 'Founder, 19 Nov 2026 04:30: "Approve the tiered volume discounts, $15,000 platform cap, customer protections, and no retroactive device billing"';
 const S0445 = 'Founder, 19 Nov 2026 04:45: "approve 1B, 2 IN, 3 YES, 4 YES for Price Book 3"';
+const S0608 = 'Founder, 19 Nov 2026 06:08: "A customer should receive the full 5–8% bundle discount when purchasing the complete bundle, not simply because they selected one product that happens to belong to it"';
 
 export const PRICE_BOOK = {
   id: 'EMPATHIA-PB-3',
@@ -86,13 +87,23 @@ export const PRICE_BOOK = {
   },
   /** bundles (the seven of the v1.5 list): what replaced a bundle's product takes its place in the bundle (04:45 "2 IN") */
   bundleSuccessors: { 'PRO-ROOM': 'room licences (their base and device charges)', 'CORE-ENTERPRISE': 'the platform fee' } as Readonly<Record<string, string>>,
+  /**
+   * A bundle's discount is for the complete bundle (06:08): every product in it on the order, the platform fee and the room licences
+   * standing in for Core and the Pro room. One product of a bundle is at its list price. The v1.5 quote engine (quote()) keeps the v1.5
+   * rule, a discount on each eligible line, so a quote or an order made under v1.5 reads as it did; contracted prices are honoured.
+   */
+  bundleRule: {
+    requires: 'complete' as const,
+    text: 'A bundle’s discount applies when every product in the bundle is on the order; the platform fee and the room licences stand in for Core and the Pro room. A single product is at its list price.',
+    status: 'founder-directed' as RateStatus, source: S0608,
+  },
   /** Search Party (04:45 "1B"): its own line and its own price; it never charges a device a room already charges per device */
   searchParty: {
     sku: 'SEARCH',
     counts: 'every managed asset except the devices a room already charges per device: the devices within each room’s included allowance, and the spares, stock and loaners you manage outside rooms',
     status: 'founder-directed' as RateStatus, source: S0445,
   },
-  /** customer protection (04:30) */
+  /** customer protection (04:30; the last term, existing customers' contracted pricing, 06:08) */
   protection: {
     terms: [
       'The prices on a signed order hold for its whole term.',
@@ -100,6 +111,7 @@ export const PRICE_BOOK = {
       'You are told 90 days before any change at renewal, line by line.',
       'Device charges are never retroactive.',
       'A pilot converts at the list prices in force on its first day, held for 12 months.',
+      'Contracted prices are honoured: an order signed under an earlier price list, including a v1.5 bundle discount on part of a bundle, keeps its prices and discounts for its signed term.',
     ] as readonly string[],
     status: 'founder-directed' as RateStatus, source: S0430,
   },

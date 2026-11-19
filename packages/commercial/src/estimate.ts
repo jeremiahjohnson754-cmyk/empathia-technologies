@@ -13,7 +13,7 @@
  *
  * Discounts are lines of their own, never hidden in a price: the volume tranches on room licences (04:30), or a bundle's discount on its
  * own products (the seven bundles of the v1.5 list; the platform fee takes Core's place and the room licences the Pro room's, 04:45
- * "2 IN"). A room licence takes the larger of the two, never both. Search Party is counted by the price book: every managed asset except
+ * "2 IN"), only when the whole bundle is on the order (06:08). A room licence takes the larger of the two, never both. Search Party is counted by the price book: every managed asset except
  * the devices a room already charges per device (04:45 "1B"). Add-ons are v1.5 list products priced by quote(), so its rules (the Search
  * Party minimum) live in one place. Lines the price books replaced are refused, so nothing is charged twice. Integer cents throughout;
  * every figure is before any applicable tax.
@@ -67,6 +67,8 @@ export interface Estimate {
   perDeviceAnnualCents: number | null;
   /** Search Party's managed-asset count, when it is in the estimate */
   searchAssets: number | null;
+  /** the bundle asked for: complete (its discount applies) or the products still to add (06:08: the discount is for the complete bundle) */
+  bundle: { id: string; complete: boolean; missing: string[] } | null;
   excluded: string[];
   notes: string[];
 }
@@ -183,9 +185,13 @@ export function estimate(input: EstimateInput): Estimate {
   }
   recurring.push(...addLines);
 
-  // discounts: lines of their own. Room licences take the larger of their bundle discount and their volume discount, never both.
+  // discounts: lines of their own. A bundle's discount is for the complete bundle (06:08); room licences take the larger of their bundle
+  // discount and their volume discount, never both.
+  const have = new Set(addOns.map((a) => a.sku));
+  const missing = bundle ? bundle.skus.filter((s) => !(s in PRICE_BOOK.bundleSuccessors) && !have.has(s)) : [];
+  const complete = !!bundle && missing.length === 0;
   const volume = volumeDiscount(std, g.large);
-  const bundleOnRooms = !!bundle && bundle.skus.includes('PRO-ROOM');
+  const bundleOnRooms = complete && bundle!.skus.includes('PRO-ROOM');
   const bundleOnRoomsCents = bundleOnRooms ? roomLines.reduce((a, l) => a + l.cents - less(l.cents, bundle!.discountPct), 0) : 0;
   const bundleWinsRooms = bundleOnRooms && bundleOnRoomsCents >= volume.cents;
   let monthDiscount = 0;
@@ -194,7 +200,11 @@ export function estimate(input: EstimateInput): Estimate {
     monthDiscount += volume.cents;
     notes.push(`Volume discount: the monthly licence of rooms 101 to 250 is 5 % off, of rooms 251 to 500 10 % off, and of every room from the 501st 15 % off; standard rooms are counted first, then large rooms. Device charges are not volume-discounted, and adding a room or a device never lowers the bill. ${PRICE_BOOK.volume.rule}`);
   }
-  if (bundle) {
+  if (bundle && !complete) {
+    const name = (id: string) => SKUS.find((x) => x.sku === id)?.name || id;
+    notes.push(`${bundle.name} takes ${bundle.discount} off when all ${bundle.skus.length} of its products are on the order. Still to add: ${missing.map(name).join(', ')}. Until then each product is at its list price.`);
+  }
+  if (bundle && complete) {
     const parts: string[] = []; let d = 0;
     const take = (cents: number, what: string, monthly: boolean) => { const x = cents - less(cents, bundle.discountPct); if (!x) return; d += x; if (monthly) monthDiscount += x; parts.push(`${what} ${usd(x)}`); };
     if (bundle.skus.includes('CORE-ENTERPRISE')) take(band.cents, 'platform fee', false);
@@ -225,7 +235,7 @@ export function estimate(input: EstimateInput): Estimate {
   notes.push('Totals over three and five years use today’s list prices, with no escalation or renewal change.');
 
   return {
-    rooms: g.rooms, devices: g.devices, band, recurring, oneTime,
+    rooms: g.rooms, devices: g.devices, band, recurring, oneTime, bundle: bundle ? { id: bundle.id, complete, missing } : null,
     monthlyCents,
     annualRecurringCents: annual, oneTimeCents: once,
     firstYearCents: annual + once, threeYearCents: annual * 3 + once, fiveYearCents: annual * 5 + once,
