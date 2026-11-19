@@ -198,6 +198,17 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
   themes (it is one dark instrument by design), with a contrast check for each text colour on its grounds. Whole unit sweep: 873 pass.
 - **Lesson:** run the whole unit sweep and every package's own tests before freezing a candidate, not only the suites of the day.
 
+### D18-21 · P2 · Fixed (exact-commit regression of 47c40be, part 1; and the non-browser run that followed)
+- **What was wrong:**
+  - `security: public sites` failed: the built demo named hosts outside the reviewed list. These were AVIXA's own pages (avixa.org)
+    and handbook PDFs (a-us.storyblok.com), cited by Learn's CTS study spaces since ce3ca01.
+  - `unit: packages/api-client` still expected 213 operations. The OpenAPI document had been regenerated to 221 (7ffacce): the two
+    report routes and the six platform-link routes.
+- **Fix:** both hosts are named in the test with the reason: links a reader opens, never fetched. The expected count is 221, and the
+  routes that changed it are listed in the test.
+- **Why the day's checks missed it:** the package tests run from each package's compiled `dist/test`, which a source-only sweep does
+  not reach. Before freezing a candidate, run the whole non-browser runner (`node scripts/test.mjs`).
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220

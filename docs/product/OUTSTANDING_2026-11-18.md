@@ -1,4 +1,39 @@
-# Session handoff — 18 Nov 2026, 18:10 America/Chicago (read this first)
+# Session handoff — 18 Nov 2026, 19:40 America/Chicago (read this first)
+
+**Branch** `v18/continuation` (pushed). **Staging still `81276b2`**. The plan, per the founder's 16:41 directive ("this run up and live
+for actual real-life human testing"): one exact-commit regression on the combined commit (`node scripts/test.mjs --browser --studio
+--part=N/5`, then `--merge=5`), stage it (`phase3/legendary-experience`; `staging/demo-api` only if its diff rule holds), verify on
+Render. Production is untouched; it needs the founder's word.
+
+**Candidates so far today, and why they stopped**
+- `d836752`: stopped in part 1's unit stage. Two unit checks were failing (D18-20).
+- `47c40be`: part 1 of 5 = 53 PASS · 1 FAIL · 2 NOT_RUN. The failure was `security: public sites`. Learn's CTS study spaces link to
+  AVIXA's own pages and handbook PDFs (avixa.org, a-us.storyblok.com), and those hosts were not on the reviewed list. Both hosts are
+  now named in the test, with the reason.
+- **Lesson, now the rule before freezing a candidate:** run the whole non-browser runner (`node scripts/test.mjs` without --browser),
+  the unit sweep and every package's own tests, not only the day's suites.
+
+**Built since 18:10 (committed, pushed, tested)**
+- #232 + #237 §6: "Open This Exact Demonstration".
+  - `packages/ui/src/launches.ts` catalogues every website→demo link.
+  - In the demo, `LaunchStrip` says where the visitor came from and as which perspective, offers their previous view back, and
+    links back to the exact website page.
+  - `/platform#follow` follows one ceiling microphone through five products, each with a fresh capture and its launch.
+- #237 §4: the home page uses the founder's headline. Beside it is a room-to-estate opening: six element captures of the demo, in
+  `media/hero`, admitted by name and hash. It plays once, can be paused, and is still under reduced motion.
+  - The first screen keeps two actions (the 90-1 rule). Explore Empathia and Discover FieldLink sit directly under it.
+  - **For the founder:** the directive lists four options in the opening, and 90-1 allows two. Both are met this way. Say if you
+    want all four on the first screen.
+- #237 §13: 14 film treatments in `docs/media/FILM_TREATMENTS_2026-11-18.md`. Each says what is real recording and what is a
+  labelled concept. Treatments only; no new film yet.
+- The field calculator's colours are tokens now. The voice tool is named only in the disclosure lines.
+
+**Found for the next QA cycle (not changed yet)**
+- The Pro product page's limits line says its command centre, operations hub and standards pages "are still being migrated". All
+  three are now native demo pages (`#/pro`, `#/pro/ops`, `#/pro/eng`). The line understates; check each page, then correct the line
+  and the demo state together.
+
+## Handoff at 18:10
 
 **Branch** `v18/continuation` (pushed). **Staging still `81276b2`**. The plan, per the founder's 16:41 directive ("this run up and live for actual real-life human testing"):
 1. One exact-commit regression on the combined commit. `node scripts/test.mjs --browser --part=N/M` runs it in parts of under two hours each; `--merge=M` joins them and refuses parts from another commit or a changed tree.
