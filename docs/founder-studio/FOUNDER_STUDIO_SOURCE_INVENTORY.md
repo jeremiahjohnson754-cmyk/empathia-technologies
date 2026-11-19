@@ -38,6 +38,13 @@ files live in the private store named by `apps/founder-studio/PRIVATE_ASSETS.jso
 | `BUILD_MANIFEST.json` | 2,423 | 2,136 | Each build writes its own. |
 | `media/films/*.mp4` | none bundled | 5 of 36 linked from the private store | A lists 36 films and bundles none (directive §10). |
 
+## Version reconciliation (19 Nov)
+
+`VERSION_RECONCILIATION.md` sets B against the November 2.5.4 founder inventory (3 Nov) and against the 2.5.3 and 2.5.5 builds. B's
+230 modules match the November source's: 224 within two bytes, and the other 6 differ only where each build writes its stamps.
+Every inventoried action, destination, event, record type, area, page and persona is present in B. The November file itself is
+still not available, and nothing claims it.
+
 ## Still to be inventoried (task #242)
 
 - What Artifact A's `studio/films.json` lists (36 entries) against the masters that are available: the media audit, §10.
