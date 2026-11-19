@@ -28,7 +28,7 @@ export const stepsOf = (k: KindId): StepId[] => k === 'evaluate-device' ? ['what
 /** Which answers each step asks for, so a step is checked only for its own answers. */
 const FIELDS: Record<StepId, string[]> = { what: ['need', 'goals'], where: ['building', 'floor', 'place', 'roomId'], needs: ['use', 'people', 'position', 'adds', 'date', 'category'], photos: ['dims'], review: [] };
 const isTool = (k: KindId) => ['scouter', 'optimizer', 'report'].includes(kindOf(k).goes);
-const QUICK_KINDS: KindId[] = ['add-devices', 'replace-device', 'change-room', 'event', 'problem', 'improve-room'];
+const QUICK_KINDS: KindId[] = ['add-devices', 'replace-device', 'change-room', 'event', 'problem', 'improve-room', 'evaluate-device'];
 const LEGACY_KEY = 'empathia.demo.request.draft.v1';
 const replaceHash = (h: string) => { try { history.replaceState(null, '', h); } catch { /* the address stays as it was */ } };
 
@@ -243,16 +243,21 @@ export default function Wizard({ role, query, params }: PageProps) {
       {kindTiles}
       <div className="rq-cols" ref={formRef}>
         <div className="rq-form rq-a">
+          <div className="rq-row">
+            <Field label="Building">{(fid) => <select id={fid} value={d.building} onChange={(e) => set({ building: e.target.value, roomId: '', position: '' })} data-testid="rq-building">{SITES.map((b) => <option key={b.key} value={b.key}>{b.name}</option>)}</select>}</Field>
+            <Field label="Room" error={shown('roomId')}>{(fid, by) => <select id={fid} aria-describedby={by} aria-invalid={!!shown('roomId')} value={d.roomId} onChange={(e) => set({ roomId: e.target.value, position: '' })} data-testid="rq-room"><option value="">Choose a room</option>{roomsOf(d.building).map((r) => <option key={r.id} value={r.id}>{fullName(r)}</option>)}</select>}</Field>
+          </div>
           {facts(d)}
           {needsStep}
         </div>
         <div className="rq-form rq-b">
-          {isTool(d.kind) ? <div className="rq-send"><p className="rq-then"><Icon name="arrow-right" size={16} /> <span>{k.then}</span></p>{go2 ? <a className="ui-btn ui-btn--primary" href={go2} data-testid="rq-handoff">{d.kind === 'problem' ? 'Report the problem' : 'Open Space Optimizer for this room'}</a> : null}</div> : <>
+          {isTool(d.kind) ? <div className="rq-send"><p className="rq-then"><Icon name="arrow-right" size={16} /> <span>{k.then}</span></p>{go2 ? <a className="ui-btn ui-btn--primary" href={go2} data-testid="rq-handoff">{d.kind === 'evaluate-device' ? `Open Scouter for ${catName(d.category).toLowerCase()}s` : d.kind === 'problem' ? 'Report the problem' : 'Open Space Optimizer for this room'}</a> : <p className="ui-muted">Choose the room first.</p>}</div> : <>
             {needField}
             <div className="rq-send">
               {refused && <div role="alert" className="ui-notice ui-tone--bad" data-testid="rq-refused"><b>Not sent yet.</b><ul>{refused.map((x) => <li key={x}>{x}</li>)}</ul></div>}
               <Button kind="primary" onClick={submit} testId="rq-send">Send the request</Button>
-              <p className="ui-meta">Sending creates {k.goes === 'desk' ? 'a project on the decision desk' : 'a job in ServiceHands'}. Nothing is ordered, approved or changed by asking. <button type="button" className="ik-link" onClick={() => { const nid = ensureDraft('photos'); if (nid) { setQuick(false); go('photos'); } }} data-testid="ik-more">Add photos or more detail</button></p>
+              <p className="ui-meta">Sending creates {k.goes === 'desk' ? 'a project on the decision desk' : 'a job in ServiceHands'}. Nothing is ordered, approved or changed by asking.</p>
+              <button type="button" className="ui-btn ui-btn--quiet" onClick={() => { const nid = ensureDraft('photos'); if (nid) { setQuick(false); go('photos'); } }} data-testid="ik-more"><Icon name="camera" size={16} /> Add photos or more detail</button>
             </div></>}
           {sent && <div className="rq-sent" data-testid="rq-sent" data-id={sent.id} data-goes={sent.goes}><h3 ref={sentRef} tabIndex={-1}>Your request has been received: {sent.id}</h3>
             <ul className="rq-mine">{<RequestItem r={sent} w={w} desk={loadDesk()} role={role} />}</ul></div>}

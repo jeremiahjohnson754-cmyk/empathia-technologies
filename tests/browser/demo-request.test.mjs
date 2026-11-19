@@ -1,36 +1,58 @@
 // The request portal in a real browser (founder, 10 Nov): any admitted role can ask for a room or equipment in a few answers, sees a
 // picture of what it is asking for before sending, the request lands on the decision desk or in ServiceHands, and the asker can follow
 // it. Roles the portal does not admit never see it.   node tests/browser/demo-request.test.mjs      (build first: node scripts/build.mjs)
+// 19 Nov 2026 (founder directive "The definitive Intake experience"): #/request is the front door and a request is made in steps; from a
+// room (a shortcut naming it) the steps are one screen, as before. RQ-01..RQ-10 were rewritten for the front door and the steps (they
+// tested the one-page portal that the steps replace); RQ-11..RQ-27 test the one-screen request unchanged; RQ-30..RQ-39 are new.
 import { harness } from './demo-shell-lib.mjs';
+import zlib from 'node:zlib';
+// a real PNG, made here (a photograph stands in for a person's: 48 × 32 px of a flat grey wall)
+const crcT = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+const crc = (b) => { let c = 0xffffffff; for (const x of b) c = crcT[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+const chunk = (t, d) => { const len = Buffer.alloc(4); len.writeUInt32BE(d.length); const td = Buffer.concat([Buffer.from(t), d]); const c = Buffer.alloc(4); c.writeUInt32BE(crc(td)); return Buffer.concat([len, td, c]); };
+const pngOf = (w, h) => { const ih = Buffer.alloc(13); ih.writeUInt32BE(w, 0); ih.writeUInt32BE(h, 4); ih[8] = 8; ih[9] = 2; const raw = Buffer.alloc((w * 3 + 1) * h, 0x9a); for (let y = 0; y < h; y++) raw[y * (w * 3 + 1)] = 0;
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ih), chunk('IDAT', zlib.deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]); };
 const t = await harness('demo-request'); const { ok, open, base } = t;
 const settle = async (p, ms = 300) => { await p.waitForSelector('main h1', { timeout: 8000 }).catch(() => undefined); await p.waitForTimeout(ms); };
-const state = (p) => p.evaluate(() => { const pg = document.querySelector('[data-testid=request-page]'); const pv = document.querySelector('[data-testid=rq-preview]'); const ts = document.querySelector('[data-testid=rq-tests]');
+const state = (p) => p.evaluate(() => { const pg = document.querySelector('[data-testid=request-page], [data-testid=ik-home]'); const pv = document.querySelector('[data-testid=rq-preview]'); const ts = document.querySelector('[data-testid=rq-tests]');
   return { page: !!pg, kind: pg?.dataset.kind, denied: !!document.querySelector('[data-testid=access-page]'), preview: !!pv, marked: Number(pv?.dataset.marked ?? -1), positions: Number(pv?.dataset.positions ?? -1), drawn: document.querySelectorAll('[data-testid=rq-stage] [data-testid^=dev-]').length, ringed: document.querySelectorAll('[data-testid=rq-stage] [data-marked]').length,
     title: document.querySelector('[data-testid=rq-title]')?.textContent || '', tests: Number(ts?.dataset.added ?? -1), total: Number(ts?.dataset.total ?? -1), equipment: [...document.querySelectorAll('[data-testid=rq-equipment] li')].map((x) => x.textContent), known: document.querySelectorAll('[data-testid=rq-known] dt').length,
     refused: document.querySelector('[data-testid=rq-refused]')?.innerText || '', sent: document.querySelector('[data-testid=rq-sent]')?.dataset || null, items: [...document.querySelectorAll('[data-testid=rq-item]')].map((x) => ({ id: x.dataset.id, state: x.dataset.state, goes: x.dataset.goes, text: x.innerText })) }; });
 
-// ── a new room, asked for by an employee ─────────────────────────────────────────────────────────────────────────────────────────
-{ const s = await open('#/request', { role: 'employee' }); const p = s.page; await settle(p); const a = await state(p);
-  const kinds = await p.locator('[data-testid^=rq-kind-]').count();
-  ok('RQ-01', 'the Employee opens the portal: seven kinds of request in plain words, a new room chosen, and a picture already drawn', a.page && !a.denied && kinds === 7 && a.kind === 'new-room' && a.preview && a.drawn === a.positions && a.positions > 5 && a.marked === 0 && /^New .+ for 8 at Atlas HQ$/.test(a.title) && a.tests > 10, JSON.stringify(a));
-  await p.fill('[data-testid=rq-people]', '40'); await p.locator('.rq-chips label', { hasText: 'Training and teaching' }).click(); await p.selectOption('[data-testid=rq-building]', 'HFD'); await p.waitForTimeout(250); const b = await state(p);
-  ok('RQ-02', 'the picture follows the answers: forty people for training at Highfield becomes a training room, larger, with more equipment', /^New training room for 40 at Highfield Academy$/.test(b.title) && b.positions > a.positions && b.drawn === b.positions, JSON.stringify([a.title, a.positions, b.title, b.positions]));
-  const folded = !(await p.locator('[data-testid=rq-more-camera]').isVisible()); await p.click('[data-testid=rq-extras] summary'); await p.waitForTimeout(150);
-  await p.click('[data-testid=rq-more-camera]'); await p.click('[data-testid=rq-more-camera]'); await p.waitForTimeout(200); const c = await state(p);
-  ok('RQ-03', 'optional extras are folded until wanted and stay open while used; what is added is drawn, ringed and counted as new', folded && c.marked === 2 && c.ringed === 2 && c.positions === b.positions + 2 && c.equipment.some((e) => /Camera.*2 new/.test(e)) && (await p.locator('[data-testid=rq-extras]').getAttribute('open')) !== null, JSON.stringify([folded, c.marked, c.ringed, c.equipment]));
-  await p.locator('.stage__bar button', { hasText: '3D' }).click(); await p.waitForTimeout(200);
-  ok('RQ-04', 'the same request in 3D, with the same devices', (await p.locator('[data-testid=room-3d]').count()) === 1 && (await p.locator('[data-testid=room-3d] .rv__dev').count()) === c.positions && (await p.locator('[data-testid=room-3d] .is-marked').count()) === 2);
-  await p.click('[data-testid=rq-send]'); await p.waitForTimeout(250); const d = await state(p);
-  ok('RQ-05', 'sending without saying what is needed is refused in words, the field is marked and focused, and nothing is sent', /Not sent yet/.test(d.refused) && /Say in a sentence what you need/.test(d.refused) && !d.sent && d.items.length === 0 && (await p.evaluate(() => document.activeElement?.getAttribute('data-testid'))) === 'rq-need' && (await p.getAttribute('[data-testid=rq-need]', 'aria-invalid')) === 'true');
-  await p.fill('[data-testid=rq-need]', 'A classroom where forty apprentices can follow a lesson taught from another site'); await p.click('[data-testid=rq-send]'); await p.waitForTimeout(400); const e = await state(p);
-  ok('RQ-06', 'with the need said, the request is sent to the decision desk as a project, the page says so and moves focus to it, and it appears under “Your requests”', e.sent?.goes === 'desk' && /^REQ-\d{4}$/.test(e.sent.id) && e.items.length === 1 && e.items[0].state === 'SUBMITTED' && /Waiting for an engineer to review/.test(e.items[0].text) && /asked by the Employee/.test(e.items[0].text) && (await p.evaluate(() => /^Sent: REQ-/.test(document.activeElement?.textContent || ''))), JSON.stringify(e.items));
-  ok('RQ-07', 'the Employee is not offered a link into the decision desk, which it cannot open', !/Open it in Decision desk/.test(e.items[0]?.text || ''));
-  await p.reload(); await settle(p); const f = await state(p);
-  ok('RQ-08', 'the request is still listed after a reload', f.items.length === 1 && f.items[0].id === e.sent?.id);
-  // the Systems Engineer sees it on the desk
+// ── a new room, asked for by an employee: the front door, then the steps ──────────────────────────────────────────────────────
+{ const s = await open('#/request', { role: 'employee' }); const p = s.page; await settle(p);
+  const home = await p.evaluate(() => ({ h1: document.querySelector('main h1')?.textContent || '', lede: document.querySelector('.kit-hero__lede')?.textContent || '', cards: [...document.querySelectorAll('[data-testid^=ik-card-]')].map((x) => x.dataset.testid), box: !!document.querySelector('[data-testid=ik-describe-text]'), who: document.querySelector('[data-testid=ik-who]')?.textContent || '', nav: [...document.querySelectorAll('[data-testid=ik-nav] .ik-nav__main a')].map((a) => a.textContent) }));
+  ok('RQ-01', 'the Employee opens Intake: the directive’s question and line, one place to describe the need, four choices and “Not sure?”, the five places to go, and no invented name',
+    home.h1 === 'What can we help you create, improve, or fix?' && /Tell us what your space needs\. We.ll help you take it from idea to reality\./.test(home.lede) && home.box && JSON.stringify(home.cards) === JSON.stringify(['ik-card-create', 'ik-card-improve', 'ik-card-equipment', 'ik-card-help', 'ik-card-unsure'])
+    && JSON.stringify(home.nav) === JSON.stringify(['Home', 'New request', 'My requests', 'My spaces', 'Help']) && /Asking as the Employee/.test(home.who) && /no name is shown/.test(home.who), JSON.stringify(home));
+  await p.fill('[data-testid=ik-describe-text]', 'We need a new training room for forty apprentices, with remote students joining'); await p.click('[data-testid=ik-describe-go]'); await p.waitForTimeout(200);
+  const rd = await p.evaluate(() => { const r = document.querySelector('[data-testid=ik-reading]'); return { kind: r?.dataset.kind, basis: document.querySelector('[data-testid=ik-reading-basis]')?.textContent || '', text: r?.innerText || '' }; });
+  ok('RQ-02', 'what was typed is read by word lists, shown back as a suggestion with the words that produced it, said not to be AI, and nothing starts until the person says so', rd.kind === 'new-room' && /^Matched by word lists, not by AI/.test(rd.basis) && /Teaching|teaching|training/i.test(rd.text) && !/draft=/.test(p.url()), JSON.stringify(rd));
+  await p.click('[data-testid=ik-reading-start]'); await settle(p, 400);
+  const w1 = await p.evaluate(() => ({ step: document.querySelector('[data-testid=request-page]')?.dataset.step, draft: document.querySelector('[data-testid=request-page]')?.dataset.draft, need: document.querySelector('[data-testid=rq-need]')?.value || '', steps: [...document.querySelectorAll('[data-testid=ik-steps] li')].length, goals: [...document.querySelectorAll('[data-testid=ik-goals] input:checked')].length }));
+  ok('RQ-03', 'starting makes a draft with its own id at once (in the address too), on step 1 of 5, with the words and the goals already filled in', w1.step === 'what' && /^REQ-\d{4}$/.test(w1.draft || '') && /draft=REQ-\d{4}/.test(p.url()) && /forty apprentices/.test(w1.need) && w1.steps === 5 && w1.goals >= 2, JSON.stringify(w1));
+  await p.click('[data-testid=ik-next]'); await p.waitForTimeout(150); await p.selectOption('[data-testid=rq-building]', 'HFD'); await p.click('[data-testid=ik-next]'); await p.waitForTimeout(150);
+  await p.locator('.rq-chips label', { hasText: 'Training and teaching' }).click(); await p.fill('[data-testid=rq-people]', '40'); await p.waitForTimeout(700); const b = await state(p);
+  ok('RQ-04', 'the picture follows the answers: forty people for training at Highfield becomes a training room, drawn beside the step', /^New training room for 40 at Highfield Academy$/.test(b.title) && b.preview && b.positions > 8, JSON.stringify([b.title, b.positions]));
+  await p.reload(); await settle(p, 500); const r = await p.evaluate(() => ({ step: document.querySelector('[data-testid=request-page]')?.dataset.step, people: document.querySelector('[data-testid=rq-people]')?.value, title: document.querySelector('[data-testid=rq-title]')?.textContent }));
+  ok('RQ-05', 'a refresh in the middle keeps the step and every answer (the draft is a record, not the page’s memory)', r.step === 'needs' && r.people === '40' && /New training room for 40 at Highfield Academy/.test(r.title || ''), JSON.stringify(r));
+  await p.click('[data-testid=ik-next]'); await p.waitForTimeout(200);
+  const png = pngOf(48, 32);
+  await p.setInputFiles('[data-testid=ik-photo-front]', { name: 'front-wall.png', mimeType: 'image/png', buffer: png }); await p.waitForTimeout(600);
+  const ph = await p.evaluate(() => ({ policy: document.querySelector('[data-testid=ik-photos]')?.dataset.policy, items: document.querySelectorAll('[data-testid=ik-checklist] li').length, atts: [...document.querySelectorAll('[data-testid=ik-att]')].map((x) => x.innerText), img: !!document.querySelector('[data-testid=ik-att] img'), done: document.querySelectorAll('[data-testid=ik-checklist] li[data-done]').length }));
+  ok('RQ-06', 'show us the space: the checklist for a new room (four photographs), the location policy said plainly, and a photograph added against its item with a preview and no measurement read from it', ph.policy === 'LOCATION_VERIFICATION_REQUIRED' && ph.items === 4 && ph.atts.length === 1 && /front-wall\.png/.test(ph.atts[0]) && /not verified/.test(ph.atts[0]) && ph.img && ph.done === 1, JSON.stringify(ph));
+  await p.click('[data-testid=ik-next]'); await p.waitForTimeout(400);
+  const rv = await p.evaluate(() => ({ secs: [...document.querySelectorAll('[data-testid^=ik-rev-]')].map((x) => x.dataset.testid), prop: document.querySelector('[data-testid=ik-proposed]')?.dataset.positions, svg: !!document.querySelector('[data-testid=ik-proposed] svg'), loc: document.querySelector('[data-testid=ik-rev-where]')?.innerText || '' }));
+  ok('RQ-07', 'review: what, where, the result, attachments, timing and next steps, each changeable; the proposed room drawn in Lite’s 3D room view; the location marked provisional', JSON.stringify(rv.secs) === JSON.stringify(['ik-rev-what', 'ik-rev-where', 'ik-rev-needs', 'ik-rev-photos', 'ik-rev-time', 'ik-rev-next']) && Number(rv.prop) === b.positions && rv.svg && /Provisional/.test(rv.loc), JSON.stringify(rv));
+  await p.click('[data-testid=rq-send]'); await settle(p, 500);
+  const rc = await p.evaluate(() => ({ h: document.querySelector('[data-testid=rq-sent] h1')?.textContent, id: document.querySelector('[data-testid=ik-rec-id]')?.textContent, prv: document.querySelector('[data-testid=ik-rec-prv]')?.textContent || '', focus: document.activeElement?.id, prop: !!document.querySelector('[data-testid=ik-proposed]') }));
+  ok('RQ-08', 'sent: “Your request has been received.”, the same id as the draft, the provisional space it created, the proposed room, focus moved to the news', rc.h === 'Your request has been received.' && rc.id === w1.draft && /^PRV-\d{4}: .+Highfield Academy, floor 1\. Awaiting review; not an operational room\./.test(rc.prv) && rc.focus === 'ik-rec-h' && rc.prop, JSON.stringify(rc));
+  await p.click('[data-testid=ik-track]'); await settle(p, 400);
+  const tr = await p.evaluate(() => ({ owner: document.querySelector('[data-testid=ik-owner]')?.textContent, next: document.querySelector('[data-testid=ik-next]')?.textContent || '', hist: document.querySelector('[data-testid=ik-history]')?.innerText || '', docs: document.querySelector('[data-testid=ik-docs]')?.innerText || '' }));
+  ok('RQ-09', 'following it: who acts next (a team, never a name), what happens next, its photograph, and its history in the platform’s event names', tr.owner === 'Systems engineering' && /someone on site confirms where the new space is/.test(tr.next) && /front-wall\.png/.test(tr.docs) && ['request.drafted', 'document.added', 'room.provisional_created', 'request.submitted'].every((e) => tr.hist.includes(e)), JSON.stringify(tr));
   await p.evaluate(() => localStorage.setItem('empathia.demo.perspective', 'syseng')); await p.goto(base + '#/intake'); await p.reload(); await settle(p, 500);
   const desk = await p.evaluate(() => document.querySelector('main').innerText);
-  ok('RQ-09', 'the Systems Engineer finds the project on the decision desk: submitted, with no estimate invented', /New training room for 40 at Highfield Academy/.test(desk) && /SUBMITTED/i.test(desk) && !/\$0\b/.test(desk), desk.slice(0, 300));
+  ok('RQ-09b', 'the Systems Engineer finds the project on the decision desk: submitted, with no estimate invented', /New training room for 40 at Highfield Academy/.test(desk) && /SUBMITTED/i.test(desk) && !/\$0\b/.test(desk), desk.slice(0, 300));
   ok('RQ-10', 'no page error and nothing leaves the page', s.errs.length === 0 && s.off.length === 0, [...s.errs, ...s.off].join(' | ')); await s.close(); }
 
 // ── more equipment in a room, from the room page, by the Service Manager ─────────────────────────────────────────────────────────
@@ -63,11 +85,44 @@ for (const role of ['visitor', 'service', 'installer', 'cxeng', 'ipm', 'steward'
   ok(`RQ-21-${role}`, `the portal does not open for a role it does not admit (${role}): the access page says so`, a.denied && !a.page); await s.close(); }
 for (const role of ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect']) { const s = await open('#/home', { role }); const p = s.page; await settle(p);
   const link = p.locator('[data-testid=rh-jump] a[href="#/request"]'); const n = await link.count(); if (n) await link.first().click(); await settle(p); const a = await state(p);
-  ok(`RQ-22-${role}`, `${role}: the start page has “Ask for something”, and it opens the portal`, n === 1 && a.page && !a.denied, JSON.stringify([n, a.page, a.denied])); await s.close(); }
+  ok(`RQ-22-${role}`, `${role}: the start page has “Ask for something”, and it opens Intake`, n === 1 && a.page && !a.denied, JSON.stringify([n, a.page, a.denied])); await s.close(); }
 { const s = await open('#/intake/new', { role: 'designer' }); const a = await state(s.page); ok('RQ-23', 'V2.5.3’s address for a new request opens the portal', a.page && !a.denied); await s.close(); }
 { const s = await open('#/campus/ATL/7/R-ATL-7-300', { role: 'ops' }); const p = s.page; await settle(p); const l = p.locator('a', { hasText: 'Ask for a change' }); const n = await l.count(); if (n) await l.first().click(); await settle(p); const a = await state(p);
   ok('RQ-24', 'a room page offers “Ask for a change”, and it opens the portal on that room', n >= 1 && a.page && a.kind === 'add-devices' && (await p.inputValue('[data-testid=rq-room]').catch(() => '')) === 'R-ATL-7-300', JSON.stringify([n, a.kind])); await s.close(); }
 { const s = await open('#/campus/ATL/7/R-ATL-7-300', { role: 'visitor' }); const p = s.page; await settle(p); ok('RQ-25', 'a visitor’s room page does not offer it', (await p.locator('a', { hasText: 'Ask for a change' }).count()) === 0); await s.close(); }
+
+// ── the other ways in: Not sure, a room by its number, duplicates, drafts kept and discarded, an unknown request (RQ-30..) ───────────
+{ const s = await open('#/request', { role: 'employee' }); const p = s.page; await settle(p);
+  await p.click('[data-testid=ik-card-unsure]'); await settle(p, 300);
+  const g = await p.evaluate(() => ({ kind: document.querySelector('[data-testid=request-page]')?.dataset.kind, steps: [...document.querySelectorAll('[data-testid=ik-steps] li')].map((x) => x.innerText.trim()) }));
+  await p.fill('[data-testid=rq-need]', 'We need to retire the old projector in the basement meeting room. It is never used.'); await p.click('[data-testid=ik-next]'); await p.waitForTimeout(150);
+  await p.click('[data-testid=ik-next]'); await p.waitForTimeout(150); await p.click('[data-testid=ik-next]'); await p.waitForTimeout(200); await p.click('[data-testid=rq-send]'); await settle(p, 400);
+  const gs = await p.evaluate(() => ({ goes: document.querySelector('[data-testid=rq-sent]')?.dataset.goes, text: document.querySelector('[data-testid=rq-sent]')?.innerText || '' }));
+  ok('RQ-30', '“Not sure?”: four steps (no technical questions), the person’s own words, and it goes to the AV operations team to be routed, with nothing decided by sending', g.kind === 'general' && g.steps.length === 4 && gs.goes === 'triage' && /AV operations/.test(gs.text) && /Nobody is assigned and no date is promised/.test(gs.text), JSON.stringify([g, gs.goes]));
+  await s.close(); }
+{ const s = await open('#/request/new/add-devices', { role: 'employee' }); const p = s.page; await settle(p);
+  await p.fill('[data-testid=rq-need]', 'A second display for the far end of the table'); await p.click('[data-testid=ik-next]'); await p.waitForTimeout(150);
+  await p.fill('[data-testid=ik-find]', '4.218'); await p.waitForTimeout(150); const hits = await p.locator('[data-testid=ik-hit]').count(); await p.locator('[data-testid=ik-hit]').first().click(); await p.waitForTimeout(200);
+  const where = await p.evaluate(() => ({ room: document.querySelector('[data-testid=rq-room]')?.value, known: document.querySelectorAll('[data-testid=rq-known] dt').length, dupes: [...document.querySelectorAll('[data-testid=ik-dupes] li')].map((x) => x.innerText) }));
+  ok('RQ-31', 'finding the room by its number chooses the room on record; what is already on record is filled in', hits >= 1 && where.room === 'R-ATL-4-218' && where.known >= 6, JSON.stringify(where));
+  ok('RQ-32', 'work already open for that room is shown before asking again (the decision desk’s projects on Atlas 4.218), without blocking', where.dupes.length >= 1 && where.dupes.some((x) => /decision desk/.test(x)) && (await p.isEnabled('[data-testid=ik-next]')), JSON.stringify(where.dupes));
+  await p.fill('[data-testid=ik-find]', 'https://northstar.example.com/e/#/lite/room/R-ATL-7-300?mode=employee'); await p.waitForTimeout(150); const qr = await p.locator('[data-testid=ik-hit]').first().getAttribute('data-room');
+  ok('RQ-33', 'the address on a room’s QR label finds that room', qr === 'R-ATL-7-300', String(qr));
+  await p.click('[data-testid=ik-later]'); await settle(p, 400); const mine = await p.evaluate(() => ({ drafts: [...document.querySelectorAll('[data-testid=ik-mine-drafts] [data-testid=rq-item]')].map((x) => x.dataset.id), url: location.hash }));
+  ok('RQ-34', '“Save and finish later” keeps the draft and lists it under My requests', mine.url === '#/requests' && mine.drafts.length === 1, JSON.stringify(mine));
+  await p.click('[data-testid=ik-resume]'); await settle(p, 400); const back = await p.evaluate(() => ({ step: document.querySelector('[data-testid=request-page]')?.dataset.step, room: document.querySelector('[data-testid=rq-room]')?.value, need: document.querySelector('[data-testid=rq-need]')?.value }));
+  ok('RQ-35', 'carrying on opens the draft where it was left, with its room', back.step === 'where' && back.room === 'R-ATL-4-218', JSON.stringify(back));
+  await p.goto(base + '#/requests'); await settle(p, 300); await p.click('[data-testid=ik-discard]'); await p.waitForTimeout(100); const asked = await p.locator('[data-testid=ik-confirm]').count();
+  await p.click('[data-testid=ik-confirm-yes]'); await p.waitForTimeout(200); const left = await p.locator('[data-testid=ik-mine-drafts] [data-testid=rq-item]').count();
+  ok('RQ-36', 'discarding a draft asks first, on the page, and then removes it', asked === 1 && left === 0, JSON.stringify([asked, left]));
+  await p.goto(base + '#/requests/REQ-9999'); await settle(p, 300); const nf = await p.evaluate(() => document.querySelector('[data-testid=ik-track]')?.dataset.found);
+  ok('RQ-37', 'a request that is not in this browser says so, and says why', nf === 'no' && /kept in the browser they were made in/.test(await p.evaluate(() => document.querySelector('main').innerText)));
+  ok('RQ-38', 'no page error and nothing leaves the page', s.errs.length === 0 && s.off.length === 0, [...s.errs, ...s.off].join(' | ')); await s.close(); }
+for (const theme of ['light', 'dark']) { const s = await open('#/request', { role: 'employee', w: 390, h: 844, theme }); const p = s.page; await settle(p);
+  const fit = async () => p.evaluate(() => { const de = document.documentElement; const small = [...document.querySelectorAll('main :is(button, select, textarea, input:not([type=radio]):not([type=checkbox]):not(.ik-file), .ik-card, .ik-nav__main a)')].filter((e) => { const r = e.getBoundingClientRect(); return r.width && r.height && r.height < 40; }).map((e) => e.textContent.trim().slice(0, 20) || e.tagName); return { over: de.scrollWidth - de.clientWidth, small }; });
+  const a = await fit(); await p.click('[data-testid=ik-card-create]'); await settle(p, 300); const b = await fit(); await p.fill('[data-testid=rq-need]', 'A room for eight'); await p.click('[data-testid=ik-next]'); await p.waitForTimeout(200); const c = await fit();
+  ok(`RQ-39-${theme}`, `phone, ${theme}: the front door and the steps fit the screen, with no sideways scroll and no control under 40 px`, [a, b, c].every((m) => m.over <= 0 && m.small.length === 0), JSON.stringify([a, b, c]));
+  await s.close(); }
 
 // ── phone, both themes: one column, no sideways scroll, every control at least 44 px, readable ───────────────────────────────────
 for (const theme of ['light', 'dark']) { const s = await open('#/request?kind=add-devices&room=R-ATL-4-218', { role: 'employee', w: 390, h: 844, theme }); const p = s.page; await settle(p); await p.click('[data-testid=rq-more-camera]'); await p.waitForTimeout(200);
