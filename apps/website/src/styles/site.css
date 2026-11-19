@@ -65,7 +65,7 @@
 /* each product's colour, by id, for components that carry data-p */
 [data-p="mission-control"] { --pc: var(--w-p-mission-control); } [data-p="lite"] { --pc: var(--w-p-lite); } [data-p="pro"] { --pc: var(--w-p-pro); }
 [data-p="search-party"] { --pc: var(--w-p-search-party); } [data-p="servicehands"] { --pc: var(--w-p-servicehands); } [data-p="commissioning"] { --pc: var(--w-p-commissioning); }
-[data-p="apex"] { --pc: var(--w-p-apex); } [data-p="field"] { --pc: var(--w-p-field); } [data-p="learn"] { --pc: var(--w-p-learn); }
+[data-p="apex"] { --pc: var(--w-p-apex); } [data-p="field"] { --pc: var(--w-p-field); } [data-p="learn"] { --pc: var(--w-p-learn); } [data-p="intake"] { --pc: var(--w-accent); }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 88px; }
@@ -842,3 +842,18 @@ p { text-wrap: pretty; }
   .worlds3 > li { scroll-snap-align: start; }
 }
 @media (prefers-reduced-motion: reduce) { .world3 img, .world3:hover img { transition: none; transform: none; } }
+
+/* Intake (founder, 19 Nov 2026 13:28): not a product, so not one product's colour: the tile beside Learn carries the whole spectrum on its
+   edge, and its page shows the steps as numbered screenshots (a real sequence). */
+.glass__tile--intake { border: 1.5px solid transparent; background: linear-gradient(var(--w-bg), var(--w-bg)) padding-box, linear-gradient(120deg, var(--w-p-mission-control), var(--w-p-lite), var(--w-p-search-party), var(--w-p-servicehands), var(--w-p-commissioning), var(--w-p-apex), var(--w-p-field), var(--w-p-learn)) border-box; }
+.glass__tile--intake .glass__ico { color: var(--w-tx); background: linear-gradient(135deg, color-mix(in srgb, var(--w-p-lite) 42%, transparent), color-mix(in srgb, var(--w-p-search-party) 38%, transparent) 55%, color-mix(in srgb, var(--w-p-servicehands) 40%, transparent)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--w-tx) 18%, transparent); }
+.glass__tile--intake::after { color: var(--w-tx); }
+@media (forced-colors: active) { .glass__tile--intake { background: Canvas; } }
+.intake-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(32px, 5vw, 64px); }
+.intake-steps > li { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); gap: clamp(18px, 3vw, 40px); align-items: center; }
+.intake-steps h3 { margin: 0 0 8px; display: flex; align-items: center; gap: 12px; font-size: clamp(19px, 1.8vw, 23px); letter-spacing: -.01em; }
+.intake-steps__n { flex: none; display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--w-tx); background: linear-gradient(135deg, color-mix(in srgb, var(--w-p-lite) 45%, transparent), color-mix(in srgb, var(--w-p-search-party) 40%, transparent)); box-shadow: inset 0 0 0 1px var(--w-line2); }
+.intake-steps p { margin: 0; color: var(--w-tx2); line-height: 1.55; max-width: 46ch; }
+.intake-steps .shot { margin: 0; }
+.intake-never { margin: 0 0 18px; padding-inline-start: 20px; display: grid; gap: 8px; line-height: 1.55; max-width: 72ch; }
+@media (max-width: 860px) { .intake-steps > li { grid-template-columns: minmax(0, 1fr); } }

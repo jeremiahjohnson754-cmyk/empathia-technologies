@@ -10,6 +10,7 @@ import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './pr
 import { TALLY_FORM } from './enquiry.js';
 import { commercialPages } from './commercial.js';
 import { fieldlinkPage } from './fieldlink.js';
+import { intakePage } from './intake.js';
 import { Follow } from './follow.js';
 import { Opening, type HeroFrame } from './opening.js';
 import { PRODUCT_LAUNCHES, START_LAUNCH, launchHref } from '../../../packages/ui/src/launches.ts';
@@ -354,6 +355,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       </div>
     ) },
     fieldlinkPage(demo),   // founder 18 Nov 2026 17:25: the optional hardware family, a concept (fieldlink.tsx)
+    intakePage(demo, ctx.captures),   // founder 19 Nov 2026 13:28: Intake, not a product, its own page with screenshots only (intake.tsx)
     { path: '/request-demo', title: 'Request a demonstration — Empathia Technologies', description: 'Request a guided demonstration of the Empathia Living Campus.', body: (
       <>
         <Hero label="Request a demonstration" title="See it with your questions" lead="A guided walk through the scenarios on synthetic data, for your team and your questions." />

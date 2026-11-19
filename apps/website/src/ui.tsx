@@ -285,13 +285,20 @@ const Glyph = ({ d }: { d: string }) => <svg className="ico" viewBox="0 0 24 24"
 /** The nine products as glass tiles under the home hero (the concept's product row, in the canonical order D37/D40), each tinted by its
  *  own colour. Navigation, not imagery: the image-led tiles further down carry the captures. */
 export const GlassRail = () => (
-  <ul className="glass" aria-label="The nine products, in lifecycle order">{PRODUCTS.map((p) => (
+  <ul className="glass" aria-label="The nine products, in lifecycle order, then Intake, where work starts">{PRODUCTS.map((p) => (
     <li key={p.id} className="glass__tile" data-p={p.id}>
       <span className="glass__ico"><Glyph d={PRODUCT_ICON[p.id] || ICONS.model!} /></span>
       <span className="glass__txt"><a href={`/products/${p.slug}`}>{p.name}</a><small>{p.purpose}</small></span>
     </li>
-  ))}</ul>
+  ))}
+    {/* founder, 19 Nov 2026 13:28: "make intake a colorful little button next to learn … it's not a product" (its page: intake.tsx) */}
+    <li className="glass__tile glass__tile--intake" data-p="intake">
+      <span className="glass__ico"><Glyph d={INTAKE_ICON} /></span>
+      <span className="glass__txt"><a href="/intake">Intake</a><small>Where work starts · not a product</small></span>
+    </li></ul>
 );
+/** Intake's mark: a request arriving in a tray. */
+const INTAKE_ICON = 'M4 13h4l1.5 3h5L16 13h4M4 13l2-7h12l2 7v6H4zM12 3v7M9 7.5 12 10l3-2.5';
 
 /** A labelled strip of glass chips (the concept's industries / workflow / architecture rows): a title block, then the chips. With
  *  `flow`, the chips are steps joined by arrows and read as an ordered list. */
