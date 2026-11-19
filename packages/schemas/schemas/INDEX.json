@@ -666,7 +666,7 @@
     {
       "file": "api/postV1IssuesIssueMeasuredException.json",
       "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueMeasuredException/0.1.0.json",
-      "sha256": "1d2a17a2111dae0f926999155bb9c6f70918ec0fe20d2d82a76acd9f41c54798"
+      "sha256": "f8820baa5b76c1e1deddc7937fb6d51d7cda7c56eed567eb1ad665a929c8a7af"
     },
     {
       "file": "api/postV1MeasuredExceptionsCodeDecide.json",

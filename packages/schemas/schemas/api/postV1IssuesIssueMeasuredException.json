@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueMeasuredException/0.1.0.json",
   "title": "POST /v1/issues/{issue}/measured-exception request body",
-  "description": "Log the exception record of a deficiency opened by a failed measured test with a criterion: why the value is poor, the root cause, the mitigation and evidence. The measured value, metric and limits are copied by the database from the measurement the current FAIL rests on",
+  "description": "Log the exception record of a deficiency opened by a failed measured test with a criterion, or by a speech transmission index at or below the commissioning standard’s 0.40: why the value is poor, the root cause, the mitigation and evidence. The measured value, metric and limits are copied by the database from the measurement the current FAIL rests on",
   "type": "object",
   "additionalProperties": false,
   "required": [
