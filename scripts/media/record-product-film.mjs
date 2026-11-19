@@ -89,8 +89,10 @@ try {
       fs.writeFileSync(path.join(out, 'RECORDING.json'), JSON.stringify({ key, title: F.title, product: F.product, recordedAt: new Date().toISOString(), duration: dur, viewport: '1280x720', colorScheme: 'dark', data: 'synthetic demonstration data', role: F.role || 'architect',
         demoBuild: build ? { commit: build.commit || build.git?.commit || null, builtAt: build.builtAt || build.at || null } : null, git: spawnSync('git', ['-C', repo, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).stdout.trim(), steps: log, ...(voice ? { voice } : {}), files }, null, 2) + '\n');
       console.log(`${key}: ${dur.toFixed(1)} s, ${log.length} steps, all proofs met · 720.mp4 ${(files['720.mp4'].bytes / 1048576).toFixed(1)} MB`);
-      // a voiced film holds each step until its line is said, so it runs longer (founder 19 Nov: the films voiced); the silent ones keep 30–45 s
-      const [lo, hi] = VOICE ? [30, 60] : [30, 45];
+      // a voiced film holds each step until its line is said, so it runs longer (founder 19 Nov: the films voiced); the silent ones keep 30–45 s.
+      // 19 Nov evening: recorded with the voice, Lite's thirteen steps run 63 s and Search Party's eleven 60 s, so a voiced product film may
+      // run to 65 s; a flow film (F-*: a room's whole life, one device followed, SIGNAL) reads ids aloud and may run to 90 s (F-LIFE: 79 s)
+      const [lo, hi] = VOICE ? [30, key.startsWith('F-') ? 90 : 65] : [30, 45];
       if (dur < lo || dur > hi) { console.error(`${key}: ${dur.toFixed(1)} s is outside ${lo}–${hi} s`); failed++; }
     } catch (e) { failed++; console.error(`${key}: NOT RECORDED — ${e.message.split('\n')[0]}`); await ctx.close().catch(() => undefined); }
     fs.rmSync(tmp, { recursive: true, force: true });

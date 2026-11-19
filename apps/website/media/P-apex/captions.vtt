@@ -1,37 +1,37 @@
 WEBVTT
 
 NOTE
-Captions of "APEX: cited hypotheses, bounded actions, blocked outcomes". The film is silent: these are the words shown on screen, one per step, written by the recorder
-(scripts/media/record-product-film.mjs) above the demonstration; each step was verified by its proof before its words appeared.
+Captions of "APEX: cited hypotheses, bounded actions, blocked outcomes". The words are shown on screen and spoken by an AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan, one line per step, as they appear;
+the recorder (scripts/media/record-product-film.mjs) drew the words above the demonstration, and each step was verified by its proof before its words appeared.
 
 1
-00:00:00.000 --> 00:00:03.220
+00:00:00.010 --> 00:00:08.100
 APEX: cited hypotheses, bounded actions, and outcomes it is not allowed to take.
 
 2
-00:00:03.220 --> 00:00:07.800
+00:00:09.220 --> 00:00:14.750
 Drill down: one case, far-end audio dropping out.
 
 3
-00:00:07.800 --> 00:00:11.750
+00:00:15.550 --> 00:00:19.210
 The layers it reasons over, each one cited.
 
 4
-00:00:11.750 --> 00:00:15.760
+00:00:19.930 --> 00:00:25.760
 A hypothesis, with the evidence for and against it.
 
 5
-00:00:15.760 --> 00:00:20.180
+00:00:26.550 --> 00:00:33.110
 What it may do alone, what needs a person, and what it may never do.
 
 6
-00:00:20.180 --> 00:00:24.040
+00:00:33.840 --> 00:00:37.200
 Every step it took, in its log.
 
 7
-00:00:24.040 --> 00:00:28.280
+00:00:38.220 --> 00:00:42.880
 Across to Search Party: the room and who answers for it.
 
 8
-00:00:28.280 --> 00:00:31.560
+00:00:42.950 --> 00:00:47.210
 And back: a person decides; APEX shows its work.

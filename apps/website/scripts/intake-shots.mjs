@@ -72,8 +72,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     await page.goto(base + `#/lite/room/${room}`, { waitUntil: 'networkidle' }); await page.waitForTimeout(800);
     const ask = page.locator('[data-testid=lite-ask-room]'); if (await ask.count()) { await ask.first().click(); } else { await page.goto(base + `#/request?room=${room}`); }
     await settle(600); await page.click('[data-testid=rq-kind-replace-device]'); await page.waitForTimeout(300);
-    const first = await page.locator('[data-testid=rq-position] option').nth(1).getAttribute('value'); await page.selectOption('[data-testid=rq-position]', first || ''); await page.waitForTimeout(300);
-    await page.fill('[data-testid=rq-need]', 'The camera loses focus on the far end of the table during calls.'); await page.waitForTimeout(500); await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(300);
+    const cam = await page.evaluate(() => [...document.querySelectorAll('[data-testid=rq-position] option')].find((o) => /camera/i.test(o.textContent || ''))?.getAttribute('value') || ''); if (!cam) { console.error('no camera in the room'); process.exit(1); } await page.selectOption('[data-testid=rq-position]', cam); await page.waitForTimeout(300);
+    await page.fill('[data-testid=rq-need]', 'The camera loses focus on the far end of the table during calls.'); await page.waitForTimeout(500); await at('.rq-cols');
     await shot('intake-8', `#/request?room=${room} (replace a device)`);
     await page.click('[data-testid=rq-send]'); await page.waitForTimeout(700); const id = await page.evaluate(() => document.querySelector('[data-testid=rq-sent]')?.dataset.id);
     await page.goto(base + `#/requests/${id}`); await settle(700); await shot('intake-9', `#/requests/${id}`);

@@ -2,91 +2,150 @@
   "key": "P-field-intelligence",
   "title": "Field Intelligence: what the collector declares, and what it may not do",
   "product": "field-intelligence",
-  "recordedAt": "2026-11-14T03:08:52.343Z",
-  "duration": 31.73,
+  "recordedAt": "2026-11-19T23:38:12.698Z",
+  "duration": 48.98,
   "viewport": "1280x720",
   "colorScheme": "dark",
   "data": "synthetic demonstration data",
   "role": "architect",
   "demoBuild": {
     "commit": null,
-    "builtAt": "2026-11-14T02:38:15.027Z"
+    "builtAt": "2026-11-19T23:05:29.841Z"
   },
-  "git": "9c9c968",
+  "git": "eca7f43",
   "steps": [
     {
       "at": 0,
-      "until": 3.22,
+      "shown": 0.01,
+      "until": 4.88,
       "say": "Field Intelligence: what the room’s collector declares before it runs.",
       "proof": "[data-testid=fi-plan]",
       "url": "/#/v25/fi"
     },
     {
-      "at": 3.22,
-      "until": 7.62,
+      "at": 4.88,
+      "shown": 5.97,
+      "until": 11.99,
       "say": "Read-only checks, on a schedule, of only what it is allowed to reach.",
       "proof": "[data-testid=fi-plan]",
       "url": "/#/v25/fi"
     },
     {
-      "at": 7.62,
-      "until": 12.02,
+      "at": 11.99,
+      "shown": 13.09,
+      "until": 19.66,
       "say": "Each result an evidence record: what was seen, and what it does not prove.",
       "proof": "[data-testid=fi-plan]",
       "url": "/#/v25/fi"
     },
     {
-      "at": 12.02,
-      "until": 15.87,
+      "at": 19.66,
+      "shown": 19.84,
+      "until": 29.7,
       "say": "Where a finding goes: a service job, with its evidence.",
       "proof": "[data-testid=stages]",
       "url": "/#/servicehands/wo/WO-0088"
     },
     {
-      "at": 15.87,
-      "until": 19.61,
+      "at": 29.7,
+      "shown": 29.84,
+      "until": 33.44,
       "say": "Into the room’s history.",
       "proof": "[data-testid=rp-scrub]",
       "url": "/#/replay/R-ATL-4-218"
     },
     {
-      "at": 19.61,
-      "until": 23.54,
+      "at": 33.44,
+      "shown": 33.82,
+      "until": 38.19,
       "say": "Each record dated, each one its own step.",
       "proof": "[data-testid=rp-card]",
       "url": "/#/replay/R-ATL-4-218?at=requirements"
     },
     {
-      "at": 23.54,
-      "until": 28.18,
+      "at": 38.19,
+      "shown": 39.77,
+      "until": 43.16,
       "say": "And the room itself, in Engineer mode.",
       "proof": "[data-testid=lite-room-3d]",
       "url": "/#/lite/room/R-ATL-4-218?mode=engineer"
     },
     {
-      "at": 28.18,
-      "until": 31.73,
+      "at": 43.16,
+      "shown": 43.3,
+      "until": 48.98,
       "say": "Back up: no collector is connected in the demonstration; the checks are simulated.",
       "proof": "[data-testid=fi-plan]",
       "url": "/#/v25/fi"
     }
   ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 4.42,
+        "sha256": "76deeabe2a6de7e708b81cb7f1817c382021f627562f57528af408873f74437c"
+      },
+      {
+        "step": 2,
+        "seconds": 5.55,
+        "sha256": "c097ba3610fa432107e303a5357295ca74e877be28383eaa12c2a9e3f0213d44"
+      },
+      {
+        "step": 3,
+        "seconds": 6.11,
+        "sha256": "3a64c2183e1fb78a21b7db6981fc981d02754ffadd9871230a7ad37671214243"
+      },
+      {
+        "step": 4,
+        "seconds": 9.41,
+        "sha256": "1bd27da95a5a546b45d24ec29430435efb35a815122bc02119da9717a3e618fb"
+      },
+      {
+        "step": 5,
+        "seconds": 2.04,
+        "sha256": "44263d103da8aeeacefeed933f80835ccbd848a5c85908f1025dd0b9e5c37326"
+      },
+      {
+        "step": 6,
+        "seconds": 3.91,
+        "sha256": "95c96dbd3040a6a4b673a3551abdd42fdd9f6c3772103aad09294a93beb63597"
+      },
+      {
+        "step": 7,
+        "seconds": 2.94,
+        "sha256": "3406524878313fc0e527b3968610ceda4d213d436f84488a9bfacf6c7a1637b8"
+      },
+      {
+        "step": 8,
+        "seconds": 5.22,
+        "sha256": "a3c075a600cc16167dee5e90766822bb325818bb1d35fa29b4ac2e079f198406"
+      }
+    ]
+  },
   "files": {
     "720.mp4": {
-      "bytes": 1124981,
-      "sha256": "48ec336be4857f212663f1192f11849118f5600e4bc79d7a4d8683186027ebf0"
+      "bytes": 2060956,
+      "sha256": "68856446a971540059485cf86fe366db99b018cc984a57f2f829b5d0aab220cd"
     },
     "poster.webp": {
-      "bytes": 46686,
-      "sha256": "f9251f10ce2182916437efee2d15ebd46bb8df907f1231f3054105adf7c27cbf"
+      "bytes": 46658,
+      "sha256": "43e42c85665761af97de8f13be368be978be0b6225f13fd9b919cac2890712d0"
     },
     "poster.jpg": {
-      "bytes": 89390,
-      "sha256": "9935632de8e05f65a17586ef625b6ed69a6dc627acee79441042058e71f81f1f"
+      "bytes": 90066,
+      "sha256": "e1a85e4538047e466bd7258908171f64b303f720fd0d08dbcd6fedc508818eef"
     },
     "captions.vtt": {
-      "bytes": 1052,
-      "sha256": "c4d27bda94b3a08a2e05b0b36894aeb48f4f0a0e3307d12739101a9aca02f8a6"
+      "bytes": 1151,
+      "sha256": "0f471fe50fc62b26187ed8649a2d5063534d1eb200b32399d1daf1dfd8f4ff55"
     }
   }
 }

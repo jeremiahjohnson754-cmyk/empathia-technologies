@@ -1,45 +1,45 @@
 WEBVTT
 
 NOTE
-Captions of "Learn: from what actually happened, to the lab, and back". The film is silent: these are the words shown on screen, one per step, written by the recorder
-(scripts/media/record-product-film.mjs) above the demonstration; each step was verified by its proof before its words appeared.
+Captions of "Learn: from what actually happened, to the lab, and back". The words are shown on screen and spoken by an AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan, one line per step, as they appear;
+the recorder (scripts/media/record-product-film.mjs) drew the words above the demonstration, and each step was verified by its proof before its words appeared.
 
 1
-00:00:00.000 --> 00:00:03.210
+00:00:00.010 --> 00:00:04.950
 Learn: reviewed cases from what actually happened on the campus.
 
 2
-00:00:03.210 --> 00:00:06.570
+00:00:05.670 --> 00:00:09.590
 Each case starts from a room and its service history.
 
 3
-00:00:06.570 --> 00:00:09.730
+00:00:10.040 --> 00:00:14.160
 Drill down: the labs, by subject.
 
 4
-00:00:09.730 --> 00:00:12.730
+00:00:14.470 --> 00:00:18.310
 Filter to one subject: equalisation.
 
 5
-00:00:12.730 --> 00:00:15.730
+00:00:18.700 --> 00:00:23.880
 One lab: notch the ringing wedge.
 
 6
-00:00:15.730 --> 00:00:19.020
+00:00:23.910 --> 00:00:29.630
 The Audio Lab: hear what one EQ band does, live in the browser.
 
 7
-00:00:19.020 --> 00:00:21.660
+00:00:29.660 --> 00:00:32.870
 The Camera Lab: see what each setting changes.
 
 8
-00:00:21.660 --> 00:00:24.810
+00:00:33.150 --> 00:00:37.280
 The IT onboarding guide, for the people new to the rooms.
 
 9
-00:00:24.810 --> 00:00:28.080
+00:00:37.380 --> 00:00:41.280
 The engineering standards manual, written for this campus.
 
 10
-00:00:28.080 --> 00:00:31.130
+00:00:41.320 --> 00:00:45.260
 Back up: every lesson linked to the record it came from.

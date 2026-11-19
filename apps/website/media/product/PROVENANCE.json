@@ -275,6 +275,168 @@
     "follow-replay-1280.webp": "9a3551fdcd54ea894c110ce140e0d46b6dec490b5b8fecf19fcecd7ad477101e",
     "follow-replay-640.webp": "92463eb8c9f10dd1a2b007c4b57e7eb8728c5ca65bb12fac49c258fba60e7160"
    }
+  },
+  "intake-1": {
+   "route": "#/request",
+   "step": "Describe it",
+   "shows": "The front door: the person types what they need; Intake reads it by word lists, not AI, and suggests where to start.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:10.131Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-1-1280.webp": "98909ffb0ce0e9575488f09a5ccf61b3cdf1ae28fed0d08aeb72a20d0fe88fc8",
+    "intake-1-640.webp": "14686be89fcc106dc8db59ed8c3de221605950e9c5f691d9283a17b7c6d6287c"
+   }
+  },
+  "intake-2": {
+   "route": "#/request/new?draft=…&step=what",
+   "step": "What you need",
+   "shows": "Step 1 of 5: the kind of request, the person’s own words and what should be better, already filled in from what they typed.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:10.971Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-2-1280.webp": "aa413146459f8223363f7386eaf52b97e4942adc6d84dce08e7ad8c4fb783eac",
+    "intake-2-640.webp": "bb4646232733a2508bc04a955e562dfa8360904b2f7d17c831723ed37b9f5960"
+   }
+  },
+  "intake-3": {
+   "route": "#/request/new?draft=…&step=where",
+   "step": "Where",
+   "shows": "Step 2: the building, the floor and a name for the space. It becomes a provisional space: requested, not built.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:12.427Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-3-1280.webp": "1c474817e54bd03adc4a78a1f258f90c7d650d2726cc6b2a48ff8dcc05b68537",
+    "intake-3-640.webp": "7348df04295f0512f597f960ac96c5e1a7e8c4e1fbf36869938b71af066935e3"
+   }
+  },
+  "intake-4": {
+   "route": "#/request/new?draft=…&step=needs",
+   "step": "What it should do",
+   "shows": "Step 3: what the room is for and how many people. The room is drawn as the answers change.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:14.114Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-4-1280.webp": "e103128d46a6af78717e598c073c3604f39c12a2e7e43a18f22ff566724ab021",
+    "intake-4-640.webp": "781b4854cc72fed6ca54c34bb8e56e0fe01c94e9e533cf8c3b97d2927a42222a"
+   }
+  },
+  "intake-5": {
+   "route": "#/request/new?draft=…&step=photos",
+   "step": "Show us the space",
+   "shows": "Step 4: the photographs that would help, for this kind of request only, and why. Optional to send.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:15.154Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-5-1280.webp": "8f4a5f8fba5caa4c349d67e97da01783b7553e187735982c471e0a8637ecda8b",
+    "intake-5-640.webp": "8412f4d53f3bff6c5de1884adb70fba72aa780d7429a659a28d62cc07dd1ce0d"
+   }
+  },
+  "intake-6": {
+   "route": "#/request/new?draft=…&step=review",
+   "step": "Review",
+   "shows": "Step 5: every answer, each changeable, and the proposed room in Empathia Lite’s 3D room view.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:16.730Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-6-1280.webp": "68fa9947ed0e584eec139d4beb324a90b466c8077b07611ec4bf14dfcfac3bca",
+    "intake-6-640.webp": "34c8c60b8ac69d1c1d5f54985c714c5fcc65ce4cbe459354a3a32dda0f2c19ef"
+   }
+  },
+  "intake-7": {
+   "route": "#/requests/REQ-0001 (received)",
+   "step": "Received",
+   "shows": "“Your request has been received.” The request id, where it stands, who acts next, and the proposed room.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:18.266Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-7-1280.webp": "6ab5f60ea714b38cf85780301d4d108c670909b188f88fb145b3d116db3bd2b7",
+    "intake-7-640.webp": "63a8373edc13dbf86cf86c661f62a9268a7a3360f08e3e5102030044ae69b928"
+   }
+  },
+  "intake-8": {
+   "route": "#/request?room=R-ATL-4-218 (replace a device)",
+   "step": "A device, from the room",
+   "shows": "From a device in a room: the room and the device are already known, so the person says what is wrong and sends it.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:21.564Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-8-1280.webp": "1b4e3eed1ea38c87a1a1d4970b83bb1bbde5c543486905d3eb051b39ef21ed62",
+    "intake-8-640.webp": "71678e1b08d2f32a9c3b3d14c6c6175e050e9cfa704c5e729114f1f670d1a1dd"
+   }
+  },
+  "intake-9": {
+   "route": "#/requests/REQ-0002",
+   "step": "Following it",
+   "shows": "The request’s own page: what is happening, who acts next, what is needed, what happens next, and its history.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:23.306Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-9-1280.webp": "380d9ce53621c26b2bbecda399b185382df5298f59e2c271fe66f5ebd09cd600",
+    "intake-9-640.webp": "33d9ad8eeb9fbc4033355c350281fca83361be1316b3f2be74379a31bec31b38"
+   }
   }
  }
 }

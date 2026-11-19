@@ -234,7 +234,7 @@ export default function Wizard({ role, query, params }: PageProps) {
       <IntakeNav role={role} here="new" />
       <section className="ik-received" data-testid="rq-sent" data-id={sent.id} data-goes={sent.goes} aria-labelledby="ik-rec-h">
         <h1 id="ik-rec-h" ref={sentRef} tabIndex={-1}>Your request has been received.</h1>
-        <dl className="ik-received__facts"><div><dt>Request</dt><dd data-testid="ik-rec-id">{sent.id}</dd></div><div><dt>Status</dt><dd><Tag tone={s.tone}>{s.words}</Tag></dd></div><div><dt>Next · {s.owner}</dt><dd>{s.next}</dd></div>
+        <dl className="ik-received__facts"><div><dt>Request</dt><dd data-testid="ik-rec-id">{sent.id}</dd></div><div><dt>Status</dt><dd data-testid="ik-rec-status"><b>{s.words}</b></dd></div><div><dt>Next · {s.owner}</dt><dd>{s.next}</dd></div>
           {sent.provisional && <div><dt>Provisional space</dt><dd data-testid="ik-rec-prv">{sent.provisional.id}: {sent.provisional.name}, {sent.provisional.buildingName}, floor {sent.provisional.floor}. Awaiting review; not an operational room.</dd></div>}</dl>
         <p className="ik-received__acts"><a className="ui-btn ui-btn--primary" href={`#/requests/${sent.id}`} data-testid="ik-track">Follow this request</a><a className="ui-btn" href="#/request">Ask for something else</a></p>
         <p className="ui-meta">{sent.title}. Nobody is assigned and no date is promised by sending. Kept in this browser; synthetic.</p>
@@ -304,7 +304,7 @@ export default function Wizard({ role, query, params }: PageProps) {
           </div>
           {last && !toolEnd && <p className="ui-meta">Sending creates {k.goes === 'desk' ? 'a project on the decision desk' : k.goes === 'servicehands' ? 'a job in ServiceHands' : 'a request for the AV operations team to route'}. Nothing is ordered, approved or changed by asking.</p>}
         </div>
-        {(step === 'needs' || step === 'where') && proposedSide && <aside className="ik-side rq-side" aria-live="polite" aria-label="What you are asking for"><h2 className="build__h">What you are asking for</h2>{proposedSide}</aside>}
+        {(step === 'needs' || step === 'where') && proposedSide && <aside className="ik-side" aria-live="polite" aria-label="What you are asking for"><h2 className="build__h">What you are asking for</h2>{proposedSide}</aside>}
       </div>
     </div>
   );

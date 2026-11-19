@@ -2,105 +2,176 @@
   "key": "P-servicehands",
   "title": "ServiceHands: from a report to the fix, with the room’s history",
   "product": "servicehands",
-  "recordedAt": "2026-11-14T02:58:16.129Z",
-  "duration": 31.89,
+  "recordedAt": "2026-11-19T23:32:23.188Z",
+  "duration": 58.27,
   "viewport": "1280x720",
   "colorScheme": "dark",
   "data": "synthetic demonstration data",
   "role": "architect",
   "demoBuild": {
     "commit": null,
-    "builtAt": "2026-11-14T02:38:15.027Z"
+    "builtAt": "2026-11-19T23:05:29.841Z"
   },
-  "git": "9c9c968",
+  "git": "eca7f43",
   "steps": [
     {
       "at": 0,
-      "until": 2.65,
+      "shown": 0.01,
+      "until": 6.3,
       "say": "ServiceHands: every service job, from the first report to the fix.",
       "proof": "[data-testid=jobs]",
       "url": "/#/servicehands"
     },
     {
-      "at": 2.65,
-      "until": 5.5,
+      "at": 6.3,
+      "shown": 6.73,
+      "until": 13.23,
       "say": "Anyone can report a problem: the room, what is wrong, in their own words.",
       "proof": "[data-testid=in-title]",
       "url": "/#/servicehands/new"
     },
     {
-      "at": 5.5,
-      "until": 10.66,
+      "at": 13.23,
+      "shown": 14.88,
+      "until": 19.73,
       "say": "Reported in a sentence; nothing is sent in the demonstration.",
       "proof": "[data-testid=in-submit]",
       "url": "/#/servicehands/new"
     },
     {
-      "at": 10.66,
-      "until": 13.68,
+      "at": 19.73,
+      "shown": 20.14,
+      "until": 23.76,
       "say": "Drill down: one job, through its stages.",
       "proof": "[data-testid=stages]",
       "url": "/#/servicehands/wo/WO-0088"
     },
     {
-      "at": 13.68,
-      "until": 17.02,
+      "at": 23.76,
+      "shown": 24.48,
+      "until": 29.21,
       "say": "Who answers for the room, and who covers when they are away.",
       "proof": "[data-testid=connect-who]",
       "url": "/#/servicehands/wo/WO-0088"
     },
     {
-      "at": 17.02,
-      "until": 20.15,
+      "at": 29.21,
+      "shown": 29.67,
+      "until": 35.76,
       "say": "The room’s own history, so the fix starts from what happened before.",
       "proof": "[data-testid=rp-scrub]",
       "url": "/#/replay/R-ATL-4-218"
     },
     {
-      "at": 20.15,
-      "until": 23.08,
+      "at": 35.76,
+      "shown": 36.05,
+      "until": 40.08,
       "say": "Step through it, one dated record at a time.",
       "proof": "[data-testid=rp-card]",
       "url": "/#/replay/R-ATL-4-218?at=requirements"
     },
     {
-      "at": 23.08,
-      "until": 25.86,
+      "at": 40.08,
+      "shown": 40.15,
+      "until": 46.34,
       "say": "Back up to the dispatch board: the same job, in its column.",
       "proof": "[data-testid=board]",
       "url": "/#/service?id=ISS-0417"
     },
     {
-      "at": 25.86,
-      "until": 28.86,
+      "at": 46.34,
+      "shown": 46.75,
+      "until": 51.38,
       "say": "Coverage: who is on, where, and when.",
       "proof": "[data-testid=coverage]",
       "url": "/#/service/coverage"
     },
     {
-      "at": 28.86,
-      "until": 31.89,
+      "at": 51.38,
+      "shown": 51.43,
+      "until": 58.27,
       "say": "One record from report to fix, shared with every other product.",
       "proof": "[data-testid=jobs]",
       "url": "/#/servicehands"
     }
   ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 5.83,
+        "sha256": "3e3bf63ccb813b467ab2850c7cb268afc2659ab5f9f1d68aca7bd9a4fb8a8ae5"
+      },
+      {
+        "step": 2,
+        "seconds": 6.05,
+        "sha256": "d6c9ccaa3a314862a35117ac546aa6b78461126d51261485cb42642fdbde11d3"
+      },
+      {
+        "step": 3,
+        "seconds": 4.39,
+        "sha256": "de75e7251a56b48889c93839d118053388c0bc5bd6475f4b438aa4ecb09d903d"
+      },
+      {
+        "step": 4,
+        "seconds": 3.16,
+        "sha256": "5aa9f7d5559663de839d0866816fe29e4bec1e6cc7eebe6a95c0a8482537ce9c"
+      },
+      {
+        "step": 5,
+        "seconds": 4.27,
+        "sha256": "5b761512ca32b4f7afd3184a44c12e004ab8cab59af4b18652c7d10a42c74e2e"
+      },
+      {
+        "step": 6,
+        "seconds": 5.63,
+        "sha256": "2faf5896d1e49ce37405c13077f071bba7c43ece9f781764f6b17bee37d1454d"
+      },
+      {
+        "step": 7,
+        "seconds": 3.57,
+        "sha256": "2c4f90a6dd5527cdd2cc18c784f728396bca8a13572eb44bb0cfc74d36c354d3"
+      },
+      {
+        "step": 8,
+        "seconds": 5.73,
+        "sha256": "4693f639710546410c20faccbbaa5315a6720e23e3ad2c8c5df820d39a6ef55a"
+      },
+      {
+        "step": 9,
+        "seconds": 4.17,
+        "sha256": "b6adb7ef8fdda575e009f0bb2f40eb5f654ff6eb7ee323604e5f4e406d33dc42"
+      },
+      {
+        "step": 10,
+        "seconds": 6.37,
+        "sha256": "d06e04ee4f151ab630287ed3b73044c4fff833ab372d3d195b94333e3c392e30"
+      }
+    ]
+  },
   "files": {
     "720.mp4": {
-      "bytes": 1151692,
-      "sha256": "b2f3fbbc61defd78dcd1fe59cc23017742ea33f2856189aace4e8762e5ba9f9d"
+      "bytes": 2122068,
+      "sha256": "6adee3867c7b60c89191e4495292caffb39e6b1efd7fed65e5b15b8afea7b082"
     },
     "poster.webp": {
-      "bytes": 45070,
-      "sha256": "d2bcb764eec7faecc31c9e331a35584409de50de07acdaff74b143f32c4f3195"
+      "bytes": 45756,
+      "sha256": "c879ead485c312f75e1fa57d2f4cf2fb51b7c1fb48379b3d81e949db3f32393b"
     },
     "poster.jpg": {
-      "bytes": 87529,
-      "sha256": "87bbaf675042f9c315e6fa69e46d16fe0a03908377053ad5ec08f9cf01ef5778"
+      "bytes": 87745,
+      "sha256": "6ad780642096b7bbd08ea9dbb2c4b8693a69a0d1322e40bc13f1521b09ac5d38"
     },
     "captions.vtt": {
-      "bytes": 1231,
-      "sha256": "37377e85e576c5e38c4543cf970e06a4fc8031b3074503872a61e4e551ca15f7"
+      "bytes": 1330,
+      "sha256": "64582f5ddd8180d2c063f0bdfe27e82f10a94fecfcc2a422550275378197c84c"
     }
   }
 }

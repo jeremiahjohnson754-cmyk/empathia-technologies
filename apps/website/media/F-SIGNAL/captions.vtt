@@ -1,33 +1,33 @@
 WEBVTT
 
 NOTE
-Captions of "SIGNAL: Ten Seats, played". The film is silent: these are the words shown on screen, one per step, written by the recorder
-(scripts/media/record-product-film.mjs) above the demonstration; each step was verified by its proof before its words appeared.
+Captions of "SIGNAL: Ten Seats, played". The words are shown on screen and spoken by an AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan, one line per step, as they appear;
+the recorder (scripts/media/record-product-film.mjs) drew the words above the demonstration, and each step was verified by its proof before its words appeared.
 
 1
-00:00:00.000 --> 00:00:03.630
+00:00:00.020 --> 00:00:08.870
 SIGNAL, season 1, episode 1: Ten Seats. A mystery, solved with geometry.
 
 2
-00:00:03.630 --> 00:00:08.300
+00:00:09.350 --> 00:00:13.550
 The case: ten seats where the sound goes hollow.
 
 3
-00:00:08.300 --> 00:00:13.980
+00:00:14.480 --> 00:00:19.800
 Generated footage of a fictional sanctuary, labelled as such in the film.
 
 4
-00:00:13.980 --> 00:00:19.490
+00:00:20.430 --> 00:00:25.050
 A decision stops the film in the frame: what do you do first?
 
 5
-00:00:19.490 --> 00:00:25.500
+00:00:26.000 --> 00:00:31.830
 Measure it yourself: each hollow seat’s notch, from the room’s own geometry.
 
 6
-00:00:25.500 --> 00:00:31.250
+00:00:32.520 --> 00:00:38.760
 Test the fill: turn it down, and the notches get shallower, not gone.
 
 7
-00:00:31.250 --> 00:00:36.850
+00:00:39.810 --> 00:00:45.310
 Re-aim it, and verify: the ten seats’ deep notches are gone.

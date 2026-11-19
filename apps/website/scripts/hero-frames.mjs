@@ -20,7 +20,8 @@ export const FRAMES = [
   { id: 'overlays', label: 'Its systems', route: '#/lite/room/R-ATL-4-218?mode=engineer', el: 'lite-room-3d', trim: [0.07, 0.12, 0, 0.02], as: 'syseng', what: 'the same room with camera coverage and microphone pickup drawn on it' },
   { id: 'floor', label: 'Its floor', route: '#/lite/b/ATL/4', el: 'lite-floor-3d', trim: [0.02, 0.09, 0, 0], as: 'syseng', what: 'floor 4 of Atlas HQ, every room on it' },
   { id: 'building', label: 'Its building', route: '#/lite/b/ATL', el: 'lite-building-3d', trim: [0.02, 0.09, 0, 0], as: 'syseng', what: 'Atlas HQ, its floors drawn apart' },
-  { id: 'campus', label: 'The campus', route: '#/lite', el: 'lite-campus-3d', trim: [0.02, 0.09, 0, 0], as: 'syseng', what: 'the demonstration campus, every building' },
+  { id: 'campus', label: 'The campus', route: '#/lite', el: 'lite-campus-3d', trim: [0.17, 0.09, 0, 0],   // 19 Nov: the Lite campus is the map, whose search and Campus button sit along its top edge
+    as: 'syseng', what: 'the demonstration campus, every building' },
   { id: 'estate', label: 'The estate', route: '#/pro/issues', el: 'pro-failure-map', trim: [0, 0, 0, 0], as: 'ops', what: 'the failure map: every building’s open issues, from the same records' },
 ];
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.mp3': 'audio/mpeg', '.mp4': 'video/mp4', '.glb': 'model/gltf-binary' };

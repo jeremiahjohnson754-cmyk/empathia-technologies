@@ -82,7 +82,28 @@ The scripts (all in the repository):
 **Not done:** nobody has listened to all 67 takes. The founder heard one line (G9) in Ryan and Aiden. A listening pass, and the founder's
 choice of voice, remain open.
 
-## The website's films
+## The website's films (19 Nov 2026)
 
-Recorded again with the voice by `scripts/media/record-product-film.mjs --voice=<dir>`: each step's line is read as its words appear and
-the step holds until the line is said. Their results are added here when they are recorded.
+**The takes.** 110 lines, one per step of the twelve films (P-* and F-LIFE, F-FOLLOW, F-SIGNAL), the step's own on-screen words in their
+spoken form, in the same preset voice Ryan. The first 107 were lost on the build machine (a check for half-written files ran with a Python
+that could not read audio, and deleted them); all 110 were generated again from the same spoken forms.
+
+**Heard back.** Every take was transcribed by Whisper base.en and compared word by word with its spoken form
+(`media/narration-qwen/FILM_CHECKS.json`: what each says, what was heard, the word error rate, the prepared length, the fingerprint).
+The mean word error rate is 0.11; the higher ones are the recogniser writing digits for spelled ids ("4.218" for "four point two one
+eight", "AS0097" for "A-S zero zero nine seven") and mishearing names ("Light" for "Lite", "Hatless HQ" for "Atlas H-Q").
+
+**Five takes replaced.** A take was replaced, once, from the same spoken form when the recogniser heard a sound before the first word that
+is not in the line, or when its speech ran under 0.8 written words a second with no pause to explain it: P-lite-03 (a sound first, and
+11.6 s of speech for an 8-word line), P-lite-09 (5 words stretched over 6.7 s), P-lite-11, P-search-party-10 and P-commissioning-04 (a
+sound first, heard as "Uh-huh", "Mm-hmm", "Uh-uh"). All five new takes say their lines. The replaced takes are not shipped.
+
+**Prepared** by `scripts/media/qwen-film-takes.py`: trimmed to 0.05 s before the first sound and 0.1 s after the last, one gain to
+−23 LUFS, 48 kHz mono. 532.2 s of voice in all.
+
+**Recorded** by `scripts/media/record-product-film.mjs --voice=<dir>`: each step's line is read as its words appear, the step holds until
+the line is said, the mix is levelled to −16 LUFS, and the captions run from each line's start to the next step. Each film's RECORDING.json
+names the voice; `apps/website/films.json` carries the disclosure "The voice reading the words on screen is AI-generated (synthetic, not a
+real person): Qwen3-TTS preset voice Ryan."
+
+**Not done:** nobody has listened to all 110 takes. The founder's choice between Ryan and Aiden (sent with G9 on 19 Nov) is still open.

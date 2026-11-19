@@ -133,7 +133,10 @@ const files = walk(dist); const manifest = { app: '@empathia/website', sourceCom
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
 const home = manifest.files['index.html'].bytes, js = manifest.files['site.js'].bytes;
 const themeJs = manifest.files['theme-init.js'].bytes; const fonts = ['inter-400.woff2', 'inter-600.woff2', 'inter-display-800.woff2'].reduce((a, f) => a + manifest.files[`fonts/${f}`].bytes, 0);   // the three preloaded faces (D38)
-const capBytes = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/product/')).reduce((a, [, v]) => a + v.bytes, 0);
+const capBytes = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/product/') && !f.startsWith('media/product/intake-')).reduce((a, [, v]) => a + v.bytes, 0);
+// 19 Nov 2026 (founder 13:28: Intake "given its own space … screenshots only"): the /intake page's nine screenshots are lazy, shown on that
+// page only, and counted in a budget of their own rather than the product captures'
+{ const ib = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/product/intake-')).reduce((a, [, v]) => a + v.bytes, 0); if (ib > 640 * 1024) { console.error(`BUDGET EXCEEDED: Intake screenshots ${ib} B (limit 655360)`); process.exit(1); } }
 { const hb = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/hero/')).reduce((a, [, v]) => a + v.bytes, 0); if (hb > 400 * 1024) { console.error(`BUDGET EXCEEDED: home opening frames ${hb} B (limit 409600)`); process.exit(1); } }   // six frames, two sizes
 // CHANGED 19 Nov 2026: home 48 → 50 KB for the founder-requested three-worlds section (09:09 G, 1.4 KB of HTML after trimming); the
 // images it shows are lazy and counted in the captures budget, which is unchanged.

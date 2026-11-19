@@ -1,0 +1,1128 @@
+{
+ "$description": "The voice takes of the website recorded films (Qwen3-TTS preset voice Ryan): what each says (its spoken form), what Whisper base.en heard, the word error rate against the spoken form, the prepared take length and its fingerprint. Recogniser differences are mostly numbers written as digits and names misheard; see docs/media/QWEN_TOUR_NARRATION.md.",
+ "replaced": [
+  {
+   "id": "P-lite-03",
+   "why": "a sound before the first word, and 11.6 s of speech for an 8-word line"
+  },
+  {
+   "id": "P-lite-09",
+   "why": "5 words stretched over 6.7 s with no pause"
+  },
+  {
+   "id": "P-lite-11",
+   "why": "a sound before the first word (heard as “Uh-huh”)"
+  },
+  {
+   "id": "P-search-party-10",
+   "why": "a sound before the first word (heard as “Mm-hmm”)"
+  },
+  {
+   "id": "P-commissioning-04",
+   "why": "a sound before the first word (heard as “Uh-uh”)"
+  }
+ ],
+ "replacementRule": "One new take from the same spoken form when the recogniser hears a sound before the first word that is not in the line, or the speech runs under 0.8 written words a second with no pause to explain it. Each replaced take was replaced once; all five new takes say their lines.",
+ "takes": [
+  {
+   "id": "P-lite-01",
+   "film": "P-lite",
+   "step": 1,
+   "said": "Lite opens on the campus, in three-D. Every building is a button.",
+   "heard": "Light opens on the campus in 3D. Every building is a button.",
+   "wer": 0.231,
+   "seconds": 4.45,
+   "sha256": "4cbc970ccf6a7dc5cc3825adcdbf1fd8c4d83e7a987b86a8f3fc6367f313e897"
+  },
+  {
+   "id": "P-lite-02",
+   "film": "P-lite",
+   "step": 2,
+   "said": "Drill down: Atlas H-Q, its floors drawn apart.",
+   "heard": "Drill down Hatless HQ. Its floors drawn apart.",
+   "wer": 0.333,
+   "seconds": 4.1,
+   "sha256": "fbc7d877a40a35568fcab62abcca84438ad19706ad4a53d5a199f9ede537b0cb"
+  },
+  {
+   "id": "P-lite-03",
+   "film": "P-lite",
+   "step": 3,
+   "said": "Floor 4: corridor, lifts, stairs, and every room.",
+   "heard": "Floor 4 corridor lifts, stares, and every room.",
+   "wer": 0.125,
+   "seconds": 5.42,
+   "sha256": "ed271c2650f937e8ec1911a1ebc9db515b5d14652017088b62c50a6b6def8b6d"
+  },
+  {
+   "id": "P-lite-04",
+   "film": "P-lite",
+   "step": 4,
+   "said": "Room four point two one eight, furnished, in three-D.",
+   "heard": "Room 4.218, furnished in 3D.",
+   "wer": 0.7,
+   "seconds": 4.76,
+   "sha256": "9d69244e470fc32bb21ffb91f42400cea68e268384535d9ccc302fa25c042797"
+  },
+  {
+   "id": "P-lite-05",
+   "film": "P-lite",
+   "step": 5,
+   "said": "Engineer mode: the same room, with its equipment.",
+   "heard": "Engineer mode, the same room with its equipment.",
+   "wer": 0.0,
+   "seconds": 2.94,
+   "sha256": "43c2c532213275b785cbc624182622312609bed9d61f7269d2038e5bcbc0516d"
+  },
+  {
+   "id": "P-lite-06",
+   "film": "P-lite",
+   "step": 6,
+   "said": "Coverage, right on the room: camera views.",
+   "heard": "Covered right on the room, camera views?",
+   "wer": 0.143,
+   "seconds": 3.08,
+   "sha256": "c5cc03099e7a12d1262957d17ca439b844eb95544b1f8099173cb1b87446f3cd"
+  },
+  {
+   "id": "P-lite-07",
+   "film": "P-lite",
+   "step": 7,
+   "said": "Microphone pickup, with its figure.",
+   "heard": "Microphone pick up with its figure.",
+   "wer": 0.4,
+   "seconds": 2.85,
+   "sha256": "66952be28ab1953419aeebe5305e4f9a4ac67e6db839481ac49ca3f453fc574f"
+  },
+  {
+   "id": "P-lite-08",
+   "film": "P-lite",
+   "step": 8,
+   "said": "Layers: designed, commissioned, current, proposed.",
+   "heard": "Leia's designed, commissioned, current, proposed",
+   "wer": 0.2,
+   "seconds": 3.56,
+   "sha256": "8fe3c2a448dec26cc9d09cd0ec6d2e352fd36245ca362ecd88d24c0608e72deb"
+  },
+  {
+   "id": "P-lite-09",
+   "film": "P-lite",
+   "step": 9,
+   "said": "The floor plan, to scale.",
+   "heard": "The floor plan to scale.",
+   "wer": 0.0,
+   "seconds": 2.44,
+   "sha256": "249be3ca7ebb14b8a4f98a64a33999d266cbd16267e709138242f840a3356a4d"
+  },
+  {
+   "id": "P-lite-10",
+   "film": "P-lite",
+   "step": 10,
+   "said": "Eye level, from the back row.",
+   "heard": "I level from the back row.",
+   "wer": 0.167,
+   "seconds": 2.47,
+   "sha256": "0577be64b0d6a8d438cbdb1d098228b34f8f7e8013823aefce0c1932d0b1b38d"
+  },
+  {
+   "id": "P-lite-11",
+   "film": "P-lite",
+   "step": 11,
+   "said": "Drill back up: the floor,",
+   "heard": "Drill back up. The floor.",
+   "wer": 0.0,
+   "seconds": 2.48,
+   "sha256": "ae457f3a1374af1b9d945481b57fd83dea6f1c7443277c592adfe7dac0045077"
+  },
+  {
+   "id": "P-lite-12",
+   "film": "P-lite",
+   "step": 12,
+   "said": "the building,",
+   "heard": "The building",
+   "wer": 0.0,
+   "seconds": 1.03,
+   "sha256": "a59b75312c1481b84329eef6daf6207dc2f089b878be015f6a27119ccb8caf38"
+  },
+  {
+   "id": "P-lite-13",
+   "film": "P-lite",
+   "step": 13,
+   "said": "and the campus. One record, every level.",
+   "heard": "And the campus, one record, every level.",
+   "wer": 0.0,
+   "seconds": 6.43,
+   "sha256": "b218af40d52b679886f4b35e55df45ef617bf7cb9b860d9ffae6ded1dc002a17"
+  },
+  {
+   "id": "P-search-party-01",
+   "film": "P-search-party",
+   "step": 1,
+   "said": "Search Party: one search across rooms, devices, people and issues.",
+   "heard": "Search party once search across rooms, devices, people, and issues.",
+   "wer": 0.1,
+   "seconds": 4.69,
+   "sha256": "50faee15e058bcf393cab0608c3fad325cdf145fb61111a21a335ff5e6f759ac"
+  },
+  {
+   "id": "P-search-party-02",
+   "film": "P-search-party",
+   "step": 2,
+   "said": "Ask in plain words: who knows Atlas four point two one eight?",
+   "heard": "Asking plain words. Who knows atlas 4.218.",
+   "wer": 0.583,
+   "seconds": 4.81,
+   "sha256": "aec9845f9fd228501eddd8274aaf2f202e6c50a051192c588b37ce51ab6625ea"
+  },
+  {
+   "id": "P-search-party-03",
+   "film": "P-search-party",
+   "step": 3,
+   "said": "The people who answer for the room, and how they are connected.",
+   "heard": "The people who answer for the room and how they are connected.",
+   "wer": 0.0,
+   "seconds": 4.46,
+   "sha256": "5e915be4922e0851f2ea0118fd33031e72c69427f66bcb0040a9f401760e73bc"
+  },
+  {
+   "id": "P-search-party-04",
+   "film": "P-search-party",
+   "step": 4,
+   "said": "Drill down: the room, and everything linked to it.",
+   "heard": "Trill down. The room and everything link to it.",
+   "wer": 0.222,
+   "seconds": 4.05,
+   "sha256": "91bc945d76ade805210e1257c910ae69889dc049c6407b5c541fedb3c1641e17"
+  },
+  {
+   "id": "P-search-party-05",
+   "film": "P-search-party",
+   "step": 5,
+   "said": "A person: who they are, what they answer for, and their backup.",
+   "heard": "A person who they are, what they answer for, and their backup.",
+   "wer": 0.0,
+   "seconds": 5.19,
+   "sha256": "c9617a932e99b27f39aa929709cd2c85989ce0be48ce363625238113233e53c3"
+  },
+  {
+   "id": "P-search-party-06",
+   "film": "P-search-party",
+   "step": 6,
+   "said": "Every room they look after, each one a way in.",
+   "heard": "Every room they look after, each one away in.",
+   "wer": 0.2,
+   "seconds": 3.59,
+   "sha256": "9dbc87ba0c87e5fea816fd6f7de0822cb5049247890aa8cf818722f27567b62d"
+  },
+  {
+   "id": "P-search-party-07",
+   "film": "P-search-party",
+   "step": 7,
+   "said": "Ask what breaks: if this switch fails, what is affected?",
+   "heard": "Ask what breaks. If this switch fails, what is affected?",
+   "wer": 0.0,
+   "seconds": 3.72,
+   "sha256": "cb9e6e73281b41682b5546675ab0fffafb2168f468517dd755ec7008087e7283"
+  },
+  {
+   "id": "P-search-party-08",
+   "film": "P-search-party",
+   "step": 8,
+   "said": "Every affected room and device, listed first, then drawn.",
+   "heard": "Every affected room device listed first, then drawn.",
+   "wer": 0.111,
+   "seconds": 4.56,
+   "sha256": "8c6da47ec0c0aa4f4d1604911affa6bacf66ea9eaeaae8f186332c43811cc631"
+  },
+  {
+   "id": "P-search-party-09",
+   "film": "P-search-party",
+   "step": 9,
+   "said": "Into one of them: Atlas four point two one eight, on the campus.",
+   "heard": "and to one of them, atlas4.218 on the campus.",
+   "wer": 0.615,
+   "seconds": 6.69,
+   "sha256": "6a51c09175bbc8efef87e79bb68bb8f0b3554b255d3a4b2557e4ea44a28561d4"
+  },
+  {
+   "id": "P-search-party-10",
+   "film": "P-search-party",
+   "step": 10,
+   "said": "And back up to its relationships.",
+   "heard": "and back up to its relationships.",
+   "wer": 0.0,
+   "seconds": 2.31,
+   "sha256": "bdb6d5f186dad26536d286074c45a502f62006f3e1b164bcbda13447b8eb3576"
+  },
+  {
+   "id": "P-search-party-11",
+   "film": "P-search-party",
+   "step": 11,
+   "said": "One record behind every answer, with where each link came from.",
+   "heard": "One record behind every answer with where each link came from.",
+   "wer": 0.0,
+   "seconds": 4.25,
+   "sha256": "21723798c23d1e10c3b4d985020782ace03d5e03248c5bcfcbeada4640625211"
+  },
+  {
+   "id": "P-servicehands-01",
+   "film": "P-servicehands",
+   "step": 1,
+   "said": "ServiceHands: every service job, from the first report to the fix.",
+   "heard": "service hands every service job from the first report to the fix",
+   "wer": 0.182,
+   "seconds": 5.83,
+   "sha256": "3e3bf63ccb813b467ab2850c7cb268afc2659ab5f9f1d68aca7bd9a4fb8a8ae5"
+  },
+  {
+   "id": "P-servicehands-02",
+   "film": "P-servicehands",
+   "step": 2,
+   "said": "Anyone can report a problem: the room, what is wrong, in their own words.",
+   "heard": "Anyone can report a problem, the room, what is wrong, and their own words.",
+   "wer": 0.071,
+   "seconds": 6.05,
+   "sha256": "d6c9ccaa3a314862a35117ac546aa6b78461126d51261485cb42642fdbde11d3"
+  },
+  {
+   "id": "P-servicehands-03",
+   "film": "P-servicehands",
+   "step": 3,
+   "said": "Reported in a sentence; nothing is sent in the demonstration.",
+   "heard": "Reported in a sentence, nothing is sent in the demonstration.",
+   "wer": 0.0,
+   "seconds": 4.39,
+   "sha256": "de75e7251a56b48889c93839d118053388c0bc5bd6475f4b438aa4ecb09d903d"
+  },
+  {
+   "id": "P-servicehands-04",
+   "film": "P-servicehands",
+   "step": 4,
+   "said": "Drill down: one job, through its stages.",
+   "heard": "Drill down one job through its stages.",
+   "wer": 0.0,
+   "seconds": 3.16,
+   "sha256": "5aa9f7d5559663de839d0866816fe29e4bec1e6cc7eebe6a95c0a8482537ce9c"
+  },
+  {
+   "id": "P-servicehands-05",
+   "film": "P-servicehands",
+   "step": 5,
+   "said": "Who answers for the room, and who covers when they are away.",
+   "heard": "who answers for the room and who covers when they are away.",
+   "wer": 0.0,
+   "seconds": 4.27,
+   "sha256": "5b761512ca32b4f7afd3184a44c12e004ab8cab59af4b18652c7d10a42c74e2e"
+  },
+  {
+   "id": "P-servicehands-06",
+   "film": "P-servicehands",
+   "step": 6,
+   "said": "The room’s own history, so the fix starts from what happened before.",
+   "heard": "The room's own history, so the fix starts from what happened before.",
+   "wer": 0.0,
+   "seconds": 5.63,
+   "sha256": "2faf5896d1e49ce37405c13077f071bba7c43ece9f781764f6b17bee37d1454d"
+  },
+  {
+   "id": "P-servicehands-07",
+   "film": "P-servicehands",
+   "step": 7,
+   "said": "Step through it, one dated record at a time.",
+   "heard": "Step through it. One dated record at a time.",
+   "wer": 0.0,
+   "seconds": 3.57,
+   "sha256": "2c4f90a6dd5527cdd2cc18c784f728396bca8a13572eb44bb0cfc74d36c354d3"
+  },
+  {
+   "id": "P-servicehands-08",
+   "film": "P-servicehands",
+   "step": 8,
+   "said": "Back up to the dispatch board: the same job, in its column.",
+   "heard": "Back up to the dispatch board, the same job in its column.",
+   "wer": 0.0,
+   "seconds": 5.73,
+   "sha256": "4693f639710546410c20faccbbaa5315a6720e23e3ad2c8c5df820d39a6ef55a"
+  },
+  {
+   "id": "P-servicehands-09",
+   "film": "P-servicehands",
+   "step": 9,
+   "said": "Coverage: who is on, where, and when.",
+   "heard": "coverage. Who is on? Where and when?",
+   "wer": 0.0,
+   "seconds": 4.17,
+   "sha256": "b6adb7ef8fdda575e009f0bb2f40eb5f654ff6eb7ee323604e5f4e406d33dc42"
+  },
+  {
+   "id": "P-servicehands-10",
+   "film": "P-servicehands",
+   "step": 10,
+   "said": "One record from report to fix, shared with every other product.",
+   "heard": "One record from report to fix, shared with every other product.",
+   "wer": 0.0,
+   "seconds": 6.37,
+   "sha256": "d06e04ee4f151ab630287ed3b73044c4fff833ab372d3d195b94333e3c392e30"
+  },
+  {
+   "id": "P-commissioning-01",
+   "film": "P-commissioning",
+   "step": 1,
+   "said": "Commissioning: every room on the campus, and what needs attention.",
+   "heard": "Commissioning every room on the campus, and what needs attention.",
+   "wer": 0.0,
+   "seconds": 4.34,
+   "sha256": "177002bdbfedaaf49a6f4799fc5ceca92a57027514364f07e42a1932c1b0265e"
+  },
+  {
+   "id": "P-commissioning-02",
+   "film": "P-commissioning",
+   "step": 2,
+   "said": "Drill down: one room, through its phases.",
+   "heard": "Drill down one room through its phases.",
+   "wer": 0.0,
+   "seconds": 4.12,
+   "sha256": "62aa70ad9a3ff4842ed1035fb20f44428869deb3ec6f86ceab59afded79adf85"
+  },
+  {
+   "id": "P-commissioning-03",
+   "film": "P-commissioning",
+   "step": 3,
+   "said": "Every check, with its evidence and who ran it.",
+   "heard": "Every check with its evidence in who ran in.",
+   "wer": 0.222,
+   "seconds": 3.92,
+   "sha256": "d31a182b8d6a4b87729e6d79ed219d479b3d1b60b6efb110fc8fa1e9bdf84a73"
+  },
+  {
+   "id": "P-commissioning-04",
+   "film": "P-commissioning",
+   "step": 4,
+   "said": "Traceability: from the requirement to the test that proves it.",
+   "heard": "It's traceability from the requirement to the test that proves it.",
+   "wer": 0.1,
+   "seconds": 5.81,
+   "sha256": "5a273bf3299c6d245b6722c2ae99c2678e7762f3cad5e0dbf0a97eb23d051eed"
+  },
+  {
+   "id": "P-commissioning-05",
+   "film": "P-commissioning",
+   "step": 5,
+   "said": "The room’s deficiencies, each with an owner.",
+   "heard": "The room's deficiencies, each with an owner.",
+   "wer": 0.0,
+   "seconds": 3.2,
+   "sha256": "6e21900a0ca36bf853447216dd74f9d4b82af71c14e6d7ff910dc768b201a8b5"
+  },
+  {
+   "id": "P-commissioning-06",
+   "film": "P-commissioning",
+   "step": 6,
+   "said": "Assurance: the room in its four states.",
+   "heard": "Assurance. The room in its four states.",
+   "wer": 0.0,
+   "seconds": 3.26,
+   "sha256": "19bd6e914c9d7777ea4d0533630e6ed9f2af220470500b26cc578d49a70a6470"
+  },
+  {
+   "id": "P-commissioning-07",
+   "film": "P-commissioning",
+   "step": 7,
+   "said": "Run the checks again, on a simulated system: a simulation never proves commissioning.",
+   "heard": "Run the checks again on a simulated system. A simulation never proves commissioning.",
+   "wer": 0.0,
+   "seconds": 6.13,
+   "sha256": "61ab9471302b6dc3f1f2964681a35e49e8e73c378ca756455410ad7c06197503"
+  },
+  {
+   "id": "P-commissioning-08",
+   "film": "P-commissioning",
+   "step": 8,
+   "said": "Back up: every open deficiency across the campus,",
+   "heard": "Back up. Every open deficiency across the campus.",
+   "wer": 0.0,
+   "seconds": 4.07,
+   "sha256": "d20f29413dd7949520fd1d8c8193349c9bcd6b1477a198a9b127215786d160d5"
+  },
+  {
+   "id": "P-commissioning-09",
+   "film": "P-commissioning",
+   "step": 9,
+   "said": "grouped by who owns the fix.",
+   "heard": "Crouped by Who Owns the Fix?",
+   "wer": 0.167,
+   "seconds": 2.77,
+   "sha256": "071ed1b9bbf8b87058f41bf49a234263f5238736a3d0bb3475b5933c6e3c6e0b"
+  },
+  {
+   "id": "P-commissioning-10",
+   "film": "P-commissioning",
+   "step": 10,
+   "said": "Designed, commissioned, current and proposed, never confused.",
+   "heard": "Designed, commissioned, current, and proposed, never confused.",
+   "wer": 0.0,
+   "seconds": 4.34,
+   "sha256": "bb8453aba1d6a9ea0df7d7b3882b90c5d7b934e1cba5ecfcf392a2039a33998e"
+  },
+  {
+   "id": "P-learn-01",
+   "film": "P-learn",
+   "step": 1,
+   "said": "Learn: reviewed cases from what actually happened on the campus.",
+   "heard": "Learn. Reviewed cases from what actually happened on the campus.",
+   "wer": 0.0,
+   "seconds": 4.49,
+   "sha256": "91b2922f52b2dd3e2dda54958f5e0be670193a9d23b09d5717dd8ae52afb8413"
+  },
+  {
+   "id": "P-learn-02",
+   "film": "P-learn",
+   "step": 2,
+   "said": "Each case starts from a room and its service history.",
+   "heard": "Each case starts from a room and its service history.",
+   "wer": 0.0,
+   "seconds": 3.46,
+   "sha256": "3674520c4ba0357c710b4858d9177537f1987742806c61ac3928d606ad949a9d"
+  },
+  {
+   "id": "P-learn-03",
+   "film": "P-learn",
+   "step": 3,
+   "said": "Drill down: the labs, by subject.",
+   "heard": "Trill down the labs by subject.",
+   "wer": 0.167,
+   "seconds": 3.67,
+   "sha256": "7f2ebfb85a2557fbea19e1bd001c8dc4f33b5c6becfe13422dac992cf31c86bd"
+  },
+  {
+   "id": "P-learn-04",
+   "film": "P-learn",
+   "step": 4,
+   "said": "Filter to one subject: equalisation.",
+   "heard": "Filter to one subject. Equalization.",
+   "wer": 0.2,
+   "seconds": 3.38,
+   "sha256": "5ae84c7425da5fc786c2c55ba27fd8e815f9b566d7a74f444151b9311924e045"
+  },
+  {
+   "id": "P-learn-05",
+   "film": "P-learn",
+   "step": 5,
+   "said": "One lab: notch the ringing wedge.",
+   "heard": "One lab, not the ringing ledge.",
+   "wer": 0.333,
+   "seconds": 4.72,
+   "sha256": "404224386514fb7a9808afa9309ab4e0d1db43472dff014adb7b1a20c28db787"
+  },
+  {
+   "id": "P-learn-06",
+   "film": "P-learn",
+   "step": 6,
+   "said": "The Audio Lab: hear what one E-Q band does, live in the browser.",
+   "heard": "The audio lab here what one EQ band does live in the browser",
+   "wer": 0.214,
+   "seconds": 5.25,
+   "sha256": "f372245d6bc6698613b836a9d82bf40e0a94efd0a1ec21851df01725894b4730"
+  },
+  {
+   "id": "P-learn-07",
+   "film": "P-learn",
+   "step": 7,
+   "said": "The Camera Lab: see what each setting changes.",
+   "heard": "The Camera Lab, see what each setting changes.",
+   "wer": 0.0,
+   "seconds": 2.76,
+   "sha256": "ae55991426c03a891bf281b1de120a28f1ef5baaeda232e14e1b09c171aaaae1"
+  },
+  {
+   "id": "P-learn-08",
+   "film": "P-learn",
+   "step": 8,
+   "said": "The I-T onboarding guide, for the people new to the rooms.",
+   "heard": "The IT onboarding guide for the people new to the rooms.",
+   "wer": 0.167,
+   "seconds": 3.68,
+   "sha256": "f7453f108ac5e1b9e9c5f6df0548e0806feca12019f14672cb1db680f9fc7bf0"
+  },
+  {
+   "id": "P-learn-09",
+   "film": "P-learn",
+   "step": 9,
+   "said": "The engineering standards manual, written for this campus.",
+   "heard": "The engineering standards manual written for this campus.",
+   "wer": 0.0,
+   "seconds": 3.45,
+   "sha256": "24b7bcd1e35dd3d85bbd46de305d587ac115a47f334b6a0050608750c0bb8000"
+  },
+  {
+   "id": "P-learn-10",
+   "film": "P-learn",
+   "step": 10,
+   "said": "Back up: every lesson linked to the record it came from.",
+   "heard": "Back up every lesson linked to the record it came from.",
+   "wer": 0.0,
+   "seconds": 3.49,
+   "sha256": "53a7862ce0a0f7bcbdead8578d96693edfcc7c2289dbcaf5003c927db9c99be9"
+  },
+  {
+   "id": "P-mission-control-01",
+   "film": "P-mission-control",
+   "step": 1,
+   "said": "Mission Control: what changed, what matters, and what needs action.",
+   "heard": "Mission Control, what changed, what matters, and what needs action.",
+   "wer": 0.0,
+   "seconds": 5.21,
+   "sha256": "e45b4ff0f2f15090c58f8860b487676d9d8a1fac4e99da34897a317537933b45"
+  },
+  {
+   "id": "P-mission-control-02",
+   "film": "P-mission-control",
+   "step": 2,
+   "said": "Every stage of a room’s life, each with what is waiting there.",
+   "heard": "Every stage of a room's life, each with what is waiting there.",
+   "wer": 0.0,
+   "seconds": 7.15,
+   "sha256": "69f0a89e9f79db0a96f1c49bd803a53763662b0542b4da9ae0deecd009d4cbd2"
+  },
+  {
+   "id": "P-mission-control-03",
+   "film": "P-mission-control",
+   "step": 3,
+   "said": "Drill down: the decision desk, each decision with its reason.",
+   "heard": "Crow drill down the decision desk, each decision with its reason.",
+   "wer": 0.1,
+   "seconds": 9.73,
+   "sha256": "379a892d92011696034db783f67a4caa7d7d311e0656c56dcf935a60aa3d73f7"
+  },
+  {
+   "id": "P-mission-control-04",
+   "film": "P-mission-control",
+   "step": 4,
+   "said": "Every decision kept in its log.",
+   "heard": "Every decision kept in its log.",
+   "wer": 0.0,
+   "seconds": 3.24,
+   "sha256": "0585029843ecebc12a6944ac5fd31b8f8cd654ed5927b4f6e8446a799dec1abf"
+  },
+  {
+   "id": "P-mission-control-05",
+   "film": "P-mission-control",
+   "step": 5,
+   "said": "The executive view: twenty-seven measures, each with its working.",
+   "heard": "The executive view, 27 measures, each with its working.",
+   "wer": 0.2,
+   "seconds": 4.12,
+   "sha256": "5df8c378012224080442a315a499e6886fda83caa5a4bfa1e53d64d79241deb9"
+  },
+  {
+   "id": "P-mission-control-06",
+   "film": "P-mission-control",
+   "step": 6,
+   "said": "The ledger behind every state: what changed, and when.",
+   "heard": "The ledger behind every state, what changed and when?",
+   "wer": 0.0,
+   "seconds": 4.63,
+   "sha256": "5759e60a8147a4ec6c052df782bb8afd882453df6bcc789bfc4227cfaccb8db8"
+  },
+  {
+   "id": "P-mission-control-07",
+   "film": "P-mission-control",
+   "step": 7,
+   "said": "Into service: the jobs open now.",
+   "heard": "It's a service. The job's open now.",
+   "wer": 0.5,
+   "seconds": 3.17,
+   "sha256": "ae59ec62dd07b52991897dc08b6eaaf8ff3f169bf29d5b65e03e71ec46951005"
+  },
+  {
+   "id": "P-mission-control-08",
+   "film": "P-mission-control",
+   "step": 8,
+   "said": "Into commissioning: what needs attention.",
+   "heard": "Into commissioning what needs attention.",
+   "wer": 0.0,
+   "seconds": 3.63,
+   "sha256": "fc6e809d281cf3477e9bdd72ca7aed7a0d6efe5d33fe36978a8b3b3c31ea1b04"
+  },
+  {
+   "id": "P-mission-control-09",
+   "film": "P-mission-control",
+   "step": 9,
+   "said": "And back up: one view of the whole estate, from one record.",
+   "heard": "and back up one view of the whole estate from one record.",
+   "wer": 0.0,
+   "seconds": 7.3,
+   "sha256": "c3b856438da42fd0b5977144cd234b76ca3a229d060ddd48220104d105ec3a29"
+  },
+  {
+   "id": "P-pro-01",
+   "film": "P-pro",
+   "step": 1,
+   "said": "Pro: executive measures that show their work.",
+   "heard": "Bro, executive measures that show their work.",
+   "wer": 0.143,
+   "seconds": 3.46,
+   "sha256": "246816f7ed278369046b34f916e72866b605ccec55da33c9a7f6dab52ad562cd"
+  },
+  {
+   "id": "P-pro-02",
+   "film": "P-pro",
+   "step": 2,
+   "said": "Filter by period and by building.",
+   "heard": "filter by period and by building.",
+   "wer": 0.0,
+   "seconds": 3.0,
+   "sha256": "87eda1a5fad26201f89d31d95277631de9762a0b1866aa49f8be21fd389d656a"
+  },
+  {
+   "id": "P-pro-03",
+   "film": "P-pro",
+   "step": 3,
+   "said": "Twenty-seven measures, each a passport: numerator, denominator, window and coverage.",
+   "heard": "Bull, 27 measures, each a passport, numerator, denominator, window, and coverage.",
+   "wer": 0.182,
+   "seconds": 9.29,
+   "sha256": "a28f45b313d3dd0f4dfb35f22901190b2bad26f40a64fc1f912d3e5ed6b16d48"
+  },
+  {
+   "id": "P-pro-04",
+   "film": "P-pro",
+   "step": 4,
+   "said": "What is waiting for funding, and why.",
+   "heard": "What is waiting for funding, and why?",
+   "wer": 0.0,
+   "seconds": 2.94,
+   "sha256": "56f0d1587a0e5ddda91a4887a884b1ac5695dd6bf5ad8b8e7cc6d37da2c0fecc"
+  },
+  {
+   "id": "P-pro-05",
+   "film": "P-pro",
+   "step": 5,
+   "said": "Drill down: the decision behind a figure.",
+   "heard": "Trill down the decision behind a figure.",
+   "wer": 0.143,
+   "seconds": 4.79,
+   "sha256": "bebe96bd27f27d7340967f69ab15a409f06a63461b5ae48ec59d7a652ab615e5"
+  },
+  {
+   "id": "P-pro-06",
+   "film": "P-pro",
+   "step": 6,
+   "said": "Its readiness, before anyone approves it.",
+   "heard": "It's readiness before anyone approves it.",
+   "wer": 0.167,
+   "seconds": 2.68,
+   "sha256": "669c0c3237573307b6915e028f46d4c0d9d89b47e7cee61592b4715f020ebac1"
+  },
+  {
+   "id": "P-pro-07",
+   "film": "P-pro",
+   "step": 7,
+   "said": "The ledger each measure is counted from.",
+   "heard": "The ledger each measure is counted from.",
+   "wer": 0.0,
+   "seconds": 2.63,
+   "sha256": "a2c771932ea5a2022a1d3c3d66df6819e049aff62ba924f4bbac589211432df3"
+  },
+  {
+   "id": "P-pro-08",
+   "film": "P-pro",
+   "step": 8,
+   "said": "Back up: missing data is shown as missing, never as success.",
+   "heard": "Back up, missing data is shown as missing, never as success.",
+   "wer": 0.0,
+   "seconds": 6.65,
+   "sha256": "c71bbd7e3c91f9a1a898ba67faeb6e81e4179082f90ea50279448e91fc2e3cd5"
+  },
+  {
+   "id": "P-apex-01",
+   "film": "P-apex",
+   "step": 1,
+   "said": "Apex: cited hypotheses, bounded actions, and outcomes it is not allowed to take.",
+   "heard": "Apex, sighted hypotheses, bounded actions, and outcomes it is not allowed to take.",
+   "wer": 0.077,
+   "seconds": 7.62,
+   "sha256": "ef06206d940ab164d2b779d835a1102afa3fbee696af0a02c74d6911edcddf41"
+  },
+  {
+   "id": "P-apex-02",
+   "film": "P-apex",
+   "step": 2,
+   "said": "Drill down: one case, far-end audio dropping out.",
+   "heard": "Drill down one case, far-end audio dropping out.",
+   "wer": 0.0,
+   "seconds": 5.07,
+   "sha256": "3da506c45fc412c32d75f7a1b9b61779d80d0e7ea9b4072333f888d7ce0e5b6c"
+  },
+  {
+   "id": "P-apex-03",
+   "film": "P-apex",
+   "step": 3,
+   "said": "The layers it reasons over, each one cited.",
+   "heard": "The layers it reasons over, each one sighted.",
+   "wer": 0.125,
+   "seconds": 3.21,
+   "sha256": "6386713d8ba434569aa932cc3661ab149200a2de77287bbb266b2ff10ad5740d"
+  },
+  {
+   "id": "P-apex-04",
+   "film": "P-apex",
+   "step": 4,
+   "said": "A hypothesis, with the evidence for and against it.",
+   "heard": "A hypothesis with the evidence for and against it.",
+   "wer": 0.0,
+   "seconds": 5.36,
+   "sha256": "e4a41e1ec53094b426f48bf91177bf17d4dc13b8bfc9b22f44a931f62c58daa5"
+  },
+  {
+   "id": "P-apex-05",
+   "film": "P-apex",
+   "step": 5,
+   "said": "What it may do alone, what needs a person, and what it may never do.",
+   "heard": "What it may do alone, what needs a person, and what it may never do.",
+   "wer": 0.0,
+   "seconds": 6.09,
+   "sha256": "1ad96d929b00edfc201ec7741ba1b5599f1eb4f3e33bab9f6375675e1d935dff"
+  },
+  {
+   "id": "P-apex-06",
+   "film": "P-apex",
+   "step": 6,
+   "said": "Every step it took, in its log.",
+   "heard": "Every step it took, in its log.",
+   "wer": 0.0,
+   "seconds": 2.91,
+   "sha256": "b892bea74b72753ea42f61913de2996c2a18deb0eba3ae6112f6d690f30d509d"
+  },
+  {
+   "id": "P-apex-07",
+   "film": "P-apex",
+   "step": 7,
+   "said": "Across to Search Party: the room and who answers for it.",
+   "heard": "Across the search party, the room and who answers for it.",
+   "wer": 0.091,
+   "seconds": 4.2,
+   "sha256": "3957bb409bbc8b6623748cfd7f19a7463225867c9c70bb5ce6da91e737ba52d6"
+  },
+  {
+   "id": "P-apex-08",
+   "film": "P-apex",
+   "step": 8,
+   "said": "And back: a person decides; Apex shows its work.",
+   "heard": "And back, a person decides Apex shows its work.",
+   "wer": 0.0,
+   "seconds": 3.8,
+   "sha256": "67e94005fd6dd72b078016646c07d79bedea5fb653d46a83499070f624ba8e81"
+  },
+  {
+   "id": "P-field-intelligence-01",
+   "film": "P-field-intelligence",
+   "step": 1,
+   "said": "Field Intelligence: what the room’s collector declares before it runs.",
+   "heard": "Field intelligence, what the room's collector declares before it runs.",
+   "wer": 0.0,
+   "seconds": 4.42,
+   "sha256": "76deeabe2a6de7e708b81cb7f1817c382021f627562f57528af408873f74437c"
+  },
+  {
+   "id": "P-field-intelligence-02",
+   "film": "P-field-intelligence",
+   "step": 2,
+   "said": "Read-only checks, on a schedule, of only what it is allowed to reach.",
+   "heard": "Read only checks on a schedule of only what it is allowed to reach.",
+   "wer": 0.0,
+   "seconds": 5.55,
+   "sha256": "c097ba3610fa432107e303a5357295ca74e877be28383eaa12c2a9e3f0213d44"
+  },
+  {
+   "id": "P-field-intelligence-03",
+   "film": "P-field-intelligence",
+   "step": 3,
+   "said": "Each result an evidence record: what was seen, and what it does not prove.",
+   "heard": "Each results in evidence record, what was seen, and what it does not prove.",
+   "wer": 0.143,
+   "seconds": 6.11,
+   "sha256": "3a64c2183e1fb78a21b7db6981fc981d02754ffadd9871230a7ad37671214243"
+  },
+  {
+   "id": "P-field-intelligence-04",
+   "film": "P-field-intelligence",
+   "step": 4,
+   "said": "Where a finding goes: a service job, with its evidence.",
+   "heard": "Where a finding goes, a service job with its evidence.",
+   "wer": 0.0,
+   "seconds": 9.41,
+   "sha256": "1bd27da95a5a546b45d24ec29430435efb35a815122bc02119da9717a3e618fb"
+  },
+  {
+   "id": "P-field-intelligence-05",
+   "film": "P-field-intelligence",
+   "step": 5,
+   "said": "Into the room’s history.",
+   "heard": "Enter the room's history.",
+   "wer": 0.25,
+   "seconds": 2.04,
+   "sha256": "44263d103da8aeeacefeed933f80835ccbd848a5c85908f1025dd0b9e5c37326"
+  },
+  {
+   "id": "P-field-intelligence-06",
+   "film": "P-field-intelligence",
+   "step": 6,
+   "said": "Each record dated, each one its own step.",
+   "heard": "Each record dated, each one its own step.",
+   "wer": 0.0,
+   "seconds": 3.91,
+   "sha256": "95c96dbd3040a6a4b673a3551abdd42fdd9f6c3772103aad09294a93beb63597"
+  },
+  {
+   "id": "P-field-intelligence-07",
+   "film": "P-field-intelligence",
+   "step": 7,
+   "said": "And the room itself, in Engineer mode.",
+   "heard": "and the room itself in Engineer Mode.",
+   "wer": 0.0,
+   "seconds": 2.94,
+   "sha256": "3406524878313fc0e527b3968610ceda4d213d436f84488a9bfacf6c7a1637b8"
+  },
+  {
+   "id": "P-field-intelligence-08",
+   "film": "P-field-intelligence",
+   "step": 8,
+   "said": "Back up: no collector is connected in the demonstration; the checks are simulated.",
+   "heard": "Back up, no collectors connected in the demonstration. The checks are simulated.",
+   "wer": 0.154,
+   "seconds": 5.22,
+   "sha256": "a3c075a600cc16167dee5e90766822bb325818bb1d35fa29b4ac2e079f198406"
+  },
+  {
+   "id": "F-LIFE-01",
+   "film": "F-LIFE",
+   "step": 1,
+   "said": "Every room has a story. This one starts as a request.",
+   "heard": "Every room has a story. This one starts as a request.",
+   "wer": 0.0,
+   "seconds": 7.09,
+   "sha256": "5113b05dfc0bca356fa0b81f9b9c98b9f71499f5b22cf325c2a0089aeef44494"
+  },
+  {
+   "id": "F-LIFE-02",
+   "film": "F-LIFE",
+   "step": 2,
+   "said": "Nine requirements, six of them must-haves. Everything later is judged against them.",
+   "heard": "9 requirements. 6 of them must haves. Everything later is judged against them.",
+   "wer": 0.154,
+   "seconds": 10.49,
+   "sha256": "82bc5bcd403f2c103963f43ab92572da463ec0d0178ef841f57098e3e776811e"
+  },
+  {
+   "id": "F-LIFE-03",
+   "film": "F-LIFE",
+   "step": 3,
+   "said": "Designed: every device a numbered position.",
+   "heard": "Designed every device, a numbered position.",
+   "wer": 0.0,
+   "seconds": 3.39,
+   "sha256": "16d1bab2e26cd2d04746b4ebe5614a7520744a9d7440ea2d4d3d5895ecadd9a8"
+  },
+  {
+   "id": "F-LIFE-04",
+   "film": "F-LIFE",
+   "step": 4,
+   "said": "The same room in Lite: one record, another view.",
+   "heard": "The same room and light, one record, another view.",
+   "wer": 0.222,
+   "seconds": 3.49,
+   "sha256": "1c0133b0a7256ff3ab2450c3f87b5d32906681cce191c5cbad5e348a2fb62bac"
+  },
+  {
+   "id": "F-LIFE-05",
+   "film": "F-LIFE",
+   "step": 5,
+   "said": "Installed: position P-A zero zero zero seven holds asset A-S zero zero nine seven.",
+   "heard": "Installed, position P, A0, 0, 0, 7, holds asset, AS0, 0, 9, 7.",
+   "wer": 0.688,
+   "seconds": 14.09,
+   "sha256": "09a2a4a51d1382325c2c30a8e8692f480cab17dfd78a3af3ce9b9f64e7ed6dd9"
+  },
+  {
+   "id": "F-LIFE-06",
+   "film": "F-LIFE",
+   "step": 6,
+   "said": "Each test recorded, then verified by someone else.",
+   "heard": "age test recorded, then verified by someone else.",
+   "wer": 0.125,
+   "seconds": 4.76,
+   "sha256": "02c38601d06c39cea2c9f4da1aa2cff3b447d75dbc9e8c8be398f43c611fb003"
+  },
+  {
+   "id": "F-LIFE-07",
+   "film": "F-LIFE",
+   "step": 7,
+   "said": "Baseline version one: what the room was proven to do.",
+   "heard": "Baseline version 1. What the room was proven to do.",
+   "wer": 0.1,
+   "seconds": 3.97,
+   "sha256": "01b56f3d577621c43daa477c84aebae6b23ec74900318b5c8f31e3a8df59e1cf"
+  },
+  {
+   "id": "F-LIFE-08",
+   "film": "F-LIFE",
+   "step": 8,
+   "said": "A-S zero zero nine seven out, A-S zero one one two in. Only the tests that name P-A zero zero zero seven reopen.",
+   "heard": "Eh, 0, 0, 9, 7 out, a-s, 0, 1, 1, 2, n. Only the tests that name P, a-0, 0, 0, 7, reopen.",
+   "wer": 0.577,
+   "seconds": 13.89,
+   "sha256": "3cc812c9696757c3d5eac4ceffcdea344a5d0a1874659e07d97317bddde0445f"
+  },
+  {
+   "id": "F-LIFE-09",
+   "film": "F-LIFE",
+   "step": 9,
+   "said": "Re-accepted: baseline version two is current, and version one is kept.",
+   "heard": "Re-accepted, baseline version 2 is current, and version 1 is kept.",
+   "wer": 0.167,
+   "seconds": 4.85,
+   "sha256": "deafd55339e62b8a8514f35487d51ed7d7b99b977aece5d485f66cc19cfa094e"
+  },
+  {
+   "id": "F-LIFE-10",
+   "film": "F-LIFE",
+   "step": 10,
+   "said": "From here on, Assurance watches the room against that baseline.",
+   "heard": "From here on, Assurance watches the room against that baseline.",
+   "wer": 0.0,
+   "seconds": 4.23,
+   "sha256": "af1172b56068671fb850e2680afcf16db639e5b4f054c9a7322d9031fb94478c"
+  },
+  {
+   "id": "F-FOLLOW-01",
+   "film": "F-FOLLOW",
+   "step": 1,
+   "said": "Ceiling microphone A zero one zero four, asset A-S zero one zero three, in the boardroom it serves: Lite, as a Systems Engineer.",
+   "heard": "ceiling microphone a 0104 asset as 0103 in the boardroom it serves light as a systems engineer",
+   "wer": 0.458,
+   "seconds": 12.66,
+   "sha256": "2d116060c2528a9175cb9b7b96481b7f65812b23b6669f322f881312332de566"
+  },
+  {
+   "id": "F-FOLLOW-02",
+   "film": "F-FOLLOW",
+   "step": 2,
+   "said": "Its own record: the position, the unit installed there, and the checks that name it.",
+   "heard": "Its own record, the position, the unit installed there, and the checks that name it.",
+   "wer": 0.0,
+   "seconds": 6.24,
+   "sha256": "4f8ca666bc42707333b5591030457b9ede21952d5a32a358b3660dfda247a142"
+  },
+  {
+   "id": "F-FOLLOW-03",
+   "film": "F-FOLLOW",
+   "step": 3,
+   "said": "Its room’s commissioning record: what was required, what was observed, who verified it.",
+   "heard": "It's room's commissioning record, what was required, what was observed, who verified it.",
+   "wer": 0.077,
+   "seconds": 6.27,
+   "sha256": "a952ca66bcb78c2f55381061d37f5c2ab8ae57b62211be5821ff9f6176e6cd18"
+  },
+  {
+   "id": "F-FOLLOW-04",
+   "film": "F-FOLLOW",
+   "step": 4,
+   "said": "Assurance: the accepted baseline the room is checked against.",
+   "heard": "Assurance. The accepted baseline the room is checked against.",
+   "wer": 0.0,
+   "seconds": 4.7,
+   "sha256": "1da31d0fd1a71691a356e7fd64ce910ec2802a494fd5642e8fb599aefa4fbb16"
+  },
+  {
+   "id": "F-FOLLOW-05",
+   "film": "F-FOLLOW",
+   "step": 5,
+   "said": "Search Party: who supports the room, who knows it, and where each fact comes from.",
+   "heard": "Search party, who supports the room, who knows it, and where each fact comes from.",
+   "wer": 0.0,
+   "seconds": 4.87,
+   "sha256": "a250a44449987b7910cc5fd645ba1e92ddd53ccc89cd93b1efc9425d5aa4bf09"
+  },
+  {
+   "id": "F-FOLLOW-06",
+   "film": "F-FOLLOW",
+   "step": 6,
+   "said": "Core Replay: the room’s life, stopped where a change reopens only the tests it touches.",
+   "heard": "Core replay, the room's life, stopped where a change reopens only the tested touches.",
+   "wer": 0.133,
+   "seconds": 5.67,
+   "sha256": "62f8bdc6e81e5b04cb3a9764ec19566e3e36c00412f1fbc8af53585567f12d3e"
+  },
+  {
+   "id": "F-SIGNAL-01",
+   "film": "F-SIGNAL",
+   "step": 1,
+   "said": "Signal, season one, episode one: Ten Seats. A mystery, solved with geometry.",
+   "heard": "Signal. Season 1, episode 1, 10 seats. A mystery solved with geometry.",
+   "wer": 0.25,
+   "seconds": 8.37,
+   "sha256": "f75339d6df4a66d0a626f7c6fd7d192c2152ae3f9fc4e0e547c489ceb20fdb7f"
+  },
+  {
+   "id": "F-SIGNAL-02",
+   "film": "F-SIGNAL",
+   "step": 2,
+   "said": "The case: ten seats where the sound goes hollow.",
+   "heard": "The case, 10 seats where the sound goes hollow.",
+   "wer": 0.111,
+   "seconds": 3.32,
+   "sha256": "eb63e70d7db3f4fb6501ba4673b61b63340eec7742c893de28aff9367b1b4abc"
+  },
+  {
+   "id": "F-SIGNAL-03",
+   "film": "F-SIGNAL",
+   "step": 3,
+   "said": "Generated footage of a fictional sanctuary, labelled as such in the film.",
+   "heard": "generated footage of a fictional sanctuary labeled as such in the film.",
+   "wer": 0.083,
+   "seconds": 4.87,
+   "sha256": "99dbf712b207399d7b7f1fcba3fced18a9ca3f8823aad84afb6a2c6a3b32d8f3"
+  },
+  {
+   "id": "F-SIGNAL-04",
+   "film": "F-SIGNAL",
+   "step": 4,
+   "said": "A decision stops the film in the frame: what do you do first?",
+   "heard": "A decision stops the film in the frame, what do you do first?",
+   "wer": 0.0,
+   "seconds": 3.52,
+   "sha256": "171e83abecdd6e6ec23cd9419e3d1b984be017ed404584a8501b9724556d4cad"
+  },
+  {
+   "id": "F-SIGNAL-05",
+   "film": "F-SIGNAL",
+   "step": 5,
+   "said": "Measure it yourself: each hollow seat’s notch, from the room’s own geometry.",
+   "heard": "Measure it yourself. Each hollow seats not from the room's own geometry.",
+   "wer": 0.167,
+   "seconds": 5.38,
+   "sha256": "761e98172f34203a93f2a54c7122683e1744d408acffa1d0ab92c2f82272df1a"
+  },
+  {
+   "id": "F-SIGNAL-06",
+   "film": "F-SIGNAL",
+   "step": 6,
+   "said": "Test the fill: turn it down, and the notches get shallower, not gone.",
+   "heard": "Test the fill, turn it down, and the notches get shallower, not gone.",
+   "wer": 0.0,
+   "seconds": 5.79,
+   "sha256": "a9253f7da2bb374c99a3a787fe8e8633147662d80d7c178d3e6a11dc53ef2642"
+  },
+  {
+   "id": "F-SIGNAL-07",
+   "film": "F-SIGNAL",
+   "step": 7,
+   "said": "Re-aim it, and verify: the ten seats’ deep notches are gone.",
+   "heard": "Re-aim it and verify the 10 seats deep notches are gone.",
+   "wer": 0.167,
+   "seconds": 5.05,
+   "sha256": "e4ba0601699258f2d0b8bc7299a9b001dafa1b5680a8ed228c647b4536b4dbf4"
+  }
+ ]
+}

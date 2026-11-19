@@ -2,105 +2,176 @@
   "key": "P-learn",
   "title": "Learn: from what actually happened, to the lab, and back",
   "product": "learn",
-  "recordedAt": "2026-11-14T03:01:20.767Z",
-  "duration": 31.13,
+  "recordedAt": "2026-11-19T23:34:20.073Z",
+  "duration": 45.26,
   "viewport": "1280x720",
   "colorScheme": "dark",
   "data": "synthetic demonstration data",
   "role": "architect",
   "demoBuild": {
     "commit": null,
-    "builtAt": "2026-11-14T02:38:15.027Z"
+    "builtAt": "2026-11-19T23:05:29.841Z"
   },
-  "git": "9c9c968",
+  "git": "eca7f43",
   "steps": [
     {
       "at": 0,
-      "until": 3.21,
+      "shown": 0.01,
+      "until": 4.95,
       "say": "Learn: reviewed cases from what actually happened on the campus.",
       "proof": "[data-testid=learn-cases]",
       "url": "/#/v25/learn"
     },
     {
-      "at": 3.21,
-      "until": 6.57,
+      "at": 4.95,
+      "shown": 5.67,
+      "until": 9.59,
       "say": "Each case starts from a room and its service history.",
       "proof": "[data-testid=learn-rooms]",
       "url": "/#/v25/learn"
     },
     {
-      "at": 6.57,
-      "until": 9.73,
+      "at": 9.59,
+      "shown": 10.04,
+      "until": 14.16,
       "say": "Drill down: the labs, by subject.",
       "proof": "[data-testid=flagship-labs]",
       "url": "/#/learn/labs"
     },
     {
-      "at": 9.73,
-      "until": 12.73,
+      "at": 14.16,
+      "shown": 14.47,
+      "until": 18.31,
       "say": "Filter to one subject: equalisation.",
       "proof": "[data-testid=labs]",
       "url": "/#/learn/labs?type=eq"
     },
     {
-      "at": 12.73,
-      "until": 15.73,
+      "at": 18.31,
+      "shown": 18.7,
+      "until": 23.88,
       "say": "One lab: notch the ringing wedge.",
       "proof": "main h1",
       "url": "/#/learn/labs/LAB-EQ-01"
     },
     {
-      "at": 15.73,
-      "until": 19.02,
+      "at": 23.88,
+      "shown": 23.91,
+      "until": 29.63,
       "say": "The Audio Lab: hear what one EQ band does, live in the browser.",
       "proof": "main h1",
       "url": "/#/learn/labs/hear"
     },
     {
-      "at": 19.02,
-      "until": 21.66,
+      "at": 29.63,
+      "shown": 29.66,
+      "until": 32.87,
       "say": "The Camera Lab: see what each setting changes.",
       "proof": "main h1",
       "url": "/#/learn/labs/see"
     },
     {
-      "at": 21.66,
-      "until": 24.81,
+      "at": 32.87,
+      "shown": 33.15,
+      "until": 37.28,
       "say": "The IT onboarding guide, for the people new to the rooms.",
       "proof": "main h1",
       "url": "/#/onboard"
     },
     {
-      "at": 24.81,
-      "until": 28.08,
+      "at": 37.28,
+      "shown": 37.38,
+      "until": 41.28,
       "say": "The engineering standards manual, written for this campus.",
       "proof": "main h1",
       "url": "/#/manual"
     },
     {
-      "at": 28.08,
-      "until": 31.13,
+      "at": 41.28,
+      "shown": 41.32,
+      "until": 45.26,
       "say": "Back up: every lesson linked to the record it came from.",
       "proof": "[data-testid=learn-cases]",
       "url": "/#/v25/learn"
     }
   ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 4.49,
+        "sha256": "91b2922f52b2dd3e2dda54958f5e0be670193a9d23b09d5717dd8ae52afb8413"
+      },
+      {
+        "step": 2,
+        "seconds": 3.46,
+        "sha256": "3674520c4ba0357c710b4858d9177537f1987742806c61ac3928d606ad949a9d"
+      },
+      {
+        "step": 3,
+        "seconds": 3.67,
+        "sha256": "7f2ebfb85a2557fbea19e1bd001c8dc4f33b5c6becfe13422dac992cf31c86bd"
+      },
+      {
+        "step": 4,
+        "seconds": 3.38,
+        "sha256": "5ae84c7425da5fc786c2c55ba27fd8e815f9b566d7a74f444151b9311924e045"
+      },
+      {
+        "step": 5,
+        "seconds": 4.72,
+        "sha256": "404224386514fb7a9808afa9309ab4e0d1db43472dff014adb7b1a20c28db787"
+      },
+      {
+        "step": 6,
+        "seconds": 5.25,
+        "sha256": "f372245d6bc6698613b836a9d82bf40e0a94efd0a1ec21851df01725894b4730"
+      },
+      {
+        "step": 7,
+        "seconds": 2.76,
+        "sha256": "ae55991426c03a891bf281b1de120a28f1ef5baaeda232e14e1b09c171aaaae1"
+      },
+      {
+        "step": 8,
+        "seconds": 3.68,
+        "sha256": "f7453f108ac5e1b9e9c5f6df0548e0806feca12019f14672cb1db680f9fc7bf0"
+      },
+      {
+        "step": 9,
+        "seconds": 3.45,
+        "sha256": "24b7bcd1e35dd3d85bbd46de305d587ac115a47f334b6a0050608750c0bb8000"
+      },
+      {
+        "step": 10,
+        "seconds": 3.49,
+        "sha256": "53a7862ce0a0f7bcbdead8578d96693edfcc7c2289dbcaf5003c927db9c99be9"
+      }
+    ]
+  },
   "files": {
     "720.mp4": {
-      "bytes": 1015387,
-      "sha256": "4202b412a8868baf80d1e7553bc66874a406ab41fd1a975543736548867efdea"
+      "bytes": 1907262,
+      "sha256": "a115de0b6bfa6b4987754742c88aff3683d3567cd587686672f1d2f284ba012f"
     },
     "poster.webp": {
-      "bytes": 61306,
-      "sha256": "a5418396b79fcb6b17701dee2fd4361f5e00d170ed296c6efd07cb9920cd9213"
+      "bytes": 62068,
+      "sha256": "48bc7a7bbf206e201eb75d8250d8d12dedf94026832e0f02fb78d1ac47c78a85"
     },
     "poster.jpg": {
-      "bytes": 119828,
-      "sha256": "418f652b1cbd90a1d30b23292f0b605d5c1e716c858aa4c6919801d6ea053e57"
+      "bytes": 121377,
+      "sha256": "d86490085655d32dea79d815f8abb4cbdaadee111a87724d1ae94a1c45d97126"
     },
     "captions.vtt": {
-      "bytes": 1148,
-      "sha256": "887361a47ef5a1c5a3ca873200e61205bc16580689509fc9d9b67660004e6030"
+      "bytes": 1247,
+      "sha256": "5b3d2481194db570df5c13dd7a9294da716160ee7020dfe789e2e44a71a54f33"
     }
   }
 }

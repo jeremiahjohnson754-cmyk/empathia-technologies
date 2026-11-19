@@ -14,8 +14,8 @@
    "shows": "Atlas 4.218, furnished, in 3D",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "47c40be",
-   "capturedAt": "2026-11-19T01:07:14.604Z",
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:41.575Z",
    "data": "synthetic demonstration data",
    "files": {
     "room-1200.webp": "bb8c9de9a934ea36c92ed7cc30ddbf7c94c30c3da602c67de0add8144c9078c3"
@@ -34,8 +34,8 @@
    "shows": "the same room with camera coverage and microphone pickup drawn on it",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "47c40be",
-   "capturedAt": "2026-11-19T01:07:18.622Z",
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:45.067Z",
    "data": "synthetic demonstration data",
    "files": {
     "overlays-1200.webp": "5649fa2cd49d50a26b2b0f28a16ebf489fd388024ee7553813ef84068ca4ba03"
@@ -54,11 +54,11 @@
    "shows": "floor 4 of Atlas HQ, every room on it",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "47c40be",
-   "capturedAt": "2026-11-19T01:07:23.051Z",
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:48.814Z",
    "data": "synthetic demonstration data",
    "files": {
-    "floor-1200.webp": "de3c916f4892d720a855c3167e712912ea3d93927356c982077ea27802f1e3a2"
+    "floor-1200.webp": "25be4b7394e3ebe7e848b4f78ee3a8ea178c0cc0bf981f8b460685b44809f385"
    }
   },
   "building": {
@@ -74,18 +74,18 @@
    "shows": "Atlas HQ, its floors drawn apart",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "47c40be",
-   "capturedAt": "2026-11-19T01:07:27.088Z",
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:52.556Z",
    "data": "synthetic demonstration data",
    "files": {
-    "building-1200.webp": "a843c7e8032939a61b611ff57e4ac0c744d7fc826de1eedba53f6cf07374c696"
+    "building-1200.webp": "f198badc700806199fa8a6faa86a96fccc88620b5d20d6e76d9ed55ed97efe24"
    }
   },
   "campus": {
    "route": "#/lite",
    "element": "[data-testid=lite-campus-3d]",
    "trim": [
-    0.02,
+    0.17,
     0.09,
     0,
     0
@@ -94,11 +94,11 @@
    "shows": "the demonstration campus, every building",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "47c40be",
-   "capturedAt": "2026-11-19T01:07:32.134Z",
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:56.159Z",
    "data": "synthetic demonstration data",
    "files": {
-    "campus-1200.webp": "866daff7ca4558d062d91a2e2e4af991f7e2a99fdddb3d60b39ace7c801cc388"
+    "campus-1200.webp": "e695388a4ccd5660b29c892e5a468ea526b4724ec00485611f1a8602532c449e"
    }
   },
   "estate": {
@@ -111,14 +111,14 @@
     0
    ],
    "perspective": "ops",
-   "shows": "the failure map: every building\u2019s open issues, from the same records",
+   "shows": "the failure map: every building’s open issues, from the same records",
    "colorScheme": "dark",
    "reducedMotion": true,
-   "commit": "47c40be",
-   "capturedAt": "2026-11-19T01:07:36.942Z",
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:45:00.654Z",
    "data": "synthetic demonstration data",
    "files": {
-    "estate-1200.webp": "b4c313bee256b9d4920e58f33e75585ad863d4cb3c7711d07918d4c74c832d6b"
+    "estate-1200.webp": "0c8aaa34272ededcb52d933a15e7fba52cdbac3325265266cc6e4c251ba02d95"
    }
   }
  }

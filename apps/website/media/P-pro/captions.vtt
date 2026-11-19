@@ -1,37 +1,37 @@
 WEBVTT
 
 NOTE
-Captions of "Pro: executive measures that show their work". The film is silent: these are the words shown on screen, one per step, written by the recorder
-(scripts/media/record-product-film.mjs) above the demonstration; each step was verified by its proof before its words appeared.
+Captions of "Pro: executive measures that show their work". The words are shown on screen and spoken by an AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan, one line per step, as they appear;
+the recorder (scripts/media/record-product-film.mjs) drew the words above the demonstration, and each step was verified by its proof before its words appeared.
 
 1
-00:00:00.000 --> 00:00:03.010
+00:00:00.010 --> 00:00:03.930
 Pro: executive measures that show their work.
 
 2
-00:00:03.010 --> 00:00:07.300
+00:00:04.670 --> 00:00:08.170
 Filter by period and by building.
 
 3
-00:00:07.300 --> 00:00:11.450
+00:00:08.900 --> 00:00:18.640
 Twenty-seven measures, each a passport: numerator, denominator, window and coverage.
 
 4
-00:00:11.450 --> 00:00:15.740
+00:00:19.370 --> 00:00:22.870
 What is waiting for funding, and why.
 
 5
-00:00:15.740 --> 00:00:19.760
+00:00:23.350 --> 00:00:28.590
 Drill down: the decision behind a figure.
 
 6
-00:00:19.760 --> 00:00:24.010
+00:00:29.340 --> 00:00:32.840
 Its readiness, before anyone approves it.
 
 7
-00:00:24.010 --> 00:00:27.560
+00:00:32.880 --> 00:00:36.390
 The ledger each measure is counted from.
 
 8
-00:00:27.560 --> 00:00:31.020
+00:00:36.440 --> 00:00:43.560
 Back up: missing data is shown as missing, never as success.

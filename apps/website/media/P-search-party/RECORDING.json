@@ -2,112 +2,189 @@
   "key": "P-search-party",
   "title": "Search Party: ask, follow the connections, and come back",
   "product": "search-party",
-  "recordedAt": "2026-11-14T02:48:41.543Z",
-  "duration": 37.77,
+  "recordedAt": "2026-11-19T23:31:15.196Z",
+  "duration": 60.27,
   "viewport": "1280x720",
   "colorScheme": "dark",
   "data": "synthetic demonstration data",
   "role": "architect",
   "demoBuild": {
     "commit": null,
-    "builtAt": "2026-11-14T02:38:15.027Z"
+    "builtAt": "2026-11-19T23:05:29.841Z"
   },
-  "git": "1e39312",
+  "git": "eca7f43",
   "steps": [
     {
       "at": 0,
-      "until": 2.63,
+      "shown": 0.01,
+      "until": 5.15,
       "say": "Search Party: one search across rooms, devices, people and issues.",
       "proof": "[data-testid=sp-try]",
       "url": "/#/search"
     },
     {
-      "at": 2.63,
-      "until": 6.5,
+      "at": 5.15,
+      "shown": 5.71,
+      "until": 10.99,
       "say": "Ask in plain words: who knows Atlas 4.218?",
       "proof": "[data-testid=connect-who]",
       "url": "/#/search?q=who%20knows%20Atlas%204.218"
     },
     {
-      "at": 6.5,
-      "until": 9.85,
+      "at": 10.99,
+      "shown": 11.74,
+      "until": 16.66,
       "say": "The people who answer for the room, and how they are connected.",
       "proof": "[data-testid=connect-who]",
       "url": "/#/search?q=who%20knows%20Atlas%204.218"
     },
     {
-      "at": 9.85,
-      "until": 12.85,
+      "at": 16.66,
+      "shown": 17.09,
+      "until": 21.59,
       "say": "Drill down: the room, and everything linked to it.",
       "proof": "[data-testid=impact]",
       "url": "/#/search?q=who%20knows%20Atlas%204.218"
     },
     {
-      "at": 12.85,
-      "until": 16.11,
+      "at": 21.59,
+      "shown": 22.23,
+      "until": 27.89,
       "say": "A person: who they are, what they answer for, and their backup.",
       "proof": "[data-testid=person-page]",
       "url": "/#/people/p-champ-ATL"
     },
     {
-      "at": 16.11,
-      "until": 19.43,
+      "at": 27.89,
+      "shown": 28.62,
+      "until": 32.67,
       "say": "Every room they look after, each one a way in.",
       "proof": "[data-testid=person-responsible]",
       "url": "/#/people/p-champ-ATL"
     },
     {
-      "at": 19.43,
-      "until": 22.91,
+      "at": 32.67,
+      "shown": 32.73,
+      "until": 36.91,
       "say": "Ask what breaks: if this switch fails, what is affected?",
       "proof": "[data-testid=sp-scenario]",
       "url": "/#/search/scenarios/S1"
     },
     {
-      "at": 22.91,
-      "until": 26.54,
+      "at": 36.91,
+      "shown": 37.94,
+      "until": 42.97,
       "say": "Every affected room and device, listed first, then drawn.",
       "proof": "[data-testid=sp-more-rooms][aria-expanded=true]",
       "url": "/#/search/scenarios/S1"
     },
     {
-      "at": 26.54,
-      "until": 31,
+      "at": 42.97,
+      "shown": 44.79,
+      "until": 51.96,
       "say": "Into one of them: Atlas 4.218, on the campus.",
       "proof": "[data-testid=room-view]",
       "url": "/#/campus/ATL/4/R-ATL-4-218"
     },
     {
-      "at": 31,
-      "until": 34.24,
+      "at": 51.96,
+      "shown": 52.62,
+      "until": 55.38,
       "say": "And back up to its relationships.",
       "proof": "[data-testid=impact]",
       "url": "/#/search?focus=Room:R-ATL-4-218"
     },
     {
-      "at": 34.24,
-      "until": 37.77,
+      "at": 55.38,
+      "shown": 55.55,
+      "until": 60.27,
       "say": "One record behind every answer, with where each link came from.",
       "proof": "[data-testid=sp-try]",
       "url": "/#/search"
     }
   ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 4.69,
+        "sha256": "50faee15e058bcf393cab0608c3fad325cdf145fb61111a21a335ff5e6f759ac"
+      },
+      {
+        "step": 2,
+        "seconds": 4.81,
+        "sha256": "aec9845f9fd228501eddd8274aaf2f202e6c50a051192c588b37ce51ab6625ea"
+      },
+      {
+        "step": 3,
+        "seconds": 4.46,
+        "sha256": "5e915be4922e0851f2ea0118fd33031e72c69427f66bcb0040a9f401760e73bc"
+      },
+      {
+        "step": 4,
+        "seconds": 4.05,
+        "sha256": "91bc945d76ade805210e1257c910ae69889dc049c6407b5c541fedb3c1641e17"
+      },
+      {
+        "step": 5,
+        "seconds": 5.19,
+        "sha256": "c9617a932e99b27f39aa929709cd2c85989ce0be48ce363625238113233e53c3"
+      },
+      {
+        "step": 6,
+        "seconds": 3.59,
+        "sha256": "9dbc87ba0c87e5fea816fd6f7de0822cb5049247890aa8cf818722f27567b62d"
+      },
+      {
+        "step": 7,
+        "seconds": 3.72,
+        "sha256": "cb9e6e73281b41682b5546675ab0fffafb2168f468517dd755ec7008087e7283"
+      },
+      {
+        "step": 8,
+        "seconds": 4.56,
+        "sha256": "8c6da47ec0c0aa4f4d1604911affa6bacf66ea9eaeaae8f186332c43811cc631"
+      },
+      {
+        "step": 9,
+        "seconds": 6.69,
+        "sha256": "6a51c09175bbc8efef87e79bb68bb8f0b3554b255d3a4b2557e4ea44a28561d4"
+      },
+      {
+        "step": 10,
+        "seconds": 2.31,
+        "sha256": "bdb6d5f186dad26536d286074c45a502f62006f3e1b164bcbda13447b8eb3576"
+      },
+      {
+        "step": 11,
+        "seconds": 4.25,
+        "sha256": "21723798c23d1e10c3b4d985020782ace03d5e03248c5bcfcbeada4640625211"
+      }
+    ]
+  },
   "files": {
     "720.mp4": {
-      "bytes": 1908323,
-      "sha256": "e87f03d119abbbfe20527df6426aa01d8be391b193f65cfef62f0938d89547cf"
+      "bytes": 2944796,
+      "sha256": "ec87830e5addc97cdff2aa18fac0127b973853241911c1c0f2e403226101445c"
     },
     "poster.webp": {
-      "bytes": 52964,
-      "sha256": "792ec90e2df048132195a35269067050e5c9dca7b489955a7215bf3037c379e2"
+      "bytes": 54954,
+      "sha256": "c3eb2ce50bff66e6a8c0580529a9699de04e229feb8d142477fa326d6c9acda2"
     },
     "poster.jpg": {
-      "bytes": 99023,
-      "sha256": "129508f60ee473e35554a86d4c6f1f8504af76f8680b826f35e521eec0faf452"
+      "bytes": 106451,
+      "sha256": "18eb3837c9f68bbe371cd13135ac918ece5a4c0e6defd759e4bde6bd01423367"
     },
     "captions.vtt": {
-      "bytes": 1268,
-      "sha256": "ad08e371701d811aaaecd1c42db9ef00b72d51081317cdd09bce822c52a6c07c"
+      "bytes": 1367,
+      "sha256": "ce98ef5dcf1bb83f9021fbf467e720d461f9eff2fc02e5e81498994883313490"
     }
   }
 }
