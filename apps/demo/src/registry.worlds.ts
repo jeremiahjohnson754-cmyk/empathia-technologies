@@ -138,6 +138,12 @@ export const WORLD_PAGES: readonly PageDef[] = [
     load: () => import('./intake/Pages.js'),
   },
   {
+    id: 'intake.queue', title: 'Requests to triage', purpose: 'Requests in the person’s own words to route or ask about, and new spaces whose location is to be confirmed', product: 'pro', path: '/request/queue',
+    authority: { roles: ['ops', 'syseng', 'svcmgr', 'architect', 'sitechamp'], why: 'Founder directive 19 November 2026 §06: the AV Operations Lead triages (the Systems Engineer, the Service Manager and the platform architect share the work); the Site Champion confirms locations on their site' },
+    load: () => import('./intake/Pages.js'),
+    search: { keywords: 'triage queue route requests intake location verify provisional', aliases: ['intake queue', 'requests to triage'] },
+  },
+  {
     id: 'intake.spaces', title: 'My spaces', purpose: 'The rooms you asked about and the new spaces you asked for', product: 'pro', path: '/request/spaces',
     authority: { roles: ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'], why: 'Founder, 10 November 2026: the request portal is for requestors and employees. V2.5.3 admits the Executive, Systems Engineer, Operations Lead, Product Architect, Designer and Business PM to a new intake request; the Employee and the Service Manager are added here' },
     load: () => import('./intake/Pages.js'),

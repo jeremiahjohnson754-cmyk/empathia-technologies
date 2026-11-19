@@ -15,6 +15,9 @@ import { KINDS, kindOf, goalLabel, propose } from './model.js';
 import { loadRecords, recordById, discardDraft, standing, stateOf, draftOf, photoChecklist, type Request } from './store.js';
 import { IntakeNav, RequestItem, ProposedRoom, Summary, opensFor, day, plural } from './parts.js';
 import { parseHash } from '../registry.pages.js';
+import { ask, answer, route, close, verifyLocation, queue, TRIAGE_ROLES, VERIFY_ROLES } from './triage.js';
+import { CAMPUS_ROOMS } from '../campus/canon.js';
+import type { RoleKey } from '../registry.types.js';
 
 import Home from './Home.js';
 import Wizard from './Wizard.js';
@@ -47,7 +50,8 @@ function history(r: Request, w: ReturnType<typeof useWorkspace>['w'], desk: Retu
 }
 
 export function Track({ role, params }: PageProps) {
-  const { w } = useWorkspace(); const desk = useMemo(() => loadDesk(), []); const r = recordById(params['id'] || ''); const opens = opensFor(role);
+  const { w } = useWorkspace(); const desk = useMemo(() => loadDesk(), []); const [tick, setTick] = useState(0); const r = useMemo(() => recordById(params['id'] || ''), [params, tick]); const opens = opensFor(role);
+  const [say, setSay] = useState(''); const [no, setNo] = useState<string | null>(null);
   if (!r) return <div className="ik" data-native="" data-testid="ik-track" data-found="no"><IntakeNav role={role} here="track" /><EmptyState title={`No request ${params['id'] || ''} in this browser`} icon="inbox" action={<a className="ui-btn ui-btn--primary" href="#/requests">My requests</a>}>Requests are kept in the browser they were made in. This demonstration has no shared server for them.</EmptyState></div>;
   const s = standing(r, w, desk); const draft = stateOf(r) === 'DRAFT'; const room = r.roomId ? roomById(r.roomId) : null; const d = draftOf(r); const p = r.draft ? propose(d) : null;
   const pol = r.policy; const atts = r.attachments || []; const missing = photoChecklist(d).filter(([i]) => !atts.some((a) => a.item === i));
@@ -63,9 +67,17 @@ export function Track({ role, params }: PageProps) {
         <div><h2>What is needed</h2><p>{needed}</p></div>
         <div><h2>What happens next</h2><p data-testid="ik-next">{s.next}</p></div>
       </section>
+      {r.question && <section className={`ik-qa${r.question.answer ? '' : ' ik-qa--open'}`} aria-labelledby="ik-qa-h" data-testid="ik-question" data-answered={r.question.answer ? 'yes' : 'no'}><h2 id="ik-qa-h">{r.question.answer ? 'A question, answered' : 'A question for the person who asked'}</h2>
+        <p><b>The {ROLES[r.question.by].label} asked</b> <span className="ui-meta">{day(r.question.at)}</span>: {r.question.text}</p>
+        {r.question.answer ? <p><b>Answer</b> <span className="ui-meta">{day(r.question.answer.at)}</span>: {r.question.answer.text}</p>
+          : role === r.role ? <form className="ik-form" onSubmit={(e) => { e.preventDefault(); const o = answer(role, r.id, say); if ('why' in o) setNo(o.why.join(' ')); else { setNo(null); setSay(''); setTick((n) => n + 1); } }}>
+            <label htmlFor="ik-ans">Your answer</label><textarea id="ik-ans" rows={3} maxLength={600} value={say} onChange={(e) => setSay(e.target.value)} data-testid="ik-answer-text" />
+            <button type="submit" className="ui-btn ui-btn--primary" data-testid="ik-answer">Send the answer</button>{no && <p role="alert" className="sc-msg sc-msg--no">{no}</p>}</form>
+          : <p className="ui-muted">Waiting for the {ROLES[r.role].label} who asked to answer.</p>}</section>}
+      {r.triage && <p className="ik-routed" data-testid="ik-triage" data-outcome={r.triage.outcome}><Icon name="route" size={18} /><span>{r.triage.outcome === 'closed' ? <><b>Closed by the {ROLES[r.triage.by].label}</b>{r.triage.duplicateOf ? <> as the same as <a href={`#/requests/${r.triage.duplicateOf}`}>{r.triage.duplicateOf}</a></> : null}: {r.triage.note}</> : <><b>Routed by the {ROLES[r.triage.by].label}</b> to {r.triage.outcome === 'desk' ? 'the decision desk' : 'ServiceHands'} on {day(r.triage.at)}: {r.triage.note}</>} <span className="ui-meta">Your own words are kept as you wrote them.</span></span></p>}
       <div className="ik-two">
         <section className="ik-sec" aria-labelledby="ik-sp-h" data-testid="ik-space"><h2 id="ik-sp-h">Space</h2>
-          {r.provisional ? <p data-testid="ik-prv"><Tag tone="warn">Provisional</Tag> <b>{r.provisional.id}</b>: {r.provisional.name}, {r.provisional.buildingName}, floor {r.provisional.floor}. Awaiting review; not an operational room. Its location is documented by the requester and not yet verified.</p>
+          {r.provisional ? <p data-testid="ik-prv"><Tag tone="warn">Provisional</Tag> <b>{r.provisional.id}</b>: {r.provisional.name}, {r.provisional.buildingName}, floor {r.provisional.floor}. Awaiting review; not an operational room. {r.provisional.location === 'VERIFIED' ? <> Its location was confirmed on site by the {ROLES[r.provisional.verifiedBy as RoleKey]?.label || r.provisional.verifiedBy} on {day(r.provisional.verifiedAt || r.provisional.at)}: {r.provisional.verifiedNote}</> : ' Its location is documented by the requester and not yet verified.'}</p>
             : room ? <p>{fullName(room)} <span className="ui-meta">on record</span> · <a href={roomHref(room)}>Open the room</a></p> : <p className="ui-muted">Not about one room.</p>}
           {(r.goals || []).length > 0 && <p className="ik-goalline"><span className="ui-meta">Wanted:</span> {(r.goals || []).map((g) => <Chip key={g} small tone="muted">{goalLabel(g)}</Chip>)}</p>}
           {r.projectId && opens('#/intake') && <p><a href="#/intake">Open project {r.projectId} on the decision desk</a></p>}
@@ -79,6 +91,50 @@ export function Track({ role, params }: PageProps) {
       <section className="ik-sec" aria-labelledby="ik-h-h" data-testid="ik-history"><h2 id="ik-h-h">History</h2>
         <ol className="ik-hist">{history(r, w, desk).map((e, i) => <li key={i}><time dateTime={e.at}>{new Date(e.at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</time><span>{e.what}</span><span className="ui-meta">{e.who}</span></li>)}</ol>
         <p className="ui-meta">Events follow the platform’s convention (request.*, room.*), each with its version, who and when, and the request id as correlation.</p></section>
+    </div>
+  );
+}
+
+/** Requests to route, questions waiting, and new spaces whose location is to be confirmed (directive §06: the operations lead's work
+ *  queue, the site champion's location verification). Each action is a recorded event on the request. */
+export function Queue({ role }: PageProps) {
+  const { apply } = useWorkspace(); const [tick, setTick] = useState(0); const q = useMemo(() => queue(), [tick]); const all = useMemo(() => loadRecords(), [tick]);
+  const [open, setOpen] = useState<string | null>(null); const [note, setNote] = useState(''); const [to, setTo] = useState<'desk' | 'servicehands'>('desk'); const [room, setRoom] = useState(''); const [dup, setDup] = useState(''); const [no, setNo] = useState<string | null>(null); const [said, setSaid] = useState<string | null>(null);
+  const mayRoute = TRIAGE_ROLES.includes(role); const mayVerify = VERIFY_ROLES.includes(role);
+  const done = (o: { why: string[] } | { id: string }, what: string) => { if ('why' in o) { setNo(o.why.join(' ')); return; } setNo(null); setSaid(`${o.id}: ${what}`); setOpen(null); setNote(''); setRoom(''); setDup(''); setTick((n) => n + 1); };
+  const pick = (id: string, r0: string | null) => { setOpen(open === id ? null : id); setNote(''); setNo(null); setRoom(r0 || ''); setDup(''); setTo('desk'); };
+  return (
+    <div className="ik" data-native="" data-testid="ik-queue">
+      <IntakeNav role={role} here="queue" />
+      <PageHero compact eyebrow="Intake" icon="route" title="Requests to triage" lede="Requests in the person’s own words, to route or to ask about; and new spaces whose location is to be confirmed. Routing creates a project or a job; it approves and assigns nothing." meta={[<Tag key="s" tone="warn">Synthetic data</Tag>, <span key="r">As the {ROLES[role].label}</span>]} />
+      {said && <p role="status" className="sc-msg sc-msg--ok" data-testid="ik-q-done"><Icon name="check" size={18} /><span>{said}</span></p>}
+      {mayRoute && <section className="ik-sec" aria-labelledby="ik-q-r" data-testid="ik-q-route"><h2 id="ik-q-r">To route ({q.route.length})</h2>
+        {q.route.length ? <ul className="ik-qlist">{q.route.map((r) => <li key={r.id} data-testid="ik-q-item" data-id={r.id}>
+          <div className="rq-mine__h"><b><a href={`#/requests/${r.id}`}>{r.title}</a></b><span className="ui-meta">{r.id} · the {ROLES[r.role].label}, {day(r.submittedAt || r.at)}</span></div>
+          <p className="ik-own">“{r.need || r.summary}”</p>
+          <p className="ui-meta">{r.roomId && roomById(r.roomId) ? fullName(roomById(r.roomId)!) : 'Not about one room'} · {plural((r.attachments || []).length, 'file')}{(r.goals || []).length ? ` · wanted: ${(r.goals || []).map(goalLabel).join(', ').toLowerCase()}` : ''}</p>
+          <button type="button" className="ui-btn ui-btn--sm" aria-expanded={open === r.id} onClick={() => pick(r.id, r.roomId)} data-testid="ik-q-open">{open === r.id ? 'Close' : 'Route, ask or close'}</button>
+          {open === r.id && <div className="ik-form" data-testid="ik-q-form">
+            <fieldset className="rq-chips"><legend>Where it goes</legend>{([['desk', 'Decision desk, as a project'], ['servicehands', 'ServiceHands, as a job']] as const).map(([k, l]) => <label key={k} className={to === k ? 'on' : ''}><input type="radio" name={`to-${r.id}`} checked={to === k} onChange={() => setTo(k)} />{l}</label>)}</fieldset>
+            <label htmlFor="ik-q-room">Room {to === 'desk' ? '(optional)' : ''}</label><select id="ik-q-room" value={room} onChange={(e) => setRoom(e.target.value)} data-testid="ik-q-room"><option value="">{to === 'desk' ? 'Not about one room' : 'Choose the room'}</option>{CAMPUS_ROOMS.map((o) => <option key={o.id} value={o.id}>{fullName(o)}</option>)}</select>
+            <label htmlFor="ik-q-note">Note to the person who asked</label><textarea id="ik-q-note" rows={3} maxLength={400} value={note} onChange={(e) => setNote(e.target.value)} data-testid="ik-q-note" />
+            <p className="ik-q-acts">
+              <button type="button" className="ui-btn ui-btn--primary" onClick={() => done(apply((nx) => route(nx, role, r.id, to, note, room || null)), to === 'desk' ? 'routed to the decision desk.' : 'routed to ServiceHands.')} data-testid="ik-q-route-go">Route it</button>
+              <button type="button" className="ui-btn" onClick={() => done(ask(role, r.id, note), 'question sent to the person who asked.')} data-testid="ik-q-ask">Ask this as a question instead</button></p>
+            <label htmlFor="ik-q-dup">Or close it as the same as</label><select id="ik-q-dup" value={dup} onChange={(e) => setDup(e.target.value)} data-testid="ik-q-dup"><option value="">Not a duplicate</option>{all.filter((x) => x.id !== r.id && stateOf(x) === 'SUBMITTED').map((x) => <option key={x.id} value={x.id}>{x.id}: {x.title}</option>)}</select>
+            <p className="ik-q-acts"><button type="button" className="ui-btn ui-btn--quiet" onClick={() => done(close(role, r.id, note, dup || null), dup ? `closed as the same as ${dup}.` : 'closed.')} data-testid="ik-q-close">Close it, with the note as the reason</button></p>
+            {no && <p role="alert" className="sc-msg sc-msg--no" data-testid="ik-q-no">{no}</p>}</div>}
+        </li>)}</ul> : <p className="ui-muted">Nothing waiting to be routed.</p>}</section>}
+      {mayRoute && q.asked.length > 0 && <section className="ik-sec" aria-labelledby="ik-q-a"><h2 id="ik-q-a">Waiting for an answer ({q.asked.length})</h2><ul className="ik-qlist">{q.asked.map((r) => <li key={r.id}><b><a href={`#/requests/${r.id}`}>{r.title}</a></b><span className="ui-meta">{r.id} · asked: {r.question?.text}</span></li>)}</ul></section>}
+      {mayVerify && <section className="ik-sec" aria-labelledby="ik-q-v" data-testid="ik-q-verify"><h2 id="ik-q-v">Locations to confirm ({q.verify.length})</h2>
+        {q.verify.length ? <ul className="ik-qlist">{q.verify.map((r) => <li key={r.id} data-testid="ik-v-item" data-id={r.id}>
+          <div className="rq-mine__h"><b>{r.provisional!.name}</b><span className="ui-meta">{r.provisional!.id} · {r.provisional!.buildingName}, floor {r.provisional!.floor} · asked for in <a href={`#/requests/${r.id}`}>{r.id}</a> by the {ROLES[r.role].label}</span></div>
+          {(r.attachments || []).some((a) => a.preview) && <p className="ik-thumbs">{(r.attachments || []).filter((a) => a.preview).map((a) => <img key={a.id} src={a.preview!} alt={a.name} />)}</p>}
+          <button type="button" className="ui-btn ui-btn--sm" aria-expanded={open === `v-${r.id}`} onClick={() => pick(`v-${r.id}`, null)} data-testid="ik-v-open">{open === `v-${r.id}` ? 'Close' : 'Confirm the location'}</button>
+          {open === `v-${r.id}` && <div className="ik-form"><label htmlFor="ik-v-note">What you saw on site</label><textarea id="ik-v-note" rows={2} maxLength={400} value={note} onChange={(e) => setNote(e.target.value)} data-testid="ik-v-note" />
+            <p className="ik-q-acts"><button type="button" className="ui-btn ui-btn--primary" onClick={() => done(verifyLocation(role, r.id, note), 'location confirmed.')} data-testid="ik-v-go">Confirm where it is</button></p>
+            <p className="ui-meta">Confirms the location only. The space stays provisional: requested, not designed, not built.</p>{no && <p role="alert" className="sc-msg sc-msg--no">{no}</p>}</div>}
+        </li>)}</ul> : <p className="ui-muted">No new space is waiting for its location to be confirmed.</p>}</section>}
     </div>
   );
 }
@@ -125,7 +181,7 @@ export function Help({ role }: PageProps) {
  *  steps, from a shortcut), #/request/spaces, #/request/help, #/requests, #/requests/<id>, and V2.5.3's #/intake/new. */
 export default function IntakePages(props: PageProps) {
   const { segs } = parseHash(props.hash); const q = props.query;
-  const view = segs[0] === 'requests' ? (segs[1] ? 'track' : 'mine') : segs[0] === 'intake' ? 'new' : segs[1] === 'help' ? 'help' : segs[1] === 'spaces' ? 'spaces' : segs[1] || q.get('kind') || q.get('room') || q.get('draft') || q.get('card') ? 'new' : 'home';
+  const view = segs[0] === 'requests' ? (segs[1] ? 'track' : 'mine') : segs[0] === 'intake' ? 'new' : segs[1] === 'help' ? 'help' : segs[1] === 'spaces' ? 'spaces' : segs[1] === 'queue' ? 'queue' : segs[1] || q.get('kind') || q.get('room') || q.get('draft') || q.get('card') ? 'new' : 'home';
   const params = segs[0] === 'requests' && segs[1] ? { ...props.params, id: segs[1] } : props.params;
-  return view === 'home' ? <Home {...props} /> : view === 'new' ? <Wizard key={view} {...props} /> : view === 'mine' ? <Mine {...props} /> : view === 'track' ? <Track key={params['id']} {...props} params={params} /> : view === 'spaces' ? <Spaces {...props} /> : <Help {...props} />;
+  return view === 'home' ? <Home {...props} /> : view === 'new' ? <Wizard key={view} {...props} /> : view === 'mine' ? <Mine {...props} /> : view === 'track' ? <Track key={params['id']} {...props} params={params} /> : view === 'spaces' ? <Spaces {...props} /> : view === 'queue' ? <Queue {...props} /> : <Help {...props} />;
 }

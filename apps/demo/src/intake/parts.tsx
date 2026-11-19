@@ -25,15 +25,15 @@ const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'n
 export { day };
 
 /** The Intake navigation (§03): five places for everyone who asks; the professional work places for the roles that may open them. */
-export function IntakeNav({ role, here }: { role: RoleKey; here: 'home' | 'new' | 'mine' | 'spaces' | 'help' | 'track' }) {
+export function IntakeNav({ role, here }: { role: RoleKey; here: 'home' | 'new' | 'mine' | 'spaces' | 'help' | 'track' | 'queue' }) {
   const opens = opensFor(role);
   const main: Array<[typeof here, string, string]> = [['home', 'Home', '#/request'], ['new', 'New request', '#/request/new'], ['mine', 'My requests', '#/requests'], ['spaces', 'My spaces', '#/request/spaces'], ['help', 'Help', '#/request/help']];
-  const work: Array<[string, string]> = ([['Requests to triage and decide', '#/intake'], ['ServiceHands jobs', '#/servicehands'], ['Decisions', '#/decisions'], ['Projects', '#/projects']] as Array<[string, string]>).filter(([, h]) => opens(h));
+  const work: Array<[string, string]> = ([['Requests to triage', '#/request/queue'], ['The decision desk', '#/intake'], ['ServiceHands jobs', '#/servicehands'], ['Decisions', '#/decisions'], ['Projects', '#/projects']] as Array<[string, string]>).filter(([, h]) => opens(h));
   const cur = here === 'track' ? 'mine' : here;
   return (
     <nav className="ik-nav" aria-label="Intake" data-testid="ik-nav">
       <ul className="ik-nav__main">{main.map(([k, l, h]) => <li key={k}><a href={h} aria-current={cur === k ? 'page' : undefined} data-testid={`ik-nav-${k}`}>{l}</a></li>)}</ul>
-      {work.length > 0 && ['ops', 'syseng', 'designer', 'svcmgr', 'architect', 'bpm', 'exec'].includes(role) && <p className="ik-nav__work" data-testid="ik-nav-work"><span>Your work as the {ROLES[role].label}:</span>{work.map(([l, h]) => <a key={h} href={h}>{l}</a>)}</p>}
+      {work.length > 0 && ['ops', 'syseng', 'designer', 'svcmgr', 'architect', 'bpm', 'exec', 'sitechamp'].includes(role) && <p className="ik-nav__work" data-testid="ik-nav-work"><span>Your work as the {ROLES[role].label}:</span>{work.map(([l, h]) => <a key={h} href={h}>{l}</a>)}</p>}
     </nav>
   );
 }
@@ -110,7 +110,7 @@ export function RequestItem({ r, w, desk, role, onDiscard }: { r: Request; w: Wo
   return (
     <li data-testid="rq-item" data-id={r.id} data-state={s.state} data-goes={r.goes} data-record={stateOf(r)} className="ik-item">
       <div className="rq-mine__h"><b><a href={draft ? `#/request/new?draft=${r.id}` : `#/requests/${r.id}`}>{r.title}</a></b><Tag tone={s.tone}>{s.words}</Tag></div>
-      <p className="ui-muted">{r.id} · {draft ? `started on ${day(r.at)}${r.updated ? `, last changed ${day(r.updated)}` : ''}` : `asked by the ${ROLES[r.role].label} on ${day(r.submittedAt || r.at)}`}{!draft && WHERE[r.goes] ? ` · ${WHERE[r.goes]}${r.projectId ? ` project ${r.projectId}` : r.incidentId ? ` job ${r.incidentId}` : ''}` : ''}{r.date ? ` · event on ${r.date}` : ''}</p>
+      <p className="ui-muted">{r.id} · {draft ? `started on ${day(r.at)}${r.updated ? `, last changed ${day(r.updated)}` : ''}` : `asked by the ${ROLES[r.role].label} on ${day(r.submittedAt || r.at)}`}{!draft ? (r.projectId ? ` · Decision desk project ${r.projectId}` : r.incidentId ? ` · ServiceHands job ${r.incidentId}` : WHERE[r.goes] ? ` · ${WHERE[r.goes]}` : '') : ''}{r.date ? ` · event on ${r.date}` : ''}</p>
       {!draft && s.next && <p className="ik-item__next"><span className="ui-meta">Next · {s.owner}</span> {s.next}</p>}
       {s.reason && <p>Reason given: {s.reason}</p>}
       <p className="rq-mine__a">

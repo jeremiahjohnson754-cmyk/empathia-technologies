@@ -8,10 +8,10 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: (k) => { mem.delete(k); } };
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-intake-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * as I from './intake/model.ts'; export * as T from './intake/store.ts'; export * as D from './campus/design.ts'; export * as K from './campus/canon.ts'; export * as W from './workspace/store.ts'; export * as DS from './decisions/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as H from './campus/rolehome.ts'; export * as E from '@empathia/commissioning-engine';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
+await esbuild.build({ stdin: { contents: `export * as I from './intake/model.ts'; export * as T from './intake/store.ts'; export * as TR from './intake/triage.ts'; export * as D from './campus/design.ts'; export * as K from './campus/canon.ts'; export * as W from './workspace/store.ts'; export * as DS from './decisions/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as H from './campus/rolehome.ts'; export * as E from '@empathia/commissioning-engine';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
   bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
   plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => (a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined)); } }] });
-const { I, T, D, K, W, DS, P, R, H, E } = await import(pathToFileURL(out).href);
+const { I, T, TR, D, K, W, DS, P, R, H, E } = await import(pathToFileURL(out).href);
 const hw = (p) => p.positions.filter((x) => !x.furniture);
 
 // IN-01 changed 19 Nov 2026: the founder's Intake directive (§02, §05 G and J) adds a fault ("Something is not working", which opens
@@ -192,5 +192,42 @@ test('IN-16 the front door reads a description by word lists: the thirteen phras
   assert.equal(L.locate('4.218')[0].roomId, 'R-ATL-4-218'); assert.equal(L.locate('#/lite/room/R-ATL-4-218?mode=employee')[0].roomId, 'R-ATL-4-218');
   const rec = D.roomRecord('R-ATL-4-218'); const dev = rec.positions.find((p) => !p.furniture); const hit = L.locate(dev.code)[0]; assert.equal(hit.roomId, 'R-ATL-4-218'); assert.equal(hit.position, dev.code);
   assert.deepEqual(L.locate('ZZ-9999'), []); assert.ok(L.locate('boardroom').length >= 1);
+});
+
+test('IN-17 triage: a request in the person’s own words is routed by the operations lead with a note, keeping the words; a job needs a room', () => {
+  mem.clear(); const w = W.load(); const desk = DS.load(); const words = 'We need to move two displays from the old lobby to the new wing.';
+  const r = T.send(w, 'employee', I.blank('general', { need: words }), desk); assert.equal(TR.queue().route.map((x) => x.id).join(), r.id);
+  assert.ok(TR.route(w, 'employee', r.id, 'desk', 'A relocation project', null, desk).why, 'the employee does not triage');
+  assert.ok(TR.route(w, 'ops', r.id, 'servicehands', 'Two displays to move', null, desk).why, 'a job needs the room');
+  assert.ok(TR.route(w, 'ops', r.id, 'desk', 'x', null, desk).why, 'a note is required');
+  const n = desk.projects.length; const t = TR.route(w, 'ops', r.id, 'desk', 'A relocation is a small project: engineering checks the new wing first.', null, desk);
+  assert.ok(!t.why, JSON.stringify(t)); assert.equal(t.projectId, `PRJ-${r.id}`); assert.equal(desk.projects.length, n + 1); assert.equal(desk.projects.at(-1).state, 'SUBMITTED');
+  assert.equal(t.need, words, 'the person’s words are kept'); assert.equal(t.triage.outcome, 'desk'); assert.equal(t.history.at(-1).type, 'request.triaged'); assert.equal(TR.queue().route.length, 0);
+  assert.ok(TR.route(w, 'ops', r.id, 'desk', 'Again, by mistake', null, desk).why, 'routed once'); assert.equal(T.standing(t, w, desk).owner, 'Systems engineering');
+});
+
+test('IN-18 a question to the requester: the request waits for them, only they answer, and it goes back to the queue answered', () => {
+  mem.clear(); const w = W.load(); const desk = DS.load(); const r = T.send(w, 'employee', I.blank('general', { need: 'The room needs better sound.' }), desk);
+  assert.ok(TR.ask('employee', r.id, 'Which room do you mean?').why); const a = TR.ask('ops', r.id, 'Which room do you mean, and when is it used most?');
+  assert.ok(!a.why); assert.equal(T.standing(a, w, desk).owner, 'You'); assert.equal(T.standing(a, w, desk).words, 'A question for you'); assert.equal(TR.queue().route.length, 0); assert.equal(TR.queue().asked.length, 1);
+  assert.ok(TR.ask('ops', r.id, 'A second question while the first waits?').why, 'one question at a time');
+  assert.ok(TR.answer('ops', r.id, 'Atlas 4.218').why, 'only the requester answers'); const b = TR.answer('employee', r.id, 'Atlas 4.218, every Monday morning');
+  assert.ok(!b.why); assert.equal(b.question.answer.text, 'Atlas 4.218, every Monday morning'); assert.deepEqual(b.history.slice(-2).map((e) => e.type), ['request.clarification_requested', 'request.clarification_answered']); assert.equal(TR.queue().route.length, 1);
+});
+
+test('IN-19 closing a duplicate names the request it duplicates and says why; the requester is pointed to it', () => {
+  mem.clear(); const w = W.load(); const desk = DS.load(); const a = T.send(w, 'employee', I.blank('general', { need: 'The lobby screen is too small.' }), desk); const b = T.send(w, 'employee', I.blank('general', { need: 'The lobby screen is too small to read.' }), desk);
+  assert.ok(TR.close('ops', b.id, 'short', null).why); assert.ok(TR.close('ops', b.id, 'The same need, asked twice.', 'REQ-9999').why, 'the duplicate must exist');
+  const c = TR.close('ops', b.id, 'The same need, asked twice.', a.id); assert.ok(!c.why); const s = T.standing(c, w, desk); assert.equal(s.state, 'CLOSED'); assert.equal(s.href, `#/requests/${a.id}`); assert.match(s.words, new RegExp(a.id));
+});
+
+test('IN-20 a provisional space’s location is confirmed by a champion or an engineer, never by the person who asked; the space stays provisional', () => {
+  mem.clear(); const w = W.load(); const desk = DS.load(); const r = T.send(w, 'employee', I.blank('new-room', { need: 'A room for the design team', people: 6, place: { name: 'Old print room', building: '' } }), desk);
+  assert.equal(TR.queue().verify.length, 1); assert.match(T.standing(r, w, desk).next, /someone on site confirms/);
+  assert.ok(TR.verifyLocation('visitor', r.id, 'I looked at it from the corridor').why); assert.ok(TR.verifyLocation('sitechamp', r.id, 'short').why);
+  const asker = T.send(w, 'sitechamp', I.blank('new-room', { need: 'A room for the site team', people: 4 }), desk); assert.ok(TR.verifyLocation('sitechamp', asker.id, 'It is my own request, seen today').why, 'not by the person who asked');
+  const v = TR.verifyLocation('sitechamp', r.id, 'Visited: the old print room, floor 1, east side, empty.'); assert.ok(!v.why, JSON.stringify(v));
+  assert.equal(v.provisional.location, 'VERIFIED'); assert.equal(v.provisional.state, 'AWAITING_REVIEW', 'still provisional'); assert.equal(v.history.at(-1).type, 'location.verified');
+  assert.doesNotMatch(T.standing(v, w, desk).next, /someone on site confirms/); assert.equal(TR.queue().verify.length, 1, 'the champion’s own request still waits for someone else');
 });
 

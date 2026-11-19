@@ -26,7 +26,12 @@ export type PhotoPolicy = 'OPTIONAL_REFERENCE' | 'DOCUMENTATION_REQUIRED' | 'LOC
 export interface Attachment { id: string; name: string; type: string; bytes: number; sha256: string; at: string; by: RoleKey; item: string | null; preview: string | null; note: string;
   /** what the photograph shows is where the person says it is: documented, not verified (§04) */ location: 'DOCUMENTED' }
 /** A space the records do not hold yet: requested, not built, and not an operational room (§04 step 2). */
-export interface Provisional { id: string; name: string; building: string; buildingName: string; floor: number; at: string; by: RoleKey; state: 'AWAITING_REVIEW'; location: 'DOCUMENTED' }
+export interface Provisional { id: string; name: string; building: string; buildingName: string; floor: number; at: string; by: RoleKey; state: 'AWAITING_REVIEW';
+  /** where it is: as the requester documented it, until someone entitled confirms it on site */ location: 'DOCUMENTED' | 'VERIFIED'; verifiedBy?: RoleKey; verifiedAt?: string; verifiedNote?: string }
+/** A question to the person who asked, and their answer (triage.ts). */
+export interface Question { text: string; by: RoleKey; at: string; answer: { text: string; at: string; by: RoleKey } | null }
+/** How a request in the person's own words was routed, or why it was closed (triage.ts). */
+export interface Triage { outcome: 'desk' | 'servicehands' | 'closed'; by: RoleKey; at: string; note: string; duplicateOf: string | null }
 export interface RequestEvent { v: 1; at: string; type: string; by: RoleKey; detail: string; correlation: string }
 
 export interface Request { id: string; kind: KindId; goes: Goes; title: string; summary: string; role: RoleKey; at: string; roomId: string | null; projectId: string | null; incidentId: string | null; equipment: Array<{ label: string; count: number; added: number }>; tests: number; date: string | null;
@@ -34,7 +39,7 @@ export interface Request { id: string; kind: KindId; goes: Goes; title: string; 
   /** the size Empathia proposed, with its basis (a new room) */ size?: { w: number; l: number; h: number; basis: string } | null;
   /** since 19 Nov 2026: requests are records from their first answer. Requests stored before carry no state and were sent. */
   state?: RecordState; card?: CardId; draft?: Draft; step?: string; updated?: string; submittedAt?: string | null;
-  attachments?: Attachment[]; provisional?: Provisional | null; policy?: PhotoPolicy; goals?: string[]; history?: RequestEvent[] }
+  attachments?: Attachment[]; provisional?: Provisional | null; policy?: PhotoPolicy; goals?: string[]; history?: RequestEvent[]; question?: Question | null; triage?: Triage | null }
 export type Refusal = { why: string[] };
 const KEY = 'empathia.demo.requests.v1';
 /** The roles the portal admits (registry: intake.request). A request is a request: who asked is recorded, and nothing is granted by asking. */
@@ -200,9 +205,11 @@ export interface Standing { words: string; tone: 'info' | 'ok' | 'warn' | 'bad';
 /** Where a request stands now, read from what it became; in the asker's words, with the reason when someone gave one. */
 export function standing(r: Request, w: Workspace, desk: DecisionState = loadDesk()): Standing {
   if (stateOf(r) === 'DRAFT') return { words: 'Not sent yet', tone: 'info', state: 'DRAFT', href: null, where: '', reason: null, owner: 'You', next: 'Finish the request and send it. It is kept in this browser until you do.' };
+  if (r.question && !r.question.answer) return { words: 'A question for you', tone: 'warn', state: 'CLARIFICATION', href: null, where: '', reason: null, owner: 'You', next: `Answer the question from the ${ROLES[r.question.by].label}: “${r.question.text}” The request carries on when you do.` };
+  if (r.triage?.outcome === 'closed') return { words: r.triage.duplicateOf ? `Closed: the same as ${r.triage.duplicateOf}` : 'Closed', tone: 'info', state: 'CLOSED', href: r.triage.duplicateOf ? `#/requests/${r.triage.duplicateOf}` : null, where: '', reason: r.triage.note, owner: 'Nobody', next: r.triage.duplicateOf ? `Follow ${r.triage.duplicateOf} instead.` : 'Nothing more happens with this request. Ask again if the need changes.' };
   if (r.projectId) { const p = desk.projects.find((x) => x.id === r.projectId); if (!p) return { words: 'The project is no longer on the desk', tone: 'bad', state: 'GONE', href: null, where: 'Decision desk', reason: null, owner: 'Nobody', next: 'Ask again if it is still needed.' };
     const dec = desk.decisions.filter((x) => x.projectId === p.id).sort((a, b) => b.at.localeCompare(a.at))[0]; const [words, tone] = DESK_WORDS[p.state] || [p.state, 'info']; const [owner, next] = DESK_NEXT[p.state] || ['Systems engineering', 'The project moves on.'];
-    const verify = r.provisional && p.state === 'SUBMITTED' ? ' First, someone on site confirms where the new space is.' : '';
+    const verify = r.provisional && r.provisional.location !== 'VERIFIED' && p.state === 'SUBMITTED' ? ' First, someone on site confirms where the new space is.' : '';
     return { words, tone, state: p.state, href: '#/intake', where: 'Decision desk', reason: dec && (p.state === 'HELD' || p.state === 'REJECTED') ? dec.reason : null, owner, next: `${next}${verify}` }; }
   if (r.incidentId) { const i = S.incidentOf(w, r.incidentId); if (!i) return { words: 'The job is no longer in ServiceHands', tone: 'bad', state: 'GONE', href: null, where: 'ServiceHands', reason: null, owner: 'Nobody', next: 'Ask again if it is still needed.' };
     const [words, tone] = JOB_WORDS[i.state] || [i.state, 'info']; const [owner, next] = JOB_NEXT[i.state] || ['Service management', 'The job moves on.']; return { words, tone, state: i.state, href: '#/servicehands', where: 'ServiceHands', reason: null, owner, next }; }
