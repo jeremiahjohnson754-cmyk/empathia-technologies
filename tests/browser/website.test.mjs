@@ -207,8 +207,11 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   if (w === 1440) {
     const [popup] = await Promise.all([page.waitForEvent('popup', { timeout: 4000 }).catch(() => null), page.click('[data-founder=home] a[data-enquiry=founder]')]);
     ok('W-founder-click', 'a real click on "Connect with the founder" opens the hosted form (stubbed) in a new tab while the page stays put', !!popup && popup.url().startsWith(`${TALLY}?source=founder`) && page.url() === base + '/', popup?.url());
-    await page.goto(base + '/founder'); const fp = await page.evaluate(() => ({ h1: document.querySelector('h1').textContent, creds: Array.from(document.querySelectorAll('.creds abbr')).map((a) => a.textContent), about: !!document.querySelector('main a[data-founder-about]'), conn: document.querySelectorAll('main a[data-enquiry=founder]').length, extra: /\b(PMP|CISSP|CCNA|MBA|Ph\.?D|certified (by|in))\b/.test(document.querySelector('main').innerText) }));
-    ok('W-founder-page', '/founder: his name as h1, only the three credentials, Connect with the founder (no self-link to the biography), no other qualification claimed', fp.h1 === 'Jeremiah Johnson' && fp.creds.join(',') === 'CTS,CAPM,Network+' && !fp.about && fp.conn >= 1 && !fp.extra, JSON.stringify(fp));
+    await page.goto(base + '/founder'); const fp = await page.evaluate(() => ({ h1: document.querySelector('h1').textContent, creds: Array.from(document.querySelectorAll('.creds abbr')).map((a) => a.textContent), about: !!document.querySelector('main a[data-founder-about]'), conn: document.querySelectorAll('main a[data-enquiry=founder]').length, extra: /\b(PMP|CISSP|CCNA|MBA|Ph\.?D|SHRM(-CP)?|CMP|CTS-D|CTS-I|certified (by|in))\b/.test(document.querySelector('main').innerText),
+      // ADDED 2026-11-19 (founder 21:34 directive, task #242 public-page audit): the founder page carries none of the private origins archive
+      // (receipts, screenshots, chronology), no unauthenticated founder-vision date, no implied B3 Integrated Solutions affiliation
+      archive: /\b(B3 Integrated|receipts?|origins archive|chronology)\b|(November 20|20 November),? 2025/i.test(document.querySelector('main').innerText) }));
+    ok('W-founder-page', '/founder: his name as h1, only the three credentials, Connect with the founder (no self-link to the biography), no other qualification claimed, nothing of the private origins archive', fp.h1 === 'Jeremiah Johnson' && fp.creds.join(',') === 'CTS,CAPM,Network+' && !fp.about && fp.conn >= 1 && !fp.extra && !fp.archive, JSON.stringify(fp));
   }
   await ctx.close();
 }
