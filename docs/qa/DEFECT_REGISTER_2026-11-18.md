@@ -262,6 +262,12 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **Status:** open, P3. The b3b23b4 regression is recorded as it ran: PASS 277, FAIL 1 (this one), NOT_RUN 2. It was not rerun to
   turn it green. The next step is to make CL-13 measure what it means to: a sustained median over a longer window, with the sample
   count and spread in its result. That test change will carry its reason.
+- **19 Nov, 89d5d83 (stopped, not counted):** part 1 recorded CL-13 at 7 fps, FAIL. This time the cause is known and it was mine:
+  while that part ran I built and tested the commercial package, ran the private pricing model and the public exposure audit in the
+  main tree, against this register's own rule. The run was stopped after part 1 (20 suites in, CL-13 its only failure) and is not
+  used for any decision; a19216e supersedes 89d5d83 and its regression runs with nothing else on the machine.
+- **19 Nov, 9e081f6 (stopped before any part):** the regression stopped at the build, "generated files are stale:
+  docs/api/openapi.json" (3ef51ae changed two route summaries without regenerating it); fixed in c2f5487 and 89d5d83.
 
 ### D18-26 · P1 · Fixed (staging of 3143112: both static-site builds failed on Render; the regression had passed 277/0)
 - **What was wrong:** on Render the website's home page came to 49,186 B, over its 49,152 B budget. The staging build writes the
