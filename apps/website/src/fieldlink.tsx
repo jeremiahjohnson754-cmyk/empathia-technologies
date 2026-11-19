@@ -82,9 +82,9 @@ export const fieldlinkPage = (demo: (href?: string) => string) => ({
           <p className="fl-status" data-fl-status><b>Concept reference design.</b> No FieldLink unit has been built, certified or priced by a supplier. Prices are proposed and illustrative. The pictures are concept renders.</p>
         </div>
         <figure className="fl-hero__fig">
-          <picture><source type="image/webp" srcSet="/media/fieldlink/family-640.webp 640w, /media/fieldlink/family-960.webp 960w, /media/fieldlink/family-1600.webp 1600w" sizes="(max-width: 900px) 100vw, 56vw" />
-            <img src="/media/fieldlink/family-960.jpg" srcSet="/media/fieldlink/family-640.jpg 640w, /media/fieldlink/family-960.jpg 960w, /media/fieldlink/family-1600.jpg 1600w" sizes="(max-width: 900px) 100vw, 56vw" width={1600} height={900} alt="Concept render of the three FieldLink devices on a dark surface: a small USB-C dongle with a teal light (Nano), a ribbed fanless box with two network ports (Edge) and a round sensor puck with a teal ring (Pulse)" fetchPriority="high" /></picture>
-          <figcaption>Concept render of the industrial design — not a photograph of manufactured hardware.</figcaption>
+          <picture><source type="image/webp" srcSet="/media/fieldlink/family-prices-640.webp 640w, /media/fieldlink/family-prices-960.webp 960w, /media/fieldlink/family-prices-1600.webp 1600w" sizes="(max-width: 900px) 100vw, 56vw" />
+            <img src="/media/fieldlink/family-prices-960.jpg" srcSet="/media/fieldlink/family-prices-640.jpg 640w, /media/fieldlink/family-prices-960.jpg 960w, /media/fieldlink/family-prices-1600.jpg 1600w" sizes="(max-width: 900px) 100vw, 56vw" width={1600} height={816} alt="Concept image of the three FieldLink devices on a dark surface, each with its card. Nano, USB-C, compatible hosts: proposed $249, portable diagnostics. Edge, PoE, rack and room gateway: proposed $1,499, local intelligence hub. Pulse, distributed room sensors: proposed $499, distributed environmental sensing. Optional hardware: Empathia software works independently. Concept products and illustrative prices." fetchPriority="high" /></picture>
+          <figcaption>Concept image, not a photograph of manufactured hardware. Prices are proposed and illustrative.</figcaption>
         </figure>
       </div></section>
 
