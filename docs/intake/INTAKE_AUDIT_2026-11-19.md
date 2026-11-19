@@ -191,6 +191,26 @@ request types, which become the canonical key in both. Recorded here as an open 
 
 None of the five journeys or twenty scenarios is built or tested end to end as written. The pieces that exist are listed above.
 
+## Built since this audit (19 Nov 2026, evening)
+
+What changed against the matrix above; `INTAKE_FRONT_DOOR.md` describes it. Unit evidence: `tests/unit/demo-intake.test.mjs` (IN-01 to
+IN-22). Browser evidence: `tests/browser/demo-request.test.mjs` RQ-01 to RQ-49 (the result is recorded below once run).
+
+| Section | Now |
+|---|---|
+| §03 Home | the directive's hero and line, describe box (word lists, labelled not AI), four cards and "Not sure?", drafts, waiting, recent; Intake navigation (Home, New request, My requests, My spaces, Help) and the professional work links |
+| §04 Steps | five steps skipped by kind; drafts as records (REQ id, saved as they change, survive refresh); room search by name, number, QR address, device code; recent rooms; open work for the room shown; provisional spaces; a building not on record; photo checklist by kind, fingerprints and previews, nothing measured from a photo; a size the person gives, labelled as theirs; review with change links, save for later, copy the summary; "Your request has been received" with id, status, owner and next step |
+| §05 J, G | "Something else" in the person's own words, routed by the operations lead; "Something is not working" opens ServiceHands' report |
+| §06 | operations lead: triage queue (route with a note, ask a question, close a duplicate); Site Champion: locations to confirm, requests at the site; requester: answers questions |
+| §07 | one page per request: what is happening, who acts next, what is needed, what happens next; space, files, the proposed room, question and answer, routing, history; access for the requester, the people who work on it and the site's champion |
+| §09 | Search Party room → "Ask for work in this room"; a room's History lists its requests; the proposed room in Lite's 3D room view |
+| §10 | request.drafted, request.updated, document.added, room.provisional_created, request.submitted, request.clarification_requested, request.clarification_answered, request.triaged, request.closed, location.verified, request.example_marked |
+| §20 D | five Living Campus examples (enterprise, university, stadium, convention), added on request, marked |
+
+Still open: REQUEST CHANGES (§08; needs a governance transition and the API's `project_decision` CHECK, so a migration), tenant-configurable
+photo policy, notifications, the AI assistant, relocation/retirement/new-building templates, engineering review on the request, the
+journeys after approval.
+
 ## Phase 2 plan (the front door), in the demonstration
 
 Order of work, each step tested before the next:
