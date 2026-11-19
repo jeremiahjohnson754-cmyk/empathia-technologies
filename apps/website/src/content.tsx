@@ -9,6 +9,7 @@ import { Hero, Section, Cards, Steps, Note, Actions, Tag, EVIDENCE, EvidenceLine
 import { PRODUCTS, DEMO_STATE, ROOMS_SENTENCE, ROOM_MIX, ROOM_TOTAL } from './products.js';
 import { TALLY_FORM } from './enquiry.js';
 import { commercialPages } from './commercial.js';
+import { fieldlinkPage } from './fieldlink.js';
 import { FounderReveal, SearchPartyStory, SearchPartyOrigin, BeforeTheExplanation } from './founderStory.js';   // the founder page's plate and the Search Party founding story   // v18/pilot: /pricing and /pilots
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; /** a small script of the page's own loaded in <head>, before first paint (the founder page's introduction must start from its opening frame) */ headScript?: string; }
@@ -168,6 +169,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       <>
         <section className="hero"><div className="wrap"><Spectrum /><p className="label">Products</p><h1>Nine products, one record</h1><p className="lede">Each product is a stage of the same lifecycle. Each page states what the public demonstration shows today, and what it does not. Scouter is part of Lite.</p><div className="actions hero__action"><a className="btn btn--primary btn--lg" href={demo()} data-hero-action>Explore the live demo</a></div></div></section>
         <Section title="All nine, in lifecycle order"><ProductTiles captures={ctx.captures} /></Section>
+        <Section id="fieldlink" eyebrow="Optional hardware · concept" title="FieldLink extends what Empathia can observe" lead="Three proposed devices — Nano, Edge and Pulse — for sites that want local, hardware-attributed evidence. None of the nine products needs them; no unit has been built yet."><Actions><a className="btn btn--primary" href="/fieldlink">Discover FieldLink</a><a className="btn" href="/fieldlink#optional">Do I need FieldLink? No.</a></Actions></Section>
         {ctx.booklets?.length ? <Section id="guides" title="Guides for the people who use the rooms" lead="The End-User Success Guide and the IT Onboarding Success Guide as printed booklets, set from the demonstration’s own content and screenshots. Both are drafts on synthetic data, not yet reviewed by a practising specialist.">
           <ul className="booklets" data-booklets={ctx.booklets.length}>{ctx.booklets.map((b) => <li key={b.file} className="booklet">
             <a href={`/media/booklets/${b.file}`} className="booklet__cover" aria-label={`${b.title} (PDF, ${b.pages} pages)`}><img src={`/media/booklets/${b.cover}`} alt="" width={600} height={776} loading="lazy" /></a>
@@ -265,6 +267,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       <>
         <Hero label="Company" title="About Empathia" lead="Empathia Technologies builds the Living Campus: software that keeps the technology of a workplace honest about its own state." />
         <Section title="Founder" lead="Empathia was founded by Jeremiah Johnson (CTS, CAPM, CompTIA Network+)."><Actions><a className="btn" href="/founder">About the founder</a></Actions></Section>
+        <Section id="fieldlink" title="FieldLink: optional hardware, a concept" lead="Nano, Edge and Pulse: three proposed devices that would let Empathia observe and verify more of a room locally. Empathia does not need them. No unit has been built."><Actions><a className="btn" href="/fieldlink">FieldLink</a></Actions></Section>
         <Section id="in-development" title="In Development: Collabora-SING" lead="Collabora-SING is a product in development. Its page sets out a research plan; the pilot has not been run yet."><Actions><a className="btn" href="/collabora-sing">Collabora-SING</a></Actions></Section>
         <Section title="Principles" tone="deep"><Cards cols={3} items={PRINCIPLES} /></Section>
         <Section id="investors" title="Investor conversations" lead="The company, the platform and the demonstration, with the evidence behind each claim."><EnquiryCard source="website-investor" primary /></Section>
@@ -324,6 +327,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <section className="band"><div className="wrap"><h2>Questions about Collabora-SING?</h2><p>Write to us through the contact page and say that your message is about Collabora-SING.</p><div className="actions"><a className="btn btn--primary btn--lg" href="/contact">Contact</a></div></div></section>
       </div>
     ) },
+    fieldlinkPage(demo),   // founder 18 Nov 2026 17:25: the optional hardware family, a concept (fieldlink.tsx)
     { path: '/request-demo', title: 'Request a demonstration — Empathia Technologies', description: 'Request a guided demonstration of the Empathia Living Campus.', body: (
       <>
         <Hero label="Request a demonstration" title="See it with your questions" lead="A guided walk through the scenarios on synthetic data, for your team and your questions." />

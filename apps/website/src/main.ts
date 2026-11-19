@@ -73,3 +73,6 @@ if (scenes.length && !matchMedia('(prefers-reduced-motion: reduce)').matches && 
   const io = new IntersectionObserver((es) => es.forEach((e) => { const v = e.target as HTMLVideoElement; if (e.isIntersecting) { v.muted = true; v.play().catch(() => undefined); } else v.pause(); }), { threshold: 0.35 });
   scenes.forEach((v) => io.observe(v));
 }
+// a link to a closed <details> (FieldLink's "View specifications") opens it, so the address leads to readable content
+const openTarget = () => { const id = decodeURIComponent(location.hash.slice(1)); const t = id ? document.getElementById(id) : null; if (t instanceof HTMLDetailsElement && !t.open) { t.open = true; t.scrollIntoView({ block: 'start' }); } };
+window.addEventListener('hashchange', openTarget); openTarget();

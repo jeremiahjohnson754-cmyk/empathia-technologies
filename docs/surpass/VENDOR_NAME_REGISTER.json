@@ -184,6 +184,11 @@
     "file": "apps/demo/src/fieldtools/calc.ts",
     "evidence": "standard-cited",
     "note": "PoE budget calculator: IEEE 802.3af/at/bt class powers, cited as the standard’s published classes"
+   },
+   {
+    "file": "apps/website/src/fieldlink.tsx",
+    "evidence": "standard-cited",
+    "note": "IEEE 802.3at, the PoE+ standard named in FieldLink Edge's power specification (a concept design target)"
    }
   ],
   "IFC": [
