@@ -20,6 +20,7 @@ import { send, saveDraft, recordById, draftOf, stateOf, policyFor, photoChecklis
 import { locate, recentRooms, roomsOf, type Place } from './locate.js';
 import { IntakeNav, Preview, ProposedRoom, Summary, RequestItem, KIND_ICON, plural } from './parts.js';
 import { load as loadDesk } from '../decisions/store.js';
+import { parseHash } from '../registry.pages.js';
 
 type StepId = 'what' | 'where' | 'needs' | 'photos' | 'review';
 const STEP_LABEL: Record<StepId, string> = { what: 'What you need', where: 'Where', needs: 'What it should do', photos: 'Show us the space', review: 'Review and send' };
@@ -134,7 +135,13 @@ export default function Wizard({ role, query, params }: PageProps) {
   const [attempt, setAttempt] = useState(0);
   // a shortcut that names a kind or a room replaces what is on screen (a link followed from another page while this one is open)
   const qkey = `${params['kind'] || ''}|${query.get('kind') || ''}|${query.get('room') || ''}|${query.get('position') || ''}|${query.get('card') || ''}|${query.get('draft') || ''}`; const firstKey = useRef(qkey);
-  useEffect(() => { if (qkey === firstKey.current) return; firstKey.current = qkey; const s = start(query, params); setId(s.id); setD(s.d); setStep(s.step); setCard(s.card); setQuick(s.quick); setSent(s.sent); setTried(null); setRefused(null); setAtts(s.id ? recordById(s.id)?.attachments || [] : []); }, [qkey]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const reset = (s: Start) => { setId(s.id); setD(s.d); setStep(s.step); setCard(s.card); setQuick(s.quick); setSent(s.sent); setTried(null); setRefused(null); setAtts(s.id ? recordById(s.id)?.attachments || [] : []); };
+  useEffect(() => { if (qkey === firstKey.current) return; firstKey.current = qkey; reset(start(query, params)); }, [qkey]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // the address this page writes for itself (replaceState) fires no event; any other change of address is a person going somewhere, so a
+  // link to a new request, or back to the same kind after sending, starts from that address (the shell may keep this page mounted)
+  useEffect(() => { const on = () => { const { segs, query: q } = parseHash(location.hash); if (segs[0] !== 'request' || ['help', 'spaces', 'queue'].includes(segs[1] || '')) return;
+    if (!segs[1] && !q.get('kind') && !q.get('room') && !q.get('draft') && !q.get('card')) return; reset(start(q, segs[1] && segs[1] !== 'new' ? { kind: segs[1] } : {})); };
+    window.addEventListener('hashchange', on); return () => window.removeEventListener('hashchange', on); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (attempt) formRef.current?.querySelector<HTMLElement>('[aria-invalid=true]')?.focus(); }, [attempt]);
   useEffect(() => { if (sent) sentRef.current?.focus(); }, [sent]);
   // the one-screen request keeps its answers for the life of the tab, as the portal always has
@@ -156,7 +163,7 @@ export default function Wizard({ role, query, params }: PageProps) {
     setTried('review'); if (Object.keys(errs).length && !(isTool(d.kind))) { setRefused(Object.values(errs)); setAttempt((n) => n + 1); return; }
     const out = apply((nx) => send(nx, role as RoleKey, d, undefined, id));
     if ('why' in out) { setRefused(out.why); return; }
-    setRefused(null); setSent(out); setId(out.id); setTried(null); replaceHash(`#/requests/${out.id}`); try { sessionStorage.removeItem(LEGACY_KEY); } catch { /* nothing to clear */ }
+    setRefused(null); setSent(out); setId(out.id); setTried(null); replaceHash(`#/request/new?draft=${out.id}`);   // a refresh shows it as received; the link to its page still navigates try { sessionStorage.removeItem(LEGACY_KEY); } catch { /* nothing to clear */ }
   };
   const copy = async () => { const { title, summary } = summarise(d, p); const text = `${title}\n${summary}${id ? `\nDraft ${id}` : ''}`; try { await navigator.clipboard.writeText(text); setCopied(true); } catch { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); setCopied(true); } catch { setCopied(false); } ta.remove(); } };
   const go2 = handoff(d); const desk = useMemo(() => loadDesk(), [sent]);   // eslint-disable-line react-hooks/exhaustive-deps

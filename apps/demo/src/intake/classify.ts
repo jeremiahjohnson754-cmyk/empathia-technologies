@@ -21,7 +21,7 @@ const KIND_RULES: Array<[KindId, RegExp]> = [
   ['problem', /\b(broken|not working|isn'?t working|doesn'?t work|does not work|stopped|keeps? (?:failing|dropping|cutting)|fail(?:ed|ing|s)?|fault(?:y)?|cuts? out|no (?:sound|picture|signal|audio|video)|won'?t (?:turn on|connect|work)|flicker(?:s|ing)?|dead|error|crash(?:es|ed)?|frozen|buzz(?:ing)?|hum(?:ming)?)\b/i],
   ['event', /\b(event|town ?hall|all[- ]hands|webinar|launch|off-?site|temporary|for (?:a|one) day|next week'?s|conference day|gala|ceremony)\b/i],
   ['evaluate-device', /\b(evaluat(?:e|ion)|compare|which (?:camera|display|screen|microphone|speaker|codec|projector)s?|recommend(?:ation)?|before (?:buying|we buy)|is (?:it|this) approved|approved standard)\b/i],
-  ['new-room', /\b(new (?:meeting )?(?:room|space|office|classroom|studio|building|floor|area|site|campus|lab)|create (?:a|an)|build (?:a|an)|opening (?:a|an|our)|fit[- ]out|we'?re (?:opening|moving into))\b/i],
+  ['new-room', /\b(new (?:[a-z-]+ ){0,2}(?:room|space|office|classroom|studio|building|floor|area|site|campus|lab)s?|create (?:a|an)|build (?:a|an)|opening (?:a|an|our)|fit[- ]out|we'?re (?:opening|moving into))\b/i],
   ['add-devices', /\b(another|extra|additional|a second|second|more|add(?:ing)? (?:a|an|another|more)?)\s+(?:\w+\s+)?(camera|display|screen|monitor|tv|microphone|mic|speaker|projector|touch ?panel|scheduler|lectern)s?\b/i],
   ['improve-room', /\b(can'?t (?:see|hear)|cannot (?:see|hear)|hard to (?:see|hear)|echo(?:es|y)?|layout|(?:seats?|people) (?:at|in) the back|sightlines?)\b/i],
   ['change-room', /\b(upgrade|moderni[sz]e|redesign|improv(?:e|ing)|refresh|convert|turn (?:it|the room) into|digital signage|signage|wayfinding|better (?:camera|audio|video|sound|screen|display)s?)\b/i],

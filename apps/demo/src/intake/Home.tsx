@@ -26,7 +26,7 @@ export default function Home({ role }: PageProps) {
   const describe = (e: { preventDefault: () => void }) => { e.preventDefault(); const r = read(text); setReading(r); setWhy(r ? null : 'Say a few words about what you need, or choose one of the four below.'); requestAnimationFrame(() => readRef.current?.focus()); };
   const begin = (r: Reading) => {
     const d = blank(r.kind, { need: text.trim().slice(0, 600), goals: r.goals, ...(r.roomId ? { roomId: r.roomId, building: roomById(r.roomId)!.building } : {}) });
-    const k = kindOf(r.kind); if (['scouter', 'optimizer', 'report'].includes(k.goes)) { location.hash = `#/request/new/${r.kind}${r.roomId ? `?room=${r.roomId}` : ''}`; return; }
+    const k = kindOf(r.kind); if (['scouter', 'optimizer', 'report'].includes(k.goes)) { location.hash = `#/request/${r.kind}${r.roomId ? `?room=${r.roomId}` : ''}`; return; }
     const out = saveDraft(role, d, null, 'what'); if ('why' in out) { setWhy(out.why.join(' ')); return; }
     location.hash = `#/request/new?draft=${out.id}&step=what`;
   };
@@ -54,7 +54,7 @@ export default function Home({ role }: PageProps) {
       <div className="ik-cards" ref={cardsRef} data-testid="ik-cards">
         {CARDS.map((c) => <a key={c.id} className="ik-card" href={`#/request/new?card=${c.id}`} data-testid={`ik-card-${c.id}`}><Icon name={c.icon} size={26} /><b>{c.label}</b><span>{c.blurb}</span>
           <span className="ik-card__kinds">{c.kinds.map((k) => kindOf(k).label).join(' · ')}</span></a>)}
-        <a className="ik-card ik-card--unsure" href="#/request/new/general" data-testid="ik-card-unsure"><Icon name="info" size={26} /><b>Not sure?</b><span>Say it in your own words. The right team picks it up, and nobody needs the technical words.</span></a>
+        <a className="ik-card ik-card--unsure" href="#/request/general" data-testid="ik-card-unsure"><Icon name="info" size={26} /><b>Not sure?</b><span>Say it in your own words. The right team picks it up, and nobody needs the technical words.</span></a>
       </div>
 
       <div className="ik-panels">

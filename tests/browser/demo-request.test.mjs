@@ -100,7 +100,7 @@ for (const role of ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'desig
   const gs = await p.evaluate(() => ({ goes: document.querySelector('[data-testid=rq-sent]')?.dataset.goes, text: document.querySelector('[data-testid=rq-sent]')?.innerText || '' }));
   ok('RQ-30', '“Not sure?”: four steps (no technical questions), the person’s own words, and it goes to the AV operations team to be routed, with nothing decided by sending', g.kind === 'general' && g.steps.length === 4 && gs.goes === 'triage' && /AV operations/.test(gs.text) && /Nobody is assigned and no date is promised/.test(gs.text), JSON.stringify([g, gs.goes]));
   await s.close(); }
-{ const s = await open('#/request/new/add-devices', { role: 'employee' }); const p = s.page; await settle(p);
+{ const s = await open('#/request/add-devices', { role: 'employee' }); const p = s.page; await settle(p);
   await p.fill('[data-testid=rq-need]', 'A second display for the far end of the table'); await p.click('[data-testid=ik-next]'); await p.waitForTimeout(150);
   await p.fill('[data-testid=ik-find]', '4.218'); await p.waitForTimeout(150); const hits = await p.locator('[data-testid=ik-hit]').count(); await p.locator('[data-testid=ik-hit]').first().click(); await p.waitForTimeout(200);
   const where = await p.evaluate(() => ({ room: document.querySelector('[data-testid=rq-room]')?.value, known: document.querySelectorAll('[data-testid=rq-known] dt').length, dupes: [...document.querySelectorAll('[data-testid=ik-dupes] li')].map((x) => x.innerText) }));
@@ -125,9 +125,9 @@ for (const theme of ['light', 'dark']) { const s = await open('#/request', { rol
   await s.close(); }
 
 // ── the professional side: triage, a question to the requester, a location confirmed on site (RQ-40..) ────────────────────────────
-{ const s = await open('#/request/new/general', { role: 'employee' }); const p = s.page; await settle(p);
+{ const s = await open('#/request/general', { role: 'employee' }); const p = s.page; await settle(p);
   const as = async (role, hash) => { await p.evaluate((r) => localStorage.setItem('empathia.demo.perspective', r), role); await p.goto(base + hash); await p.reload(); await settle(p, 500); };
-  const sendGeneral = async (words) => { await p.goto(base + '#/request/new/general'); await settle(p, 300); await p.fill('[data-testid=rq-need]', words); for (let i = 0; i < 3; i++) { await p.click('[data-testid=ik-next]'); await p.waitForTimeout(150); } await p.click('[data-testid=rq-send]'); await settle(p, 300); return p.evaluate(() => document.querySelector('[data-testid=rq-sent]')?.dataset.id); };
+  const sendGeneral = async (words) => { await p.goto(base + '#/request/general'); await settle(p, 300); await p.fill('[data-testid=rq-need]', words); for (let i = 0; i < 3; i++) { await p.click('[data-testid=ik-next]'); await p.waitForTimeout(150); } await p.click('[data-testid=rq-send]'); await settle(p, 300); return p.evaluate(() => document.querySelector('[data-testid=rq-sent]')?.dataset.id); };
   const a = await sendGeneral('We need to move two displays from the old lobby to the new wing.'); const b = await sendGeneral('The training room sound is poor for people at the back.');
   await as('ops', '#/request/queue'); const q0 = await p.evaluate(() => [...document.querySelectorAll('[data-testid=ik-q-item]')].map((x) => x.dataset.id));
   ok('RQ-40', 'the Operations Lead finds both requests waiting to be routed, in the person’s own words', q0.includes(a) && q0.includes(b), JSON.stringify(q0));

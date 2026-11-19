@@ -182,7 +182,7 @@ test('IN-16 the front door reads a description by word lists: the thirteen phras
   const want = [['I need a new meeting room.', 'new-room'], ['We want to upgrade our conference room.', 'change-room'], ['I need another camera.', 'add-devices'], ['Our current equipment is outdated.', 'replace-device'],
     ['I need to replace a broken device.', 'replace-device'], ["We're opening a new office.", 'new-room'], ['I need help planning a town hall.', 'event'], ['We want to add digital signage.', 'change-room'],
     ['I need someone to assess a space.', 'general'], ['We need to relocate some equipment.', 'general'], ['We need to retire a room or device.', 'general'], ['I need AV help.', 'general'], ["I'm not sure what technology we need.", 'general'],
-    ['The display in 4.218 keeps flickering', 'problem']];
+    ['The display in 4.218 keeps flickering', 'problem'], ['We need a new training room for forty apprentices', 'new-room'], ['A new hybrid meeting space on floor 3', 'new-room']];
   for (const [t, k] of want) { const r = X.read(t); assert.equal(r.kind, k, t); assert.ok(r.basis.length > 20); }
   assert.equal(X.read('The display in 4.218 keeps flickering').roomId, 'R-ATL-4-218'); assert.equal(X.read('https://northstar.example.com/e/#/lite/room/R-ATL-4-218?mode=employee').roomId, 'R-ATL-4-218', 'a QR code’s address names its room');
   assert.equal(X.read('lunch').confident, false, 'nothing matched: own words, said so'); assert.equal(X.read('lunch').kind, 'general'); assert.equal(X.read('  '), null);
