@@ -13,6 +13,10 @@ import { fieldlinkPage } from './fieldlink.js';
 import { Follow } from './follow.js';
 import { Opening, type HeroFrame } from './opening.js';
 import { PRODUCT_LAUNCHES, launchHref } from '../../../packages/ui/src/launches.ts';
+import { DEFAULT_STATE, stateHash, type AddonSku } from './build-view.js';
+/** each product page's way into Build Your Empathia (founder 19:39: lead generation off the interactive sales part), its own line ticked */
+const PRICE_ADD: Record<string, AddonSku[]> = { commissioning: ['COMMISSION', 'ASSURANCE'], servicehands: ['SERVICE'], field: ['FIELD-CORE'], apex: ['APEX'] };
+const priceHref = (id: string) => `/pricing${PRICE_ADD[id] ? stateHash({ ...DEFAULT_STATE, addons: PRICE_ADD[id]! }) : '#build'}`;
 import { FounderReveal, SearchPartyStory, SearchPartyOrigin, BeforeTheExplanation } from './founderStory.js';   // the founder page's plate and the Search Party founding story   // v18/pilot: /pricing and /pilots
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; /** a small script of the page's own loaded in <head>, before first paint (the founder page's introduction must start from its opening frame) */ headScript?: string; }
@@ -142,7 +146,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       {p.film && film(p.film) ? <Section title="Watch it">{film(p.film)}</Section> : null}
       <section className="section"><div className="wrap"><div className="facts">
         <div className="facts__shows"><p className="eyebrow">Try it</p><h2>Open it in the demonstration</h2><p>{DEMO_STATE[p.demoState].text}, on synthetic data in your browser. Every value on its screens carries its evidence label; nothing is connected to a live system.{PRODUCT_LAUNCHES[p.id] ? ` It opens as the ${PRODUCT_LAUNCHES[p.id]!.perspectiveLabel}, with a way back to this page.` : ''}</p>
-          <Actions>{p.demo ? <a className="btn btn--primary" href={go(p.id, `/products/${p.slug}`)}>{p.demo.label}</a> : null}<a className="btn" href="/request-demo">Request a guided demonstration</a></Actions></div>
+          <Actions>{p.demo ? <a className="btn btn--primary" href={go(p.id, `/products/${p.slug}`)}>{p.demo.label}</a> : null}<a className="btn" href={priceHref(p.id)} data-price-it>Price it for your estate</a><a className="btn" href="/request-demo">Request a guided demonstration</a></Actions></div>
         <div className="facts__limits"><p className="eyebrow">Limits</p><h2>Limits, stated</h2><p>{p.limits}</p></div>
       </div></div></section>
       {p.id === 'search-party' ? <SearchPartyOrigin /> : null}

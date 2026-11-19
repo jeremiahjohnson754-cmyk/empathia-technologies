@@ -86,6 +86,15 @@ try {
     const c = await page.evaluate(() => ({ rates: Array.from(document.querySelectorAll('#book2 [data-rate]')).map((x) => `${x.dataset.rate}:${x.querySelector('.price b').textContent}`), bands: Array.from(document.querySelectorAll('#book2 [data-band] td')).map((x) => x.textContent), replaced: Array.from(document.querySelectorAll('[data-replaced]')).map((x) => x.dataset.replaced), pro: document.querySelector('[data-pilot=PILOT-PRO-PLUS] .price b')?.textContent }));
     ok('BY-11', 'the full price list leads with price book 2 (user $9.99; rooms $39.99 and $74.99; platform $2,499 / $3,499 / $4,999 / from $15,000; FieldLink proposed), lists the four replaced v1.5 lines struck through, and shows $19.99 only as the proposed Pro pilot', c.rates.join() === 'ROOM-STD:$39.99,ROOM-LRG:$74.99,USER:$9.99,FIELDLINK-NANO:$249.00,FIELDLINK-EDGE:$1,499.00,FIELDLINK-PULSE:$499.00' && c.bands.join() === '$2,499.00,$3,499.00,$4,999.00,from $15,000.00' && c.replaced.join() === 'PRO-ROOM,CORE-STARTER,CORE-ENTERPRISE,SEAT-ENTERPRISE' && c.pro === '$19.99', JSON.stringify(c));
     await ctx.close(); }
+  // 12. every product page leads into the builder; a product sold as an add-on arrives with its own line ticked
+  { const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, colorScheme: scheme }); const page = await ctx.newPage(); const got = {};
+    for (const slug of ['commissioning', 'servicehands', 'apex', 'pro']) {
+      await page.goto(`${base}/products/${slug}`, { waitUntil: 'load' }); const href = await page.getAttribute('[data-price-it]', 'href');
+      await page.goto(base + href, { waitUntil: 'load' }); await page.waitForTimeout(250);
+      got[slug] = { href, ticked: await page.evaluate(() => Array.from(document.querySelectorAll('[data-by-add]:checked')).map((c) => c.dataset.byAdd).join(',')), lines: (await receipt(page)).lines.map((l) => l.split(':')[0]).join(',') };
+    }
+    ok('BY-12', 'each product page has “Price it for your estate”: Commissioning arrives with Commissioning and Assurance ticked, ServiceHands and APEX with their own line, Pro with the platform alone', got.commissioning.ticked === 'COMMISSION,ASSURANCE' && /COMMISSION,ASSURANCE/.test(got.commissioning.lines) && got.servicehands.ticked === 'SERVICE' && got.apex.ticked === 'APEX' && got.pro.ticked === '' && got.pro.href === '/pricing#build', JSON.stringify(got));
+    await ctx.close(); }
 } finally {
   await browser.close(); srv.kill();
   const out = path.join(repo, `tests/evidence/website-pricing${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
