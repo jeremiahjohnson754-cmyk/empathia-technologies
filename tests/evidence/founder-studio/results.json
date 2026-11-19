@@ -1,10 +1,10 @@
 {
  "suite": "founder-studio",
  "dist": "/home/claude/empathia-technologies/apps/founder-studio/dist",
- "at": "2026-10-31T21:30:50.896Z",
+ "at": "2026-11-19T03:38:49.744Z",
  "passed": 19,
  "failed": 0,
- "notRun": 1,
+ "notRun": 0,
  "results": [
   {
    "id": "S-01",
@@ -58,19 +58,19 @@
    "id": "S-09",
    "name": "Media Library: the film file is served from this computer with byte ranges, and in a browser without H.264 the player says so (not \"missing\")",
    "result": "PASS",
-   "detail": "206,1024 canPlayType=\"\" The file is here, but this browser cannot decode H.264 video (some Chromium builds ship without it). Open the studio in Chrome, Edge or Safari, or open the file directly from media/films/."
+   "detail": "206,1024 canPlayType=\"probably\" "
   },
   {
    "id": "S-09b",
    "name": "H.264 playback inside the test browser",
-   "result": "NOT_RUN",
-   "detail": "the test Chromium build has no H.264 decoder; verified instead by a full ffmpeg decode of every film (tests/media/decode-films.mjs)"
+   "result": "RUN",
+   "detail": ""
   },
   {
    "id": "S-10",
    "name": "the studio’s film route plays video end to end (a VP9 excerpt of Film A, served through the same launcher path; time advances)",
    "result": "PASS",
-   "detail": "1.550361"
+   "detail": "1.501168"
   },
   {
    "id": "S-11",
@@ -100,7 +100,7 @@
    "id": "S-15",
    "name": "appearance: the light theme applies (data-theme=\"light\", pale ground)",
    "result": "PASS",
-   "detail": "light rgb(243, 246, 251)"
+   "detail": "light rgb(244, 246, 250)"
   },
   {
    "id": "S-16",

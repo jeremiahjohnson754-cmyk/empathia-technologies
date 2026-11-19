@@ -1,0 +1,85 @@
+{
+  "key": "F-SIGNAL",
+  "title": "SIGNAL: Ten Seats, played",
+  "product": "learn",
+  "recordedAt": "2026-11-19T03:34:59.655Z",
+  "duration": 36.85,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T03:34:10.666Z"
+  },
+  "git": "f39f4c9",
+  "steps": [
+    {
+      "at": 0,
+      "until": 3.63,
+      "say": "SIGNAL, season 1, episode 1: Ten Seats. A mystery, solved with geometry.",
+      "proof": "[data-testid=film-title]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 3.63,
+      "until": 8.3,
+      "say": "The case: ten seats where the sound goes hollow.",
+      "proof": "[data-testid=film][data-kind=quest]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 8.3,
+      "until": 13.98,
+      "say": "Generated footage of a fictional sanctuary, labelled as such in the film.",
+      "proof": "[data-testid=film][data-shot=\"10\"][data-kind=footage]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 13.98,
+      "until": 19.49,
+      "say": "A decision stops the film in the frame: what do you do first?",
+      "proof": "[data-testid=film][data-shot=\"15\"][data-kind=decision]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 19.49,
+      "until": 25.5,
+      "say": "Measure it yourself: each hollow seat’s notch, from the room’s own geometry.",
+      "proof": "[data-testid=film][data-shot=\"17\"][data-kind=play]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 25.5,
+      "until": 31.25,
+      "say": "Test the fill: turn it down, and the notches get shallower, not gone.",
+      "proof": "[data-testid=film][data-shot=\"41\"][data-kind=play]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 31.25,
+      "until": 36.85,
+      "say": "Re-aim it, and verify: the ten seats’ deep notches are gone.",
+      "proof": "[data-testid=film][data-shot=\"58\"][data-kind=play]",
+      "url": "/#/film/s01e01"
+    }
+  ],
+  "files": {
+    "720.mp4": {
+      "bytes": 1296272,
+      "sha256": "54dc9a091df3710e63b0fa7f03533a644c663ea85bcb39aded21b52d6eec5307"
+    },
+    "poster.webp": {
+      "bytes": 50190,
+      "sha256": "245cbab3bb154e69bf9cff4dacac9c011feb2f494013c34ac87b485f49b66c23"
+    },
+    "poster.jpg": {
+      "bytes": 93559,
+      "sha256": "28cf0bbd0517bd5974999fbe686b69a18afdd0ed0f71b0926a07a3b70b12ddf8"
+    },
+    "captions.vtt": {
+      "bytes": 980,
+      "sha256": "f77f5574a09043d23a8d8ebfc0215d7e8255beba140961c30181a34f9281c48f"
+    }
+  }
+}
