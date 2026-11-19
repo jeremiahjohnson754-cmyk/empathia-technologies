@@ -53,7 +53,10 @@ try {
   // the private dossier's commercial internals never appear anywhere on the built site
   const files = []; const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.(html|js|json|css|xml|txt)$/.test(e.name)) files.push(p); } }; walk(dist);
   // the dossier's own figures (its landed costs, gross profits, margins and scenario revenues) and the words that would carry them
-  const SECRET = /\b(BOM|COGS|gross margin|gross profit|landed (hardware )?cost|unit economics)\b|\$82\b|\$485\b|\$181\b|\$167\b|\$1,014\b|\$318\b|67\.1 ?%|67\.6 ?%|63\.7 ?%|\$6,739|\$2,302|\$4,437|\$67,390|\$269,560|\$808,680/i;
+  // Changed 19 Nov 2026: the dossier's unit costs are whole dollars ("$82"); a price the site computes is not one of them. Price book 3's
+  // four estates show "$82.00" a device a year for the 150-room campus, which the old pattern read as the Nano's cost. (?![.,]\d) keeps
+  // every whole-dollar figure caught and lets a cents price through; every other pattern is unchanged.
+  const SECRET = /\b(BOM|COGS|gross margin|gross profit|landed (hardware )?cost|unit economics)\b|\$(82|485|181|167|318)\b(?![.,]\d)|\$1,014\b(?![.,]\d)|67\.1 ?%|67\.6 ?%|63\.7 ?%|\$6,739|\$2,302|\$4,437|\$67,390|\$269,560|\$808,680/i;
   const leak = files.filter((f) => SECRET.test(fs.readFileSync(f, 'utf8')));
   ok('FL-10', 'no bill-of-materials, cost-of-goods, margin or supplier figure appears anywhere on the built site', !leak.length, leak.map((f) => path.relative(dist, f)).join(', '));
   const prov = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media/fieldlink/PROVENANCE.json'), 'utf8'));
