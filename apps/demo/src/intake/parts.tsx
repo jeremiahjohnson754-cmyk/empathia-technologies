@@ -109,7 +109,7 @@ export function RequestItem({ r, w, desk, role, onDiscard }: { r: Request; w: Wo
   const s = standing(r, w, desk); const room = r.roomId ? roomById(r.roomId) : null; const draft = stateOf(r) === 'DRAFT'; const opens = opensFor(role);
   return (
     <li data-testid="rq-item" data-id={r.id} data-state={s.state} data-goes={r.goes} data-record={stateOf(r)} className="ik-item">
-      <div className="rq-mine__h"><b><a href={draft ? `#/request/new?draft=${r.id}` : `#/requests/${r.id}`}>{r.title}</a></b><Tag tone={s.tone}>{s.words}</Tag></div>
+      <div className="rq-mine__h"><b><a href={draft ? `#/request/new?draft=${r.id}` : `#/requests/${r.id}`}>{r.title}</a></b><span>{r.example && <Tag tone="muted">Example</Tag>} <Tag tone={s.tone}>{s.words}</Tag></span></div>
       <p className="ui-muted">{r.id} · {draft ? `started on ${day(r.at)}${r.updated ? `, last changed ${day(r.updated)}` : ''}` : `asked by the ${ROLES[r.role].label} on ${day(r.submittedAt || r.at)}`}{!draft ? (r.projectId ? ` · Decision desk project ${r.projectId}` : r.incidentId ? ` · ServiceHands job ${r.incidentId}` : WHERE[r.goes] ? ` · ${WHERE[r.goes]}` : '') : ''}{r.date ? ` · event on ${r.date}` : ''}</p>
       {!draft && s.next && <p className="ik-item__next"><span className="ui-meta">Next · {s.owner}</span> {s.next}</p>}
       {s.reason && <p>Reason given: {s.reason}</p>}

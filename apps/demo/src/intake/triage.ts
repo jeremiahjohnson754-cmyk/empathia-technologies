@@ -14,7 +14,8 @@ import type { Workspace } from '../workspace/store.js';
 import * as S from '../workspace/store.js';
 import { load as loadDesk, save as saveDesk, type DecisionState } from '../decisions/store.js';
 import { fullName, roomById } from '../campus/canon.js';
-import { loadRecords, stateOf, type Request, type RequestEvent, type Question, type Triage } from './store.js';
+import { loadRecords, stateOf, send, type Request, type RequestEvent, type Question, type Triage } from './store.js';
+import { blank } from './model.js';
 
 /** Who may route requests and ask the requester questions: the operations lead's work, which the systems engineer, the service manager and
  *  the platform architect share (directive §06). */
@@ -91,4 +92,22 @@ export function verifyLocation(role: RoleKey, id: string, note: string): Rec | R
   return change(id, (r) => { const p = r.provisional; if (!p) return { why: [`${id} has no provisional space.`] }; if (p.location === 'VERIFIED') return { why: ['Its location is already confirmed.'] };
     if (role === r.role) return { why: ['The person who asked for the space does not also confirm where it is.'] };
     return { ...r, provisional: { ...p, location: 'VERIFIED', verifiedBy: role, verifiedAt: new Date().toISOString(), verifiedNote: n }, history: [...(r.history || []), ev(r, 'location.verified', role, `${p.id}: ${n}`)] }; });
+}
+
+/** The Living Campus examples (directive §20 Deliverable D: "credible, deterministic example requests … Enterprise, Stadium, University,
+ *  and Convention contexts"): five requests, the same engine, different places and people. Added to this browser only when someone asks for
+ *  them, each sent by the role named, marked as an example wherever it is listed. Fictional venues and synthetic data. */
+export const EXAMPLES: Array<{ key: string; context: 'Enterprise' | 'University' | 'Stadium' | 'Convention'; role: RoleKey; draft: () => ReturnType<typeof blank> }> = [
+  { key: 'ex-enterprise-room', context: 'Enterprise', role: 'sitechamp', draft: () => blank('new-room', { need: 'The design team on level 3 needs a project room where eight people can review drawings with colleagues joining on video.', use: 'meet', people: 8, building: 'ATL', floor: 3, goals: ['video', 'present'], place: { name: 'Level 3 project room', building: '' } }) },
+  { key: 'ex-enterprise-camera', context: 'Enterprise', role: 'employee', draft: () => blank('add-devices', { need: 'People at the far end of the boardroom table cannot see the shared screen; a second display would help.', roomId: 'R-ATL-4-218', building: 'ATL', adds: [{ cat: 'display', qty: 1 }], goals: ['displays'] }) },
+  { key: 'ex-university', context: 'University', role: 'bpm', draft: () => blank('change-room', { need: 'The tiered lecture hall should let remote students ask questions and be heard by everyone in the room.', roomId: 'R-HFD-1-110', building: 'HFD', goals: ['teach', 'audio', 'access'], when: 'half' }) },
+  { key: 'ex-stadium', context: 'Stadium', role: 'exec', draft: () => blank('general', { need: 'Harborlight Stadium needs its press conference room ready for live-streamed briefings before the season opener. It is not in the campus records yet.', goals: [] }) },
+  { key: 'ex-convention', context: 'Convention', role: 'ops', draft: () => blank('general', { need: 'Hall A of the Larkspur Exchange Convention Centre needs a temporary streaming setup for the keynote, and the gear returned afterwards.', goals: [] }) },
+];
+/** Add the examples that are not here yet. Each is sent through the same `send` as any request (its project or job is created the same way). */
+export function addExamples(w: Workspace, desk: DecisionState = loadDesk()): { added: string[]; refused: string[] } {
+  const have = new Set(loadRecords().map((r) => r.example).filter(Boolean)); const added: string[] = []; const refused: string[] = [];
+  for (const x of EXAMPLES) { if (have.has(x.key)) continue; const r = send(w, x.role, x.draft(), desk); if ('why' in r) { refused.push(`${x.key}: ${r.why.join(' ')}`); continue; }
+    change(r.id, (q) => ({ ...q, example: x.key, history: [...(q.history || []), ev(q, 'request.example_marked', x.role, `${x.context} example from the Living Campus (synthetic)`)] })); added.push(r.id); }
+  return { added, refused };
 }

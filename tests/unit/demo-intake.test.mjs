@@ -239,3 +239,12 @@ test('IN-21 who may open a request’s page: the person who asked, the people wh
   assert.ok(T.mayView('sitechamp', { ...own, provisional: { building: 'ATL' } }), 'a new space at the champion’s site');
 });
 
+test('IN-22 the Living Campus examples: five requests from an enterprise, a university, a stadium and a convention centre, sent through the same engine, marked, added once', () => {
+  mem.clear(); const w = W.load(); const desk = DS.load(); const o = TR.addExamples(w, desk);
+  assert.deepEqual(o.refused, []); assert.equal(o.added.length, 5); const recs = T.loadRequests(); assert.equal(recs.length, 5); assert.ok(recs.every((r) => r.example && r.history.at(-1).type === 'request.example_marked'));
+  assert.deepEqual([...new Set(TR.EXAMPLES.map((x) => x.context))].sort(), ['Convention', 'Enterprise', 'Stadium', 'University']);
+  const by = (k) => recs.find((r) => r.example === k); assert.ok(by('ex-enterprise-room').provisional && by('ex-enterprise-room').projectId); assert.ok(by('ex-enterprise-camera').incidentId); assert.equal(by('ex-stadium').goes, 'triage');
+  assert.equal(new Set(recs.map((r) => r.role)).size, 5, 'five different people'); assert.equal(TR.queue().route.length, 2, 'the stadium and the convention centre wait to be routed');
+  assert.equal(TR.addExamples(w, desk).added.length, 0, 'added once');
+});
+

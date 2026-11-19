@@ -15,7 +15,7 @@ import { KINDS, kindOf, goalLabel, propose } from './model.js';
 import { loadRecords, recordById, discardDraft, standing, stateOf, draftOf, photoChecklist, mayView, type Request } from './store.js';
 import { IntakeNav, RequestItem, ProposedRoom, Summary, opensFor, day, plural } from './parts.js';
 import { parseHash } from '../registry.pages.js';
-import { ask, answer, route, close, verifyLocation, queue, TRIAGE_ROLES, VERIFY_ROLES } from './triage.js';
+import { ask, answer, route, close, verifyLocation, queue, addExamples, EXAMPLES, TRIAGE_ROLES, VERIFY_ROLES } from './triage.js';
 import { CAMPUS_ROOMS } from '../campus/canon.js';
 import type { RoleKey } from '../registry.types.js';
 
@@ -109,9 +109,11 @@ export function Queue({ role }: PageProps) {
       <IntakeNav role={role} here="queue" />
       <PageHero compact eyebrow="Intake" icon="route" title="Requests to triage" lede="Requests in the person’s own words, to route or to ask about; and new spaces whose location is to be confirmed. Routing creates a project or a job; it approves and assigns nothing." meta={[<Tag key="s" tone="warn">Synthetic data</Tag>, <span key="r">As the {ROLES[role].label}</span>]} />
       {said && <p role="status" className="sc-msg sc-msg--ok" data-testid="ik-q-done"><Icon name="check" size={18} /><span>{said}</span></p>}
+      {mayRoute && EXAMPLES.some((x) => !all.some((r) => r.example === x.key)) && <p className="ik-examples" data-testid="ik-examples"><span>For a demonstration: add the Living Campus examples to this browser, five requests from an enterprise, a university, a stadium and a convention centre, sent by different people. Fictional venues, synthetic data.</span>
+        <button type="button" className="ui-btn" onClick={() => { const o = apply((nx) => addExamples(nx)); setSaid(o.added.length ? `Added ${o.added.length} examples: ${o.added.join(', ')}.` : 'No example was added.'); if (o.refused.length) setNo(o.refused.join(' ')); setTick((n) => n + 1); }} data-testid="ik-examples-add">Add the examples</button></p>}
       {mayRoute && <section className="ik-sec" aria-labelledby="ik-q-r" data-testid="ik-q-route"><h2 id="ik-q-r">To route ({q.route.length})</h2>
         {q.route.length ? <ul className="ik-qlist">{q.route.map((r) => <li key={r.id} data-testid="ik-q-item" data-id={r.id}>
-          <div className="rq-mine__h"><b><a href={`#/requests/${r.id}`}>{r.title}</a></b><span className="ui-meta">{r.id} · the {ROLES[r.role].label}, {day(r.submittedAt || r.at)}</span></div>
+          <div className="rq-mine__h"><b><a href={`#/requests/${r.id}`}>{r.title}</a></b><span className="ui-meta">{r.example ? <Tag tone="muted">Example</Tag> : null} {r.id} · the {ROLES[r.role].label}, {day(r.submittedAt || r.at)}</span></div>
           <p className="ik-own">“{r.need || r.summary}”</p>
           <p className="ui-meta">{r.roomId && roomById(r.roomId) ? fullName(roomById(r.roomId)!) : 'Not about one room'} · {plural((r.attachments || []).length, 'file')}{(r.goals || []).length ? ` · wanted: ${(r.goals || []).map(goalLabel).join(', ').toLowerCase()}` : ''}</p>
           <button type="button" className="ui-btn ui-btn--sm" aria-expanded={open === r.id} onClick={() => pick(r.id, r.roomId)} data-testid="ik-q-open">{open === r.id ? 'Close' : 'Route, ask or close'}</button>

@@ -39,7 +39,8 @@ export interface Request { id: string; kind: KindId; goes: Goes; title: string; 
   /** the size Empathia proposed, with its basis (a new room) */ size?: { w: number; l: number; h: number; basis: string } | null;
   /** since 19 Nov 2026: requests are records from their first answer. Requests stored before carry no state and were sent. */
   state?: RecordState; card?: CardId; draft?: Draft; step?: string; updated?: string; submittedAt?: string | null;
-  attachments?: Attachment[]; provisional?: Provisional | null; policy?: PhotoPolicy; goals?: string[]; history?: RequestEvent[]; question?: Question | null; triage?: Triage | null }
+  attachments?: Attachment[]; provisional?: Provisional | null; policy?: PhotoPolicy; goals?: string[]; history?: RequestEvent[]; question?: Question | null; triage?: Triage | null;
+  /** one of the Living Campus examples (triage.ts › addExamples): synthetic, labelled wherever it is listed */ example?: string }
 export type Refusal = { why: string[] };
 const KEY = 'empathia.demo.requests.v1';
 /** The roles the portal admits (registry: intake.request). A request is a request: who asked is recorded, and nothing is granted by asking. */
