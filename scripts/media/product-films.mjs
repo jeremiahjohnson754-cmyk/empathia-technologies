@@ -174,16 +174,18 @@ export const FILMS = {
     ],
   },
   // "Follow one microphone" (founder 18 Nov 2026 17:25 §6 and §13): the five catalogued launches of /platform#follow, in order, each
-  // opened the way the website opens it (from=site), so the demonstration itself switches to that view's perspective and says so
+  // opened the way the website opens it (from=site), so the demonstration itself switches to that view's perspective and says so; each
+  // step's proof is the page's own heading, so no words appear over a page still loading
   'F-FOLLOW': {
     product: 'lite', title: 'Follow one microphone through five products', label: 'EMPATHIA · ONE DEVICE, ONE RECORD · DEMONSTRATION · SYNTHETIC DATA', role: 'visitor',
     start: '#/lite/room/R-ATL-4-218?mode=engineer&device=A-0104&from=site&li=follow-lite&back=%2Fplatform%23follow-lite', startProof: '[data-testid=launch-strip][data-launch=follow-lite]',
     steps: [
-      { do: show('[data-testid=lite-room-3d]'), say: 'Ceiling microphone A-0104, asset AS-0103, in the boardroom it serves: Lite, as a Systems Engineer.', proof: '[data-testid=lite-room-3d]', hold: 3800 },
-      { do: async (p) => { await go('#/commissioning/room/R-ATL-4-218?from=site&li=follow-commissioning&back=%2Fplatform%23follow-commissioning')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Its room’s commissioning record: what was required, what was observed, who verified it.', proof: '[data-testid=launch-strip][data-launch=follow-commissioning]', hold: 3600 },
-      { do: async (p) => { await go('#/assurance/room/R-ATL-4-218?from=site&li=follow-assurance&back=%2Fplatform%23follow-assurance')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Assurance: the accepted baseline the room is checked against.', proof: '[data-testid=launch-strip][data-launch=follow-assurance]', hold: 3400 },
-      { do: async (p) => { await go('#/search?focus=Room:R-ATL-4-218&from=site&li=follow-support&back=%2Fplatform%23follow-support')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Search Party: who supports the room, who knows it, and where each fact comes from.', proof: '[data-testid=launch-strip][data-launch=follow-support]', hold: 3600 },
-      { do: async (p) => { await go('#/replay/R-ATL-4-218?at=change&from=site&li=follow-replay&back=%2Fplatform%23follow-replay')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Core Replay: the room’s life, stopped where a change reopens only the tests it touches.', proof: '[data-testid=reopened]', hold: 3800 },
+      { do: show('[data-testid=lite-room-3d]'), say: 'Ceiling microphone A-0104, asset AS-0103, in the boardroom it serves: Lite, as a Systems Engineer.', proof: '[data-testid=lite-room-3d]', hold: 5200 },
+      { do: show('[data-testid=lite-device]'), say: 'Its own record: the position, the unit installed there, and the checks that name it.', proof: '[data-testid=lite-device]', hold: 4800 },
+      { do: async (p) => { await go('#/commissioning/room/R-ATL-4-218?from=site&li=follow-commissioning&back=%2Fplatform%23follow-commissioning')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Its room’s commissioning record: what was required, what was observed, who verified it.', proof: 'main h1:has-text("Commissioning: Atlas 4.218")', hold: 5000 },
+      { do: async (p) => { await go('#/assurance/room/R-ATL-4-218?from=site&li=follow-assurance&back=%2Fplatform%23follow-assurance')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Assurance: the accepted baseline the room is checked against.', proof: 'main h1:has-text("Assurance: Atlas 4.218")', hold: 5000 },
+      { do: async (p) => { await go('#/search?focus=Room:R-ATL-4-218&from=site&li=follow-support&back=%2Fplatform%23follow-support')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Search Party: who supports the room, who knows it, and where each fact comes from.', proof: 'main h1:has-text("Atlas 4.218 Boardroom")', hold: 5000 },
+      { do: async (p) => { await go('#/replay/R-ATL-4-218?at=change&from=site&li=follow-replay&back=%2Fplatform%23follow-replay')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Core Replay: the room’s life, stopped where a change reopens only the tests it touches.', proof: '[data-testid=reopened]', hold: 5200 },
     ],
   },
 };
