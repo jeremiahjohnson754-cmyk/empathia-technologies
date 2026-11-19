@@ -121,13 +121,13 @@ export const OPS_PAGES: readonly PageDef[] = [
   {
     id: 'pro.assets', title: 'Asset Intelligence', purpose: 'What the organization owns: positions, identities, installations', product: 'pro',
     path: '/pro/assets', authority: { area: 'pro.assets' },
-    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.AssetsPage, { perspective: p.role })),
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.AssetsPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'assets devices positions identity', aliases: ['asset intelligence'] },
   },
   {
     id: 'pro.issues', title: 'Issue Intelligence', purpose: 'How and where it fails: severity, source, building, recurrence', product: 'pro',
     path: '/pro/issues', authority: { area: 'pro.issues' },
-    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.IssuesPage, { perspective: p.role })),
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.IssuesPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'issues severity recurrence patterns', aliases: ['issue intelligence'] },
   },
   {

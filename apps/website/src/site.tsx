@@ -4,6 +4,7 @@
 import React from 'react';
 import type { Page } from './content';
 import { PRODUCTS } from './products.js';
+import { START_LAUNCH, launchHref } from '../../../packages/ui/src/launches.ts';
 
 // Pilots is reached from Pricing and the footer: the bar stays short (founder, 9 Nov: outcomes first, the catalogue deeper)
 const PRIMARY = ['/platform', '/how-it-works', '/technology', '/proof', '/trust', '/pricing', '/founder'];
@@ -37,7 +38,7 @@ export function Shell({ page, pages, demoUrl, preview }: { page: Page; pages: Pa
             {nav.map((n) => <li key={n.path}><a href={n.path} aria-current={here(n.path) ? 'page' : undefined}>{n.nav}</a></li>)}
           </ul>
           <ThemeSwitch />
-          <div className="nav__cta"><a className="btn btn--quiet" href={demoUrl + '/#/investor'}>Open the demo</a><a className="btn btn--primary" href="/request-demo">Request a demo</a></div>
+          <div className="nav__cta"><a className="btn btn--quiet" href={launchHref(demoUrl, START_LAUNCH, page.path === '/404' ? '/' : page.path)}>Open the demo</a><a className="btn btn--primary" href="/request-demo">Request a demo</a></div>
         </nav>
       </div></header>
       <main id="main">{page.body}</main>

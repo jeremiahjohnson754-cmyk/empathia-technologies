@@ -31,7 +31,7 @@ export interface CampusTile { score: number | null; band: 'healthy' | 'monitor' 
 const BAND_GLYPH = { healthy: '●', monitor: '▲', action: '◆', none: '○' } as const;
 /** The campus map wherever it appears: the Empathia Map (WebGL2: aerial imagery, 3D buildings, fly-to drill-down; task #234), or this
  *  SVG isometric map where the browser has no WebGL2. Both keep one keyboard button per building (data-testid campus-b-<key>). */
-type MapProps = { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; lens?: 'none' | 'risk' | 'issues' };
+type MapProps = { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; lens?: 'none' | 'risk' | 'issues' | 'assets' | 'coverage' };
 let MapCode: ((p: MapProps) => JSX.Element) | null = null;
 const hasGl = () => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch { return false; } };
 export function CampusMap(props: MapProps) {

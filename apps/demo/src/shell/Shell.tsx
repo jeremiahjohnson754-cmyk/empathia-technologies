@@ -15,6 +15,7 @@ import { resolve, hrefOf } from '../registry.pages.js';
 import { ROLES, ROLE_KEYS, canOpen, allows, tabsFor, type Resolved } from '../access/policy.js';
 import { PRODUCTS, ThemeSwitch, Icon, deviceIcon, type IconName } from '@empathia/ui';   // the one canonical list of the nine (D37/D40), the shared theme switch (D9), the kit's icons
 import { useDialog } from '../viewas/ViewAsSheet.js';
+import { Coachmarks } from './Coachmarks.js';
 import { openPages } from '../viewas/scope.js';
 export { openPages };
 
@@ -67,6 +68,7 @@ export function Shell({ role, hash, at, onViewAs, onRole, children }: { role: Ro
         </div>
       </header>
       <div className="rolebar" data-r={role} aria-hidden="true" />
+      <Coachmarks hash={hash} role={role} />
       <nav aria-label={`${r.label}: ${r.home}`} className="rail" data-testid="hometabs" data-n={Math.min(tabs.length + 1, 6)}>
         {tabs.map((t) => t.act === 'viewas'
           ? <button key={t.key} type="button" className="hometab" onClick={onViewAs} aria-haspopup="dialog"><Icon name={TAB_ICON[t.icon] || 'users'} size={22} /><span className="hometab__l">{t.label}</span></button>

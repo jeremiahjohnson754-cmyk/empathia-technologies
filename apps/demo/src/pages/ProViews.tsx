@@ -33,19 +33,24 @@ const TONES: Series[] = ['accent', 'indigo', 'violet', 'info', 'warn', 'ok', 'mu
 const topSegs = (xs: Array<[string, number]>, max = 6) => { const keep = xs.slice(0, max - 1); const rest = xs.slice(max - 1).reduce((a, [, n]) => a + n, 0); return [...keep, ...(rest ? [['Other', rest] as [string, number]] : [])].map(([k, v], i) => ({ key: k, label: k, value: v, tone: TONES[i % TONES.length]! })); };
 
 // ------------------------------------------------------------------------------------------------------------ Asset Intelligence
-export function AssetsPage({ perspective }: { perspective: string }) {
-  const persona = personaOf(perspective); const recs = allRecords();
+/** The building a jump from the campus map carries (`?building=ATL`, founder 19 Nov 2026 09:09 F: "jumps that keep the selection"):
+ *  the page reads that building only, says so, and offers the whole campus back. An unknown key is ignored. */
+export const buildingParam = (hash: string | undefined): string | null => { const k = /[?&]building=([A-Z]{2,4})(?:&|$)/.exec(hash || '')?.[1]; return k && BUILDINGS.some((b) => b.key === k) ? k : null; };
+const OnlyChip = ({ only, base }: { only: string | null; base: string }) => only ? <Chip small tone="accent">{BUILDINGS.find((b) => b.key === only)!.name} only · <a href={base} data-testid="pro-only-all">the whole campus</a></Chip> : null;
+
+export function AssetsPage({ perspective, hash }: { perspective: string; hash?: string }) {
+  const persona = personaOf(perspective); const only = buildingParam(hash); const recs = allRecords().filter((r) => !only || r.outline.building === only);
   const pos = recs.flatMap((r) => r.positions.filter((p) => !p.furniture).map((p) => ({ r, p })));
   const ident = (['VERIFIED', 'OBSERVED', 'DECLARED', 'UNKNOWN'] as const).map((k, i) => ({ key: k, label: k.toLowerCase(), value: pos.filter((x) => x.p.identity === k).length, tone: (['ok', 'info', 'warn', 'muted'] as Series[])[i]! }));
   const byCat = topSegs(count(pos, (x) => x.p.catLabel));
   const installed = recs.reduce((a, r) => a + r.installations.filter((i) => !i.removedAt).length, 0); const removed = recs.reduce((a, r) => a + r.installations.filter((i) => i.removedAt).length, 0);
   const rows = recs.map((r) => ({ r, n: r.positions.filter((p) => !p.furniture).length, net: r.positions.filter((p) => !p.furniture && p.layer === 'network').length, verified: r.positions.filter((p) => p.identity === 'VERIFIED').length }));
   return (
-    <section className="wk" data-native="workspace" data-testid="pro-assets">
+    <section className="wk" data-native="workspace" data-testid="pro-assets" data-building={only || ''}>
       <ProTabs role={perspective} current="#/pro/assets" />
       <PageHero product="pro" plain icon="device" eyebrow="Pro · what the organization owns" title="Asset Intelligence"
         lede={<>Every device position across the campus, its identity and where it is installed. <b>{plural(pos.length, 'position')}</b> in {plural(recs.length, 'room')}; <b>{ident[3]!.value}</b> carry no verified make, model or serial — a class template, never an invented one.</>}
-        meta={[<Chip key="m" small tone="muted">Modelled positions</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
+        meta={[<OnlyChip key="o" only={only} base="#/pro/assets" />, <Chip key="m" small tone="muted">Modelled positions</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
       <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Device positions" value={pos.length} icon="device" tone="pro" hint={`${byCat.length} kinds · furniture excluded`} />
         <StatTile label="Identity verified" value={ident[0]!.value} unit={`of ${pos.length}`} icon="check" tone="ok" hint="A person other than the installer confirmed it" />
@@ -53,7 +58,7 @@ export function AssetsPage({ perspective }: { perspective: string }) {
         <StatTile label="Networked positions" value={rows.reduce((a, x) => a + x.net, 0)} icon="route" tone="indigo" hint="On the room network layer" />
       </div>
       {(() => { const reg = recs.map((r) => deviceRegister(r, readRegister(r.outline.id).entries)).flat(); const done = reg.filter((x) => x.complete).length;
-        const retired = recs.reduce((a, r) => a + retiredRegister(r).length, 0); const hist = syntheticHistory(); const ms = months(12);
+        const retired = recs.reduce((a, r) => a + retiredRegister(r).length, 0); const hist = syntheticHistory().filter((j) => !only || j.building === only); const ms = months(12);
         const onUnits = hist.filter((j) => j.asset && Date.parse(j.openedAt) >= ms[ms.length - 3]!.from).length;
         const docs = recs.filter((r) => r.coverage.length && r.coverage.every((c) => c.state === 'complete' || c.state === 'recorded')).length;
         const cs = campusStats(); const units = new Set(hist.filter((j) => j.asset).map((j) => j.asset));
@@ -66,7 +71,7 @@ export function AssetsPage({ perspective }: { perspective: string }) {
           </div>
           <div className="wk-g2">
             <Card icon="building" title="Buildings" sub="Campus, building, room, device: health is modelled from the records">
-              <List label="Buildings">{cs.buildings.filter((b) => b.rooms).map((b) => <ListRow key={b.b.key} title={b.b.name} sub={`${plural(b.rooms, 'room')} · ${plural(b.devices, 'device position')} · ${b.open} open issue${b.open === 1 ? '' : 's'}${b.verifiedPct != null ? ` · ${b.verifiedPct}% of tests verified` : ''}`} href={`#/commissioning?b=${b.b.key}`} trailing={<Tag tone={b.band === 'healthy' ? 'ok' : b.band === 'monitor' ? 'warn' : 'bad'}>{b.score ?? '—'}</Tag>} />)}</List>
+              <List label="Buildings">{cs.buildings.filter((b) => b.rooms && (!only || b.b.key === only)).map((b) => <ListRow key={b.b.key} title={b.b.name} sub={`${plural(b.rooms, 'room')} · ${plural(b.devices, 'device position')} · ${b.open} open issue${b.open === 1 ? '' : 's'}${b.verifiedPct != null ? ` · ${b.verifiedPct}% of tests verified` : ''}`} href={`#/commissioning?b=${b.b.key}`} trailing={<Tag tone={b.band === 'healthy' ? 'ok' : b.band === 'monitor' ? 'warn' : 'bad'}>{b.score ?? '—'}</Tag>} />)}</List>
             </Card>
             <Card icon="chart" title="Service on units, by month" sub="Jobs that named a unit, by layer · synthetic service history">
               <TrendChart testId="pro-assets-trend" title="Jobs naming a unit, by month (synthetic history)" labels={ms.map((m) => m.label)} unit=""
@@ -74,6 +79,8 @@ export function AssetsPage({ perspective }: { perspective: string }) {
             </Card>
           </div>
         </>; })()}
+      {(() => { const c = campusStats(); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
+        return <Card icon="map" title="Where units need service" sub="The campus map on the Assets lens: jobs that named a unit in twelve months, per 100 device positions"><div data-testid="pro-asset-map"><Stage label="Asset map" testId="pro-asset-stage"><CampusMap tiles={tiles} lens="assets" current={only || undefined} onOpen={(b) => { location.hash = `#/pro/assets?building=${b.key}`; }} /></Stage></div></Card>; })()}
       <div className="wk-g2">
         <Card icon="layers" title="Positions by kind"><Donut label="Device positions by kind" total="positions" segments={byCat} /></Card>
         <Card icon="shield" title="How well each unit is known" sub="Identity states, from verified to unknown"><Donut label="Positions by identity state" total="positions" segments={ident} /></Card>
@@ -93,35 +100,36 @@ export function AssetsPage({ perspective }: { perspective: string }) {
 }
 
 // ------------------------------------------------------------------------------------------------------------ Issue Intelligence
-export function IssuesPage({ perspective }: { perspective: string }) {
-  const persona = personaOf(perspective); const { w } = useWorkspace(); const recs = allRecords();
+export function IssuesPage({ perspective, hash }: { perspective: string; hash?: string }) {
+  const persona = personaOf(perspective); const { w } = useWorkspace(); const only = buildingParam(hash); const recs = allRecords().filter((r) => !only || r.outline.building === only);
+  const inc = w.incidents.filter((i) => !only || i.buildingKey === only);
   const room = recs.flatMap((r) => r.issues.map((i) => ({ r, i })));
   const open = room.filter((x) => x.i.state !== 'RESOLVED');
-  const rec = w.incidents.filter((i) => i.recurrenceOf);
+  const rec = inc.filter((i) => i.recurrenceOf);
   const bySource = topSegs(count(room, (x) => /engine/.test(x.i.source) ? 'Design check' : /field|WO-/.test(x.i.source) ? 'Field report' : 'Commissioning'), 4);
   const sev = (['High', 'Medium', 'Low'] as const).map((s, k) => ({ key: s, label: s, value: open.filter((x) => x.i.severity === s).length, tone: (['bad', 'warn', 'info'] as Series[])[k]! }));
   const rooms = count(open, (x) => x.r.outline.id).length;
   return (
-    <section className="wk" data-native="workspace" data-testid="pro-issues">
+    <section className="wk" data-native="workspace" data-testid="pro-issues" data-building={only || ''}>
       <ProTabs role={perspective} current="#/pro/issues" />
       <PageHero product="pro" plain icon="alert" eyebrow="Pro · how and where it fails" title="Issue Intelligence"
-        lede={<><b>{plural(open.length, 'room issue')}</b> open in <b>{plural(rooms, 'room')}</b>, beside <b>{plural(w.incidents.filter((i) => !DONE.includes(i.state)).length, 'service job')}</b>; <b>{rec.length}</b> {rec.length === 1 ? 'job is a recurrence' : 'jobs are recurrences'} of an earlier one in the same room.</>}
-        meta={[<Chip key="m" small tone="muted">Synthetic records</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
+        lede={<><b>{plural(open.length, 'room issue')}</b> open in <b>{plural(rooms, 'room')}</b>, beside <b>{plural(inc.filter((i) => !DONE.includes(i.state)).length, 'service job')}</b>; <b>{rec.length}</b> {rec.length === 1 ? 'job is a recurrence' : 'jobs are recurrences'} of an earlier one in the same room.</>}
+        meta={[<OnlyChip key="o" only={only} base="#/pro/issues" />, <Chip key="m" small tone="muted">Synthetic records</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
       <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Open room issues" value={open.length} unit={`of ${room.length}`} icon="alert" tone="pro" />
         <StatTile label="High severity open" value={sev[0]!.value} icon="alert" tone="bad" />
-        <StatTile label="Service jobs open" value={w.incidents.filter((i) => !DONE.includes(i.state)).length} icon="ticket" tone="servicehands" href="#/servicehands" />
+        <StatTile label="Service jobs open" value={inc.filter((i) => !DONE.includes(i.state)).length} icon="ticket" tone="servicehands" href="#/servicehands" />
         <StatTile label="Recurrences" value={rec.length} icon="undo" tone="apex" href="#/v25/apex" hint="Diagnosed by APEX before another visit" />
       </div>
       {/* #234 (founder 13:42, 14:00): the failure map — the same campus map with the Issues lens, counts and rates per 10 rooms, the source and
           its time, each building drilling to its rooms. One map component, so it agrees with Campus and Mission Control. */}
       {(() => { const c = campusStats(w); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
-        return <Card icon="map" title="Where it fails" sub="Open room issues on the campus map: counts or per 10 rooms; select a building for its rooms"><div data-testid="pro-failure-map"><Stage label="Failure map" testId="pro-map-stage"><CampusMap tiles={tiles} lens="issues" onOpen={(b) => { location.hash = `#/campus/${b.key}`; }} /></Stage></div></Card>; })()}
+        return <Card icon="map" title="Where it fails" sub="Open room issues on the campus map: counts or per 10 rooms; select a building for its rooms"><div data-testid="pro-failure-map"><Stage label="Failure map" testId="pro-map-stage"><CampusMap tiles={tiles} lens="issues" current={only || undefined} onOpen={(b) => { location.hash = `#/campus/${b.key}`; }} /></Stage></div></Card>; })()}
       <div className="wk-g2">
         <Card icon="pulse" title="Open by severity"><Donut label="Open room issues by severity" total="open" segments={sev} /></Card>
         <Card icon="filter" title="Where issues come from" sub="Every room issue, by the check that found it"><Donut label="Room issues by source" total="issues" segments={bySource} /></Card>
       </div>
-      {(() => { const hist = syntheticHistory(); const ms = months(12); const ser = ms.map((m) => stats(hist, m.from, m.to));
+      {(() => { const hist = syntheticHistory().filter((j) => !only || j.building === only); const ms = months(12); const ser = ms.map((m) => stats(hist, m.from, m.to));
         const repeat = [...hist.reduce((m, j) => m.set(j.roomId, [...(m.get(j.roomId) || []), j]), new Map<string, typeof hist>()).entries()].map(([id, js]) => ({ id, name: js[0]!.roomName, n: js.length, layers: [...new Set(js.map((j) => j.layer))] })).sort((a, b) => b.n - a.n).slice(0, 6);
         return <div className="wk-g2" data-testid="pro-issues-trends">
           <Card icon="chart" title="Issues by month and layer" sub="Opened in the synthetic service history · click through to Service analytics">

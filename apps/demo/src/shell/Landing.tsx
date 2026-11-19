@@ -66,11 +66,14 @@ export default function Landing({ role }: PageProps) {
       <section className="hero lnd__hero">
         <div className="lnd__top"><div>
         <p className="kicker">Investor demonstration · synthetic estate</p>
-        <h1>Every room has a story. Every system has a history. Every decision has consequences.</h1>
-        <p className="lead">Follow the intelligence connecting spaces, technology, people, engineering and service. Declared is not verified and modeled is not measured — the product says so itself. Start with the life of one room, or choose your way in:</p>
+        <h1 data-testid="welcome-h">Welcome to Empathia. What would you like to see first?</h1>
+        <p className="lead lnd__tag">Every room has a story. Every system has a history. Every decision has consequences.</p>
+        <Ask />
         </div>
         <figure className="lnd__art stage" data-stage="" aria-label="The living campus in 3D"><CampusMap tiles={tiles} onOpen={(b) => { location.hash = `#/campus/${b.key}`; }} /><figcaption className="stage__cap">The living campus: six buildings, each tinted by its modelled health. Select one to go inside.</figcaption></figure>
         </div>
+        <First role={role} />
+        <Worlds3d />
         <a className="lnd__flag" href="#/tours/g" data-testid="life-of-a-room"><span className="lnd__flagk">The flagship tour</span><b>The Life of a Room</b><span>One boardroom from its request to service, a replaced camera, re-acceptance and the estate view: sixteen stops through the real product, every product reading the same record.</span></a>
         <div className="start">
           {build
@@ -118,6 +121,64 @@ export default function Landing({ role }: PageProps) {
         </ul>
       </section>
     </div>
+  );
+}
+
+/**
+ * Founder, 19 Nov 2026 09:09: "a warm welcome to Empathia: what would you like to see first? Who or what can I find for you through
+ * Search Party?" — the question is answered by asking Search Party in words, or by choosing one of the product's best screens.
+ */
+const ASK_SAMPLES = [['Atlas 4.218', 'Atlas 4.218'], ['a ceiling microphone', 'ceiling microphone'], ['open issues', 'issue'], ['who supports a room', 'support']] as const;
+function Ask() {
+  const [q, setQ] = useState('');
+  const go = (text: string) => { const t = text.trim(); location.hash = t ? `#/search?q=${encodeURIComponent(t)}` : '#/search'; };
+  return (
+    <form className="lnd__ask" role="search" aria-label="Ask Search Party" data-testid="welcome-ask" onSubmit={(e) => { e.preventDefault(); go(q); }}>
+      <label htmlFor="lnd-ask"><Icon name="search" size={16} /> Who or what can I find for you?</label>
+      <div className="lnd__askrow"><input id="lnd-ask" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="A room, a device, a person, an issue…" autoComplete="off" enterKeyHint="search" />
+        <button type="submit" className="ui-btn ui-btn--primary">Find it</button></div>
+      <p className="lnd__asktry"><span className="ui-meta">Try</span>{ASK_SAMPLES.map(([label, text]) => <button key={label} type="button" className="lnd__try" onClick={() => go(text)}>{label}</button>)}</p>
+    </form>
+  );
+}
+/** The first choices: each the best screen of its product, opened as a role that may see it (the Product Architect sees them all). */
+const FIRST: readonly { title: string; line: string; href: string; icon: Parameters<typeof Icon>[0]['name']; as: RoleKey }[] = [
+  { title: 'Walk the campus in 3D', line: 'Six buildings in Lite, every room furnished and measured', href: '#/lite', icon: 'cube', as: 'designer' },
+  { title: 'A boardroom, device by device', line: 'Atlas 4.218 in Lite: coverage, signal flow, its history', href: '#/lite/room/R-ATL-4-218', icon: 'device', as: 'designer' },
+  { title: 'Where the estate hurts', line: 'Pro’s failure map: issues per room, per device, per month', href: '#/pro/issues', icon: 'graph', as: 'exec' },
+  { title: 'Prove a room works', line: 'Commissioning: what was required, observed and verified', href: '#/commissioning/room/R-ATL-4-218', icon: 'check', as: 'cxeng' },
+  { title: 'Play SIGNAL: Ten Seats', line: 'An interactive film about the people behind the rooms', href: '#/film/s01e01', icon: 'spark', as: 'architect' },
+  { title: 'Replay a room’s life', line: 'Core Replay: Atlas 4.218 from its request to today, change by change', href: '#/replay/R-ATL-4-218', icon: 'clock', as: 'architect' },
+];
+function First({ role }: { role: RoleKey }) {
+  const va = useViewAs();
+  return (
+    <nav className="lnd__first" aria-label="What to see first" data-testid="welcome-first">
+      {FIRST.map((f) => { const body = <><span className="go__ic" aria-hidden="true"><Icon name={f.icon} size={20} /></span><b>{f.title}</b><span>{f.line}</span></>;
+        return opensNative(role, f.href)
+          ? <a key={f.href} className="lnd__pick" href={f.href} data-first={f.href}>{body}</a>
+          : <button key={f.href} type="button" className="lnd__pick" data-first={f.href} onClick={() => { va.switchTo(f.as); setTimeout(() => { location.hash = f.href; }, 0); }}>{body}</button>; })}
+    </nav>
+  );
+}
+
+/** The three other worlds, in 3D (founder, 19 Nov 2026 09:09 G: "make the 3 other experiences ... easier for investors to find"): one tap
+ *  from the welcome to each, with the frame the website shows for it (captured from this demonstration; provenance in apps/website/media/product/PROVENANCE.json). */
+const WORLDS_3D: readonly { key: string; world: string; title: string; line: string; href: string; img: string; alt: string }[] = [
+  { key: 'stadium', world: 'Stadium', title: 'Stadium LIVE', line: 'Harborlight Stadium under the lights: run the bowl from the LIVE console', href: '#/play/stadium', img: 'exp-stadium', alt: 'Harborlight Stadium in 3D at night, with the LIVE console' },
+  { key: 'university', world: 'University', title: 'Campus Life', line: 'Walk the Quad, meet Professor Calder, fix the circuit bench in SCI-110', href: '#/play/campus', img: 'exp-campus', alt: 'The Quad of Kestrel Valley University in 3D' },
+  { key: 'convention', world: 'Convention', title: 'Expo LIVE', line: 'Hall A of the Larkspur Exchange: booths, sessions and polls', href: '#/play/expo', img: 'exp-expo', alt: 'Hall A of the Larkspur Exchange Convention Centre in 3D' },
+];
+function Worlds3d() {
+  return (
+    <section className="lnd__w3" aria-labelledby="w3-h" data-testid="welcome-worlds">
+      <div className="lnd__w3head"><h2 id="w3-h">Three more worlds, in 3D</h2><span className="ui-meta">Fictional venues · synthetic data · first versions</span></div>
+      <ul className="lnd__w3list">{WORLDS_3D.map((w) => (
+        <li key={w.key}><a className="lnd__w3card" href={w.href} data-world={w.key}>
+          <img src={`media/worlds/${w.img}-640.webp`} width={640} height={400} loading="lazy" decoding="async" alt={w.alt} />
+          <span className="lnd__w3k">{w.world}</span><b>{w.title}</b><span>{w.line}</span>
+        </a></li>))}</ul>
+    </section>
   );
 }
 

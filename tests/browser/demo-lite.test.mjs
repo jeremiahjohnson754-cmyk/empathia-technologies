@@ -94,6 +94,21 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`LT-${tag}-26`, 'the badge step shows the badge with a code and says the host message was simulated', (await t.page.locator('[data-testid="lite-badge"] [data-testid="lite-qr"]').count()) === 1);
   await t.go('#/lite/visit?step=checkin', 200); await t.page.fill('#lt-vn', ''); await t.page.click('[data-testid="lite-visit-next"]'); await t.page.waitForTimeout(150);
   ok(`LT-${tag}-27`, 'checking in without a name is refused with a message, not ignored', /Enter your name/.test(await t.text()));
+  // the V2.5.3 visitor experience, walked (founder 19 Nov 2026 09:09 B: "fully resolve ... wayfinding and sign in ... a non-verbal investor
+  // demonstration"). Added; nothing above relaxed.
+  await t.go('#/lite/way?to=R-MER-2-400', 400);
+  const way = await t.page.evaluate(() => { const g = document.querySelector('[data-testid="lite-way-svg"]'); return { to: g?.getAttribute('data-to'), on: g?.querySelectorAll('.lt-arrive__b.on').length, route: !!g?.querySelector('.lt-route'), walker: !!g?.querySelector('.lt-walker') }; });
+  ok(`LT-${tag}-27b`, 'wayfinding draws the walk on the campus from above: the Atlas entrance, the route, the destination building marked, the visitor on the way', way.to === 'MER' && way.on === 1 && way.route && way.walker, JSON.stringify(way));
+  await t.go('#/lite/visit', 400);
+  const v1 = await t.page.evaluate(() => ({ scene: document.querySelector('[data-testid="lite-visit-stage"]')?.getAttribute('data-scene'), arrive: !!document.querySelector('[data-testid="lite-arrive"] .lt-walker') }));
+  await t.page.click('[data-testid="lite-visit-watch"]'); await t.page.waitForTimeout(4200);
+  const v2 = await t.page.evaluate(() => ({ step: document.querySelector('[data-testid="lite-visit"]')?.getAttribute('data-step'), auto: document.querySelector('[data-testid="lite-visit"]')?.getAttribute('data-auto'), scene: document.querySelector('[data-testid="lite-visit-stage"]')?.getAttribute('data-scene'), walker: !!document.querySelector('[data-testid="lite-visit-stage"] [data-testid="lt-walker"]'), route: !!document.querySelector('[data-testid="lite-visit-stage"] .lt-route') }));
+  await t.page.click('[data-testid="lite-visit-pause"]'); const held = await t.page.evaluate(() => document.querySelector('[data-testid="lite-visit"]')?.getAttribute('data-step')); await t.page.waitForTimeout(3800);
+  const v3 = await t.page.evaluate(() => document.querySelector('[data-testid="lite-visit"]')?.getAttribute('data-step'));
+  ok(`LT-${tag}-27c`, 'the visit shows itself: step 1 is the campus arrival with the visitor walking; "Watch the visit" walks a sample visitor on into the 3D lobby, route drawn, on its own; Pause holds the step', v1.scene === 'campus' && v1.arrive && v2.step === 'entrance' && v2.auto === 'true' && v2.scene === 'lobby' && v2.walker && v2.route && held === v3, JSON.stringify({ v1, v2, held, v3 }));
+  await t.page.click('.lt-stepper li:nth-child(8) button'); await t.page.waitForTimeout(300);
+  const v4 = await t.page.evaluate(() => ({ step: document.querySelector('[data-testid="lite-visit"]')?.getAttribute('data-step'), sofa: !!document.querySelector('[data-testid="lite-visit-stage"] .lt-zone.on') }));
+  ok(`LT-${tag}-27d`, 'any step can be opened from the stepper: "Where to wait" shows the visitor at the waiting area, marked', v4.step === 'wait' && v4.sofa, JSON.stringify(v4));
   await t.go('#/lite/qr'); ok(`LT-${tag}-28`, 'the QR page draws seven codes', (await t.page.locator('[data-testid="lite-qr"]').count()) === 7);
   await t.go('#/lite/commons?scene=event', 300);
   ok(`LT-${tag}-29`, 'the Commons event scene is chosen and drawn', (await t.page.evaluate(() => document.querySelector('[data-testid="lite-commons"]')?.getAttribute('data-scene'))) === 'event' && (await t.page.locator('.lt-obj--camera').count()) === 3);

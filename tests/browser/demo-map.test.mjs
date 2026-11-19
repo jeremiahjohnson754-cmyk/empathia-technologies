@@ -2,7 +2,8 @@
 // Empathia Map (task #234; founder 18 Nov 14:10: "Fix the campus maps please cause it is not the quality we're looking for"). Each
 // control is pressed and its effect checked on the drawn map (canvas pixels compared) or on the camera (data-dist / data-yaw), in reduced
 // motion so frames are stable: the aerial and street styles, zoom, turning to north, the campus → building → floor → room drill and back,
-// search, the room's jumps to the other products, a phone layout with no overlapping controls, and no console error.
+// search, the room's jumps to the other products, the Assets and Coverage lenses with jumps that keep the building (19 Nov), a phone
+// layout with no overlapping controls, and no console error.
 // Light by default; PW_COLOR_SCHEME=dark for the dark run. Headless Chromium renders WebGL in software here: no frame-rate claim.
 //   node tests/browser/demo-map.test.mjs
 import crypto from 'node:crypto';
@@ -94,6 +95,27 @@ await p.evaluate(() => { location.hash = '#/campus'; }); await p.waitForSelector
 await p.evaluate(() => { location.hash = '#/investor'; }); await p.waitForSelector('[data-testid=emap][data-ready=true]', { timeout: 30000 });
 const ov = await p.evaluate(() => { const a = document.querySelector('.emap__search')?.getBoundingClientRect(), b = document.querySelector('.emap__layers')?.getBoundingClientRect(); return a && b ? { overlap: a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom, w: Math.round(document.querySelector('.emap').getBoundingClientRect().width) } : null; });
 ok('MAP-24', `in a narrower map (the investor start, ${ov?.w} px wide) the search box stays clear of the layer buttons`, !!ov && !ov.overlap, JSON.stringify(ov));
+// the Assets and Coverage lenses (founder 19 Nov 2026 09:09 F: "the campus map everywhere shows Pro's asset and issue intelligence and
+// Search Party coverage maps, with jumps that keep the selection"). Added; nothing above relaxed.
+await p.evaluate(() => { location.hash = '#/campus'; }); await p.waitForSelector('[data-testid=emap][data-ready=true]'); await p.waitForTimeout(400);
+const lenses = await p.evaluate(() => [...document.querySelectorAll('.emap__lens button')].map((b) => b.textContent));
+await p.getByTestId('emap-lens-assets').click(); await p.waitForTimeout(400);
+const av = await p.evaluate(() => [...document.querySelectorAll('[data-testid^="emap-lv-"]')].map((e) => e.textContent)); const asrc = await p.getByTestId('emap-legend-src').textContent();
+ok('MAP-33', 'five lenses (no lens, health risk, issues, assets, coverage); the Assets lens puts each building’s service on units per 100 device positions on its pin, the values differ, and the legend names its two sources', lenses.join('|') === 'No lens|Health risk|Issues|Assets|Coverage' && av.length === 6 && av.every((x) => /^\d+\.\d\/100 units$|^—$/.test(x || '')) && new Set(av).size > 1 && /service history/.test(asrc || '') && /room records/.test(asrc || ''), JSON.stringify({ lenses, av, asrc }));
+await p.getByTestId('emap-lens-coverage').click(); await p.waitForTimeout(400);
+const cvv = await p.evaluate(() => [...document.querySelectorAll('[data-testid^="emap-lv-"]')].map((e) => e.textContent));
+await p.getByTestId('campus-b-ATL').click(); await p.waitForTimeout(800);
+const cvm = await p.getByTestId('emap-card-metric').textContent(); const lj = await p.getByTestId('emap-legend-sp').getAttribute('href');
+ok('MAP-34', 'the Coverage lens shows each building’s share of rooms nobody knows first-hand; the selected building’s card shows the arithmetic, and the legend’s jump opens that building’s people', cvv.length === 6 && cvv.every((x) => /^\d+% uncovered$|^—$/.test(x || '')) && /\d+ of \d+ rooms with nobody who knows them first-hand = \d+% uncovered/.test(cvm || '') && lj === '#/people?site=ATL', JSON.stringify({ cvv, cvm, lj }));
+const bj = await p.evaluate(() => ['emap-b-issues', 'emap-b-assets', 'emap-b-cover'].map((id) => document.querySelector(`[data-testid=${id}]`)?.getAttribute('href')));
+await p.getByTestId('emap-b-issues').click(); await p.waitForSelector('[data-testid=pro-failure-map] [data-testid=emap][data-ready=true]', { timeout: 30000 }); await p.waitForTimeout(400);
+const iss = await p.evaluate(() => ({ b: document.querySelector('[data-testid=pro-issues]')?.dataset.building, chip: document.querySelector('[data-testid=pro-only-all]')?.parentElement?.textContent || '', sel: document.querySelector('[data-testid=pro-failure-map] [data-testid=emap]')?.dataset.sel }));
+ok('MAP-35', 'the building card jumps to Issue Intelligence, Asset Intelligence and who covers it, each keeping the building; Issue Intelligence opens on Atlas only, says so, and its failure map has Atlas selected', bj.join(' ') === '#/pro/issues?building=ATL #/pro/assets?building=ATL #/people?site=ATL' && iss.b === 'ATL' && /Atlas HQ only/.test(iss.chip) && iss.sel === 'ATL', JSON.stringify({ bj, iss }));
+await p.evaluate(() => { location.hash = '#/pro/assets?building=ATL'; }); await p.waitForSelector('[data-testid=pro-asset-map] [data-testid=emap][data-ready=true]', { timeout: 30000 });
+const as = await p.evaluate(() => ({ b: document.querySelector('[data-testid=pro-assets]')?.dataset.building, lens: document.querySelector('[data-testid=pro-asset-map] [data-testid=emap]')?.dataset.lens, sel: document.querySelector('[data-testid=pro-asset-map] [data-testid=emap]')?.dataset.sel }));
+await p.evaluate(() => { location.hash = '#/search/support'; }); await p.waitForSelector('[data-testid=sp-coverage-map] [data-testid=emap][data-ready=true]', { timeout: 30000 });
+const sp = await p.evaluate(() => document.querySelector('[data-testid=sp-coverage-map] [data-testid=emap]')?.dataset.lens);
+ok('MAP-36', 'Asset Intelligence carries the campus map on the Assets lens, opened on the building it was given; Search Party’s support coverage carries it on the Coverage lens', as.b === 'ATL' && as.lens === 'assets' && as.sel === 'ATL' && sp === 'coverage', JSON.stringify({ as, sp }));
 await p.evaluate(() => { location.hash = '#/campus'; }); await p.waitForSelector('[data-testid=emap][data-ready=true]');
 ok('MAP-15', `the map knows the graphics it runs on and says so (data-gpu=${await A(p, 'gpu')}): a software renderer gets no opening flight and standard resolution, a GPU the cinematic opening`, ['software', 'hardware'].includes(await A(p, 'gpu') || ''), await A(p, 'gpu'));
 ok('MAP-14', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));

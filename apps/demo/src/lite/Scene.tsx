@@ -147,7 +147,7 @@ export function RoomScene(props: RoomSceneProps) {
 }
 
 /** A Lite space (lobby, Tech Zone, Commons…) in 3D from its V2.5.3 layout: zones on the floor, objects as boxes, optional route. */
-export function SpaceScene({ layout, view, label, highlight, route, bind, selected, onSelect }: { layout: SpaceLayout; view: View; label: string; highlight?: string; route?: Array<[number, number]>; bind?: Record<string, unknown>; selected?: string | null; onSelect?: (id: string) => void }) {
+export function SpaceScene({ layout, view, label, highlight, route, walker, bind, selected, onSelect }: { layout: SpaceLayout; view: View; label: string; highlight?: string; route?: Array<[number, number]>; walker?: [number, number] | null; bind?: Record<string, unknown>; selected?: string | null; onSelect?: (id: string) => void }) {
   const { w, d, h } = layout; const S = (w > 20 ? 30 : 44) * view.zoom; const { P, depth, pts } = projector(w, d, view, S);
   const corners: Array<[number, number]> = [[0, 0], [w, 0], [w, d], [0, d]];
   const xy = corners.map(([x, y]) => P(x, y, 0)).concat(corners.map(([x, y]) => P(x, y, h)));
@@ -171,6 +171,8 @@ export function SpaceScene({ layout, view, label, highlight, route, bind, select
           </g>
         );
       })}
+      {/* the person walking the route (the visit and wayfinding, founder 19 Nov 09:09 B): drawn last, so nothing hides them */}
+      {walker && (() => { const [wx, wy] = P(walker[0], walker[1], 0.05); const [hx, hy] = P(walker[0], walker[1], 1.7); return <g className="lt-walker" aria-hidden="true" data-testid="lt-walker"><circle cx={wx} cy={wy} r={14} className="lt-walker__ring" /><line x1={wx} y1={wy} x2={hx} y2={hy} className="lt-walker__body" /><circle cx={hx} cy={hy} r={6} className="lt-walker__head" /></g>; })()}
     </svg>
   );
 }

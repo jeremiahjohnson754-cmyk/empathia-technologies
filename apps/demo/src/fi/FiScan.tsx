@@ -4,7 +4,7 @@
  * (pan ±30°, tilt −20° to +10°, test level ≤ −30 dBFS, a 20-minute window, at most 4 actions; the demonstration's example limits). A
  * replay reads; it never writes the evidence ledger or the workspace. Findings become evidence only from a work order in ServiceHands.
  */
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useId, useMemo, useState } from 'react';
 import { Tag } from '@empathia/ui';
 import type { WorkspaceProps } from '../hardening/lazy.js';
 import { OpsHead, param, personaOf } from '../hardening/kit.js';
@@ -79,6 +79,7 @@ export default function FiScan({ perspective, hash }: WorkspaceProps) {
 
 function ScanPlan({ room, step }: { room: RoomRec; step: number }) {
   const W = 320, s = W / Math.max(room.w, room.d), H = Math.round(room.d * s) + 20;
+  const clip = 'scan-clip-' + useId().replace(/[^a-zA-Z0-9_-]/g, '');
   const cam = room.positions.find((p) => p.pa === SWAP.pa) || room.positions.find((p) => p.cat === 'camera' || p.cat === 'bar');
   const pan = POLICY.pan[0] + (step / MAX_STEP) * (POLICY.pan[1] - POLICY.pan[0]);
   const seenPa = new Set(findingsOf(room.id).filter((f) => f.step <= step).map((f) => f.pa));
@@ -86,8 +87,10 @@ function ScanPlan({ room, step }: { room: RoomRec; step: number }) {
     const p = (t: number) => `${cx + Math.sin(t) * r},${cy + dir * Math.cos(t) * r}`; return `M${cx},${cy} L${p(a - h)} L${p(a + h)} Z`; })() : null;
   return (
     <div className="ops-stage"><svg viewBox={`0 0 ${W + 20} ${H}`} role="img" aria-label={`Plan of ${room.name}: ${cam ? `camera ${cam.pa} panned ${Math.round(pan)}°, ` : ''}${seenPa.size} position(s) observed`}>
+      <defs><clipPath id={clip}><rect x="10" y="10" width={room.w * s} height={room.d * s} /></clipPath></defs>
       <rect x="10" y="10" width={room.w * s} height={room.d * s} fill="#111827" stroke="#3b4a63" />
-      {cone && <path d={cone} fill="rgba(69,207,193,0.16)" stroke="rgba(69,207,193,0.6)" />}
+      {/* the camera sees the room, not the corridor: its view is drawn inside the walls */}
+      {cone && <path d={cone} clipPath={`url(#${clip})`} fill="rgba(69,207,193,0.16)" stroke="rgba(69,207,193,0.6)" />}
       {room.positions.map((p) => <circle key={p.pa} cx={10 + p.x * s} cy={10 + p.y * s} r={seenPa.has(p.pa) ? 6 : 4} fill={seenPa.has(p.pa) ? '#45cfc1' : '#5b6b84'} />)}
       {!room.positions.length && <text x="20" y="40" fill="#e8eef7" fontSize="11">No device positions recorded</text>}
     </svg></div>

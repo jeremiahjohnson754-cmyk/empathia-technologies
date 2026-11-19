@@ -126,7 +126,7 @@ for (const [w, theme] of [[1440, 'light'], [390, 'dark']]) {
 // ---------------------------------------------------------------- 4. the world page: tour, panels, roles, keyboard, back
 { const t = await open('#/investor', { role: 'architect' }); const p = t.page;
   const entry = await p.locator('[data-testid=worlds-entry]').getAttribute('href');
-  ok('W-21', 'the investor start still opens on its own heading and links prominently to Choose a world', entry === '#/worlds' && /Every room has a story/.test(await p.locator('main h1').innerText())   /* CHANGED 18 Nov 2026 (#230): the founder's investor headline replaced "Every state here has a guard, an actor and an event behind it" */ && await p.locator('.start .go').count() === 3);
+  ok('W-21', 'the investor start still opens on its own heading and links prominently to Choose a world', entry === '#/worlds' && /^Welcome to Empathia/.test(await p.locator('main h1').innerText())   /* CHANGED 19 Nov 2026 (founder 09:09): the start page now opens with the welcome question; the investor headline moved to the line under it */   /* CHANGED 18 Nov 2026 (#230): the founder's investor headline replaced "Every state here has a guard, an actor and an event behind it" */ && await p.locator('.start .go').count() === 3);
   await p.click('[data-testid=worlds-entry]'); await settle(p);
   const f = await p.evaluate(() => ({ start: document.activeElement.tagName, order: [], world: '', said: document.getElementById('route-announcer').textContent }));
   for (let i = 0; i < 2; i++) { await p.keyboard.press('Tab'); f.world = await p.evaluate(() => document.activeElement.dataset.world || ''); f.order.push(f.world); }

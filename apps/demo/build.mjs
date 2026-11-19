@@ -49,6 +49,19 @@ fs.mkdirSync(dist, { recursive: true });
 { const { shipSignal } = await import('./build.signal.mjs'); const r = shipSignal(repo, dist); console.log(`SIGNAL canon: ${r.chapters} chapters, ${r.panels} panels`); }
 // static media (narration takes and captions): apps/demo/public/** ships as is beside the bundle
 if (fs.existsSync(path.join(app, 'public'))) fs.cpSync(path.join(app, 'public'), dist, { recursive: true });
+// the three other worlds' frames on the welcome (Landing.tsx Worlds3d): the website's captures of this demonstration's own 3D worlds,
+// copied so the welcome and the website show the same frame (one source: apps/website/media/product). Their provenance stays in that
+// folder's PROVENANCE.json (route, viewport, commit, time, hashes) and is checked here; it is not shipped (the public build carries no
+// stray JSON, scripts/audit/public-exposure.mjs PX-06).
+{ const src = path.join(repo, 'apps/website/media/product'); const out = path.join(dist, 'media/worlds'); fs.mkdirSync(out, { recursive: true });
+  const prov = JSON.parse(fs.readFileSync(path.join(src, 'PROVENANCE.json'), 'utf8')).captures || {};
+  for (const k of ['exp-campus', 'exp-stadium', 'exp-expo']) {
+    const f = `${k}-640.webp`; const want = prov[k]?.files?.[f];
+    if (!fs.existsSync(path.join(src, f)) || !want) throw new Error(`welcome worlds: ${f} or its provenance is missing`);
+    const got = crypto.createHash('sha256').update(fs.readFileSync(path.join(src, f))).digest('hex');
+    if (got !== want) throw new Error(`welcome worlds: ${f} does not match its provenance (${got.slice(0, 12)} ≠ ${want.slice(0, 12)})`);
+    fs.copyFileSync(path.join(src, f), path.join(out, f));
+  } }
 await esbuild.build({
   // ES modules with code splitting: every page registered with a lazy `load` is its own chunk, fetched only when the role may open it
   // (D44: a forbidden address never downloads its screen). The entry stays demo.js; pages land in chunks/.

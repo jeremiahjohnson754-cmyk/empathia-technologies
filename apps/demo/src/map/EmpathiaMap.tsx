@@ -19,6 +19,7 @@ import { useOpens } from '../spatial/parts.js';
 import { layoutOf, paintAsync, GROUND, STOREY, type Layout, type Rect } from './imagery.js';
 import type { CampusTile } from '../spatial/Spatial.js';
 import { exposureByBuilding, WINDOW_FROM, WINDOW_TO, type Exposure } from '../campus/heat.js';
+import { assetsByBuilding, coverageByBuilding, unitServiceRate, uncoveredPct, type AssetFacts, type CoverFacts } from '../campus/lenses.js';
 
 type Mode = 'imagery' | 'map';
 type Level = { k: 'campus' } | { k: 'building'; b: string } | { k: 'floor'; b: string; f: number };
@@ -72,8 +73,14 @@ void main(){ vec2 e = min(vUV, 1.0 - vUV); float inside = step(0.0, min(e.x, e.y
   vec3 c = mix(uEdge, texture(uTex, clamp(vUV, 0.0, 1.0)).rgb, inside * smoothstep(0.0, 0.06, min(e.x, e.y)));
   float f = clamp((distance(uEye, vW) - uNear) / (uFar - uNear), 0.0, 1.0); o = vec4(mix(c, uFog, f * f), 1.0); }`;
 
-type Lens = 'none' | 'risk' | 'issues';
-const LENS_NAME: Record<Lens, string> = { none: 'No lens', risk: 'Health risk', issues: 'Issues' };
+type Lens = 'none' | 'risk' | 'issues' | 'assets' | 'coverage';
+const LENS_NAME: Record<Lens, string> = { none: 'No lens', risk: 'Health risk', issues: 'Issues', assets: 'Assets', coverage: 'Coverage' };
+const LENSES: readonly Lens[] = ['none', 'risk', 'issues', 'assets', 'coverage'];
+/** each lens's colour ramp (sequential: one hue, light → dark) */
+const RAMP: Record<Exclude<Lens, 'none'>, [number[], number[]]> = { issues: [[255, 210, 120], [185, 28, 28]], risk: [[196, 178, 255], [76, 29, 149]], assets: [[186, 214, 255], [29, 78, 216]], coverage: [[178, 236, 222], [15, 110, 98]] };
+const rgb = (c: number[]) => `rgb(${c.join(',')})`;
+/** the Assets and Coverage lenses' per-building facts (campus/lenses.ts) */
+export interface LensFacts { ax: Record<string, AssetFacts>; cv: Record<string, CoverFacts> }
 /** what the Issues lens compares (founder, 18 Nov 2026 15:38): three measures of the open issues now, three of the last twelve months of
  * synthetic service history (campus/heat.ts). A building with nothing to divide by has no value, never a zero. */
 type Measure = 'count' | 'room' | 'device' | 'roomMonth' | 'burden' | 'repeat';
@@ -91,40 +98,52 @@ interface Metric { rows: Row[]; max: number; topRaw: Building | null; topRate: B
 const NO_E: Exposure = { rooms: 0, devices: 0, roomMonths: 0, jobs: 0, burden: 0, repeats: 0, unique: 0 };
 /** the lens values per building, from the same tiles the pins use (the room records and the service workspace) and, for the twelve-month
  * measures, the synthetic service history */
-function metricOf(lens: Lens, m: Measure, tiles: Record<string, CampusTile>, ex: Record<string, Exposure>): Metric | null {
+function metricOf(lens: Lens, m: Measure, tiles: Record<string, CampusTile>, ex: Record<string, Exposure>, lf: LensFacts): Metric | null {
   if (lens === 'none') return null;
-  const val = (x: CampusTile, e: Exposure): number | null => lens === 'risk' ? (x.score == null ? null : 100 - x.score)
+  const val = (x: CampusTile, e: Exposure, k: string): number | null => lens === 'assets' ? unitServiceRate(lf.ax[k]) : lens === 'coverage' ? uncoveredPct(lf.cv[k]) : lens === 'risk' ? (x.score == null ? null : 100 - x.score)
     : m === 'count' ? x.issues : m === 'room' ? (x.rooms ? (x.issues / x.rooms) * 10 : null) : m === 'device' ? (e.devices ? (x.issues / e.devices) * 10 : null)
     : m === 'roomMonth' ? (e.roomMonths ? (e.jobs / e.roomMonths) * 100 : null) : m === 'burden' ? (e.roomMonths ? e.burden : null) : (e.jobs ? (100 * e.repeats) / e.jobs : null);
-  const rows: Row[] = BUILDINGS.map((b) => { const x = tiles[b.key] || { score: null, band: 'none' as const, issues: 0, rooms: 0 }; const e = ex[b.key] || NO_E; return { b, v: val(x, e), issues: x.issues, rooms: x.rooms, score: x.score, e }; });
+  const rows: Row[] = BUILDINGS.map((b) => { const x = tiles[b.key] || { score: null, band: 'none' as const, issues: 0, rooms: 0 }; const e = ex[b.key] || NO_E; return { b, v: val(x, e, b.key), issues: x.issues, rooms: x.rooms, score: x.score, e }; });
   const top = (f: (r: Row) => number) => { const r = [...rows].sort((a, c) => f(c) - f(a))[0]; return r && f(r) > 0 ? r.b : null; };
   return { rows, max: Math.max(0, ...rows.map((r) => r.v ?? 0)), topRaw: top((r) => r.issues), topRate: top((r) => (r.rooms ? r.issues / r.rooms : 0)), top: top((r) => r.v ?? 0) };
 }
-const fmt = (lens: Lens, m: Measure, v: number | null) => (v == null ? '—' : lens === 'issues' ? MEASURE[m].fmt(v) : `risk ${v}`);
+const fmt = (lens: Lens, m: Measure, v: number | null) => (v == null ? '—' : lens === 'issues' ? MEASURE[m].fmt(v) : lens === 'assets' ? `${v.toFixed(1)}/100 units` : lens === 'coverage' ? `${Math.round(v)}% uncovered` : `risk ${v}`);
 /** a soft glow on the ground under each building, its size and colour by the lens value (sequential: one hue, light → dark) */
 function heatCanvas(m: Metric, lens: Lens): HTMLCanvasElement {
   const N = 512; const c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d')!; const L = layout(); const P = (v: number) => (v / GROUND.size) * N;
-  const lo = lens === 'issues' ? [255, 210, 120] : [196, 178, 255], hi = lens === 'issues' ? [185, 28, 28] : [76, 29, 149];
+  const [lo, hi] = RAMP[lens === 'none' ? 'risk' : lens];
   for (const r of m.rows) { if (!r.v || !m.max) continue; const k = r.v / m.max; const F = L.foot[r.b.key]!; const cx = P(F.x + F.w / 2 - GROUND.x0), cz = P(F.z + F.d / 2 - GROUND.z0); const rad = P(Math.max(F.w, F.d) * 0.62 + 18 + 26 * k);
     const col = lo.map((a, i) => Math.round(a + (hi[i]! - a) * k)).join(','); const gr = g.createRadialGradient(cx, cz, 0, cx, cz, rad); gr.addColorStop(0, `rgba(${col},${(0.42 + 0.4 * k).toFixed(2)})`); gr.addColorStop(0.55, `rgba(${col},${(0.25 + 0.3 * k).toFixed(2)})`); gr.addColorStop(1, `rgba(${col},0)`); g.fillStyle = gr; g.beginPath(); g.arc(cx, cz, rad, 0, 7); g.fill(); }
   return c;
 }
-function Legend({ lens, m, setM, metric, at, opens }: { lens: Lens; m: Measure; setM: (x: Measure) => void; metric: Metric; at: Date; opens: (h: string) => boolean }) {
-  const hhmm = at.toTimeString().slice(0, 5); const lo = lens === 'issues' ? '#ffd278' : '#c4b2ff', hi = lens === 'issues' ? '#b91c1c' : '#4c1d95';
+/** where each lens's numbers are read in full, opened on the building the map has selected (the selection travels with the jump) */
+const LENS_JUMP: Partial<Record<Lens, { base: string; sel: (k: string) => string; text: string; id: string }>> = {
+  issues: { base: '#/pro/issues', sel: (k) => `#/pro/issues?building=${k}`, text: 'Open Issue Intelligence', id: 'emap-legend-pro' },
+  risk: { base: '#/pro/issues', sel: (k) => `#/pro/issues?building=${k}`, text: 'Open Issue Intelligence', id: 'emap-legend-pro' },
+  assets: { base: '#/pro/assets', sel: (k) => `#/pro/assets?building=${k}`, text: 'Open Asset Intelligence', id: 'emap-legend-assets' },
+  coverage: { base: '#/search/support', sel: (k) => `#/people?site=${k}`, text: 'Open Search Party coverage', id: 'emap-legend-sp' },
+};
+function Legend({ lens, m, setM, metric, at, opens, sel }: { lens: Lens; m: Measure; setM: (x: Measure) => void; metric: Metric; at: Date; opens: (h: string) => boolean; sel: Building | null }) {
+  const hhmm = at.toTimeString().slice(0, 5); const [lo, hi] = RAMP[lens === 'none' ? 'risk' : lens].map(rgb) as [string, string];
   const rr = (b: Building | null) => metric.rows.find((x) => x.b === b) || null;
   const a = rr(metric.topRaw), b = rr(metric.topRate), t = rr(metric.top); const M = MEASURE[m]; const unknown = metric.rows.filter((r) => r.v == null).map((r) => r.b.short);
   const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  const title = lens === 'issues' ? M.title : lens === 'assets' ? 'Service on units, per 100 device positions' : lens === 'coverage' ? 'Rooms nobody knows first-hand' : 'Health risk (100 − health score)';
+  const J = LENS_JUMP[lens]; const href = J ? (sel ? J.sel(sel.key) : J.base) : null;
   return (
     <section className="emap__legend" aria-label={`${LENS_NAME[lens]} legend`} data-testid="emap-legend">
-      <h3>{lens === 'issues' ? M.title : 'Health risk (100 − health score)'}</h3>
+      <h3>{title}</h3>
       {lens === 'issues' && <div className="emap__seg emap__seg--wrap" role="group" aria-label="Measure">{MEASURES.map((k) => <button key={k} type="button" aria-pressed={m === k} onClick={() => setM(k)} data-testid={MEASURE[k].id}>{MEASURE[k].name}</button>)}</div>}
       <div className="emap__scale" aria-hidden="true"><i style={{ background: `linear-gradient(90deg, ${lo}, ${hi})` }} /><span>0</span><span>{fmt(lens, m, lens === 'issues' && m !== 'count' && m !== 'burden' ? Math.round(metric.max * 10) / 10 : metric.max)}</span></div>
       {lens === 'issues' && <p className="emap__def" data-testid="emap-legend-def">{M.def}</p>}
       {lens === 'issues' && (m === 'count' || m === 'room') && <p data-testid="emap-legend-top">Most issues: <b>{a ? `${a.b.short} (${a.issues} in ${a.rooms} rooms)` : 'none'}</b>. Most per 10 rooms: <b>{b ? `${b.b.short} (${((b.issues / Math.max(1, b.rooms)) * 10).toFixed(1)})` : 'none'}</b>. A large building with many issues is not necessarily less reliable than a small one with a few.</p>}
       {lens === 'issues' && m !== 'count' && m !== 'room' && <p data-testid="emap-legend-top">Highest: <b>{t ? `${t.b.short} (${M.fmt(t.v!)})` : 'none'}</b>.{unknown.length ? ` No value (nothing to divide by, not zero): ${unknown.join(', ')}.` : ''}</p>}
+      {lens === 'assets' && <p className="emap__def" data-testid="emap-legend-def">Pro · Asset Intelligence: jobs of the last twelve months that named a unit ÷ the building’s device positions (furniture not counted) × 100. Identities are not mapped: no position on record is verified yet.</p>}
+      {lens === 'coverage' && <p className="emap__def" data-testid="emap-legend-def">Search Party · people and support: rooms no site champion or backup knows first-hand (worked in it, or based on its floor) ÷ the building’s rooms. Looking after the whole building is not first-hand.</p>}
+      {(lens === 'assets' || lens === 'coverage') && <p data-testid="emap-legend-top">Highest: <b>{t ? `${t.b.short} (${fmt(lens, m, t.v)})` : 'none'}</b>.{unknown.length ? ` No value (nothing to divide by, not zero): ${unknown.join(', ')}.` : ''}</p>}
       {lens === 'risk' && <p>A building with no scored room has no risk value and no glow (it is not a zero).</p>}
-      <p className="emap__src" data-testid="emap-legend-src">{lens === 'issues' && M.window ? `From the synthetic service history, break-fix jobs opened ${day(WINDOW_FROM)} to ${day(WINDOW_TO)}, and the room records · synthetic · computed at ${hhmm}.` : `From the room records and the service workspace held in this browser · synthetic · computed at ${hhmm}.`}</p>
-      {opens('#/pro/issues') && !location.hash.startsWith('#/pro/issues') && <a href="#/pro/issues" className="emap__jump" data-testid="emap-legend-pro">Open Issue Intelligence</a>}
+      <p className="emap__src" data-testid="emap-legend-src">{lens === 'issues' && M.window ? `From the synthetic service history, break-fix jobs opened ${day(WINDOW_FROM)} to ${day(WINDOW_TO)}, and the room records · synthetic · computed at ${hhmm}.` : lens === 'assets' ? `From the synthetic service history, jobs opened ${day(WINDOW_FROM)} to ${day(WINDOW_TO)}, and the room records (positions modelled from each room’s archetype) · synthetic · computed at ${hhmm}.` : lens === 'coverage' ? `From the people directory and the service workspace held in this browser, against the room records · synthetic · computed at ${hhmm}.` : `From the room records and the service workspace held in this browser · synthetic · computed at ${hhmm}.`}</p>
+      {J && href && opens(J.base) && !location.hash.startsWith(href) && <a href={href} className="emap__jump" data-testid={J.id}>{J.text}{sel ? `: ${sel.short}` : ''}</a>}
     </section>
   );
 }
@@ -139,8 +158,10 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, testId = 'campu
   const sel = level.k === 'campus' ? null : BUILDINGS.find((b) => b.key === level.b) || null;
   const [lens, setLens] = useState<Lens>(lens0); const [m, setM] = useState<Measure>('count'); const [at] = useState(() => new Date()); const rate = m === 'room';
   const ex = useMemo(() => exposureByBuilding(), []);
-  const metric = useMemo(() => metricOf(lens, m, tiles, ex), [lens, m, tiles, ex]);
   const ws = useMemo(loadWsSafe, []);
+  // the Assets and Coverage lenses are computed when first chosen (the people directory is not read for a map that never asks)
+  const lf = useMemo<LensFacts>(() => (lens === 'assets' || lens === 'coverage' ? { ax: assetsByBuilding(), cv: coverageByBuilding(ws) } : { ax: {}, cv: {} }), [lens === 'assets' || lens === 'coverage', ws]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const metric = useMemo(() => metricOf(lens, m, tiles, ex, lf), [lens, m, tiles, ex, lf]);
   const rooms = useMemo(() => (level.k === 'floor' && sel ? roomLayout(sel, level.f, ws) : []), [level, sel, ws]);
   // the camera lives outside React (it changes every frame); `kick` asks for a redraw
   const S = useRef({ cam: { tx: 0, tz: 0, dist: 520, yaw: -0.65, pitch: 0.86 } as Cam, from: null as Cam | null, to: null as Cam | null, t0: 0, dur: 1, dirty: true, raf: 0, kick: () => {}, mode, tilt, level, rooms, sel: sel?.key || null, hover: null as string | null, vp: null as M4 | null, soft: false, heat: null as { key: string; c: HTMLCanvasElement } | null });
@@ -326,18 +347,19 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, testId = 'campu
       <p className="emap__credit">Empathia Map · synthetic {mode === 'imagery' ? 'aerial imagery' : 'map'} of a fictional campus · heights and floor layouts modeled</p>
       </div>
       <div className="emap__lens" role="group" aria-label="Map lens">
-        {(['none', 'risk', 'issues'] as const).map((k) => <button key={k} type="button" aria-pressed={lens === k} onClick={() => setLens(k)} data-testid={`emap-lens-${k}`}>{LENS_NAME[k]}</button>)}
+        {LENSES.map((k) => <button key={k} type="button" aria-pressed={lens === k} onClick={() => setLens(k)} data-testid={`emap-lens-${k}`}>{LENS_NAME[k]}</button>)}
       </div>
-      {metric && <Legend lens={lens} m={m} setM={setM} metric={metric} at={at} opens={opens} />}
+      {metric && <Legend lens={lens} m={m} setM={setM} metric={metric} at={at} opens={opens} sel={sel} />}
       {sel && level.k !== 'campus' && !selRoom && (
         <section className="emap__card" aria-labelledby="emap-card-h" data-testid="emap-card">
           <h3 id="emap-card-h">{sel.name}</h3><p className="emap__meta">{sel.purpose} · {sel.floors} floors · opened {sel.opened}</p>
           <p className="emap__meta"><span className={`emap__band emap__band--${t(sel).band}`}>{BAND_GLYPH[t(sel).band]} {t(sel).score == null ? 'not scored' : `${t(sel).score} of 100`}</span> · {t(sel).rooms} rooms · {t(sel).issues} open issue{t(sel).issues === 1 ? '' : 's'}</p>
           <div className="emap__floors" role="group" aria-label="Floors">{Array.from({ length: sel.floors }, (_, i) => i + 1).reverse().map((f) => { const n = roomsIn(sel.key, f).length; return <button key={f} type="button" aria-pressed={level.k === 'floor' && level.f === f} disabled={!n} onClick={() => goLevel({ k: 'floor', b: sel.key, f })} data-testid={`emap-floor-${f}`} title={n ? `${n} room${n === 1 ? '' : 's'} on floor ${f}` : `No canonical room on floor ${f}`}>{f}<small>{n || ''}</small></button>; })}</div>
-          {metric && lens !== 'none' && (() => { const x = t(sel); return <p className="emap__meta" data-testid="emap-card-metric">{lens === 'issues' ? (() => { const e = ex[sel.key] || NO_E; return m === 'device' ? <>{x.issues} open issue{x.issues === 1 ? '' : 's'} ÷ {e.devices} devices = <b>{e.devices ? ((x.issues / e.devices) * 10).toFixed(1) : '—'} per 10 devices</b></> : m === 'roomMonth' ? <>{e.jobs} break-fix jobs ÷ {e.roomMonths} room-months = <b>{e.roomMonths ? ((e.jobs / e.roomMonths) * 100).toFixed(1) : '—'} per 100 room-months</b></> : m === 'burden' ? <>{e.jobs} jobs, weighted 5 / 3 / 1 by severity = <b>burden {e.burden}</b></> : m === 'repeat' ? <>{e.repeats} repeat and {e.unique} unique of {e.jobs} jobs = <b>{e.jobs ? `${Math.round((100 * e.repeats) / e.jobs)}% repeat` : '—'}</b></> : <>{x.issues} open issue{x.issues === 1 ? '' : 's'} ÷ {x.rooms} rooms = <b>{x.rooms ? ((x.issues / x.rooms) * 10).toFixed(1) : '—'} per 10 rooms</b></>; })() : <>Health {x.score ?? '—'} of 100 → risk <b>{x.score == null ? '—' : 100 - x.score}</b></>}</p>; })()}
+          {metric && lens !== 'none' && (() => { const x = t(sel); return <p className="emap__meta" data-testid="emap-card-metric">{lens === 'issues' ? (() => { const e = ex[sel.key] || NO_E; return m === 'device' ? <>{x.issues} open issue{x.issues === 1 ? '' : 's'} ÷ {e.devices} devices = <b>{e.devices ? ((x.issues / e.devices) * 10).toFixed(1) : '—'} per 10 devices</b></> : m === 'roomMonth' ? <>{e.jobs} break-fix jobs ÷ {e.roomMonths} room-months = <b>{e.roomMonths ? ((e.jobs / e.roomMonths) * 100).toFixed(1) : '—'} per 100 room-months</b></> : m === 'burden' ? <>{e.jobs} jobs, weighted 5 / 3 / 1 by severity = <b>burden {e.burden}</b></> : m === 'repeat' ? <>{e.repeats} repeat and {e.unique} unique of {e.jobs} jobs = <b>{e.jobs ? `${Math.round((100 * e.repeats) / e.jobs)}% repeat` : '—'}</b></> : <>{x.issues} open issue{x.issues === 1 ? '' : 's'} ÷ {x.rooms} rooms = <b>{x.rooms ? ((x.issues / x.rooms) * 10).toFixed(1) : '—'} per 10 rooms</b></>; })() : lens === 'assets' ? (() => { const f = lf.ax[sel.key]; return f ? <>{f.jobs} job{f.jobs === 1 ? '' : 's'} on {f.units} unit{f.units === 1 ? '' : 's'} ÷ {f.positions} device positions × 100 = <b>{f.positions ? `${unitServiceRate(f)!.toFixed(1)} per 100 positions` : '—'}</b></> : <>No device positions on record</>; })() : lens === 'coverage' ? (() => { const f = lf.cv[sel.key]; return f ? <>{f.rooms - f.firstHand} of {f.rooms} rooms with nobody who knows them first-hand = <b>{f.rooms ? `${Math.round(uncoveredPct(f)!)}% uncovered` : '—'}</b>{f.who.length ? <> · first-hand: {f.who.join(', ')}</> : null}</> : <>No rooms on record</>; })() : <>Health {x.score ?? '—'} of 100 → risk <b>{x.score == null ? '—' : 100 - x.score}</b></>}</p>; })()}
           {metric && lens !== 'none' && opens(`#/rooms?building=${sel.key}`) && <div className="emap__acts"><a href={`#/rooms?building=${sel.key}`} className="emap__jump" data-testid="emap-card-drill">Its rooms and their issues</a></div>}
           {level.k === 'floor' && <p className="emap__note">Floor {level.f}: {rooms.length} room{rooms.length === 1 ? '' : 's'}. The layout inside the floor is modeled from each room’s size, not a surveyed plan.</p>}
           <div className="emap__acts"><button type="button" className="emap__go" onClick={() => onOpen(sel)} data-testid="emap-open">Open {sel.short}</button>{J(`#/rooms?building=${sel.key}`, 'Its rooms', 'emap-rooms')}{J(`#/search?focus=Building:${sel.key}`, 'Search Party', 'emap-sp-b')}</div>
+          <div className="emap__acts emap__acts--intel" aria-label={`${sel.short} in Pro and Search Party`}>{J(`#/pro/issues?building=${sel.key}`, 'Issue Intelligence', 'emap-b-issues')}{J(`#/pro/assets?building=${sel.key}`, 'Asset Intelligence', 'emap-b-assets')}{J(`#/people?site=${sel.key}`, 'Who covers it', 'emap-b-cover')}</div>
         </section>)}
       {selRoom && (
         <section className="emap__card" aria-labelledby="emap-room-h" data-testid="emap-roomcard">

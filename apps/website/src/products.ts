@@ -34,7 +34,7 @@ const STORY: Record<string, Story> = {
   lite: {
     body: 'A conceptual room model from an archetype, dimensions, plans and photos. Geometry carries its provenance: extracted, inferred, simulated, field-measured or engineer-approved, and never promoted silently. Coverage is predicted and labelled modeled. Scouter works inside Lite: equipment proposals from comparable rooms, reviewed by the engineer before anything is adopted.',
     showsAs: ['modeled', 'modeled', 'modeled', 'declared'], shows: ['Drawing a room from an archetype and its dimensions', 'Seats, displays, cameras and microphones placed in plan and 3D', 'Modeled coverage with the assumptions stated', 'Scouter: equipment proposals from comparable rooms, with their limits'],
-    limits: 'Predictions are modeled values; a calibrated instrument measures. Photo and plan extraction are not part of the public demonstration.', demoState: 'native', demo: { href: '#/v25/build', label: 'Open Build a Room' },
+    limits: 'Predictions are modeled values; a calibrated instrument measures. Photo and plan extraction are not part of the public demonstration.', demoState: 'native', demo: { href: '#/lite/room/R-ATL-4-218', label: 'Open Atlas 4.218 in Lite' },
   },
   pro: {
     body: 'Executive intelligence that shows its work: each measure with its numerator, denominator, window, coverage and freshness, and missing data shown as missing, never as success.',
@@ -55,7 +55,7 @@ const STORY: Record<string, Story> = {
   commissioning: {
     body: 'An adaptive test plan compiled from the project type, the room, its devices, the approved design and the standard versions, with the reason for every test. Failed tests open deficiencies; nothing is accepted on the word of the person who did the work. An accepted result becomes the room’s baseline, and drift is read against it.',
     showsAs: ['declared', 'simulated', 'simulated'], shows: ['The plan, with why each test applies and why others do not', 'A blocked approval that names every unresolved item', 'Retest, independent verification, acceptance and the baseline that follows'],
-    limits: 'Test results in the demonstration are synthetic; no instrument is connected.', demoState: 'native', film: 'F02P', demo: { href: '#/v25/build?tab=checks', label: 'Open the commissioning plan' },
+    limits: 'Test results in the demonstration are synthetic; no instrument is connected.', demoState: 'native', film: 'F02P', demo: { href: '#/commissioning/room/R-ATL-4-218', label: 'Open a room’s commissioning record' },
   },
   apex: {
     body: 'APEX reads a room against its accepted baseline and ranks the hypotheses that could explain what changed, each with the evidence that supports it and the reason it is not yet proven. Actions stay in bounded tiers; a suggestion never becomes an action by itself.',
@@ -65,7 +65,7 @@ const STORY: Record<string, Story> = {
   field: {
     body: 'Every observation is labelled declared, observed, verified, modeled, unknown or unavailable. A device that answers is not a room that works; the plan keeps every pair untested until evidence arrives.',
     showsAs: ['declared', 'simulated', 'simulated', 'modeled'], shows: ['Collector facts as declared, with their limits', 'Plan versus executed, with nothing filled in', 'An optional physical-validation flow, simulated', 'Field Tools: 39 calculators for the site walk, each showing its formula and working'],
-    limits: 'No collector is connected in the public demonstration; physical validation is simulated.', demoState: 'native', film: 'IE', demo: { href: '#/v25/fi', label: 'Open Field Intelligence' },
+    limits: 'No collector is connected in the public demonstration; physical validation is simulated.', demoState: 'native', film: 'IE', demo: { href: '#/v25/fi/scan/R-ATL-4-218', label: 'Play a room scan' },
   },
   learn: {
     body: 'A case needs permission, de-identification, a subject-matter review and approval before it teaches anyone. Lessons, labs and the SIGNAL story link to competencies, and training never grants authority.',

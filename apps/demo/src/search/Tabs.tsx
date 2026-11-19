@@ -57,6 +57,9 @@ export function SupportTab({ opens }: { opens: (h: string) => boolean }) {
   return (
     <div className="stack" data-testid="sp-support">
       <div className="tiles"><StatTile label="Support paths" value={n} sub={`three for each of ${BUILDINGS.length} buildings`} icon="route" /><StatTile label="Backups named" value={0} sub="none is on record, so none is shown" tone="monitor" icon="alert" /><StatTile label="Escalation organisations" value={new Set(rows.flatMap((r) => r.orgs.map((o) => o.label))).size} sub="fictional partners" icon="building" /><StatTile label="Rooms covered" value={ROOMS.length} sub="every room inherits its building’s paths" icon="room" /></div>
+      {/* the coverage map (founder 19 Nov 09:09 F): the same campus map on the Coverage lens; a building opens who covers it */}
+      {(() => { const c = campusStats(); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
+        return <div data-testid="sp-coverage-map"><Stage label="Coverage map" testId="sp-coverage-stage"><CampusMap tiles={tiles} lens="coverage" onOpen={(b) => { location.hash = `#/people?site=${b.key}`; }} /></Stage></div>; })()}
       {rows.map((r) => <Section key={r.b.key} title={r.b.name} aside={`${plural(ROOMS.filter((x) => x.building === r.b.key).length, 'room')}`} id={`sp-sup-${r.b.key}`}>
         <List label={`${r.b.name} support paths`}>{r.paths.map((p) => <ListRow key={p.id} href={r.first && opens('#/search/scenarios') ? `#/search/scenarios/S2?room=${r.first.id}` : undefined} leading={<span className="row__ic"><Icon name="route" /></span>} title={p.label} sub={`${p.detail} · ${p.provenance}`} trailing={<Chip tone="warn">No backup on record</Chip>} />)}</List>
       </Section>)}

@@ -826,3 +826,19 @@ p { text-wrap: pretty; }
   .glass__tile { flex-direction: column; align-items: flex-start; gap: 8px; min-height: 0; }
   .glass__ico { width: 32px; height: 32px; }
 }
+
+/* the three other worlds on the home page (content.tsx WORLDS3): three frames in a row, a swipe rail on a phone like the chapters; each
+   card is one link (the frame, the world and its name) */
+.worlds3 { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.world3 { display: grid; align-content: start; gap: 4px; min-width: 0; color: inherit; text-decoration: none; }
+.world3 img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; margin-bottom: 8px; border-radius: 14px; border: 1px solid var(--w-line); background: #0b1220; transition: transform .3s ease, border-color .3s ease; }
+.world3:hover img { transform: translateY(-2px); border-color: var(--w-accent); }
+.world3 i { font-style: normal; font-size: 13px; font-weight: 700; color: var(--w-accent); }
+.world3 b { font-size: 1.15rem; } .world3:hover b { color: var(--w-accent); }
+.world3 span { color: var(--w-ink2, inherit); }
+.world3__more { margin: 18px 0 0; font-weight: 600; }
+@media (max-width: 720px) {
+  .worlds3 { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 84%; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; gap: 14px; padding-bottom: 12px; }
+  .worlds3 > li { scroll-snap-align: start; }
+}
+@media (prefers-reduced-motion: reduce) { .world3 img, .world3:hover img { transition: none; transform: none; } }

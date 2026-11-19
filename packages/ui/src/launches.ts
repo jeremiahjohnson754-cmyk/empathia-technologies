@@ -41,20 +41,27 @@ export const FOLLOW: readonly Launch[] = [
   { id: 'follow-replay', title: 'Atlas 4.218 in Core Replay, at the camera change', shows: 'The room’s life played back from its records, stopped where a like-for-like change reopens only the tests it touches.', route: `/replay/${FOLLOW_ROOM}?at=change`, perspective: 'syseng', perspectiveLabel: 'Systems Engineer' },
 ];
 
-/** The demonstration each product page opens (the product's own "Open …" button), keyed by product id. */
+/** The demonstration each product page opens (the product's own "Open …" button), keyed by product id: each product's best screen,
+ *  shown as the role that uses it (founder, 19 Nov 2026 09:09: "exact that screen with the role selected best looking screen"). */
 export const PRODUCT_LAUNCHES: Readonly<Record<string, Launch>> = {
   'mission-control': { id: 'product-mission-control', title: 'Mission Control', shows: 'The campus at a glance and the products that read it.', route: '/v25', perspective: 'architect', perspectiveLabel: 'Product Architect' },
-  lite: { id: 'product-lite', title: 'Lite, Build a Room', shows: 'Describe a room and see it designed, with its predictions labelled as models.', route: '/v25/build', perspective: 'designer', perspectiveLabel: 'Designer' },
+  lite: { id: 'product-lite', title: 'Lite, a furnished room in 3D', shows: 'Atlas 4.218 drawn in 3D with its seats, displays, cameras and microphones, and its modelled coverage labelled as a model.', route: `/lite/room/${FOLLOW_ROOM}`, perspective: 'designer', perspectiveLabel: 'Designer' },
   pro: { id: 'product-pro', title: 'Pro, the executive measures', shows: 'Estate measures that trace to the rooms and jobs they came from.', route: '/v25/exec', perspective: 'exec', perspectiveLabel: 'Executive' },
   'search-party': { id: 'product-search-party', title: 'Search Party', shows: 'One search across rooms, devices, people and their relationships.', route: '/search', perspective: 'service', perspectiveLabel: 'Service Engineer' },
   servicehands: { id: 'product-servicehands', title: 'ServiceHands', shows: 'Jobs tied to the room and the device, from report to resolution.', route: '/servicehands', perspective: 'service', perspectiveLabel: 'Service Engineer' },
-  commissioning: { id: 'product-commissioning', title: 'Commissioning, the plan for a room', shows: 'The checks a designed room will need, before anything is installed.', route: '/v25/build?tab=checks', perspective: 'designer', perspectiveLabel: 'Designer' },
+  commissioning: { id: 'product-commissioning', title: 'Commissioning, a room’s record', shows: 'Atlas 4.218’s five check phases and the approval it is blocked on, with every unresolved item named.', route: `/commissioning/room/${FOLLOW_ROOM}`, perspective: 'cxeng', perspectiveLabel: 'Commissioning Engineer' },
   apex: { id: 'product-apex', title: 'APEX, diagnosis and analytics', shows: 'Diagnosis and analytics on simulated evidence, each figure traced to its source.', route: '/v25/apex', perspective: 'ops', perspectiveLabel: 'AV Operations Lead' },
-  field: { id: 'product-field', title: 'Field Intelligence', shows: 'What a room scan observes, with provenance and its limits.', route: '/v25/fi', perspective: 'syseng', perspectiveLabel: 'Systems Engineer' },
+  field: { id: 'product-field', title: 'Field Intelligence, a room scan', shows: 'A scan of Atlas 4.218 you play step by step: what it observes, inside the policy limits, with provenance.', route: `/v25/fi/scan/${FOLLOW_ROOM}`, perspective: 'syseng', perspectiveLabel: 'Systems Engineer' },
   learn: { id: 'product-learn', title: 'SIGNAL: Ten Seats', shows: 'Season 1, episode 1 as an interactive film you play.', route: '/film/s01e01', perspective: 'architect', perspectiveLabel: 'Product Architect' },
 };
 
-export const LAUNCHES: readonly Launch[] = [...FOLLOW, ...Object.values(PRODUCT_LAUNCHES)];
+/**
+ * The investor start (founder, 19 Nov 2026 09:09: opened "normally or through the main open the demo button" it should open "with
+ * product architect role selected"): the welcome page as the Product Architect, who may open every surface.
+ */
+export const START_LAUNCH: Launch = { id: 'start', title: 'Welcome to Empathia', shows: 'The campus, Search Party and every product, one choice away.', route: '/investor', perspective: 'architect', perspectiveLabel: 'Product Architect' };
+
+export const LAUNCHES: readonly Launch[] = [START_LAUNCH, ...FOLLOW, ...Object.values(PRODUCT_LAUNCHES)];
 export const launchById = (id: string | null | undefined): Launch | null => LAUNCHES.find((l) => l.id === id) || null;
 
 /** A website path the demonstration may send the visitor back to: absolute path, optional #anchor, nothing that leaves the site. */

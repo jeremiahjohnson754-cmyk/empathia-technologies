@@ -470,3 +470,23 @@ g.pl-piece > .pl-floor, g.pl-piece .pl-floor { fill: rgba(140,130,115,.16); stro
 .lt-qr2__item .ui-btn { align-self: flex-start; margin-top: 4px; }
 .lt-pubnote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid var(--info); background: color-mix(in srgb, var(--info) 8%, transparent); border-radius: 6px; }
 .lt-ask { margin: 8px 0; }
+
+/* the visit, walked (LitePlaces.tsx VisitPage; founder 19 Nov 2026 09:09 B): the lobby or the campus beside the step, the visitor drawn
+   where they stand, the route so far; "Watch the visit" plays the ten steps hands-free */
+.lt-visitbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 var(--sp-3); }
+.lt-stepper li button { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; min-height: 32px; }
+.lt-stepper li button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-pill); }
+.lt-visit { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--sp-4); align-items: start; margin-top: var(--sp-3); }
+.lt-visit__stage { margin: 0; min-height: 320px; }
+.lt-walker__ring { fill: color-mix(in srgb, var(--accent) 22%, transparent); stroke: var(--accent); stroke-width: 2; }
+.lt-walker__body { stroke: var(--accent); stroke-width: 5; stroke-linecap: round; }
+.lt-walker__head { fill: var(--accent); stroke: var(--panel); stroke-width: 2; }
+@media (prefers-reduced-motion: no-preference) { .lt-walker:not(.lt-walker--flat) .lt-walker__ring { animation: lt-walker-pulse 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; } }
+@keyframes lt-walker-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.35); opacity: .55; } }
+.lt-arrive { display: block; width: 100%; height: auto; }
+.lt-arrive__b { fill: color-mix(in srgb, var(--panel) 70%, var(--line2)); stroke: var(--line2); } .lt-arrive__b.on { fill: color-mix(in srgb, var(--accent) 22%, var(--panel)); stroke: var(--accent); stroke-width: 2; }
+.lt-arrive__park { fill: color-mix(in srgb, var(--tx2) 14%, transparent); stroke: var(--line2); stroke-dasharray: 4 4; }
+.lt-arrive__t { font-size: 12px; font-weight: 600; fill: var(--tx); }
+.lt-arrive__door { fill: var(--accent); }
+@media (max-width: 900px) { .lt-visit { grid-template-columns: 1fr; } .lt-visit__stage { min-height: 0; } }
+.lt-visit__stage > svg, .lt-visit__stage .lt-arrive { display: block; width: 100%; max-height: 440px; }

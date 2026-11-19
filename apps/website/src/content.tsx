@@ -12,7 +12,7 @@ import { commercialPages } from './commercial.js';
 import { fieldlinkPage } from './fieldlink.js';
 import { Follow } from './follow.js';
 import { Opening, type HeroFrame } from './opening.js';
-import { PRODUCT_LAUNCHES, launchHref } from '../../../packages/ui/src/launches.ts';
+import { PRODUCT_LAUNCHES, START_LAUNCH, launchHref } from '../../../packages/ui/src/launches.ts';
 import { DEFAULT_STATE, stateHash, type AddonSku } from './build-view.js';
 /** each product page's way into Build Your Empathia (founder 19:39: lead generation off the interactive sales part), its own line ticked */
 const PRICE_ADD: Record<string, AddonSku[]> = { commissioning: ['COMMISSION', 'ASSURANCE'], servicehands: ['SERVICE'], field: ['FIELD-CORE'], apex: ['APEX'] };
@@ -70,6 +70,13 @@ const estatesFoot = <p>The demonstration’s rooms are modelled on these estates
 const CtaBand = ({ title, body, children }: { title: string; body: string; children: React.ReactNode }) => (
   <section className="band band--drawn"><div className="wrap"><div className="band__copy"><h2>{title}</h2><p>{body}</p>{children}</div><RoomDrawing /></div></section>
 );
+/** The three other worlds on the home page (founder, 19 Nov 2026 09:09 G: "a small screenshot section on the corporate home page"):
+ *  each the frame captured from the demonstration's own 3D world, opening that world; wording kept to the Experiences page. */
+const WORLDS3 = [
+  { file: 'exp-stadium', world: 'Stadium', name: 'Stadium LIVE', line: 'Run the bowl under the lights from the LIVE console.', route: '#/play/stadium' },
+  { file: 'exp-campus', world: 'University', name: 'Campus Life', line: 'Walk the Quad and fix a lecture theatre’s circuit bench.', route: '#/play/campus' },
+  { file: 'exp-expo', world: 'Convention', name: 'Expo LIVE', line: 'Fly to a booth, join a session, answer its poll.', route: '#/play/expo' },
+] as const;
 /** The home page's story, in lifecycle order, each chapter told with that product's own screen. Wording kept to what the
  *  demonstration shows (products.ts), so a chapter never claims more than its product page. */
 const STORY: ChapterItem[] = [
@@ -102,7 +109,7 @@ export function buildPages(ctx: SiteContext): Page[] {
             <p className="label">Empathia Technologies</p>
             <h1 className="display"><span>Technology.</span> <span>Space.</span> <span>Intelligence.</span> <span>Experience.</span> <span>Connected.</span></h1>
             <p className="lede">Empathia unifies engineering, AV and UC operations, physical spaces, service intelligence, people and learning in one record: every room, every device, every decision, with its evidence.</p>
-            <Actions><a className="btn btn--primary btn--lg" href={demo()}>Experience the platform</a>{heroFilm ? <a className="btn btn--lg" href="#film-M2">Watch the film</a> : <a className="btn btn--lg" href="/request-demo">Request a demonstration</a>}</Actions>
+            <Actions><a className="btn btn--primary btn--lg" href={launchHref(ctx.demoUrl, START_LAUNCH, '/')}>Experience the platform</a>{heroFilm ? <a className="btn btn--lg" href="#film-M2">Watch the film</a> : <a className="btn btn--lg" href="/request-demo">Request a demonstration</a>}</Actions>
           </div>
           <div className="hero__aside">{ctx.hero?.length ? <><Opening frames={ctx.hero} /><Counts counts={heroCounts} under /></> : heroFilm ? <>{heroFilm}<Counts counts={heroCounts} under /></> : heroArt}</div>
         </div>
@@ -117,7 +124,12 @@ export function buildPages(ctx: SiteContext): Page[] {
       <Section eyebrow="The products" title="Nine products. One record." lead="Each product is a stage of the same governed lifecycle and shares one identity for every room, device, person and project. Each says how much of it you can see in the public demonstration today." tone="deep">
         <ProductTiles captures={ctx.captures} />
       </Section>
-      <p className="exp-line"><a href="/experiences">Three worlds in 3D: play, operate, explore →</a></p>
+      <Section id="worlds" eyebrow="Three more worlds" title="The same Core, in venues you can walk" lead="In 3D, in the browser. Fictional venues, synthetic data, first versions.">
+        <p className="rail-hint" aria-hidden="true">Swipe through the three worlds →</p>
+        <ul className="worlds3">{WORLDS3.map((w) => { const cap = ctx.captures[w.file]; return (
+          <li key={w.file} data-exp={w.file}><a className="world3" href={demo(w.route)}>{cap ? <img src={`/media/product/${w.file}-640.webp`} width={640} height={Math.round(640 * cap.h / cap.w)} loading="lazy" alt="" /> : null}<i>{w.world}</i><b>{w.name}</b><span>{w.line}</span></a></li>); })}</ul>
+        <p className="world3__more"><a href="/experiences">What each world shows, and what it does not →</a></p>
+      </Section>
       <Strip id="flow" eyebrow="The workflow" title="From request to a proven room" items={FLOW} flow />
       <Section eyebrow="The demonstration campus" title={`${ROOM_TOTAL} rooms, each with its record`}><Campus /></Section>
       <Strip id="estates" eyebrow="Where it fits" title="Built for the rooms of every estate" items={ESTATES} foot={estatesFoot} />
