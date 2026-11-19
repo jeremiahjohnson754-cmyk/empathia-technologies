@@ -20,7 +20,7 @@ export default function Home({ role }: PageProps) {
   const { w } = useWorkspace(); const desk = useMemo(() => loadDesk(), []);
   const [text, setText] = useState(''); const [reading, setReading] = useState<Reading | null>(null); const [why, setWhy] = useState<string | null>(null);
   const cardsRef = useRef<HTMLDivElement>(null); const readRef = useRef<HTMLDivElement>(null);
-  const all = useMemo(() => loadRecords(), []); const drafts = all.filter((r) => stateOf(r) === 'DRAFT'); const sent = all.filter((r) => stateOf(r) === 'SUBMITTED');
+  const all = useMemo(() => loadRecords().filter((r) => r.role === role), [role]); const drafts = all.filter((r) => stateOf(r) === 'DRAFT'); const sent = all.filter((r) => stateOf(r) === 'SUBMITTED');
   const waiting = sent.filter((r) => { const s = standing(r, w, desk); return s.state === 'HELD' || s.owner === 'You'; });
   const lastSite = sent.find((r) => r.roomId)?.roomId; const site = lastSite ? roomById(lastSite) : null;
   const describe = (e: { preventDefault: () => void }) => { e.preventDefault(); const r = read(text); setReading(r); setWhy(r ? null : 'Say a few words about what you need, or choose one of the four below.'); requestAnimationFrame(() => readRef.current?.focus()); };

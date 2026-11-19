@@ -12,7 +12,7 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import { load as loadDesk } from '../decisions/store.js';
 import { incidentOf } from '../workspace/store.js';
 import { KINDS, kindOf, goalLabel, propose } from './model.js';
-import { loadRecords, recordById, discardDraft, standing, stateOf, draftOf, photoChecklist, type Request } from './store.js';
+import { loadRecords, recordById, discardDraft, standing, stateOf, draftOf, photoChecklist, mayView, type Request } from './store.js';
 import { IntakeNav, RequestItem, ProposedRoom, Summary, opensFor, day, plural } from './parts.js';
 import { parseHash } from '../registry.pages.js';
 import { ask, answer, route, close, verifyLocation, queue, TRIAGE_ROLES, VERIFY_ROLES } from './triage.js';
@@ -23,13 +23,13 @@ import Home from './Home.js';
 import Wizard from './Wizard.js';
 
 export function Mine({ role }: PageProps) {
-  const { w } = useWorkspace(); const desk = useMemo(() => loadDesk(), []); const [all, setAll] = useState(() => loadRecords()); const [asking, setAsking] = useState<string | null>(null);
+  const { w } = useWorkspace(); const desk = useMemo(() => loadDesk(), []); const [all, setAll] = useState(() => loadRecords().filter((r) => r.role === role)); const [asking, setAsking] = useState<string | null>(null);
   const drafts = all.filter((r) => stateOf(r) === 'DRAFT'); const sent = all.filter((r) => stateOf(r) !== 'DRAFT');
-  const discard = (id: string) => { const r = discardDraft(id); if (!('why' in r)) { setAll(loadRecords()); setAsking(null); } };
+  const discard = (id: string) => { const r = discardDraft(id); if (!('why' in r)) { setAll(loadRecords().filter((x) => x.role === role)); setAsking(null); } };
   return (
     <div className="ik" data-native="" data-testid="ik-mine">
       <IntakeNav role={role} here="mine" />
-      <PageHero compact eyebrow="Intake" icon="inbox" title="My requests" lede="What you have started and what you have sent from this browser, with where each stands and who acts next." meta={[<Tag key="s" tone="warn">Synthetic data</Tag>, <span key="r">Asking as the {ROLES[role].label}</span>]} />
+      <PageHero compact eyebrow="Intake" icon="inbox" title="My requests" lede={`What you have started and sent as the ${ROLES[role].label}, from this browser, with where each stands and who acts next.`} meta={[<Tag key="s" tone="warn">Synthetic data</Tag>, <span key="r">Asking as the {ROLES[role].label}</span>]} />
       <section className="ik-sec" aria-labelledby="ik-d-h" data-testid="ik-mine-drafts"><h2 id="ik-d-h">Drafts ({drafts.length})</h2>
         {drafts.length ? <ul className="rq-mine">{drafts.map((r) => <RequestItem key={r.id} r={r} w={w} desk={desk} role={role} onDiscard={(id) => setAsking(id)} />)}</ul> : <p className="ui-muted">No drafts.</p>}
         {asking && <div className="ik-confirm" role="alertdialog" aria-labelledby="ik-c-h" data-testid="ik-confirm"><p id="ik-c-h"><b>Discard {asking}?</b> Its answers and photographs are removed from this browser. It was never sent, so nobody else has it.</p>
@@ -53,6 +53,7 @@ export function Track({ role, params }: PageProps) {
   const { w } = useWorkspace(); const desk = useMemo(() => loadDesk(), []); const [tick, setTick] = useState(0); const r = useMemo(() => recordById(params['id'] || ''), [params, tick]); const opens = opensFor(role);
   const [say, setSay] = useState(''); const [no, setNo] = useState<string | null>(null);
   if (!r) return <div className="ik" data-native="" data-testid="ik-track" data-found="no"><IntakeNav role={role} here="track" /><EmptyState title={`No request ${params['id'] || ''} in this browser`} icon="inbox" action={<a className="ui-btn ui-btn--primary" href="#/requests">My requests</a>}>Requests are kept in the browser they were made in. This demonstration has no shared server for them.</EmptyState></div>;
+  if (!mayView(role, r)) return <div className="ik" data-native="" data-testid="ik-track" data-found="restricted"><IntakeNav role={role} here="track" /><EmptyState title={`${r.id} is not yours to open`} icon="lock" action={<a className="ui-btn ui-btn--primary" href="#/requests">My requests</a>}>A request is opened by the person who asked, the people who work on it, and the champion of its site. Ask the person who sent it to share what you need.</EmptyState></div>;
   const s = standing(r, w, desk); const draft = stateOf(r) === 'DRAFT'; const room = r.roomId ? roomById(r.roomId) : null; const d = draftOf(r); const p = r.draft ? propose(d) : null;
   const pol = r.policy; const atts = r.attachments || []; const missing = photoChecklist(d).filter(([i]) => !atts.some((a) => a.item === i));
   const needed = draft ? 'Finish it and send it.' : r.provisional && r.provisional.location !== 'VERIFIED' ? 'Nothing from you. Someone on site confirms where the new space is; photographs help them.' : s.state === 'HELD' && s.reason ? `What the approver asked for: ${s.reason}` : 'Nothing from you right now.';
@@ -140,7 +141,7 @@ export function Queue({ role }: PageProps) {
 }
 
 export function Spaces({ role }: PageProps) {
-  const all = useMemo(() => loadRecords(), []); const rooms = [...new Set(all.map((r) => r.roomId).filter((x): x is string => !!x && !!roomById(x)))]; const prov = all.filter((r) => r.provisional);
+  const all = useMemo(() => loadRecords().filter((r) => r.role === role), [role]); const rooms = [...new Set(all.map((r) => r.roomId).filter((x): x is string => !!x && !!roomById(x)))]; const prov = all.filter((r) => r.provisional);
   return (
     <div className="ik" data-native="" data-testid="ik-spaces">
       <IntakeNav role={role} here="spaces" />

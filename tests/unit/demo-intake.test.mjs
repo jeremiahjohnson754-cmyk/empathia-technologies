@@ -231,3 +231,11 @@ test('IN-20 a provisional space’s location is confirmed by a champion or an en
   assert.doesNotMatch(T.standing(v, w, desk).next, /someone on site confirms/); assert.equal(TR.queue().verify.length, 1, 'the champion’s own request still waits for someone else');
 });
 
+test('IN-21 who may open a request’s page: the person who asked, the people who work on it, the champion of its site; nobody else', () => {
+  const at = { id: 'REQ-0001', role: 'employee', roomId: 'R-ATL-4-218', provisional: null }; const away = { ...at, roomId: K.CAMPUS_ROOMS.find((r) => r.building !== 'ATL').id }; const own = { ...at, roomId: null };
+  assert.ok(T.mayView('employee', at)); for (const r of ['ops', 'syseng', 'svcmgr', 'architect', 'designer', 'exec', 'bpm']) assert.ok(T.mayView(r, at), r);
+  assert.ok(T.mayView('sitechamp', at), 'at the champion’s site'); assert.ok(!T.mayView('sitechamp', away), 'not at the champion’s site'); assert.ok(!T.mayView('sitechamp', own), 'not about a room');
+  for (const r of ['visitor', 'installer', 'service', 'qa']) assert.ok(!T.mayView(r, at), r);
+  assert.ok(T.mayView('sitechamp', { ...own, provisional: { building: 'ATL' } }), 'a new space at the champion’s site');
+});
+

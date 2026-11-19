@@ -47,6 +47,14 @@ const KEY = 'empathia.demo.requests.v1';
 export const PORTAL_ROLES: readonly RoleKey[] = ['employee', 'sitechamp', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'];
 export const mayRequest = (role: RoleKey) => PORTAL_ROLES.includes(role);
 export const stateOf = (r: Request): RecordState => r.state || 'SUBMITTED';
+/** Who may open a request's own page (directive §06: a requester tracks their own; the professionals the requests they work on; a Site
+ *  Champion the requests at their site). In the demonstration a role stands for a person. */
+export const STAFF_VIEW: readonly RoleKey[] = ['ops', 'syseng', 'svcmgr', 'architect', 'designer', 'exec', 'bpm'];
+export function mayView(role: RoleKey, r: Request, championSites: readonly string[] = ['ATL']): boolean {
+  if (r.role === role || STAFF_VIEW.includes(role)) return true;
+  if (role === 'sitechamp') { const b = r.roomId ? roomById(r.roomId)?.building : r.provisional?.building; return !!b && championSites.includes(b); }
+  return false;
+}
 /** At most this many photographs and files on one request: the previews are kept in this browser. */
 export const MAX_ATTACHMENTS = 8;
 
