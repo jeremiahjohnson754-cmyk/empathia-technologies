@@ -61,6 +61,15 @@ for (const [id, c] of Object.entries(prov.captures || {})) {
   for (const [f, sha] of files) { const buf = fs.readFileSync(path.join(capDir, f)); if (crypto.createHash('sha256').update(buf).digest('hex') !== sha) { console.error(`capture ${f} does not match its PROVENANCE.json hash`); process.exit(1); } copy(path.join(capDir, f), path.join(dist, 'media/product', f)); }
   captures[id] = { w: c.width, h: c.height, route: c.route };
 }
+// the home page's opening sequence (founder 18 Nov 2026 17:25 §4): element captures of the running demonstration, listed with their hashes
+// in media/hero/PROVENANCE.json (apps/website/scripts/hero-frames.mjs); only those enter the site, in the order that file lists them
+const heroDir = path.join(mediaSrc, 'hero'); const heroProv = fs.existsSync(path.join(heroDir, 'PROVENANCE.json')) ? JSON.parse(fs.readFileSync(path.join(heroDir, 'PROVENANCE.json'), 'utf8')) : { frames: {} };
+const hero = [];
+for (const [id, f] of Object.entries(heroProv.frames || {})) {
+  const files = Object.entries(f.files || {}); if (!files.length || !files.every(([x]) => fs.existsSync(path.join(heroDir, x)))) continue;
+  for (const [x, sha] of files) { const buf = fs.readFileSync(path.join(heroDir, x)); if (crypto.createHash('sha256').update(buf).digest('hex') !== sha) { console.error(`hero frame ${x} does not match its PROVENANCE.json hash`); process.exit(1); } copy(path.join(heroDir, x), path.join(dist, 'media/hero', x)); }
+  hero.push({ id, shows: f.shows, route: f.route });
+}
 // films not yet cleared are listed on /films by title and summary only (no frame, no file): the page always exists and says why they do not play
 // (a film marked `exclusive` belongs to its own section and is never listed on /films, cleared or not)
 const pendingFilms = catalogue.filter((f) => !films.includes(f) && !f.exclusive).map(({ key, title, runtime, summary, disclosure }) => ({ key, title, runtime, summary, disclosure }));
@@ -74,7 +83,7 @@ const asOf = new Date().toISOString();
 const bookletsDir = path.join(mediaSrc, 'booklets'); const BLURB = { 'end-user-guide': 'How to use one room: what is in it, how to start, share and finish, and what to do when something does not work; with the room in Lite and its plan.', 'it-onboarding-success-guide': 'Ninety days by phase, with the knowledge checks and answers, and what good looks like at 30, 60 and 90 days.' };
 const booklets = fs.existsSync(path.join(bookletsDir, 'BOOKLETS.json')) ? JSON.parse(fs.readFileSync(path.join(bookletsDir, 'BOOKLETS.json'), 'utf8')).booklets.filter((b) => fs.existsSync(path.join(bookletsDir, b.file)) && fs.existsSync(path.join(bookletsDir, b.cover))).map((b) => ({ ...b, blurb: Object.entries(BLURB).find(([k]) => b.file.startsWith(k))?.[1] || '' })) : [];
 for (const b of booklets) for (const f of [b.file, b.cover]) copy(path.join(bookletsDir, f), path.join(dist, 'media/booklets', f));
-const rendered = renderAll({ asOf, films, pendingFilms, transcripts, cues, demoUrl, preview: filmsMode === 'preview', captures, broll, booklets }, { api: api || null, base });
+const rendered = renderAll({ asOf, films, pendingFilms, transcripts, cues, demoUrl, preview: filmsMode === 'preview', captures, broll, booklets, hero }, { api: api || null, base });
 // an `exclusive` film plays on the pages in its `placement` and nowhere else (founder, 2026-11-10: the Collabora-SING film is "just for"
 // its section). The build fails rather than ship it on another page, or ship its own page without it when the film is built in.
 for (const f of catalogue.filter((x) => x.exclusive)) {
@@ -93,7 +102,7 @@ for (const f of fs.readdirSync(path.join(mediaSrc, 'keepsake'))) copy(path.join(
 // FieldLink concept renders (founder 18 Nov 2026 17:25), resized from the packet's clean render; PROVENANCE.json says what they are
 for (const f of fs.readdirSync(path.join(mediaSrc, 'fieldlink')).filter((x) => /\.(webp|jpg)$/.test(x))) copy(path.join(mediaSrc, 'fieldlink', f), path.join(dist, 'media/fieldlink', f));
 for (const f of films) for (const x of filesOf(f)) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
-const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`, `/* apps/website/src/styles/founder.css */\n${fs.readFileSync(path.join(app, 'src/styles/founder.css'), 'utf8')}`, `/* apps/website/src/styles/fieldlink.css */\n${fs.readFileSync(path.join(app, 'src/styles/fieldlink.css'), 'utf8')}`, `/* apps/website/src/styles/follow.css */\n${fs.readFileSync(path.join(app, 'src/styles/follow.css'), 'utf8')}`].join('\n');
+const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`, `/* apps/website/src/styles/founder.css */\n${fs.readFileSync(path.join(app, 'src/styles/founder.css'), 'utf8')}`, `/* apps/website/src/styles/fieldlink.css */\n${fs.readFileSync(path.join(app, 'src/styles/fieldlink.css'), 'utf8')}`, `/* apps/website/src/styles/follow.css */\n${fs.readFileSync(path.join(app, 'src/styles/follow.css'), 'utf8')}`, `/* apps/website/src/styles/home.css */\n${fs.readFileSync(path.join(app, 'src/styles/home.css'), 'utf8')}`].join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);
 // the Proof Registry's public projection, as data (v1.8 A): the same file the demonstration ships, so the two can be compared
 { const { SEED_CLAIMS, publicProjection } = await import('@empathia/proof-registry');
@@ -110,6 +119,7 @@ fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest
 const home = manifest.files['index.html'].bytes, js = manifest.files['site.js'].bytes;
 const themeJs = manifest.files['theme-init.js'].bytes; const fonts = ['inter-400.woff2', 'inter-600.woff2', 'inter-display-800.woff2'].reduce((a, f) => a + manifest.files[`fonts/${f}`].bytes, 0);   // the three preloaded faces (D38)
 const capBytes = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/product/')).reduce((a, [, v]) => a + v.bytes, 0);
+{ const hb = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/hero/')).reduce((a, [, v]) => a + v.bytes, 0); if (hb > 400 * 1024) { console.error(`BUDGET EXCEEDED: home opening frames ${hb} B (limit 409600)`); process.exit(1); } }   // six frames, two sizes
 if (home > 48 * 1024 || js > 8 * 1024 || themeJs > 512 || fonts > 88 * 1024 || capBytes > 1400 * 1024) { console.error(`BUDGET EXCEEDED: index.html ${home} B (limit 49152), site.js ${js} B (limit 8192), theme-init.js ${themeJs} B (limit 512), fonts ${fonts} B (limit 90112, D38), captures ${capBytes} B (limit 1433600)`); process.exit(1); }
 { const fj = manifest.files['founder.js'].bytes; if (fj > 4 * 1024) { console.error(`BUDGET EXCEEDED: founder.js ${fj} B (limit 4096)`); process.exit(1); } }   // the founder page's introduction
 { const pj = manifest.files['pilot.js'].bytes; if (pj > 16 * 1024) { console.error(`BUDGET EXCEEDED: pilot.js ${pj} B (limit 16384)`); process.exit(1); } }   // v18/pilot

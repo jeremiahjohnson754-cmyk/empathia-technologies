@@ -89,7 +89,8 @@ export interface Cue { from: string; to: string; text: string }
  *  same text, readable without playing anything. No autoplay with sound; nothing downloads until the viewer presses play.
  *  A silent film (`cues` given) has nothing to caption: its captions track holds one cue that says so, its descriptions track and the
  *  text under the player say what is shown, with the on-screen words quoted. No spoken word is ever invented for it. */
-export const FilmPlayer = ({ film, transcript, cues, lead }: { film: Film; transcript: string[]; cues?: Cue[]; lead?: boolean }) => {
+/** `transcriptAt`: where the film's transcript is on the site, given when this page links to it instead of carrying it (the home page) */
+export const FilmPlayer = ({ film, transcript, cues, lead, transcriptAt }: { film: Film; transcript: string[]; cues?: Cue[]; lead?: boolean; transcriptAt?: string }) => {
   const described = film.textTrack === 'descriptions' && !!cues?.length;
   return (
     <figure className={`film${lead ? ' film--lead' : ''}${described ? ' film--described' : ''}${film.burnedLabel ? ' film--band' : ''}${film.orientation === 'portrait' ? ' film--portrait' : ''}`} id={`film-${film.key}`} data-film={film.key}>
@@ -101,13 +102,13 @@ export const FilmPlayer = ({ film, transcript, cues, lead }: { film: Film; trans
           {described ? <track kind="descriptions" src={`/media/${film.key}/descriptions.vtt`} srcLang="en" label="Text description (English)" /> : null}
         </video>
       </div>
-      <figcaption id={`film-${film.key}-cap`} className="film__cap"><b>{film.title}</b><span>{described ? `${film.runtime} · no sound · text description below` : `${film.runtime} · captions${film.burnedCaptions ? ' in the picture' : ''} · transcript below`}</span><span className="film__disc">{film.disclosure}</span></figcaption>
+      <figcaption id={`film-${film.key}-cap`} className="film__cap"><b>{film.title}</b><span>{described ? `${film.runtime} · no sound · text description below` : <>{film.runtime} · captions{film.burnedCaptions ? ' in the picture' : ''} · {transcriptAt ? <a href={transcriptAt}>transcript</a> : 'transcript below'}</>}</span><span className="film__disc">{film.disclosure}</span></figcaption>
       {described ? <>
         <p className="film__how" data-film-how>This film has no sound and no narration: everything it says is written on screen. The description below is of what is shown, scene by scene, with the on-screen words in quotation marks and this page’s own notes in square brackets. Nothing in it was spoken.</p>
         <details className="film__transcript film__transcript--described" data-film-description><summary>What the film shows: a text description</summary>
           <ol className="film__cues">{cues!.map((c) => <li key={c.from}><span className="film__time"><span className="sr">From </span>{c.from}<span aria-hidden="true"> – </span><span className="sr"> to </span>{c.to}</span><p>{c.text}</p></li>)}</ol>
         </details>
-      </> : <details className="film__transcript"><summary>Transcript</summary><div>{transcript.map((t, i) => <p key={i}>{t}</p>)}</div></details>}
+      </> : transcriptAt ? null : <details className="film__transcript"><summary>Transcript</summary><div>{transcript.map((t, i) => <p key={i}>{t}</p>)}</div></details>}
     </figure>
   );
 };

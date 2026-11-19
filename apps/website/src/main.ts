@@ -89,3 +89,23 @@ if (fol) {
   const fromHash = () => { const k = panes.findIndex((p) => '#' + p.id === location.hash); if (k >= 0) { pick(k); fol.scrollIntoView({ block: 'start' }); } };
   pick(0); fromHash(); window.addEventListener('hashchange', fromHash);
 }
+
+// The home page's opening sequence (founder 17:25 §4): it plays once; Pause stops it; the level names become buttons that show one frame
+// each, which is also how it is used with reduced motion (nothing moves, the room is shown first).
+const seq = document.querySelector<HTMLElement>('figure.seq');
+if (seq) {
+  const frames = Array.from(seq.querySelectorAll<HTMLElement>('.seq__f')); const steps = Array.from(seq.querySelectorAll<HTMLLIElement>('.seq__steps li'));
+  const pause = document.createElement('button'); pause.type = 'button'; pause.className = 'seq__pause'; pause.textContent = 'Pause'; pause.hidden = true;
+  seq.append(pause);   // on the figure, over the box's corner, so the frames stay the box's only children
+  const last = frames.length - 1;
+  const mark = (k: number) => steps.forEach((s, i) => { s.classList.toggle('is-on', i === k); s.querySelector('button')?.setAttribute('aria-pressed', String(i === k)); });
+  const show = (k: number) => { seq.classList.add('seq--manual'); frames.forEach((f, i) => f.classList.toggle('is-on', i === k)); mark(k); pause.hidden = true; };
+  steps.forEach((li, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = li.textContent; li.textContent = ''; li.append(b); b.addEventListener('click', () => show(i)); });
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) show(0);
+  else {
+    mark(0); pause.hidden = false;
+    pause.addEventListener('click', () => { const p = seq.classList.toggle('seq--paused'); pause.textContent = p ? 'Play' : 'Pause'; });
+    frames.forEach((f, i) => f.addEventListener('animationstart', () => { if (!seq.classList.contains('seq--manual')) mark(i); }));
+    frames[last]!.addEventListener('animationend', () => { if (!seq.classList.contains('seq--manual')) show(last); });
+  }
+}

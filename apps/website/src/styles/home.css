@@ -1,0 +1,40 @@
+/* The home page's opening sequence (founder 18 Nov 2026 17:25 §4) and the four ways in under it. The frames are the demonstration's own
+   renders on its dark stage, so the box is dark in both themes; everything around it follows the page theme. One orchestrated moment:
+   each frame pulls back from the one before (scale 1.08 → 1), about 3.2 s apart, once. Reduced motion: no movement, the room is shown. */
+.seq { margin: 0; position: relative; }
+.seq__box { position: relative; aspect-ratio: 16 / 10; max-width: 100%; border-radius: 18px; overflow: hidden; background: #0b0f15; box-shadow: 0 24px 60px rgb(0 0 0 / .35); isolation: isolate; }
+.seq__f { position: absolute; inset: 0; opacity: 0; }
+.seq__f:first-child { opacity: 1; }
+.seq__f img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.seq__l { position: absolute; left: 14px; bottom: 14px; right: 80px; padding: 8px 12px; border-radius: 10px; background: rgb(8 12 18 / .78); color: #e9eef5; font-size: 14px; line-height: 1.35; backdrop-filter: blur(6px); }
+.seq__pause { position: absolute; top: 12px; right: 12px; z-index: 2; min-height: 44px; min-width: 72px; padding: 0 14px; border-radius: 999px; border: 1px solid rgb(255 255 255 / .28); background: rgb(8 12 18 / .7); color: #e9eef5; font: inherit; font-size: 15px; cursor: pointer; }
+.seq__pause:focus-visible { outline: 2px solid #8fe3d8; outline-offset: 2px; }
+.seq__steps { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: 14px; color: var(--w-tx2); }
+.seq__steps li { display: inline-flex; align-items: center; min-height: 32px; padding: 0 10px; border: 1px solid var(--w-line); border-radius: 999px; }
+.seq__steps button { all: unset; cursor: pointer; display: inline-flex; align-items: center; min-height: 44px; margin: -6px -10px; padding: 0 10px; border-radius: 999px; }
+.seq__steps button:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 2px; }
+.seq__steps li.is-on { color: var(--w-tx); border-color: var(--w-accent); }
+.seq__cap { margin-top: 8px; font-size: 14px; color: var(--w-tx2); }
+.seq--manual .seq__f { animation: none !important; opacity: 0; transition: opacity .35s var(--w-ease, ease); }
+.seq--manual .seq__f.is-on { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .seq:not(.seq--manual) .seq__f:not(:first-child) { animation: seq-in 1.3s var(--w-ease, ease) both; }
+  .seq:not(.seq--manual) .seq__f:first-child img { animation: seq-pull 3.4s var(--w-ease, ease) both; }
+  .seq__f:nth-child(2) { animation-delay: 3.2s !important; } .seq__f:nth-child(3) { animation-delay: 6.4s !important; } .seq__f:nth-child(4) { animation-delay: 9.6s !important; }
+  .seq__f:nth-child(5) { animation-delay: 12.8s !important; } .seq__f:nth-child(6) { animation-delay: 16s !important; }
+  /* each frame's line shows only while its frame is the one on top, so two lines never overlap in a cross-fade */
+  .seq:not(.seq--manual) .seq__l { animation: seq-lab 3.2s linear both; }
+  .seq:not(.seq--manual) .seq__f:last-child .seq__l { animation-name: seq-lab-end; }
+  .seq__f:nth-child(2) .seq__l { animation-delay: 3.2s !important; } .seq__f:nth-child(3) .seq__l { animation-delay: 6.4s !important; } .seq__f:nth-child(4) .seq__l { animation-delay: 9.6s !important; }
+  .seq__f:nth-child(5) .seq__l { animation-delay: 12.8s !important; } .seq__f:nth-child(6) .seq__l { animation-delay: 16s !important; }
+  .seq--paused .seq__f, .seq--paused .seq__f img, .seq--paused .seq__l { animation-play-state: paused !important; }
+}
+@keyframes seq-lab { 0%, 22% { opacity: 0; } 34%, 92% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes seq-lab-end { 0%, 22% { opacity: 0; } 34%, 100% { opacity: 1; } }
+@keyframes seq-in { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: none; } }
+@keyframes seq-pull { from { transform: scale(1.06); } to { transform: none; } }
+.doors { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; margin-bottom: 8px; }
+.doors a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid var(--w-line2); border-radius: 999px; color: var(--w-tx); font-weight: 600; text-decoration: none; }
+.doors a:hover { border-color: var(--w-accent); color: var(--w-accent); }
+.section--film .film { max-width: 920px; margin: 0 auto; }
+@media (max-width: 600px) { .seq__l { left: 10px; right: 10px; bottom: 10px; font-size: 13px; } .seq__pause { top: 8px; right: 8px; } }

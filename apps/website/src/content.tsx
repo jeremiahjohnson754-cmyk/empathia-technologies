@@ -11,11 +11,12 @@ import { TALLY_FORM } from './enquiry.js';
 import { commercialPages } from './commercial.js';
 import { fieldlinkPage } from './fieldlink.js';
 import { Follow } from './follow.js';
+import { Opening, type HeroFrame } from './opening.js';
 import { PRODUCT_LAUNCHES, launchHref } from '../../../packages/ui/src/launches.ts';
 import { FounderReveal, SearchPartyStory, SearchPartyOrigin, BeforeTheExplanation } from './founderStory.js';   // the founder page's plate and the Search Party founding story   // v18/pilot: /pricing and /pilots
 
 export interface Page { path: string; title: string; description: string; nav?: string; body: React.ReactNode; /** a page's own script in dist (e.g. 'pilot.js'), loaded after site.js on that page only */ script?: string; /** a small script of the page's own loaded in <head>, before first paint (the founder page's introduction must start from its opening frame) */ headScript?: string; }
-export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; /** a silent film's description, cue by cue (build.mjs reads its descriptions.vtt) */ cues?: Record<string, Cue[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean; /** short silent scenes cleared for the website (broll.json) */ broll?: { key: string; title: string }[];
+export interface SiteContext { asOf?: string; films: Film[]; pendingFilms?: Pick<Film, 'key' | 'title' | 'runtime' | 'summary' | 'disclosure'>[]; transcripts: Record<string, string[]>; /** a silent film's description, cue by cue (build.mjs reads its descriptions.vtt) */ cues?: Record<string, Cue[]>; demoUrl: string; preview: boolean; captures: Record<string, Capture>; api?: boolean; /** short silent scenes cleared for the website (broll.json) */ broll?: { key: string; title: string }[]; /** the home page's opening frames (media/hero/PROVENANCE.json) */ hero?: HeroFrame[];
   /** the guides as printed booklets (media/booklets/BOOKLETS.json, made by scripts/media/make-booklets.mjs) */ booklets?: Booklet[] }
 export interface Booklet { file: string; title: string; bytes: number; pages: number; cover: string; sha256: string; blurb: string }
 
@@ -75,7 +76,7 @@ const STORY: ChapterItem[] = [
 ];
 
 export function buildPages(ctx: SiteContext): Page[] {
-  const film = (key: string, lead?: boolean) => { const f = ctx.films.find((x) => x.key === key); return f ? <FilmPlayer film={f} transcript={ctx.transcripts[key] || []} cues={ctx.cues?.[key]} lead={lead} /> : null; };
+  const film = (key: string, lead?: boolean, transcriptAt?: string) => { const f = ctx.films.find((x) => x.key === key); return f ? <FilmPlayer film={f} transcript={ctx.transcripts[key] || []} cues={ctx.cues?.[key]} lead={lead} transcriptAt={transcriptAt} /> : null; };
   const demo = (href = '#/investor') => ctx.demoUrl + '/' + href;
   // #232: a product's own demonstration, as a typed launch (its perspective, and the way back to the page that opened it)
   const go = (id: string, back: string) => { const l = PRODUCT_LAUNCHES[id]; return l ? launchHref(ctx.demoUrl, l, back) : demo(); };
@@ -94,16 +95,18 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Spectrum />
         <div className="hero__grid">
           <div className="hero__copy">
-            <p className="label">Empathia Living Campus</p>
-            <h1 className="display"><span>Every room.</span> <span>Every device.</span> <span>Every decision.</span> <span>With its evidence.</span></h1>
-            <p className="lede">The request, the design, the commissioning tests, the service work and the accepted baseline of every room, connected in one record of what actually happened, and honest about what is only declared or modeled.</p>
-            <Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href={demo()}>Explore the live demo</a></Actions>
+            <p className="label">Empathia Technologies</p>
+            <h1 className="display"><span>Technology.</span> <span>Space.</span> <span>Intelligence.</span> <span>Experience.</span> <span>Connected.</span></h1>
+            <p className="lede">Empathia unifies engineering, AV and UC operations, physical spaces, service intelligence, people and learning in one record: every room, every device, every decision, with its evidence.</p>
+            <Actions><a className="btn btn--primary btn--lg" href={demo()}>Experience the platform</a>{heroFilm ? <a className="btn btn--lg" href="#film-M2">Watch the film</a> : <a className="btn btn--lg" href="/request-demo">Request a demonstration</a>}</Actions>
           </div>
-          <div className="hero__aside">{heroFilm ? <>{heroFilm}<Counts counts={heroCounts} under /></> : heroArt}</div>
+          <div className="hero__aside">{ctx.hero?.length ? <><Opening frames={ctx.hero} /><Counts counts={heroCounts} under /></> : heroFilm ? <>{heroFilm}<Counts counts={heroCounts} under /></> : heroArt}</div>
         </div>
         <EvidenceLine />
         <GlassRail />
       </div></section>
+      <nav className="doors wrap" aria-label="More ways in"><a href="/platform">Explore Empathia</a><a href="/fieldlink">Discover FieldLink</a></nav>
+      {ctx.hero?.length && heroFilm ? <section className="section section--film"><div className="wrap">{film('M2', true, '/films#film-M2')}</div></section> : null}
       <Section eyebrow="The lifecycle, in the product" title="From an empty room to an accepted baseline" lead="Four moments of one record, each shown on the product’s own screen in the public demonstration. Every screen runs on synthetic data.">
         <Chapters items={STORY} captures={ctx.captures} />
       </Section>
