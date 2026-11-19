@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/putV1PlatformsPlatform/0.1.0.json",
+  "title": "PUT /v1/platforms/{platform} request body",
+  "description": "Set where the organization’s jump to one platform goes (https only), or turn it off (the security administrator or the operations lead; audited)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "url"
+  ],
+  "properties": {
+    "url": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 400,
+      "pattern": "^https://"
+    },
+    "label": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 80
+    },
+    "enabled": {
+      "type": "boolean"
+    }
+  }
+}

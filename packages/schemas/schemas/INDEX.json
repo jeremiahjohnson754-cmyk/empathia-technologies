@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 107,
+    "api": 110,
     "entities": 4
   },
   "files": [
@@ -707,6 +707,21 @@
       "file": "api/postV1DirectorySupportPathsCodeDecide.json",
       "$id": "https://schemas.empathia.invalid/api/postV1DirectorySupportPathsCodeDecide/0.1.0.json",
       "sha256": "e9b09d9d9162883cebdca4470d1d451987f114a408a262334172a7bb10a3ef90"
+    },
+    {
+      "file": "api/putV1PlatformsPlatform.json",
+      "$id": "https://schemas.empathia.invalid/api/putV1PlatformsPlatform/0.1.0.json",
+      "sha256": "d07552e9f3278d7a09e2bc62f530085d87296333383651684ae3b1e9d2835670"
+    },
+    {
+      "file": "api/postV1RoomsRefPlatforms.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRefPlatforms/0.1.0.json",
+      "sha256": "bb3e59dd0b07f2fd8463bcc52f375bacf9997fe23032e90358350377f0af9948"
+    },
+    {
+      "file": "api/postV1AssetsRefPlatforms.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AssetsRefPlatforms/0.1.0.json",
+      "sha256": "31cce319688133bd50d2f7693e40a63e0047576c8c6322ab595152f3e21f54b1"
     },
     {
       "file": "api/patchV1SitesSite.json",
