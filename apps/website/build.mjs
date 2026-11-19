@@ -23,8 +23,16 @@ await esbuild.build({ entryPoints: [path.join(app, 'src/reveal.ts')], bundle: tr
 // FieldLink's concept enclosures you can turn (17:25 §10, Version D): its own script, on /fieldlink only
 await esbuild.build({ entryPoints: [path.join(app, 'src/viewer.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'fieldlink.js'), legalComments: 'linked', logLevel: 'warning' });
 await esbuild.build({ entryPoints: [path.join(app, 'src/pilot.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'pilot.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
-// Build Your Empathia (founder 18 Nov 2026 19:39, 20:51): the pricing builder's script, loaded on /pricing only; it bundles the one estimate() engine
-await esbuild.build({ entryPoints: [path.join(app, 'src/build.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'build.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
+// Build Your Empathia (founder 18 Nov 2026 19:39, 20:51): the pricing builder's script, loaded on /pricing only; it bundles the one estimate() engine.
+// The browser never shows a product's scope text, a pilot's scope or caveat, or a bundle's summary (the pre-rendered pages print them), so
+// the script's copy of the generated catalogue carries them empty: the same SKUs, prices, units, families and bundle rules, ~3.8 KB lighter.
+// The count is checked, so a change in the generator's format stops the build instead of shipping a half-stripped list.
+const displayOnly = { name: 'catalogue-display-text', setup(b) { b.onLoad({ filter: /packages[\\/]commercial[\\/]src[\\/]generated[\\/]catalog\.ts$/ }, (a) => {
+  let n = 0; const src = fs.readFileSync(a.path, 'utf8').replace(/"(scope|caveat|summary)":"(?:[^"\\]|\\.)*"/g, (_, k) => { n += 1; return `"${k}":""`; });
+  const keys = (src.match(/"(scope|caveat|summary)":/g) || []).length;
+  if (n < 40 || n !== keys) throw new Error(`catalogue-display-text: stripped ${n} of ${keys} display fields`);
+  return { contents: src, loader: 'ts' }; }); } };
+await esbuild.build({ entryPoints: [path.join(app, 'src/build.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'build.js'), plugins: [displayOnly], define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
 
 // source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/
 { const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
@@ -130,5 +138,9 @@ if (home > 48 * 1024 || js > 8 * 1024 || themeJs > 512 || fonts > 88 * 1024 || c
 { const fj = manifest.files['founder.js'].bytes; if (fj > 4 * 1024) { console.error(`BUDGET EXCEEDED: founder.js ${fj} B (limit 4096)`); process.exit(1); } }   // the founder page's introduction
 { const fj = manifest.files['fieldlink.js'].bytes; if (fj > 4 * 1024) { console.error(`BUDGET EXCEEDED: fieldlink.js ${fj} B (limit 4096)`); process.exit(1); } }   // FieldLink's concept viewer
 { const pj = manifest.files['pilot.js'].bytes; if (pj > 16 * 1024) { console.error(`BUDGET EXCEEDED: pilot.js ${pj} B (limit 16384)`); process.exit(1); } }   // v18/pilot
-{ const bj = manifest.files['build.js'].bytes; if (bj > 32 * 1024) { console.error(`BUDGET EXCEEDED: build.js ${bj} B (limit 32768)`); process.exit(1); } }   // Build Your Empathia: it carries the one estimate() engine and the v1.5 list it prices add-ons from (about 9 KB compressed)
+// Build Your Empathia: it carries the one estimate() engine and the v1.5 list it prices add-ons from. Raised from 32 KB to 38 KB on 19 Nov 2026
+// for price book 3 (founder 04:45), which adds room groups with their devices, the volume and bundle discount lines, Search Party's count and
+// the bundle choice to the same engine: 39.9 KB as first built, 36.1 KB (12.3 KB compressed) once the catalogue's display-only text was left
+// out above. The engine is not split or duplicated to fit; the limit keeps the same ~5 % headroom over what it carries.
+{ const bj = manifest.files['build.js'].bytes; if (bj > 38 * 1024) { console.error(`BUDGET EXCEEDED: build.js ${bj} B (limit 38912)`); process.exit(1); } }
 console.log(`website built: ${PATHS.length} pages, films ${filmsMode}: ${films.map((f) => f.key).join(', ') || 'none'} (excluded: ${excluded.map((e) => `${e.key} ${e.status}`).join(', ') || 'none'}), index.html ${(home / 1024).toFixed(1)} KiB, site.js ${(js / 1024).toFixed(1)} KiB, site.css ${(manifest.files['site.css'].bytes / 1024).toFixed(1)} KiB`);
