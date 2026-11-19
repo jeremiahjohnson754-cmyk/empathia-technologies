@@ -9,7 +9,7 @@ import { Tag, Notice } from '@empathia/ui';
 import { stationOf } from './mission.js';
 import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, SITE, buildingByKey, roomsIn, roomById, shortName, roomHref, fullName, ARCHETYPE_NAME, REFERENCE_ROOM_ID, type Building } from './canon.js';
 import { allRecords, roomRecord, type RoomRecord } from './design.js';
-import { campusStats, roomHealth, roomIssues, BAND_LABEL, type BuildingStats } from './metrics.js';
+import { campusStats, buildingStats, roomHealth, roomIssues, BAND_LABEL, type BuildingStats } from './metrics.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { CampusMap, FloorPlate, Stage, type CampusTile } from '../spatial/Spatial.js';
 import { RoomView, LIFE_TONE } from '../rooms/RoomView.js';
@@ -157,15 +157,41 @@ function BuildingPage({ b }: { b: string }) {
   );
 }
 
+/** A floor, in the same treatment as the campus and the building (founder, 19 Nov 2026 09:54: the building and floor views look and feel
+ *  like the estate view): the hero with the floor's health, its four figures, the Empathia Map opened on this floor with every room on it,
+ *  and beside it the floor's rooms as cards, each opening the room at its campus address. A regional site is not on the map: its floor
+ *  keeps the plate drawn from the rooms' sizes. */
 function FloorPage({ b, f }: { b: string; f: number }) {
   const opens = useOpens();
   const w = useWs();
-  const B = buildingByKey(b)!; const rs = roomsIn(b, f).map((o) => roomRecord(o.id)!);
+  const B = buildingByKey(b)!; const rs = roomsIn(b, f).map((o) => roomRecord(o.id)!); const regional = REGIONAL_SITES.some((x) => x.key === b);
+  const c = useMemo(() => campusStats(w), [w]); const s = useMemo(() => buildingStats(b, w, f), [b, f, w]);
+  const step = <nav className="campus__step" aria-label="Floors">{f > 1 && <a className="ui-btn" href={`#/campus/${b}/${f - 1}`} data-testid="floor-down">Floor {f - 1}</a>}{f < B.floors && <a className="ui-btn" href={`#/campus/${b}/${f + 1}`} data-testid="floor-up">Floor {f + 1}</a>}</nav>;
+  const open = (id: string) => { const h = roomHref(roomById(id)!); if (opens(h)) go(h); };
   return (
     <section className="campus" data-native="" data-testid="campus-floor">
       <Crumbs items={[['Campus', '#/campus'], [B.name, `#/campus/${b}`], [`Floor ${f}`]]} />
-      <header className="campus__head"><div><p className="kicker">{B.name}</p><h1>Floor {f}</h1><p className="ui-muted">{rs.length ? `${rs.length} room${rs.length === 1 ? '' : 's'} of the canonical campus. Select a room to open it.` : 'No room of the canonical campus on this floor.'}</p></div><nav className="campus__step" aria-label="Floors">{f > 1 && <a className="ui-btn" href={`#/campus/${b}/${f - 1}`}>Floor {f - 1}</a>}{f < B.floors && <a className="ui-btn" href={`#/campus/${b}/${f + 1}`}>Floor {f + 1}</a>}</nav></header>
-      {rs.length ? <Stage label={`Floor plate of ${B.name} floor ${f}`} testId="floor-stage"><FloorPlate rooms={rs.map((r) => ({ id: r.outline.id, label: shortName(r.outline), w: r.outline.dims[0], l: r.outline.dims[1], state: r.lifecycle, issues: roomIssues(r, w).length }))} onOpen={(id) => { const h = roomHref(roomById(id)!); if (opens(h)) go(h); }} /></Stage>
+      <header className="room__hero campus__hero">
+        <div className="campus__herot"><p className="kicker">{B.name} · floor {f} of {B.floors}</p><h1>Floor {f}</h1><p className="room__intent">{rs.length ? `${rs.length} room${rs.length === 1 ? '' : 's'} of the canonical campus. Select a room to open it.` : 'No room of the canonical campus on this floor.'}</p>{step}</div>
+        {rs.length > 0 && <div className="campus__score"><ScoreRing score={s.score} band={s.band} size={104} label="Floor health" caption={s.score == null ? 'not scored' : `mean of ${s.scored} scored rooms`} /></div>}
+      </header>
+      {rs.length > 0 && <div className="tiles">
+        <StatTile label="Rooms" value={s.rooms} sub={`${s.scored} scored`} icon="room" />
+        <StatTile label="Open issues" value={s.open} sub={`${s.high} High`} tone={s.high ? 'monitor' : undefined} icon="alert" />
+        <StatTile label="Devices" value={s.devices} sub="positions across its rooms" icon="device" />
+        <StatTile label="Tests verified" value={s.verifiedPct ?? '—'} unit={s.verifiedPct == null ? undefined : '%'} sub={`${s.verified} of ${s.applicable}`} icon="check" />
+      </div>}
+      {rs.length ? <div className="campus__stagewrap">
+        {regional ? <Stage label={`Floor plate of ${B.name} floor ${f}`} testId="floor-stage"><FloorPlate rooms={rs.map((r) => ({ id: r.outline.id, label: shortName(r.outline), w: r.outline.dims[0], l: r.outline.dims[1], state: r.lifecycle, issues: roomIssues(r, w).length }))} onOpen={open} /></Stage>
+          : <Stage label={`Floor ${f} of ${B.name} on the campus map`} testId="floor-stage"><CampusMap tiles={tilesOf(c.buildings)} current={b} floor={f} onOpen={(x) => go(`#/campus/${x.key}`)} /><Legend /></Stage>}
+        <Section title="Rooms on this floor" aside="By number" id="frooms-h">
+          <ul className="campus__floors floors" data-testid="floor-rooms">{[...rs].sort((x, y) => x.outline.number.localeCompare(y.outline.number, 'en', { numeric: true })).map((r) => { const h = roomHealth(r, w); const n = roomIssues(r, w).length; return (
+            <li key={r.outline.id}><a href={roomHref(r.outline)} className="campus__card floor" data-testid={`floor-room-${r.outline.id}`} onClick={(e) => { e.preventDefault(); open(r.outline.id); }}>
+              <span className="floor__n">{r.outline.number.split('.')[1]}</span>
+              <span className="floor__body"><b>{shortName(r.outline)} · {r.outline.name}</b><span className="ui-meta">{ARCHETYPE_NAME[r.outline.archetype]} · {r.outline.capacity} seats · {r.lifecycle.replace(/_/g, ' ').toLowerCase()}{n ? ` · ${n} open issue${n === 1 ? '' : 's'}` : ''}</span>
+                <span className="floor__rooms"><span className={`floor__room floor__room--${h.band}`}>{h.score == null ? 'not scored' : `health ${h.score}`}</span></span></span></a></li>); })}</ul>
+        </Section>
+      </div>
         : <div className="empty"><b>No room of the canonical campus on this floor</b><p>The demonstration models {ROOMS.length} rooms; this floor has none of them. Other floors of {B.name} do.</p></div>}
       <RoomList rows={rs} w={w} />
     </section>

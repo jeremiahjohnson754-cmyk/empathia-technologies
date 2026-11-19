@@ -35,7 +35,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       const ctx = await browser.newContext({ viewport: { width: 1600, height: 1000 }, colorScheme: 'dark', reducedMotion: 'reduce', deviceScaleFactor: 1.5 });
       await ctx.addInitScript((as) => { try { localStorage.setItem('empathia.theme', 'dark'); localStorage.setItem('empathia.demo.perspective', as); } catch { /* none */ } }, fr.as);
       const page = await ctx.newPage(); const errs = []; page.on('pageerror', (e) => errs.push(e.message));
-      await page.goto(base + fr.route, { waitUntil: 'networkidle' }); await page.waitForSelector(`[data-testid=${fr.el}]`, { timeout: 15000 }); await page.waitForTimeout(1800);
+      await page.goto(base + fr.route, { waitUntil: 'networkidle' }); await page.waitForSelector(`[data-testid=${fr.el}]:not([data-ground="painting"])`, { timeout: 15000 }); await page.waitForTimeout(1800);   // a Lite stage on the aerial imagery is captured once its ground is painted (19 Nov)
       if (errs.length) { console.error(`FAIL ${fr.id}: ${errs[0]}`); process.exit(1); }
       const png = path.join(tmp, `hero-${fr.id}.png`); await page.locator(`[data-testid=${fr.el}]`).first().screenshot({ path: png }); await ctx.close();
       // 16:10, centred, so every frame lands in the same box

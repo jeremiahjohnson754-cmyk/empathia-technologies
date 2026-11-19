@@ -176,7 +176,10 @@ export function Glyph({ x, y, tone, r = 5 }: { x: number; y: number; tone: strin
  * order drawn), its label placement (lift a label clear of another, drop a minor one that still collides), and object selection: a shape
  * or hit that belongs to an object (`o`) selects it, and the selected object is outlined.
  */
-export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj, onObjDrag, eye, eyePri, bg, tidy }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObjDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void; /** an occupant's eye position: the room seen from there, in perspective */ eye?: Eye | null; onObj?: (id: string) => void;
+export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, defs, v253, sel, onObj, onObjDrag, eye, eyePri, bg, tidy, look, credit, ground }: { sc: L3Scene; c: ReturnType<typeof useCam>; label: string; onNav: (to: string) => void; testId?: string; tall?: boolean; over?: ReactNode; S?: number; defs?: string; v253?: boolean; sel?: string | null; onObjDrag?: (id: string, dx: number, dy: number, phase: 'move' | 'end') => void; /** an occupant's eye position: the room seen from there, in perspective */ eye?: Eye | null; onObj?: (id: string) => void;
+  /** 'estate': the Empathia Map's look (founder, 19 Nov 2026 09:54): ground, glass labels and controls as on the estate view */ look?: 'estate'; /** a line at the foot of the stage saying what is drawn (as the estate map's own) */ credit?: string;
+  /** an image lying on the ground (z = 0), covering x … x + w, y … y + d in the scene's metres: the estate map's synthetic aerial imagery.
+   *  The camera is orthographic, so the ground plane maps to the screen by one affine transform and the image is drawn exactly in place. */ ground?: { href: string; x: number; y: number; w: number; d: number } | null;
   /** from an eye, order the room's shell by each shape's tier (floor, rug, shadow, terrain, solid) before distance (Empathia's rooms, ./rooms) */ eyePri?: boolean; /** a paint behind the scene (a sky, from an eye) */ bg?: string; /** keep labels clear of each other, as for V2.5.3's scenes */ tidy?: boolean }) {
   const ex = eye ? eyeProjector(eye, c.cam, S) : null; const { P, depth } = ex || projector(sc, c.cam, S);
   const drawn = useMemo(() => {
@@ -240,15 +243,22 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
     }
     return out;
   }, [sc, c.cam, px, v253, tidy]);   // eslint-disable-line
-  return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}`} data-stage="" data-testid={testId} ref={stage} {...pointer} {...objDrag}>
+  return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}${look ? ` l3-stage--${look}` : ''}`} data-stage="" data-look={look} data-ground={ground === undefined ? undefined : ground ? 'ready' : 'painting'} data-testid={testId} ref={stage} {...pointer} {...objDrag}>
     <div className="l3-frame">
     <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.goal.yaw)} data-pitch={Math.round(c.goal.pitch)} data-zoom={c.goal.zoom} data-pan={`${c.goal.px || 0},${c.goal.py || 0}`} data-moving={c.goal === c.cam ? undefined : ''}>
       {defs ? <g dangerouslySetInnerHTML={{ __html: defs }} /> : <defs>
         <linearGradient id="l3slab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4a463f" /><stop offset="1" stopColor="#36332e" /></linearGradient>
         <pattern id="l3hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#4b3a2c" /><line x1="0" y1="0" x2="0" y2="6" stroke="#c98a3a" strokeWidth="1.5" /></pattern>
+        {/* the estate look: the Empathia Map's own ground (imagery.ts: grass #55703a, paving #c9c2b4) and its hatch for a room that needs action */}
+        <pattern id="l3grass" width="31" height="29" patternUnits="userSpaceOnUse"><rect width="31" height="29" fill="#55703a" /><circle cx="4" cy="6" r="2.2" fill="#506a37" /><circle cx="17" cy="3" r="1.6" fill="#5a773d" /><circle cx="24" cy="18" r="2.4" fill="#506a37" /><circle cx="9" cy="21" r="1.7" fill="#5a773d" /><circle cx="15" cy="12" r="1.2" fill="#52703a" /></pattern>
+        <pattern id="l3pave" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#c9c2b4" /><path d="M0 0H9M0 0V9" stroke="rgba(80,70,60,.2)" strokeWidth=".6" /></pattern>
+        <pattern id="l3hatchE" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#ead2c4" /><line x1="0" y1="0" x2="0" y2="6" stroke="#cf5a46" strokeWidth="1.6" /></pattern>
+        <linearGradient id="l3slabE" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ece7dd" /><stop offset="1" stopColor="#d9d3c7" /></linearGradient>
       </defs>}
       {v253 && !bg && <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill="url(#l3glow)" />}
       {bg && <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill={bg} />}
+      {ground && !ex && (() => { const a = P([ground.x, ground.y, 0]), b = P([ground.x + ground.w, ground.y, 0]), d = P([ground.x, ground.y + ground.d, 0]);
+        return <image href={ground.href} x={0} y={0} width={1} height={1} preserveAspectRatio="none" transform={`matrix(${(b[0] - a[0]).toFixed(3)} ${(b[1] - a[1]).toFixed(3)} ${(d[0] - a[0]).toFixed(3)} ${(d[1] - a[1]).toFixed(3)} ${a[0].toFixed(2)} ${a[1].toFixed(2)})`} data-testid="l3-ground" aria-hidden="true" />; })()}
       {drawn.map(({ i }, k) => { const obj = typeof i.o === 'string' ? i.o : undefined; const on = !!obj && obj === sel; const op = typeof i.o === 'number' ? i.o : i.a;
         return i.t === 'p'
           ? <polygon key={k} points={fmt(i.p)} fill={i.f || 'none'} stroke={on ? 'var(--teal)' : i.s || 'none'} strokeWidth={on ? 1.6 : i.sw ?? 0.6} strokeDasharray={i.da} opacity={op} data-o={obj} className={`${i.cls || ''}${i.nav ? ' l3-go' : ''}${obj && onObj ? ' l3-obj' : ''}`} onClick={i.nav ? () => go(i.nav) : obj && onObj ? () => pick(obj) : undefined} />
@@ -268,6 +278,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
     </div>
     {/* on a phone the controls sit under the scene, so they never cover a piece of equipment you mean to tap */}
     <CamBar c={c} />
+    {credit && <p className="l3-credit">{credit}</p>}
     {over}
   </div>;
 }

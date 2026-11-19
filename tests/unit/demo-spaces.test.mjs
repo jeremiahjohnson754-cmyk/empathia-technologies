@@ -145,5 +145,8 @@ test('tours: 10 / 10 / 7 / 14 / 12 / 10 stops, honest copy, narration only from 
     assert.deepEqual(E.stops.filter((s) => s.href.startsWith('#/here')).map((s) => new URLSearchParams(s.href.split('?')[1] || '').get('step')), [null, 'look', 'history', 'wrong', 'try', 'record'], 'the walk-in steps in their order'); }
   const used = tours.TOURS.flatMap((t) => t.stops).filter((s) => s.narration); assert.ok(used.every((s) => tours.NARRATION[s.narration]));
   const bytes = Object.values(tours.NARRATION).reduce((n, x) => n + fs.statSync(path.join(repo, 'apps/demo/public', x.src)).size, 0);
-  assert.ok(bytes < 2_000_000, `narration media ${bytes} bytes within the 2 MB budget`);
+  // CHANGED 19 Nov 2026: 2 MB → 6 MB. Every tour stop now has a take (founder 09:48 and 10:12: the missing lines voiced with Qwen3-TTS), 79 in
+  // all; the new ones are mono 48 kb/s. Narration is never in the app's offline shell: it is fetched when a stop's Listen is pressed.
+  assert.ok(bytes < 6_000_000, `narration media ${bytes} bytes within the 6 MB budget`);
+  for (const t of tours.TOURS) for (const st of t.stops) assert.ok(st.narration && tours.NARRATION[st.narration], `${st.id} has a take`);
 });

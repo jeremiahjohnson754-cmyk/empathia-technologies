@@ -57,9 +57,10 @@ export function roomHealth(r: RoomRecord, w?: Workspace | null): Health {
 const mean = (xs: number[]) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null);
 
 export interface BuildingStats { b: Building; rooms: number; scored: number; score: number | null; band: Band; open: number; high: number; devices: number; applicable: number; verified: number; verifiedPct: number | null; byLife: Record<string, number> }
-export function buildingStats(key: string, w?: Workspace | null): BuildingStats {
+/** a building's figures from its room records; with `floor`, the same figures for that floor's rooms only (the campus floor page) */
+export function buildingStats(key: string, w?: Workspace | null, floor?: number): BuildingStats {
   const b = BUILDINGS.find((x) => x.key === key) || REGIONAL_SITES.find((x) => x.key === key)!;
-  const recs = allRecords().filter((r) => r.outline.building === key);
+  const recs = allRecords().filter((r) => r.outline.building === key && (floor == null || r.outline.floor === floor));
   const hs = recs.map((r) => roomHealth(r, w)); const scores = hs.map((h) => h.score).filter((s): s is number => s != null);
   const iss = recs.flatMap((r) => roomIssues(r, w));
   const applicable = recs.reduce((s, r) => s + r.counts.applicable, 0); const verified = recs.reduce((s, r) => s + r.counts.verified, 0);

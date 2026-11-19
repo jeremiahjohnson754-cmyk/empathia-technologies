@@ -20,6 +20,7 @@ import { layoutOf, paintAsync, GROUND, STOREY, type Layout, type Rect } from './
 import type { CampusTile } from '../spatial/Spatial.js';
 import { exposureByBuilding, WINDOW_FROM, WINDOW_TO, type Exposure } from '../campus/heat.js';
 import { assetsByBuilding, coverageByBuilding, unitServiceRate, uncoveredPct, type AssetFacts, type CoverFacts } from '../campus/lenses.js';
+import { LOOK, MAPLOOK } from './looks.js';   // a facade palette per building, shared with Lite's scenes
 
 type Mode = 'imagery' | 'map';
 type Level = { k: 'campus' } | { k: 'building'; b: string } | { k: 'floor'; b: string; f: number };
@@ -30,9 +31,6 @@ export const webgl2 = () => { try { return !!document.createElement('canvas').ge
 const STATE_COL: Record<string, string> = { OPERATIONAL: '#2f9e6b', ACCEPTED: '#2f9e6b', COMMISSIONING: '#d79a2b', INSTALLED_UNVERIFIED: '#d4762c', INSTALLATION_PENDING: '#6f86c9', DESIGN_APPROVED: '#6f86c9', PLANNED: '#8b93a1' };
 const STATE_WORD: Record<string, string> = { OPERATIONAL: 'operational', ACCEPTED: 'accepted', COMMISSIONING: 'commissioning', INSTALLED_UNVERIFIED: 'installed, not verified', INSTALLATION_PENDING: 'installation pending', DESIGN_APPROVED: 'design approved', PLANNED: 'planned' };
 const BAND_GLYPH = { healthy: '●', monitor: '▲', action: '◆', none: '○' } as const;
-// a facade palette per building, so the campus reads as six different buildings (all MODELED materials)
-const LOOK: Record<string, { glass: string; slab: string; roof: string }> = { ATL: { glass: '#3e586f', slab: '#e2ddd2', roof: '#6f6d68' }, MER: { glass: '#5c7684', slab: '#cfc8bb', roof: '#7a776f' }, FRG: { glass: '#8d969b', slab: '#b9b3a7', roof: '#8a8d8f' }, BCN: { glass: '#4f6f6a', slab: '#e8e1d2', roof: '#74716a' }, HZN: { glass: '#2f3f52', slab: '#d8d2c6', roof: '#5f5e5a' }, NST: { glass: '#566a7d', slab: '#ddd6c9', roof: '#77746d' } };
-const MAPLOOK = { glass: '#e7e1d6', slab: '#efe9df', roof: '#dcd4c6' };
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const reduced = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -148,12 +146,12 @@ function Legend({ lens, m, setM, metric, at, opens, sel }: { lens: Lens; m: Meas
   );
 }
 
-export function EmpathiaMap({ tiles, onOpen, onPreview, current, testId = 'campus-3d', lens: lens0 = 'none' }: { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; testId?: string; lens?: Lens }) {
+export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId = 'campus-3d', lens: lens0 = 'none' }: { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; /** with `current`, open on this floor of it (the campus floor page, founder 19 Nov 09:54: the same treatment at every level) */ floor?: number; testId?: string; lens?: Lens }) {
   const opens = useOpens();
   const host = useRef<HTMLDivElement>(null); const canvas = useRef<HTMLCanvasElement>(null);
   const pins = useRef<Record<string, HTMLButtonElement | null>>({}); const rpins = useRef<Record<string, HTMLButtonElement | null>>({}); const needle = useRef<HTMLSpanElement>(null);
   const [mode, setMode] = useState<Mode>('imagery'); const [tilt, setTilt] = useState(true);
-  const [level, setLevel] = useState<Level>(() => (current ? { k: 'building', b: current } : { k: 'campus' }));
+  const [level, setLevel] = useState<Level>(() => (current && floor != null ? { k: 'floor', b: current, f: floor } : current ? { k: 'building', b: current } : { k: 'campus' }));
   const [room, setRoom] = useState<string | null>(null); const [q, setQ] = useState(''); const [ready, setReady] = useState(false); const [err, setErr] = useState('');
   const sel = level.k === 'campus' ? null : BUILDINGS.find((b) => b.key === level.b) || null;
   const [lens, setLens] = useState<Lens>(lens0); const [m, setM] = useState<Measure>('count'); const [at] = useState(() => new Date()); const rate = m === 'room';

@@ -1,0 +1,4 @@
+/** The campus's facade palette, one per building, so the campus reads as six different buildings (all MODELED materials). Shared by the
+ *  Empathia Map (EmpathiaMap.tsx) and Lite's campus, building and floor scenes (lite/BuildingScenes.tsx), so every level looks the same. */
+export const LOOK: Record<string, { glass: string; slab: string; roof: string }> = { ATL: { glass: '#3e586f', slab: '#e2ddd2', roof: '#6f6d68' }, MER: { glass: '#5c7684', slab: '#cfc8bb', roof: '#7a776f' }, FRG: { glass: '#8d969b', slab: '#b9b3a7', roof: '#8a8d8f' }, BCN: { glass: '#4f6f6a', slab: '#e8e1d2', roof: '#74716a' }, HZN: { glass: '#2f3f52', slab: '#d8d2c6', roof: '#5f5e5a' }, NST: { glass: '#566a7d', slab: '#ddd6c9', roof: '#77746d' } };
+export const MAPLOOK = { glass: '#e7e1d6', slab: '#efe9df', roof: '#dcd4c6' };

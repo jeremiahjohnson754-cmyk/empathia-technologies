@@ -100,7 +100,7 @@ function LiteHome({ role }: PageProps) {
       <PageHero product="lite" plain eyebrow="Empathia Lite" title={SITE.name} lede={LITE_TAGLINE} />
       <LensPicker role={role} lens={lens} onPick={pick} />
       <div className="lt-hero-stage" data-testid="lite-campus-card"><figure className="stage lt-stage lt-stage--hero" data-stage=""><CampusStage buildings={CAMPUS_BLDGS} lens={lens} tone={campusTone} plaza={CAMPUS_PLAZA} visitorPath={VISITOR_PATH} onNav={(to) => { location.hash = to; }} />
-        <figcaption className="stage__cap lt-capchips"><Chip small tone="muted" icon="moon">Stage stays dark (D36)</Chip><Chip small tone="ok">green · healthy</Chip><Chip small tone="warn">amber · monitor</Chip><Chip small tone="bad">red · action</Chip><span>Footprints from V2.5.3 BUILDINGS · readiness computed from the room records</span></figcaption></figure></div>
+        <figcaption className="stage__cap lt-capchips"><Chip small tone="muted" icon="moon">The same synthetic aerial view in either theme</Chip><Chip small tone="ok">green · healthy</Chip><Chip small tone="warn">amber · monitor</Chip><Chip small tone="bad">red · action</Chip><span>Footprints from V2.5.3 BUILDINGS · readiness computed from the room records</span></figcaption></figure></div>
       <p className="lt-gnote">Tap a building to go inside: campus, building, floor, room. The same places appear in every lens; the lens decides what is drawn on them.</p>
       <LiteNav here="" role={role} />
       <div className="lt-home">

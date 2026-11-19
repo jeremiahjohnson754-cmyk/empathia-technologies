@@ -327,8 +327,11 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   { const pf = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/films.json'), 'utf8')).films.filter((f) => f.productFilm && f.rights?.website?.status === 'VERIFIED'); const bad = [];
     for (const f of pf) { const rec = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media', f.key, 'RECORDING.json'), 'utf8'));
       await page.goto(base + f.placement[0]); const v = await page.evaluate((k) => ({ n: document.querySelectorAll(`[data-film="${k}"] video`).length, cap: !!document.querySelector(`[data-film="${k}"] track[kind=captions]`) }), f.key);
-      if (v.n !== 1 || !v.cap || !(rec.duration >= 30 && rec.duration <= 45) || !rec.steps.length || rec.steps.some((st) => !st.proof) || fm.srcs.some((x) => x.includes(`/media/${f.key}/`))) bad.push(`${f.key} ${JSON.stringify(v)} ${rec.duration}`); }
-    ok('W-product-films', `every cleared product film (${pf.length}) plays on its product page with captions, is 30–45 s long, every step of its recording had a proof, and it is not on /films`, pf.length >= 1 && !bad.length, bad.join(' | ')); }
+      // CHANGED 19 Nov 2026 (founder 09:48 and 10:12: the captioned films voiced): a voiced film holds each step until its line is said, so it
+      // may run to 60 s; its recording names the voice, and its page says the voice is AI-generated
+      const hi = rec.voice ? 60 : 45; const said = !rec.voice || (/AI-generated/.test(f.disclosure) && /AI-generated voice/.test(rec.voice.label) && rec.voice.takes.length === rec.steps.length && rec.steps.every((st) => st.shown != null));
+      if (v.n !== 1 || !v.cap || !(rec.duration >= 30 && rec.duration <= hi) || !said || !rec.steps.length || rec.steps.some((st) => !st.proof) || fm.srcs.some((x) => x.includes(`/media/${f.key}/`))) bad.push(`${f.key} ${JSON.stringify(v)} ${rec.duration}`); }
+    ok('W-product-films', `every cleared product film (${pf.length}) plays on its product page with captions, is 30–45 s long (60 s when voiced, its AI voice named), every step of its recording had a proof, and it is not on /films`, pf.length >= 1 && !bad.length, bad.join(' | ')); }
   // the guides as printed booklets (founder, 13 Nov 2026): /products offers each one listed in BOOKLETS.json, its cover and its PDF, and
   // each PDF served is the file whose SHA-256 the list records
   { const bl = JSON.parse(fs.readFileSync(path.join(repo, 'apps/website/media/booklets/BOOKLETS.json'), 'utf8')).booklets; await page.goto(base + '/products');

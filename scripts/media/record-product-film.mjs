@@ -4,10 +4,14 @@
 // real browser on the built demonstration: every step does one thing a person would do and then WAITS FOR ITS PROOF (the page state the
 // step must produce). A step whose proof does not appear stops the recording, so a film exists only if every step it shows worked.
 // The words on screen are drawn by the recorder (an overlay above the page), and the same words become the film's WebVTT track.
-// Nothing is generated: no voice, no music, no AI imagery. Output, per film, in apps/website/media/<KEY>/ (key P-<product>):
-// 720.mp4 (1280×720, H.264, silent), poster.webp, poster.jpg, captions.vtt and RECORDING.json (the steps, their proofs, timings, the
+// Nothing else is generated: no music, no AI imagery. Output, per film, in apps/website/media/<KEY>/ (key P-<product>):
+// 720.mp4 (1280×720, H.264), poster.webp, poster.jpg, captions.vtt and RECORDING.json (the steps, their proofs, timings, the
 // demonstration build and the hashes).
-//   node scripts/media/record-product-film.mjs --product=lite [--dist=apps/demo/dist]
+// --voice=<dir> (founder, 19 Nov 2026 09:48 and 10:12: voice the captioned films): <dir>/<KEY>/NN.wav is the take of step NN, the same
+// words read by an AI-generated voice (Qwen3-TTS preset voice, scripts/media/qwen-film-takes.py). Each step then holds until its line
+// has been said (at least its own hold), the take starts as its words appear, and the film carries the mixed voice at -16 LUFS as AAC
+// (the level of the site's other voiced films). Without --voice the film is silent, as before.
+//   node scripts/media/record-product-film.mjs --product=lite [--dist=apps/demo/dist] [--voice=<dir>]
 import fs from 'node:fs'; import path from 'node:path'; import os from 'node:os'; import crypto from 'node:crypto';
 import { spawn, spawnSync } from 'node:child_process'; import { fileURLToPath } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -15,6 +19,8 @@ const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const FILMS = (await import('./product-films.mjs')).FILMS;
 const which = arg('product'); const films = which === 'all' ? Object.keys(FILMS) : [which];
+const voiceDir = arg('voice', ''); const VOICE = voiceDir ? JSON.parse(fs.readFileSync(path.join(voiceDir, 'VOICE.json'), 'utf8')) : null;
+const seconds = (f) => Number(spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f], { encoding: 'utf8' }).stdout.trim());
 const dist = path.resolve(repo, arg('dist', 'apps/demo/dist')); const port = Number(arg('port', 5791));
 const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
 const ff = (...a) => { const r = spawnSync('ffmpeg', ['-v', 'error', '-y', ...a], { encoding: 'utf8' }); if (r.status) throw new Error(r.stderr); };
@@ -41,16 +47,17 @@ try {
       Object.assign(el.style, { position: 'fixed', right: '14px', top: '10px', zIndex: 2147483647, padding: '4px 10px', borderRadius: '6px', background: 'rgba(8,10,14,.8)', color: '#cfd6dd', font: '600 12px/1.2 Inter, system-ui, sans-serif', letterSpacing: '.04em', pointerEvents: 'none' }); document.body.appendChild(el); } el.textContent = t; }, F.label);
     try {
       await page.goto(base + F.start); await page.waitForSelector(F.startProof, { timeout: 15000 }); await page.waitForTimeout(600);
+      const takes = VOICE ? F.steps.map((_, i) => { const f = path.join(voiceDir, key, `${String(i + 1).padStart(2, '0')}.wav`); if (!fs.existsSync(f)) throw new Error(`no take for step ${i + 1}: ${f}`); return { f, s: seconds(f) }; }) : null;
       const tStart = Date.now();
-      for (const s of F.steps) {
+      for (const [i, s] of F.steps.entries()) {
         const at = (Date.now() - tStart) / 1000;
         if (s.do) await say('');   // the last step's words leave as this step's action begins, so words never sit over the wrong screen
         try { if (s.do) await s.do(page); if (s.proof) await page.waitForSelector(s.proof, { timeout: 12000, state: s.state || 'visible' }); }
         catch (e) { await page.screenshot({ path: path.join(tmp, '..', `pfilm-${key}-failed.png`) }).catch(() => undefined); throw new Error(`step "${s.say}" (${s.proof || 'no proof'}): ${e.message.split('\n')[0]}`); }
         if (s.check) { const ok = await s.check(page); if (!ok) throw new Error(`step "${s.say}": its check failed`); }
-        await say(s.say);
-        await page.waitForTimeout(s.hold ?? F.hold ?? 2600);
-        log.push({ at: Number(at.toFixed(2)), until: Number(((Date.now() - tStart) / 1000).toFixed(2)), say: s.say, proof: s.proof || null, url: page.url().replace(base, '/') });
+        await say(s.say); const shown = (Date.now() - tStart) / 1000;
+        await page.waitForTimeout(Math.max(s.hold ?? F.hold ?? 2600, takes ? Math.round(takes[i].s * 1000) + 450 : 0));
+        log.push({ at: Number(at.toFixed(2)), ...(takes ? { shown: Number(shown.toFixed(2)) } : {}), until: Number(((Date.now() - tStart) / 1000).toFixed(2)), say: s.say, proof: s.proof || null, url: page.url().replace(base, '/') });
       }
       if (errs.length) throw new Error(`page error during the recording: ${errs[0]}`);
       const lead = (Date.now() - t0 - (Date.now() - tStart)) / 1000;   // the loading before the first step is cut from the film
@@ -62,15 +69,29 @@ try {
       ff('-ss', pAt, '-i', path.join(out, '720.mp4'), '-frames:v', '1', '-c:v', 'libwebp', '-quality', '80', path.join(out, 'poster.webp'));
       ff('-ss', pAt, '-i', path.join(out, '720.mp4'), '-frames:v', '1', '-q:v', '3', path.join(out, 'poster.jpg'));
       const ts = (x) => { const m = Math.floor(x / 60); return `00:${String(m).padStart(2, '0')}:${(x - m * 60).toFixed(3).padStart(6, '0')}`; };
-      const vtt = ['WEBVTT', '', 'NOTE', `Captions of "${F.title}". The film is silent: these are the words shown on screen, one per step, written by the recorder`, '(scripts/media/record-product-film.mjs) above the demonstration; each step was verified by its proof before its words appeared.', '',
-        ...log.flatMap((l, i) => [String(i + 1), `${ts(l.at)} --> ${ts(Math.min(dur, l.until))}`, l.say, ''])].join('\n');
+      // the voice: each take placed where its words appear, mixed, then one gain to -16 LUFS; the picture is copied, not re-encoded
+      let voice = null;
+      if (takes) {
+        const mix = path.join(tmp, 'voice.wav'); const inputs = takes.flatMap((t) => ['-i', t.f]);
+        const graph = takes.map((t, i) => `[${i}:a]aresample=48000,adelay=${Math.round(log[i].shown * 1000)}:all=1[a${i}]`).join(';') + `;${takes.map((_, i) => `[a${i}]`).join('')}amix=inputs=${takes.length}:normalize=0:dropout_transition=0,apad,atrim=0:${dur.toFixed(3)}[m]`;
+        ff(...inputs, '-filter_complex', graph, '-map', '[m]', '-ac', '1', '-c:a', 'pcm_s16le', mix);
+        const I = Number((spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', mix, '-af', 'ebur128=framelog=quiet', '-f', 'null', '-'], { encoding: 'utf8' }).stderr.match(/I:\s+(-?[\d.]+) LUFS/g) || []).at(-1)?.match(/-?[\d.]+/)[0]);
+        const silentMp4 = path.join(tmp, 'picture.mp4'); fs.renameSync(path.join(out, '720.mp4'), silentMp4);
+        ff('-i', silentMp4, '-i', mix, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-af', `volume=${(-16 - I).toFixed(2)}dB`, '-c:a', 'aac', '-b:a', '96k', '-ar', '48000', '-ac', '1', '-shortest', '-movflags', '+faststart', path.join(out, '720.mp4'));
+        voice = { ...VOICE, mixLufs: -16, takes: takes.map((t, i) => ({ step: i + 1, seconds: Number(t.s.toFixed(2)), sha256: sha(t.f) })) };
+      }
+      const vtt = ['WEBVTT', '', 'NOTE', VOICE ? `Captions of "${F.title}". The words are shown on screen and spoken by an ${VOICE.label}, one line per step, as they appear;` : `Captions of "${F.title}". The film is silent: these are the words shown on screen, one per step, written by the recorder`,
+        VOICE ? 'the recorder (scripts/media/record-product-film.mjs) drew the words above the demonstration, and each step was verified by its proof before its words appeared.' : '(scripts/media/record-product-film.mjs) above the demonstration; each step was verified by its proof before its words appeared.', '',
+        ...log.flatMap((l, i) => [String(i + 1), `${ts(l.shown ?? l.at)} --> ${ts(Math.min(dur, l.until))}`, l.say, ''])].join('\n');
       fs.writeFileSync(path.join(out, 'captions.vtt'), vtt);
       const build = fs.existsSync(path.join(dist, 'BUILD_MANIFEST.json')) ? JSON.parse(fs.readFileSync(path.join(dist, 'BUILD_MANIFEST.json'), 'utf8')) : null;
       const files = Object.fromEntries(['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt'].map((f) => [f, { bytes: fs.statSync(path.join(out, f)).size, sha256: sha(path.join(out, f)) }]));
       fs.writeFileSync(path.join(out, 'RECORDING.json'), JSON.stringify({ key, title: F.title, product: F.product, recordedAt: new Date().toISOString(), duration: dur, viewport: '1280x720', colorScheme: 'dark', data: 'synthetic demonstration data', role: F.role || 'architect',
-        demoBuild: build ? { commit: build.commit || build.git?.commit || null, builtAt: build.builtAt || build.at || null } : null, git: spawnSync('git', ['-C', repo, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).stdout.trim(), steps: log, files }, null, 2) + '\n');
+        demoBuild: build ? { commit: build.commit || build.git?.commit || null, builtAt: build.builtAt || build.at || null } : null, git: spawnSync('git', ['-C', repo, 'rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).stdout.trim(), steps: log, ...(voice ? { voice } : {}), files }, null, 2) + '\n');
       console.log(`${key}: ${dur.toFixed(1)} s, ${log.length} steps, all proofs met · 720.mp4 ${(files['720.mp4'].bytes / 1048576).toFixed(1)} MB`);
-      if (dur < 30 || dur > 45) { console.error(`${key}: ${dur.toFixed(1)} s is outside 30–45 s`); failed++; }
+      // a voiced film holds each step until its line is said, so it runs longer (founder 19 Nov: the films voiced); the silent ones keep 30–45 s
+      const [lo, hi] = VOICE ? [30, 60] : [30, 45];
+      if (dur < lo || dur > hi) { console.error(`${key}: ${dur.toFixed(1)} s is outside ${lo}–${hi} s`); failed++; }
     } catch (e) { failed++; console.error(`${key}: NOT RECORDED — ${e.message.split('\n')[0]}`); await ctx.close().catch(() => undefined); }
     fs.rmSync(tmp, { recursive: true, force: true });
   }

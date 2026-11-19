@@ -20,7 +20,10 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok(`LT-${tag}-01`, 'Lite opens on the campus: six buildings in 3D, six lenses for the architect, the fifteen plan rooms and one sector of five more, Scouter in Lite (D41)', /Northstar/.test(home.h1) && home.blds === 6 && home.lenses === 6 && home.plan === 20 && home.scouter && home.nav >= 8, JSON.stringify(home));
   { await t.page.locator('[data-testid="lite-sector"]').nth(3).click(); await t.page.waitForTimeout(150); const sec = await t.page.evaluate(() => ({ n: document.querySelectorAll('[data-testid="lite-sector"]').length, on: document.querySelector('[data-testid="lite-sector"][aria-pressed="true"]')?.textContent, cards: Array.from(document.querySelectorAll('[data-testid="lite-estate"] [data-testid^="lite-room-"]')).map((a) => a.getAttribute('data-testid')) }));
     ok(`LT-${tag}-01b`, 'the 45 additions are browsed a sector at a time: nine sectors, five rooms each, and choosing one changes the five', sec.n === 9 && sec.on === 'Health / research' && sec.cards.length === 5 && sec.cards.every((c) => /lite-room-R-WMR-/.test(c)), JSON.stringify(sec)); }
-  ok(`LT-${tag}-02`, 'the campus stage stays dark in either theme (D36)', (await lum(t.page, '[data-testid="lite-campus-card"] .stage')) < 0.25);
+  // CHANGED 19 Nov 2026 (founder 12:37: the Lite campus looks like the start page's campus): the scene now lies on the estate map's synthetic
+  // aerial imagery, the same in either theme; the stage round it stays dark (D36)
+  await t.page.waitForSelector('[data-testid="lite-campus-3d"][data-ground="ready"]', { timeout: 15000 }).catch(() => {});
+  ok(`LT-${tag}-02`, 'the campus lies on the synthetic aerial imagery, the same in either theme, on a stage that stays dark (D36)', (await lum(t.page, '[data-testid="lite-campus-card"] .stage')) < 0.25 && (await t.page.locator('[data-testid="lite-campus-3d"] [data-testid="l3-ground"]').count()) === 1);
   ok(`LT-${tag}-03`, 'no horizontal overflow on the Lite home', (await t.overflow()) <= 0, await t.overflow());
   if (vp[2] === 'desktop') await t.page.screenshot({ path: path.join(out, `${tag}-home.png`), fullPage: true });
   // keyboard into a building, then a floor, then a room

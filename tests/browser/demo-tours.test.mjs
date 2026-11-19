@@ -73,18 +73,20 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   ok('TR-reduced-motion', 'under reduced motion the spotlight has no transition', /^(0s|none)/.test(tr) && !t.errs.length, tr); await t.close(); }
 // Tour G narration (18 Nov 2026, Brian, eleven_v4): exactly the stops with a shipped take offer it; none autoplays; each has captions,
 // a transcript and the AI-voice label; every take and caption file is served, and every take decodes and plays (muted, headless).
-// G9, G12, G13, G15 and G16 have no take (ElevenLabs refused them when the credits ran out): no audio at all, captions only.
+// CHANGED 19 Nov 2026: G9, G12, G13, G15 and G16, captions only since ElevenLabs refused them, are voiced by Qwen3-TTS (founder 09:48 and
+// 10:12: the missing tour lines); every stop now offers a take, each labelled with its own voice.
 for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const t = await open(vp, SCHEMES[0], { hash: '#/tours' }); await t.go('#/tours/g', 600);
-  const WITH = new Set([1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 14]); const bad = [];
+  const WITH = new Set(Array.from({ length: COUNTS.g }, (_, i) => i + 1)); const QWEN = new Set([9, 12, 13, 15, 16]); const bad = [];
   for (let i = 1; i <= COUNTS.g; i += 1) {
-    const v = await t.page.evaluate(() => { const n = document.querySelector('[data-testid="guided"] [data-testid="narration"]'); const a = n?.querySelector('audio'); const c = document.querySelector('[data-testid="guided"] [data-testid="captions-only"]'); return { has: !!n, paused: a ? a.paused : null, auto: a ? a.autoplay : null, track: !!a?.querySelector('track[kind="captions"]'), tr: !!n?.querySelector('details'), label: /AI-generated voice \(synthetic, not a real person\) · ElevenLabs premade voice Brian/.test(n?.textContent || ''), src: a?.getAttribute('src') || '', cap: !!c && /captions only, no sound/.test(c.textContent || '') && !!c.querySelector('details'), audioAnywhere: !!document.querySelector('[data-testid="guided"] audio') }; });
+    const v = await t.page.evaluate(() => { const n = document.querySelector('[data-testid="guided"] [data-testid="narration"]'); const a = n?.querySelector('audio'); const c = document.querySelector('[data-testid="guided"] [data-testid="captions-only"]'); return { has: !!n, paused: a ? a.paused : null, auto: a ? a.autoplay : null, track: !!a?.querySelector('track[kind="captions"]'), tr: !!n?.querySelector('details'), who: (n?.querySelector('.narr__who')?.textContent || ''), src: a?.getAttribute('src') || '', cap: !!c && /captions only, no sound/.test(c.textContent || '') && !!c.querySelector('details'), audioAnywhere: !!document.querySelector('[data-testid="guided"] audio') }; });
     if (v.has !== WITH.has(i)) bad.push(`G${i}: narration ${v.has ? 'shown' : 'missing'}`);
     if (!WITH.has(i) && (!v.cap || v.audioAnywhere)) bad.push(`G${i}: captions-only ${JSON.stringify(v)}`);   // founder 16:41: the five unvoiced lines are "silent with captions"
+    v.label = QWEN.has(i) ? /^AI-generated voice \(synthetic, not a real person\) · Qwen3-TTS preset voice Ryan/.test(v.who) : /^AI-generated voice \(synthetic, not a real person\) · ElevenLabs premade voice Brian/.test(v.who);
     if (v.has && (!v.paused || v.auto || !v.track || !v.tr || !v.label || v.src !== `media/narration/tour-g-${String(i).padStart(2, '0')}.mp3`)) bad.push(`G${i}: ${JSON.stringify(v)}`);
     if (i < COUNTS.g) { await t.page.click('[data-testid="guided"] button:has-text("Next")'); await t.page.waitForTimeout(450); }
   }
-  ok(`TR-g-narr-${vp[2]}`, 'Tour G: the eleven stops with a take offer it (not autoplayed, captions, transcript, AI-voice label); the five without offer captions only, labelled, with no audio', !bad.length, bad.slice(0, 3).join(' | '));
+  ok(`TR-g-narr-${vp[2]}`, 'Tour G: all sixteen stops offer a take (not autoplayed, captions, transcript), each labelled AI-generated with its own voice: Brian for eleven, Qwen3-TTS Ryan for G9, G12, G13, G15, G16', !bad.length, bad.slice(0, 3).join(' | '));
   // 18 Nov 2026 (first-time-viewer pass): an <audio> element draws no captions, so the captions were never seen; and on a phone the
   // spotlit element could sit entirely under the docked panel. Now: Listen plays and the caption of the moment shows as text; the
   // spotlit element is wholly or at least its top clear of the panel and the shell bar.
@@ -97,14 +99,15 @@ for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   await t.page.click('[data-testid="narr-play"]').catch(() => {}); await t.page.waitForTimeout(200);
   const after = await t.page.evaluate(() => ({ paused: document.querySelector('[data-testid="narration"] audio')?.paused, pressed: document.querySelector('[data-testid="narr-play"]')?.getAttribute('aria-pressed') }));
   ok(`TR-g-cue-${vp[2]}`, 'Listen plays the take and shows the caption of the moment as text; pressing again pauses it', live.pressed === 'true' && live.at > 0.3 && /^Every room has a story\.$|^This is Atlas 4\.218/.test(live.cue) && after.paused && after.pressed === 'false', JSON.stringify({ live, after }));
-  await t.go('#/tours/g?stop=9', 900); await t.page.click('[data-testid="read-along"]'); await t.page.waitForTimeout(700);
-  const ra = await t.page.evaluate(() => ({ pressed: document.querySelector('[data-testid="read-along"]')?.getAttribute('aria-pressed'), cue: document.querySelector('[data-testid="narr-cue"]')?.textContent || '' }));
-  await t.page.waitForTimeout(1600); const ra2 = await t.page.evaluate(() => document.querySelector('[data-testid="narr-cue"]')?.textContent || '');
-  ok(`TR-g-readalong-${vp[2]}`, 'G9 (no voice): Read along shows the line as timed captions, sentence by sentence, with no sound', ra.pressed === 'true' && ra.cue === 'In use, things fail.' && /^When they do/.test(ra2), JSON.stringify({ ra, ra2 }));
+  // CHANGED 19 Nov 2026: G9 was captions only ("Read along"); it now has its Qwen3-TTS take, so the check is that Listen plays it with its captions
+  await t.go('#/tours/g?stop=9', 900); await t.page.click('[data-testid="narr-play"]'); await t.page.waitForTimeout(1500);
+  const ra = await t.page.evaluate(() => ({ pressed: document.querySelector('[data-testid="narr-play"]')?.getAttribute('aria-pressed'), cue: document.querySelector('[data-testid="narr-cue"]')?.textContent || '', at: document.querySelector('[data-testid="narration"] audio')?.currentTime || 0 }));
+  await t.page.click('[data-testid="narr-play"]').catch(() => {});
+  ok(`TR-g-voiced9-${vp[2]}`, 'G9 now has a voice: Listen plays its take and shows its first caption', ra.pressed === 'true' && ra.at > 0.3 && ra.cue === 'In use, things fail.', JSON.stringify(ra));
   if (vp[2] === 'desktop') {
     const files = await t.page.evaluate(async (ids) => Promise.all(ids.map(async (n) => { const k = `tour-g-${String(n).padStart(2, '0')}`; const m = await fetch(`media/narration/${k}.mp3`); const c = await fetch(`media/narration/${k}.vtt`); const vt = await c.text(); const a = new Audio(`media/narration/${k}.mp3`); a.muted = true; a.preload = 'auto'; const meta = await new Promise((r) => { a.addEventListener('loadedmetadata', () => r(true), { once: true }); a.addEventListener('error', () => r(false), { once: true }); setTimeout(() => r(false), 8000); }); let played = false; try { await a.play(); await new Promise((r) => setTimeout(r, 500)); played = a.currentTime > 0.1; a.pause(); } catch { played = false; } return { k, mp3: m.status, type: m.headers.get('content-type'), vtt: c.status, cues: (vt.match(/-->/g) || []).length, head: vt.startsWith('WEBVTT'), dur: a.duration, meta, played }; })), [...WITH]);
     const fb = files.filter((f) => f.mp3 !== 200 || !/audio\/mpeg/.test(f.type || '') || f.vtt !== 200 || !f.head || f.cues < 1 || !f.meta || !(f.dur > 6) || !f.played);
-    ok('TR-g-narr-files', 'Tour G: all eleven takes and caption files are served with the right types, and every take decodes and plays (muted)', !fb.length, JSON.stringify(fb.slice(0, 2)));
+    ok('TR-g-narr-files', 'Tour G: all sixteen takes and caption files are served with the right types, and every take decodes and plays (muted)', !fb.length, JSON.stringify(fb.slice(0, 2)));
   }
   ok(`TR-g-narr-${vp[2]}-clean`, 'no page error while stepping through Tour G', !t.errs.length, t.errs.join(' | '));
   await t.close();
