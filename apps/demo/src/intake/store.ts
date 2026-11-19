@@ -65,10 +65,12 @@ function saveRecords(l: Request[]): { ok: boolean; previewsDropped: boolean } {
 const nextId = (all: Request[]) => `REQ-${String(all.reduce((m, r) => Math.max(m, Number(r.id.slice(4)) || 0), 0) + 1).padStart(4, '0')}`;
 const ev = (r: Request, type: string, by: RoleKey, detail: string, at = new Date().toISOString()): RequestEvent => ({ v: 1, at, type, by, detail, correlation: r.id });
 
-/** The photo policy that applies, and why, in words the person can act on. A space not on record must have its location verified before
- *  review; nothing else requires a photograph of an employee (§04: "Do not force employees to produce documents they do not possess"). */
+/** The photo policy that applies, and why, in words the person can act on. The names are the platform's (the API's project_request and the
+ *  governance package, where LOCATION_VERIFICATION_REQUIRED means a photograph is needed before the request can be submitted). The
+ *  demonstration asks that of nobody: a new space needs documentation before design, which the site champion or an engineer can supply
+ *  when they confirm where it is (§04: "Do not force employees to produce documents they do not possess unless policy requires them"). */
 export function policyFor(d: Draft): { policy: PhotoPolicy; why: string } {
-  if (d.kind === 'new-room') return { policy: 'LOCATION_VERIFICATION_REQUIRED', why: 'The space is not on record yet. Before an engineer reviews the request, someone on site (the site champion or an engineer) confirms where it is. Photos help them, but you can send without any.' };
+  if (d.kind === 'new-room') return { policy: 'DOCUMENTATION_REQUIRED', why: 'Before an engineer designs a new space, they need photographs or a plan of it. You can send without any: someone on site (the site champion or an engineer) confirms where the space is and can take them then.' };
   if (d.kind === 'general' && !roomById(d.roomId)) return { policy: 'OPTIONAL_REFERENCE', why: 'Photos are optional. Add them if they help explain what you need.' };
   return { policy: 'OPTIONAL_REFERENCE', why: 'Photos are optional. The room is already on record, so nobody needs a photo to find it.' };
 }

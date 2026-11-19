@@ -136,7 +136,7 @@ test('IN-11 a draft is a record from its first save: its own id, its answers, a 
   assert.ok(r.projectId && desk.projects.some((p) => p.id === r.projectId && p.state === 'SUBMITTED'));
   assert.deepEqual(r.history.map((e) => e.type), ['request.drafted', 'room.provisional_created', 'request.submitted']); for (const e of r.history) { assert.equal(e.v, 1); assert.equal(e.correlation, r.id); assert.ok(e.at && e.by); }
   assert.ok(r.provisional && /^PRV-\d{4}$/.test(r.provisional.id) && r.provisional.state === 'AWAITING_REVIEW' && r.provisional.location === 'DOCUMENTED' && r.provisional.name === 'Level 2 project room');
-  assert.equal(r.policy, 'LOCATION_VERIFICATION_REQUIRED'); assert.deepEqual(r.goals, ['video', 'present']);
+  assert.equal(r.policy, 'DOCUMENTATION_REQUIRED', 'needed before design, never to send: nobody is made to produce a photograph to ask'); assert.deepEqual(r.goals, ['video', 'present']);
   const n = desk.projects.length; const again = T.send(w, 'employee', T.draftOf(r), desk, a.id); assert.equal(again.id, r.id); assert.equal(desk.projects.length, n, 'sending twice creates nothing twice (scenario 18)');
   assert.ok(T.saveDraft('employee', d, a.id, 'what').why, 'a sent request is not changed as a draft'); assert.ok(T.discardDraft(a.id).why, 'a sent request is not discarded');
   const s = T.standing(r, w, desk); assert.equal(s.owner, 'Systems engineering'); assert.match(s.next, /someone on site confirms where the new space is/);

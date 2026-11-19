@@ -55,7 +55,7 @@ export function Track({ role, params }: PageProps) {
   if (!r) return <div className="ik" data-native="" data-testid="ik-track" data-found="no"><IntakeNav role={role} here="track" /><EmptyState title={`No request ${params['id'] || ''} in this browser`} icon="inbox" action={<a className="ui-btn ui-btn--primary" href="#/requests">My requests</a>}>Requests are kept in the browser they were made in. This demonstration has no shared server for them.</EmptyState></div>;
   const s = standing(r, w, desk); const draft = stateOf(r) === 'DRAFT'; const room = r.roomId ? roomById(r.roomId) : null; const d = draftOf(r); const p = r.draft ? propose(d) : null;
   const pol = r.policy; const atts = r.attachments || []; const missing = photoChecklist(d).filter(([i]) => !atts.some((a) => a.item === i));
-  const needed = draft ? 'Finish it and send it.' : pol === 'LOCATION_VERIFICATION_REQUIRED' && r.provisional ? 'Nothing from you. Someone on site confirms where the new space is; photos help them.' : s.state === 'HELD' && s.reason ? `What the approver asked for: ${s.reason}` : 'Nothing from you right now.';
+  const needed = draft ? 'Finish it and send it.' : r.provisional && r.provisional.location !== 'VERIFIED' ? 'Nothing from you. Someone on site confirms where the new space is; photographs help them.' : s.state === 'HELD' && s.reason ? `What the approver asked for: ${s.reason}` : 'Nothing from you right now.';
   return (
     <div className="ik" data-native="" data-testid="ik-track" data-found="yes" data-id={r.id} data-state={s.state} data-record={stateOf(r)}>
       <IntakeNav role={role} here="track" />
@@ -84,7 +84,7 @@ export function Track({ role, params }: PageProps) {
           {r.incidentId && opens('#/servicehands') && <p><a href="#/servicehands">Open job {r.incidentId} in ServiceHands</a></p>}</section>
         <section className="ik-sec" aria-labelledby="ik-doc-h" data-testid="ik-docs"><h2 id="ik-doc-h">Photographs and files ({atts.length})</h2>
           {atts.length ? <ul className="ik-atts">{atts.map((a) => <li key={a.id}>{a.preview ? <img src={a.preview} alt={a.name} /> : <span className="ik-atts__file" aria-hidden="true"><Icon name="book" size={20} /></span>}<span><b>{a.name}</b><span className="ui-meta">added {day(a.at)} by the {ROLES[a.by]?.label || a.by} · location documented, not verified{a.sha256 ? ` · SHA-256 ${a.sha256.slice(0, 12)}…` : ''}</span></span></li>)}</ul>
-            : <p className="ui-muted">None.{pol === 'LOCATION_VERIFICATION_REQUIRED' ? ' The location is checked on site instead.' : ''}</p>}
+            : <p className="ui-muted">None.{pol === 'DOCUMENTATION_REQUIRED' ? ' Photographs or a plan are needed before design; someone on site can take them.' : ''}</p>}
           {atts.length > 0 && missing.length > 0 && !draft && <p className="ui-meta">Not shown: {missing.map(([, l]) => l.replace(/^Show /, '').toLowerCase()).join('; ')}.</p>}</section>
       </div>
       {p && r.kind !== 'replace-device' && <section className="ik-sec" aria-labelledby="ik-pr-h"><h2 id="ik-pr-h">{r.kind === 'new-room' ? 'The room asked for, as proposed' : 'The room with this request, as proposed'}</h2><ProposedRoom p={p} d={d} people={r.kind === 'new-room' ? d.people : room?.capacity || 8} /><Summary p={p} d={d} /></section>}
