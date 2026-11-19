@@ -106,6 +106,7 @@ suite('unit: SIGNAL canon (hash manifest, 133 chapters / 1,610 panels / 387 deci
 suite('unit: SIGNAL content bundle (lessons, quizzes, drills, labs, incidents, gates; held by hash)', 'unit', node, ['--test', 'tests/unit/signal-library.test.mjs'], tap);
 suite('unit: SIGNAL interactive film (every chapter a valid film; Season 1 footage and takes placed; Ten Seats acoustics match the canon)', 'unit', node, ['--test', 'tests/unit/signal-film.test.mjs'], tap);
 suite('unit: typed launch intents (#232: every website→demonstration link opens a registered page for its perspective; no open redirect)', 'unit', node, ['--test', 'tests/unit/launch-intents.test.mjs'], tap);
+suite('unit: failure-map measures (count, per room, per device, per room-month, severity-weighted, repeat vs unique; 18 Nov 15:38)', 'unit', node, ['--test', 'tests/unit/heat-metrics.test.mjs'], tap);
 suite('unit: SIGNAL story engine (decisions recorded as the reference does, clock, echoes, gates, quiz records)', 'unit', node, ['--test', 'tests/unit/signal-story.test.mjs'], tap);
 suite('unit: SIGNAL drills (six kinds on the reference rules, all 146 drills)', 'unit', node, ['--test', 'tests/unit/signal-drills.test.mjs'], tap);
 suite('unit: SIGNAL live incidents (the reference rules; all 121 solver paths end proven inside the clock)', 'unit', node, ['--test', 'tests/unit/signal-incidents.test.mjs'], tap);

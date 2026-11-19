@@ -90,3 +90,6 @@
   .emap__lens { position: static; margin: 10px 0 0; display: flex; width: fit-content; background: #121a26; }
   .emap__legend { position: static; width: auto; margin: 8px 0 0; background: #121a26; }
 }
+/* six measures of the Issues lens (founder 18 Nov 15:38): they wrap into rows inside the legend */
+.emap__seg--wrap { display: flex; flex-wrap: wrap; justify-self: stretch; }
+.emap__seg--wrap button { flex: 1 1 auto; min-height: 44px; }

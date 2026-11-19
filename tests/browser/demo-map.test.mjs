@@ -65,6 +65,24 @@ const src = await p.getByTestId('emap-legend-src').innerText();
 ok('MAP-19', 'the legend says where the numbers come from, that they are synthetic, and when they were computed', /room records/.test(src) && /synthetic/.test(src) && /computed at \d\d:\d\d/.test(src), src);
 await p.getByTestId('campus-b-BCN').click(); await p.waitForTimeout(400); const cm = await p.getByTestId('emap-card-metric').innerText(); const f = facts['BCN'];
 ok('MAP-20', 'a building’s card shows the numerator and denominator behind its rate and drills to its rooms', cm.includes(`${f.issues} open issue${f.issues === 1 ? '' : 's'} ÷ ${f.rooms} rooms = ${((f.issues / f.rooms) * 10).toFixed(1)} per 10 rooms`) && (await p.getByTestId('emap-card-drill').getAttribute('href')) === '#/rooms?building=BCN', cm);
+// the six measures (founder 18 Nov 2026 15:38): each pin shows its measure, the card shows the numerator and denominator behind it, the
+// legend says how it is computed and from which source; the BCN card is still open from MAP-20
+{ const lvOf = () => p.evaluate(() => Object.fromEntries([...document.querySelectorAll('[data-testid^="emap-lv-"]')].map((e) => [e.getAttribute('data-testid').slice(8), e.textContent])));
+  const seg = await p.evaluate(() => [...document.querySelectorAll('[data-testid=emap-legend] [role=group] button')].map((b) => [b.textContent, Math.round(b.getBoundingClientRect().height)]));
+  ok('MAP-31', 'the Issues lens offers six measures — count, per 10 rooms, per 10 devices, per room-month, severity-weighted, repeat share — each a 44 px button', seg.map((x) => x[0]).join('|') === 'Count|Per 10 rooms|Per 10 devices|Per room-month|Severity-weighted|Repeat share' && seg.every((x) => x[1] >= 44), JSON.stringify(seg));
+  const res = {};
+  for (const [id, re, card] of [['emap-m-device', /^\d+\.\d\/10 devices$|^—$/, /^(\d+) open issues? ÷ (\d+) devices = ([\d.]+) per 10 devices$/], ['emap-m-roommonth', /^\d+\.\d\/100 room-mo$|^—$/, /^(\d+) break-fix jobs ÷ (\d+) room-months = ([\d.]+) per 100 room-months$/], ['emap-m-burden', /^burden \d+$|^—$/, /^(\d+) jobs, weighted 5 \/ 3 \/ 1 by severity = burden (\d+)$/], ['emap-m-repeat', /^\d+% repeat$|^—$/, /^(\d+) repeat and (\d+) unique of (\d+) jobs = (\d+)% repeat$/]]) {
+    await p.getByTestId(id).click(); await p.waitForTimeout(250);
+    const lv = await lvOf(); const cm = (await p.getByTestId('emap-card-metric').innerText()).trim(); const def = await p.getByTestId('emap-legend-def').innerText(); const src = await p.getByTestId('emap-legend-src').innerText();
+    res[id] = { lv: lv.BCN, cm, ok: Object.values(lv).every((v) => re.test(v || '')) && re.test(lv.BCN) && card.test(cm), def: def.length > 30, src: id === 'emap-m-device' ? /room records/.test(src) : /synthetic service history/.test(src) && /1 Nov 2025 to 1 Nov 2026/.test(src) };
+    const m = card.exec(cm);
+    if (m && id === 'emap-m-device') res[id].math = lv.BCN === `${((+m[1] / +m[2]) * 10).toFixed(1)}/10 devices`;
+    if (m && id === 'emap-m-roommonth') res[id].math = lv.BCN === `${((+m[1] / +m[2]) * 100).toFixed(1)}/100 room-mo`;
+    if (m && id === 'emap-m-burden') res[id].math = lv.BCN === `burden ${m[2]}`;
+    if (m && id === 'emap-m-repeat') res[id].math = +m[1] + +m[2] === +m[3] && lv.BCN === `${m[4]}% repeat` && Math.round((100 * +m[1]) / +m[3]) === +m[4];
+  }
+  ok('MAP-32', 'each measure: every pin shows it, the building card shows the arithmetic behind its pin, the legend says how it is computed and from which source (the last twelve months for the history measures)', Object.values(res).every((r) => r.ok && r.def && r.src && r.math), JSON.stringify(res));
+  await p.getByTestId('emap-count').click(); await p.waitForTimeout(200); }
 await p.getByTestId('emap-up-campus').click(); await p.getByTestId('emap-lens-risk').click(); await p.waitForTimeout(300); const rv = await p.evaluate(() => [...document.querySelectorAll('[data-testid^="emap-lv-"]')].map((e) => e.textContent));
 ok('MAP-21', 'the Health risk lens shows 100 − health for each scored building and no value for an unscored one (never a zero)', rv.length === 6 && rv.every((x) => /^risk \d+$|^—$/.test(x || '')), rv.join(' | '));
 await p.getByTestId('emap-lens-none').click(); await p.evaluate(() => { location.hash = '#/pro/issues'; }); await p.waitForSelector('[data-testid=pro-failure-map] [data-testid=emap][data-ready=true]', { timeout: 30000 });
