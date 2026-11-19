@@ -117,3 +117,13 @@ test('generated CSS: system default, data-theme on any element, stages stay dark
   const init = fs.readFileSync(path.join(pkg, 'dist/theme-init.js'), 'utf8');
   assert.ok(init.includes('"empathia.theme"') && init.length < 400, 'theme-init uses the shared key and stays tiny');
 });
+
+// SIGNAL's field calculator (packages/ui/src/kit.css, 18 Nov 2026): one dark instrument in either theme, so its tokens are the same in
+// both modes and every text colour on it is checked against its own grounds
+test('the field calculator instrument: same in both themes; its text ≥ 4.5:1 on its panel, wells and keys', () => {
+  const I = (k) => T.color[`inst-${k}`];
+  for (const k of ['night', 'well', 'key', 'line', 'line2', 'ink', 'dim', 'mute', 'amber', 'answer']) assert.equal(I(k).dark, I(k).light, `--inst-${k}`);
+  for (const fg of ['ink', 'dim', 'mute', 'amber', 'answer']) assert.ok(contrast(I(fg).dark, I('night').dark) >= 4.5, `--inst-${fg} on --inst-night`);
+  for (const g of ['well', 'key']) assert.ok(contrast(I('ink').dark, I(g).dark) >= 4.5, `--inst-ink on --inst-${g}`);
+  assert.ok(contrast(I('night').dark, I('amber').dark) >= 4.5, 'the = key: --inst-night on --inst-amber');
+});

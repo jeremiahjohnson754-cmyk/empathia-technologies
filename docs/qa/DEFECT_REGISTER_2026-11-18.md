@@ -189,6 +189,15 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
   - `vendor-claims`: Google named in a comment, and "Zoom" in the zoom buttons' labels.
 - **Fix:** see commit e9f987f. All 90 unit files pass.
 
+### D18-20 · P2 · Fixed (found before the exact-commit regression of d836752 could pass)
+- **What was wrong:** two unit checks failed on the release candidate, so its regression was stopped after part 1's unit stage:
+  - `connector-claims`: the Tour G takes' `source` lines and two comments named the voice tool outside the exempt `voice:` disclosure line;
+  - `packages/ui` kit.css: SIGNAL's field calculator (restored that morning) drew with ten literal hex colours instead of tokens.
+- **Fix:** the source lines say "generation flow …" (the tool is still named in each take's `voice:` line and in
+  docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md); the calculator's colours are tokens `--inst-*` in tokens.json, identical in both
+  themes (it is one dark instrument by design), with a contrast check for each text colour on its grounds. Whole unit sweep: 873 pass.
+- **Lesson:** run the whole unit sweep and every package's own tests before freezing a candidate, not only the suites of the day.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220

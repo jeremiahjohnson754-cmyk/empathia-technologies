@@ -157,7 +157,7 @@ export const TOURS: Tour[] = [
 
 /** Narration takes that are shipped (apps/demo/public/media/narration), each held by its hash. A stop without one is text only.
  *  tour-a-05 was owner-approved by ear. Of the Tour G takes (18 Nov 2026), ten are the founder's own picks after listening; G7 is
- *  the first take, not yet chosen by ear. G9, G12, G13, G15 and G16 have no voice (ElevenLabs refused them when the account's
+ *  the first take, not yet chosen by ear. G9, G12, G13, G15 and G16 have no voice (the voice provider refused them when the account's
  *  credits ran out; founder 16:41: "make them silent with captions") — see CAPTIONS_ONLY. Provenance:
  *  docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md. */
 export const NARRATION: Record<string, { src: string; captions: string; transcript: string; seconds: number; voice: string; lufs: number; sha256: string; source: string }> = {
@@ -171,70 +171,70 @@ export const NARRATION: Record<string, { src: string; captions: string; transcri
     src: 'media/narration/tour-g-01.mp3', captions: 'media/narration/tour-g-01.vtt', seconds: 15.15, lufs: -23.4,
     transcript: 'Every room has a story. This is Atlas 4.218, a boardroom on a fictional campus. Core Replay plays its life from its own records, and every step tells you how sure it is. Watching never changes the room.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'f49c35f59ccbe68360822089febcb8ae570b51bfb4c8943d4132961444ac886e', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation 66oKWmt04qNUfw5mZ90M, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 cbac6ec7…), gain −0.4 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'f49c35f59ccbe68360822089febcb8ae570b51bfb4c8943d4132961444ac886e', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation 66oKWmt04qNUfw5mZ90M, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 cbac6ec7…), gain −0.4 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-02': {
     src: 'media/narration/tour-g-02.mp3', captions: 'media/narration/tour-g-02.vtt', seconds: 14.03, lufs: -23.5,
     transcript: 'It begins with intent. Nine requirements, six of them must-haves: everyone heard and seen at the far end, one touch to join, simple enough for a guest. Everything that follows is judged against these.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'c797160408a456302e67e0339f3d94eae246724c3aabddb472b2bc98438e1f3b', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation ijnqK1jRQUzKcedoE9Rq, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 0f365880…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'c797160408a456302e67e0339f3d94eae246724c3aabddb472b2bc98438e1f3b', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation ijnqK1jRQUzKcedoE9Rq, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 0f365880…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-03': {
     src: 'media/narration/tour-g-03.mp3', captions: 'media/narration/tour-g-03.vtt', seconds: 10.45, lufs: -23.5,
     transcript: 'Then the room is designed. Every device becomes a numbered position, and before anything is installed, the commissioning engine already knows which tests this design will need.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '35f06a50f1db624816b782b7d7e2d3f833885cbbe8e944cd60ef2eff4373b107', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation 8tyxEsmHhRecrpZdWzL3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 9c1b3cd5…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '35f06a50f1db624816b782b7d7e2d3f833885cbbe8e944cd60ef2eff4373b107', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation 8tyxEsmHhRecrpZdWzL3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 9c1b3cd5…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-04': {
     src: 'media/narration/tour-g-04.mp3', captions: 'media/narration/tour-g-04.vtt', seconds: 9.17, lufs: -23.4,
     transcript: 'This is the same room in Lite. The same record, seen in three dimensions: the walls, the furniture, and every device at its position.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '8eef209559b25b00e3329b2c1fbbf3348ce0eccf3123c6937f3984d23187bfe7', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation WHLKCuh3Sm2z3YUNJpkX, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 9bca2d12…), gain −1 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '8eef209559b25b00e3329b2c1fbbf3348ce0eccf3123c6937f3984d23187bfe7', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation WHLKCuh3Sm2z3YUNJpkX, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 9bca2d12…), gain −1 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-05': {
     src: 'media/narration/tour-g-05.mp3', captions: 'media/narration/tour-g-05.vtt', seconds: 11.55, lufs: -23.4,
     transcript: 'The design becomes real. The front camera’s position now holds a physical unit with its own identity. A position and the asset in it are different things, and the record keeps both.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '382f0b45f9aa92307ce00a9794a32a2d0a20a1589d1b60a5e1f89c268e4107f7', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation xEk3ctEiinXQPrFeAZAD, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 510c3b1f…), gain −0.7 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '382f0b45f9aa92307ce00a9794a32a2d0a20a1589d1b60a5e1f89c268e4107f7', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation xEk3ctEiinXQPrFeAZAD, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 510c3b1f…), gain −0.7 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-06': {
     src: 'media/narration/tour-g-06.mp3', captions: 'media/narration/tour-g-06.vtt', seconds: 10.19, lufs: -23.4,
     transcript: 'Commissioning proves it. Each test is recorded by the person responsible, and checked by somebody else. A result nobody independently verified does not count.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'c9f19495ff32114fb907c73b2fbef5d258ed133ea55c3f863ee6ddf42a214013', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation lnUIEkALdiJNuJamLqe3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 8b7120ea…), gain −0.6 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'c9f19495ff32114fb907c73b2fbef5d258ed133ea55c3f863ee6ddf42a214013', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation lnUIEkALdiJNuJamLqe3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 8b7120ea…), gain −0.6 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-07': {
     src: 'media/narration/tour-g-07.mp3', captions: 'media/narration/tour-g-07.vtt', seconds: 9.95, lufs: -23.5,
     transcript: 'Here is the record itself: what was required, what was observed, who recorded it, and who verified it. The evidence is synthetic, and it says so.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'a1cc732a1276ae8b25a6354298da3946b41546a7dc2b7af2a746b083b31f942c', source: 'Tour G take 1 of its line, first take; the founder’s picks did not include G7, so it is not yet chosen by ear (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation NgKBU1Usu87Kt4xPNAY3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 f6b0a4f4…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'a1cc732a1276ae8b25a6354298da3946b41546a7dc2b7af2a746b083b31f942c', source: 'Tour G take 1 of its line, first take; the founder’s picks did not include G7, so it is not yet chosen by ear (generation flow tqtqM1ZAZZSfJji28HCc, generation NgKBU1Usu87Kt4xPNAY3, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 f6b0a4f4…), gain −0.8 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-08': {
     src: 'media/narration/tour-g-08.mp3', captions: 'media/narration/tour-g-08.vtt', seconds: 10.45, lufs: -23.4,
     transcript: 'The room is no longer just installed. Its accepted condition is now documented. Baseline one is what this room was proven to do, and it is never overwritten.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: 'a337661383445fa61268bb82e8ee2819d7e044820ed46bd0f8197e752b61fecf', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation ze4rNhFfYYEiigH4EiLw, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 2417e01a…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: 'a337661383445fa61268bb82e8ee2819d7e044820ed46bd0f8197e752b61fecf', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation ze4rNhFfYYEiigH4EiLw, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 2417e01a…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-10': {
     src: 'media/narration/tour-g-10.mp3', captions: 'media/narration/tour-g-10.vtt', seconds: 9.64, lufs: -23.5,
     transcript: 'Who can fix it? Search Party starts from the room: who supports it, who knows it, and how they are connected, each with where that knowledge came from.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '28ba7d7e3c7a6c86e2b959fda85c174e2abfdf98e4123bbf8bf505dec922cdcd', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation kFkiOn1cVf2IrUgI9yRh, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 b4c8ddd6…), gain −1.2 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '28ba7d7e3c7a6c86e2b959fda85c174e2abfdf98e4123bbf8bf505dec922cdcd', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation kFkiOn1cVf2IrUgI9yRh, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 b4c8ddd6…), gain −1.2 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-11': {
     src: 'media/narration/tour-g-11.mp3', captions: 'media/narration/tour-g-11.vtt', seconds: 8.91, lufs: -23.5,
     transcript: 'And where is the equipment? Search for the replacement unit, and every product finds the same asset: its position, its room, its history.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '949d5933124658d2166af6b70599d4e603276d1a8b7a1e10738939ec7acc0d62', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation FvkpPBuzaxPHam25nQq1, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 5b779dd8…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '949d5933124658d2166af6b70599d4e603276d1a8b7a1e10738939ec7acc0d62', source: 'Tour G take 2 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation FvkpPBuzaxPHam25nQq1, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 5b779dd8…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
   },
   'tour-g-14': {
     src: 'media/narration/tour-g-14.mp3', captions: 'media/narration/tour-g-14.vtt', seconds: 7.63, lufs: -23.5,
     transcript: 'Assurance holds the accepted state, so any later difference shows as drift against a known baseline, not as a guess.',
     voice: 'AI-generated voice (synthetic, not a real person) · ElevenLabs premade voice Brian · eleven_v4',
-    sha256: '97c2c43ccd287b033f07987506ec760aab89d66868e766a0ba282cc28bd7da22', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (ElevenLabs flow tqtqM1ZAZZSfJji28HCc, generation fksjm3N9vFzqBKBqEaDo, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 ac45e37e…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
+    sha256: '97c2c43ccd287b033f07987506ec760aab89d66868e766a0ba282cc28bd7da22', source: 'Tour G take 1 of its line, the founder’s pick after listening (sent 2026-11-18 16:53) (generation flow tqtqM1ZAZZSfJji28HCc, generation fksjm3N9vFzqBKBqEaDo, 2026-11-18; founder approval for media generation 2026-11-18 16:23; source sha256 ac45e37e…), gain −0.9 dB toward −23 LUFS, mono 96 kb/s',
   },
 };
-/** Stops whose line was written for the voice but has no take (ElevenLabs refused them when the credits ran out; founder 18 Nov
+/** Stops whose line was written for the voice but has no take (the voice provider refused them when the credits ran out; founder 18 Nov
  *  16:41: "it's good enough to make them silent with captions"). The same words, shown as timed captions with no sound, at the pace
  *  of the shipped takes (2.6 words a second), and labelled as captions only. One entry per sentence. */
 export const CAPTIONS_ONLY: Record<string, string[]> = {
