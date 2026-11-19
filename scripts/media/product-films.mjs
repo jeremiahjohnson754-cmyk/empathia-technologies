@@ -155,4 +155,35 @@ export const FILMS = {
       { do: async (p) => { await go('#/v25/fi')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Back up: no collector is connected in the demonstration; the checks are simulated.', proof: '[data-testid=fi-plan]', hold: 3400 },
     ],
   },
+  // Core Replay, the life of a room (founder 18 Nov 2026 17:25 §13–14; docs/media/FILM_TREATMENTS_2026-11-18.md, film 5): one room from
+  // its request to its second accepted baseline, each stage proved by the replay's own stage strip before its words appear
+  'F-LIFE': {
+    product: 'mission-control', title: 'Core Replay: the life of a room', label: 'EMPATHIA · CORE REPLAY · DEMONSTRATION · SYNTHETIC DATA', role: 'syseng',
+    start: '#/replay/R-ATL-4-218?at=request', startProof: '.ops-strip li.on:has-text("Request")',
+    steps: [
+      { do: show('[data-testid=rp-card]'), say: 'Every room has a story. This one starts as a request.', proof: '.ops-strip li.on:has-text("Request")', hold: 3200 },
+      { do: go('#/replay/R-ATL-4-218?at=requirements'), say: 'Nine requirements, six of them must-haves. Everything later is judged against them.', proof: '.ops-strip li.on:has-text("Requirements")', hold: 3400 },
+      { do: go('#/replay/R-ATL-4-218?at=design'), say: 'Designed: every device a numbered position.', proof: '.ops-strip li.on:has-text("Design")' },
+      { do: async (p) => { await go('#/lite/room/R-ATL-4-218')(p); await p.waitForSelector('[data-testid=lite-room-3d]'); await show('[data-testid=lite-room-3d]')(p); }, say: 'The same room in Lite: one record, another view.', proof: '[data-testid=lite-room-3d]', hold: 3200 },
+      { do: async (p) => { await go('#/replay/R-ATL-4-218?at=build')(p); await p.evaluate(() => scrollTo(0, 0)); await show('[data-testid=rp-card]')(p); }, say: 'Installed: position PA-0007 holds asset AS-0097.', proof: '.ops-strip li.on:has-text("Build")' },
+      { do: go('#/replay/R-ATL-4-218?at=commissioning'), say: 'Each test recorded, then verified by someone else.', proof: '.ops-strip li.on:has-text("Commissioning")' },
+      { do: go('#/replay/R-ATL-4-218?at=baseline1'), say: 'Baseline v1: what the room was proven to do.', proof: '.ops-strip li.on:has-text("Baseline v1")' },
+      { do: go('#/replay/R-ATL-4-218?at=change'), say: 'AS-0097 out, AS-0112 in. Only the tests that name PA-0007 reopen.', proof: '[data-testid=reopened]', hold: 3600 },
+      { do: go('#/replay/R-ATL-4-218?at=baseline2'), say: 'Re-accepted: baseline v2 is current, and v1 is kept.', proof: '.ops-strip li.on:has-text("Baseline v2")' },
+      { do: async (p) => { await go('#/assurance/room/R-ATL-4-218')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'From here on, Assurance watches the room against that baseline.', proof: 'main h1', hold: 3400 },
+    ],
+  },
+  // "Follow one microphone" (founder 18 Nov 2026 17:25 §6 and §13): the five catalogued launches of /platform#follow, in order, each
+  // opened the way the website opens it (from=site), so the demonstration itself switches to that view's perspective and says so
+  'F-FOLLOW': {
+    product: 'lite', title: 'Follow one microphone through five products', label: 'EMPATHIA · ONE DEVICE, ONE RECORD · DEMONSTRATION · SYNTHETIC DATA', role: 'visitor',
+    start: '#/lite/room/R-ATL-4-218?mode=engineer&device=A-0104&from=site&li=follow-lite&back=%2Fplatform%23follow-lite', startProof: '[data-testid=launch-strip][data-launch=follow-lite]',
+    steps: [
+      { do: show('[data-testid=lite-room-3d]'), say: 'Ceiling microphone A-0104, asset AS-0103, in the boardroom it serves: Lite, as a Systems Engineer.', proof: '[data-testid=lite-room-3d]', hold: 3800 },
+      { do: async (p) => { await go('#/commissioning/room/R-ATL-4-218?from=site&li=follow-commissioning&back=%2Fplatform%23follow-commissioning')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Its room’s commissioning record: what was required, what was observed, who verified it.', proof: '[data-testid=launch-strip][data-launch=follow-commissioning]', hold: 3600 },
+      { do: async (p) => { await go('#/assurance/room/R-ATL-4-218?from=site&li=follow-assurance&back=%2Fplatform%23follow-assurance')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Assurance: the accepted baseline the room is checked against.', proof: '[data-testid=launch-strip][data-launch=follow-assurance]', hold: 3400 },
+      { do: async (p) => { await go('#/search?focus=Room:R-ATL-4-218&from=site&li=follow-support&back=%2Fplatform%23follow-support')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Search Party: who supports the room, who knows it, and where each fact comes from.', proof: '[data-testid=launch-strip][data-launch=follow-support]', hold: 3600 },
+      { do: async (p) => { await go('#/replay/R-ATL-4-218?at=change&from=site&li=follow-replay&back=%2Fplatform%23follow-replay')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Core Replay: the room’s life, stopped where a change reopens only the tests it touches.', proof: '[data-testid=reopened]', hold: 3800 },
+    ],
+  },
 };

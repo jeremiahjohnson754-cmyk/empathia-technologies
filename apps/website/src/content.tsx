@@ -164,6 +164,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         {film('FA') ? <Section title="The platform in two minutes">{film('FA')}</Section> : null}
         <Section title="The lifecycle"><EvidenceLine /></Section>
         <Follow demoUrl={ctx.demoUrl} captures={ctx.captures} />
+        {film('F-FOLLOW') ? <Section id="follow-film" title="The same five views, as one film" lead="Recorded from the demonstration, opened the way this page opens it: each view switches to its own perspective and says so.">{film('F-FOLLOW')}</Section> : null}
         <Strip id="flow" eyebrow="The workflow" title="Five moves of one record" items={FLOW} flow />
         <Section title="The products"><ProductTiles captures={ctx.captures} /></Section>
         <Section title="The demonstration campus" tone="deep"><Campus /></Section>
@@ -219,6 +220,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       <>
         <Hero label="How it works" action={{ href: demo(), label: 'Walk the lifecycle in the live demo' }} title="From request to accepted baseline" lead="The governed lifecycle the platform is built around, as the demonstration shows it: every transition with an authorized role, the required evidence, a guard, an event and an audit record." />
         <Strip id="flow" eyebrow="In five moves" title="Design, prove, operate, repair, learn" items={FLOW} flow />
+        {film('F-LIFE') ? <Section id="life" title="One room’s whole life" lead="Core Replay plays a room’s life back from its records, recorded here from the demonstration: the request, the design, the build, the tests, the first baseline, a camera change that reopens only the tests it touches, and the second baseline.">{film('F-LIFE')}</Section> : null}
         <Section title="Nine steps, one record"><Steps steps={[
           { title: 'Request', body: 'A requestor describes the room, with photos, plans, known dimensions and constraints. Photos follow a stated privacy policy.' },
           { title: 'Acknowledgement and pitch', body: 'The assigned supplier acknowledges; the operations lead assembles a revisioned business case.' },
