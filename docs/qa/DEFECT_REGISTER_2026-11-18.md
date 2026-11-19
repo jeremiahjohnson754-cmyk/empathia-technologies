@@ -266,6 +266,8 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
   while that part ran I built and tested the commercial package, ran the private pricing model and the public exposure audit in the
   main tree, against this register's own rule. The run was stopped after part 1 (20 suites in, CL-13 its only failure) and is not
   used for any decision; a19216e supersedes 89d5d83 and its regression runs with nothing else on the machine.
+- **19 Nov, 28f53ac (run alone, about 16:00-17:51 UTC):** part 1 recorded CL-13 at 7 fps, FAIL; rerun alone on the same build right
+  after the regression: 20/20 PASS. Recorded as it ran, not rerun to green; the measurement change above is still owed (#245).
 - **19 Nov, 9e081f6 (stopped before any part):** the regression stopped at the build, "generated files are stale:
   docs/api/openapi.json" (3ef51ae changed two route summaries without regenerating it); fixed in c2f5487 and 89d5d83.
 
