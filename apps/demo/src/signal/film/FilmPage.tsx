@@ -11,10 +11,10 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PageProps } from '../../registry.types.js';
-import { answerTalk, callbacksBefore, chapterVerdict, choose, complete, echoes, emptyChapter, load, nextOf, prevOf, replayDecision, save, seconds, tally, timeOut, trustLine, weightLine, weightOf, TIMEOUT, type Chapter, type ChapterState, type Item, type Progress, type StoryIndex } from '../story.js';
+import { answerTalk, callbacksBefore, chapterVerdict, choose, complete, echoes, emptyChapter, find, load, nextOf, prevOf, replayDecision, save, seconds, tally, timeOut, trustLine, weightLine, weightOf, TIMEOUT, type Chapter, type ChapterState, type Item, type Progress, type StoryIndex } from '../story.js';
 import { TAKES, VOICES, takeFor, readMs, quoted, returnsToChoice } from '../cinematic.js';
 import { Face, getJson, loadDefs, loadIndex, useLoaded, notKept } from '../StoryPage.js';
-import { buildFilm, INTERLUDES, ONLY_IF, loadFilm, saveFilm, emptyFilm, type FilmShot, type FilmState, type PlayRecord } from './director.js';
+import { buildFilm, INTERLUDES, ONLY_IF, loadFilm, saveFilm, emptyFilm, hidingPlace, objectiveState, questOf, type FilmShot, type FilmState, type PlayRecord } from './director.js';
 import { Board, Cards, FillTest, Measure, PlanConsequence } from './Interludes.js';
 import { enableSound, roomTone, silence } from './sound.js';
 
@@ -42,6 +42,7 @@ function Film({ ix, id }: { ix: StoryIndex; id: string }) {
   const writeFilm = (f: FilmState) => { setFilm(f); if (!sandbox) saveFilm(id, f); };
   const [k, setK] = useState(0); const [line, setLine] = useState(0); const [playing, setPlaying] = useState(true);
   const [sound, setSound] = useState(false); const [out, setOut] = useState<Out | null>(null); const [left, setLeft] = useState<number | null>(null);
+  const [miss, setMiss] = useState(0);
   const [cap, setCap] = useState<'m' | 'l'>('m'); const [theatre, setTheatre] = useState(false); const [said, setSaid] = useState('');
   const audio = useRef<HTMLAudioElement>(null); const timer = useRef<number | null>(null); const root = useRef<HTMLElement>(null); const stage = useRef<HTMLDivElement>(null);
   const panelNo = useMemo(() => { const m = new Map<number, number>(); let n = -1; items.forEach((it, i) => { if (it.type === 'panel') { n += 1; m.set(i, n); } }); return m; }, [items]);
@@ -63,9 +64,14 @@ function Film({ ix, id }: { ix: StoryIndex; id: string }) {
   const play = shot.kind === 'play' ? (INTERLUDES[id] || []).find((p) => p.id === shot.id) || null : null;
   const playRec = play ? film.plays[play.id] || null : null;
   const chosen = dec ? state.choices[dec.id] : undefined;
+  const disc = shot.kind === 'find' && it?.type === 'discovery' ? it : null; const twist = shot.kind === 'twist' && it?.type === 'twist' ? it : null; const quest = questOf(items);
+  const discoveries = useMemo(() => items.filter((x) => x.type === 'discovery').map((x) => (x as Extract<Item, { type: 'discovery' }>).id), [items]);
+  const twistAt = shots.findIndex((x) => x.kind === 'twist');
+  const upTo = shot.kind === 'credits' ? items.length : 'item' in shot ? shot.item : 0;
+  const evidence = useMemo(() => items.slice(0, upTo + 1).flatMap((x) => (x.type === 'panel' ? x.evidence : [])), [items, upTo]);
   const clear = () => { if (timer.current) { window.clearTimeout(timer.current); timer.current = null; } };
   const actOf = (n: number) => { for (let j = n; j >= 0; j -= 1) { const s = shots[j]!; if (s.kind === 'act') return s.title; } return ref.title; };
-  const goTo = (n: number) => { clear(); audio.current?.pause(); const to = Math.max(0, Math.min(shots.length - 1, n)); setK(to); setLine(0); setOut(null); setLeft(null); setPlaying(true);
+  const goTo = (n: number) => { clear(); audio.current?.pause(); const to = Math.max(0, Math.min(shots.length - 1, n)); setK(to); setLine(0); setOut(null); setLeft(null); setPlaying(true); setMiss(0);
     const s = shots[to]!; if (s.kind === 'act') setSaid(`${s.title}${s.sub ? `. ${s.sub}` : ''}`); else if (s.kind === 'decision') setSaid('A decision. The film waits for you.'); else if (s.kind === 'play') setSaid('Your turn: a playable scene.');
     if (to > 0 && s.kind !== 'credits') writeFilm({ ...film, at: to }); };
   const advance = () => { clear(); if (ln && line + 1 < lines.length) { setLine(line + 1); return; } if (k + 1 < shots.length) goTo(k + 1); };
@@ -85,7 +91,7 @@ function Film({ ix, id }: { ix: StoryIndex; id: string }) {
   useEffect(() => { if (!limit || !playing) { setLeft(null); return undefined; } setLeft(limit); const t0 = Date.now(); const h = window.setInterval(() => { const s = limit - Math.floor((Date.now() - t0) / 1000); setLeft(s); if (s <= 0) { window.clearInterval(h); } }, 250); return () => window.clearInterval(h); }, [k, limit, playing]);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (left === 0 && dec && !state.choices[dec.id]) { setState(timeOut(state, dec)); setOut({ letter: TIMEOUT, result: (dec.timeout || ['Someone else decided for you.']).join(' '), consequence: '', ladder: false, weight: weightLine('costly', 2), trust: '', timedOut: true }); setSaid('Time ran out. The decision is recorded as missed.'); } }, [left]);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => { silence(); }, []);
-  useEffect(() => { if (shot.kind === 'decision' || shot.kind === 'play' || shot.kind === 'credits') root.current?.querySelector<HTMLElement>('.fm-focus')?.focus({ preventScroll: true }); }, [k]);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (shot.kind === 'decision' || shot.kind === 'play' || shot.kind === 'credits' || shot.kind === 'quest' || shot.kind === 'twist' || shot.kind === 'find') root.current?.querySelector<HTMLElement>('.fm-focus')?.focus({ preventScroll: true }); }, [k]);   // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (shot.kind === 'credits' && !sandbox && !state.done && complete(items, state)) setState({ ...state, done: true }); }, [k]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const pick = (letter: string) => {
@@ -110,7 +116,7 @@ function Film({ ix, id }: { ix: StoryIndex; id: string }) {
   if (!ch.data) return <div className="sg" aria-busy="true"><h1 tabIndex={-1}>{ref.title}</h1><p className="lead">Opening the film…</p></div>;
   const svg = shot.kind === 'panel' ? art.data?.panels[panelNo.get(shot.item) ?? -1] : undefined;
   // a decision or conversation holds the last picture behind it, dimmed, so the choice stays in the scene
-  const bgArt = (dec || talk) && 'item' in shot ? (() => { for (let j = shot.item; j >= 0; j -= 1) { const n = panelNo.get(j); if (n !== undefined) return art.data?.panels[n]; } return undefined; })() : undefined;
+  const bgArt = (dec || talk || disc || twist) && 'item' in shot ? (() => { for (let j = shot.item; j >= 0; j -= 1) { const n = panelNo.get(j); if (n !== undefined) return art.data?.panels[n]; } return undefined; })() : undefined;
   const acts = shots.map((s, i) => ({ s, i })).filter((x) => x.s.kind === 'act') as { s: Extract<FilmShot, { kind: 'act' }>; i: number }[];
   const prev = prevOf(ix, id); const prevEcho = prev ? echoes([], progress.chapters[prev.id]) : null; const next = nextOf(ix, id);
   const voiced = [...new Set(takes.map((t) => t.who))];
@@ -151,6 +157,27 @@ function Film({ ix, id }: { ix: StoryIndex; id: string }) {
         {!out && chosen && chosen.letter !== TIMEOUT && <p className="ui-meta">You chose {chosen.letter} before. <button type="button" className="ui-btn ui-btn--sm" onClick={() => goTo(k + 1)} data-testid="film-continue">Keep it and continue</button> or choose again.</p>}
         {!out && chosen?.letter === TIMEOUT && <p className="ui-meta">The clock ran out here before. <button type="button" className="ui-btn ui-btn--sm" onClick={() => setState(replayDecision(state, dec.id))} data-testid="film-replay-decision">Replay this decision</button> <button type="button" className="ui-btn ui-btn--sm" onClick={() => goTo(k + 1)}>Continue</button></p>}
       </div>}
+      {shot.kind === 'quest' && it?.type === 'quest' && <div className="fm-dec fm-quest" data-testid="film-quest">
+        <p className="fm-dec__k">{it.kind} · {it.level}</p><h2 className="fm-dec__q fm-focus" tabIndex={-1}>{it.title}</h2>
+        <p className="fm-dec__h"><b>Stakes:</b> {it.stakes}</p><p className="fm-dec__h"><b>Clock:</b> {it.clock} · <b>Reward:</b> {it.reward}</p>
+        <ul className="fm-obj" aria-label="Objectives">{it.objectives.map((o) => <li key={o.key} data-obj={o.key}>{o.text}</li>)}</ul>
+        <p className="ui-meta">The film keeps these objectives in the case file below, and ticks them as you go.</p>
+        <button type="button" className="ui-btn ui-btn--primary" onClick={() => goTo(k + 1)} data-testid="film-continue">Take the case</button>
+      </div>}
+      {disc && <div className="fm-find" data-testid="film-find" data-discovery={disc.id}>
+        {bgArt ? <div className="fm-find__art" aria-hidden="true" dangerouslySetInnerHTML={{ __html: bgArt }} /> : <div className="fm-find__art fm-find__art--none" />}
+        {!state.found.includes(disc.id) ? <>
+          <button type="button" className="fm-find__miss" aria-label="Look here" onClick={() => setMiss(miss + 1)} data-testid="film-find-miss" />
+          {(() => { const h = hidingPlace(disc.id); return <button type="button" className={`fm-find__spot${miss >= 3 ? ' is-hint' : ''}`} style={{ left: `${h.x * 100}%`, top: `${h.y * 100}%`, width: `${h.w * 100}%`, height: `${h.h * 100}%` }} aria-label={`Look closer: ${disc.teaser}`} onClick={() => { setState(find(state, disc.id)); setSaid(`Found: ${disc.title}.`); }} data-testid="film-find-spot" />; })()}
+          <div className="fm-find__bar"><p className="fm-dec__k fm-focus" tabIndex={-1}>Look closer · something about {disc.teaser}</p><p className="ui-meta">{miss === 0 ? 'Something in this picture is worth a closer look. Click where you would look.' : miss < 3 ? 'Not there. Look again.' : 'It is marked now.'} Optional: you can move on without it.</p>
+            <button type="button" className="ui-btn ui-btn--sm" onClick={() => goTo(k + 1)} data-testid="film-find-skip">Move on</button></div>
+        </> : <div className="fm-out fm-find__card" role="status" data-testid="film-found"><p className="fm-dec__k">Found · {disc.thread}</p><h2 className="fm-dec__q fm-focus" tabIndex={-1}>{disc.title}</h2>{disc.body.split(/\n{2,}/).map((x, i) => <p key={i}>{x.replace(/\*/g, '')}</p>)}<button type="button" className="ui-btn ui-btn--primary" onClick={() => goTo(k + 1)} data-testid="film-continue">Continue</button></div>}
+      </div>}
+      {twist && <div className="fm-dec fm-twist" data-testid="film-twist">
+        {bgArt && <div className="fm-dec__bg" aria-hidden="true" dangerouslySetInnerHTML={{ __html: bgArt }} />}
+        <p className="fm-dec__k">Twist</p><h2 className="fm-dec__q fm-focus" tabIndex={-1}>{twist.title}</h2><p className="fm-twist__b">{twist.body}</p>
+        <button type="button" className="ui-btn ui-btn--primary" onClick={() => goTo(k + 1)} data-testid="film-continue">Continue</button>
+      </div>}
       {talk && <div className="fm-dec fm-talk" data-testid="film-talk" data-talk={talk.id}>
         {bgArt && <div className="fm-dec__bg" aria-hidden="true" dangerouslySetInnerHTML={{ __html: bgArt }} />}
         <p className="fm-dec__k"><Face id={talk.who} pose="N" expr="worried" /> {nameOf(talk.who)}</p><h2 className="fm-dec__q fm-focus" tabIndex={-1}>{talk.prompt}</h2>
@@ -178,6 +205,11 @@ function Film({ ix, id }: { ix: StoryIndex; id: string }) {
       <button type="button" className="ui-btn ui-btn--quiet" onClick={() => { const el = stage.current; if (!el) return; if (document.fullscreenElement) void document.exitFullscreen(); else void el.requestFullscreen?.().catch(() => setTheatre(true)); }} data-testid="film-full">Full screen</button>
       <span className="ui-meta fm-ctl__where" data-testid="film-where">{actOf(k)} · shot {k} of {shots.length - 2}</span>
     </div>}
+    {shot.kind !== 'title' && (quest || evidence.length > 0 || discoveries.length > 0) && <section className="fm-case" aria-label="Case file" data-testid="film-case">
+      {quest && <div className="fm-case__col"><h3>Objectives</h3><ul className="fm-obj">{quest.objectives.map((o) => { const st = objectiveState(o.key, { choices: state.choices, found: state.found, discoveries, twistSeen: twistAt >= 0 && k > twistAt }); return <li key={o.key} data-obj={o.key} data-state={st}><span aria-hidden="true">{st === 'done' ? '✓' : st === 'open' ? '○' : '·'}</span> {o.text}{st === 'elsewhere' ? <> <a href={`#/story/${id}`} className="ui-meta">practice in the written story</a></> : null}<span className="ui-visually-hidden">{st === 'done' ? ', done' : st === 'open' ? ', not yet' : ''}</span></li>; })}</ul></div>}
+      <div className="fm-case__col"><h3>Evidence so far</h3>{evidence.length ? <ul className="fm-ev" data-testid="film-evidence-so-far">{evidence.map((e, i) => <li key={i} data-state={e.state}><span className={`fm-ev__s fm-ev__s--${e.state.toLowerCase()}`}>{e.state.toLowerCase()}</span> {e.label}</li>)}</ul> : <p className="ui-meta">Nothing recorded yet.</p>}
+        {discoveries.length > 0 && <p className="ui-meta" data-testid="film-found-count">Found {state.found.filter((f) => discoveries.includes(f)).length} of {discoveries.length} things worth a closer look.</p>}</div>
+    </section>}
     <p className="ui-visually-hidden" role="status" aria-live="polite" data-testid="film-said">{said}</p>
     {shot.kind !== 'title' && shot.kind !== 'credits' && <details className="fm-script"><summary>Transcript of this shot</summary>{lines.length ? <ol>{lines.map((l, i) => <li key={i}><b>{l.name}:</b> {l.text}</li>)}</ol> : <p>{String((it as { alt?: string; caption?: string })?.caption || (it as { alt?: string })?.alt || (shot.kind === 'footage' ? shot.note : ''))}</p>}</details>}
   </section>;

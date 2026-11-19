@@ -20,6 +20,9 @@ export type FilmShot =
   | { kind: 'decision'; item: number; id: string }
   | { kind: 'talk'; item: number; id: string }
   | { kind: 'play'; item: number; id: string }
+  | { kind: 'quest'; item: number }   // the chapter's briefing: what is at stake, and the objectives the film then tracks
+  | { kind: 'find'; item: number; id: string }   // a canon discovery, hidden in the last picture: optional, found by looking
+  | { kind: 'twist'; item: number }   // the canon twist, revealed
   | { kind: 'credits' };
 
 /** A playable scene: control passes to the player before canon item `before`, whose text must contain `anchor` (checked by the unit
@@ -47,6 +50,9 @@ export function buildFilm(chapterId: string, items: Item[]): FilmShot[] {
     for (const p of plays.filter((x) => x.before === i)) shots.push({ kind: 'play', item: i, id: p.id });
     if (it.type === 'heading') shots.push({ kind: 'act', title: it.text, sub: it.sub });
     for (const f of foot.filter((x) => x.before === i)) shots.push({ kind: 'footage', item: i, src: f.src, note: f.note });   // every reviewed clip is placed, whatever item it opens on
+    if (it.type === 'quest') { shots.push({ kind: 'quest', item: i }); return; }
+    if (it.type === 'discovery') { shots.push({ kind: 'find', item: i, id: it.id }); return; }
+    if (it.type === 'twist') { shots.push({ kind: 'twist', item: i }); return; }
     if (it.type !== 'panel' && it.type !== 'beat' && it.type !== 'decision' && it.type !== 'talk') return;
     if (it.type === 'decision') shots.push({ kind: 'decision', item: i, id: it.id });
     else if (it.type === 'talk') shots.push({ kind: 'talk', item: i, id: it.id });
@@ -66,6 +72,7 @@ export function validateFilm(chapterId: string, items: Item[], shots: FilmShot[]
   if (shots[0]?.kind !== 'title') bad.push('no title shot first'); if (shots[shots.length - 1]?.kind !== 'credits') bad.push('no credits last');
   for (const [i, it] of items.entries()) {
     if (it.type === 'decision' || it.type === 'talk') { const n = shots.filter((s) => (s.kind === 'decision' || s.kind === 'talk') && s.item === i).length; if (n !== 1) bad.push(`${it.id}: in the film ${n} times`); }
+    if (it.type === 'discovery' || it.type === 'twist' || it.type === 'quest') { const k = it.type === 'discovery' ? 'find' : it.type; const n = shots.filter((s) => s.kind === k && s.item === i).length; if (n !== 1) bad.push(`${it.type} at ${i}: in the film ${n} times`); }
   }
   for (const p of INTERLUDES[chapterId] || []) { if (!textOf(items[p.before]).includes(p.anchor)) bad.push(`${p.id}: canon item ${p.before} no longer says “${p.anchor}”`); if (shots.filter((s) => s.kind === 'play' && s.id === p.id).length !== 1) bad.push(`${p.id}: not placed once`); }
   for (const o of ONLY_IF[chapterId] || []) { const d = items.find((x) => x.type === 'decision' && x.id === o.decision) as Extract<Item, { type: 'decision' }> | undefined; if (!d || !d.options.some((x) => x.letter === o.letter)) bad.push(`only-if ${o.item}: ${o.decision}/${o.letter} does not exist`); const p = items[o.item]; if (!p || p.type !== 'panel' || !p.bubbles.some((b) => b.who === o.who)) bad.push(`only-if ${o.item}: no line by ${o.who}`); }
@@ -87,3 +94,17 @@ export function loadFilm(id: string): FilmState {
   return emptyFilm();
 }
 export function saveFilm(id: string, f: FilmState): void { try { const all = JSON.parse(localStorage.getItem(KEY) || '{}') as Record<string, FilmState>; all[id] = f; localStorage.setItem(KEY, JSON.stringify(all)); } catch { /* the film still plays */ } }
+const hash = (s: string): number => { let h = 2166136261; for (let i = 0; i < s.length; i += 1) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+/** Where a discovery hides in its picture: deterministic from its id (so a reload finds it in the same place), inside the lower
+ *  two-thirds, never touching an edge. Fractions of the picture's width and height. */
+export const hidingPlace = (id: string) => { const h = hash(id); const w = 0.2; const ht = 0.26; return { x: 0.06 + ((h % 1000) / 1000) * (0.88 - w), y: 0.3 + (((h >>> 10) % 1000) / 1000) * (0.62 - ht), w, h: ht }; };
+type Quest = Extract<Item, { type: 'quest' }>;
+/** A quest objective's state in the film: a decision recorded, the twist reached, discoveries found — or practice that lives in the
+ *  written story (core gates, meltdowns), which the film does not pretend to track. */
+export function objectiveState(key: string, ctx: { choices: Record<string, { letter: string }>; found: string[]; discoveries: string[]; twistSeen: boolean }): 'done' | 'open' | 'elsewhere' {
+  if (/^BR-/.test(key)) return ctx.choices[key] ? 'done' : 'open';
+  if (key === 'twist') return ctx.twistSeen ? 'done' : 'open';
+  const m = /^disc:(\d+)$/.exec(key); if (m) return ctx.found.filter((f) => ctx.discoveries.includes(f)).length >= Number(m[1]) ? 'done' : 'open';
+  return 'elsewhere';
+}
+export const questOf = (items: Item[]): Quest | null => (items.find((i) => i.type === 'quest') as Quest | undefined) || null;

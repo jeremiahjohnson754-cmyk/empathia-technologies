@@ -16,16 +16,27 @@ const store = (p) => p.evaluate(() => { try { return { story: JSON.parse(localSt
 const over = (p) => p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
 const setRange = (p, sel, v) => p.evaluate(([s, val]) => { const el = document.querySelector(s); const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; set.call(el, String(val)); el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }, [sel, v]);
 
-// ── the whole episode, desktop, without sound ───────────────────────────────────────────────────────────────────────────────────────
+// ── the whole episode, desktop, without sound (FM-36…39: the briefing, a discovery, objectives, the twist — every chapter has them) ───────────────────────────────────────────────────────────────────────────────────────
 { const t = await open('#/film/s01e01', { w: 1440, h: 900, init: countAudio }); const p = t.page;
   await p.waitForSelector('[data-testid=film-title]', { timeout: 20000 });
   const t0 = await p.evaluate(() => ({ h1: document.querySelector('h1')?.textContent, k: document.querySelector('.fm-title__k')?.textContent, b: document.querySelectorAll('[data-testid^=film-begin]').length, ac: window.__ac, playing: [...document.querySelectorAll('audio, video')].some((m) => !m.paused), modes: [...document.querySelectorAll('.fm-modes a')].map((a) => a.getAttribute('href')).join(' ') }));
   ok('FM-01', 'the film opens on its title card (season, episode, title), offers to begin with or without sound, and nothing sounds or plays yet', t0.h1 === 'Ten Seats' && /Season 1: The Sanctuary · Episode 1/.test(t0.k) && t0.b === 2 && t0.ac === 0 && !t0.playing && /#\/film\/s01e01 #\/play\/s01e01 #\/story\/s01e01/.test(t0.modes), JSON.stringify(t0));
-  await p.click('[data-testid=film-begin-quiet]'); const a = await info(p); await p.waitForTimeout(3600); const b = await info(p);
-  ok('FM-02', 'begun without sound, it opens on the first act card and runs by itself, shot after shot; no audio context was ever created', a.kind === 'act' && b.k > a.k && (await p.evaluate(() => window.__ac)) === 0 && b.sound === 'false', JSON.stringify([a, b]));
+  await p.click('[data-testid=film-begin-quiet]'); const q = await info(p);
+  const brief = await p.evaluate(() => ({ t: document.querySelector('[data-testid=film-quest] .fm-dec__q')?.textContent, n: document.querySelectorAll('[data-testid=film-quest] .fm-obj li').length, stakes: /Dolores thinks she's losing her hearing/.test(document.querySelector('[data-testid=film-quest]')?.textContent || '') }));
+  ok('FM-36', 'it opens on the case briefing — the canon quest, its stakes and objectives — which the case file then tracks', q.kind === 'quest' && brief.t === 'The Hollow Seats' && brief.n >= 4 && brief.stakes && (await p.locator('[data-testid=film-case] .fm-obj li').count()) === brief.n, JSON.stringify(brief));
+  await p.click('[data-testid=film-continue]'); const a = await info(p); await p.waitForTimeout(3600); const b = await info(p);
+  ok('FM-02', 'taking the case opens the first act card, and the film runs by itself, shot after shot; no audio context was ever created', a.kind === 'act' && b.k > a.k && (await p.evaluate(() => window.__ac)) === 0 && b.sound === 'false', JSON.stringify([a, b]));
   const f = await until(p, (s) => s.kind === 'footage'); await p.waitForTimeout(1600);
+  const footShot = f.k;
   const v = await p.evaluate(() => { const x = document.querySelector('[data-testid=film-footage]'); return x ? { src: x.getAttribute('src'), muted: x.muted, t: x.currentTime, label: document.querySelector('.fm-foot__n')?.textContent || '' } : null; });
   ok('FM-03', 'the episode’s generated footage plays in the film (muted, labelled as generated footage of a fictional setting)', f.kind === 'footage' && v && /media\/signal\/s01e01\/footage-sanctuary\.mp4$/.test(v.src) && v.muted && v.t > 0.3 && /Generated footage/.test(v.label), JSON.stringify(v));
+  const fd = await until(p, (s) => s.kind === 'find');
+  for (let i = 0; i < 3; i += 1) await p.click('[data-testid=film-find-miss]', { position: { x: 5, y: 5 } });
+  const hint = await p.getAttribute('[data-testid=film-find-spot]', 'class'); const nextOk = !(await p.locator('[data-testid=film-next]').isDisabled());
+  await p.click('[data-testid=film-find-spot]'); await p.waitForTimeout(150);
+  const fnd = await p.evaluate(() => ({ t: document.querySelector('[data-testid=film-found] .fm-dec__q')?.textContent, c: document.querySelector('[data-testid=film-found-count]')?.textContent }));
+  ok('FM-37', 'a canon discovery hides in the picture: optional (the film may go on), marked after three misses, found by looking — the same record as the written story', fd.kind === 'find' && nextOk && /is-hint/.test(hint || '') && fnd.t === 'Photo 41 of 212' && /Found 1 of 2/.test(fnd.c || '') && (await store(p)).story.chapters?.s01e01?.found?.includes('D-S1-01a'), JSON.stringify({ hint, fnd }));
+  await p.click('[data-testid=film-continue]');
   const d1 = await until(p, (s) => s.kind === 'decision');
   const g = await p.evaluate(() => ({ next: document.querySelector('[data-testid=film-next]').disabled, n: document.querySelectorAll('.fm-opt').length, q: document.querySelector('.fm-dec__q')?.textContent }));
   ok('FM-04', 'the first decision stops the film inside the frame: four choices, and the film will not go on until one is made', d1.dec === 'BR-S01E01-01' && g.next && g.n === 4 && /What do you try first/.test(g.q), JSON.stringify([d1, g]));
@@ -36,6 +47,7 @@ const setRange = (p, sel, v) => p.evaluate(([s, val]) => { const el = document.q
   const ca = await p.evaluate(() => ({ l: document.querySelector('[data-testid=film-out]')?.dataset.letter, r: document.querySelector('.fm-out__r')?.textContent, cont: !!document.querySelector('[data-testid=film-continue]') }));
   const s1 = await store(p);
   ok('FM-06', 'key 1 chooses “EQ the fill”: the canon result plays and the choice is the story’s own record (the written story reads the same)', ca.l === 'A' && /Seat 13 better, seat 12 worse/.test(ca.r) && ca.cont && s1.story.chapters?.s01e01?.choices?.['BR-S01E01-01']?.letter === 'A', JSON.stringify(ca));
+  ok('FM-38', 'the case file ticks the first objective as soon as the call is recorded', (await p.getAttribute('[data-testid=film-case] [data-obj=BR-S01E01-01]', 'data-state')) === 'done');
   await p.click('[data-testid=film-continue]'); const m = await until(p, (s) => s.kind === 'play');
   const cons = await p.locator('[data-testid=fm-cons-eq]').count();
   ok('FM-07', 'the wrong first call has a visible consequence in the next scene: the measurement is of a changed system, and says so', m.play === 'measure' && cons === 1, JSON.stringify(m));
@@ -52,7 +64,12 @@ const setRange = (p, sel, v) => p.evaluate(([s, val]) => { const el = document.q
   await p.click('[data-testid=fm-where-aisles]'); await p.click('[data-testid=fm-when-after]'); const wrong = await p.locator('[data-testid=fm-cards-wrong]').count();
   await p.click('[data-testid=fm-where-centre]'); const right = await p.locator('[data-testid=fm-cards-right]').count(); await p.click('[data-testid=fm-play-finish]');
   ok('FM-10', 'Plot the cards: twelve cards on the chart; a wrong reading is answered, the right one (rows 7–9 centre, just after the renovation) records the canon’s evidence', c.play === 'cards' && wrong === 1 && right === 1 && (await store(p)).film.s01e01.plays.cards?.evidence === 'EV-CASE001-01');
-  await p.click('[data-testid=film-continue]'); const bd = await until(p, (s) => s.kind === 'play');
+  await p.click('[data-testid=film-continue]'); const tw = await until(p, (s) => s.kind === 'twist');
+  const twt = await p.textContent('[data-testid=film-twist] .fm-dec__q');
+  await p.click('[data-testid=film-continue]'); await p.waitForTimeout(150);
+  const ev = await p.evaluate(() => [...document.querySelectorAll('[data-testid=film-evidence-so-far] li')].map((x) => x.dataset.state));
+  ok('FM-39', 'the canon twist is revealed in the frame; the twist objective ticks; the evidence so far lists what the panels recorded, with their states', tw.kind === 'twist' && /It was never Dolores's hearing/.test(twt || '') && (await p.getAttribute('[data-testid=film-case] [data-obj=twist]', 'data-state')) === 'done' && ev.includes('MEASURED') && ev.includes('OBSERVED'), JSON.stringify({ twt, ev }));
+  const bd = await until(p, (s) => s.kind === 'play');
   for (const x of ['mic', 'hearing', 'air', 'room']) await p.click(`[data-testid=fm-run-${x}]`);
   const hearing = await p.textContent('[data-testid=fm-test-hearing]');
   await p.click('[data-testid=fm-keep-mic]'); const w2 = await p.locator('[data-testid=fm-board-wrong]').count(); await p.click('[data-testid=fm-keep-room]'); await p.click('[data-testid=fm-play-finish]');
