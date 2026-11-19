@@ -18,6 +18,7 @@ import { buildingByKey, roomById, roomsIn, shortName } from '../campus/canon.js'
 import { allRecords } from '../campus/design.js';
 import { roomIssues } from '../campus/metrics.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
+import { loadRequests } from '../intake/store.js';
 import { championView, confirmAccess, confirmOccupancy, contribute, verifyRoom } from './store.js';
 import { startView } from './start.js';
 import { contributions } from './recognition.js';
@@ -28,6 +29,19 @@ import { TRACKED_REPORT, TRACKED_ROOM } from '../docs5/model.js';
 const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 const LIVE = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'RESTORED', 'PENDING_VERIFICATION']);
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+
+/** The requests at the champion's site, and the new spaces there whose location is waiting to be confirmed. */
+function SiteRequests({ site, opens }: { site: string; opens: (href: string) => boolean }) {
+  const here = loadRequests().filter((r) => (r.roomId && roomById(r.roomId)?.building === site) || r.provisional?.building === site);
+  const toLocate = here.filter((r) => r.provisional && r.provisional.location !== 'VERIFIED');
+  return (
+    <Card title="Requests at your site" icon="inbox" sub="What people here have asked for, and new spaces whose place you can confirm." testId="site-requests">
+      {toLocate.length > 0 && opens('#/request/queue') ? <p className="sc-msg sc-msg--ok" data-testid="site-to-locate"><Icon name="place" size={18} /><span>{toLocate.length === 1 ? 'One new space is' : `${toLocate.length} new spaces are`} waiting for you to confirm where {toLocate.length === 1 ? 'it is' : 'they are'}. <a href="#/request/queue">Confirm a location</a></span></p> : null}
+      {here.length ? <ul className="sc-list">{here.slice(0, 6).map((r) => <li key={r.id}><b>{opens(`#/requests/${r.id}`) ? <a href={`#/requests/${r.id}`}>{r.title}</a> : r.title}</b><span className="ui-meta">{r.id}{r.provisional ? ` · new space ${r.provisional.id}${r.provisional.location === 'VERIFIED' ? ', location confirmed' : ', location not yet confirmed'}` : ''}</span></li>)}</ul>
+        : <p className="sc-note">No request has been sent for a room at this site from this browser.</p>}
+    </Card>
+  );
+}
 
 export default function SitePage({ role, can }: PageProps) {
   const { w, apply } = useWorkspace(); const c = championView(w);
@@ -99,6 +113,8 @@ export default function SitePage({ role, can }: PageProps) {
           </form>
           {c.notes.length ? <ul className="sc-notes" data-testid="site-note-list">{c.notes.slice(0, 6).map((n) => { const r = roomById(n.roomId); return <li key={n.id}><p>{n.text}</p><span>{r ? shortName(r) : n.roomId} · {when(n.at)} · <Chip small tone="muted">Awaiting review</Chip></span></li>; })}</ul> : null}
         </Card>
+        {/* 19 Nov 2026 (Intake directive §06 Site Champion: "Assigned site request overview", "Location verification when authorized") */}
+        <SiteRequests site={site} opens={opens} />
       </div>
 
       <Card title="What you have done for this site" icon="check" sub="Counts from the record. Nobody is scored, rated or compared." testId="site-done-for">
