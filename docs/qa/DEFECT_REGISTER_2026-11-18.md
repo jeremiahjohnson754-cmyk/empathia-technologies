@@ -217,6 +217,34 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
   in-person, Pearson testing centers." The delivery line says the same, and still sends the reader to AVIXA before booking.
   `certs.test.mjs` passes 7/7.
 
+### D18-23 · P1 · Fixed in d380481 (exact-commit regression of acbe026, part 4: the public sites audit, 180/196)
+- **What was wrong:** seven deterministic P1 findings in `scripts/audit/site-audit.mjs --strict`:
+  - AUD-001: APEX at 320 px was 9 px too wide; a long option in a select set the row's width.
+  - AUD-002..004: on the investor start, the flagship card's text was measured against the page. It had only a gradient, with no
+    solid colour beneath it, and its small label was 4.2:1 at the gradient's lightest stop.
+  - AUD-005: the Search Party graph caption took the stage's light text but sat on the light page (2.55:1).
+  - AUD-006: the FieldLink hero eyebrow used the light scheme's accent on the dark stage (3.35:1).
+  - AUD-007: on /pilots, a focused radio showed its ring on its option only, not on itself.
+- **Fix:** `min-width: 0` on build-row fields. The flagship card gets a solid colour under its gradient, and its text lightens to
+  4.9:1 at the lightest stop. The graph figure gets the stage background. The hero eyebrow uses `--fl-stage-teal` (10.1:1). The radio
+  shows its own ring.
+- **Verified:** website-pilot 54/54 in light and dark. The full audit reruns on the next candidate.
+
+### D18-24 · P1 · Open, needs the founder's file (exact-commit regression of acbe026, part 4: founder town hall T-00)
+- **What is wrong:** the Founder Studio embeds the **2.5.3 Private Engineer Edition** under the Founder Edition's name. The page's
+  SHA-256 `604cc748…` is the Private Engineer Edition's (apps/engineer-demo/README.md), and its `__EMPATHIA_EDITION__.kind` is
+  `engineer-private`. The town-hall test expects the 2.5.4 development build. This has been so in this tree's studio build since 12
+  Nov, and the 17 Nov private-store snapshot carried it into `PRIVATE_ASSETS.json`. The 24 functional steps of the town hall pass on
+  it; only the edition check fails.
+- **Why it is open:** the 2.5.4 development build (`Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-nomedia.html`)
+  is only on the founder's machine. The test is not changed. The founder was asked for the file on 18 Nov at about 21:10.
+- **Impact:** the Founder Studio is internal and is not deployed. The public sites do not use it.
+
+### D18-25 · P3 · Under watch (exact-commit regression of acbe026, part 5: demo-campus-life CL-13)
+- **What was seen:** 5 fps at 1280 × 860, against a budget of 8 on this machine's software renderer. The run overlapped website builds
+  and browser suites run in the main tree at the same time.
+- **Next:** the next candidate's regression runs with nothing else on the machine. If CL-13 fails there too, it is a real slowdown.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220
