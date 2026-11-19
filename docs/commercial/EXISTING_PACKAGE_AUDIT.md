@@ -2,8 +2,9 @@
 
 Task #238, step 1 of the founder's 60/10 Master Commercial Pricing Architecture (18 Nov 2026, 19:39). This is the source audit the
 directive asks for first: what is priced today, where each price comes from, and where it conflicts with the 19:39 baseline. **No
-rate has been changed.** Every conflict below is an open decision for the founder; until it is made, the website keeps showing the
-v1.5 list it shows today.
+rate was changed silently.** The founder decided the main conflicts at 20:51 the same evening: "Let's use the updated pricing all
+the way there maybe the $19.99 price can be a pilot package price for just pro and another complimentary product item but the
+updated pricing is king here". The decisions are recorded in §3; the v2 rates live in `packages/commercial/src/pricebook.ts`.
 
 Only public price fields appear here. The internal columns of the founder's price files (the basis of each price, its review state),
 the internal financial models and every hardware unit cost stay in the private handoff and are never copied into this repository.
@@ -61,9 +62,23 @@ education, houses of worship and non-profit terms, volume discounts beyond bundl
 | D-09 | FieldLink | Not in v1.5 | Nano $249, Edge $1,499, Pulse $499, proposed | None on the site (already labelled proposed and illustrative) | Add to the price book as optional hardware, status "proposed concept"; unit costs stay private. |
 | D-10 | Pilots | Four fixed prices | Asks for a pilot catalogue (nine categories) with conversion terms | Five of the nine categories have no price | The four keep their prices; the others are Pricing Pending Approval until set. |
 
+### Decisions (founder, 18 Nov 2026 20:51)
+
+| # | Decision | Where it lives |
+|---|---|---|
+| D-01 | **Decided.** The 19:39 room tiers replace the v1.5 Pro room everywhere: standard $39.99, large $74.99 a room a month. The v1.5 $19.99 becomes the proposed price of a pilot: Pro plus one more product, included. | `PRICE_BOOK.rooms`; `PRICE_BOOK.superseded`; `PRICE_BOOK.pilots[PILOT-PRO-PLUS]` (price founder-suggested; terms drafted, pending approval) |
+| D-02 | **Decided.** The banded annual platform fee replaces Core Starter and Core Enterprise. | `PRICE_BOOK.platform` |
+| D-03 | Follows D-01/D-02: one licensed-user line at $9.99; the v1.5 named-user SKU is replaced so nobody is charged twice. | `PRICE_BOOK.user`; `superseded` |
+| D-04 | **Kept as directed.** $15,000 from 25 rooms, shown as a starting figure, with the step named on every estimate between 20 and 30 rooms. Transition options are modelled for review only. | `estimate()` notes |
+| D-05 | Not answered: the proposed device rule is used and marked pending approval. | `PRICE_BOOK.roomRule` |
+| D-06…D-10 | Unchanged: as proposed above; anything without an approved price is Pricing Pending Approval or Custom Quote. | — |
+
 ## 4. Next steps (each its own commit)
 
-1. The founder's answers to D-01, D-02, D-04 and D-05 (the price book cannot be one source of truth until they are made).
-2. A versioned price book (v2 draft beside v1.5, each rate with its source and approval state) and the calculation engine, tested at
-   0, 1, 9, 10, 19, 20, 24, 25, 26, 50, 150, 500 and 501 rooms and at 19 vs 20 devices.
-3. Build Your Empathia on `/pricing`, with "See this package in action" opening the matching demonstration view.
+1. Done: price book 2 and the estimate engine (`packages/commercial/src/{pricebook,estimate}.ts`), tested to the cent against the
+   founder's own illustration ($52,185.00 at 50 rooms; $215,038.80 and $219,781.80 at 310 rooms with seven FieldLink devices) and at
+   1, 9, 10, 19, 20, 24, 25, 26, 50, 150, 500 and 501 rooms, recomputed independently.
+2. Build Your Empathia on `/pricing`, with "See this package in action" opening the matching demonstration view, and the price list
+   pages moved to price book 2.
+3. Still for the founder: the Pro pilot's terms (room cap, length, which products may be the included one), the device rule (D-05),
+   whether bundle discounts carry over to v2, the 25-room transition policy.

@@ -8,6 +8,8 @@ export { usd, unitLabel } from './money.js';
 export * from './readiness.js';
 export * from './machine.js';
 export { quote, type QuoteInput, type QuoteLine, type Quote } from './quote.js';
+export * from './pricebook.js';
+export * from './estimate.js';
 
 /** What every price on a public page is: the founder's list price, with purchase not yet open. */
 export const PRICE_LABEL = 'Founder-approved list price. Self-serve purchase is not open yet.';
