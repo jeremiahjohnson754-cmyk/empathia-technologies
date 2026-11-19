@@ -15,6 +15,9 @@ const lum = (page, sel) => page.evaluate((s) => { const el = document.querySelec
 
 for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/lite' });
+  // CHANGED 19 Nov 2026: the campus is the Empathia Map (founder 12:37, 14:03), whose code loads when the map is first shown, so its building
+  // buttons appear a moment after the page; the count is read once they are there
+  await t.page.waitForSelector('[data-testid^="lite-bld-"]', { timeout: 15000 }).catch(() => {});
   const home = await t.page.evaluate(() => ({ h1: document.querySelector('main h1')?.textContent || '', blds: document.querySelectorAll('[data-testid^="lite-bld-"]').length, lenses: document.querySelectorAll('[data-testid^="lite-lens-"]').length, plan: document.querySelectorAll('[data-testid^="lite-room-"]').length, scouter: !!document.querySelector('[data-testid="lite-scouter-card"]'), nav: document.querySelectorAll('.lt-nav a').length }));
   // 10 Nov 2026: 15 → 20 room cards on Lite's home: the fifteen plan rooms, then the first of nine sectors (five rooms) of the 90-room estate
   ok(`LT-${tag}-01`, 'Lite opens on the campus: six buildings in 3D, six lenses for the architect, the fifteen plan rooms and one sector of five more, Scouter in Lite (D41)', /Northstar/.test(home.h1) && home.blds === 6 && home.lenses === 6 && home.plan === 20 && home.scouter && home.nav >= 8, JSON.stringify(home));
