@@ -1009,6 +1009,170 @@
         }
       }
     },
+    "/v1/reports/estate.pdf": {
+      "get": {
+        "tags": [
+          "reporting"
+        ],
+        "summary": "The estate data report as a PDF (data reports export as PDF only): the KPI summary read with the caller’s own scope, each figure with its definition, the SHA-256 of the figures; the executive, operations lead, service manager or security administrator; every export audited",
+        "operationId": "getV1ReportsEstate.pdf",
+        "x-authority": [
+          "project.decide",
+          "handoff.accept",
+          "service.assign",
+          "policy.configure"
+        ],
+        "x-authority-enforced": [
+          "project.decide",
+          "handoff.accept",
+          "service.assign",
+          "policy.configure"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "application/pdf"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/reports/powerbi.zip": {
+      "get": {
+        "tags": [
+          "reporting"
+        ],
+        "summary": "A Power BI project (PBIP: a TMDL semantic model with DAX measures, a PBIR report and an Empathia theme) of the caller’s records, zipped, for the customer to open and publish in their own Power BI; nothing is published by Empathia; each row carries its source record codes; audited",
+        "operationId": "getV1ReportsPowerbi.zip",
+        "x-authority": [
+          "project.decide",
+          "handoff.accept",
+          "service.assign",
+          "policy.configure"
+        ],
+        "x-authority-enforced": [
+          "project.decide",
+          "handoff.accept",
+          "service.assign",
+          "policy.configure"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "application/zip"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/reports/summary": {
       "get": {
         "tags": [
@@ -7518,6 +7682,609 @@
         "responses": {
           "200": {
             "description": "support path"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/platforms": {
+      "get": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "The platforms a jump can open (device clouds, meeting-room portals, collaboration, DSP and audio-network management, signage, design and ITSM) with the address the organization set or the vendor’s documented sign-in address; a jump exchanges no data and is not an integration",
+        "operationId": "getV1Platforms",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "platforms"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/platforms/{platform}": {
+      "put": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "Set where the organization’s jump to one platform goes (https only), or turn it off (the security administrator or the operations lead; audited)",
+        "operationId": "putV1PlatformsPlatform",
+        "x-authority": [
+          "policy.configure",
+          "handoff.accept"
+        ],
+        "x-authority-enforced": [
+          "policy.configure",
+          "handoff.accept"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "url"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 400,
+                    "pattern": "^https://"
+                  },
+                  "label": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 80
+                  },
+                  "enabled": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "platform link"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rooms/{ref}/platforms": {
+      "get": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "The jumps for one room: its own address in a platform where someone recorded it, else the organization’s portal",
+        "operationId": "getV1RoomsRefPlatforms",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ref",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "jumps"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "Record where this room is in a platform (https only; replaces the current address, which is kept): someone who designs, installs, serves or triages it",
+        "operationId": "postV1RoomsRefPlatforms",
+        "x-authority": [
+          "room.design",
+          "work.evidence",
+          "service.triage"
+        ],
+        "x-authority-enforced": [
+          "room.design",
+          "work.evidence",
+          "service.triage"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ref",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "platform",
+                  "url"
+                ],
+                "properties": {
+                  "platform": {
+                    "type": "string",
+                    "enum": [
+                      "xio-cloud",
+                      "utelogy",
+                      "teams-rooms-pro",
+                      "m365-admin",
+                      "sharepoint",
+                      "xyte",
+                      "q-sys-reflect",
+                      "dante",
+                      "appspace",
+                      "signage",
+                      "sennheiser",
+                      "autodesk",
+                      "servicenow"
+                    ]
+                  },
+                  "url": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 400,
+                    "pattern": "^https://"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "reference"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/assets/{ref}/platforms": {
+      "get": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "The jumps for one device: its own address in a platform where someone recorded it, else the organization’s portal",
+        "operationId": "getV1AssetsRefPlatforms",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ref",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "jumps"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not signed in",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not allowed for your role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found in your tenant or scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "refused by a business rule",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "Record where this device is in a platform (https only; replaces the current address, which is kept): someone who designs, installs, serves or triages it",
+        "operationId": "postV1AssetsRefPlatforms",
+        "x-authority": [
+          "room.design",
+          "work.evidence",
+          "service.triage"
+        ],
+        "x-authority-enforced": [
+          "room.design",
+          "work.evidence",
+          "service.triage"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ref",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "platform",
+                  "url"
+                ],
+                "properties": {
+                  "platform": {
+                    "type": "string",
+                    "enum": [
+                      "xio-cloud",
+                      "utelogy",
+                      "teams-rooms-pro",
+                      "m365-admin",
+                      "sharepoint",
+                      "xyte",
+                      "q-sys-reflect",
+                      "dante",
+                      "appspace",
+                      "signage",
+                      "sennheiser",
+                      "autodesk",
+                      "servicenow"
+                    ]
+                  },
+                  "url": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 400,
+                    "pattern": "^https://"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "reference"
           },
           "400": {
             "description": "validation error",
