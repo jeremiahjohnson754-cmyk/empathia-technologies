@@ -9,8 +9,10 @@
  * A film marked `exclusive` in films.json plays only on the pages in its `placement` (never on /films): the build checks it.
  */
 import fs from 'node:fs'; import { execFileSync } from 'node:child_process'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
-const app = path.dirname(fileURLToPath(import.meta.url)); const repo = path.resolve(app, '../..'); const dist = path.join(app, 'dist');
+const app = path.dirname(fileURLToPath(import.meta.url)); const repo = path.resolve(app, '../..');
 const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
+// --out=<dir>: build elsewhere (the runner checks the budgets with the staging URLs this way, without touching apps/website/dist)
+const dist = path.resolve(arg('out', path.join(app, 'dist')));
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
 await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic', outfile: path.join(dist, 'site.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });

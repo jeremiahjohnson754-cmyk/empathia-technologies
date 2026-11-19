@@ -202,8 +202,9 @@ p { text-wrap: pretty; }
 .eline { list-style: none; margin: clamp(48px, 6vw, 80px) 0 0; padding: 26px 28px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); position: relative; border: 1px solid var(--w-line2); border-radius: var(--w-r-card); background: var(--w-glass); box-shadow: var(--w-edge), var(--w-lift); }
 .eline::before { content: ""; position: absolute; left: 28px; right: 28px; top: 33px; height: 2px; background: linear-gradient(90deg, var(--w-ev-declared), var(--w-ev-modeled), var(--w-ev-verified), var(--w-ev-observed), var(--w-ev-verified), var(--w-ev-verified), var(--w-ev-observed), var(--w-ev-declared)); opacity: .55; transform-origin: left; }
 .eline__stop { position: relative; display: grid; gap: 6px; align-content: start; padding-right: 12px; }
-.eline__dot { position: relative; width: 16px; height: 16px; border-radius: 50%; background: var(--w-panel); border: 2px solid var(--w-tx2); }
-.eline__stop:has(.tag--verified) .eline__dot { border-color: var(--w-ev-verified); } .eline__stop:has(.tag--observed) .eline__dot { border-color: var(--w-ev-observed); } .eline__stop:has(.tag--modeled) .eline__dot { border-color: var(--w-ev-modeled); }
+/* the dot and the arrow are drawn by CSS, not markup (19 Nov 2026: 840 bytes off the home page, under its 48 KB budget with the staging URLs) */
+.eline__stop::before { content: ""; position: relative; width: 16px; height: 16px; border-radius: 50%; background: var(--w-panel); border: 2px solid var(--w-tx2); }
+.eline__stop:has(.tag--verified)::before { border-color: var(--w-ev-verified); } .eline__stop:has(.tag--observed)::before { border-color: var(--w-ev-observed); } .eline__stop:has(.tag--modeled)::before { border-color: var(--w-ev-modeled); }
 .eline__stop b { margin-top: 10px; font-size: 16px; color: var(--w-tx); }
 .eline__adds { color: var(--w-tx3); font-size: 14px; line-height: 1.4; min-height: 2.8em; }
 .section .eline { margin-top: 8px; }
@@ -428,7 +429,7 @@ p { text-wrap: pretty; }
 .glass__txt a::after, .strip__txt a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
 .glass__txt a:focus-visible, .strip__txt a:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 4px; border-radius: 4px; }   /* the ring on the link itself (the audit's A8), as the tiles do */
 .glass__txt small { color: var(--w-tx2); font-size: 13.5px; line-height: 1.4; }
-.glass__go { flex: none; margin-left: auto; color: var(--pc); font-weight: 600; }
+.glass__tile::after { content: "→"; content: "→" / ""; flex: none; margin-left: auto; color: var(--pc); font-weight: 600; }
 
 .strip { padding: clamp(28px, 4vw, 48px) 0; border-bottom: 1px solid var(--w-line); }
 .strip__panel { display: grid; grid-template-columns: minmax(180px, 210px) minmax(0, 1fr); gap: 18px 24px; align-items: center; padding: clamp(20px, 2.4vw, 28px); border: 1px solid var(--w-line2); border-radius: var(--w-r-panel); background: radial-gradient(600px 220px at 0% 0%, var(--w-glow-a), transparent 70%), var(--w-card); box-shadow: var(--w-edge), var(--w-lift); }
@@ -475,7 +476,7 @@ p { text-wrap: pretty; }
 @media (prefers-reduced-motion: no-preference) {
   .glass__tile, .strip__item { transition: transform var(--w-t-base) var(--w-ease), border-color var(--w-t-base) var(--w-ease), box-shadow var(--w-t-base) var(--w-ease); }
   .glass__tile:hover, .strip__item:has(a):hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--pc) 70%, var(--w-line2)); }
-  .glass__go { transition: transform var(--w-t-base) var(--w-ease); } .glass__tile:hover .glass__go { transform: translateX(3px); }
+  .glass__tile::after { transition: transform var(--w-t-base) var(--w-ease); } .glass__tile:hover::after { transform: translateX(3px); }
 }
 @media (max-width: 1100px) {
   .glass { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -487,7 +488,7 @@ p { text-wrap: pretty; }
 @media (max-width: 720px) {
   .glass__tile { min-height: 64px; padding: 12px 14px; gap: 10px; }
   .glass__txt small { display: none; }
-  .glass__go { display: none; }
+  .glass__tile::after { display: none; }
   .glass__txt a { overflow-wrap: normal; word-break: normal; hyphens: manual; }   /* 18 Nov first-time-viewer pass: “anywhere” split product names mid-word (ServiceHand·s, Commissioni·ng) */
   .glass__txt a { font-size: 15px; }
   .glass__ico { width: 36px; height: 36px; }
@@ -572,7 +573,7 @@ p { text-wrap: pretty; }
   .eline { grid-template-columns: 1fr; row-gap: 0; padding: 22px 18px 4px 20px; }
   .eline::before { display: block; left: 27px; right: auto; top: 30px; bottom: 30px; width: 2px; height: auto; background: var(--w-line2); opacity: 1; }
   .eline__stop { grid-template-columns: 16px minmax(0, 1fr); column-gap: 16px; row-gap: 4px; padding: 0 0 22px; }
-  .eline__dot { grid-row: 1 / span 3; margin-top: 4px; z-index: 1; }
+  .eline__stop::before { grid-row: 1 / span 3; margin-top: 4px; z-index: 1; }
   .eline__stop b { margin-top: 0; } .eline__adds { min-height: 0; }
   .chapter h3 { font-size: 28px; }
   .chapter__text > p:not([class]) { font-size: 17px; }
@@ -817,7 +818,7 @@ p { text-wrap: pretty; }
   .hero .eline { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; row-gap: 0; padding: 18px 16px 2px; }
   .hero .eline::before { display: none; }
   .hero .eline__stop { grid-template-columns: 12px minmax(0, 1fr); column-gap: 10px; padding: 0 0 16px; }
-  .hero .eline__dot { width: 12px; height: 12px; margin-top: 3px; }
+  .hero .eline__stop::before { width: 12px; height: 12px; margin-top: 3px; }
   .hero .eline__stop b { margin-top: 0; font-size: 15px; }
   .hero .eline__adds { font-size: 13px; min-height: 0; }
 }

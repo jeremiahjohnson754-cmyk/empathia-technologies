@@ -62,7 +62,7 @@ export const LIFECYCLE: { stage: string; adds: string; s: Evidence }[] = [
 ];
 export const EvidenceLine = () => (
   <ol className="eline" aria-label="The Empathia lifecycle">{LIFECYCLE.map((l) => (
-    <li key={l.stage} className="eline__stop"><span className="eline__dot" aria-hidden="true" /><b>{l.stage}</b><span className="eline__adds">{l.adds}</span><Tag s={l.s} /></li>
+    <li key={l.stage} className="eline__stop"><b>{l.stage}</b><span className="eline__adds">{l.adds}</span><Tag s={l.s} /></li>
   ))}</ol>
 );
 
@@ -289,7 +289,6 @@ export const GlassRail = () => (
     <li key={p.id} className="glass__tile" data-p={p.id}>
       <span className="glass__ico"><Glyph d={PRODUCT_ICON[p.id] || ICONS.model!} /></span>
       <span className="glass__txt"><a href={`/products/${p.slug}`}>{p.name}</a><small>{p.purpose}</small></span>
-      <span className="glass__go" aria-hidden="true">→</span>
     </li>
   ))}</ul>
 );

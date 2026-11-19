@@ -11,6 +11,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -31,6 +32,8 @@ const custom = (out) => {
   return { tests: NaN, pass: NaN, fail: NaN };
 };
 const unittest = (out) => { const n = Number(/^Ran (\d+) test/m.exec(out)?.[1] ?? NaN); const f = /FAILED \((?:failures=(\d+))?(?:, )?(?:errors=(\d+))?/.exec(out); const fail = f ? Number(f[1] || 0) + Number(f[2] || 0) : 0; return { tests: n, pass: n - fail, fail }; };
+/** a build that must finish within its budgets: one check, PASS when it says it built and no budget was exceeded */
+const built = (out) => { const ok = /website built:/.test(out) && !/BUDGET EXCEEDED/.test(out); return { tests: 1, pass: ok ? 1 : 0, fail: ok ? 0 : 1 }; };
 
 function suite(name, kind, cmd, args, parse, opts = {}) {
   seq += 1; if (mergeArg || (PART && (seq - PART.n) % PART.of !== 0)) return;
@@ -175,6 +178,7 @@ suite('browser: public sites security (CSP in the page, no request leaves, injec
 // v18/pilot (handoff v1.8 §4): the price list and pilot readiness on the website; the pilot activation API; the demo's sandbox pilot
 suite('browser: website pricing and pilot readiness', 'browser', node, ['tests/browser/website-pilot.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/pilot.js')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 suite('browser: website FieldLink (optional hardware, a concept: optional, labelled, no cost internals)', 'browser', node, ['tests/browser/website-fieldlink.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/fieldlink/index.html')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
+suite('build: the website within its budgets with the staging URLs (19 Nov 2026: the Render build failed at 49,186 B while the local build passed)', 'build', node, ['apps/website/build.mjs', `--out=${path.join(os.tmpdir(), 'empathia-website-staging-budget')}`, '--base=https://empathia-website-next.onrender.com', '--demo=https://empathia-demo-next.onrender.com', '--api=https://empathia-demo-api-l04n.onrender.com'], built, {});
 suite('browser: website Build Your Empathia (price book 2: every figure from estimate(), shareable, enquiry and demonstration one click away)', 'browser', node, ['tests/browser/website-pricing.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/build.js')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 suite('browser: website Follow one device and product launches (#232, 17:25 §6)', 'browser', node, ['tests/browser/website-follow.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/platform/index.html')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 suite('browser: website home opening (17:25 §4: the founder headline, the room-to-estate sequence from the demonstration, two actions)', 'browser', node, ['tests/browser/website-opening.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });

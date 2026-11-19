@@ -253,6 +253,17 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
   and browser suites run in the main tree at the same time.
 - **Next:** the next candidate's regression runs with nothing else on the machine. If CL-13 fails there too, it is a real slowdown.
 
+### D18-26 · P1 · Fixed (staging of 3143112: both static-site builds failed on Render; the regression had passed 277/0)
+- **What was wrong:** on Render the website's home page came to 49,186 B, over its 49,152 B budget. The staging build writes the
+  longer staging URLs into the page: its canonical base, `empathia-demo-next` and the API. The regression builds without them, at
+  49,0xx B, so it passed. Both static sites run the same build, so both failed, and Render kept 81276b2 live. The API deployed
+  3143112.
+- **Fix:** the eight lifecycle dots and the nine product-tile arrows are drawn by CSS, not markup, which takes 885 B off the home page.
+  It is now 48,400 B with the staging URLs. The arrow is silent to screen readers, as its `aria-hidden` span was. The runner has a
+  new check, "the website within its budgets with the staging URLs", which builds into a temporary folder with those URLs
+  (`apps/website/build.mjs --out=`). A gap between the regression and the real build can no longer pass unseen.
+- **Verified:** website 261/261, fold 37/37, opening 19/19; the dots and arrows were checked in screenshots.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220
