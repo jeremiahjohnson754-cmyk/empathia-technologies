@@ -5,6 +5,7 @@
  * issues — and, below, the 3D and plan stage with layers, a device panel (position code, asset code, identity state), the engine-judged
  * tests, the history and an honest coverage table. Every number is computed from the records (campus/metrics.ts).
  */
+import { loadRequests } from '../intake/store.js';
 import { useMemo, useState, useEffect } from 'react';
 import { Tag, Notice, Button } from '@empathia/ui';
 import { resultLabel } from '@empathia/commissioning-engine';
@@ -244,12 +245,19 @@ function Tests({ r }: { r: RoomRecord }) {
   );
 }
 
+function RoomRequests({ roomId }: { roomId: string }) {
+  const list = loadRequests().filter((q) => q.roomId === roomId);
+  return <><h2 className="build__h">Requests ({list.length})</h2>{list.length ? <ul className="plain" data-testid="room-requests">{list.map((q) => <li key={q.id}><a href={`#/requests/${q.id}`}>{q.id}</a> <b>{q.title}</b> <span className="ui-meta">· asked {date(q.submittedAt || q.at)}</span></li>)}</ul>
+    : <p className="ui-muted">No request has been sent for this room from this browser.</p>}</>;
+}
 function History({ r }: { r: RoomRecord }) {
   return (
     <div className="stack">
       <h2 className="build__h">Baselines</h2>
       {r.baselines.length ? <ul className="plain" data-testid="baselines">{r.baselines.map((b) => <li key={b.version}><Tag tone={b.state === 'CURRENT' ? 'ok' : b.state === 'PENDING_ACCEPTANCE' ? 'warn' : 'muted'}>v{b.version} {b.state}</Tag> revision {b.revision} · {date(b.at)}{b.by ? ` · ${who(b.by)}` : ''} <span className="ui-meta">· {b.note}</span></li>)}</ul> : <p className="ui-muted">No baseline: the room has not been accepted.</p>}
       {r.exception && <div className="card stack" data-testid="exception"><h3 className="build__h3">{r.exception.id} <Tag tone="warn">PENDING APPROVAL</Tag></h3><dl className="facts"><dt>Finding</dt><dd>{r.exception.finding}</dd><dt>Requirement</dt><dd>{r.exception.requirement}</dd><dt>Waivability</dt><dd>{r.exception.waivability}</dd><dt>Rationale</dt><dd>{r.exception.rationale}</dd><dt>Scope</dt><dd>{r.exception.scope}</dd><dt>Revision</dt><dd>{r.exception.revision}</dd><dt>Proposed expiry</dt><dd>{r.exception.expiry}</dd><dt>Requested by</dt><dd>{who(r.exception.requester)}</dd><dt>Reviewer</dt><dd>none yet — an independent reviewer must approve before the exception counts</dd></dl></div>}
+      {/* 19 Nov 2026 (Intake directive §09.11): the requests made for this room, each opening its own page */}
+      <RoomRequests roomId={r.outline.id} />
       <h2 className="build__h">Issues</h2>
       {r.issues.length ? <ul className="plain">{r.issues.map((i) => <li key={i.id}><Tag tone={i.state === 'RESOLVED' ? 'ok' : i.severity === 'High' ? 'bad' : 'warn'}>{i.state}</Tag> <b>{i.title}</b> <span className="ui-meta">· {i.severity} · {i.source}{i.positions.length ? ` · ${i.positions.join(', ')}` : ''}</span></li>)}</ul> : <p className="ui-muted">No issue recorded.</p>}
       <h2 className="build__h">Events ({r.events.length})</h2>
