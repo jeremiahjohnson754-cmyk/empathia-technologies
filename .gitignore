@@ -43,6 +43,8 @@ apps/enterprise-web/src/generated/
 apps/website/media/*
 !apps/website/media/founder/
 !apps/website/media/product/
+# FieldLink concept renders (about 300 KB; apps/website/media/fieldlink/PROVENANCE.json): the build copies them, so they are committed
+!apps/website/media/fieldlink/
 # the Collabora-SING film's web renditions (about 4 MB; docs/media/COLLABORA_SING_FILM.md): the site is built from the repository, and the build stops when a VERIFIED film's files are missing
 !apps/website/media/SYNCLAB/
 # the home page film M2 (about 15 MB; owner verified 2026-11-13, apps/website/films.json)
