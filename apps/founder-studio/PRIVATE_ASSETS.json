@@ -4,9 +4,9 @@
  "files": [
   {
    "path": "founder-edition/Empathia-Founder-Edition.html",
-   "bytes": 6957389,
-   "sha256": "604cc7486e4a63a214c6ea471d8dc41fb826060483f24ee8dbd88df8aecb56f7",
-   "role": "the Founder Edition page the studio embeds"
+   "bytes": 8371566,
+   "sha256": "ecdf64be4de7cda5096c8dd7902814e26a7b1fe5d693799f9d489fbbddcbe1ee",
+   "role": "the Founder Edition page the studio embeds: the Living Campus 2.5.4 development build the 26 Oct studio (f51229b) shipped, supplied by the founder on 18 Nov; not the newer November no-media build, which is still unavailable (DEFECT_REGISTER D18-24)"
   },
   {
    "path": "films/Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p.mp4",

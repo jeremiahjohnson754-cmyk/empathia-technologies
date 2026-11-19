@@ -230,7 +230,7 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
   shows its own ring.
 - **Verified:** website-pilot 54/54 in light and dark. The full audit reruns on the next candidate.
 
-### D18-24 · P1 · Open, needs the founder's file (exact-commit regression of acbe026, part 4: founder town hall T-00)
+### D18-24 · P1 · Mislabel fixed; the newer November build still unavailable (exact-commit regression of acbe026, part 4: founder town hall T-00)
 - **What is wrong:** the Founder Studio embeds the **2.5.3 Private Engineer Edition** under the Founder Edition's name. The page's
   SHA-256 `604cc748…` is the Private Engineer Edition's (apps/engineer-demo/README.md), and its `__EMPATHIA_EDITION__.kind` is
   `engineer-private`. The town-hall test expects the 2.5.4 development build. This has been so in this tree's studio build since 12
@@ -239,6 +239,14 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **Why it is open:** the 2.5.4 development build (`Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-nomedia.html`)
   is only on the founder's machine. The test is not changed. The founder was asked for the file on 18 Nov at about 21:10.
 - **Impact:** the Founder Studio is internal and is not deployed. The public sites do not use it.
+- **Fixed (18 Nov, after the founder's 21:34 upload):** the private store now holds the founder's Artifact B as the Founder Edition
+  page (8,371,566 bytes, SHA-256 `ecdf64be…`). This is the Living Campus 2.5.4 development build that the 26 Oct Founder Studio
+  (`f51229b`) shipped; its BUILD_MANIFEST lists the same hash. The 2.5.3 page is kept aside in the store, unchanged.
+  `PRIVATE_ASSETS.json` names the new file and says what it is. The town hall now passes 25/25 (T-00: "development"), the Founder
+  Studio 19/19 and private-assets 6/6.
+- **Still open, under the founder's 21:34 restoration directive (§2):** the newer November no-media build
+  (`Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-no-media.html`) is not available here. The 26 Oct build is used
+  and named as what it is; nothing claims the November version is restored.
 
 ### D18-25 · P3 · Under watch (exact-commit regression of acbe026, part 5: demo-campus-life CL-13)
 - **What was seen:** 5 fps at 1280 × 860, against a budget of 8 on this machine's software renderer. The run overlapped website builds
