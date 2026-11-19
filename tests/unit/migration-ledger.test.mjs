@@ -8,11 +8,15 @@ import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath }
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const ledger = fs.readFileSync(path.join(repo, 'docs/product/MIGRATION_LEDGER.md'), 'utf8');
 // pages the ledger names as server, with the source file that is the page
-const SERVER_PAGES = { '#/connected': 'apps/demo/src/pages/Connected.tsx', '#/flagship': 'apps/demo/src/pages/Flagship.tsx' };
+// 18 Nov 2026: three more pages read and write only through the server in connected builds (#/platforms, #/reports/server,
+// #/servicehands/queue). They were built that day without this list or the ledger being updated; the exact-commit regression's
+// demo-connected CN-13 found them calling the server, which is what they are for. They are listed here and held to the same rule.
+const SERVER_PAGES = { '#/connected': 'apps/demo/src/pages/Connected.tsx', '#/flagship': 'apps/demo/src/pages/Flagship.tsx', '#/platforms': 'apps/demo/src/pages/Platforms.tsx', '#/reports/server': 'apps/demo/src/pages/ServerReports.tsx', '#/servicehands/queue': 'apps/demo/src/pages/ServiceQueue.tsx' };
 // 17 Nov 2026: the flagship page gained a measurement bench. ../flagship/* are the page's own components and are held to the same
 // list; ../bench/reverb.js is a calculation (impulse response in, decay times out) with no imports and no stored record, and the
 // second assertion of ML-02 still checks that nothing reached through any of them holds a record.
-const ALLOWED = [/^react$/, /^@empathia\/ui$/, /^\.\.\/connected\/[a-z]+\.js$/, /^\.\.\/flagship\/[A-Za-z]+\.js$/, /^\.\.\/bench\/reverb\.js$/];
+// ./Flagship.js: the three newer server pages take the sandbox's people (PEOPLE) from the flagship server page itself, held to this rule too
+const ALLOWED = [/^react$/, /^@empathia\/ui$/, /^\.\.\/connected\/[a-z]+\.js$/, /^\.\.\/flagship\/[A-Za-z]+\.js$/, /^\.\.\/bench\/reverb\.js$/, /^\.\/Flagship\.js$/];
 const importsOf = (file, seen = new Set()) => {
   const abs = path.join(repo, file); if (seen.has(abs)) return []; seen.add(abs);
   const src = fs.readFileSync(abs, 'utf8'); const out = [];

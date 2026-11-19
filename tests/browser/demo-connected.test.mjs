@@ -142,7 +142,9 @@ await t.close();
   // checked by tests/unit/migration-ledger.test.mjs). It is still opened here and must open without a console error; its requests are
   // counted separately and not as findings. Every other page calling the server is still a finding. This check failed from the commit
   // that added that page (8fe5413) until now, because that commit ran the flagship suite and not this one.
-  const SERVER_PAGES = ['/flagship']; let serverPageCalls = 0;
+  // 18 Nov 2026: #/platforms, #/reports/server and #/servicehands/queue are server pages too (docs/product/MIGRATION_LEDGER.md, the same
+  // unit check). They were added that day without this list; the exact-commit regression's run of this suite found them.
+  const SERVER_PAGES = ['/flagship', '/platforms', '/reports/server', '/servicehands/queue']; let serverPageCalls = 0;
   q.on('request', (r) => { if (r.url().startsWith(API)) { if (SERVER_PAGES.includes(on)) { serverPageCalls += 1; return; } calls += 1; bad.push(`${on} called ${r.url().slice(API.length)}`); } });
   for (const x of paths) { on = x; const n0 = s.errs.length;
     await q.evaluate((h) => { location.hash = `#${h}`; }, x); await q.waitForFunction((h) => location.hash.split('?')[0] === `#${h}` && (document.querySelector('main')?.innerText || '').trim().length > 40, x, { timeout: 8000 }).catch(async () => bad.push(`${x} rendered nothing: hash ${await q.evaluate(() => location.hash)} · ${(await q.evaluate(() => (document.querySelector('main')?.innerText || '').trim().length))} characters`)); await q.waitForTimeout(120);

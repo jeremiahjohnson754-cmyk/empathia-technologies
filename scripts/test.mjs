@@ -177,7 +177,8 @@ suite('browser: website first screen (90-1)', 'browser', node, ['tests/browser/w
 
 const out = path.join(root, 'tests/evidence'); fs.mkdirSync(out, { recursive: true });
 const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();
-const dirty = spawnSync('git', ['status', '--porcelain', '--untracked-files=no', '--', '.', ':!tests/evidence'], { cwd: root, encoding: 'utf8' }).stdout.trim() !== '';
+// the enterprise web E2E re-takes its screenshots into media/screenshots by design; those, like tests/evidence, are not the tree under test
+const dirty = spawnSync('git', ['status', '--porcelain', '--untracked-files=no', '--', '.', ':!tests/evidence', ':!media/screenshots'], { cwd: root, encoding: 'utf8' }).stdout.trim() !== '';
 if (PART) { fs.writeFileSync(path.join(out, `TEST_RESULTS.part-${PART.n}-of-${PART.of}.json`), JSON.stringify({ at: new Date().toISOString(), commit: head, dirty, part: PART, suites }, null, 2)); console.log(`\npart ${PART.n} of ${PART.of} on ${head.slice(0, 7)}${dirty ? ' (working tree changed)' : ''}: PASS ${suites.filter((x) => x.result === 'PASS').length} · FAIL ${suites.filter((x) => x.result === 'FAIL').length} · NOT_RUN ${suites.filter((x) => x.result === 'NOT_RUN').length}`); process.exit(suites.some((x) => x.result === 'FAIL') ? 1 : 0); }
 if (mergeArg) { const M = Number(mergeArg[1]); const parts = Array.from({ length: M }, (_, i) => { const f = path.join(out, `TEST_RESULTS.part-${i + 1}-of-${M}.json`); return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null; });
   const bad = parts.map((x, i) => (!x ? `part ${i + 1} missing` : x.commit !== head ? `part ${i + 1} ran ${x.commit.slice(0, 7)}, not ${head.slice(0, 7)}` : x.dirty ? `part ${i + 1} ran on a changed working tree` : '')).filter(Boolean);
