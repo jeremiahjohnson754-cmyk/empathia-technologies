@@ -188,4 +188,19 @@ export const FILMS = {
       { do: async (p) => { await go('#/replay/R-ATL-4-218?at=change&from=site&li=follow-replay&back=%2Fplatform%23follow-replay')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Core Replay: the room’s life, stopped where a change reopens only the tests it touches.', proof: '[data-testid=reopened]', hold: 5200 },
     ],
   },
+  // SIGNAL — cinematic learning and interactive gameplay (founder 18 Nov 2026 17:25 §13, film 9): Ten Seats as a player meets it, each
+  // moment opened from the film's own saved place (empathia.signal.film.v1, the Resume button a returning player sees), never faked
+  'F-SIGNAL': {
+    product: 'learn', title: 'SIGNAL: Ten Seats, played', label: 'EMPATHIA LEARN · SIGNAL · GAMEPLAY RECORDED FROM THE DEMONSTRATION', role: 'architect',
+    start: '#/film/s01e01', startProof: '[data-testid=film-title]',
+    steps: [
+      { say: 'SIGNAL, season 1, episode 1: Ten Seats. A mystery, solved with geometry.', proof: '[data-testid=film-title]', hold: 3600 },
+      { do: click('[data-testid=film-begin-quiet]'), say: 'The case: ten seats where the sound goes hollow.', proof: '[data-testid=film][data-kind=quest]', hold: 4200 },
+      ...[[10, 'footage', 'Generated footage of a fictional sanctuary, labelled as such in the film.'], [15, 'decision', 'A decision stops the film in the frame: what do you do first?'],
+        [17, 'play', 'Measure it yourself: each hollow seat’s notch, from the room’s own geometry.'], [41, 'play', 'Test the fill: turn it down, and the notches get shallower, not gone.'],
+        [58, 'play', 'Re-aim it, and verify: the ten seats’ deep notches are gone.']].map(([at, kind, say]) => ({
+        do: async (p) => { await p.evaluate((k) => { localStorage.setItem('empathia.signal.film.v1', JSON.stringify({ s01e01: { at: k, plays: {}, sound: false } })); }, at); await p.reload(); await p.waitForSelector('[data-testid=film-resume]'); await p.click('[data-testid=film-resume]'); },
+        say, proof: `[data-testid=film][data-shot="${at}"][data-kind=${kind}]`, hold: 4600 })),
+    ],
+  },
 };

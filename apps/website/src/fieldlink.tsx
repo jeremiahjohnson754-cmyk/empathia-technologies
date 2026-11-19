@@ -5,6 +5,7 @@
 // named vendor's interface is available, or anything that implies Empathia needs this hardware.
 import React from 'react';
 import { SOLIDS, POSE, project, fillOf } from './fieldlink-geom.js';
+import { EnquiryLink } from './ui.js';
 
 type Cls = 'V' | 'C' | 'T';
 const CLS: Record<Cls, string> = { V: 'Vendor-documented constraint', C: 'Calculated for stated assumptions', T: 'Target or provisional selection' };
@@ -78,7 +79,7 @@ export const fieldlinkPage = (demo: (href?: string) => string) => ({
           <h1 id="fl-h">FieldLink</h1>
           <p className="fl-hero__sub">Physical intelligence for intelligent spaces.</p>
           <p className="lede">Three optional devices that would let Empathia observe and verify more of a room on its own: a portable diagnostic, a local gateway and distributed sensors. Empathia is a complete software platform without them.</p>
-          <div className="actions"><a className="btn btn--primary" href="#family">See the three devices</a><a className="btn" href="#optional">Do I need FieldLink?</a><a className="btn btn--ghost" href="#specs">Specifications</a></div>
+          <div className="actions"><a className="btn btn--primary" href="#family">See the three devices</a><a className="btn" href="#optional">Do I need FieldLink?</a><a className="btn btn--ghost" href="#package">Engineering package</a></div>
           <p className="fl-status" data-fl-status><b>Concept reference design.</b> No FieldLink unit has been built, certified or priced by a supplier. Prices are proposed and illustrative. The pictures are concept renders.</p>
         </div>
         <figure className="fl-hero__fig">
@@ -154,6 +155,51 @@ export const fieldlinkPage = (demo: (href?: string) => string) => ({
         <ol className="fl-life">{LIFE.map((l, i) => <li key={l.step}><span className="fl-life__n" aria-hidden="true">{i + 1}</span><div><h3>{l.step}</h3><p>{l.body}</p><p className="fl-life__k">{l.kind}</p></div></li>)}</ol>
         <div className="actions"><a className="btn btn--primary" href={demo('#/v25/fi')}>Open Field Intelligence in the demonstration</a><a className="btn" href={demo('#/replay/R-ATL-4-218')}>See a room’s history in Core Replay</a></div>
         <p className="note">The demonstration runs on synthetic data, without FieldLink: it shows the software that observations would feed, not a FieldLink device.</p>
+      </div></section>
+
+      <section className="section fl-pkg" id="package" aria-labelledby="fl-pkg-h"><div className="wrap">
+        <p className="label">Master specification and engineering design package · Rev 0.9 concept · 18 Nov 2026</p>
+        <h2 id="fl-pkg-h">The engineering package behind this page</h2>
+        <p className="lede">A reference design and engineering discussion package, not production-released hardware: requirements, reproducible calculations, proposed interfaces and a verification plan, for engineering reviewers, design partners and investors.</p>
+        <div className="fl-pkg__grid">
+          <div className="fl-pkg__col">
+            <h3>Document control</h3>
+            <dl className="fl-pkg__dl">
+              <div><dt>Release</dt><dd>Rev 0.9 concept, 18 November 2026</dd></div>
+              <div><dt>Status</dt><dd>Preliminary design intent; vendor verification required</dd></div>
+              <div><dt>Scope</dt><dd>Nano (USB), Edge (PoE+), Pulse (distributed sensing) and their Empathia integrations</dd></div>
+              <div><dt>Not included</dt><dd>Released schematics or PCB files, bench test reports, RF/EMC approvals, verified supplier bids</dd></div>
+            </dl>
+            <h3>How each value is classed</h3>
+            <ul className="fl-pkg__keys">
+              <li><span className="fl-cls fl-cls--V">V</span> documented by a vendor or a published standard, with its source</li>
+              <li><span className="fl-cls fl-cls--C">C</span> calculated exactly from stated assumptions; not a measured product</li>
+              <li><span className="fl-cls fl-cls--T">T</span> a target requirement or a provisional engineering choice</li>
+            </ul>
+          </div>
+          <div className="fl-pkg__col">
+            <h3>What it contains</h3>
+            <ul className="fl-pkg__list">
+              <li><b>Master engineering specification</b> (22 pages): system requirements, design inputs awaiting approval, a reference specification per device, electrical, thermal, storage and network budgets, acoustic methodology, security and test plan, compliance plan, verification and destructive-QA matrix, risks and open decisions.</li>
+              <li><b>Visual blueprints</b>: eight vector plates, one diagram per page.</li>
+              <li><b>Proposed interfaces</b>: an observation message schema, an API description with its authentication boundaries, and a reference database schema. None is a deployed service.</li>
+            </ul>
+            <p className="fl-pkg__note">Commercial planning (costs, margins and forecasts) is internal and not part of the package shared from this page.</p>
+          </div>
+        </div>
+        <h3 className="fl-sub">Checks anyone can repeat</h3>
+        <div className="fl-table-wrap"><table className="fl-table fl-pkg__checks"><thead><tr><th scope="col">Design check</th><th scope="col">Result</th><th scope="col">Class</th></tr></thead><tbody>
+          <tr><th scope="row">Nano: USB 2.0 maximum, 5 V × 0.5 A</th><td>2.500 W</td><td><span className="fl-cls fl-cls--V">V</span></td></tr>
+          <tr><th scope="row">Nano: design peak with a 20 % reserve</th><td>1.701 W (0.799 W headroom)</td><td><span className="fl-cls fl-cls--C">C</span></td></tr>
+          <tr><th scope="row">Edge: draw with reserve against a 25.5 W PoE+ module</th><td>23.100 W (2.400 W headroom)</td><td><span className="fl-cls fl-cls--C">C</span></td></tr>
+          <tr><th scope="row">Pulse: design peak with reserve at 5 V × 1 A</th><td>2.430 W (2.570 W headroom)</td><td><span className="fl-cls fl-cls--C">C</span></td></tr>
+          <tr><th scope="row">Event load: 1,000 rooms × 96 events × 1,000 bytes</th><td>96.0 MB a day</td><td><span className="fl-cls fl-cls--C">C</span></td></tr>
+          <tr><th scope="row">Sound over 5 m at 343 m/s</th><td>14.58 ms</td><td><span className="fl-cls fl-cls--C">C</span></td></tr>
+        </tbody></table></div>
+        <div className="fl-pkg__next">
+          <div><h3>The next decision</h3><p>Sign off the requirements, then build an Edge developer-edition feasibility prototype with a design partner and a scoped, authorized one- to three-room pilot. No tooling for all three devices at once before that is validated.</p></div>
+          <div className="enquire"><EnquiryLink source="website-fieldlink" primary id="fl-pkg" /></div>
+        </div>
       </div></section>
 
       <section className="section fl-specs" id="specs" aria-labelledby="fl-sp"><div className="wrap">

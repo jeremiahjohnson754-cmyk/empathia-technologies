@@ -179,7 +179,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [768, 1024, 'tablet'], [390, 
 // ---- enquiries: the hosted form, honestly, with source attribution (founder 2026-10-31 20:18, 21:46, 21:51) ----
 {
   const ctx = await newCtx({ viewport: { width: 390, height: 844 } }); const page = await ctx.newPage();
-  const expect = { '/': ['founder'], '/founder': ['founder'], '/request-demo': ['website-demo'], '/pilot-partners': ['website-pilot', 'website-partner'], '/about': ['website-investor'], '/contact': ['website-demo', 'website-pilot', 'website-partner', 'website-investor', 'website-contact'] };
+  const expect = { '/': ['founder'], '/founder': ['founder'], '/request-demo': ['website-demo'], '/pilot-partners': ['website-pilot', 'website-partner'], '/about': ['website-investor'], '/contact': ['website-demo', 'website-pilot', 'website-partner', 'website-investor', 'website-contact'], '/fieldlink': ['website-fieldlink'] };
   for (const [p, sources] of Object.entries(expect)) {
     await page.goto(base + p);
     const links = await page.evaluate(() => Array.from(document.querySelectorAll('a[data-enquiry]')).map((a) => ({ s: a.dataset.enquiry, href: a.getAttribute('href'), target: a.target, rel: a.rel, name: a.textContent, disc: document.getElementById(a.getAttribute('aria-describedby') || '')?.textContent || '' })));

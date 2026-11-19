@@ -35,6 +35,7 @@ the website never shows a success message. **No hidden field yet**, so Tally ign
 | `/pilot-partners`, `/contact` | Discuss a partnership | `website-partner` | Strategic Partnership or MSP / AV Integration Partnership |
 | `/about#investors`, `/contact` | Start an investor conversation | `website-investor` | Investment Conversation |
 | `/contact` | Send an enquiry | `website-contact` | General Inquiry |
+| `/fieldlink#package` | Request the engineering package | `website-fieldlink` | Strategic Partnership or MSP / AV Integration Partnership (added 18 Nov 2026, founder 19:39) |
 
 "About the founder" stays an internal link to `/founder` (same tab); "Connect with the founder" is the enquiry. Two distinct buttons,
 never merged. The founder disclosure says the enquiry is marked for the founder and is not a private channel.

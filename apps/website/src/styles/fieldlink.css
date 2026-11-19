@@ -92,3 +92,16 @@
 .fl-turn__devs .btn[aria-pressed=true] { border-color: var(--fl-teal); box-shadow: inset 0 0 0 1px var(--fl-teal); }
 .fl-turn figcaption { color: var(--w-tx2); font-size: 15px; line-height: 1.5; }
 .fl-turn figcaption [data-turn-env] { color: var(--w-tx); font-weight: 600; }
+/* The master specification and engineering design package (founder 18 Nov 19:39): readable text from the dossier, never its cost pages */
+.fl-pkg__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
+.fl-pkg__col { border: 1px solid var(--w-line); border-radius: var(--w-r-card); background: var(--w-card); padding: clamp(18px, 2.4vw, 28px); display: grid; gap: 12px; align-content: start; min-width: 0; }
+.fl-pkg__col h3 { margin: 0; font-size: 20px; }
+.fl-pkg__dl { margin: 0; display: grid; gap: 0; }
+.fl-pkg__dl > div { display: grid; grid-template-columns: minmax(110px, 30%) 1fr; gap: 12px; padding: 9px 0; border-top: 1px solid var(--w-line); }
+.fl-pkg__dl dt { font-weight: 600; } .fl-pkg__dl dd { margin: 0; line-height: 1.5; }
+.fl-pkg__keys, .fl-pkg__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: 16px; line-height: 1.5; }
+.fl-pkg__keys .fl-cls { margin: 0 8px 0 0; }
+.fl-pkg__note { margin: 0; color: var(--w-tx2); font-size: 15px; }
+.fl-pkg__next { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; margin-top: 28px; align-items: start; }
+.fl-pkg__next h3 { margin: 0 0 6px; font-size: 20px; } .fl-pkg__next p { margin: 0; font-size: 16px; line-height: 1.5; }
+@media (max-width: 900px) { .fl-pkg__grid, .fl-pkg__next { grid-template-columns: 1fr; } .fl-pkg__dl > div { grid-template-columns: 1fr; gap: 2px; } }

@@ -8,7 +8,9 @@
 // - "View specifications" opens that device's specifications; the comparison is a real table;
 // - the products and about pages link to it, and the sitemap lists it;
 // - phone and desktop: no sideways scroll, readable text, 44 px targets; no console error, CSP intact, nothing off-origin;
-// - the concept enclosures turn (17:25 §10, Version D), envelope only, with or without the script.
+// - the concept enclosures turn (17:25 §10, Version D), envelope only, with or without the script;
+// - the master specification and engineering design package (founder 18 Nov 19:39) is on the page as readable text: its release and
+//   status, the V/C/T key, its technical contents, the checks anyone can repeat, the next decision, and its own enquiry source.
 // Run it in both schemes: PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/website-fieldlink.test.mjs
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -70,6 +72,18 @@ try {
     await page.goto(base + '/fieldlink', { waitUntil: 'load' });
     const r = await page.evaluate(() => ({ polys: document.querySelectorAll('[data-turn] polygon').length, controls: document.querySelector('[data-turn-controls]')?.hidden }));
     ok('FL-14', 'without the script the Edge concept is still drawn, and no dead controls are offered', r.polys >= 3 && r.controls === true, JSON.stringify(r)); await ctx.close(); }
+  // The engineering package (founder 18 Nov 2026 19:39): readable text from the dossier, the technical half only
+  { const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme }); const page = await ctx.newPage();
+    await page.goto(base + '/fieldlink', { waitUntil: 'load' });
+    const hero = await page.evaluate(() => [...document.querySelectorAll('.fl-hero a.btn')].map((a) => [a.textContent.trim(), a.getAttribute('href')]));
+    const pk = await page.evaluate(() => { const s = document.getElementById('package'); if (!s) return null; const t = s.innerText; return { t, keys: [...s.querySelectorAll('.fl-pkg__keys .fl-cls')].map((x) => x.textContent), dl: s.querySelectorAll('.fl-pkg__dl > div').length, beforeSpecs: !!(s.compareDocumentPosition(document.getElementById('specs')) & Node.DOCUMENT_POSITION_FOLLOWING) }; });
+    ok('FL-15', '"Engineering package" in the hero leads to the package: its release and status, what is not included, the V/C/T key, its technical contents, and that commercial planning is not part of it; it sits before the specifications', hero.some(([n, h]) => n === 'Engineering package' && h === '#package') && pk && pk.dl === 4 && /Rev 0\.9 concept/.test(pk.t) && /Preliminary design intent/.test(pk.t) && /bench test reports/.test(pk.t) && pk.keys.join('') === 'VCT' && /Master engineering specification/.test(pk.t) && /None is a deployed service/.test(pk.t) && /Commercial planning \(costs, margins and forecasts\) is internal and not part of the package/.test(pk.t) && pk.beforeSpecs, JSON.stringify({ hero, pk: pk && { ...pk, t: pk.t.slice(0, 160) } }));
+    const checks = await page.evaluate(() => [...document.querySelectorAll('#package .fl-pkg__checks tbody tr')].map((r) => ({ q: r.querySelector('th')?.textContent || '', v: r.querySelector('td')?.textContent || '', c: r.querySelector('.fl-cls')?.textContent || '' })));
+    const want = ['2.500 W', '1.701 W (0.799 W headroom)', '23.100 W (2.400 W headroom)', '2.430 W (2.570 W headroom)', '96.0 MB a day', '14.58 ms'];
+    ok('FL-16', 'the checks anyone can repeat are a real table: the dossier’s independently checked values, each classed V or C, none commercial', checks.length === 6 && checks.every((r, i) => r.v === want[i] && /^[VC]$/.test(r.c) && r.q.length > 10), JSON.stringify(checks));
+    const req = await page.evaluate(() => { const a = document.querySelector('#package a[data-enquiry]'); return a && { s: a.dataset.enquiry, href: a.getAttribute('href'), target: a.target, rel: a.rel, name: a.textContent, disc: document.getElementById(a.getAttribute('aria-describedby') || '')?.textContent || '' }; });
+    ok('FL-17', 'the package request opens the hosted form in a new tab with its own source (website-fieldlink), says so, and carries the disclosure; the next decision is named beside it', req && req.s === 'website-fieldlink' && req.href === 'https://tally.so/r/VpG0Vy?source=website-fieldlink' && req.target === '_blank' && /noopener/.test(req.rel) && /new tab/.test(req.name) && /tally\.so/.test(req.disc) && /Edge developer-edition feasibility prototype/.test(pk?.t || ''), JSON.stringify(req));
+    await ctx.close(); }
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme }); const page = await ctx.newPage();
   await page.goto(base + '/products', { waitUntil: 'load' }); const p1 = await page.locator('main a[href="/fieldlink"]').count();
   await page.goto(base + '/about', { waitUntil: 'load' }); const p2 = await page.locator('main a[href="/fieldlink"]').count();
