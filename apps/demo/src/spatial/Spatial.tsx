@@ -7,6 +7,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { BUILDINGS, type Building } from '../campus/canon.js';
 import { C, type Position, type Layer } from '../campus/design.js';
 import type { Connection } from '@empathia/domain-types';
+import type { MapOverlay } from '../map/EmpathiaMap.js';
 
 export const LAYER_COLOR: Record<Layer, string> = { display: 'var(--c-display)', video: 'var(--c-camera)', audio: 'var(--c-audio)', control: 'var(--c-control)', network: 'var(--c-network)', power: 'var(--c-speaker)', furniture: 'var(--c-furniture)' };
 export const LAYER_GLYPH: Record<Layer, string> = { display: 'D', video: 'V', audio: 'A', control: 'C', network: 'N', power: 'P', furniture: '' };
@@ -31,7 +32,8 @@ export interface CampusTile { score: number | null; band: 'healthy' | 'monitor' 
 const BAND_GLYPH = { healthy: '●', monitor: '▲', action: '◆', none: '○' } as const;
 /** The campus map wherever it appears: the Empathia Map (WebGL2: aerial imagery, 3D buildings, fly-to drill-down; task #234), or this
  *  SVG isometric map where the browser has no WebGL2. Both keep one keyboard button per building (data-testid campus-b-<key>). */
-type MapProps = { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; floor?: number; lens?: 'none' | 'risk' | 'issues' | 'assets' | 'coverage' };
+type MapProps = { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; floor?: number; lens?: 'none' | 'risk' | 'issues' | 'assets' | 'coverage';
+  /** Lite's campus on the same map (19 Nov): see EmpathiaMap */ testId?: string; direct?: boolean; bare?: boolean; pinTest?: (key: string) => string; pinSub?: (key: string) => string | undefined; onRoom?: (id: string) => void; overlay?: MapOverlay | null };
 let MapCode: ((p: MapProps) => JSX.Element) | null = null;
 const hasGl = () => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch { return false; } };
 export function CampusMap(props: MapProps) {

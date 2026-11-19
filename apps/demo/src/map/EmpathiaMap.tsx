@@ -146,7 +146,13 @@ function Legend({ lens, m, setM, metric, at, opens, sel }: { lens: Lens; m: Meas
   );
 }
 
-export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId = 'campus-3d', lens: lens0 = 'none' }: { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; /** with `current`, open on this floor of it (the campus floor page, founder 19 Nov 09:54: the same treatment at every level) */ floor?: number; testId?: string; lens?: Lens }) {
+/** Drawn over the map, in its metres (x, height, z), and kept in place as the camera moves: Lite's lens lines and their labels. */
+export interface MapOverlay { lines: Array<{ pts: Array<[number, number, number]>; dash?: boolean; route?: boolean }>; labels: Array<{ at: [number, number, number]; text: string; testId?: string }> }
+export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId = 'campus-3d', lens: lens0 = 'none', direct, bare, pinTest, pinSub, onRoom, overlay }: { tiles: Record<string, CampusTile>; onOpen: (b: Building) => void; onPreview?: (b: Building | null) => void; current?: string; /** with `current`, open on this floor of it (the campus floor page, founder 19 Nov 09:54: the same treatment at every level) */ floor?: number; testId?: string; lens?: Lens;
+  /** Lite's campus (founder 19 Nov 12:37 and 14:03: the Lite campus is the start page's campus): `direct` opens a building at once instead of
+   *  flying to it, `bare` leaves out the lens row and its legend (Lite has its own lenses), `pinTest` names each building's button, `pinSub`
+   *  adds a few words to a pin ("you are here"), `onRoom` opens a room found by the search, `overlay` draws a lens's lines and labels. */
+  direct?: boolean; bare?: boolean; pinTest?: (key: string) => string; pinSub?: (key: string) => string | undefined; onRoom?: (id: string) => void; overlay?: MapOverlay | null }) {
   const opens = useOpens();
   const host = useRef<HTMLDivElement>(null); const canvas = useRef<HTMLCanvasElement>(null);
   const pins = useRef<Record<string, HTMLButtonElement | null>>({}); const rpins = useRef<Record<string, HTMLButtonElement | null>>({}); const needle = useRef<HTMLSpanElement>(null);
@@ -164,6 +170,8 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
   // the camera lives outside React (it changes every frame); `kick` asks for a redraw
   const S = useRef({ cam: { tx: 0, tz: 0, dist: 520, yaw: -0.65, pitch: 0.86 } as Cam, from: null as Cam | null, to: null as Cam | null, t0: 0, dur: 1, dirty: true, raf: 0, kick: () => {}, mode, tilt, level, rooms, sel: sel?.key || null, hover: null as string | null, vp: null as M4 | null, soft: false, heat: null as { key: string; c: HTMLCanvasElement } | null });
   S.current.mode = mode; S.current.tilt = tilt; S.current.level = level; S.current.rooms = rooms; S.current.sel = sel?.key || null;
+  const opt = useRef({ direct, onOpen, onRoom, overlay }); opt.current = { direct, onOpen, onRoom, overlay };
+  const ovLines = useRef<Array<SVGPolylineElement | null>>([]); const ovLabels = useRef<Array<HTMLSpanElement | null>>([]);
   const heat = useMemo(() => (metric ? { key: `${lens}:${m}:${metric.rows.map((r) => r.v ?? '-').join(',')}`, c: heatCanvas(metric, lens) } : null), [metric, lens, m]);
   S.current.heat = heat;
 
@@ -241,7 +249,7 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
       // ground
       if (!painted[st.mode]) { const m = st.mode; (painting[m] ||= paintAsync(m, BUILDINGS, layout())).then((c) => { painted[m] = c; st.kick(); }); }
       gl.clearColor(fog[0], fog[1], fog[2], 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      if (painted[st.mode]) { gl.useProgram(gp); gl.uniformMatrix4fv(gu['uVP']!, false, vp); gl.uniform4f(gu['uBox']!, GROUND.x0, GROUND.z0, GROUND.size, 0); gl.uniform3fv(gu['uEye']!, eye); gl.uniform3fv(gu['uFog']!, fog); gl.uniform1f(gu['uNear']!, c.dist * 1.2); gl.uniform1f(gu['uFar']!, c.dist * 4 + 1200); gl.uniform3fv(gu['uEdge']!, map ? [0.925, 0.93, 0.9] : [0.33, 0.43, 0.24]);
+      if (painted[st.mode]) { host.current?.setAttribute('data-ground', 'ready'); gl.useProgram(gp); gl.uniformMatrix4fv(gu['uVP']!, false, vp); gl.uniform4f(gu['uBox']!, GROUND.x0, GROUND.z0, GROUND.size, 0); gl.uniform3fv(gu['uEye']!, eye); gl.uniform3fv(gu['uFog']!, fog); gl.uniform1f(gu['uNear']!, c.dist * 1.2); gl.uniform1f(gu['uFar']!, c.dist * 4 + 1200); gl.uniform3fv(gu['uEdge']!, map ? [0.925, 0.93, 0.9] : [0.33, 0.43, 0.24]);
         gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, upload(st.mode)); gl.uniform1i(gu['uTex']!, 0); gl.uniform1f(gu['uOver']!, 0); gl.disable(gl.CULL_FACE); gl.bindVertexArray(gvao); gl.drawArrays(gl.TRIANGLES, 0, 6);
         if (st.heat) { if (heatKey !== st.heat.key) { if (!heatTex) heatTex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, heatTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, st.heat.c); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); heatKey = st.heat.key; }
           gl.bindTexture(gl.TEXTURE_2D, heatTex); gl.uniform1f(gu['uOver']!, 1); gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.disable(gl.DEPTH_TEST); gl.drawArrays(gl.TRIANGLES, 0, 6); gl.enable(gl.DEPTH_TEST); gl.disable(gl.BLEND); }
@@ -266,13 +274,15 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
     const place = (vp: M4, cv2: HTMLCanvasElement) => { const w = cv2.clientWidth, h = cv2.clientHeight; const proj = (x: number, y: number, z: number) => { const p = xf(vp, [x, y, z, 1]); if (p[3] <= 0) return null; return [(p[0] / p[3] * 0.5 + 0.5) * w, (1 - (p[1] / p[3] * 0.5 + 0.5)) * h] as const; };
       for (const b of BUILDINGS) { const el = pins.current[b.key]; if (!el) continue; const F = L.foot[b.key]!; const s = proj(F.x + F.w / 2, b.floors * STOREY + 4, F.z + F.d / 2); const show = !!s && s[0] > -40 && s[0] < w + 40 && s[1] > -20 && s[1] < h + 40 && !(st.level.k === 'floor');
         el.style.transform = s ? `translate(${s[0].toFixed(1)}px, ${s[1].toFixed(1)}px) translate(-50%, -100%)` : ''; el.style.visibility = show ? 'visible' : 'hidden'; }
-      const lv = st.level; for (const rb of st.rooms) { const el = rpins.current[rb.o.id]; if (!el || lv.k !== 'floor') continue; const s = proj(rb.x + rb.w / 2, (lv.f - 1) * STOREY + 2.6, rb.z + rb.d / 2); el.style.transform = s ? `translate(${s[0].toFixed(1)}px, ${s[1].toFixed(1)}px) translate(-50%, -50%)` : ''; el.style.visibility = s ? 'visible' : 'hidden'; } };
+      const lv = st.level; for (const rb of st.rooms) { const el = rpins.current[rb.o.id]; if (!el || lv.k !== 'floor') continue; const s = proj(rb.x + rb.w / 2, (lv.f - 1) * STOREY + 2.6, rb.z + rb.d / 2); el.style.transform = s ? `translate(${s[0].toFixed(1)}px, ${s[1].toFixed(1)}px) translate(-50%, -50%)` : ''; el.style.visibility = s ? 'visible' : 'hidden'; }
+      const ov = opt.current.overlay; if (ov) { ov.lines.forEach((ln, i) => { const el = ovLines.current[i]; if (!el) return; const ps = ln.pts.map((q) => proj(q[0], q[1], q[2])); el.setAttribute('points', ps.every(Boolean) ? ps.map((q) => `${q![0].toFixed(1)},${q![1].toFixed(1)}`).join(' ') : ''); });
+        ov.labels.forEach((lb, i) => { const el = ovLabels.current[i]; if (!el) return; const s = proj(lb.at[0], lb.at[1], lb.at[2]); el.style.transform = s ? `translate(${s[0].toFixed(1)}px, ${s[1].toFixed(1)}px) translate(-50%, -100%)` : ''; el.style.visibility = s ? 'visible' : 'hidden'; }); } };
     st.kick = () => { if (!st.raf) st.raf = requestAnimationFrame(draw); };
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => st.kick()) : null; ro?.observe(cv);
     const lost = (e: Event) => { e.preventDefault(); setErr('The map’s graphics were interrupted. Reload the page to restore them.'); }; cv.addEventListener('webglcontextlost', lost);
     st.kick(); return () => { if (st.raf) cancelAnimationFrame(st.raf); ro?.disconnect(); cv.removeEventListener('webglcontextlost', lost); r.dispose(); };
   };
-  useEffect(() => { S.current.kick(); }, [mode, tilt, level, rooms, room, heat]);
+  useEffect(() => { S.current.kick(); }, [mode, tilt, level, rooms, room, heat, overlay]);
 
   // ---- input: drag to pan, right-drag / two fingers to turn and tilt, wheel / pinch to zoom, keys --------------------------------------
   useEffect(() => { const cv = canvas.current!; const st = S.current; const ptrs = new Map<number, { x: number; y: number }>(); let moved = 0; let down: { x: number; y: number; b: number } | null = null; let last2: { d: number; a: number; mx: number; my: number } | null = null;
@@ -292,7 +302,7 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
       if (ptrs.size >= 2) { const [a, b] = [...ptrs.values()] as [{ x: number; y: number }, { x: number; y: number }]; const d = Math.hypot(b.x - a.x, b.y - a.y), ang = Math.atan2(b.y - a.y, b.x - a.x), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
         if (last2) { zoom(last2.d / Math.max(1, d)); st.cam.yaw -= ang - last2.a; turn(0, (my - last2.my) * 0.6); } last2 = { d, a: ang, mx, my }; return; }
       if (down && (down.b === 2 || e.ctrlKey || e.shiftKey)) turn(dx, dy); else pan(dx, dy); };
-    const onUp = (e: PointerEvent) => { ptrs.delete(e.pointerId); if (ptrs.size < 2) last2 = null; if (moved < 6 && down && ptrs.size === 0) { const h = pick(e.clientX, e.clientY); if (h && 'room' in h) setRoom(h.room!); else if (h && 'b' in h) goLevel({ k: 'building', b: h.b! }); } down = null; };
+    const onUp = (e: PointerEvent) => { ptrs.delete(e.pointerId); if (ptrs.size < 2) last2 = null; if (moved < 6 && down && ptrs.size === 0) { const h = pick(e.clientX, e.clientY); const o = opt.current; if (h && 'room' in h) setRoom(h.room!); else if (h && 'b' in h) { const b = BUILDINGS.find((x) => x.key === h.b)!; if (o.direct) o.onOpen(b); else goLevel({ k: 'building', b: h.b! }); } } down = null; };
     const onWheel = (e: WheelEvent) => { e.preventDefault(); zoom(Math.exp(e.deltaY * (e.ctrlKey ? 0.01 : 0.0014))); };
     const onKey = (e: KeyboardEvent) => { const k = e.key; const step = 40; if (k === 'ArrowLeft') pan(step, 0); else if (k === 'ArrowRight') pan(-step, 0); else if (k === 'ArrowUp') pan(0, step); else if (k === 'ArrowDown') pan(0, -step); else if (k === '+' || k === '=') zoom(0.8); else if (k === '-' || k === '_') zoom(1.25); else if (k === 'q' || k === 'Q') turn(-30, 0); else if (k === 'e' || k === 'E') turn(30, 0); else return; e.preventDefault(); };
     const noMenu = (e: Event) => e.preventDefault();
@@ -304,7 +314,7 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
   // ---- search ---------------------------------------------------------------------------------------------------------------------
   const hits = useMemo(() => { const s = q.trim().toLowerCase(); if (s.length < 2) return []; const bs = BUILDINGS.filter((b) => `${b.name} ${b.short} ${b.key}`.toLowerCase().includes(s)).map((b) => ({ k: 'b' as const, id: b.key, label: b.name, sub: `${b.floors} floors · ${b.purpose}` }));
     const rs = BUILDINGS.flatMap((b) => roomsIn(b.key)).filter((r) => `${r.id} ${r.name} ${shortName(r)} ${r.aliases.join(' ')}`.toLowerCase().includes(s)).slice(0, 6).map((r) => ({ k: 'r' as const, id: r.id, label: `${shortName(r)} · ${r.name}`, sub: `Floor ${r.floor}` })); return [...bs, ...rs].slice(0, 8); }, [q]);
-  const choose = (h: { k: 'b' | 'r'; id: string }) => { setQ(''); if (h.k === 'b') goLevel({ k: 'building', b: h.id }); else { const r = BUILDINGS.flatMap((b) => roomsIn(b.key)).find((x) => x.id === h.id)!; const lv: Level = { k: 'floor', b: r.building, f: r.floor }; setLevel(lv); fly(camFor(lv)); setRoom(r.id); } };
+  const choose = (h: { k: 'b' | 'r'; id: string }) => { setQ(''); if (direct && h.k === 'b') { onOpen(BUILDINGS.find((b) => b.key === h.id)!); return; } if (onRoom && h.k === 'r') { onRoom(h.id); return; } if (h.k === 'b') goLevel({ k: 'building', b: h.id }); else { const r = BUILDINGS.flatMap((b) => roomsIn(b.key)).find((x) => x.id === h.id)!; const lv: Level = { k: 'floor', b: r.building, f: r.floor }; setLevel(lv); fly(camFor(lv)); setRoom(r.id); } };
 
   const t = (b: Building) => tiles[b.key] || { score: null, band: 'none' as const, issues: 0, rooms: 0 };
   const label = (b: Building) => { const x = t(b); return `${b.name}: health ${x.score == null ? 'not scored' : `${x.score} of 100`}, ${x.rooms} rooms, ${x.issues} open issue${x.issues === 1 ? '' : 's'}, ${b.floors} floors`; };
@@ -317,9 +327,11 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
       <div className="emap__view">
       <canvas ref={canvas} className="emap__cv" tabIndex={0} role="img" aria-label="Empathia Map of the Northstar campus: drag to move, Ctrl or right-drag to turn, scroll or pinch to zoom, arrow keys to move, plus and minus to zoom, Q and E to turn. Every building and room is also a button below." data-testid="emap-canvas" />
       <div className="emap__pins" role="group" aria-label={`Campus map: ${BUILDINGS.length} buildings. Each opens its place card.`} data-testid={testId}>
-        {BUILDINGS.map((b) => { const x = t(b); return <button key={b.key} type="button" ref={(e: HTMLButtonElement | null) => { pins.current[b.key] = e; }} className={`emap__pin emap__pin--${x.band}${sel?.key === b.key ? ' on' : ''}`} aria-label={label(b)} aria-current={current === b.key ? 'true' : undefined} aria-pressed={sel?.key === b.key} data-testid={`campus-b-${b.key}`}
-          onClick={() => { if (sel?.key === b.key && level.k === 'building') onOpen(b); else goLevel({ k: 'building', b: b.key }); }} onMouseEnter={() => { S.current.hover = b.key; S.current.kick(); onPreview?.(b); }} onMouseLeave={() => { S.current.hover = null; S.current.kick(); }} onFocus={() => onPreview?.(b)}>
-          <span className="emap__glyph" aria-hidden="true">{BAND_GLYPH[x.band]}</span><b>{b.short}</b>{metric ? <span className="emap__lv" data-testid={`emap-lv-${b.key}`}>{fmt(lens, m, metric.rows.find((r) => r.b.key === b.key)?.v ?? null)}</span> : <><span className="emap__score">{x.score ?? '—'}</span>{x.issues > 0 && <span className="emap__iss" aria-hidden="true">{x.issues}</span>}</>}</button>; })}
+        {overlay && <svg className="emap__ov" aria-hidden="true">{overlay.lines.map((ln, i) => <polyline key={i} ref={(e: SVGPolylineElement | null) => { ovLines.current[i] = e; }} className={`emap__ovl${ln.dash ? ' emap__ovl--dash' : ''}${ln.route ? ' emap__ovl--route' : ''}`} />)}</svg>}
+        {BUILDINGS.map((b) => { const x = t(b); return <button key={b.key} type="button" ref={(e: HTMLButtonElement | null) => { pins.current[b.key] = e; }} className={`emap__pin emap__pin--${x.band}${sel?.key === b.key ? ' on' : ''}`} aria-label={label(b)} aria-current={current === b.key ? 'true' : undefined} aria-pressed={sel?.key === b.key} data-testid={pinTest ? pinTest(b.key) : `campus-b-${b.key}`}
+          onClick={() => { if (direct || (sel?.key === b.key && level.k === 'building')) onOpen(b); else goLevel({ k: 'building', b: b.key }); }} onMouseEnter={() => { S.current.hover = b.key; S.current.kick(); onPreview?.(b); }} onMouseLeave={() => { S.current.hover = null; S.current.kick(); }} onFocus={() => onPreview?.(b)}>
+          <span className="emap__glyph" aria-hidden="true">{BAND_GLYPH[x.band]}</span><b>{b.short}</b>{metric ? <span className="emap__lv" data-testid={`emap-lv-${b.key}`}>{fmt(lens, m, metric.rows.find((r) => r.b.key === b.key)?.v ?? null)}</span> : <><span className="emap__score">{x.score ?? '—'}</span>{x.issues > 0 && <span className="emap__iss" aria-hidden="true">{x.issues}</span>}</>}{pinSub?.(b.key) && <span className="emap__sub">{pinSub(b.key)}</span>}</button>; })}
+        {overlay?.labels.map((lb, i) => <span key={i} ref={(e: HTMLSpanElement | null) => { ovLabels.current[i] = e; }} className="emap__ovt" data-testid={lb.testId} aria-hidden="true">{lb.text}</span>)}
         {level.k === 'floor' && rooms.map((rb) => <button key={rb.o.id} type="button" ref={(e: HTMLButtonElement | null) => { rpins.current[rb.o.id] = e; }} className={`emap__rpin${room === rb.o.id ? ' on' : ''}`} data-testid={`map-room-${rb.o.id}`} aria-label={`${shortName(rb.o)} ${rb.o.name}: ${STATE_WORD[rb.state] || rb.state}${rb.issues ? `, ${rb.issues} open issue${rb.issues === 1 ? '' : 's'}` : ''}`} aria-pressed={room === rb.o.id} onClick={() => setRoom(rb.o.id)}>
           <i style={{ background: STATE_COL[rb.state] }} aria-hidden="true" />{rb.o.number}{rb.issues > 0 && <span className="emap__iss" aria-hidden="true">{rb.issues}</span>}</button>)}
       </div>
@@ -344,10 +356,10 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
       </div>
       <p className="emap__credit">Empathia Map · synthetic {mode === 'imagery' ? 'aerial imagery' : 'map'} of a fictional campus · heights and floor layouts modeled</p>
       </div>
-      <div className="emap__lens" role="group" aria-label="Map lens">
+      {!bare && <div className="emap__lens" role="group" aria-label="Map lens">
         {LENSES.map((k) => <button key={k} type="button" aria-pressed={lens === k} onClick={() => setLens(k)} data-testid={`emap-lens-${k}`}>{LENS_NAME[k]}</button>)}
-      </div>
-      {metric && <Legend lens={lens} m={m} setM={setM} metric={metric} at={at} opens={opens} sel={sel} />}
+      </div>}
+      {metric && !bare && <Legend lens={lens} m={m} setM={setM} metric={metric} at={at} opens={opens} sel={sel} />}
       {sel && level.k !== 'campus' && !selRoom && (
         <section className="emap__card" aria-labelledby="emap-card-h" data-testid="emap-card">
           <h3 id="emap-card-h">{sel.name}</h3><p className="emap__meta">{sel.purpose} · {sel.floors} floors · opened {sel.opened}</p>

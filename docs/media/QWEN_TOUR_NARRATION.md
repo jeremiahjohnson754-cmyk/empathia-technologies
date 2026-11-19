@@ -64,6 +64,25 @@ The scripts (all in the repository):
 
 **In the tour:** nothing plays until the visitor presses Listen. Each narrated stop has captions and a transcript. If the audio cannot load, the transcript stands in.
 
-## Results
+## Results (tour takes, 19 Nov 2026)
 
-Filled in from the checks when the takes were shipped: see the section below and `media/narration-qwen/CHECKS.json`.
+- **67 takes shipped, one per stop that had none.** Every tour stop (79) now has a take; `media/narration-qwen/CHECKS.json` lists each
+  take's words, spoken form, what the recogniser heard, its measurements and hash. The spoken script is `media/narration-qwen/tour-script.json`.
+- **Heard back:** every take says its line. Word error rates (Whisper base.en against the written words) are 0 to 0.36, mean about 0.05;
+  the non-zero rates are the recogniser writing digits for spelled numbers ("version 1" for "version one", "140" for the written 140
+  read aloud), splitting "ServiceHands", or mishearing a name ("Began" for "Beacon", which Whisper small.en hears correctly).
+- **Two takes replaced.** B8's first take said "overridden" for "overwritten" and F6's garbled "dossier". Both recognisers heard the
+  errors. Each got one new take from a corrected spoken form, and both new takes say their lines. The replaced takes were not shipped.
+- **Levels:** −23.2 to −23.5 LUFS after encoding. 673.5 s of narration in all, 4.05 MB (mono 24 kHz MP3, 48 kb/s).
+- **Pace:** 1.3 to 3.0 written words a second (the shipped ElevenLabs takes run 2.4–2.6). Ryan is slower than Brian on some lines;
+  C2 is the slowest. The longest pause inside any take is 0.98 s (A9).
+- **Captions:** 53 sentence boundaries; 52 were placed by the recogniser's word timing, then snapped to a measured pause within 0.8 s
+  where one exists. 15 boundaries had no pause that close and sit at the timed word end (listed per take in CHECKS.json as estimated).
+
+**Not done:** nobody has listened to all 67 takes. The founder heard one line (G9) in Ryan and Aiden. A listening pass, and the founder's
+choice of voice, remain open.
+
+## The website's films
+
+Recorded again with the voice by `scripts/media/record-product-film.mjs --voice=<dir>`: each step's line is read as its words appear and
+the step holds until the line is said. Their results are added here when they are recorded.

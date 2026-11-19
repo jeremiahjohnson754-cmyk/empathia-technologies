@@ -12,7 +12,11 @@ import { SPACES } from './data/v253.js';
 import { roomsOf, readiness, liteRoomHref } from './model.js';
 import { scene, poly, line, label, hit, box, rgb, useCam, L3View, type Cam, type RGB, type L3Scene } from './l3.js';
 import { LOOK } from '../map/looks.js';
-import { paintAsync, GROUND, U, STOREY } from '../map/imagery.js';
+import { CampusMap } from '../spatial/Spatial.js';
+import type { MapOverlay } from '../map/EmpathiaMap.js';
+import { campusStats } from '../campus/metrics.js';
+import { load as loadWs } from '../workspace/store.js';
+import { paintAsync, layoutOf, GROUND, U, STOREY, type View } from '../map/imagery.js';
 
 export interface PlanItem { id: string; type: 'room' | 'space' | 'closet'; w: number; d: number; label: string; x: number; y: number; side: 'N' | 'S' }
 export interface FloorPlanModel { bKey: string; fN: number; W: number; D: number; core: { x: number; y: number; w: number; d: number }; corridor: { x: number; y: number; w: number; d: number }; midY: number; items: PlanItem[]; liftBox: { x: number; y: number; w: number; d: number }; stairBox: { x: number; y: number; w: number; d: number }; entrance: [number, number] | null }
@@ -51,15 +55,20 @@ const lookOf = (key: string) => LOOK[key] || LOOK.ATL!;
 /** The ground at every level is the estate map's own synthetic aerial imagery (map/imagery.ts: lawns, the ring road, car parks, plazas,
  *  paths, woods, the pond, and the buildings' shadows), painted once in this browser and kept for the visit; never fetched, never real.
  *  Founder, 19 Nov 2026 12:37: the Lite campus should look like the campus on the start page. */
-let aerial: Promise<string> | null = null;
-export function useAerial(): string | null {
+const aerial = new Map<string, Promise<string>>();
+/** the square of ground round a building, `k` times its longer side: the imagery painted at a few times the campus's resolution (the floor
+ *  sees close, 3×; the building's floors drawn apart see far behind it, 8×) */
+export const viewOf = (key: string, k = 3): View => { const F = footOf(key); const size = Math.max(F.w, F.d) * k; return { x0: F.x + F.w / 2 - size / 2, z0: F.y + F.d / 2 - size / 2, size }; };
+export function useAerial(key?: string, k = 3): string | null {
   const [href, setHref] = useState<string | null>(null);
   useEffect(() => { let live = true;
     if (typeof document === 'undefined') return undefined;
-    aerial ||= paintAsync('imagery', BUILDINGS).then((c) => new Promise<string>((ok) => { if (c.toBlob) c.toBlob((b) => ok(b ? URL.createObjectURL(b) : c.toDataURL('image/jpeg', 0.88)), 'image/jpeg', 0.88); else ok(c.toDataURL('image/jpeg', 0.88)); }));
-    aerial.then((h) => { if (live) setHref(h); }).catch(() => { aerial = null; });
+    // a data: URL, not a blob: one: the demonstration's content policy admits images from itself and data: only
+    const id = key ? `${key}×${k}` : '*'; let job = aerial.get(id);
+    if (!job) { job = paintAsync('imagery', BUILDINGS, undefined, 8, key ? viewOf(key, k) : undefined).then((c) => c.toDataURL('image/jpeg', 0.86)); aerial.set(id, job); }
+    job.then((h) => { if (live) setHref(h); }).catch(() => { aerial.delete(id); });
     return () => { live = false; };
-  }, []);
+  }, [key, k]);
   return href;
 }
 /** only the campus's own buildings stand in the imagery; a regional site's views keep the stage's plain grass */
@@ -67,8 +76,8 @@ const onCampus = (key: string) => BUILDINGS.some((b) => b.key === key);
 /** the estate's footprint of a building, in its metres */
 const footOf = (key: string) => { const b = buildingByKey(key)!; return { x: b.map.x * U, y: b.map.y * U, w: b.map.w * U, d: b.map.d * U }; };
 /** the aerial ground under a building's plan: the imagery scaled so the building's footprint lies under the plan, centred on it */
-const groundUnder = (key: string, W: number, D: number) => { const F = footOf(key); const k = (W / F.w + D / F.d) / 2;
-  return { x: W / 2 + (GROUND.x0 - (F.x + F.w / 2)) * k, y: D / 2 + (GROUND.z0 - (F.y + F.d / 2)) * k, w: GROUND.size * k, d: GROUND.size * k }; };
+const groundUnder = (key: string, W: number, D: number, mult = 3) => { const F = footOf(key); const k = (W / F.w + D / F.d) / 2; const v = viewOf(key, mult);
+  return { x: W / 2 + (v.x0 - (F.x + F.w / 2)) * k, y: D / 2 + (v.z0 - (F.y + F.d / 2)) * k, w: v.size * k, d: v.size * k }; };
 const toneOf = (id: string) => { const r = roomRecord(id); return r ? bandOf(readiness(r)) : 'none'; };
 const spaceHref = (id: string) => (id === 'SP-ATL-COMMONS' ? '#/lite/commons' : `#/lite/space/${id}`);
 /** where a visitor is (V2.5.3 herePlace's default): the Atlas lobby on floor 1 */
@@ -137,14 +146,14 @@ export function floorScene(cam: Cam, bKey: string, fN: number, mark?: string | n
 
 /** The building's exploded floors, with the camera and controls. */
 export function BuildingStage({ bKey, onNav }: { bKey: string; onNav: (to: string) => void }) {
-  const c = useCam({ yaw: -34, pitch: 20, zoom: 1 }); const B = buildingByKey(bKey)!; const href = useAerial();
+  const c = useCam({ yaw: -34, pitch: 20, zoom: 1 }); const B = buildingByKey(bKey)!; const href = useAerial(onCampus(bKey) ? bKey : undefined, 8);
   const sc = useMemo(() => buildingScene(c.cam, bKey), [c.cam, bKey]);
-  const ground = useMemo(() => { if (!onCampus(bKey)) return undefined; if (!href) return null; const plans = Array.from({ length: B.floors }, (_, i) => floorPlan(bKey, i + 1)); return { href, ...groundUnder(bKey, Math.max(...plans.map((p) => p.W)), Math.max(...plans.map((p) => p.D))) }; }, [href, bKey, B.floors]);
+  const ground = useMemo(() => { if (!onCampus(bKey)) return undefined; if (!href) return null; const plans = Array.from({ length: B.floors }, (_, i) => floorPlan(bKey, i + 1)); return { href, ...groundUnder(bKey, Math.max(...plans.map((p) => p.W)), Math.max(...plans.map((p) => p.D)), 8) }; }, [href, bKey, B.floors]);
   return <L3View sc={sc} c={c} label={`The floors of ${B.name}, drawn apart. Each floor is a button.`} onNav={onNav} testId="lite-building-3d" tall S={14} look="estate" ground={ground} credit={`Empathia Lite · ${B.name}, its floors drawn apart · synthetic · floor layouts modeled`} />;
 }
 /** One floor in 3D, with the camera and controls. */
 export function FloorStage({ bKey, fN, onNav, mark }: { bKey: string; fN: number; onNav: (to: string) => void; mark?: string | null }) {
-  const c = useCam({ yaw: -30, pitch: 50, zoom: 1 }); const B = buildingByKey(bKey)!; const href = useAerial();
+  const c = useCam({ yaw: -30, pitch: 50, zoom: 1 }); const B = buildingByKey(bKey)!; const href = useAerial(onCampus(bKey) ? bKey : undefined);
   const sc = useMemo(() => floorScene(c.cam, bKey, fN, mark), [c.cam, bKey, fN, mark]);
   const ground = useMemo(() => { if (!onCampus(bKey)) return undefined; if (!href) return null; const P = floorPlan(bKey, fN); return { href, ...groundUnder(bKey, P.W, P.D) }; }, [href, bKey, fN]);
   return <L3View sc={sc} c={c} label={`Floor ${fN} of ${B.name} in 3D. Each room is a button.`} onNav={onNav} testId="lite-floor-3d" tall S={22} look="estate" ground={ground} credit={`Empathia Lite · ${B.name} floor ${fN} · synthetic · the layout is modeled from each room’s size, not surveyed`} />;
@@ -162,7 +171,7 @@ const entrance = (m: { x: number; y: number; w: number; d: number }, key: string
  *  as in V2.5.3: the visitor's way in from the car park, or the links to the campus core. */
 export function campusScene(cam: Cam, buildings: ReadonlyArray<{ key: string; name: string; short: string; purpose: string; floors: number; map: { x: number; y: number; w: number; d: number } }>,
   opts: { lens?: string | null; tone?: (key: string) => string; plaza: readonly [number, number]; visitorPath: ReadonlyArray<readonly [number, number]> }) {
-  const sc = scene(4.75 * K, 4.2 * K, 5.2 * K, 7 * STOREY + 2); const P2 = (p: readonly [number, number]): [number, number] => [p[0] * K, p[1] * K];
+  const sc = scene(4.55 * K, 4.3 * K, 4.15 * K, 7 * STOREY + 2); /* framed inside the ring road, as the start page frames the campus */ const P2 = (p: readonly [number, number]): [number, number] => [p[0] * K, p[1] * K];
   const tech = opts.lens === 'engineer' || opts.lens === 'optimize' || opts.lens === 'exec';
   for (const b of buildings) {
     const m = b.map, x = (m.x + m.w / 2) * K, y = (m.y + m.d / 2) * K, w = m.w * K, d = m.d * K, h = b.floors * STOREY + 1, to = `#/lite/b/${b.key}`, here = b.key === HERE.bKey;
@@ -184,13 +193,37 @@ export function campusScene(cam: Cam, buildings: ReadonlyArray<{ key: string; na
   if (opts.lens === 'visitor') { line(sc, 6, opts.visitorPath.map((p) => [p[0] * K, p[1] * K, 0.4] as [number, number, number]), { s: 'var(--l3-teal)', sw: 3, cls: 'l3-route' }); const s0 = P2(opts.visitorPath[0]!); label(sc, [s0[0] - 8, s0[1] + 4, 0.4], 'Visitor parking', { lift: 12, tone: 'here' }); }
   if (opts.lens === 'engineer') { const at = buildings.find((b) => b.key === 'ATL'); if (at) { const c0: [number, number, number] = [(at.map.x + at.map.w / 2) * K, (at.map.y + at.map.d / 2) * K, at.floors * STOREY + 3];
     for (const b of buildings) if (b.key !== 'ATL') line(sc, 6, [[(b.map.x + b.map.w / 2) * K, (b.map.y + b.map.d / 2) * K, b.floors * STOREY + 3], c0], { s: 'var(--l3-teal)', sw: 1.4, da: '4 5' });
-    label(sc, c0, 'Campus core', { lift: 52, tone: 'here' }); } }
+    label(sc, c0, 'Campus core', { lift: 84, tone: 'here' }); } }
   return sc;
 }
-/** The campus with the camera and controls. */
-export function CampusStage({ buildings, onNav, lens, tone, plaza, visitorPath }: { buildings: Parameters<typeof campusScene>[1]; onNav: (to: string) => void; lens?: string | null; tone?: (k: string) => string; plaza: readonly [number, number]; visitorPath: ReadonlyArray<readonly [number, number]> }) {
-  const c = useCam({ yaw: -37, pitch: 46, zoom: 1 }); const href = useAerial();
+/** The campus. Where the browser draws WebGL2 it is the start page's own campus, the Empathia Map (founder, 19 Nov 2026 12:37 and 14:03:
+ *  "polish it … like the campus view on the start page"), in Lite's mode: a building opens Lite's building at once, Lite's lens draws on it
+ *  (the visitor's way in, the links to the campus core), and the pins carry the same health and issues as the start page. Without WebGL2
+ *  it is the scene above, on the same aerial imagery. */
+export function CampusStage(p: { buildings: Parameters<typeof campusScene>[1]; onNav: (to: string) => void; lens?: string | null; tone?: (k: string) => string; plaza: readonly [number, number]; visitorPath: ReadonlyArray<readonly [number, number]> }) {
+  const [gl] = useState(() => { try { return typeof document !== 'undefined' && !!document.createElement('canvas').getContext('webgl2'); } catch { return false; } });
+  const tiles = useMemo(() => { let w = null; try { w = loadWs(); } catch { /* none */ } return Object.fromEntries(campusStats(w).buildings.map((s) => [s.b.key, { score: s.score, band: s.band, issues: s.open, rooms: s.rooms }])); }, []);
+  const overlay = useMemo<MapOverlay | null>(() => {
+    // the visitor's way in, on the map's own ground (map/imagery.ts layout): from the south car park up the entrance boulevard to the ring
+    // road, along it to the first clear gap south of Atlas, and up that gap across the lawn to Atlas's south door. The gap is measured: no
+    // footprint lies on it, so the line never crosses a building.
+    if (p.lens === 'visitor') { const L = layoutOf(BUILDINGS); const lot = L.lots[0]!, ring = L.ring, atl = L.foot['ATL']!, cx = ring.x + ring.w / 2, y = 0.8; const lz = lot.z + lot.d / 2;
+      const south = ring.z + ring.d - ring.lane / 2 - 2, door = atl.z + atl.d;
+      const clear = (x: number) => Object.values(L.foot).every((f) => !(x > f.x - 6 && x < f.x + f.w + 6 && f.z + f.d > door && f.z < south));
+      const xs = Object.values(L.foot).flatMap((f) => [f.x - 10, f.x + f.w + 10]).concat([atl.x + atl.w / 2]).filter((x) => x > atl.x - 40 && x < atl.x + atl.w + 40 && clear(x));
+      const gx = xs.sort((a2, b2) => Math.abs(a2 - (atl.x + atl.w / 2)) - Math.abs(b2 - (atl.x + atl.w / 2)))[0] ?? atl.x + atl.w / 2;
+      const pts: Array<[number, number, number]> = [[lot.x + lot.w * 0.8, y, lz], [cx - 5, y, lz], [cx - 5, y, south], [gx, y, south], [gx, y, door + 8], [atl.x + atl.w / 2, y, door + 8], [atl.x + atl.w / 2, y, door]];
+      return { lines: [{ pts, route: true }], labels: [{ at: [gx, 3, south], text: 'From the visitor car park', testId: 'lite-ov-parking' }] }; }
+    if (p.lens === 'engineer') { const at = p.buildings.find((b) => b.key === 'ATL'); if (!at) return null; const top = (b: (typeof p.buildings)[number]) => [(b.map.x + b.map.w / 2) * U, b.floors * STOREY + 3, (b.map.y + b.map.d / 2) * U] as [number, number, number];
+      return { lines: p.buildings.filter((b) => b.key !== 'ATL').map((b) => ({ pts: [top(b), top(at)], dash: true })), labels: [] }; }
+    return null; }, [p.lens, p.visitorPath, p.buildings]);
+  if (gl) return <CampusMap tiles={tiles} testId="lite-campus-3d" direct bare pinTest={(k) => `lite-bld-${k}`} pinSub={(k) => (k === HERE.bKey ? (p.lens === 'engineer' ? 'campus core' : 'you are here') : undefined)} overlay={overlay}
+    onOpen={(b) => p.onNav(`#/lite/b/${b.key}`)} onRoom={(id) => p.onNav(liteRoomHref(id))} />;
+  return <CampusScene {...p} />;
+}
+function CampusScene({ buildings, onNav, lens, tone, plaza, visitorPath }: Parameters<typeof CampusStage>[0]) {
+  const c = useCam({ yaw: -37, pitch: 42, zoom: 1 }); const href = useAerial();
   const sc = useMemo(() => campusScene(c.cam, buildings, { lens, tone, plaza, visitorPath }), [c.cam, buildings, lens, tone, plaza, visitorPath]);
-  const ground = useMemo(() => (href ? { href, x: GROUND.x0, y: GROUND.z0, w: GROUND.size, d: GROUND.size } : null), [href]);
+  const ground = useMemo(() => (href ? { href, x: GROUND.x0, y: GROUND.z0, w: GROUND.size, d: GROUND.size, wood: true } : null), [href]);
   return <L3View sc={sc} c={c} label={`The campus in 3D: ${buildings.length} buildings. Each building is a button.`} onNav={onNav} testId="lite-campus-3d" S={1.1} look="estate" ground={ground} credit="Empathia Lite · synthetic aerial imagery of a fictional campus · heights and floor layouts modeled" />;
 }

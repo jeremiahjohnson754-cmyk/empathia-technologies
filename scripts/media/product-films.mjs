@@ -12,9 +12,9 @@ const show = (sel) => async (p) => { await p.locator(sel).first().evaluate((el) 
 export const FILMS = {
   'P-lite': {
     product: 'lite', title: 'Lite: from the campus to one seat, and back', label: 'EMPATHIA LITE · DEMONSTRATION · SYNTHETIC DATA',
-    start: '#/lite', startProof: '[data-testid=lite-campus-3d][data-ground=ready]',   // 19 Nov: the campus lies on the aerial imagery; start once it is painted
+    start: '#/lite', startProof: '[data-ground=ready] [data-testid=lite-campus-3d], [data-testid=lite-campus-3d][data-ground=ready]',   // 19 Nov: the campus is the start page's map (or the scene on its imagery); start once the ground is painted
     steps: [
-      { say: 'Lite opens on the campus, in 3D. Every building is a button.', proof: '[data-testid=lite-campus-3d] .l3-hitbtn', hold: 2900 },
+      { say: 'Lite opens on the campus, in 3D. Every building is a button.', proof: '[data-testid=lite-bld-ATL]', hold: 2900 },
       { do: click('[data-testid=lite-bld-ATL]'), say: 'Drill down: Atlas HQ, its floors drawn apart.', proof: '[data-testid=lite-building-3d]' },
       { do: click('[data-testid=l3-floor-4]'), say: 'Floor 4: corridor, lifts, stairs, and every room.', proof: '[data-testid=lite-floor-3d]' },
       { do: async (p) => { await click('[data-testid="l3-open-R-ATL-4-218"]')(p); await p.waitForSelector('[data-testid=lite-room-3d]'); await show('[data-testid=lite-room-3d]')(p); }, say: 'Room 4.218, furnished, in 3D.', proof: '[data-testid=lite-room-3d]', hold: 3000 },
@@ -26,7 +26,7 @@ export const FILMS = {
       { do: async (p) => { await click('[data-testid=lite-eye-back]')(p); await show('[data-testid=lite-room-3d]')(p); }, say: 'Eye level, from the back row.', proof: '[data-testid=lite-eye-back][aria-checked=true]' },
       { do: async (p) => { await go('#/lite/b/ATL/4')(p); await p.evaluate(() => scrollTo(0, 0)); }, say: 'Drill back up: the floor,', proof: '[data-testid=lite-floor-3d]', hold: 2400 },
       { do: click('[data-testid=lite-up-building]'), say: 'the building,', proof: '[data-testid=lite-building-3d]', hold: 2200 },
-      { do: click('[data-testid=lite-up-campus]'), say: 'and the campus. One record, every level.', proof: '[data-testid=lite-campus-3d][data-ground=ready]', hold: 3400 },
+      { do: click('[data-testid=lite-up-campus]'), say: 'and the campus. One record, every level.', proof: '[data-ground=ready] [data-testid=lite-campus-3d], [data-testid=lite-campus-3d][data-ground=ready]', hold: 3400 },
     ],
   },
   'P-search-party': {

@@ -93,3 +93,10 @@
 /* six measures of the Issues lens (founder 18 Nov 15:38): they wrap into rows inside the legend */
 .emap__seg--wrap { display: flex; flex-wrap: wrap; justify-self: stretch; }
 .emap__seg--wrap button { flex: 1 1 auto; min-height: 44px; }
+/* Lite's campus on the map (19 Nov 2026): a pin's few added words, and a lens's lines and labels over the map */
+.emap__sub { color: #9ff0e4; font-weight: 500; }
+.emap__ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.emap__ovl { fill: none; stroke: #2fb3a3; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .45)); }
+.emap__ovl--dash { stroke-dasharray: 6 6; stroke-width: 1.6; } .emap__ovl--route { stroke: #3fe0cd; stroke-width: 4; }
+.emap__ovt { position: absolute; left: 0; top: 0; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--em-line); background: var(--em-glass); color: #9ff0e4; font: 600 11.5px/1.2 var(--font-sans, system-ui);
+  white-space: nowrap; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 18px rgba(0, 0, 0, .35); pointer-events: none; }

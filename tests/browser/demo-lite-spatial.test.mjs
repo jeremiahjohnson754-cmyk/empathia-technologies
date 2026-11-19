@@ -15,7 +15,8 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [412, 915, 'phone']]) {
   // the scene is the first thing after the page head and the lens row
   const lead = await p.evaluate(() => { const st = document.querySelector('[data-testid=lite-campus-3d]').getBoundingClientRect(); return { top: Math.round(st.top), h: Math.round(st.height), vh: innerHeight }; });
   ok(`LS-${tag}-01`, 'Lite opens on the campus in 3D, high on the page (the scene is the hero)', lead.top < lead.vh * 0.5 && lead.h > 220, JSON.stringify(lead));
-  const blds = await p.locator('[data-testid=lite-campus-3d] .l3-hitbtn').count();
+  // CHANGED 19 Nov 2026: the campus is the Empathia Map (founder 12:37, 14:03); its buildings are the map's pins, named lite-bld-<key>
+  const blds = await p.locator('[data-testid=lite-campus-3d] [data-testid^=lite-bld-]').count();
   ok(`LS-${tag}-02`, 'every campus building is a named button on the scene', blds === 6 && (await p.locator('[data-testid=lite-bld-ATL]').getAttribute('aria-label')).includes('Atlas HQ'), String(blds));
   await p.locator('[data-testid=lite-bld-ATL]').click(); await wait(p, '[data-testid=lite-building-3d]');
   ok(`LS-${tag}-03`, 'tapping Atlas opens the building with its floors drawn apart, each floor a button', (await at(p)) === '#/lite/b/ATL' && (await p.locator('[data-testid=lite-building-3d] .l3-hitbtn').count()) === 7 && (await p.locator('[data-testid=l3-floor-label-1]').innerText()).includes('you are here'));

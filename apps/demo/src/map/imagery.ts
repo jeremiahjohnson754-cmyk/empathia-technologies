@@ -53,18 +53,21 @@ function segDist(px: number, pz: number, x0: number, z0: number, x1: number, z1:
 /** signed distance to the ring road's centre line (a rounded rectangle): negative inside */
 function ringDist(r: Layout['ring'], x: number, z: number) { const cx = r.x + r.w / 2, cz = r.z + r.d / 2; const qx = Math.abs(x - cx) - (r.w / 2 - r.r), qz = Math.abs(z - cz) - (r.d / 2 - r.r); return Math.hypot(Math.max(qx, 0), Math.max(qz, 0)) + Math.min(Math.max(qx, qz), 0) - r.r; }
 
-const px = (v: number) => (v / GROUND.size) * TEX;
-const X = (x: number) => px(x - GROUND.x0), Z = (z: number) => px(z - GROUND.z0);
+/** the square of ground a painting covers, in metres: the whole campus (GROUND) or, for one building's views, the ground round it at a
+ *  higher resolution (Lite's building and floor, 19 Nov 2026: the same imagery, sharp at that distance) */
+export interface View { x0: number; z0: number; size: number }
 function noise(R: () => number, n: number, lo: number, hi: number) { const c = document.createElement('canvas'); c.width = c.height = n; const g = c.getContext('2d')!; const d = g.createImageData(n, n); for (let i = 0; i < n * n; i++) { const v = lo + (hi - lo) * R(); d.data[i * 4] = d.data[i * 4 + 1] = d.data[i * 4 + 2] = v; d.data[i * 4 + 3] = 255; } g.putImageData(d, 0, 0); return c; }
 function roundRect(g: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
 const SUN = { dx: 0.62, dz: 0.5 };   // shadow direction per metre of height (sun from the north-west, mid-afternoon in the demonstration)
 
 /** Paint in small steps (a generator), so the page stays responsive while the imagery is made: paintAsync yields to the browser between
  *  steps (18 Nov: painted in one go it blocked the main thread for ~0.9 s in total on load). paint() runs the same steps at once. */
-export function paint(mode: 'imagery' | 'map', B: Building[], L: Layout = layoutOf(B)): HTMLCanvasElement { const it = paintSteps(mode, B, L); let r = it.next(); while (!r.done) r = it.next(); return r.value; }
-export function paintAsync(mode: 'imagery' | 'map', B: Building[], L: Layout = layoutOf(B), budget = 8): Promise<HTMLCanvasElement> {
-  const it = paintSteps(mode, B, L); return new Promise((ok) => { const run = () => { const t0 = performance.now(); let r = it.next(); while (!r.done && performance.now() - t0 < budget) r = it.next(); if (r.done) ok(r.value); else setTimeout(run, 0); }; setTimeout(run, 0); }); }
-function* paintSteps(mode: 'imagery' | 'map', B: Building[], L: Layout): Generator<void, HTMLCanvasElement, void> {
+export function paint(mode: 'imagery' | 'map', B: Building[], L: Layout = layoutOf(B), view?: View): HTMLCanvasElement { const it = paintSteps(mode, B, L, view); let r = it.next(); while (!r.done) r = it.next(); return r.value; }
+export function paintAsync(mode: 'imagery' | 'map', B: Building[], L: Layout = layoutOf(B), budget = 8, view?: View): Promise<HTMLCanvasElement> {
+  const it = paintSteps(mode, B, L, view); return new Promise((ok) => { const run = () => { const t0 = performance.now(); let r = it.next(); while (!r.done && performance.now() - t0 < budget) r = it.next(); if (r.done) ok(r.value); else setTimeout(run, 0); }; setTimeout(run, 0); }); }
+function* paintSteps(mode: 'imagery' | 'map', B: Building[], L: Layout, view: View = GROUND): Generator<void, HTMLCanvasElement, void> {
+  const px = (v: number) => (v / view.size) * TEX;
+  const X = (x: number) => px(x - view.x0), Z = (z: number) => px(z - view.z0);
   const c = document.createElement('canvas'); c.width = c.height = TEX; const g = c.getContext('2d')!; const R = rng(mode === 'imagery' ? 110 : 220);
   const ring = L.ring; const ringPath = (grow: number) => roundRect(g, X(ring.x - grow), Z(ring.z - grow), px(ring.w + grow * 2), px(ring.d + grow * 2), px(ring.r + grow));
   const im = mode === 'imagery';
