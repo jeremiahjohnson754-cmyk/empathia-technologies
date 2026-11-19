@@ -20,6 +20,12 @@ import type { RequestContext } from '../auth/context.js';
 import { findRoom, type RoomRow } from './rooms.js';
 
 export const CRITERION_SET = ['room.design.approve'];
+/**
+ * The commissioning standard's intelligibility floor (0048; the founder's workbook control rule "STI <= 0.40 or Fail/Marginal routes to
+ * intelligibility exceptions"): an STI at or below it never passes, a site criterion for sti sets its lower limit above it, and its
+ * FAIL is excepted only on its own record. The database holds the same figure (app.intelligibility_floor()).
+ */
+export const INTELLIGIBILITY_FLOOR = 0.4;
 /** Lifecycle states in which a criterion may still be set: before the room is accepted. After that it is a change order. */
 export const CRITERION_OPEN = ['PLANNED', 'DESIGN_APPROVED', 'INSTALLATION_PENDING', 'INSTALLED_UNVERIFIED', 'COMMISSIONING'];
 
@@ -83,6 +89,7 @@ export async function setCriterion(ctx: RequestContext, ref: string, testId: str
     if ((lower !== null && !Number.isFinite(lower)) || (upper !== null && !Number.isFinite(upper))) why.push('a limit is a number');
     if (lower !== null && upper !== null && lower > upper) why.push('the lower limit is not above the upper limit');
     if (qty) for (const v of [lower, upper]) if (v !== null && Number.isFinite(v) && (v < qty.range[0] || v > qty.range[1])) why.push(`${qty.metric} is between ${qty.range[0]} and ${qty.range[1]} ${qty.unit}: ${v} is not a limit for it`);
+    if (qty?.metric === 'sti' && (lower === null || lower <= INTELLIGIBILITY_FLOOR)) why.push(`the commissioning standard routes a speech transmission index of ${INTELLIGIBILITY_FLOOR.toFixed(2)} or less to an intelligibility exception: a criterion for sti has a lower limit above ${INTELLIGIBILITY_FLOOR.toFixed(2)}`);
     if (!body.source || body.source.trim().length < 3) why.push('say where the limit comes from (the brief, the standard, the client’s reference)');
     if (why.length) await ctx.refuse('criterion.set', agg(room), why, { testId });
     const last = (await q.query<{ v: number }>('SELECT coalesce(max(version), 0) AS v FROM app.acceptance_criterion WHERE room_id = $1 AND test_id = $2', [room.id, testId])).rows[0]!.v;
@@ -120,7 +127,12 @@ export async function forTest(ctx: RequestContext, q: Queryable, room: RoomRow, 
  */
 export async function citeMeasurement(q: Queryable, tenantId: string, room: { id: string }, testId: string, state: string, measurementId?: string): Promise<{ why: string[]; id: string | null; measured: string | null }> {
   const c = inForce(await criteria(q, room.id), testId);
-  if (!measurementId) return { why: c ? [`${testId} has an acceptance criterion on this room (${c.metric} ${limitWords({ lower: num(c.lower), upper: num(c.upper), unit: c.unit })}, version ${c.version}): record a measurement and cite it`] : [], id: null, measured: null };
+  if (!measurementId) {
+    if (c) return { why: [`${testId} has an acceptance criterion on this room (${c.metric} ${limitWords({ lower: num(c.lower), upper: num(c.upper), unit: c.unit })}, version ${c.version}): record a measurement and cite it`], id: null, measured: null };
+    // 0048: a PASS citing nothing does not step over an STI at or below the standard's floor
+    const last = state === 'PASS' ? (await q.query<{ value: string }>("SELECT value FROM app.measurement WHERE room_id = $1 AND test_id = $2 AND metric = 'sti' ORDER BY created_at DESC, id DESC LIMIT 1", [room.id, testId])).rows[0] : undefined;
+    return { why: last && Number(last.value) <= INTELLIGIBILITY_FLOOR ? [`the latest speech transmission index of ${testId} in this room is ${Number(last.value)}, at or below the commissioning standard's ${INTELLIGIBILITY_FLOOR.toFixed(2)}: it is routed to an intelligibility exception. Record it as FAIL, or measure again after a correction and cite that measurement`] : [], id: null, measured: null };
+  }
   const m = (await q.query<{ id: string; test_id: string | null; metric: string; unit: string; value: string; criterion_id: string | null; within: boolean | null; provenance: string; calibration_status: string; approval_state: string; c_lower: string | null; c_upper: string | null; c_version: number | null }>(
     `SELECT m.id, m.test_id, m.metric, m.unit, m.value, m.criterion_id, m.within, m.provenance, m.calibration_status, m.approval_state, k.lower AS c_lower, k.upper AS c_upper, k.version AS c_version
        FROM app.measurement m LEFT JOIN app.acceptance_criterion k ON k.id = m.criterion_id WHERE m.room_id = $1 AND m.id = $2`, [room.id, measurementId])).rows[0];
@@ -130,6 +142,7 @@ export async function citeMeasurement(q: Queryable, tenantId: string, room: { id
   if (state === 'PASS') {
     if (m.approval_state === 'REJECTED') why.push('the measurement cited was rejected on review: it passes nothing');
     if (m.within === false) why.push(`the measurement cited is ${reading}, which does not meet the criterion (${judged}, version ${m.c_version}): it cannot be recorded as PASS`);
+    if (m.metric === 'sti' && Number(m.value) <= INTELLIGIBILITY_FLOOR) why.push(`the measurement cited is ${reading}, at or below the commissioning standard's ${INTELLIGIBILITY_FLOOR.toFixed(2)}: it is routed to an intelligibility exception. Record it as FAIL; the deficiency it opens is excepted only on its own exception record`);
     if (c) {
       if (m.provenance === 'SIMULATED') { if (!(await isSandbox(q, tenantId))) why.push('the measurement cited is SIMULATED: a simulated value is not a measurement of a room and passes nothing outside a demonstration sandbox'); }
       else if (m.provenance !== 'FIELD_MEASURED') why.push(`the measurement cited is ${m.provenance}: a test with a criterion passes on a field measurement`);

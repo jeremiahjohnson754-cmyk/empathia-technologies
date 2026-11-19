@@ -9,6 +9,10 @@
  *   except   the deficiency step (deficiencies.ts) then names the approved record; the database guard holds it for every writer.
  *
  * Acceptance counts such a test as PASS WITH EXCEPTION (rooms.ts → engine lifecycle `excepted`): never a pass, and the baseline says so.
+ *
+ * 0048: the record rests on one of two rules (app.exception_route): the room's criterion for the test (0042), or, where the room has
+ * none, the commissioning standard's intelligibility floor: a speech transmission index of 0.40 or less is never a pass and is routed
+ * to its own exception record. Such a record names the floor as its limit and no criterion version.
  */
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
@@ -19,7 +23,7 @@ export const LOG_AUTHORITIES = ['test.verify', 'tests.verify.all', 'work.evidenc
 export const DECIDE_AUTHORITIES = ['baseline.approve'];
 
 interface Row { id: string; code: string; room_id: string; issue_id: string; test_id: string; measurement_id: string; metric: string; unit: string; measured_value: string;
-  lower: string | null; upper: string | null; criterion_version: number; why_poor: string; root_cause: string; mitigation: string; evidence_id: string | null;
+  lower: string | null; upper: string | null; criterion_version: number | null; why_poor: string; root_cause: string; mitigation: string; evidence_id: string | null;
   logged_by: string; logged_at: string; state: string; decided_by: string | null; decided_at: string | null; decision_note: string | null; issue: string }
 const COLS = `x.id, x.code, x.room_id, x.issue_id, x.test_id, x.measurement_id, x.metric, x.unit, x.measured_value, x.lower, x.upper, x.criterion_version, x.why_poor, x.root_cause,
   x.mitigation, x.evidence_id, x.logged_by, x.logged_at, x.state, x.decided_by, x.decided_at, x.decision_note, i.code AS issue`;
@@ -29,9 +33,13 @@ export const viewOf = (r: Row) => ({
   measured: { value: Number(r.measured_value), metric: r.metric, unit: r.unit }, limit: { lower: n(r.lower), upper: n(r.upper), criterionVersion: r.criterion_version },
   whyPoor: r.why_poor, rootCause: r.root_cause, mitigation: r.mitigation, evidenceId: r.evidence_id, loggedBy: r.logged_by, loggedAt: r.logged_at,
   decidedBy: r.decided_by, decidedAt: r.decided_at, decisionNote: r.decision_note,
-  words: `${r.test_id}: measured ${Number(r.measured_value)} ${r.unit} against ${r.upper !== null ? `at most ${Number(r.upper)}` : ''}${r.upper !== null && r.lower !== null ? ' and ' : ''}${r.lower !== null ? `at least ${Number(r.lower)}` : ''} ${r.unit} (criterion version ${r.criterion_version}) — ${r.state === 'APPROVED' ? 'PASS WITH EXCEPTION once the deficiency is excepted on it: not a pass' : r.state.toLowerCase()}`,
+  basis: r.criterion_version === null ? 'commissioning standard' : 'site criterion',
+  words: `${r.test_id}: measured ${Number(r.measured_value)} ${r.unit} against ${r.criterion_version === null ? `the commissioning standard (an STI above ${Number(r.lower)} passes; at or below it is routed to an intelligibility exception)` : `${r.upper !== null ? `at most ${Number(r.upper)}` : ''}${r.upper !== null && r.lower !== null ? ' and ' : ''}${r.lower !== null ? `at least ${Number(r.lower)}` : ''} ${r.unit} (criterion version ${r.criterion_version})`} — ${r.state === 'APPROVED' ? 'PASS WITH EXCEPTION once the deficiency is excepted on it: not a pass' : r.state.toLowerCase()}`,
 });
 const agg = (code: string) => ({ type: 'MeasuredException', id: code });
+/** 'criterion' | 'standard' | null: the rule a failed test's exception record rests on (app.exception_route, 0048). */
+export const route = async (q: Queryable, tenantId: string, roomId: string, test: string) =>
+  (await q.query<{ r: string | null }>('SELECT app.exception_route($1, $2, $3) AS r', [tenantId, roomId, test])).rows[0]?.r ?? null;
 
 /** Log the exception record of a deficiency opened by a failed measured test. */
 export async function log(ctx: RequestContext, issueCode: string, body: { whyPoor?: string; rootCause?: string; mitigation?: string; evidenceId?: string }) {
@@ -42,7 +50,7 @@ export async function log(ctx: RequestContext, issueCode: string, body: { whyPoo
     const room = await findRoom(ctx, q, i.room_id); const why: string[] = [];
     const test = /^test-failed:(.+)$/.exec(i.key)?.[1];
     if (!test) why.push(`${issueCode} was not opened by a failed test: an exception record of a measured value is for those`);
-    else if (!(await q.query('SELECT 1 FROM app.acceptance_criterion WHERE room_id = $1 AND test_id = $2', [room.id, test])).rowCount) why.push(`${room.code} has no criterion for ${test}: without a limit there is no measured value to except; the deficiency follows its own workflow`);
+    else if (!(await route(q, ctx.p.tenantId, room.id, test))) why.push(`${room.code} has no criterion for ${test}, and its current FAIL is not a speech transmission index at or below the commissioning standard's 0.40: without a limit there is no measured value to except; the deficiency follows its own workflow`);
     if (['CLOSED', 'ACCEPTED_EXCEPTION'].includes(i.workflow)) why.push(`${issueCode} is ${i.workflow}: nothing to except`);
     if ((await q.query("SELECT 1 FROM app.measured_exception WHERE issue_id = $1 AND state <> 'REJECTED'", [i.id])).rowCount) why.push(`${issueCode} already has an exception record that is not rejected`);
     const t = (s: unknown) => String(s ?? '').trim();
@@ -60,7 +68,7 @@ export async function log(ctx: RequestContext, issueCode: string, body: { whyPoo
       const m = /EM020 (.+)/.exec(String((e as Error).message)); if (m) await ctx.refuse('exception.log', { type: 'RoomIssue', id: issueCode }, [m[1]!]); throw e;
     }
     const r = (await q.query<Row>(`SELECT ${COLS} FROM app.measured_exception x JOIN app.room_issue i ON i.id = x.issue_id WHERE x.code = $1`, [code])).rows[0]!;
-    await ctx.audit(q, 'exception.log', 'ALLOWED', agg(code), { issue: issueCode, test, value: Number(r.measured_value), upper: n(r.upper), lower: n(r.lower) });
+    await ctx.audit(q, 'exception.log', 'ALLOWED', agg(code), { issue: issueCode, test, value: Number(r.measured_value), upper: n(r.upper), lower: n(r.lower), basis: r.criterion_version === null ? 'commissioning standard' : 'site criterion' });
     return viewOf(r);
   });
 }
@@ -95,7 +103,8 @@ export async function ofRoom(ctx: RequestContext, ref: string) {
 /** For the except step: the approved record a measured deficiency is excepted on, or why it may not be (null when the rule does not apply). */
 export async function forExcept(q: Queryable, issueId: string, roomId: string, key: string, ref: string): Promise<{ why: string[]; loggedBy: string | null } | null> {
   const test = /^test-failed:(.+)$/.exec(key)?.[1];
-  if (!test || !(await q.query('SELECT 1 FROM app.acceptance_criterion WHERE room_id = $1 AND test_id = $2', [roomId, test])).rowCount) return null;
+  const tenant = (await q.query<{ tenant_id: string }>('SELECT tenant_id FROM app.room WHERE id = $1', [roomId])).rows[0]?.tenant_id;
+  if (!test || !tenant || !(await route(q, tenant, roomId, test))) return null;
   const e = (await q.query<{ code: string; state: string; logged_by: string }>("SELECT code, state, logged_by FROM app.measured_exception WHERE issue_id = $1 ORDER BY logged_at DESC", [issueId])).rows;
   const hit = e.find((x) => x.code === ref.trim());
   if (!hit) return { why: [`a failed measured test is excepted on its own exception record: log one (POST /v1/issues/{issue}/measured-exception)${e.length ? ` — this deficiency's: ${e.map((x) => `${x.code} ${x.state}`).join(', ')}` : ''}`], loggedBy: null };

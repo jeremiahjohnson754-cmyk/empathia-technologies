@@ -1386,7 +1386,7 @@ export interface Operations {
     };
     response: R<'postV1IssuesIssueImpact'>;
   };
-  /** POST /v1/issues/{issue}/measured-exception — Log the exception record of a deficiency opened by a failed measured test with a criterion: why the value is poor, the root cause, the mitigation and evidence. The measured value, metric and limits are copied by the database from the measurement the current FAIL rests on (authority: test.verify | tests.verify.all | work.evidence | fi.plan) */
+  /** POST /v1/issues/{issue}/measured-exception — Log the exception record of a deficiency opened by a failed measured test with a criterion, or by a speech transmission index at or below the commissioning standard’s 0.40: why the value is poor, the root cause, the mitigation and evidence. The measured value, metric and limits are copied by the database from the measurement the current FAIL rests on (authority: test.verify | tests.verify.all | work.evidence | fi.plan) */
   postV1IssuesIssueMeasuredException: {
     method: 'POST'; path: '/v1/issues/{issue}/measured-exception'; auth: true; idempotent: true;
     params: { issue: string };

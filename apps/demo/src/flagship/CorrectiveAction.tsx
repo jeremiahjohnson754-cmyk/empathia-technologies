@@ -137,7 +137,7 @@ export function ServiceWork({ issue, wo, creds, t, what = 'deficiency', start = 
 }
 
 /** A measured exception record as the server holds it (0042): the database's figures, why, cause, mitigation, decision. */
-export interface Exc { code: string; issue: string; test: string; state: string; measured: { value: number; metric: string; unit: string }; limit: { lower: number | null; upper: number | null; criterionVersion: number };
+export interface Exc { code: string; issue: string; test: string; state: string; measured: { value: number; metric: string; unit: string }; limit: { lower: number | null; upper: number | null; criterionVersion: number | null };
   whyPoor: string; rootCause: string; mitigation: string; decisionNote: string | null; words: string }
 
 /**
@@ -154,7 +154,7 @@ function ExceptionRecord({ issue, records, dw, t }: { issue: Issue; records: Exc
     <details className="ca__exc" data-testid="fl-exc" data-state={live?.state || 'NONE'} open={!!records.length}>
       <summary>Or accept it with an exception (Pass with Exception: never a pass)</summary>
       {records.length ? <ul className="fl__list" data-testid="fl-exc-list">{records.map((r) => <li key={r.code} data-exc={r.code} data-state={r.state}>
-        <span><b className="ui-mono">{r.code}</b> measured {r.measured.value} {r.measured.unit} against {r.limit.upper != null ? `at most ${r.limit.upper}` : `at least ${r.limit.lower}`} {r.measured.unit} (criterion version {r.limit.criterionVersion}) — {r.rootCause}; mitigation: {r.mitigation}{r.decisionNote ? <span className="ui-muted"> · {r.decisionNote}</span> : null}</span>
+        <span><b className="ui-mono">{r.code}</b> measured {r.measured.value} {r.measured.unit} against {r.limit.criterionVersion == null ? `the commissioning standard (an STI above ${r.limit.lower} passes)` : `${r.limit.upper != null ? `at most ${r.limit.upper}` : `at least ${r.limit.lower}`} ${r.measured.unit} (criterion version ${r.limit.criterionVersion})`} — {r.rootCause}; mitigation: {r.mitigation}{r.decisionNote ? <span className="ui-muted"> · {r.decisionNote}</span> : null}</span>
         <Tag tone={r.state === 'APPROVED' ? 'ok' : r.state === 'REJECTED' ? 'bad' : 'warn'}>{words(r.state)}</Tag></li>)}</ul> : null}
       {!live && !closed ? <><label className="kit-field">Why the value is poor <input type="text" value={why} maxLength={2000} data-testid="fl-exc-why" onChange={(e: { target: { value: string } }) => setWhy(e.target.value)} /></label>
         <div className="ca__row"><label className="kit-field">Root cause <input type="text" value={cause} maxLength={1000} data-testid="fl-exc-cause" onChange={(e: { target: { value: string } }) => setCause(e.target.value)} /></label>
