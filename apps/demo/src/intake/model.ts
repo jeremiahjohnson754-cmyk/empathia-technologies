@@ -13,9 +13,11 @@ import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS, ARCHETYPE_NAME, fullName, room
 import { roomRecord, layerOf, LAYERS, type Position, type Layer } from '../campus/design.js';
 
 const C = defaultCatalog;
-export type KindId = 'new-room' | 'change-room' | 'add-devices' | 'replace-device' | 'event' | 'evaluate-device' | 'improve-room';
-export type Goes = 'desk' | 'servicehands' | 'scouter' | 'optimizer';
-export interface Kind { id: KindId; label: string; blurb: string; needs: 'place' | 'room' | 'device' | 'category'; goes: Goes; then: string }
+export type KindId = 'new-room' | 'change-room' | 'add-devices' | 'replace-device' | 'event' | 'evaluate-device' | 'improve-room' | 'problem' | 'general';
+/** where a request goes: the decision desk (a project), ServiceHands (a job), the AV operations team's triage (a request in the person's own
+ *  words, routed by a person), or a tool that answers without a request (Scouter, Space Optimizer, ServiceHands' problem report). */
+export type Goes = 'desk' | 'servicehands' | 'scouter' | 'optimizer' | 'triage' | 'report';
+export interface Kind { id: KindId; label: string; blurb: string; needs: 'place' | 'room' | 'device' | 'category' | 'none'; goes: Goes; then: string }
 /** What a person can ask for, in their words, and where each request goes. */
 export const KINDS: Kind[] = [
   { id: 'new-room', label: 'A new room', blurb: 'A room that does not exist yet.', needs: 'place', goes: 'desk', then: 'The request goes to the decision desk as a project. An engineer reviews the proposed design before anything is approved or bought.' },
@@ -25,7 +27,33 @@ export const KINDS: Kind[] = [
   { id: 'event', label: 'An event or temporary setup', blurb: 'Extra equipment for a day, then back to normal.', needs: 'room', goes: 'servicehands', then: 'The request goes to ServiceHands as a setup job with a date, and a second job to put the room back.' },
   { id: 'evaluate-device', label: 'Check a device before buying', blurb: 'Ask whether a kind of device suits the standard.', needs: 'category', goes: 'scouter', then: 'Scouter compares it with what is already in the estate. Nothing is requested until you decide.' },
   { id: 'improve-room', label: 'Make a room work better', blurb: 'Seats that cannot see or hear; a layout that fights the room.', needs: 'room', goes: 'optimizer', then: 'Space Optimizer models the room and proposes options. You can send one as a request from there.' },
+  // 19 Nov 2026 (founder directive "The definitive Intake experience" §02, §05 G and J): a fault is reported, not requested; and a person
+  // who does not know what to ask for says it in their own words and a person routes it
+  { id: 'problem', label: 'Something is not working', blurb: 'A fault, a failure, a room that let you down.', needs: 'room', goes: 'report', then: 'ServiceHands takes the report: the room, what is wrong and a few quick checks to try first. A technician is sent if they do not fix it.' },
+  { id: 'general', label: 'Something else', blurb: 'Say it in your own words. The right team picks it up.', needs: 'none', goes: 'triage', then: 'The AV operations team reads it and decides where it goes. Nothing is decided by sending it, and they may ask you a question first.' },
 ];
+/** The front door's four choices and "Not sure?" (directive 19 Nov 2026 §03). Each opens the kinds that fit it; none asks the person to
+ *  pick an engineering workflow. */
+export type CardId = 'create' | 'improve' | 'equipment' | 'help';
+export const CARDS: Array<{ id: CardId; label: string; blurb: string; kinds: KindId[]; icon: 'plus' | 'room' | 'device' | 'wrench' }> = [
+  { id: 'create', label: 'Create a space', blurb: 'A new room, meeting area, classroom, event space or other place that needs technology.', kinds: ['new-room'], icon: 'plus' },
+  { id: 'improve', label: 'Improve a space', blurb: 'Modernise a room, give it new capabilities, make it more accessible, or change how it is used.', kinds: ['change-room', 'improve-room'], icon: 'room' },
+  { id: 'equipment', label: 'Add or change equipment', blurb: 'Install, replace or evaluate a device.', kinds: ['add-devices', 'replace-device', 'evaluate-device'], icon: 'device' },
+  { id: 'help', label: 'Get help', blurb: 'Something is not working, an event needs support, or you need someone to look at a space.', kinds: ['problem', 'event', 'general'], icon: 'wrench' },
+];
+export const cardOf = (kind: KindId): CardId => CARDS.find((c) => c.kinds.includes(kind))?.id || 'help';
+/** What a person may want a room to do better, in their words (directive §04, step 1). Chosen goals travel with the request as the
+ *  person's own, never as an approved requirement. */
+export const GOALS: Array<[id: string, label: string]> = [
+  ['video', 'Better video meetings'], ['audio', 'Better microphones and speakers'], ['displays', 'Larger or more displays'], ['present', 'Presenting and working together'],
+  ['record', 'Recording, streaming or broadcasting'], ['teach', 'Hybrid training or teaching'], ['signage', 'Digital signage'], ['access', 'Accessibility'],
+  ['standard', 'Bring it to the standard, or replace it'], ['reliable', 'Reliability and easier support'], ['modern', 'General modernisation'],
+];
+export const goalLabel = (id: string) => GOALS.find((g) => g[0] === id)?.[1] || id;
+/** The kinds that ask which goals matter (a room being made or changed, or equipment being added). */
+export const askGoals = (k: KindId) => k === 'new-room' || k === 'change-room' || k === 'add-devices';
+/** A building that is not on record yet (a new building or an undeclared space): its location is provisional until someone verifies it. */
+export const OTHER_BUILDING = 'OTHER';
 export const kindOf = (id: string): Kind => KINDS.find((k) => k.id === id) || KINDS[0]!;
 
 /** What a new room is for, in plain words, and the kind of room that means at each size. */
@@ -42,8 +70,18 @@ export const MATTERS: Array<[string, string]> = [['Standard', 'Another room will
 export const SITES = [...BUILDINGS, ...REGIONAL_SITES];
 
 export interface Add { cat: string; qty: number }
-export interface Draft { kind: KindId; need: string; use: string; people: number; building: string; floor: number; roomId: string; position: string; like: boolean; adds: Add[]; category: string; when: string; matters: string; date: string }
-export const blank = (kind: KindId = 'new-room', from: Partial<Draft> = {}): Draft => ({ kind, need: '', use: 'meet', people: 8, building: 'ATL', floor: 1, roomId: '', position: '', like: true, adds: [], category: 'camera', when: 'quarter', matters: 'Standard', date: '', ...from });
+/** A size the person knows, in metres: theirs, not surveyed (directive §04 step 4: "unknown geometry must remain unknown"). */
+export interface Known { w: number | null; l: number | null; h: number | null }
+export interface Draft { kind: KindId; need: string; use: string; people: number; building: string; floor: number; roomId: string; position: string; like: boolean; adds: Add[]; category: string; when: string; matters: string; date: string;
+  /** goals the person chose (GOALS ids) */ goals: string[];
+  /** a space that is not on record: what the person calls it, and the building when it is not on record either */ place: { name: string; building: string };
+  /** dimensions the person gave, if any */ dims: Known }
+export const blank = (kind: KindId = 'new-room', from: Partial<Draft> = {}): Draft => ({ kind, need: '', use: 'meet', people: 8, building: 'ATL', floor: 1, roomId: '', position: '', like: true, adds: [], category: 'camera', when: 'quarter', matters: 'Standard', date: '', goals: [], place: { name: '', building: '' }, dims: { w: null, l: null, h: null }, ...from });
+/** The person's own size, when both sides are given and plausible; otherwise null (the size stays modelled). */
+export const givenSize = (d: Draft): { w: number; l: number; h: number | null } | null => { const ok = (n: number | null, lo: number, hi: number) => typeof n === 'number' && Number.isFinite(n) && n >= lo && n <= hi;
+  const k = d.dims || { w: null, l: null, h: null }; return ok(k.w, 1.5, 80) && ok(k.l, 1.5, 120) ? { w: r1(k.w!), l: r1(k.l!), h: ok(k.h, 2.2, 25) ? r1(k.h!) : null } : null; };
+/** The site a draft names: a building on record, or the one the person typed. */
+export const siteName = (d: Draft): string => d.building === OTHER_BUILDING ? (d.place?.building.trim() || 'a building not yet on record') : (SITES.find((b) => b.key === d.building)?.name || d.building);
 /** Equipment a person may ask to add, in everyday words (furniture and building plant are not requested here). */
 export const ADDABLE = ['display', 'camera', 'micceil', 'mictable', 'micwireless', 'speaker', 'touch', 'scheduler', 'projector', 'bar', 'ledwall', 'lectern'].filter((c) => C.categories[c]);
 export const catName = (cat: string) => String((C.categories[cat] as { label?: string } | undefined)?.label || cat).replace(/\s*\(.*\)/, '');
@@ -105,16 +143,17 @@ const testsOf = (d: RoomDesignInput, before: Set<string> | null, marked: Planned
 export function propose(d: Draft): Proposal | null {
   const k = kindOf(d.kind);
   if (d.kind === 'new-room') {
-    const use = USES.find((u) => u.id === d.use) || USES[0]!; const people = Math.max(1, Math.min(600, Math.round(d.people) || 1)); const [archetype, template] = use.pick(people); const size = sizeFor(archetype, people);
+    const use = USES.find((u) => u.id === d.use) || USES[0]!; const people = Math.max(1, Math.min(600, Math.round(d.people) || 1)); const [archetype, template] = use.pick(people); const modelled = sizeFor(archetype, people);
+    const g = givenSize(d); const size = g ? { w: g.w, l: g.l, h: g.h ?? modelled.h, basis: `Size as you gave it: ${g.w} × ${g.l} m${g.h ? `, ceiling ${g.h} m` : `; ceiling modelled (${modelled.h} m)`}. Not surveyed; an engineer confirms it` } : modelled;
     let seq = 0; const devices = templateDevices(template, outlineFor('rect', size.w, size.l), () => `PA-${String(++seq).padStart(4, '0')}`, C);
     const marked: string[] = []; for (const add of d.adds) for (let i = 0; i < add.qty; i++) { const id = `PA-${String(++seq).padStart(4, '0')}`; devices.push(newDevice(id, add.cat, devices, place(add.cat, i, add.qty, size.w, size.l, devices.filter((x) => !x.furniture)), 'asked for in the request', C)); marked.push(id); }
     const design = designOf({ template, intent: `${use.label}${d.need ? `: ${d.need}` : ''}`, people, ...size }, devices); const { a, tests } = testsOf(design, null);
-    const positions = devices.map((x) => toPosition(x, marked.includes(x.id) ? 'asked for in the request' : `engine room template (${template})`)); const site = SITES.find((b) => b.key === d.building) || SITES[0]!;
-    return { title: `New ${(ARCHETYPE_NAME[archetype] || archetype).toLowerCase()} for ${people} at ${site.name}`, where: `${site.name}, floor ${d.floor}`, archetype, archetypeName: ARCHETYPE_NAME[archetype] || archetype, ...size, positions, marked, equipment: tally(positions, marked), tests,
+    const positions = devices.map((x) => toPosition(x, marked.includes(x.id) ? 'asked for in the request' : `engine room template (${template})`)); const site = siteName(d); const named = d.place?.name.trim();
+    return { title: named ? `${named}: a new ${(ARCHETYPE_NAME[archetype] || archetype).toLowerCase()} for ${people} at ${site}` : `New ${(ARCHETYPE_NAME[archetype] || archetype).toLowerCase()} for ${people} at ${site}`, where: `${site}, floor ${d.floor}`, archetype, archetypeName: ARCHETYPE_NAME[archetype] || archetype, ...size, positions, marked, equipment: tally(positions, marked), tests,
       findings: a.checks.slice(0, 4).map((f) => ({ title: f.title, severity: String(f.severity) })), engineReads: a.classification.archetypeName ? `The design engine reads this as ${a.classification.archetypeName} (${a.classification.sizeCategory}, ${a.classification.complexity} complexity).` : '',
       basis: [size.basis, `Equipment from the engine’s ${template.replace(/_/g, ' ')} room template: class templates, no make or model chosen`, 'Tests are the ones the engine judges applicable to this equipment; none has been run'] };
   }
-  if (k.needs === 'category') return null;
+  if (k.needs === 'category' || k.needs === 'none') return null;
   const o = roomById(d.roomId); const rec = o ? roomRecord(o.id) : null; if (!o || !rec) return null;
   const [w, l, h] = o.dims; const base = rec.design.devices.filter((x) => !x.removed); const before = new Set(rec.analysis.applicability.rows.filter((r) => r.applicable).map((r) => r.id));
   const devices = base.map((x) => ({ ...x })); const marked: string[] = []; let seq = devices.length;
@@ -144,25 +183,31 @@ export function known(d: Draft): Array<[label: string, value: string, source: st
 export function problems(d: Draft): Record<string, string> {
   const e: Record<string, string> = {}; const k = kindOf(d.kind);
   if (d.need.trim().length < 6) e.need = 'Say in a sentence what you need (at least 6 characters).'; if (d.need.length > 600) e.need = 'Keep it under 600 characters.';
-  if (k.needs === 'place') { if (!SITES.some((b) => b.key === d.building)) e.building = 'Choose the building.'; const b = SITES.find((x) => x.key === d.building); if (b && (d.floor < 1 || d.floor > b.floors || !Number.isInteger(d.floor))) e.floor = `${b.name} has floors 1 to ${b.floors}.`; if (!(d.people >= 1 && d.people <= 600)) e.people = 'Say how many people, from 1 to 600.'; if (!USES.some((u) => u.id === d.use)) e.use = 'Choose what the room is for.'; }
+  if (k.needs === 'place') { if (d.building === OTHER_BUILDING) { if ((d.place?.building || '').trim().length < 2) e.building = 'Say which building, in a few words.'; if (!(Number.isInteger(d.floor) && d.floor >= 0 && d.floor <= 200)) e.floor = 'Say the floor as a number (0 for the ground floor).'; } else if (!SITES.some((b) => b.key === d.building)) e.building = 'Choose the building.'; const b = SITES.find((x) => x.key === d.building); if (b && (d.floor < 1 || d.floor > b.floors || !Number.isInteger(d.floor))) e.floor = `${b.name} has floors 1 to ${b.floors}.`;
+    if ((d.place?.name || '').length > 80) e.place = 'Keep the name under 80 characters.'; if (!(d.people >= 1 && d.people <= 600)) e.people = 'Say how many people, from 1 to 600.'; if (!USES.some((u) => u.id === d.use)) e.use = 'Choose what the room is for.'; }
   if (k.needs === 'room' || k.needs === 'device') { if (!roomById(d.roomId)) e.roomId = 'Choose the room.'; }
   if (k.needs === 'device' && roomById(d.roomId) && !roomRecord(d.roomId)!.positions.some((p) => p.code === d.position && !p.furniture)) e.position = 'Choose the device to replace.';
   if ((d.kind === 'add-devices' || d.kind === 'event') && !d.adds.some((a) => a.qty > 0)) e.adds = d.kind === 'event' ? 'Choose the extra equipment the event needs.' : 'Choose what to add.';
   if (d.adds.some((a) => !ADDABLE.includes(a.cat) || a.qty < 0 || a.qty > 12 || !Number.isInteger(a.qty))) e.adds = 'Up to 12 of each kind of equipment.';
   if (d.kind === 'event' && !/^\d{4}-\d{2}-\d{2}$/.test(d.date)) e.date = 'Say the day of the event.';
   if (k.needs === 'category' && !C.categories[d.category]) e.category = 'Choose the kind of device.';
+  if ((d.goals || []).some((g) => !GOALS.some((x) => x[0] === g))) e.goals = 'Choose from the list.';
+  const k2 = d.dims || { w: null, l: null, h: null }; if ((k2.w !== null || k2.l !== null) && !givenSize(d)) e.dims = 'Give both sides, in metres (1.5 to 80 wide, 1.5 to 120 long), or leave both empty.';
+  if (k2.h !== null && !(k2.h >= 2.2 && k2.h <= 25)) e.dims = 'A ceiling height is between 2.2 and 25 metres, or leave it empty.';
   return e;
 }
 /** Where a hand-off kind sends the person instead of raising a request. */
 export function handoff(d: Draft): string | null {
   if (d.kind === 'evaluate-device') return `#/scouter?category=${encodeURIComponent(d.category)}`;
   if (d.kind === 'improve-room') return roomById(d.roomId) ? `#/optimizer/enterprise/${encodeURIComponent(d.roomId)}` : null;
+  if (d.kind === 'problem') return roomById(d.roomId) ? `#/servicehands/new?room=${encodeURIComponent(d.roomId)}` : '#/servicehands/new';
   return null;
 }
 /** The request as the records will hold it: a title and a summary anyone can read, built from the answers and the proposal. */
 export function summarise(d: Draft, p: Proposal | null): { title: string; summary: string } {
   const k = kindOf(d.kind); const when = WHEN.find((w) => w[0] === d.when)?.[1] || ''; const matters = MATTERS.find((m) => m[0] === d.matters)?.[1] || '';
-  const title = (p?.title || k.label).slice(0, 118);
-  const bits = [d.need.trim(), p ? `${p.where}.` : '', p && p.equipment.length ? `Equipment: ${p.equipment.map((e) => `${e.count} × ${e.label}${e.added ? ` (${e.added} ${d.kind === 'replace-device' ? 'to replace' : d.kind === 'event' ? 'for the event' : 'new'})` : ''}`).join(', ')}.` : '', p ? `${d.kind === 'new-room' ? 'Tests that apply' : d.kind === 'replace-device' ? 'Tests to run again' : 'Tests to run'}: ${p.tests.added}${p.tests.fresh && d.kind !== 'new-room' ? ` (${p.tests.fresh} new to this room)` : ''}.` : '', when && d.kind !== 'event' ? `Wanted: ${when.toLowerCase()}.` : '', matters ? `If it waits: ${matters.toLowerCase()}.` : ''];
+  // a request in the person's own words is titled by its first sentence, not by the kind's name
+  const own = d.need.trim().split(/(?<=[.!?])\s/)[0]!.replace(/[.!?]+$/, ''); const title = (p?.title || (d.kind === 'general' && own ? (own.length > 90 ? `${own.slice(0, 88).replace(/\s+\S*$/, '')} …` : own) : k.label)).slice(0, 118);
+  const bits = [d.need.trim(), (d.goals || []).length ? `Wanted: ${(d.goals || []).map(goalLabel).join(', ').toLowerCase()}.` : '', p ? `${p.where}.` : '', !p && d.kind === 'general' && roomById(d.roomId) ? `About ${fullName(roomById(d.roomId)!)}.` : '', p && p.equipment.length ? `Equipment: ${p.equipment.map((e) => `${e.count} × ${e.label}${e.added ? ` (${e.added} ${d.kind === 'replace-device' ? 'to replace' : d.kind === 'event' ? 'for the event' : 'new'})` : ''}`).join(', ')}.` : '', p ? `${d.kind === 'new-room' ? 'Tests that apply' : d.kind === 'replace-device' ? 'Tests to run again' : 'Tests to run'}: ${p.tests.added}${p.tests.fresh && d.kind !== 'new-room' ? ` (${p.tests.fresh} new to this room)` : ''}.` : '', when && d.kind !== 'event' ? `Wanted: ${when.toLowerCase()}.` : '', matters ? `If it waits: ${matters.toLowerCase()}.` : ''];
   return { title, summary: bits.filter(Boolean).join(' ').slice(0, 590) };
 }

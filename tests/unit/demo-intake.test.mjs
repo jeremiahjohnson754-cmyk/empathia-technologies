@@ -14,11 +14,16 @@ await esbuild.build({ stdin: { contents: `export * as I from './intake/model.ts'
 const { I, T, D, K, W, DS, P, R, H, E } = await import(pathToFileURL(out).href);
 const hw = (p) => p.positions.filter((x) => !x.furniture);
 
-test('IN-01 seven kinds of request, each in plain words, each saying where it goes; none promises an order, a price or an approval', () => {
-  assert.equal(I.KINDS.length, 7); assert.equal(new Set(I.KINDS.map((k) => k.id)).size, 7);
-  for (const k of I.KINDS) { assert.ok(k.label.length >= 6 && k.blurb.length >= 10 && k.then.length >= 40, k.id); assert.ok(['desk', 'servicehands', 'scouter', 'optimizer'].includes(k.goes)); assert.doesNotMatch(`${k.label} ${k.blurb} ${k.then}`, /\b(order(ed)?|purchase|guarantee|approved automatically|certif)/i, k.id); }
+// IN-01 changed 19 Nov 2026: the founder's Intake directive (§02, §05 G and J) adds a fault ("Something is not working", which opens
+// ServiceHands' problem report) and a request in the person's own words ("Something else", routed by the AV operations team): nine kinds.
+test('IN-01 nine kinds of request, each in plain words, each saying where it goes; none promises an order, a price or an approval', () => {
+  assert.equal(I.KINDS.length, 9); assert.equal(new Set(I.KINDS.map((k) => k.id)).size, 9);
+  for (const k of I.KINDS) { assert.ok(k.label.length >= 6 && k.blurb.length >= 10 && k.then.length >= 40, k.id); assert.ok(['desk', 'servicehands', 'scouter', 'optimizer', 'triage', 'report'].includes(k.goes)); assert.doesNotMatch(`${k.label} ${k.blurb} ${k.then}`, /\b(order(ed)?|purchase|guarantee|approved automatically|certif)/i, k.id); }
   assert.deepEqual(I.KINDS.filter((k) => k.goes === 'servicehands').map((k) => k.id).sort(), ['add-devices', 'event', 'replace-device'], 'equipment, replacements and event setups go to ServiceHands');
   assert.deepEqual(I.KINDS.filter((k) => k.goes === 'desk').map((k) => k.id).sort(), ['change-room', 'new-room']);
+  assert.deepEqual(I.KINDS.filter((k) => k.goes === 'triage').map((k) => k.id), ['general']); assert.deepEqual(I.KINDS.filter((k) => k.goes === 'report').map((k) => k.id), ['problem']);
+  // the front door's four choices cover every kind exactly once
+  assert.deepEqual(I.CARDS.map((c) => c.id), ['create', 'improve', 'equipment', 'help']); assert.deepEqual(I.CARDS.flatMap((c) => c.kinds).sort(), I.KINDS.map((k) => k.id).sort());
 });
 
 test('IN-02 a new room is drawn by the design engine: its template, its devices, its applicable tests; the size comes from rooms of the same kind', () => {
@@ -119,3 +124,73 @@ test('IN-10 the portal is registered for the roles that may ask, they have a sho
   for (const r of P.ROLE_KEYS.filter((x) => !T.PORTAL_ROLES.includes(x))) { const opens = (href) => { const x = R.resolve(href.split('?')[0]); return !!x && P.canOpen(r, x); }; assert.ok(!H.jumpsFor(r, opens).some((x) => x.href === '#/request'), `${r} is not offered what it cannot open`); }
   const old = R.resolve('#/intake/new'); assert.ok(old); assert.ok(P.canOpen('syseng', old) && !P.canOpen('visitor', old));
 });
+
+// ── 19 Nov 2026: requests as records (founder directive "The definitive Intake experience" §03, §04, §07, §10) ──────────────────────
+test('IN-11 a draft is a record from its first save: its own id, its answers, a request.drafted event; sending keeps the id and sends once', () => {
+  mem.clear(); const w = W.load(); const desk = DS.load();
+  const d = I.blank('new-room', { need: 'A project room for the design team', people: 6, goals: ['video', 'present'], place: { name: 'Level 2 project room', building: '' } });
+  const a = T.saveDraft('employee', d, null, 'what'); assert.ok(!a.why, JSON.stringify(a)); assert.match(a.id, /^REQ-\d{4}$/); assert.equal(a.state, 'DRAFT'); assert.deepEqual(a.history.map((e) => e.type), ['request.drafted']);
+  assert.equal(T.loadRequests().length, 0, 'a draft is not a sent request'); assert.equal(T.loadRecords().length, 1);
+  const b = T.saveDraft('employee', { ...d, people: 8 }, a.id, 'needs'); assert.equal(b.id, a.id); assert.equal(b.draft.people, 8); assert.equal(T.loadRecords().length, 1, 'saving again updates the same record');
+  const r = T.send(w, 'employee', T.draftOf(T.recordById(a.id)), desk, a.id); assert.ok(!r.why, JSON.stringify(r)); assert.equal(r.id, a.id, 'the draft is sent with its id'); assert.equal(r.state, 'SUBMITTED');
+  assert.ok(r.projectId && desk.projects.some((p) => p.id === r.projectId && p.state === 'SUBMITTED'));
+  assert.deepEqual(r.history.map((e) => e.type), ['request.drafted', 'room.provisional_created', 'request.submitted']); for (const e of r.history) { assert.equal(e.v, 1); assert.equal(e.correlation, r.id); assert.ok(e.at && e.by); }
+  assert.ok(r.provisional && /^PRV-\d{4}$/.test(r.provisional.id) && r.provisional.state === 'AWAITING_REVIEW' && r.provisional.location === 'DOCUMENTED' && r.provisional.name === 'Level 2 project room');
+  assert.equal(r.policy, 'LOCATION_VERIFICATION_REQUIRED'); assert.deepEqual(r.goals, ['video', 'present']);
+  const n = desk.projects.length; const again = T.send(w, 'employee', T.draftOf(r), desk, a.id); assert.equal(again.id, r.id); assert.equal(desk.projects.length, n, 'sending twice creates nothing twice (scenario 18)');
+  assert.ok(T.saveDraft('employee', d, a.id, 'what').why, 'a sent request is not changed as a draft'); assert.ok(T.discardDraft(a.id).why, 'a sent request is not discarded');
+  const s = T.standing(r, w, desk); assert.equal(s.owner, 'Systems engineering'); assert.match(s.next, /someone on site confirms where the new space is/);
+});
+
+test('IN-12 a refused job keeps the draft: nothing the person wrote is lost when ServiceHands refuses (directive §10)', () => {
+  mem.clear(); const w = W.load(); const desk = DS.load(); const room = K.CAMPUS_ROOMS[0].id;
+  const d = I.blank('add-devices', { roomId: room, building: K.roomById(room).building, need: 'One more display for the far end', adds: [{ cat: 'display', qty: 1 }] });
+  const a = T.saveDraft('employee', d, null, 'needs'); const r = T.send(w, 'visitor', d, desk, a.id); assert.ok(r.why, 'the visitor does not raise requests');
+  assert.equal(T.recordById(a.id).state, 'DRAFT'); assert.equal(T.recordById(a.id).draft.need, d.need);
+});
+
+test('IN-13 a draft can be discarded, a sent request cannot; drafts survive a reload (they are in storage, not in the page)', () => {
+  mem.clear(); const a = T.saveDraft('employee', I.blank('general', { need: 'We need to move two displays to the new wing' }), null, 'what');
+  const raw = JSON.parse(mem.get('empathia.demo.requests.v1')); assert.equal(raw[0].id, a.id, 'kept in local storage'); assert.equal(raw[0].draft.need, 'We need to move two displays to the new wing');
+  assert.deepEqual(T.discardDraft(a.id), { ok: true }); assert.equal(T.loadRecords().length, 0);
+});
+
+test('IN-14 a request in the person’s own words goes to the AV operations team, titled by its first sentence, with no project or job', () => {
+  mem.clear(); const w = W.load(); const desk = DS.load(); const before = desk.projects.length; const inc = w.incidents.length;
+  const r = T.send(w, 'employee', I.blank('general', { need: 'We need to retire the old projector in the basement. It is never used.' }), desk);
+  assert.ok(!r.why, JSON.stringify(r)); assert.equal(r.goes, 'triage'); assert.equal(r.title, 'We need to retire the old projector in the basement'); assert.equal(r.projectId, null); assert.equal(r.incidentId, null);
+  assert.equal(desk.projects.length, before); assert.equal(w.incidents.length, inc); const s = T.standing(r, w, desk); assert.equal(s.owner, 'AV operations'); assert.match(s.words, /AV operations team/);
+  assert.ok(T.send(w, 'employee', I.blank('problem', { need: 'The display flickers', roomId: K.CAMPUS_ROOMS[0].id }), desk).why, 'a fault opens ServiceHands’ report; it is not sent as a request');
+  assert.equal(I.handoff(I.blank('problem', { roomId: K.CAMPUS_ROOMS[0].id })), `#/servicehands/new?room=${encodeURIComponent(K.CAMPUS_ROOMS[0].id)}`);
+});
+
+test('IN-15 a size the person gives is used and labelled as theirs; half a size or a nonsense one is refused, never guessed', () => {
+  const base = { use: 'meet', people: 8, need: 'A room for eight' };
+  const g = I.propose(I.blank('new-room', { ...base, dims: { w: 5, l: 7.5, h: null } })); assert.equal(g.w, 5); assert.equal(g.l, 7.5); assert.match(g.basis[0], /Size as you gave it: 5 × 7.5 m; ceiling modelled/);
+  const m = I.propose(I.blank('new-room', base)); assert.match(m.basis[0], /^Size modelled from/);
+  assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 5, l: null, h: null } })).dims, 'one side only'); assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 500, l: 7, h: null } })).dims, 'out of range');
+  assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 5, l: 7, h: 1 } })).dims, 'a ceiling of 1 m');
+  const other = I.blank('new-room', { ...base, building: I.OTHER_BUILDING, floor: 3 }); assert.ok(I.problems(other).building, 'a building not on record needs its name');
+  const named = { ...other, place: { name: '', building: 'Riverside Annex' } }; assert.deepEqual(Object.keys(I.problems(named)), []); assert.match(I.propose(named).title, /Riverside Annex$/);
+});
+
+test('IN-16 the front door reads a description by word lists: the thirteen phrasings of the directive each start somewhere sensible, and nothing invents a room', async () => {
+  const esb = path.join(path.dirname(out), 'c.mjs');
+  await esbuild.build({ stdin: { contents: `export * as X from './intake/classify.ts'; export * as L from './intake/locate.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: esb, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
+    plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => (a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined)); } }] });
+  const { X, L } = await import(pathToFileURL(esb).href);
+  const want = [['I need a new meeting room.', 'new-room'], ['We want to upgrade our conference room.', 'change-room'], ['I need another camera.', 'add-devices'], ['Our current equipment is outdated.', 'replace-device'],
+    ['I need to replace a broken device.', 'replace-device'], ["We're opening a new office.", 'new-room'], ['I need help planning a town hall.', 'event'], ['We want to add digital signage.', 'change-room'],
+    ['I need someone to assess a space.', 'general'], ['We need to relocate some equipment.', 'general'], ['We need to retire a room or device.', 'general'], ['I need AV help.', 'general'], ["I'm not sure what technology we need.", 'general'],
+    ['The display in 4.218 keeps flickering', 'problem']];
+  for (const [t, k] of want) { const r = X.read(t); assert.equal(r.kind, k, t); assert.ok(r.basis.length > 20); }
+  assert.equal(X.read('The display in 4.218 keeps flickering').roomId, 'R-ATL-4-218'); assert.equal(X.read('https://northstar.example.com/e/#/lite/room/R-ATL-4-218?mode=employee').roomId, 'R-ATL-4-218', 'a QR code’s address names its room');
+  assert.equal(X.read('lunch').confident, false, 'nothing matched: own words, said so'); assert.equal(X.read('lunch').kind, 'general'); assert.equal(X.read('  '), null);
+  assert.ok(X.read('We need better audio for hybrid meetings').goals.includes('audio') && X.read('We need better audio for hybrid meetings').goals.includes('video'));
+  assert.match(X.read('I need a new meeting room').basis, /^Matched by word lists, not by AI: /, 'never presented as AI');
+  // the locator: a room number, a QR address, a device code, a name; and an unknown code finds nothing
+  assert.equal(L.locate('4.218')[0].roomId, 'R-ATL-4-218'); assert.equal(L.locate('#/lite/room/R-ATL-4-218?mode=employee')[0].roomId, 'R-ATL-4-218');
+  const rec = D.roomRecord('R-ATL-4-218'); const dev = rec.positions.find((p) => !p.furniture); const hit = L.locate(dev.code)[0]; assert.equal(hit.roomId, 'R-ATL-4-218'); assert.equal(hit.position, dev.code);
+  assert.deepEqual(L.locate('ZZ-9999'), []); assert.ok(L.locate('boardroom').length >= 1);
+});
+

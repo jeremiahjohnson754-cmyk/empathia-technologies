@@ -112,11 +112,40 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'offline device save install connection no signal download keep packs storage phone field', aliases: ['offline', 'offline use', 'this device'] },
   },
   {
-    id: 'intake.request', title: 'Ask for a room or equipment', purpose: 'A request anyone can finish: a few plain answers, a picture of what is asked for, and where it goes next', product: 'pro',
-    path: '/request', alias: ['/request/:kind', '/requests'],
+    // 19 Nov 2026 (founder directive "The definitive Intake experience" §03–§07): the front door, the steps, the requests and their pages
+    id: 'intake.request', title: 'Intake', purpose: 'What can we help you create, improve or fix? Describe it, or choose one of four; follow what you asked for',
+    product: 'pro', path: '/request',
     authority: { roles: ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'], why: 'Founder, 10 November 2026: the request portal is for requestors and employees. V2.5.3 admits the Executive, Systems Engineer, Operations Lead, Product Architect, Designer and Business PM to a new intake request; the Employee and the Service Manager are added here' },
-    load: () => import('./intake/RequestPage.js'),
-    search: { keywords: 'request ask new room equipment device add replace event intake need want order', aliases: ['ask for a room', 'new room', 'add a device', 'request', 'new request', 'more equipment'] },
+    load: () => import('./intake/Pages.js'),
+    search: { keywords: 'request ask new room equipment device add replace event intake need want order help create improve fix', aliases: ['ask for a room', 'new room', 'add a device', 'request', 'intake', 'more equipment'] },
+  },
+  {
+    id: 'intake.new', title: 'New request', purpose: 'A request in at most five steps: what you need, where, what it should do, photos, review and send', product: 'pro',
+    path: '/request/new', alias: ['/request/:kind'],
+    authority: { roles: ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'], why: 'Founder, 10 November 2026: the request portal is for requestors and employees. V2.5.3 admits the Executive, Systems Engineer, Operations Lead, Product Architect, Designer and Business PM to a new intake request; the Employee and the Service Manager are added here' },
+    load: () => import('./intake/Pages.js'),
+    search: { keywords: 'new request wizard steps draft photos room device', aliases: ['new request', 'start a request'] },
+  },
+  {
+    id: 'intake.mine', title: 'My requests', purpose: 'Drafts and sent requests, where each stands and who acts next', product: 'pro', path: '/requests',
+    authority: { roles: ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'], why: 'Founder, 10 November 2026: the request portal is for requestors and employees. V2.5.3 admits the Executive, Systems Engineer, Operations Lead, Product Architect, Designer and Business PM to a new intake request; the Employee and the Service Manager are added here' },
+    load: () => import('./intake/Pages.js'),
+    search: { keywords: 'my requests drafts status follow track', aliases: ['my requests', 'track a request'] },
+  },
+  {
+    id: 'intake.track', title: 'Request', purpose: 'One request: what is happening, who acts next, what is needed, what happens next, and its history', product: 'pro', path: '/requests/:id',
+    authority: { roles: ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'], why: 'Founder, 10 November 2026: the request portal is for requestors and employees. V2.5.3 admits the Executive, Systems Engineer, Operations Lead, Product Architect, Designer and Business PM to a new intake request; the Employee and the Service Manager are added here' },
+    load: () => import('./intake/Pages.js'),
+  },
+  {
+    id: 'intake.spaces', title: 'My spaces', purpose: 'The rooms you asked about and the new spaces you asked for', product: 'pro', path: '/request/spaces',
+    authority: { roles: ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'], why: 'Founder, 10 November 2026: the request portal is for requestors and employees. V2.5.3 admits the Executive, Systems Engineer, Operations Lead, Product Architect, Designer and Business PM to a new intake request; the Employee and the Service Manager are added here' },
+    load: () => import('./intake/Pages.js'),
+  },
+  {
+    id: 'intake.help', title: 'How requests work', purpose: 'What happens after you ask, who looks at it, and what asking never does', product: 'pro', path: '/request/help',
+    authority: { roles: ['employee', 'exec', 'bpm', 'ops', 'svcmgr', 'syseng', 'designer', 'architect'], why: 'Founder, 10 November 2026: the request portal is for requestors and employees. V2.5.3 admits the Executive, Systems Engineer, Operations Lead, Product Architect, Designer and Business PM to a new intake request; the Employee and the Service Manager are added here' },
+    load: () => import('./intake/Pages.js'),
   },
   {
     // Founder, 10 Nov 2026 (the signature demonstration): walk into a room you do not know, and one page carries you from what is in it
