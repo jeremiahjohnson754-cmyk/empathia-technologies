@@ -85,14 +85,38 @@ validated in the first paid pilots. Nothing below is on the site until price boo
 | Standard room | $34.99 a room a month with 8 devices included, then $2.99 a device | approved direction (04:30), with the conditions above |
 | Large room | $68.99 a room a month with 20 devices included, then $3.99 a device | approved direction (04:30), with the conditions above |
 | Large-room rule | **20 devices or more = large.** A 20-device room is $68.99. This replaces the 04:04 instruction "exactly 20 devices = standard; 21+ = large", as the founder asked to record. It is the 18 Nov 19:39 rule, unchanged. | approved (04:30) |
-| Volume tranches | Room licences: rooms 101–250 at 5 % off, 251–500 at 10 % off, from 501 at 15 % off. Each rate applies only to the rooms in its tranche, so adding a room never lowers the bill. A line takes its bundle discount or its volume discount, whichever is larger, never both. | approved (04:30) |
+| Volume tranches | Room licences: rooms 101–250 at 5 % off, 251–500 at 10 % off, from 501 at 15 % off. Each rate applies only to the base licence ($34.99 or $68.99) of the rooms in its tranche, standard rooms counted first, then large rooms; device charges are not volume-discounted. Room licences take their bundle discount or their volume discount, whichever is larger, never both. | approved (04:30); method corrected while building (see below) |
 | Enterprise platform fee | A firm $15,000, with no "from". It is reached at 45 rooms, or 48 for an estate that started with 24 or fewer. Scope beyond the standard platform is its own named line on a quote. | approved (04:30) |
 | Customer protection | Prices hold for the signed term. At renewal, an increase phases in at no more than 10 % a year, and a decrease applies at once. Customers get 90 days' notice with a line-by-line comparison. A pilot converts at the list price of its start day, held for 12 months. | approved (04:30) |
 | Device billing | Never retroactive. A device added mid-term is billed from the next invoice after the customer has seen it. | approved (04:30) |
-| Bundles | No product leaves a bundle. The Pro room's place goes to the room licences and Core's to the platform fee. Whether the platform fee takes the bundle discount is for the founder. | open |
-| Search Party | It stays its own product and line: $0.45 a managed asset, $49.99 minimum. Which assets it counts, given per-device room charges, is for the founder. | open |
-| Device counting (D-05) | Proposed: installed and in service in the room's commissioned baseline. | open |
-| Pro pilot rooms | Proposed: no device charges during a pilot. | open |
+| Bundles | No product leaves a bundle. The Pro room's place goes to the room licences and Core's to the platform fee. | decided 04:45 (below) |
+| Search Party | It stays its own product and line: $0.45 a managed asset, $49.99 minimum. | decided 04:45 (below) |
+| Device counting (D-05) | Installed and in service in the room's commissioned baseline. | decided 04:45 (below) |
+| Pro pilot rooms | No device charges during a pilot. | decided 04:45 (below) |
+
+### Decisions (founder, 19 Nov 2026 04:45): Price Book 3, task #248
+
+"approve 1B, 2 IN, 3 YES, 4 YES for Price Book 3", with three checks before implementation: reconcile the revenue and margin tables,
+confirm the 90-day Pro pilot against the existing approved pilots, and keep all seven bundles' complete functionality. The checks were
+reported privately (the figures include margins, which stay private). Price Book 3 is `EMPATHIA-PB-3`.
+
+| Item | Decision | Where it lives |
+|---|---|---|
+| 1B Search Party | Never charges a device a room already charges per device (devices beyond a room's included allowance); it counts every device within a room's allowance and every managed asset outside rooms. The $49.99 minimum applies even with nothing to count. A typed quantity that disagrees with this count is refused. | `PRICE_BOOK.searchParty`; `searchPartyAssets()` |
+| 2 IN platform fee in bundles | The platform fee (Core's successor) stays in Workplace Essentials, Service Intelligence and Unified Estate (Four-World Operations) and takes their bundle discount. The platform fee never takes a volume discount. | `PRICE_BOOK.bundleSuccessors`; `estimate()` |
+| 3 YES device count | Verified, unique assets installed and in service in the room's commissioned baseline; spares, stock, retired devices and virtual endpoints do not count; device charges are never retroactive. | `PRICE_BOOK.roomRule` |
+| 4 YES Pro pilot | $19.99 a room a month, up to 10 rooms for 90 days; licensed users at $9.99, named on the pilot order; no platform fee, device charges or hardware during the pilot; it ends on day 90 and nothing continues, renews or converts without a signed conversion order; a converted estate keeps the list prices of the pilot's first day for 12 months. Two terms remain to be confirmed and are shown as such on the site: one pilot at a time per estate, and onboarding beyond self-serve setup quoted separately. | `PRICE_BOOK.pilots[PILOT-PRO-PLUS]` |
+| Seven bundles | All seven keep every product they held. Where Core or the Pro room was, the platform fee and the room licences take its place. The builder on `/pricing` offers the three bundles that hold room licences; the other four are quoted. | `BUNDLES`; `ROOM_BUNDLES` in `apps/website/src/build-view.ts` |
+
+**Corrected while building: the volume method.** The 04:30 report averaged the tranche rate over the estate and applied it to every
+room line, device charges included. A sweep of every estate from 1 to 700 rooms showed that this could lower a bill when a cheap room
+was added to a very dense estate (for example 600 large rooms of 200 devices). As built, each tranche's rate applies to the base
+licence of the rooms in it, standard rooms first, and device charges take no volume discount, so a room or a device can only add to the
+bill. The tranches and rates are the approved ones. The founder is told of the correction and its effect; if device charges should be
+volume-discounted too, a method that keeps the same guarantee is modelled and brought back before any change.
+
+**Open, for the founder:** a bundle's discount applies to whichever of its products are on the estimate, as in v1.5 (`quote()` did the
+same). Whether a bundle should require all of its products before its discount applies has not been decided.
 
 ## 4. Next steps (each its own commit)
 

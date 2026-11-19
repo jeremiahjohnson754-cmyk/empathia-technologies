@@ -25,6 +25,20 @@
 .by__q input[type="number"] { grid-area: n; width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--w-line2); border-radius: var(--w-r-control); background: var(--w-bg); color: var(--w-tx); font: 700 18px/1 var(--w-display); font-variant-numeric: tabular-nums; text-align: right; }
 .by__q input[type="range"] { grid-area: r; width: 100%; min-height: 32px; accent-color: var(--w-accent); }
 .by__adds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Price Book 3: each room group is its rooms and the devices in them, with what those rooms can hold beneath */
+.by__controls .by__group { padding: 14px; border: 1px solid var(--w-line); border-radius: var(--w-r-control); background: var(--w-panel); gap: 8px; }
+.by__controls .by__group legend { float: left; width: 100%; margin: 0 0 8px; }
+.by__controls .by__group legend small { display: block; margin: 2px 0 0; }
+.by__pair { clear: both; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 10px; }
+.by__num { display: grid; gap: 4px; min-width: 0; }
+.by__num span { color: var(--w-tx2); font-size: 13px; }
+.by__num input { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--w-line2); border-radius: var(--w-r-control); background: var(--w-bg); color: var(--w-tx); font: 700 18px/1 var(--w-display); font-variant-numeric: tabular-nums; text-align: right; }
+.by__range { margin: 0; color: var(--w-tx2); font-size: 13px; font-variant-numeric: tabular-nums; }
+.by__rule { margin: -8px 0 0; }
+.by__bundle { display: grid; gap: 8px; }
+.by__bundle span { display: grid; gap: 2px; } .by__bundle b { font: 600 16px/1.3 var(--w-sans); } .by__bundle small { color: var(--w-tx2); font-size: 14px; line-height: 1.4; }
+.by__bundle select { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--w-line2); border-radius: var(--w-r-control); background: var(--w-bg); color: var(--w-tx); font: 500 16px/1.2 var(--w-sans); }
+.by__outside[hidden] { display: none; }
 .by__small { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; min-height: 44px; padding: 10px 12px; border: 1px solid var(--w-accent); border-radius: var(--w-r-control); background: color-mix(in srgb, var(--w-accent) 8%, var(--w-panel)); cursor: pointer; }
 .by__small[hidden] { display: none; }
 .by__small input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--w-accent); }
@@ -67,6 +81,8 @@
 .by-r__ex { margin: 0; color: var(--w-tx2); font-size: 14px; line-height: 1.5; }
 .by-r__err { margin: 0 0 12px; padding: 10px 12px; border: 1px solid var(--w-warn); border-radius: var(--w-r-control); color: var(--w-tx); font-size: 15px; }
 .by__receipt[data-error] > :not(.by-r__err) { opacity: .45; }
+.by-r__lines li.by-r__off .by-r__amt { color: var(--w-ok); }
+.by-r__lines li.by-r__off b { font-weight: 500; }
 .by__act { display: flex; flex-wrap: wrap; gap: 10px; }
 .by__act .btn { flex: 1 1 auto; }
 .by__hint, .by__label { margin: 0; color: var(--w-tx2); font-size: 14px; line-height: 1.5; }
@@ -80,6 +96,8 @@
 .by-parts .card h3 { margin: 0; }
 .by-parts .card > p { margin: 0; color: var(--w-tx2); font-size: 15px; line-height: 1.55; }
 .by-pilot h3 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.by-pilot__terms, .by-protect { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--w-tx2); font-size: 15px; line-height: 1.5; }
+.by-pilot__open { color: var(--w-tx2); font-size: 14px; }
 .price--was b s { color: var(--w-tx2); text-decoration-thickness: 2px; }
 /* a phone keeps the year's total in sight while the numbers change; the full receipt follows the controls */
 .by__mini { display: none; }
@@ -93,7 +111,7 @@
 }
 @media (max-width: 620px) {
   .by__presets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .by__adds, .by__hw { grid-template-columns: minmax(0, 1fr); }
+  .by__adds, .by__hw, .by__pair { grid-template-columns: minmax(0, 1fr); }
   .by__step { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
   .by__stepper { grid-template-columns: 44px 3em 44px; }
 }
