@@ -1,7 +1,8 @@
 /**
  * The facts of AVIXA's three certification exams, as AVIXA itself publishes them, each with its source and the date it was read
- * (founder, 18 Nov 2026: CTS, CTS-D and CTS-I study spaces). Only what the candidate handbooks and AVIXA's pages say; where two AVIXA
- * pages disagree (online proctoring), both are cited and the candidate is told to confirm. Fees and policies change: every page that
+ * (founder, 18 Nov 2026: CTS, CTS-D and CTS-I study spaces). Only what the candidate handbooks and AVIXA's pages say. 18 Nov 2026
+ * (checked with Firecrawl): AVIXA's proctoring notice and its "about the CTS credential" page now answer 404; AVIXA's CTS page says
+ * the exams are only delivered at in-person Pearson testing centres, so that page is cited instead. Fees and policies change: every page that
  * shows these says when they were read and sends the reader to AVIXA before paying or booking.
  *
  * CTS®, CTS-D® and CTS-I® are certifications of AVIXA®. Empathia is not affiliated with or endorsed by AVIXA, and nothing here is an
@@ -15,8 +16,7 @@ export const SOURCES: Record<string, Source> = {
   ctsHandbook: { label: 'AVIXA, CTS Candidate Handbook (dated 13 November 2023; fee table effective 1 January 2025)', url: 'https://a-us.storyblok.com/f/570395326227278/x/726c898d76/cts_handbook_2026.pdf' },
   ctsdHandbook: { label: 'AVIXA, CTS-D Candidate Handbook (dated 13 November 2023; fee table effective 1 January 2025)', url: 'https://a-us.storyblok.com/f/570395326227278/x/6343519a6d/cts-d_handbook_2026.pdf' },
   ctsiHandbook: { label: 'AVIXA, CTS-I Candidate Handbook (dated 13 November 2023; fee table effective 1 January 2025)', url: 'https://a-us.storyblok.com/f/570395326227278/x/687329bcaf/cts-i_handbook_2026.pdf' },
-  proctoring: { label: 'AVIXA, “Change in availability for online proctoring”', url: 'https://www.avixa.org/change-in-availability-for-online-proctoring' },
-  ctsPage: { label: 'AVIXA, About the Certified Technology Specialist (CTS) credential', url: 'https://avixa.org/training-certification/certification/CTS/about-the-certified-technology-specialist-(cts)-credential' },
+  proctoring: { label: 'AVIXA, CTS Certification: “Can I take the exam online?”', url: 'https://www.avixa.org/training-certification/certification/cts-certification' },
 };
 
 export interface Task { code: string; title: string; weight: number }
@@ -41,7 +41,7 @@ export const CERTS: Record<CertId, Cert> = {
     prerequisite: 'None stated beyond agreeing to AVIXA’s terms and Code of Ethics; the application is approved for 120 days.',
     experience: 'The handbook states no minimum experience; AVIXA recommends the AV Essentials and CTS Prep training (not required).',
     fees: { member: 390, nonMember: 490, note: 'US dollars, as the handbook’s fee table lists them; confirm on AVIXA’s site before paying.' },
-    delivery: 'Pearson VUE test centres. AVIXA’s notice says online proctoring is no longer offered; one AVIXA page still mentions scheduling online. Confirm with AVIXA when you book.',
+    delivery: 'Pearson VUE test centres, in person: AVIXA’s CTS page says its exams are only delivered at secure, in-person Pearson testing centres (no online proctoring). Confirm with AVIXA when you book.',
     retakes: 'Up to two retakes at a reduced fee, at least 30 days apart; after two unsuccessful retakes, a 90-day wait.',
     renewal: 'Every three years with 30 renewal units (RUs).',
     aids: 'An on-screen calculator and a non-erasable note board supplied at the test centre; nothing of your own.',

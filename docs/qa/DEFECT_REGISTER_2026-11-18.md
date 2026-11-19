@@ -209,6 +209,14 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **Why the day's checks missed it:** the package tests run from each package's compiled `dist/test`, which a source-only sweep does
   not reach. Before freezing a candidate, run the whole non-browser runner (`node scripts/test.mjs`).
 
+### D18-22 · P2 · Fixed (link check with the Firecrawl connector, 18 Nov evening)
+- **What was wrong:** two of the AVIXA pages the CTS study space cites now answer 404: the "Change in availability for online
+  proctoring" notice and the "About the Certified Technology Specialist (CTS) credential" page. The three handbook PDFs answer 200.
+- **Fix:** AVIXA's current CTS page is cited instead
+  (www.avixa.org/training-certification/certification/cts-certification). Its FAQ says: "AVIXA exams are only delivered at secure,
+  in-person, Pearson testing centers." The delivery line says the same, and still sends the reader to AVIXA before booking.
+  `certs.test.mjs` passes 7/7.
+
 ## Observed, not yet fixed
 
 ### O18-01 · Task #219 / #220
