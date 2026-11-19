@@ -681,7 +681,7 @@ p { text-wrap: pretty; }
 .opt input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--w-accent); }
 .opt:has(input:checked) { border-color: var(--w-accent); box-shadow: inset 0 0 0 1px var(--w-accent); }
 .opt:has(input:focus-visible) { outline: 2px solid var(--w-accent); outline-offset: 3px; }
-.opt input:focus-visible { outline: none; }
+.opt input:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 2px; }   /* the radio shows its own ring as well as its option's (SITE_AUDIT AUD-007: keyboard focus visible on the focused control itself) */
 .opt b { display: block; color: var(--w-tx); font-weight: 600; line-height: 1.35; }
 .opt small { display: block; margin-top: 2px; color: var(--w-tx2); font-size: 14px; line-height: 1.45; }
 .wiz__field { display: grid; gap: 8px; color: var(--w-tx2); font-weight: 600; font-size: 15px; }

@@ -5,7 +5,7 @@
 // stays as it is: each entry point names the choice to make.
 export const TALLY_FORM = 'https://tally.so/r/VpG0Vy';
 
-export type Source = 'founder' | 'website-demo' | 'website-pilot' | 'website-partner' | 'website-investor' | 'website-contact' | 'website-fieldlink';
+export type Source = 'founder' | 'website-demo' | 'website-pilot' | 'website-partner' | 'website-investor' | 'website-contact' | 'website-fieldlink' | 'website-pricing';
 export interface Enquiry { source: Source; button: string; area: string; title: string; body: string }
 
 /** The CTA → source mapping from LEAD_CAPTURE_TALLY.md, one row per website entry point. */
@@ -17,6 +17,7 @@ export const ENQUIRIES: Record<Source, Enquiry> = {
   'website-investor': { source: 'website-investor', button: 'Start an investor conversation', area: 'Investment Conversation', title: 'Investor conversations', body: 'The company, the platform and the demonstration, with the evidence behind each claim.' },
   'website-contact': { source: 'website-contact', button: 'Send an enquiry', area: 'General Inquiry', title: 'Anything else', body: 'Questions about the platform, press or anything not covered above.' },
   'website-fieldlink': { source: 'website-fieldlink', button: 'Request the engineering package', area: 'Strategic Partnership or MSP / AV Integration Partnership', title: 'The FieldLink engineering package', body: 'For engineering reviewers, design partners and investors: say who you are and what you would review; the technical package is shared after a conversation.' },
+  'website-pricing': { source: 'website-pricing', button: 'Request this estimate', area: 'Enterprise Pilot', title: 'Your estimate', body: 'Paste the estimate you built; a person replies with a quote, including implementation, and nothing is binding until both sides sign.' },
 };
 
 export const enquiryUrl = (source: Source) => `${TALLY_FORM}?source=${encodeURIComponent(source)}`;

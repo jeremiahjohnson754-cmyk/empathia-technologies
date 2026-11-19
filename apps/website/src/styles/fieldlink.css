@@ -1,10 +1,10 @@
 /* FieldLink (founder 18 Nov 2026 17:25): a premium hardware page on the site's own tokens. The hero is a dark product stage in both
    themes (the render is a dark studio shot); everything else follows the page theme. Text is real HTML at ≥16 px; nothing that must be
    read is inside an image. */
-[data-fieldlink] { --fl-stage: #0a0d12; --fl-stage-ink: #eef3f8; --fl-stage-dim: #a7b4c4; --fl-teal: var(--w-accent); }
+[data-fieldlink] { --fl-stage: #0a0d12; --fl-stage-ink: #eef3f8; --fl-stage-dim: #a7b4c4; --fl-teal: var(--w-accent); --fl-stage-teal: #45cfc1; }
 .fl-hero { position: relative; isolation: isolate; background: radial-gradient(900px 500px at 78% 30%, rgb(25 179 166 / .18), transparent 60%), radial-gradient(700px 420px at 8% 90%, rgb(214 160 96 / .10), transparent 60%), var(--fl-stage); color: var(--fl-stage-ink); padding: clamp(40px, 6vw, 96px) 0 clamp(40px, 6vw, 88px); border-bottom: 1px solid rgb(255 255 255 / .08); }
 .fl-hero__grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.15fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
-.fl-hero .label { color: var(--fl-teal); }
+.fl-hero .label { color: var(--fl-stage-teal); }   /* the hero is the dark stage in both schemes: the dark scheme's accent reads on it (SITE_AUDIT AUD-006, 3.35:1 with the light accent) */
 .fl-hero h1 { margin: 6px 0 0; font-size: clamp(56px, 8vw, 112px); line-height: .95; letter-spacing: -.045em; color: #fff; }
 .fl-hero__sub { margin: 10px 0 0; font-size: clamp(22px, 2.4vw, 30px); line-height: 1.2; color: var(--fl-stage-ink); }
 .fl-hero .lede { color: var(--fl-stage-dim); font-size: 18px; max-width: 46ch; }

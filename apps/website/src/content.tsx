@@ -406,7 +406,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       </Section> : null}
     </>
   ) });
-  pages.splice(pages.findIndex((p) => p.path === '/request-demo'), 0, ...commercialPages());   // v18/pilot: the price list and the pilot packages
+  pages.splice(pages.findIndex((p) => p.path === '/request-demo'), 0, ...commercialPages(ctx.demoUrl));   // v18/pilot: the price list and the pilot packages
   return pages;
 }
 

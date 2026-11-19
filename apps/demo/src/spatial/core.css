@@ -148,7 +148,8 @@ main h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .sp__rlist li a { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 10px 12px; }
 .sp__rtop { display: flex; justify-content: space-between; gap: 8px; min-width: 0; } .sp__rtop .sp__id { overflow-wrap: anywhere; text-align: right; }
 .sp__rlist b { overflow-wrap: break-word; word-break: normal; } .sp__sub { font-size: var(--fs-sm); color: var(--tx2); overflow-wrap: break-word; line-height: 1.4; }
-.sp__graph[data-stage] svg { background: var(--bg2); } .sp__graph[data-stage] { color: var(--tx); }
+.sp__graph[data-stage] svg { background: var(--bg2); } .sp__graph[data-stage] { color: var(--tx); background: var(--bg2); border-radius: var(--r-md, 12px); overflow: hidden; }
+.sp__graph[data-stage] figcaption { padding: 8px 12px 10px; }   /* the caption takes the stage's dark tokens, so it sits on the stage, not on the page (SITE_AUDIT AUD-005, 2.55:1 in light) */
 .sp__browse .rows a, .sp__browse .rows .linkish { color: var(--tx); text-decoration: none; } .sp__browse .rows a:hover b, .sp__browse .rows .linkish:hover b { color: var(--accent); }
 .sp__browse .row__end { color: var(--tx3); }
 .sp__hero .sp__input, .sp__hero .sp__search select { box-sizing: border-box; max-width: 100%; }
