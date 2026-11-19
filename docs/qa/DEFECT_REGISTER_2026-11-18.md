@@ -252,6 +252,16 @@ The formal two-cycle destructive QA (task #225) has **not started**. Its own reg
 - **What was seen:** 5 fps at 1280 × 860, against a budget of 8 on this machine's software renderer. The run overlapped website builds
   and browser suites run in the main tree at the same time.
 - **Next:** the next candidate's regression runs with nothing else on the machine. If CL-13 fails there too, it is a real slowdown.
+- **19 Nov, measured:**
+  - The regression of 3143112 ran alone: CL-13 PASS.
+  - The regression of b3b23b4 also ran alone and recorded 7 fps, FAIL. b3b23b4's demo, packages and services are byte-identical to
+    3143112's (`git diff 3143112 b3b23b4 -- apps/demo packages services` is empty).
+  - Three reruns of the suite alone on b3b23b4: 8, 8 and 8 fps, 20/20 each. On acbe026, alone, on the evening of 18 Nov: 10 fps.
+  - So the same code measures 7 to 10 fps on this virtual machine at different times. The floor of 8 sits inside that noise; the
+    variation does not come from the code.
+- **Status:** open, P3. The b3b23b4 regression is recorded as it ran: PASS 277, FAIL 1 (this one), NOT_RUN 2. It was not rerun to
+  turn it green. The next step is to make CL-13 measure what it means to: a sustained median over a longer window, with the sample
+  count and spread in its result. That test change will carry its reason.
 
 ### D18-26 · P1 · Fixed (staging of 3143112: both static-site builds failed on Render; the regression had passed 277/0)
 - **What was wrong:** on Render the website's home page came to 49,186 B, over its 49,152 B budget. The staging build writes the
