@@ -73,6 +73,27 @@ education, houses of worship and non-profit terms, volume discounts beyond bundl
 | D-05 | Not answered: the proposed device rule is used and marked pending approval. | `PRICE_BOOK.roomRule` |
 | D-06…D-10 | Unchanged: as proposed above; anything without an approved price is Pricing Pending Approval or Custom Quote. | — |
 
+### Decisions (founder, 19 Nov 2026 04:04 and 04:30): per-device room pricing, task #246
+
+At 04:04 the founder set provisional per-device room rates and asked for a full review before any change. The review covered
+benchmarks, the cost to serve, 1–600 rooms at many device densities, every bundle and the edge cases. Its cost and margin figures are
+kept private. At 04:30 the founder approved the commercial direction on two conditions: the corrected model, and delivery costs
+validated in the first paid pilots. Nothing below is on the site until price book 3 is built, tested and staged.
+
+| Item | Decision | State |
+|---|---|---|
+| Standard room | $34.99 a room a month with 8 devices included, then $2.99 a device | approved direction (04:30), with the conditions above |
+| Large room | $68.99 a room a month with 20 devices included, then $3.99 a device | approved direction (04:30), with the conditions above |
+| Large-room rule | **20 devices or more = large.** A 20-device room is $68.99. This replaces the 04:04 instruction "exactly 20 devices = standard; 21+ = large", as the founder asked to record. It is the 18 Nov 19:39 rule, unchanged. | approved (04:30) |
+| Volume tranches | Room licences: rooms 101–250 at 5 % off, 251–500 at 10 % off, from 501 at 15 % off. Each rate applies only to the rooms in its tranche, so adding a room never lowers the bill. A line takes its bundle discount or its volume discount, whichever is larger, never both. | approved (04:30) |
+| Enterprise platform fee | A firm $15,000, with no "from". It is reached at 45 rooms, or 48 for an estate that started with 24 or fewer. Scope beyond the standard platform is its own named line on a quote. | approved (04:30) |
+| Customer protection | Prices hold for the signed term. At renewal, an increase phases in at no more than 10 % a year, and a decrease applies at once. Customers get 90 days' notice with a line-by-line comparison. A pilot converts at the list price of its start day, held for 12 months. | approved (04:30) |
+| Device billing | Never retroactive. A device added mid-term is billed from the next invoice after the customer has seen it. | approved (04:30) |
+| Bundles | No product leaves a bundle. The Pro room's place goes to the room licences and Core's to the platform fee. Whether the platform fee takes the bundle discount is for the founder. | open |
+| Search Party | It stays its own product and line: $0.45 a managed asset, $49.99 minimum. Which assets it counts, given per-device room charges, is for the founder. | open |
+| Device counting (D-05) | Proposed: installed and in service in the room's commissioned baseline. | open |
+| Pro pilot rooms | Proposed: no device charges during a pilot. | open |
+
 ## 4. Next steps (each its own commit)
 
 1. Done: price book 2 and the estimate engine (`packages/commercial/src/{pricebook,estimate}.ts`), tested to the cent against the
