@@ -2,11 +2,13 @@
  * SIGNAL Cinematic Story (A5, 12 Nov 2026; extended to Seasons 1–6 at the founder's word, 11:35 CT). A scene is built from the canon
  * chapter itself at run time: its acts are the chapter's own headings; its shots are the act's panels (art, caption, speech), beats
  * (exchanges) and decisions, in canon order. Every word shown or spoken is the canon's. Recorded takes speak the lines they match word
- * for word (voices locked by the founder: Maya = Sarah, Ray = Paul); a line without a take is shown as a caption for a calm reading time.
+ * for word (voices locked by the founder: Maya = Sarah, Ray = Paul; Season 2, 19 Nov 2026: Maya = Qwen3-TTS Vivian, Ben = Aiden); a line
+ * without a take is shown as a caption for a calm reading time.
  * The decision is the story engine's own, so a choice made here is the choice in Classic Story.
  */
 import type { Item } from './story.js';
 import { TAKES_S01, FOOTAGE_S01 } from './takes-s01.js';
+import { TAKES_S02, VOICES_S02 } from './takes-s02.js';
 
 export interface Take { who: string; text: string; src: string }
 export interface Shot { item: number; kind: 'panel' | 'decision' | 'beat' | 'footage'; src?: string; note?: string }
@@ -54,6 +56,10 @@ export const TAKES: Record<string, Take[]> = {
 // Season 1 (generated 12 Nov 2026 in grouped takes, provided by the founder, split at their breaks): media/signal/s01/build-takes.py.
 // Added to a chapter's own takes, never in place of them (Ten Seats has both).
 for (const [ch, ts] of Object.entries(TAKES_S01)) TAKES[ch] = [...(TAKES[ch] || []), ...ts];
+// Season 2 (founder, 19 Nov 2026 17:54: "Vivian and ben is good I pick those voices"): Qwen3-TTS preset voices, generated here, AI voices
+for (const [ch, ts] of Object.entries(TAKES_S02)) TAKES[ch] = [...(TAKES[ch] || []), ...ts];
+/** The voices heard in a chapter: Season 2 has its own cast (each a Qwen3-TTS preset, named so); every other season, Season 1's. */
+export const voicesFor = (chapterId: string): Record<string, string> => (/^s02e/.test(chapterId) ? VOICES_S02 : VOICES);
 /** Footage by chapter (filled as reviewed clips are imported). */
 export const FOOTAGE: Record<string, Footage[]> = {
   s01e01: [
@@ -77,7 +83,7 @@ export function sceneOf(chapterId: string, items: Item[]): Scene {
     for (const f of (FOOTAGE[chapterId] || []).filter((x) => x.before === i)) cur.shots.push({ item: i, kind: 'footage', src: f.src, note: f.note });
     cur.shots.push({ item: i, kind });
   });
-  return { chapter: chapterId, acts: acts.filter((a) => a.shots.length > 0), takes: TAKES[chapterId] || [], voices: VOICES };
+  return { chapter: chapterId, acts: acts.filter((a) => a.shots.length > 0), takes: TAKES[chapterId] || [], voices: voicesFor(chapterId) };
 }
 /** Canon text and recorded takes are compared with straight quotes and collapsed spaces, so a typographic apostrophe never breaks a match. */
 export const norm = (s: string) => s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').replace(/\s*\[COMIC[^\]]*\]/g, '').trim().replace(/^\((.*)\)$/, '$1');  // a thought, "(…)", is spoken without its parentheses; the canon's [COMIC …] art tags are not spoken
