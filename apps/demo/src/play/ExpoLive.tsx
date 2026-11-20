@@ -6,10 +6,12 @@
  * question that waits for the moderator. The organiser view lays a modeled footfall map over the hall and shows a booth's simulated AV
  * fault with where it would go. Everything is fictional; agenda, details, votes and questions stay in this browser and say so.
  */
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as RPE } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Renderer, boxVerts, figureVerts, hex, m4, norm, type Mesh, type V3 } from './gl.js';
 import { BOOTHS, FOOD, FOOTFALL_NOTE, HALL, LOUNGE, REG, SESSIONS, STAGE, ZONES, footfall, type Booth } from './expo.js';
 
+import { attach, hintText, setFull, type Hint } from '../map/gestures.js';
+import { MovePad, useMoveKeys, type Moves } from './MovePad.js';
 const KEY = 'empathia.expolive.v1';
 interface Saved { agenda: string[]; leads: Array<{ booth: string; name: string; at: string }>; votes: Record<string, string>; questions: Array<{ session: string; text: string; state: 'pending' }> }
 const load = (): Saved => { try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); return s && Array.isArray(s.agenda) ? s : { agenda: [], leads: [], votes: {}, questions: [] }; } catch { return { agenda: [], leads: [], votes: {}, questions: [] }; } };
@@ -25,9 +27,14 @@ export function ExpoLivePage() {
   const [session, setSession] = useState<string | null>(null); const sessRef = useRef(session); sessRef.current = session;
   const [saved, setSaved] = useState<Saved>(load); const keep = (s: Saved) => { setSaved(s); try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { /* not kept */ } };
   const [consent, setConsent] = useState(false); const [name, setName] = useState(''); const [q, setQ] = useState('');
+  // moving around and choosing a booth in the hall (founder, 20 Nov 2026 05:34: clicking a booth in the hall did not take you there; hard to
+  // move around): gestures.ts, a tap on a booth flies to it, a stage that can go full screen
+  const stage = useRef<HTMLDivElement>(null); const vpRef = useRef<number[] | null>(null); const [hint, setHint] = useState<Hint>(null); const [full, setFullState] = useState(false); const fullRef = useRef(false);
+  const toggleFull = (on: boolean) => { fullRef.current = setFull(stage.current, on); setFullState(on); };
+  useEffect(() => { if (!full) return; const k = (e: KeyboardEvent) => { if (e.key === 'Escape') toggleFull(false); }; window.addEventListener('keydown', k); return () => { window.removeEventListener('keydown', k); setFull(stage.current, false); }; }, [full]);   // eslint-disable-line react-hooks/exhaustive-deps
   const [labels, setLabels] = useState<Array<{ x: number; y: number; text: string; id: string; kind: string }>>([]);
   const [reduced] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches); const reducedRef = useRef(reduced);
-  const cam = useRef({ yaw: -0.5, pitch: 0.72, dist: 120, at: [0, 0, 0] as V3, goal: null as null | { yaw: number; pitch: number; dist: number; at: V3 } }); const drag = useRef<{ x: number; y: number } | null>(null);
+  const cam = useRef({ yaw: -0.5, pitch: 0.72, dist: 120, at: [0, 0, 0] as V3, goal: null as null | { yaw: number; pitch: number; dist: number; at: V3 } });
   const booth = BOOTHS.find((b) => b.id === sel) || null; const sess = SESSIONS.find((s) => s.id === session) || null;
   const flyTo = useCallback((b: Booth | null) => { setSel(b?.id ?? null); setConsent(false); cam.current.goal = b ? { yaw: cam.current.yaw, pitch: 0.5, dist: 34, at: [b.x, 1, b.z] } : { yaw: -0.5, pitch: 0.72, dist: 120, at: [0, 0, 0] }; if (reducedRef.current && cam.current.goal) { Object.assign(cam.current, cam.current.goal); cam.current.goal = null; } }, []);
 
@@ -69,7 +76,8 @@ export function ExpoLivePage() {
       const C = cam.current; if (C.goal) { const k = Math.min(1, dt * 3); C.yaw += (C.goal.yaw - C.yaw) * k; C.pitch += (C.goal.pitch - C.pitch) * k; C.dist += (C.goal.dist - C.dist) * k; C.at = lerp(C.at, C.goal.at, k); if (Math.abs(C.dist - C.goal.dist) < 0.05) C.goal = null; }
       r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = canvas.current!; const aspect = cv.width / Math.max(1, cv.height);
       const eye: V3 = [C.at[0] + Math.sin(C.yaw) * Math.cos(C.pitch) * C.dist, C.at[1] + Math.sin(C.pitch) * C.dist, C.at[2] + Math.cos(C.yaw) * Math.cos(C.pitch) * C.dist];
-      const vp = m4.mul(m4.persp(0.9, aspect, 0.3, 600), m4.look(eye, C.at));
+      const vp = m4.mul(m4.persp(0.9, aspect, 0.3, 600), m4.look(eye, C.at)); vpRef.current = vp as unknown as number[];
+      const cs = `${C.at[0].toFixed(1)} ${C.at[2].toFixed(1)} ${C.dist.toFixed(0)} ${C.yaw.toFixed(2)} ${C.pitch.toFixed(2)}`; if (cv.dataset.cam !== cs) cv.dataset.cam = cs;   // the camera (target x z, distance, yaw, pitch), read by the gesture tests
       r.light = { sun: norm([0.3, 0.9, 0.2]), sunCol: [0.55, 0.53, 0.5], sky: [0.92, 0.92, 0.9], ground: [0.42, 0.4, 0.38], amb: 0.62 };
       r.begin(vp, eye, [0.86, 0.88, 0.9], 200, 520); r.sky(eye, [0.88, 0.9, 0.93], [0.5, 0.66, 0.88], 500);
       r.draw(M.hall); r.draw(M.carpet); r.draw(audience);
@@ -94,8 +102,26 @@ export function ExpoLivePage() {
     raf = requestAnimationFrame(loop); return () => { cancelAnimationFrame(raf); r.dispose(); };
   }, []);
 
-  const onDown = (e: RPE) => { drag.current = { x: e.clientX, y: e.clientY }; };
-  const onMove = (e: RPE) => { const d = drag.current; if (!d) return; cam.current.goal = null; cam.current.yaw -= (e.clientX - d.x) * 0.005; cam.current.pitch = Math.max(0.15, Math.min(1.4, cam.current.pitch + (e.clientY - d.y) * 0.004)); d.x = e.clientX; d.y = e.clientY; };
+  // which booth is under a point of the canvas: each booth's footprint, raised to its wall height, projected; the nearest one that contains it
+  const boothAt = (x: number, y: number): Booth | null => { const vp = vpRef.current; const cv = canvas.current; if (!vp || !cv) return null; const W = cv.clientWidth, H = cv.clientHeight;
+    const P = (p: V3) => { const c = [0, 1, 2, 3].map((i) => vp[i]! * p[0] + vp[4 + i]! * p[1] + vp[8 + i]! * p[2] + vp[12 + i]!); if (c[3]! <= 0.3) return null; return [(c[0]! / c[3]! + 1) / 2 * W, (1 - c[1]! / c[3]!) / 2 * H, c[3]!] as const; };
+    let best: { b: Booth; d: number } | null = null;
+    for (const b of BOOTHS) { const h = 4; const pts = [[-1, -1], [1, -1], [1, 1], [-1, 1]].flatMap(([sx, sz]) => [P([b.x + sx! * b.w / 2, 0, b.z + sz! * b.d / 2]), P([b.x + sx! * b.w / 2, h, b.z + sz! * b.d / 2])]).filter(Boolean) as Array<readonly [number, number, number]>;
+      if (pts.length < 8) continue; const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]); if (x < Math.min(...xs) - 4 || x > Math.max(...xs) + 4 || y < Math.min(...ys) - 4 || y > Math.max(...ys) + 4) continue;
+      const dep = pts.reduce((a, p) => a + p[2], 0) / pts.length; if (!best || dep < best.d) best = { b, d: dep }; }
+    return best?.b ?? null; };
+  // every move of the camera, for the gestures, the buttons on the hall and the keyboard alike
+  const moves = useMemo<Moves>(() => { const C = cam.current; return {
+    turn: (da) => { C.goal = null; C.yaw += da; },
+    tilt: (dp) => { C.goal = null; C.pitch = Math.max(0.15, Math.min(1.4, C.pitch + dp)); },
+    zoom: (f) => { C.goal = null; C.dist = Math.max(16, Math.min(200, C.dist * f)); },
+    pan: (dx, dy) => { C.goal = null; const k = C.dist / Math.max(240, canvas.current?.clientHeight || 400); const sy = Math.sin(C.yaw), cy = Math.cos(C.yaw);
+      C.at = [Math.max(HALL.x0, Math.min(HALL.x1, C.at[0] - (dx * cy - dy * sy) * k)), C.at[1], Math.max(HALL.z0, Math.min(HALL.z1, C.at[2] - (dx * sy + dy * cy) * k))]; },
+  }; }, []);
+  useMoveKeys(canvas, moves);
+  useEffect(() => { const cv = canvas.current; if (!cv) return;
+    return attach(cv, { drag: (dx, dy) => { moves.turn(-dx * 0.0042); moves.tilt!(dy * 0.0032); }, alt: (dx, dy) => moves.pan!(dx, dy), zoom: (f) => moves.zoom(f), twist: (da) => moves.turn(-da),
+      tap: (x, y) => { cv.focus({ preventScroll: true }); const b = boothAt(x, y); if (b) flyTo(b); }, hint: setHint }, { greedy: () => fullRef.current, twoFingerMove: 'alt' }); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
   const vote = (sid: string, o: string) => { if (saved.votes[sid]) return; keep({ ...saved, votes: { ...saved.votes, [sid]: o } }); };
   const visible = useMemo(() => [...BOOTHS].sort((a, b) => a.id.localeCompare(b.id)), []);
   const inAgenda = booth ? saved.agenda.includes(booth.id) : false; const left = booth ? saved.leads.some((l) => l.booth === booth.id) : false;
@@ -103,11 +129,15 @@ export function ExpoLivePage() {
   return <section className="xpo" data-testid="expo-live" data-ready={!err} data-sel={sel || ''} data-organiser={organiser} data-session={session || ''} data-fps={fps} data-agenda={saved.agenda.length} data-leads={saved.leads.length}>
     <header className="cl-head"><h1>Expo LIVE</h1><p>The Northlight Technology Expo, Hall A of the Larkspur Exchange Convention Centre: a fictional expo, twenty fictional exhibitors and the Empathia showcase. Your agenda, details, votes and questions stay in this browser.</p></header>
     <div className="xpo-grid">
-      <div className="xpo-stage">
-        <canvas ref={canvas} className="cl-canvas" tabIndex={0} data-testid="xpo-canvas" aria-label="Hall A in 3D. Drag to look around; choose a booth on the plan or in the list." onPointerDown={onDown} onPointerMove={onMove} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} onWheel={(e) => { cam.current.goal = null; cam.current.dist = Math.max(16, Math.min(200, cam.current.dist * (e.deltaY > 0 ? 1.08 : 0.93))); }} />
+      <div className="xpo-stage" ref={stage}>
+        <canvas ref={canvas} className="cl-canvas" tabIndex={0} data-testid="xpo-canvas" aria-label="Hall A in 3D. Tap or click a booth to go to it. Drag to look around, right-drag or Shift-drag to move along the hall, Ctrl or ⌘ with the wheel or a pinch to zoom; on a phone two fingers move the view, or open it full screen. Every booth is also on the plan and in the list." />
+        {hint ? <p className="xpo-hint" role="status" data-testid="xpo-hint">{hintText(hint)}</p> : null}
+        {full && booth ? <div className="xpo-mini" data-testid="xpo-mini"><b>{booth.id} · {booth.name}</b><span>{booth.cat}</span><button type="button" className="cl-btn" onClick={() => { toggleFull(false); requestAnimationFrame(() => document.querySelector('[data-testid=xpo-card]')?.scrollIntoView({ block: 'nearest' })); }}>Details</button></div> : null}
         {err ? <div className="cl-err" role="alert" data-testid="xpo-err"><b>This browser cannot draw the hall.</b> {err}. The plan beside it has every booth.</div> : null}
         <div className="cl-labels">{labels.map((l) => <button key={l.id} type="button" tabIndex={-1} className={`cl-tag xpo-tag xpo-tag--${l.kind}`} style={{ transform: `translate(${Math.round(l.x)}px, ${Math.round(l.y)}px)` }} onClick={() => { const b = BOOTHS.find((x) => x.id === l.id); if (b) flyTo(b); }}><b>{l.text}</b></button>)}</div>
+        <MovePad moves={moves} what="hall" prefix="xpo" />
         <div className="xpo-bar"><button type="button" className="cl-btn" onClick={() => flyTo(null)} data-testid="xpo-overview">Whole hall</button>
+          <button type="button" className="cl-btn" aria-pressed={full} onClick={() => toggleFull(!full)} data-testid="xpo-full">{full ? 'Done' : 'Full screen'}</button>
           <label className="cl-btn xpo-org"><input type="checkbox" checked={organiser} onChange={(e) => setOrganiser(e.target.checked)} data-testid="xpo-organiser" /> Organiser view</label><span className="xpo-fps">{fps} fps here</span></div>
       </div>
       <aside className="xpo-side" aria-label="Plan, booths and sessions">

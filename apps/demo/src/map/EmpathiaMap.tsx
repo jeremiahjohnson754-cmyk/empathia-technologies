@@ -20,7 +20,8 @@ import { layoutOf, paintAsync, GROUND, STOREY, type Layout, type Rect } from './
 import type { CampusTile } from '../spatial/Spatial.js';
 import { exposureByBuilding, WINDOW_FROM, WINDOW_TO, type Exposure } from '../campus/heat.js';
 import { assetsByBuilding, coverageByBuilding, unitServiceRate, uncoveredPct, type AssetFacts, type CoverFacts } from '../campus/lenses.js';
-import { LOOK, MAPLOOK } from './looks.js';   // a facade palette per building, shared with Lite's scenes
+import { LOOK, MAPLOOK } from './looks.js';
+import { attach, hintText, setFull, type Hint } from './gestures.js';   // a facade palette per building, shared with Lite's scenes
 
 type Mode = 'imagery' | 'map';
 type Level = { k: 'campus' } | { k: 'building'; b: string } | { k: 'floor'; b: string; f: number };
@@ -157,6 +158,10 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
   const host = useRef<HTMLDivElement>(null); const canvas = useRef<HTMLCanvasElement>(null);
   const pins = useRef<Record<string, HTMLButtonElement | null>>({}); const rpins = useRef<Record<string, HTMLButtonElement | null>>({}); const needle = useRef<HTMLSpanElement>(null);
   const [mode, setMode] = useState<Mode>('imagery'); const [tilt, setTilt] = useState(true);
+  // how to move it (founder, 20 Nov 2026 05:34: too sensitive on a phone; the page would not scroll): see gestures.ts
+  const [hint, setHint] = useState<Hint>(null); const [full, setFullState] = useState(false); const fullRef = useRef(false);
+  const toggleFull = (on: boolean) => { fullRef.current = setFull(host.current, on); setFullState(on); requestAnimationFrame(() => S.current.kick()); };
+  useEffect(() => { if (!full) return; const k = (e: KeyboardEvent) => { if (e.key === 'Escape') toggleFull(false); }; window.addEventListener('keydown', k); return () => { window.removeEventListener('keydown', k); setFull(host.current, false); }; }, [full]);   // eslint-disable-line react-hooks/exhaustive-deps
   const [level, setLevel] = useState<Level>(() => (current && floor != null ? { k: 'floor', b: current, f: floor } : current ? { k: 'building', b: current } : { k: 'campus' }));
   const [room, setRoom] = useState<string | null>(null); const [q, setQ] = useState(''); const [ready, setReady] = useState(false); const [err, setErr] = useState('');
   const sel = level.k === 'campus' ? null : BUILDINGS.find((b) => b.key === level.b) || null;
@@ -267,7 +272,7 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
       late.forEach((f) => f());
       setReady(true); place(vp, cv);
       if (needle.current) needle.current.style.transform = `rotate(${(-c.yaw * 180) / Math.PI}deg)`;
-      host.current?.setAttribute('data-dist', c.dist.toFixed(0)); host.current?.setAttribute('data-yaw', c.yaw.toFixed(2)); host.current?.setAttribute('data-pitch', c.pitch.toFixed(2));
+      host.current?.setAttribute('data-dist', c.dist.toFixed(0)); host.current?.setAttribute('data-yaw', c.yaw.toFixed(2)); host.current?.setAttribute('data-pitch', c.pitch.toFixed(2)); host.current?.setAttribute('data-at', `${c.tx.toFixed(0)} ${c.tz.toFixed(0)}`);
       if (st.to) st.raf = requestAnimationFrame(draw);
     };
     // pins follow the buildings and rooms on screen. A pin or a lens label is kept inside the view and clear of the map's own controls and
@@ -309,8 +314,9 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
   };
   useEffect(() => { S.current.kick(); }, [mode, tilt, level, rooms, room, heat, overlay]);
 
-  // ---- input: drag to pan, right-drag / two fingers to turn and tilt, wheel / pinch to zoom, keys --------------------------------------
-  useEffect(() => { const cv = canvas.current!; const st = S.current; const ptrs = new Map<number, { x: number; y: number }>(); let moved = 0; let down: { x: number; y: number; b: number } | null = null; let last2: { d: number; a: number; mx: number; my: number } | null = null;
+  // ---- input (gestures.ts): drag to pan, right/Shift-drag to turn; on a phone two fingers (one in full screen); Ctrl/⌘ + wheel or a pinch
+  //      to zoom; a tap that barely moved opens; keys
+  useEffect(() => { const cv = canvas.current!; const st = S.current;
     const clampCam = () => { const c = st.cam; c.dist = Math.max(18, Math.min(1500, c.dist)); c.pitch = Math.max(0.28, Math.min(1.55, c.pitch)); c.tx = Math.max(GROUND.x0, Math.min(GROUND.x0 + GROUND.size, c.tx)); c.tz = Math.max(GROUND.z0, Math.min(GROUND.z0 + GROUND.size, c.tz)); };
     const pan = (dx: number, dy: number) => { const c = st.cam; const k = (c.dist * 1.15) / Math.max(200, cv.clientHeight); const sy = Math.sin(c.yaw), cy = Math.cos(c.yaw); c.tx -= (dx * cy + dy * sy / Math.max(0.35, Math.sin(c.pitch))) * k; c.tz -= (-dx * sy + dy * cy / Math.max(0.35, Math.sin(c.pitch))) * k; st.to = null; clampCam(); st.kick(); };
     const turn = (dx: number, dy: number) => { st.cam.yaw -= dx * 0.006; st.cam.pitch += dy * 0.004; st.to = null; clampCam(); st.kick(); };
@@ -320,20 +326,15 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
     const pick = (cx: number, cy: number) => { const r = ray(cx, cy); if (!r) return null; const lv = st.level;
       if (lv.k === 'floor') { const y = (lv.f - 1) * STOREY; let best: { id: string; t: number } | null = null; for (const rb of st.rooms) { const t = hitBox(r.o, r.d, [rb.x, y, rb.z], [rb.x + rb.w, y + 2.6, rb.z + rb.d]); if (t != null && (!best || t < best.t)) best = { id: rb.o.id, t }; } if (best) return { room: best.id }; }
       let best: { b: string; t: number } | null = null; for (const b of BUILDINGS) { const F = L.foot[b.key]!; const t = hitBox(r.o, r.d, [F.x, 0, F.z], [F.x + F.w, b.floors * STOREY + 1.5, F.z + F.d]); if (t != null && (!best || t < best.t)) best = { b: b.key, t }; } return best ? { b: best.b } : null; };
-    const onDown = (e: PointerEvent) => { ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); try { cv.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ } moved = 0; down = { x: e.clientX, y: e.clientY, b: e.button }; last2 = null; cv.focus({ preventScroll: true }); };
-    const onMove = (e: PointerEvent) => { const p = ptrs.get(e.pointerId);
-      if (!p) { const h = pick(e.clientX, e.clientY); const k = h && 'b' in h ? h.b! : null; if (k !== st.hover) { st.hover = k; cv.style.cursor = k ? 'pointer' : 'grab'; st.kick(); } return; }
-      const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
-      if (ptrs.size >= 2) { const [a, b] = [...ptrs.values()] as [{ x: number; y: number }, { x: number; y: number }]; const d = Math.hypot(b.x - a.x, b.y - a.y), ang = Math.atan2(b.y - a.y, b.x - a.x), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-        if (last2) { zoom(last2.d / Math.max(1, d)); st.cam.yaw -= ang - last2.a; turn(0, (my - last2.my) * 0.6); } last2 = { d, a: ang, mx, my }; return; }
-      if (down && (down.b === 2 || e.ctrlKey || e.shiftKey)) turn(dx, dy); else pan(dx, dy); };
-    const onUp = (e: PointerEvent) => { ptrs.delete(e.pointerId); if (ptrs.size < 2) last2 = null; if (moved < 6 && down && ptrs.size === 0) { const h = pick(e.clientX, e.clientY); const o = opt.current; if (h && 'room' in h) setRoom(h.room!); else if (h && 'b' in h) { const b = BUILDINGS.find((x) => x.key === h.b)!; if (o.direct) o.onOpen(b); else goLevel({ k: 'building', b: h.b! }); } } down = null; };
-    const onWheel = (e: WheelEvent) => { e.preventDefault(); zoom(Math.exp(e.deltaY * (e.ctrlKey ? 0.01 : 0.0014))); };
+    // hover (a mouse over a building, not dragging) shows which one a click opens
+    const onHover = (e: PointerEvent) => { if (e.pointerType !== 'mouse' || e.buttons) return; const h = pick(e.clientX, e.clientY); const k = h && 'b' in h ? h.b! : null; if (k !== st.hover) { st.hover = k; cv.style.cursor = k ? 'pointer' : 'grab'; st.kick(); } };
+    const open = (cx: number, cy: number) => { const h = pick(cx, cy); const o = opt.current; if (h && 'room' in h) setRoom(h.room!); else if (h && 'b' in h) { const b = BUILDINGS.find((x) => x.key === h.b)!; if (o.direct) o.onOpen(b); else goLevel({ k: 'building', b: h.b! }); } };
+    const off = attach(cv, { drag: (dx, dy) => pan(dx, dy), alt: (dx, dy) => turn(dx, dy), zoom: (f) => zoom(f), twist: (da) => { st.cam.yaw -= da; st.to = null; st.kick(); },
+      tap: (x, y) => { const r = cv.getBoundingClientRect(); cv.focus({ preventScroll: true }); open(r.left + x, r.top + y); }, hint: (h) => setHint(h) }, { greedy: () => fullRef.current, twoFingerMove: 'drag' });
     const onKey = (e: KeyboardEvent) => { const k = e.key; const step = 40; if (k === 'ArrowLeft') pan(step, 0); else if (k === 'ArrowRight') pan(-step, 0); else if (k === 'ArrowUp') pan(0, step); else if (k === 'ArrowDown') pan(0, -step); else if (k === '+' || k === '=') zoom(0.8); else if (k === '-' || k === '_') zoom(1.25); else if (k === 'q' || k === 'Q') turn(-30, 0); else if (k === 'e' || k === 'E') turn(30, 0); else return; e.preventDefault(); };
-    const noMenu = (e: Event) => e.preventDefault();
-    cv.addEventListener('pointerdown', onDown); cv.addEventListener('pointermove', onMove); cv.addEventListener('pointerup', onUp); cv.addEventListener('pointercancel', onUp); cv.addEventListener('wheel', onWheel, { passive: false }); cv.addEventListener('keydown', onKey); cv.addEventListener('contextmenu', noMenu);
+    cv.addEventListener('pointermove', onHover); cv.addEventListener('keydown', onKey);
     const dbl = (e: MouseEvent) => { const r = ray(e.clientX, e.clientY); if (r && r.d[1] < 0) { const t = -r.o[1] / r.d[1]; fly({ ...st.cam, tx: r.o[0] + r.d[0] * t, tz: r.o[2] + r.d[2] * t, dist: st.cam.dist * 0.5 }, 0.6); } }; cv.addEventListener('dblclick', dbl);
-    return () => { cv.removeEventListener('pointerdown', onDown); cv.removeEventListener('pointermove', onMove); cv.removeEventListener('pointerup', onUp); cv.removeEventListener('pointercancel', onUp); cv.removeEventListener('wheel', onWheel); cv.removeEventListener('keydown', onKey); cv.removeEventListener('contextmenu', noMenu); cv.removeEventListener('dblclick', dbl); };
+    return () => { off(); cv.removeEventListener('pointermove', onHover); cv.removeEventListener('keydown', onKey); cv.removeEventListener('dblclick', dbl); };
   }, []);   // eslint-disable-line react-hooks/exhaustive-deps
 
   // ---- search ---------------------------------------------------------------------------------------------------------------------
@@ -367,7 +368,7 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
       </div>
       </div>
       <div className="emap__view">
-      <canvas ref={canvas} className="emap__cv" tabIndex={0} role="img" aria-label="Empathia Map of the Northstar campus: drag to move, Ctrl or right-drag to turn, scroll or pinch to zoom, arrow keys to move, plus and minus to zoom, Q and E to turn. Every building and room is also a button below." data-testid="emap-canvas" />
+      <canvas ref={canvas} className="emap__cv" tabIndex={0} role="img" aria-label="Empathia Map of the Northstar campus: drag to move, right-drag or Shift-drag to turn, Ctrl or ⌘ with the wheel or a pinch to zoom; on a phone two fingers move it, or open it full screen. Arrow keys move, plus and minus zoom, Q and E turn. Every building and room is also a button." data-testid="emap-canvas" />
       <div className="emap__pins" role="group" aria-label={`Campus map: ${BUILDINGS.length} buildings. Each opens its place card.`} data-testid={testId}>
         {overlay && <svg className="emap__ov" aria-hidden="true">{overlay.lines.map((ln, i) => <polyline key={`c${i}`} ref={(e: SVGPolylineElement | null) => { ovCase.current[i] = e; }} className={`emap__ovc${ln.dash ? ' emap__ovc--dash' : ''}${ln.route ? ' emap__ovc--route' : ''}`} />)}{overlay.lines.map((ln, i) => <polyline key={i} ref={(e: SVGPolylineElement | null) => { ovLines.current[i] = e; }} className={`emap__ovl${ln.dash ? ' emap__ovl--dash' : ''}${ln.route ? ' emap__ovl--route' : ''}`} />)}</svg>}
         {BUILDINGS.map((b) => { const x = t(b); return <button key={b.key} type="button" ref={(e: HTMLButtonElement | null) => { pins.current[b.key] = e; }} className={`emap__pin emap__pin--${x.band}${sel?.key === b.key ? ' on' : ''}`} aria-label={label(b)} aria-current={current === b.key ? 'true' : undefined} aria-pressed={sel?.key === b.key} data-testid={pinTest ? pinTest(b.key) : `campus-b-${b.key}`}
@@ -377,7 +378,9 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
         {level.k === 'floor' && rooms.map((rb) => <button key={rb.o.id} type="button" ref={(e: HTMLButtonElement | null) => { rpins.current[rb.o.id] = e; }} className={`emap__rpin${room === rb.o.id ? ' on' : ''}`} data-testid={`map-room-${rb.o.id}`} aria-label={`${shortName(rb.o)} ${rb.o.name}: ${STATE_WORD[rb.state] || rb.state}${rb.issues ? `, ${rb.issues} open issue${rb.issues === 1 ? '' : 's'}` : ''}`} aria-pressed={room === rb.o.id} onClick={() => setRoom(rb.o.id)}>
           <i style={{ background: STATE_COL[rb.state] }} aria-hidden="true" />{rb.o.number}{rb.issues > 0 && <span className="emap__iss" aria-hidden="true">{rb.issues}</span>}</button>)}
       </div>
+      {hint ? <p className="emap__hint" role="status" data-testid="emap-hint">{hintText(hint)}</p> : null}
       <div className="emap__ctrl">
+        <button type="button" aria-label={full ? 'Leave full screen' : 'Full screen'} title={full ? 'Leave full screen (Esc)' : 'Full screen'} aria-pressed={full} onClick={() => toggleFull(!full)} data-testid="emap-full"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">{full ? <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" /> : <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />}</svg></button>
         <button type="button" aria-label="North up" title="North up" onClick={() => fly({ ...S.current.cam, yaw: 0 }, 0.6)} data-testid="emap-north"><span ref={needle} className="emap__needle" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 2.5 15.5 12h-7z" fill="#ff6b5b" /><path d="M12 21.5 8.5 12h7z" fill="#cfd8e6" /><text x="12" y="9.6" textAnchor="middle" fontSize="5.5" fontWeight="700" fill="#2a0e0b">N</text></svg></span></button>
         <button type="button" aria-label="Zoom in" onClick={() => fly({ ...S.current.cam, dist: Math.max(18, S.current.cam.dist * 0.6) }, 0.45)} data-testid="emap-in">+</button>
         <button type="button" aria-label="Zoom out" onClick={() => fly({ ...S.current.cam, dist: Math.min(1500, S.current.cam.dist * 1.6) }, 0.45)} data-testid="emap-out">−</button>

@@ -1,0 +1,26 @@
+# UX/UI defect register (deliverable B)
+
+Severity as the directive defines it: **P0** critical (blocks the core path, data or security), **P1** high (broken navigation, search, an
+unusable map, key workflows, major mobile failures, accessibility blockers), **P2** medium (degraded but usable), **P3** polish.
+Status: FIXED (code changed and a test checks it), OPEN, BY DESIGN (a deliberate limit, said where the user meets it).
+Earlier registers: `docs/qa/DEFECT_REGISTER_2026-11-18.md`, `docs/qa/MOBILE_MAPS_2026-11-19.md`.
+
+| ID | Sev | Where | Reproduce | Cause | Fix | Status | Evidence |
+|---|---|---|---|---|---|---|---|
+| D-01 | P1 | Campus map (`#/campus`, Lite's landing) on a phone | Swipe up with one finger over the map: the page does not scroll, the map pans instead; on a short phone the map fills most of the screen, so the page below is hard to reach (founder 20 Nov) | `touch-action: none` on the canvas; every pointer moved the map | One gesture model (`map/gestures.ts`): one finger scrolls the page and the map says how to move it; two fingers move it; full screen makes one finger move it | FIXED | GS-map-01…07 |
+| D-02 | P1 | Campus map with a mouse or trackpad | Scroll the page with the wheel: when the pointer passes over the map, the page stops and the map zooms (scroll-jacking) | the wheel handler zoomed on every wheel event | The plain wheel scrolls the page with a hint; Ctrl/⌘ + wheel (and a trackpad pinch) zooms; in full screen the plain wheel zooms | FIXED | GS-map-09, GS-map-10, GS-map-13 |
+| D-03 | P1 | Expo LIVE (`#/play/expo`) | Click or tap a booth's stand in the hall: nothing is chosen, the camera does not go there (founder: "It doesn't take me there") | the hall canvas had no picking; only the small floating name tags, the plan and the list chose a booth | Each booth's footprint, raised to wall height, is projected through the drawn camera; the nearest containing the point is chosen and the camera flies to it, its card opens | FIXED | GS-xpo-03, GS-xpo-07 |
+| D-04 | P1 | Expo LIVE, Stadium LIVE, Campus Life on a phone | One finger on the 3D picture: the page cannot be scrolled past it (the stages are 74–78 % of the window tall) (founder: "hard to move around", "hard to experience") | `touch-action: none` on the stages | The same gesture model as the map; full screen for the greedy mode, with Done | FIXED | GS-xpo-05…09, GS-slv-01…04, GS-cl-01…04 |
+| D-05 | P1 | Expo LIVE, Stadium LIVE | Turning or zooming needs a drag or a wheel; nothing for a single press or the keyboard (WCAG 2.2 2.5.7 Dragging Movements, 2.1.1 Keyboard) | no controls besides the drag | Turn left/right, nearer/farther buttons on the picture; arrows, +/−, Shift+arrows on the focused picture | FIXED | GS-xpo-11, GS-slv-07 |
+| D-06 | P1 | Lite's room and space scenes in 3D (technical view, places) on a phone | Swipe up over the room: the page does not scroll, the room turns | `touch-action: none` on `.lt-svg`; every pointer orbited | V2.5.3's rule, as Lite's campus already had: vertical swipes scroll the page, sideways ones turn; the drag is captured only once it is a drag, so a tap still reaches what is under it | FIXED | GS-lite-01 |
+| D-07 | P1 | Search Party → another product → back | Search “4.218”, filter to Rooms, choose the room, open it, go to Lite and Commissioning, press Back: Search Party is empty (directive §3's own example) | the search's words, filter and choice lived only in the page's memory | They are kept in the address (`?q`, `?type`, `?focus`, `?sel`, written with `replaceState` after typing stops) and on the trail as "Your search"; Back, refresh and the trail return to it | FIXED | JR-*-01…06 |
+| D-08 | P2 | Results page `#/find` | Narrow by a facet, open a result, press Back: the facet is reset to All | the facet lived only in the page's memory | The facet is in the address (`&facet=`) | FIXED | JR-*-08 |
+| D-09 | P2 | All three search fields | Type a query: whether a clear control appears depends on the browser (Chromium draws its own small one; not every browser does) | the browser's native control was relied on | Our own 40 px clear control in the header bar, Search Party and the search bars; the native one hidden so there are never two; focus stays in the field | FIXED | SC-*-16, JR-*-07 |
+| D-10 | P3 | Search, case 12 | Searching a vendor's name finds nothing | vendors are not in the search index (service jobs carry them) | — | OPEN | NAVIGATION_AND_SEARCH_VALIDATION.md |
+| D-11 | P3 | Search, case 10 | Searching a manufacturer or model finds nothing | the synthetic catalogue names no makers (no real brands, by rule) | Search by category, position or asset ID; the results never invent a make, model or serial (S-03) | BY DESIGN | S-03 |
+| D-12 | P2 | Campus map | No full-screen mode (directive §4 lists full-screen actions) | not built | A Full screen button first among the map's controls; Done/Escape leaves | FIXED | GS-map-05…07, GS-map-13 |
+
+## Not confirmed on real devices
+
+The touch checks drive Chromium's own touch input; they were not run on a physical iPhone or Android phone, and Safari was not available
+here. That is a limit of this verification, not a known defect.

@@ -2,7 +2,7 @@
 .cl { --cl-ink: #0f172a; --cl-panel: rgba(255,255,255,.88); --cl-line: rgba(15,23,42,.14); --cl-teal: #0a7268; --cl-gold: #e0a43b; display: grid; gap: 10px; }
 .cl-head h1 { margin: 0; font-size: clamp(1.4rem, 2.6vw, 2rem); letter-spacing: -.01em; }
 .cl-head p { margin: 2px 0 0; color: var(--tx2, #5b6676); }
-.cl-stage { position: relative; width: 100%; height: min(78vh, 760px); min-height: 420px; border-radius: 14px; overflow: hidden; background: #cfe0ec; box-shadow: 0 1px 0 var(--cl-line) inset; touch-action: none; user-select: none; }
+.cl-stage { position: relative; width: 100%; height: min(78vh, 760px); min-height: 420px; border-radius: 14px; overflow: hidden; background: #cfe0ec; box-shadow: 0 1px 0 var(--cl-line) inset; touch-action: pan-x pan-y; user-select: none; }
 .cl-canvas { display: block; width: 100%; height: 100%; outline: none; cursor: grab; }
 .cl-canvas:focus-visible { box-shadow: 0 0 0 3px var(--cl-teal) inset; }
 .cl-canvas:active { cursor: grabbing; }
@@ -79,7 +79,7 @@
 .slv { display: grid; gap: 10px; }
 .slv-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 12px; align-items: start; }
 @media (max-width: 1000px) { .slv-grid { grid-template-columns: minmax(0, 1fr); } }
-.slv-stage { position: relative; height: min(76vh, 740px); min-height: 380px; border-radius: 14px; overflow: hidden; background: #0f1a24; touch-action: none; }
+.slv-stage { position: relative; height: min(76vh, 740px); min-height: 380px; border-radius: 14px; overflow: hidden; background: #0f1a24; touch-action: pan-x pan-y; }
 .slv-now { position: absolute; left: 12px; bottom: 12px; right: 12px; background: rgba(10,16,24,.72); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 13px; }
 .slv-tag b { background: rgba(10,16,24,.78); padding: 2px 8px; border-radius: 6px; text-shadow: none; font-size: 12px; }
 .slv-tag--board b { background: rgba(14,143,131,.92); font-size: 13px; }
@@ -118,7 +118,7 @@
 .xpo { display: grid; gap: 10px; }
 .xpo-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 12px; align-items: start; }
 @media (max-width: 1000px) { .xpo-grid { grid-template-columns: minmax(0, 1fr); } }
-.xpo-stage { position: relative; height: min(74vh, 720px); min-height: 380px; border-radius: 14px; overflow: hidden; background: #dfe4ea; touch-action: none; }
+.xpo-stage { position: relative; height: min(74vh, 720px); min-height: 380px; border-radius: 14px; overflow: hidden; background: #dfe4ea; touch-action: pan-x pan-y; }
 .xpo-tag { pointer-events: auto; border: 0; background: transparent; padding: 0; cursor: pointer; }
 .xpo-tag b { background: rgba(15,23,42,.72); padding: 2px 7px; border-radius: 6px; text-shadow: none; font-size: 11px; font-weight: 600; }
 .xpo-tag--show b { background: #0a7268; font-size: 12px; } .xpo-tag--sel b { background: #b54708; font-size: 13px; } .xpo-tag--place b { background: rgba(255,255,255,.92); color: #0f172a; }
@@ -146,3 +146,27 @@
 .xpo-poll { display: grid; gap: 6px; padding: 8px 2px; } .xpo-poll p { margin: 0; }
 .xpo button, .xpo input, .xpo a, .xpo .xpo-plan__b { scroll-margin-top: 96px; }
 .xpo, .slv { --cl-panel: rgba(255,255,255,.9); --cl-line: rgba(15,23,42,.14); --cl-ink: #0f172a; --cl-teal: #0a7268; }
+
+/* On the page a finger scrolls the page and two move the world; full screen gives the world every gesture (map/gestures.ts; founder,
+   20 Nov 2026 05:34: the worlds look amazing but are hard to experience, too sensitive on a phone) */
+.cl-canvas { touch-action: pan-x pan-y; }
+.cl-stage.is-full, .slv-stage.is-full, .xpo-stage.is-full { position: fixed; inset: 0; z-index: 2000; width: auto; height: auto; min-height: 0; border-radius: 0; touch-action: none; }
+.is-full .cl-canvas { touch-action: none; }
+html.has-full, html.has-full body { overflow: hidden; }
+.xpo-hint { position: absolute; z-index: 6; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; max-width: min(80%, 340px); padding: 10px 14px; border-radius: 12px; background: rgba(10, 14, 20, 0.88); color: #eef3fb; font-size: 14px; line-height: 1.35; text-align: center; pointer-events: none; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
+.slv-full { position: absolute; z-index: 5; right: 12px; top: 12px; min-height: 44px; }
+.slv-stage.is-full .slv-full { top: max(12px, env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); }
+.xpo-mini { position: absolute; z-index: 5; left: 12px; right: 12px; bottom: max(64px, calc(env(safe-area-inset-bottom, 0px) + 64px)); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
+.xpo-mini b { flex: 1 1 auto; } .xpo-mini span { color: #5b6676; font-size: 13px; } .xpo-mini .cl-btn { min-height: 44px; }
+.xpo-stage.is-full .xpo-bar { bottom: max(12px, env(safe-area-inset-bottom, 0px)); }
+
+/* the moves a drag makes, as buttons on the picture (20 Nov 2026; WCAG 2.2 2.5.7): a column at the right, under Stadium's Full screen */
+.mvpad { position: absolute; z-index: 5; right: 12px; top: 12px; display: grid; gap: 6px; }
+.slv-stage .mvpad { top: 66px; }
+.mvpad button { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; border: 1px solid rgba(15, 23, 42, 0.18); background: rgba(255, 255, 255, 0.9); color: #0f172a; font-size: 20px; line-height: 1; cursor: pointer; }
+.mvpad button:hover { background: #fff; border-color: rgba(15, 23, 42, 0.4); }
+.mvpad button:focus-visible { outline: 2px solid #0a7268; outline-offset: 2px; }
+.is-full .mvpad { right: max(12px, env(safe-area-inset-right, 0px)); }
+.xpo-stage.is-full .mvpad { top: max(12px, env(safe-area-inset-top, 0px)); }
+.slv-stage.is-full .mvpad { top: calc(max(12px, env(safe-area-inset-top, 0px)) + 54px); }
+@media (max-width: 560px) { .mvpad { gap: 4px; } }

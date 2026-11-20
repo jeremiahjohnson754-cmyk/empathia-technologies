@@ -11,7 +11,7 @@ import { understand, canonical, type Reading } from './understand.js';
 import { allows } from '../access/policy.js';
 import { openable } from '../pages/V25Nav.js';
 import type { RoleKey } from '../registry.types.js';
-import { Notice } from '@empathia/ui';
+import { Notice, Icon } from '@empathia/ui';
 
 const KIND: Record<Hit['kind'], string> = { room: 'Room', building: 'Building', device: 'Device', product: 'Product', page: 'Page', tour: 'Tour', issue: 'Issue', person: 'Person', project: 'Project' };
 /** V2.5.3's facets, in its order, for the kinds this index holds */
@@ -64,6 +64,8 @@ export function SearchBar({ hero, placeholder, label = 'Search the demonstration
           else if (e.key === 'Enter') { e.preventDefault(); submit(); }
           else if (e.key === 'Escape') { if (open) { e.preventDefault(); setOpen(false); setAct(-1); } else setQ(''); }
         }} />
+      {/* a clear control that every browser shows (the native one is hidden: not every browser draws one, and two would be one too many) */}
+      {q && <button type="button" className="sbar__clear" aria-label="Clear the search" onMouseDown={(e) => e.preventDefault()} onClick={() => { setQ(''); setAct(-1); setOpen(true); box.current?.focus(); }} data-testid="sbar-clear"><Icon name="close" size={16} /></button>}
       <ul id={`${id}-list`} role="listbox" aria-label="Suggestions" className="sbar__list" hidden={!open || !hits.length}>
         {hits.map((h, i) => <li key={h.id} id={`${id}-o${i}`} role="option" aria-selected={i === act} className={`${i === act ? 'on' : ''}${h.id === 'answer' ? ' sbar__answer' : ''}`} data-kind={h.id === 'answer' ? 'answer' : undefined} onMouseDown={(e) => { e.preventDefault(); go(h.href, h.label); }} data-option-kind={h.kind}><span className="sbar__kind">{h.kind}</span><b><Marked text={h.label} q={q} /></b><span className="ui-meta">{h.description}</span></li>)}
       </ul>
@@ -96,7 +98,10 @@ function Answer({ r }: { r: Reading }) {
 export function FindPage({ hash, role }: { hash: string; role?: RoleKey }) {
   const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '').get('q') || '';
   const r = useMemo(() => understand(q, { limit: CAMPUS_ROOMS.length, may: mayFor(role) }), [q, role]); const hits = r.hits; const answer = r.mode === 'answer';
-  const shown = hits.filter(visible(role)); const [facet, setFacet] = useState<Hit['kind'] | 'all'>('all');
+  const shown = hits.filter(visible(role));
+  // the facet is part of the address (20 Nov 2026), so coming Back to the results keeps the narrowing that was chosen
+  const [facet, setFacet] = useState<Hit['kind'] | 'all'>(() => { const f = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '').get('facet'); return (FACETS.find(([k]) => k === f)?.[0]) || 'all'; });
+  const pickFacet = (k: Hit['kind'] | 'all') => { setFacet(k); const p = new URLSearchParams(/\?(.*)$/.exec(location.hash)?.[1] || ''); if (k === 'all') p.delete('facet'); else p.set('facet', k); try { history.replaceState(history.state, '', `#/find?${p.toString()}`); } catch { /* the narrowing is simply not kept */ } };
   const counts = Object.fromEntries(FACETS.map(([k]) => [k, k === 'all' ? shown.length : shown.filter((h) => h.kind === k).length])); const on = counts[facet] ? facet : 'all';
   const groups = (['room', 'product', 'tour', 'building', 'device', 'person', 'project', 'issue', 'page'] as const).filter((k) => on === 'all' || k === on).map((k) => [k, shown.filter((h) => h.kind === k)] as const).filter(([, l]) => l.length);
   return (
@@ -111,7 +116,7 @@ export function FindPage({ hash, role }: { hash: string; role?: RoleKey }) {
       {q && r.mode === 'empty' && <><Notice tone="info">Nothing matches “{q}”. Try a room number such as 4.218, a device such as “camera”, or a product such as “Search Party”. For relationships, open <a href={`#/search?q=${encodeURIComponent(q)}`}>Search Party with this text</a>.</Notice>
         <div className="fnd-ans__next" data-testid="find-starters"><h2 className="build__h">Searches that have an answer</h2><ul>{r.next.map((s) => <li key={s.q}><a href={findHref(s.q)}>{s.label}</a></li>)}</ul></div></>}
       {!q && <div className="fnd-ans__next" data-testid="find-starters"><h2 className="build__h">Try one</h2><ul>{r.next.map((s) => <li key={s.q}><a href={findHref(s.q)}>{s.label}</a></li>)}</ul></div>}
-      {q && shown.length > 0 && <div className="fnd__facets" role="group" aria-label="Narrow the results" data-testid="find-facets">{FACETS.filter(([k]) => k === 'all' || counts[k]).map(([k, l]) => <button key={k} type="button" className={`chip${on === k ? ' on' : ''}`} aria-pressed={on === k} onClick={() => setFacet(k)} data-facet={k}>{l} <span className="ui-meta">{counts[k]}</span></button>)}</div>}
+      {q && shown.length > 0 && <div className="fnd__facets" role="group" aria-label="Narrow the results" data-testid="find-facets">{FACETS.filter(([k]) => k === 'all' || counts[k]).map(([k, l]) => <button key={k} type="button" className={`chip${on === k ? ' on' : ''}`} aria-pressed={on === k} onClick={() => pickFacet(k)} data-facet={k}>{l} <span className="ui-meta">{counts[k]}</span></button>)}</div>}
       {answer && groups.length > 0 && <h2 className="build__h fnd__also">Pages and records that match the words</h2>}
       {groups.map(([k, l]) => <div key={k} className="fnd__group"><h2 className="build__h">{k === 'person' ? 'People' : `${KIND[k]}s`} ({l.length})</h2><ul className="fnd__list">{l.map((h) => <li key={h.id}><a href={h.href} onClick={() => remember(h.href, h.label)}><b><Marked text={h.label} q={q} /></b><span className="ui-muted">{h.description}</span>{h.why && <span className="ui-meta">alias {h.why}</span>}</a></li>)}</ul></div>)}
     </section>

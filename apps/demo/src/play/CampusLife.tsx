@@ -9,6 +9,7 @@
  * run. Sound is off until the player turns it on, and is quiet.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as RPE, type ReactElement } from 'react';
+import { attach, hintText, setFull, type Hint } from '../map/gestures.js';
 import { Renderer, boxVerts, hex, m4, type M4, type V3 } from './gl.js';
 import { boxes, round, CARDS, DOOR, HALL, NPC, BENCH, signs, WORLD, inHall } from './world.js';
 import { act, camera, fresh, fromSave, level, reach, solved, step, STAGES, toSave, type Input, type Reach, type State } from './sim.js';
@@ -49,7 +50,7 @@ function person(r: Renderer, x: number, z: number, yaw: number, walk: number, sp
 export default function CampusLife() { return <CampusLifePage />; }
 export function CampusLifePage() {
   const canvas = useRef<HTMLCanvasElement>(null); const root = useRef<HTMLDivElement>(null);
-  const st = useRef<State>(load() || fresh()); const keys = useRef(new Set<string>()); const stick = useRef({ x: 0, y: 0, on: false }); const drag = useRef<{ x: number; y: number; id: number } | null>(null);
+  const st = useRef<State>(load() || fresh()); const keys = useRef(new Set<string>()); const stick = useRef({ x: 0, y: 0, on: false });
   const turnBy = useRef({ yaw: 0, pitch: 0 }); const runToggle = useRef(false);
   const [hud, setHud] = useState(() => ({ ...st.current, reach: null as Reach | null, fps: 0, inside: false, eyeZ: 0 }));
   const [paused, setPaused] = useState(false); const [panel, setPanel] = useState<null | 'talk' | 'circuits' | 'screen' | { card: string }>(null);
@@ -127,10 +128,13 @@ export function CampusLifePage() {
     return () => { cancelAnimationFrame(raf); r.dispose(); };
   }, [commit]);
 
-  // pointer: drag to turn the camera; the thumb-stick
-  const onDown = (e: RPE) => { const ne = e as unknown as { pointerType: string; button: number }; if (ne.pointerType === 'mouse' && ne.button !== 0) return; canvas.current?.focus(); drag.current = { x: e.clientX, y: e.clientY, id: e.pointerId }; try { (e.target as Element).setPointerCapture?.(e.pointerId); } catch { /* a pointer the browser no longer tracks */ } };
-  const onMove = (e: RPE) => { const d = drag.current; if (!d || d.id !== e.pointerId) return; turnBy.current.yaw -= (e.clientX - d.x) * 0.006; turnBy.current.pitch += (e.clientY - d.y) * 0.004; d.x = e.clientX; d.y = e.clientY; };
-  const onUp = () => { drag.current = null; };
+  // the camera: a drag turns it (gestures.ts: on a phone, two fingers, or one in full screen, so the page still scrolls under a finger;
+  // founder, 20 Nov 2026 05:34: the worlds are hard to experience on a phone); the thumb-stick walks
+  const stageEl = useRef<HTMLDivElement>(null); const [hint, setHint] = useState<Hint>(null); const [full, setFullState] = useState(false); const fullRef = useRef(false);
+  const toggleFull = (on: boolean) => { fullRef.current = setFull(stageEl.current, on); setFullState(on); };
+  useEffect(() => { if (!full) return; const k = (e: KeyboardEvent) => { if (e.key === 'Escape') toggleFull(false); }; window.addEventListener('keydown', k); return () => { window.removeEventListener('keydown', k); setFull(stageEl.current, false); }; }, [full]);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { const cv = canvas.current; if (!cv) return; const turn = (dx: number, dy: number) => { turnBy.current.yaw -= dx * 0.006; turnBy.current.pitch += dy * 0.004; };
+    return attach(cv, { drag: turn, alt: turn, zoom: () => { /* the camera's distance follows the student */ }, twist: (da) => { turnBy.current.yaw -= da; }, tap: () => cv.focus({ preventScroll: true }), hint: setHint }, { greedy: () => fullRef.current, twoFingerMove: 'drag' }); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
   const stickEl = useRef<HTMLDivElement>(null);
   const stickMove = (e: RPE) => { const b = stickEl.current!.getBoundingClientRect(); const cx = b.left + b.width / 2, cy = b.top + b.height / 2; let x = (e.clientX - cx) / (b.width / 2), y = (e.clientY - cy) / (b.height / 2); const l = Math.hypot(x, y); if (l > 1) { x /= l; y /= l; } stick.current = { x, y, on: true }; };
   const s = hud; const lvl = level(s.xp); const into = s.xp % 200;
@@ -139,9 +143,9 @@ export function CampusLifePage() {
   return <section className="cl" ref={root} data-testid="campus-life" data-ready={!err} data-x={s.x.toFixed(2)} data-z={s.z.toFixed(2)} data-yaw={s.camYaw.toFixed(3)} data-cam={s.camDist.toFixed(2)} data-eye-z={s.eyeZ.toFixed(2)}
     data-xp={s.xp} data-level={lvl} data-quest={s.stage} data-door={s.door ? 'open' : 'closed'} data-inside={s.inside} data-fps={s.fps} data-cards={s.cards.length} data-speed={s.speed.toFixed(2)}>
     <header className="cl-head"><h1>Campus Life</h1><p>Kestrel Valley University · the Quad and Science Hall · a first playable slice. Everything here is fictional; progress is kept <b>in this browser</b>.</p></header>
-    <div className="cl-stage">
-      <canvas ref={canvas} className="cl-canvas" tabIndex={0} aria-label="Campus Life: the Quad and Science Hall. Move with W A S D, run with Shift, act with E, turn the camera with the left and right arrow keys or by dragging, C to put it behind you." data-testid="cl-canvas"
-        onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} />
+    <div className="cl-stage" ref={stageEl}>
+      <canvas ref={canvas} className="cl-canvas" tabIndex={0} aria-label="Campus Life: the Quad and Science Hall. Move with W A S D, run with Shift, act with E, turn the camera with the left and right arrow keys or by dragging (two fingers on a phone, or one in full screen), C to put it behind you." data-testid="cl-canvas" />
+      {hint ? <p className="xpo-hint" role="status" data-testid="cl-hint">{hintText(hint)}</p> : null}
       {err ? <div className="cl-err" role="alert" data-testid="cl-err"><b>This browser cannot draw the campus.</b> {err}. The <a href="#/worlds/university">University world</a> shows the same campus as a plan.</div> : null}
       <div className="cl-labels" aria-hidden="true">{labels.map((l, i) => <div key={i} className={`cl-tag cl-tag--${l.kind}`} style={{ transform: `translate(${Math.round(l.x)}px, ${Math.round(l.y)}px)` }}><b>{l.text}</b>{l.sub ? <span>{l.sub}</span> : null}</div>)}</div>
       <div className="cl-hud">
@@ -163,6 +167,7 @@ export function CampusLifePage() {
           <button type="button" className="cl-btn" onClick={() => setPaused(true)} data-testid="cl-pause">Pause</button>
           <button type="button" className="cl-btn" onClick={() => { store(st.current); setSaved(`Saved in this browser · ${new Date().toLocaleTimeString()}`); }} data-testid="cl-save">Save</button>
           <button type="button" className="cl-btn" onClick={() => setMap((m) => !m)} aria-pressed={map}>Map</button>
+          <button type="button" className="cl-btn" aria-pressed={full} onClick={() => toggleFull(!full)} data-testid="cl-full">{full ? 'Done' : 'Full screen'}</button>
           {saved ? <span className="cl-saved" data-testid="cl-saved">{saved}</span> : null}
         </div>
       </div>

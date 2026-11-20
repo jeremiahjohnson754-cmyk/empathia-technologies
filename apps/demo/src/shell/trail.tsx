@@ -14,7 +14,7 @@
 import { useEffect, useState } from 'react';
 import { Icon } from '@empathia/ui';
 
-export interface Mark { path: string; hash: string; label: string; sub: string; sy: number; at: number }
+export interface Mark { path: string; hash: string; label: string; sub: string; sy: number; at: number; /** a search kept with its query, filter and choice (20 Nov 2026) */ search?: boolean }
 const KEY = 'empathia.trail.v1';
 const MAX = 6; const TTL = 3 * 3600_000;
 /** route parameters that name a place where work happens; and the pages that are such a place without a parameter */
@@ -73,22 +73,40 @@ export function notePage(route: string, pageId: string | null, params: Record<st
   setTimeout(look, 60);
 }
 export function forget(path: string) { write(read().filter((m) => m.path !== path)); }
+/** A search with something in it (founder's master directive, 20 Nov 2026: find a room in Search Party, open it in Lite, look at its devices
+ *  and its commissioning evidence, "and return to the original search without unexpectedly losing the selected room, filters, or navigation
+ *  context"). The search page keeps its query, filter and choice in its own address; this keeps that address on the trail as well, as a
+ *  second, quieter way back, so the most recent place of work stays the main chip. */
+export function noteSearch(hash: string, label: string, sub: string) {
+  const path = pathOf(hash); const ms = read(); const old = ms.find((m) => m.path === path);
+  if (!label) return;   // an empty search keeps the last one on the trail; a new search replaces it, and × forgets it
+  if (old && old.hash === hash && old.label === label && old.sub === sub) return;
+  write([{ path, hash, label: label.slice(0, 80), sub: sub.slice(0, 40), sy: old?.sy ?? 0, at: Date.now(), search: true }, ...ms.filter((x) => x.path !== path)]);
+}
 
 /** The return chip: the most recent place of work that is not this page and that this role may open. */
 export function ReturnChip({ route, allowed }: { route: string; allowed: (hash: string) => boolean }) {
   const [ms, setMs] = useState<Mark[]>(read);
   useEffect(() => { const f = () => setMs(read()); listeners.add(f); f(); return () => { listeners.delete(f); }; }, [route]);
   const here = pathOf(route);
-  const m = ms.find((x) => x.path !== here && allowed(x.hash));
-  if (!m) return null;
+  const m = ms.find((x) => !x.search && x.path !== here && allowed(x.hash));
+  const sx = ms.find((x) => x.search && x.path !== here && allowed(x.hash));
+  if (!m && !sx) return null;
   // a fragment navigation is synchronous: the new history entry exists at once, so its scroll is written onto it before the router's
   // popstate/hashchange read it (the 18 Nov first version kept a "pending" value that the second of those two events wiped)
-  const go = () => { if (location.hash !== m.hash) location.hash = m.hash; try { history.replaceState({ ...(history.state as object | null || {}), sy: m.sy }, ''); } catch { /* none */ } arrival = m.sy; if (location.hash === m.hash && pathOf(route) === m.path) settleScroll(); };
+  const go = (to: Mark) => { if (location.hash !== to.hash) location.hash = to.hash; try { history.replaceState({ ...(history.state as object | null || {}), sy: to.sy }, ''); } catch { /* none */ } arrival = to.sy; if (location.hash === to.hash && pathOf(route) === to.path) settleScroll(); };
   return (
-    <nav className="trail" aria-label="Where you were" data-testid="trail">
-      <a className="trail__back" href={m.hash} onClick={(e) => { e.preventDefault(); go(); }} data-testid="trail-back" data-to={m.hash}>
-        <Icon name="undo" size={18} /><span className="trail__t"><span className="trail__k">Back to</span> <b>{m.label}</b>{m.sub && <span className="trail__s"> · {m.sub}</span>}</span></a>
-      <button type="button" className="trail__x" aria-label={`Forget ${m.label}`} onClick={() => forget(m.path)} data-testid="trail-forget"><Icon name="close" size={16} /></button>
+    <nav className="trail-row" aria-label="Where you were" data-testid="trail">
+      {m && <div className="trail">
+        <a className="trail__back" href={m.hash} onClick={(e) => { e.preventDefault(); go(m); }} data-testid="trail-back" data-to={m.hash}>
+          <Icon name="undo" size={18} /><span className="trail__t"><span className="trail__k">Back to</span> <b>{m.label}</b>{m.sub && <span className="trail__s"> · {m.sub}</span>}</span></a>
+        <button type="button" className="trail__x" aria-label={`Forget ${m.label}`} onClick={() => forget(m.path)} data-testid="trail-forget"><Icon name="close" size={16} /></button>
+      </div>}
+      {sx && <div className="trail trail--search">
+        <a className="trail__back" href={sx.hash} onClick={(e) => { e.preventDefault(); go(sx); }} data-testid="trail-search" data-to={sx.hash}>
+          <Icon name="search" size={18} /><span className="trail__t"><span className="trail__k">Your search</span> <b>{sx.label}</b>{sx.sub && <span className="trail__s"> · {sx.sub}</span>}</span></a>
+        <button type="button" className="trail__x" aria-label={`Forget the search ${sx.label}`} onClick={() => forget(sx.path)} data-testid="trail-search-forget"><Icon name="close" size={16} /></button>
+      </div>}
     </nav>
   );
 }

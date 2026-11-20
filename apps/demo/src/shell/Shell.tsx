@@ -251,7 +251,8 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
           placeholder="Rooms, devices, incidents, pages…" aria-label="Search Party: find a room, device, incident or page" aria-keyshortcuts="Control+K Meta+K /" value={q} autoComplete="off" spellCheck={false} maxLength={80}
           onChange={(e) => { setQ(e.target.value); setI(0); }}
           onKeyDown={(e) => { if (e.key === 'ArrowDown') { e.preventDefault(); setI(Math.min(sel + 1, hits.length - 1)); } else if (e.key === 'ArrowUp') { e.preventDefault(); setI(Math.max(sel - 1, 0)); } else if (e.key === 'Enter') { e.preventDefault(); submit(); } else if (e.key === 'Escape') { e.preventDefault(); if (q) setQ(''); else close(); } }} />
-        <kbd className="find__kbd" aria-hidden="true">{KEYS}</kbd>
+        {/* a clear control every browser shows (20 Nov 2026; not every browser draws its own), in place of the shortcut once there are words */}
+        {q ? <button type="button" className="find__clear" aria-label="Clear the search" onMouseDown={(e) => e.preventDefault()} onClick={() => { setQ(''); setI(0); input.current?.focus(); }} data-testid="find-clear"><Icon name="close" size={16} /></button> : <kbd className="find__kbd" aria-hidden="true">{KEYS}</kbd>}
         {hits.length > 0 && <div className="find__list">
           <ul id="find-list" role="listbox" aria-label={`Results for ${text}`}>{groups.map((g) => (
             <li key={g.key} role="presentation" className="find__grp">

@@ -90,7 +90,9 @@ body.has-dialog { overflow: hidden; }
   box-shadow: inset 0 1px 0 var(--sheen); transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease); }
 .find__box input:hover { border-color: color-mix(in srgb, var(--p-search-party) 45%, var(--line2)); }
 .find__box input::placeholder { color: var(--tx3); }
-.find__box input::-webkit-search-cancel-button { cursor: pointer; }
+.find__box input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.find__clear { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--tx2); cursor: pointer; }
+.find__clear:hover { color: var(--tx); background: var(--panel2); } .find__clear:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: -2px; }
 .find__box input:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 75%, transparent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
 .find__kbd { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); padding: 2px 6px; border-radius: 6px; border: 1px solid var(--line2); background: var(--panel2); color: var(--tx2); font: 600 11px var(--font-mono); text-align: center; pointer-events: none; white-space: nowrap; }
 .find__box input:focus ~ .find__kbd { display: none; }
@@ -188,7 +190,7 @@ body.has-dialog { overflow: hidden; }
   .demo-shell .shell__tools { display: contents; }
   .notes { margin-left: auto; }
   .find { order: 10; flex: 1 0 100%; margin: 0; }
-  .find__box input { padding-left: 40px; padding-right: 14px; }
+  .find__box input { padding-left: 40px; padding-right: 44px; }
   .find__sp span { display: none; } .find__sp { background: transparent; padding: 0 8px; }
   .find__list, .find__none { left: 0; right: 0; width: auto; max-height: calc(100dvh - var(--top-h) - 84px); }
   .find__kbd, .find__all { display: none; }
@@ -312,7 +314,8 @@ body.has-dialog { overflow: hidden; }
   .shell__main { padding: 0 !important; margin: 0 !important; max-inline-size: none !important; }
 }
 /* #223 the return trail: one quiet chip at the top of the page that returns to the last place of work exactly as it was */
-.trail { display: flex; align-items: stretch; gap: 0; width: fit-content; max-width: 100%; margin: 0 0 12px; border: 1px solid var(--line2); border-radius: var(--r-pill); background: var(--panel); overflow: hidden; }
+.trail-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; max-width: 100%; }
+.trail { display: flex; align-items: stretch; gap: 0; width: fit-content; max-width: 100%; margin: 0; border: 1px solid var(--line2); border-radius: var(--r-pill); background: var(--panel); overflow: hidden; }
 .trail__back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 14px 4px 12px; color: var(--tx); text-decoration: none; min-width: 0; font-size: var(--fs-sm); }
 .trail__back .kit-icon { color: var(--accent); flex: none; }
 .trail__t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

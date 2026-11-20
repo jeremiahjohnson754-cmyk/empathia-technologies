@@ -61,7 +61,7 @@
 
 /* stages */
 .lt-stage { min-width: 0; }
-.lt-svg { display: block; width: 100%; height: auto; max-height: 620px; touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
+.lt-svg { display: block; width: 100%; height: auto; max-height: 620px; touch-action: pan-y;   /* a vertical swipe scrolls the page (20 Nov 2026) */ user-select: none; -webkit-user-select: none; cursor: grab; }
 .lt-svg:active { cursor: grabbing; }
 .lt-svg--campus { cursor: default; touch-action: auto; max-height: 520px; }
 .lt-orbit { display: flex; flex-wrap: wrap; gap: 4px; }

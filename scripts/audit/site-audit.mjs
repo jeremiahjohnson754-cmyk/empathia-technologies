@@ -38,7 +38,8 @@ const serve = (site, port) => new Promise((ok) => { const root = path.join(repo,
     res.writeHead(206, { 'content-type': type, 'content-range': `bytes ${start}-${end}/${st.size}`, 'accept-ranges': 'bytes', 'content-length': end - start + 1, ...site.headers }); fs.createReadStream(f, { start, end }).pipe(res); return; }
   res.writeHead(200, { 'content-type': type, 'content-length': st.size, 'accept-ranges': 'bytes', ...site.headers }); fs.createReadStream(f).pipe(res); }); s.listen(port, '127.0.0.1', () => ok(s)); });
 
-const WIDTHS = [320, 390, 768, 1440];
+// --widths=320,360,… for the master directive's eight (20 Nov 2026: 320, 360, 390, 430, 768, 1024, 1440, 1920); the default four otherwise
+const WIDTHS = (arg('widths', '') || '320,390,768,1440').split(',').map(Number).filter((n) => n >= 280 && n <= 2560);
 const defects = []; const pages = [];
 const add = (d) => { const key = `${d.site}|${d.rule}|${d.page}|${d.detail}`; const ex = defects.find((x) => x.key === key); if (ex) { if (!ex.widths.includes(d.width)) ex.widths.push(d.width); return; } defects.push({ key, ...d, widths: [d.width] }); };
 
@@ -49,7 +50,9 @@ try {
     const port = 4340 + i; servers.push(await serve(site, port)); const base = `http://127.0.0.1:${port}`;
     const list = site.name === 'empathia-website'
       ? ['/', ...fs.readdirSync(path.join(repo, site.dir), { recursive: true }).filter((f) => f.endsWith('index.html') && f !== 'index.html').map((f) => '/' + path.dirname(f) + '/')]
-      : ['/#/investor', '/#/v25/build', '/#/search', '/#/v25/service', '/#/v25/apex', '/#/v25/learn', '/#/v25', '/#/v25/exec', '/#/v25/ledger', '/#/v25/policy', '/#/v25/fi', '/#/v25/fipv', '/#/suite/commission', '/#/suite/pro', '/#/tours/investor?scenario=1', '/#/story/R-ATL-4-218', '/#/story/R-ATL-4-231', '/#/story/R-DEMO-0001'];
+      : ['/#/investor', '/#/v25/build', '/#/search', '/#/v25/service', '/#/v25/apex', '/#/v25/learn', '/#/v25', '/#/v25/exec', '/#/v25/ledger', '/#/v25/policy', '/#/v25/fi', '/#/v25/fipv', '/#/suite/commission', '/#/suite/pro', '/#/tours/investor?scenario=1', '/#/story/R-ATL-4-218', '/#/story/R-ATL-4-231', '/#/story/R-DEMO-0001',
+        // the flagship interactions (founder, 20 Nov 2026: the campus maps, Search Party, product-to-product navigation, the stadium and the expo)
+        '/#/campus', '/#/find?q=camera', '/#/lite/room/R-ATL-4-218', '/#/commissioning/room/R-ATL-4-218', '/#/play/expo', '/#/play/stadium', '/#/play/campus', '/#/request'];
     const linkCache = new Map();
     for (const pg of list) for (const width of WIDTHS) {
       const ctx = await browser.newContext({ viewport: { width, height: width < 768 ? 844 : 900 }, deviceScaleFactor: 1, hasTouch: width < 768, reducedMotion: 'no-preference' });

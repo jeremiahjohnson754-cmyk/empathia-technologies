@@ -26,13 +26,18 @@ function projector(w: number, l: number, v: View, S: number) {
 }
 const keyAct = (fn: () => void) => (e: { key: string; preventDefault: () => void }) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); } };
 
-/** Orbit controls: pointer drag on the stage plus buttons (keyboard and touch equivalents). */
+/** Orbit controls: pointer drag on the stage plus buttons (keyboard and touch equivalents). On a phone (founder, 20 Nov 2026 05:34: "it's
+ *  hard to scroll down to the page") a finger moving up or down scrolls the page, as on Lite's campus (l3.tsx) and V2.5.3; a finger moving
+ *  sideways turns the room; the buttons tilt and zoom. The stage lets the browser have vertical pans (touch-action: pan-y in lite.css). */
 export function useOrbit(initial: View = VIEW0) {
   const [view, setView] = useState<View>(initial);
-  const drag = useRef<{ x: number; y: number; v: View } | null>(null);
+  const drag = useRef<{ x: number; y: number; v: View; touch: boolean; moved: boolean; id: number; el: { setPointerCapture?: (id: number) => void } } | null>(null);
   const bind = {
-    onPointerDown: (e: { clientX: number; clientY: number; pointerId: number; currentTarget: { setPointerCapture?: (id: number) => void } }) => { drag.current = { x: e.clientX, y: e.clientY, v: view }; try { e.currentTarget.setPointerCapture?.(e.pointerId); } catch { /* capture is optional */ } },
-    onPointerMove: (e: { clientX: number; clientY: number }) => { const d = drag.current; if (!d) return; setView({ ...d.v, yaw: d.v.yaw + (e.clientX - d.x) * 0.4, pitch: Math.max(22, Math.min(90, d.v.pitch - (e.clientY - d.y) * 0.25)) }); },
+    onPointerDown: (e: { clientX: number; clientY: number; pointerId: number; pointerType?: string; currentTarget: { setPointerCapture?: (id: number) => void } }) => { drag.current = { x: e.clientX, y: e.clientY, v: view, touch: e.pointerType === 'touch', moved: false, id: e.pointerId, el: e.currentTarget }; },
+    onPointerMove: (e: { clientX: number; clientY: number }) => { const d = drag.current; if (!d) return; const dx = e.clientX - d.x, dy = e.clientY - d.y;
+      if (!d.moved) { if (Math.abs(dx) + Math.abs(dy) <= 4) return; if (d.touch && Math.abs(dy) > Math.abs(dx) * 1.2) { drag.current = null; return; }   // the page scrolls
+        d.moved = true; try { d.el.setPointerCapture?.(d.id); } catch { /* capture is optional */ } }   // captured only once it is a drag, so a tap still reaches what is under it
+      setView({ ...d.v, yaw: d.v.yaw + dx * 0.4, pitch: d.touch ? d.v.pitch : Math.max(22, Math.min(90, d.v.pitch - dy * 0.25)) }); },
     onPointerUp: () => { drag.current = null; }, onPointerCancel: () => { drag.current = null; },
   };
   const turn = (d: number) => setView((v) => ({ ...v, yaw: v.yaw + d }));

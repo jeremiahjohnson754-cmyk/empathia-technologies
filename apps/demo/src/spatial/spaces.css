@@ -63,6 +63,10 @@
 /* search bar */
 .sbar { position: relative; flex: 1 1 220px; min-width: 0; max-width: 420px; }
 .sbar__input { width: 100%; min-height: var(--target-min, 44px); padding: 0 12px; background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-pill, 999px); font: inherit; }
+.sbar__input { padding-right: 44px; } .sbar__input::-webkit-search-cancel-button, .sp__input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.sbar__clear, .sp__clear { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--tx2); cursor: pointer; }
+.sbar__clear { right: 2px; } .sbar__clear:hover, .sp__clear:hover { color: var(--tx); background: var(--panel2); }
+.sbar__clear:focus-visible, .sp__clear:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: -2px; }
 .sbar__input:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: 1px; }
 .sbar__list { position: absolute; z-index: 40; left: 0; right: 0; top: calc(100% + 4px); list-style: none; margin: 0; padding: 4px; background: var(--panel); border: 1px solid var(--line2); border-radius: var(--r-md); box-shadow: var(--shadow, 0 8px 30px rgb(0 0 0 / .3)); max-height: min(60vh, 420px); overflow: auto; }
 .sbar__list li { display: grid; gap: 1px; padding: 8px 10px; border-radius: var(--r-sm); cursor: pointer; min-height: var(--target-min, 44px); } .sbar__list li.on, .sbar__list li:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }

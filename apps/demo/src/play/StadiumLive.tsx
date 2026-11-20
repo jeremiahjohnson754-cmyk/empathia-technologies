@@ -8,7 +8,9 @@
  * device states are simulated; sound is synthesised in the browser, off until the visitor turns it on, quiet, with a mute; there is no
  * strobing (light changes ease over half a second or more, and reduced motion removes movement); votes are kept in this browser.
  */
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as RPE } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { attach, hintText, setFull, type Hint } from '../map/gestures.js';
+import { MovePad, useMoveKeys, type Moves } from './MovePad.js';
 import { Renderer, boxVerts, figureVerts, hex, m4, norm, prismVerts, stepVerts, type Mesh, type V3 } from './gl.js';
 import { ATMOS, AWAY, DBA_ASSUMPTIONS, DEVICES, PITCH, SECTIONS, SEGS, TIERS, TIMELINE, modeledDba, ring, rnd, rowQuad, sectionName, sectionOf, theta, type Atmos } from './stadium.js';
 
@@ -60,7 +62,11 @@ export function StadiumLivePage() {
   const [reduced, setReduced] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches); const reducedRef = useRef(reduced); reducedRef.current = reduced;
   const [votes, setVotes] = useState<Record<string, number>>(() => { try { return JSON.parse(localStorage.getItem('empathia.stadiumlive.poll') || '{}'); } catch { return {}; } });
   const [mine, setMine] = useState<string | null>(() => { try { return localStorage.getItem('empathia.stadiumlive.mine'); } catch { return null; } });
-  const orbit = useRef({ yaw: 0.55, pitch: 0.62, dist: 245 }); const drag = useRef<{ x: number; y: number } | null>(null);
+  const orbit = useRef({ yaw: 0.55, pitch: 0.62, dist: 245 });
+  // moving around the bowl (founder, 20 Nov 2026 05:34: the worlds look amazing but are hard to experience; too sensitive on a phone): gestures.ts
+  const stage = useRef<HTMLDivElement>(null); const [hint, setHint] = useState<Hint>(null); const [full, setFullState] = useState(false); const fullRef = useRef(false);
+  const toggleFull = (on: boolean) => { fullRef.current = setFull(stage.current, on); setFullState(on); };
+  useEffect(() => { if (!full) return; const k = (e: KeyboardEvent) => { if (e.key === 'Escape') toggleFull(false); }; window.addEventListener('keydown', k); return () => { window.removeEventListener('keydown', k); setFull(stage.current, false); }; }, [full]);   // eslint-disable-line react-hooks/exhaustive-deps
   const atm = ATMOS[p.atmos]; const excite = replay !== null ? TIMELINE[replay]!.excite : atm.excite;
   const exciteRef = useRef(excite); exciteRef.current = excite;
   const [drawn, setDrawn] = useState(0);
@@ -147,6 +153,7 @@ export function StadiumLivePage() {
       r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = canvas.current!; const aspect = cv.width / Math.max(1, cv.height);
       if (P.view === 'flyover' && !reducedRef.current) orbit.current.yaw += dt * 0.12;
       const o = orbit.current; let eye: V3, at: V3 = [0, 4, 0];
+      { const cs = `${o.dist.toFixed(0)} ${o.yaw.toFixed(2)} ${o.pitch.toFixed(2)}`; const cvx = canvas.current; if (cvx && cvx.dataset.cam !== cs) cvx.dataset.cam = cs; }   // the orbit (distance, yaw, pitch), read by the gesture tests
       if (P.view === 'orbit') eye = [Math.sin(o.yaw) * Math.cos(o.pitch) * o.dist, Math.sin(o.pitch) * o.dist, Math.cos(o.yaw) * Math.cos(o.pitch) * o.dist];
       else if (P.view === 'flyover') { const fy = o.yaw + 1.1, fp = 1.0, fd = 290; eye = [Math.sin(fy) * Math.cos(fp) * fd, Math.sin(fp) * fd, Math.cos(fy) * Math.cos(fp) * fd]; }   // high above the roof line; it circles unless motion is reduced
       else if (P.view === 'field') { eye = [-10, 1.7, 37]; at = [8, 3, 0]; } else if (P.view === 'seat') { eye = [24, 10.2, 54.5]; at = [-4, 1, 0]; } else { eye = [0, 17, 61]; at = [0, 0, 0]; }
@@ -197,9 +204,16 @@ export function StadiumLivePage() {
   const doCheer = (side: 'home' | 'away' | 'all') => { setCheer({ side, at: performance.now() }); window.setTimeout(() => setCheer((c) => (c && performance.now() - c.at >= 3400 ? null : c)), 3600); };
   const step = (i: number) => { setReplay(i); setBoard(TIMELINE[i]!.board); if (TIMELINE[i]!.cheer) doCheer(TIMELINE[i]!.cheer!); };
   const vote = (o: string) => { if (mine) return; const n = { ...votes, [o]: (votes[o] || 0) + 1 }; setVotes(n); setMine(o); try { localStorage.setItem('empathia.stadiumlive.poll', JSON.stringify(n)); localStorage.setItem('empathia.stadiumlive.mine', o); } catch { /* not kept */ } };
-  const onDown = (e: RPE) => { drag.current = { x: e.clientX, y: e.clientY }; if (pr.current.view !== 'orbit') save({ view: 'orbit' }); };
-  const onMove = (e: RPE) => { const d = drag.current; if (!d) return; orbit.current.yaw -= (e.clientX - d.x) * 0.005; orbit.current.pitch = Math.max(0.08, Math.min(1.35, orbit.current.pitch + (e.clientY - d.y) * 0.004)); d.x = e.clientX; d.y = e.clientY; };
-  const onWheel = (e: { deltaY: number }) => { orbit.current.dist = Math.max(70, Math.min(320, orbit.current.dist * (e.deltaY > 0 ? 1.08 : 0.93))); };
+  // every move of the orbit, for the gestures, the buttons on the stadium and the keyboard alike; any of them takes the camera to Orbit
+  const moves = useMemo<Moves>(() => { const O = orbit.current; const toOrbit = () => { if (pr.current.view !== 'orbit') save({ view: 'orbit' }); }; return {
+    turn: (da) => { toOrbit(); O.yaw += da; },
+    tilt: (dp) => { toOrbit(); O.pitch = Math.max(0.08, Math.min(1.35, O.pitch + dp)); },
+    zoom: (f) => { toOrbit(); O.dist = Math.max(70, Math.min(320, O.dist * f)); },
+  }; }, []);   // eslint-disable-line react-hooks/exhaustive-deps
+  useMoveKeys(canvas, moves);
+  useEffect(() => { const cv = canvas.current; if (!cv) return; const look = (dx: number, dy: number) => { moves.turn(-dx * 0.0042); moves.tilt!(dy * 0.0032); };
+    return attach(cv, { drag: look, alt: look, zoom: (f) => moves.zoom(f), twist: (da) => moves.turn(-da), tap: () => cv.focus({ preventScroll: true }), hint: setHint },
+      { greedy: () => fullRef.current, twoFingerMove: 'drag' }); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
   const dev = DEVICES.find((d) => d.id === device) || null; const total = Object.values(votes).reduce((a, b) => a + b, 0);
   const tabs: Array<[typeof tab, string]> = [['atmos', 'Atmosphere'], ['view', 'Perspective'], ['audio', 'Audio'], ['production', 'Production'], ['ops', 'Operations'], ['people', 'Participation']];
   const opt = <T extends string>(cur: T, val: T, label: string, set: (v: T) => void, id: string) => <button key={val} type="button" className="slv-chip" aria-pressed={cur === val} onClick={() => set(val)} data-testid={`${id}-${val}`}>{label}</button>;
@@ -208,8 +222,11 @@ export function StadiumLivePage() {
   return <section className="slv" data-testid="stadium-live" data-ready={!err} data-atmos={replay !== null ? TIMELINE[replay]!.atmos : p.atmos} data-view={p.view} data-overlay={p.overlay} data-ops={p.ops} data-look={p.look} data-fill={fill} data-cheer={cheer?.side || ''} data-wave={wave} data-sound={soundOn} data-fps={fps} data-replay={replay ?? ''}>
     <header className="cl-head"><h1>Stadium LIVE</h1><p>Harborlight Stadium, a fictional venue, in 3D. The console changes the bowl itself: its light, crowd, boards, sound and overlays. Levels are modeled, device states simulated; nothing here is a live feed.</p></header>
     <div className="slv-grid">
-      <div className="slv-stage">
-        <canvas ref={canvas} className="cl-canvas" tabIndex={0} data-testid="slv-canvas" aria-label={`Harborlight Stadium in 3D: ${(replay !== null ? ATMOS[TIMELINE[replay]!.atmos] : atm).label}. Drag to look around, scroll to zoom.`} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} onWheel={onWheel} />
+      <div className="slv-stage" ref={stage}>
+        <canvas ref={canvas} className="cl-canvas" tabIndex={0} data-testid="slv-canvas" aria-label={`Harborlight Stadium in 3D: ${(replay !== null ? ATMOS[TIMELINE[replay]!.atmos] : atm).label}. Drag to look around; Ctrl or ⌘ with the wheel, or a pinch, to zoom; on a phone two fingers move the view, or open it full screen.`} />
+        {hint ? <p className="xpo-hint" role="status" data-testid="slv-hint">{hintText(hint)}</p> : null}
+        <MovePad moves={moves} what="stadium" prefix="slv" />
+        <button type="button" className="cl-btn slv-full" aria-pressed={full} onClick={() => toggleFull(!full)} data-testid="slv-full">{full ? 'Done' : 'Full screen'}</button>
         {err ? <div className="cl-err" role="alert" data-testid="slv-err"><b>This browser cannot draw the stadium.</b> {err}. The <a href="#/worlds/stadium">Stadium world</a> shows it as a plan.</div> : null}
         <div className="cl-labels" aria-hidden="true">{labels.map((l, i) => <div key={i} className={`cl-tag slv-tag slv-tag--${l.kind}`} style={{ transform: `translate(${Math.round(l.x)}px, ${Math.round(l.y)}px)` }}><b>{l.text}</b></div>)}</div>
         <div className="slv-now" role="status" data-testid="slv-now"><b>{(replay !== null ? ATMOS[TIMELINE[replay]!.atmos] : atm).label}</b> · {replay !== null ? `${TIMELINE[replay]!.t} — ${TIMELINE[replay]!.text}` : atm.note}{cheer ? ` · ${cheer.side === 'away' ? 'away' : cheer.side === 'home' ? 'home' : 'whole bowl'} cheer` : ''}</div>

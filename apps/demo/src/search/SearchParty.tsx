@@ -17,6 +17,7 @@ import type { RoleKey } from '../registry.types.js';
 import { KnowledgeResults } from '../knowledge/hooks.js';
 // --- end knowledge hook
 import { ConnectSearch } from '../connect/search.js';
+import { noteSearch } from '../shell/trail.js';
 
 /** V2.5.3's tab set, at its addresses; the panes beyond Search and Relationships live in Tabs.tsx. */
 const TABS: Array<[string, string]> = [['', 'Search'], ['graph', 'Relationships'], ['people', 'People and expertise'], ['support', 'Support coverage'], ['projects', 'Project map'], ['orgs', 'Organizations'], ['activity', 'Activity'], ['vault', 'Evidence and artifacts']];
@@ -43,15 +44,19 @@ const WAYS: Array<[string, string, string, string]> = [
 const TRY = ['camera', '4.218', 'boardroom', 'microphone', 'ISS-0417', 'switch', 'Horizon', 'WO-0088'];
 
 const TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { ANSWERED: 'ok', PARTIAL: 'warn', UNKNOWN: 'muted', OBSERVED: 'ok', DERIVED: 'info' };
-const parseHash = (hash: string): { q: string; focus: NodeRef | null } => { const m = /\?(.*)$/.exec(hash); const p = new URLSearchParams(m ? m[1] : ''); const q = p.get('q') || ''; const f = p.get('focus'); const [t, ...rest] = (f || '').split(':'); return { q, focus: f && t && rest.length ? { type: t, id: rest.join(':') } : null }; };
+const parseHash = (hash: string): { q: string; focus: NodeRef | null; type: string; sel: string | null } => { const m = /\?(.*)$/.exec(hash); const p = new URLSearchParams(m ? m[1] : ''); const q = p.get('q') || ''; const f = p.get('focus'); const [t, ...rest] = (f || '').split(':'); const sel = p.get('sel'); return { q, focus: f && t && rest.length ? { type: t, id: rest.join(':') } : null, type: (p.get('type') || '').replace(/[^A-Za-z]/g, '').slice(0, 40), sel: sel && sel.includes(':') ? sel.slice(0, 120) : null }; };
+/** The search's own address (founder's master directive, 20 Nov 2026: return "to the original search without unexpectedly losing the
+ *  selected room, filters, or navigation context"): the query, the type filter, the record chosen and the one inspected, so Back, a
+ *  refresh, a shared link and the trail all come back to the same search. */
+const addressOf = (path: string, s: { q: string; type: string; focus: NodeRef | null; sel: string | null }) => { const p = new URLSearchParams(); if (s.q.trim()) p.set('q', s.q.trim().slice(0, 80)); if (s.type) p.set('type', s.type); if (s.focus) p.set('focus', nodeKey(s.focus)); if (s.sel) p.set('sel', s.sel); const qs = p.toString(); return qs ? `${path}?${qs}` : path; };
 
 export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }) {
   const opens = (href: string) => { if (!role) return true; const r = resolve(href); return !!r && canOpen(role, r); };
   const est = useMemo(() => buildEstate(), []);
   const init = parseHash(hash);
-  const [q, setQ] = useState(init.q); const [type, setType] = useState(() => subType(hash, est)); const [focus, setFocus] = useState<NodeRef | null>(init.focus || (tabOf(hash) === 'graph' ? START : null)); const [sel, setSel] = useState<string | null>(null);
+  const [q, setQ] = useState(init.q); const [type, setType] = useState(() => init.type || subType(hash, est)); const [focus, setFocus] = useState<NodeRef | null>(init.focus || (tabOf(hash) === 'graph' ? START : null)); const [sel, setSel] = useState<string | null>(init.sel);
   // a new address (#/search?q=… or ?focus=…, from the search bar, a tour or a link) replaces what the page shows
-  useEffect(() => { const n = parseHash(hash); setQ(n.q); setFocus(n.focus || (tabOf(hash) === 'graph' ? START : null)); setType(subType(hash, est)); setSel(null); setAnswer(null); }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { const n = parseHash(hash); setQ(n.q); setFocus(n.focus || (tabOf(hash) === 'graph' ? START : null)); setType(n.type || subType(hash, est)); setSel(n.sel); setAnswer(null); }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
   const [question, setQuestion] = useState(''); const [answer, setAnswer] = useState<IntentAnswer | null>(null);
   const byKey = useMemo(() => new Map(est.nodes.map((n) => [nodeKey(n), n])), [est]);
   const res = useMemo(() => search(est, { q, type: type || null, limit: 40 }), [est, q, type]);
@@ -66,6 +71,13 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
   const label = (n: NodeRef) => byKey.get(nodeKey(n))?.label || n.id;
   const selected = sel ? byKey.get(sel) : null;
   const tab = tabOf(hash);
+  // keep the address in step with what is on screen (replaceState: no new history entry, no page change), a moment after typing stops
+  useEffect(() => { if (PANE[tab]) return; const id = setTimeout(() => {
+    const path = (location.hash || '#/search').split('?')[0]!; if (!/^#\/search(\/|$)/.test(path)) return;
+    const next = addressOf(path, { q, type, focus, sel }); if (next !== location.hash) { try { history.replaceState(history.state, '', next); } catch { /* refused: the search simply is not kept */ } }
+    const chosen = focus && !(tab === 'graph' && nodeKey(focus) === nodeKey(START) && !q.trim()) ? focus : null; const tname = type ? NODE_TYPES[type]?.[0] || type : '';
+    noteSearch(next, chosen ? label(chosen) : q.trim() ? `“${q.trim().slice(0, 40)}”` : tname, [chosen && q.trim() ? `“${q.trim().slice(0, 30)}”` : '', chosen || q.trim() ? tname : ''].filter(Boolean).join(' · '));
+  }, 300); return () => clearTimeout(id); }, [q, type, focus, sel, tab]);   // eslint-disable-line react-hooks/exhaustive-deps
   const browsing = !q.trim() && !focus && !type;
   const pick = (n: NodeRef) => { setFocus({ type: n.type, id: n.id }); setSel(null); setAnswer(null); };
   const typeCounts = Object.entries(est.coverage.types).sort((x, y) => y[1] - x[1]);
@@ -86,7 +98,7 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
           {opens('#/request') && <a className="ui-btn" href={`#/request?room=${encodeURIComponent(focus.id)}`} data-testid="sp-room-ask">Ask for work in this room</a>}
           {opens('#/servicehands/new') && <a className="ui-btn" href={`#/servicehands/new?room=${encodeURIComponent(focus.id)}`} data-testid="sp-room-report">Report a problem in ServiceHands</a>}</p>}
         {!PANE[tab] && <>
-        <div className="sp__search"><label className="ui-visually-hidden" htmlFor="spd-q">Search</label><span className="sp__glass" aria-hidden="true"><Icon name="search" /></span><input id="spd-q" className="sp__input" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a room, switch, device, issue, work order…" autoComplete="off" maxLength={80} /><select aria-label="Type" value={type} onChange={(e) => setType(e.target.value)}><option value="">Every type</option>{Object.entries(est.coverage.types).sort().map(([t, n]) => <option key={t} value={t}>{NODE_TYPES[t]?.[0] || t} ({n})</option>)}</select></div>
+        <div className="sp__search"><label className="ui-visually-hidden" htmlFor="spd-q">Search</label><span className="sp__glass" aria-hidden="true"><Icon name="search" /></span><span className="sp__field"><input id="spd-q" className="sp__input" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a room, switch, device, issue, work order…" autoComplete="off" maxLength={80} />{q && <button type="button" className="sp__clear" aria-label="Clear the search" onClick={() => { setQ(''); (document.getElementById('spd-q') as HTMLInputElement | null)?.focus(); }} data-testid="sp-clear"><Icon name="close" /></button>}</span><select aria-label="Type" value={type} onChange={(e) => setType(e.target.value)}><option value="">Every type</option>{Object.entries(est.coverage.types).sort().map(([t, n]) => <option key={t} value={t}>{NODE_TYPES[t]?.[0] || t} ({n})</option>)}</select></div>
         <div className="sp__types" role="group" aria-label="Records by type">{typeCounts.map(([t, n]) => <button key={t} type="button" className="sp__tchip" aria-pressed={type === t} onClick={() => setType(type === t ? '' : t)}><span>{NODE_TYPES[t]?.[0] || t}</span><b>{n}</b></button>)}</div>
         <p className="ui-meta">{est.nodes.length} records and {est.coverage.edges} relationships of a synthetic estate held in this page. Every edge says where it comes from; what is not modelled says so.</p>
         </>}
