@@ -198,6 +198,7 @@ test('IN-17 triage: a request in the person’s own words is routed by the opera
   mem.clear(); const w = W.load(); const desk = DS.load(); const words = 'We need to move two displays from the old lobby to the new wing.';
   const r = T.send(w, 'employee', I.blank('general', { need: words }), desk); assert.equal(TR.queue().route.map((x) => x.id).join(), r.id);
   assert.ok(TR.route(w, 'employee', r.id, 'desk', 'A relocation project', null, desk).why, 'the employee does not triage');
+  assert.ok(TR.route(w, 'sitechamp', r.id, 'desk', 'A relocation project', null, desk).why && TR.ask('sitechamp', r.id, 'Which wing, and by when?').why && TR.close('sitechamp', r.id, 'Not ours to route, says the champion', null).why, 'the Site Champion confirms locations; routing, questions and closing are not theirs');
   assert.ok(TR.route(w, 'ops', r.id, 'servicehands', 'Two displays to move', null, desk).why, 'a job needs the room');
   assert.ok(TR.route(w, 'ops', r.id, 'desk', 'x', null, desk).why, 'a note is required');
   const n = desk.projects.length; const t = TR.route(w, 'ops', r.id, 'desk', 'A relocation is a small project: engineering checks the new wing first.', null, desk);

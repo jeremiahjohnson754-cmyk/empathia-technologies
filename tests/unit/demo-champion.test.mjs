@@ -52,7 +52,11 @@ test('CH-03 over every registered page, section and action: the champion is admi
   // nothing else there: the page's engineering section and every other documentation step are asserted closed just below.
   for (const id of ['docs', 'docs.acknowledge']) assert.ok(more.includes(id), `${id} is the champion’s`);
   for (const id of ['engineering', 'docs.assign', 'docs.submit', 'docs.review', 'docs.vendor', 'docs.capture', 'docs.record', 'scan.docs']) assert.ok(!mine.includes(id), `the champion must not have ${id}`);
-  for (const id of more) assert.ok(/^(site|scan\.attest|here\.history|docs$|docs\.acknowledge$)/.test(id) || surfaces.some((s) => s.id === id && ('field' in s.a ? ['history', 'person.contact', 'support.chain'].includes(s.a.field) : 'area' in s.a ? ['search.people', 'search.support'].includes(s.a.area) : 'action' in s.a ? s.a.action === 'social.contribute' : 'entity' in s.a)), `unexpected surface for the champion: ${id}`);
+  // CHANGED 19 Nov 2026 (Intake directive §06, Site Champion: "Location verification when authorized"): the champion opens the Intake
+  // triage page to confirm where a new space is, and nothing else there: routing, questions and closing are the operations lead's
+  // (intake/triage.ts TRIAGE_ROLES excludes the champion; the page shows the champion only the locations section; unit IN-20, browser RQ-45)
+  assert.ok(more.includes('intake.queue'), 'intake.queue (locations to confirm) is the champion’s');
+  for (const id of more) assert.ok(/^(site|scan\.attest|here\.history|docs$|docs\.acknowledge$|intake\.queue$)/.test(id) || surfaces.some((s) => s.id === id && ('field' in s.a ? ['history', 'person.contact', 'support.chain'].includes(s.a.field) : 'area' in s.a ? ['search.people', 'search.support'].includes(s.a.area) : 'action' in s.a ? s.a.action === 'social.contribute' : 'entity' in s.a)), `unexpected surface for the champion: ${id}`);
   for (const id of ['dossier', 'dossier.record', 'dossier.raise', 'dossier.verify', 'dossier.accept', 'dossier.countersign', 'dossier.waive.business', 'dossier.waive.technical', 'dossier.waive.review', 'dossier.export', 'scan.attach', 'scan.openTest', 'scan.technical', 'scan.acceptance'])
     assert.ok(!mine.includes(id), `the champion must not have ${id}`);
   assert.ok(!emp.includes('scan.attest') && !emp.includes('site'), 'the Employee is not the champion: it neither attests nor has a site');
