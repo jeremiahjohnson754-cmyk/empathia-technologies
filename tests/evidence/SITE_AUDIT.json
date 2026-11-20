@@ -1,6 +1,6 @@
 {
   "label": "audit",
-  "at": "2026-11-20T15:40:45.613Z",
+  "at": "2026-11-20T18:24:47.182Z",
   "widths": [
     320,
     390,
@@ -13,7 +13,7 @@
     "P0": 0,
     "P1": 0,
     "P2": 197,
-    "P3": 286
+    "P3": 285
   },
   "defects": [
     {
@@ -3042,13 +3042,14 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
-      "width": 390,
+      "page": "/#/v25/build",
+      "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"●Northstar100\" 125×32",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
+        320,
         390
       ],
       "id": "AUD-212",
@@ -3060,7 +3061,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -3075,27 +3076,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-214",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/build",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: input \"\" 288×36",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-215",
+      "id": "AUD-214",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3109,7 +3095,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-216",
+      "id": "AUD-215",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3123,7 +3109,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-217",
+      "id": "AUD-216",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3137,7 +3123,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-218",
+      "id": "AUD-217",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3151,7 +3137,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-219",
+      "id": "AUD-218",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3165,7 +3151,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-220",
+      "id": "AUD-219",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3179,7 +3165,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-221",
+      "id": "AUD-220",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3193,7 +3179,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-222",
+      "id": "AUD-221",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3208,7 +3194,7 @@
         320,
         390
       ],
-      "id": "AUD-223",
+      "id": "AUD-222",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3218,6 +3204,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-223",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -3232,7 +3233,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -3247,27 +3248,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-226",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/service",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: select \"Mission criticalHighStandard\" 254×36",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-227",
+      "id": "AUD-226",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3282,7 +3268,7 @@
         320,
         390
       ],
-      "id": "AUD-228",
+      "id": "AUD-227",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3297,7 +3283,7 @@
         320,
         390
       ],
-      "id": "AUD-229",
+      "id": "AUD-228",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3311,7 +3297,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-230",
+      "id": "AUD-229",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3325,7 +3311,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-231",
+      "id": "AUD-230",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3339,7 +3325,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-232",
+      "id": "AUD-231",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3353,7 +3339,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-233",
+      "id": "AUD-232",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3367,7 +3353,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-234",
+      "id": "AUD-233",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3381,7 +3367,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-235",
+      "id": "AUD-234",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3395,7 +3381,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-236",
+      "id": "AUD-235",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3409,7 +3395,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-237",
+      "id": "AUD-236",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3423,7 +3409,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-238",
+      "id": "AUD-237",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3437,7 +3423,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-239",
+      "id": "AUD-238",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3451,7 +3437,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-240",
+      "id": "AUD-239",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3461,6 +3447,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-240",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -3475,27 +3476,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-242",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/apex",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: input \"\" 254×36",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-243",
+      "id": "AUD-242",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3509,7 +3495,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-244",
+      "id": "AUD-243",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3524,7 +3510,7 @@
         320,
         390
       ],
-      "id": "AUD-245",
+      "id": "AUD-244",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3539,7 +3525,7 @@
         320,
         390
       ],
-      "id": "AUD-246",
+      "id": "AUD-245",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3553,7 +3539,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-247",
+      "id": "AUD-246",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3567,7 +3553,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-248",
+      "id": "AUD-247",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3581,7 +3567,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-249",
+      "id": "AUD-248",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3596,7 +3582,7 @@
         320,
         390
       ],
-      "id": "AUD-250",
+      "id": "AUD-249",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3611,7 +3597,7 @@
         320,
         390
       ],
-      "id": "AUD-251",
+      "id": "AUD-250",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3625,7 +3611,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-252",
+      "id": "AUD-251",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3635,6 +3621,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-252",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -3649,7 +3650,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: a \"Overview\" 96×24",
       "component": "controls",
       "widths": [
         320,
@@ -3664,7 +3665,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Overview\" 96×24",
+      "detail": "below the 44 px project target on phones: a \"Build a Room\" 116×24",
       "component": "controls",
       "widths": [
         320,
@@ -3679,7 +3680,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Build a Room\" 116×24",
+      "detail": "below the 44 px project target on phones: a \"Decision desk\" 123×24",
       "component": "controls",
       "widths": [
         320,
@@ -3694,7 +3695,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Decision desk\" 123×24",
+      "detail": "below the 44 px project target on phones: a \"Executive\" 97×24",
       "component": "controls",
       "widths": [
         320,
@@ -3709,7 +3710,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Executive\" 97×24",
+      "detail": "below the 44 px project target on phones: a \"Commissioning\" 132×24",
       "component": "controls",
       "widths": [
         320,
@@ -3724,7 +3725,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Commissioning\" 132×24",
+      "detail": "below the 44 px project target on phones: a \"Assurance\" 103×24",
       "component": "controls",
       "widths": [
         320,
@@ -3739,7 +3740,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Assurance\" 103×24",
+      "detail": "below the 44 px project target on phones: a \"ServiceHands\" 123×24",
       "component": "controls",
       "widths": [
         320,
@@ -3754,7 +3755,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"ServiceHands\" 123×24",
+      "detail": "below the 44 px project target on phones: a \"Dispatch\" 92×24",
       "component": "controls",
       "widths": [
         320,
@@ -3769,7 +3770,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Dispatch\" 92×24",
+      "detail": "below the 44 px project target on phones: a \"APEX\" 72×24",
       "component": "controls",
       "widths": [
         320,
@@ -3784,7 +3785,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"APEX\" 72×24",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 140×24",
       "component": "controls",
       "widths": [
         320,
@@ -3799,7 +3800,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 140×24",
+      "detail": "below the 44 px project target on phones: a \"Replay\" 79×24",
       "component": "controls",
       "widths": [
         320,
@@ -3814,7 +3815,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Replay\" 79×24",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 73×24",
       "component": "controls",
       "widths": [
         320,
@@ -3829,7 +3830,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Learn\" 73×24",
+      "detail": "below the 44 px project target on phones: a \"Ledger\" 80×24",
       "component": "controls",
       "widths": [
         320,
@@ -3840,11 +3841,11 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/v25",
+      "page": "/#/v25/exec",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Ledger\" 80×24",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -3859,7 +3860,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -3874,27 +3875,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-269",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/exec",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: button \"30 days\" 66×36",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-270",
+      "id": "AUD-269",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3908,7 +3894,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-271",
+      "id": "AUD-270",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3922,7 +3908,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-272",
+      "id": "AUD-271",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3936,7 +3922,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-273",
+      "id": "AUD-272",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3951,7 +3937,7 @@
         320,
         390
       ],
-      "id": "AUD-274",
+      "id": "AUD-273",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3966,7 +3952,7 @@
         320,
         390
       ],
-      "id": "AUD-275",
+      "id": "AUD-274",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3981,7 +3967,7 @@
         320,
         390
       ],
-      "id": "AUD-276",
+      "id": "AUD-275",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3995,7 +3981,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-277",
+      "id": "AUD-276",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4009,7 +3995,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-278",
+      "id": "AUD-277",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4023,7 +4009,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-279",
+      "id": "AUD-278",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4037,7 +4023,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-280",
+      "id": "AUD-279",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4047,6 +4033,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-280",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4061,27 +4062,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-282",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/ledger",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: input \"Filter events\" 288×36",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-283",
+      "id": "AUD-282",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4096,7 +4082,7 @@
         320,
         390
       ],
-      "id": "AUD-284",
+      "id": "AUD-283",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4111,7 +4097,7 @@
         320,
         390
       ],
-      "id": "AUD-285",
+      "id": "AUD-284",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4126,7 +4112,7 @@
         320,
         390
       ],
-      "id": "AUD-286",
+      "id": "AUD-285",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4140,7 +4126,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-287",
+      "id": "AUD-286",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4155,7 +4141,7 @@
         320,
         390
       ],
-      "id": "AUD-288",
+      "id": "AUD-287",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4165,6 +4151,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-288",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -4179,7 +4180,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4194,7 +4195,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
       "component": "controls",
       "widths": [
         320,
@@ -4209,27 +4210,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-292",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fi",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: summary \"The numbers\" 262×24",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-293",
+      "id": "AUD-292",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4243,7 +4229,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-294",
+      "id": "AUD-293",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4253,6 +4239,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-294",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4267,7 +4268,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
       "component": "controls",
       "widths": [
         320,
@@ -4282,27 +4283,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-297",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fipv",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: summary \"The numbers\" 262×24",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-298",
+      "id": "AUD-297",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4316,7 +4302,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-299",
+      "id": "AUD-298",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4326,6 +4312,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-299",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4340,7 +4341,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: a \"Commissioning\" 91×24",
       "component": "controls",
       "widths": [
         320,
@@ -4355,7 +4356,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Commissioning\" 91×24",
+      "detail": "below the 44 px project target on phones: a \"Atlas HQ\" 51×24",
       "component": "controls",
       "widths": [
         320,
@@ -4370,7 +4371,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Atlas HQ\" 51×24",
+      "detail": "below the 44 px project target on phones: a \"Checks\" 64×24",
       "component": "controls",
       "widths": [
         320,
@@ -4385,7 +4386,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Checks\" 64×24",
+      "detail": "below the 44 px project target on phones: a \"Traceability\" 89×24",
       "component": "controls",
       "widths": [
         320,
@@ -4400,7 +4401,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Traceability\" 89×24",
+      "detail": "below the 44 px project target on phones: a \"Deficiencies\" 93×24",
       "component": "controls",
       "widths": [
         320,
@@ -4415,7 +4416,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Deficiencies\" 93×24",
+      "detail": "below the 44 px project target on phones: a \"Sign-off\" 68×24",
       "component": "controls",
       "widths": [
         320,
@@ -4430,27 +4431,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Sign-off\" 68×24",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-307",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/suite/commission",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: input \"Note for the before-installati\" 236×35",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-308",
+      "id": "AUD-307",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4464,7 +4450,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-309",
+      "id": "AUD-308",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4479,7 +4465,7 @@
         320,
         390
       ],
-      "id": "AUD-310",
+      "id": "AUD-309",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4489,6 +4475,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-310",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -4503,7 +4504,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4518,7 +4519,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: button \"1\" 24×24",
       "component": "controls",
       "widths": [
         320,
@@ -4533,7 +4534,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"1\" 24×24",
+      "detail": "below the 44 px project target on phones: button \"2\" 24×24",
       "component": "controls",
       "widths": [
         320,
@@ -4548,7 +4549,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"2\" 24×24",
+      "detail": "below the 44 px project target on phones: button \"3\" 24×24",
       "component": "controls",
       "widths": [
         320,
@@ -4563,7 +4564,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"3\" 24×24",
+      "detail": "below the 44 px project target on phones: button \"4\" 24×24",
       "component": "controls",
       "widths": [
         320,
@@ -4578,7 +4579,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"4\" 24×24",
+      "detail": "below the 44 px project target on phones: button \"5\" 24×24",
       "component": "controls",
       "widths": [
         320,
@@ -4593,7 +4594,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"5\" 24×24",
+      "detail": "below the 44 px project target on phones: button \"6\" 24×24",
       "component": "controls",
       "widths": [
         320,
@@ -4608,7 +4609,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"6\" 24×24",
+      "detail": "below the 44 px project target on phones: button \"7\" 24×24",
       "component": "controls",
       "widths": [
         320,
@@ -4623,7 +4624,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"7\" 24×24",
+      "detail": "below the 44 px project target on phones: button \"Who is responsible for this?\" 185×29",
       "component": "controls",
       "widths": [
         320,
@@ -4638,7 +4639,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Who is responsible for this?\" 185×29",
+      "detail": "below the 44 px project target on phones: button \"Who approved the current desig\" 227×29",
       "component": "controls",
       "widths": [
         320,
@@ -4653,7 +4654,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Who approved the current desig\" 227×29",
+      "detail": "below the 44 px project target on phones: button \"What is connected to this devi\" 221×29",
       "component": "controls",
       "widths": [
         320,
@@ -4668,7 +4669,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"What is connected to this devi\" 221×29",
+      "detail": "below the 44 px project target on phones: button \"What depends on this?\" 157×29",
       "component": "controls",
       "widths": [
         320,
@@ -4683,7 +4684,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"What depends on this?\" 157×29",
+      "detail": "below the 44 px project target on phones: button \"Who can approve this exception\" 218×29",
       "component": "controls",
       "widths": [
         320,
@@ -4698,28 +4699,13 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Who can approve this exception\" 218×29",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-325",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/tours/investor?scenario=1",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: button \"Which vendor supports this sys\" 237×29",
       "component": "controls",
       "widths": [
         320,
         390
       ],
-      "id": "AUD-326",
+      "id": "AUD-325",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4733,7 +4719,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-327",
+      "id": "AUD-326",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4747,7 +4733,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-328",
+      "id": "AUD-327",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4762,7 +4748,7 @@
         320,
         390
       ],
-      "id": "AUD-329",
+      "id": "AUD-328",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4772,6 +4758,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-329",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/story/R-ATL-4-231",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -4786,7 +4787,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4797,11 +4798,11 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/story/R-ATL-4-231",
+      "page": "/#/story/R-DEMO-0001",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -4816,7 +4817,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4827,11 +4828,11 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/story/R-DEMO-0001",
+      "page": "/#/campus",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -4846,7 +4847,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4861,27 +4862,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-336",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/campus",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: button \"●Atlas995\" 114×32",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-337",
+      "id": "AUD-336",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4896,7 +4882,7 @@
         320,
         390
       ],
-      "id": "AUD-338",
+      "id": "AUD-337",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4911,7 +4897,7 @@
         320,
         390
       ],
-      "id": "AUD-339",
+      "id": "AUD-338",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4926,7 +4912,7 @@
         320,
         390
       ],
-      "id": "AUD-340",
+      "id": "AUD-339",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4941,7 +4927,7 @@
         320,
         390
       ],
-      "id": "AUD-341",
+      "id": "AUD-340",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4955,7 +4941,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-342",
+      "id": "AUD-341",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4969,7 +4955,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-343",
+      "id": "AUD-342",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4979,6 +4965,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-343",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/find?q=camera",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -4993,7 +4994,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: button \"Clear the search\" 40×40",
       "component": "controls",
       "widths": [
         320,
@@ -5008,7 +5009,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Clear the search\" 40×40",
+      "detail": "below the 44 px project target on phones: button \"All 10\" 65×31",
       "component": "controls",
       "widths": [
         320,
@@ -5023,7 +5024,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"All 10\" 65×31",
+      "detail": "below the 44 px project target on phones: button \"Workspaces 1\" 121×31",
       "component": "controls",
       "widths": [
         320,
@@ -5038,7 +5039,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Workspaces 1\" 121×31",
+      "detail": "below the 44 px project target on phones: button \"Spaces 3\" 88×31",
       "component": "controls",
       "widths": [
         320,
@@ -5053,7 +5054,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Spaces 3\" 88×31",
+      "detail": "below the 44 px project target on phones: button \"Devices 3\" 92×31",
       "component": "controls",
       "widths": [
         320,
@@ -5068,7 +5069,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Devices 3\" 92×31",
+      "detail": "below the 44 px project target on phones: button \"Projects 1\" 93×31",
       "component": "controls",
       "widths": [
         320,
@@ -5083,7 +5084,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Projects 1\" 93×31",
+      "detail": "below the 44 px project target on phones: button \"Issues 2\" 82×31",
       "component": "controls",
       "widths": [
         320,
@@ -5094,11 +5095,11 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/find?q=camera",
+      "page": "/#/lite/room/R-ATL-4-218",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Issues 2\" 82×31",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -5113,7 +5114,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -5128,7 +5129,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: button \"Camera coverage\" 152×34",
       "component": "controls",
       "widths": [
         320,
@@ -5143,7 +5144,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Camera coverage\" 152×34",
+      "detail": "below the 44 px project target on phones: button \"Microphone pickup\" 161×34",
       "component": "controls",
       "widths": [
         320,
@@ -5158,7 +5159,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Microphone pickup\" 161×34",
+      "detail": "below the 44 px project target on phones: button \"Speaker zones\" 133×34",
       "component": "controls",
       "widths": [
         320,
@@ -5173,7 +5174,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Speaker zones\" 133×34",
+      "detail": "below the 44 px project target on phones: button \"Sightlines\" 101×34",
       "component": "controls",
       "widths": [
         320,
@@ -5188,7 +5189,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Sightlines\" 101×34",
+      "detail": "below the 44 px project target on phones: button \"Accessibility1/1\" 148×34",
       "component": "controls",
       "widths": [
         320,
@@ -5203,7 +5204,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Accessibility1/1\" 148×34",
+      "detail": "below the 44 px project target on phones: button \"Infrastructure fit\" 142×34",
       "component": "controls",
       "widths": [
         320,
@@ -5218,7 +5219,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Infrastructure fit\" 142×34",
+      "detail": "below the 44 px project target on phones: button \"Layers1\" 130×40",
       "component": "controls",
       "widths": [
         320,
@@ -5233,7 +5234,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Layers1\" 130×40",
+      "detail": "below the 44 px project target on phones: a \"Open the route →\" 125×24",
       "component": "controls",
       "widths": [
         320,
@@ -5244,11 +5245,11 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/lite/room/R-ATL-4-218",
+      "page": "/#/commissioning/room/R-ATL-4-218",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Open the route →\" 125×24",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -5263,7 +5264,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -5278,7 +5279,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: a \"Commissioning\" 91×24",
       "component": "controls",
       "widths": [
         320,
@@ -5293,7 +5294,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Commissioning\" 91×24",
+      "detail": "below the 44 px project target on phones: a \"Atlas HQ\" 51×24",
       "component": "controls",
       "widths": [
         320,
@@ -5308,7 +5309,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Atlas HQ\" 51×24",
+      "detail": "below the 44 px project target on phones: a \"Checks\" 64×24",
       "component": "controls",
       "widths": [
         320,
@@ -5323,7 +5324,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Checks\" 64×24",
+      "detail": "below the 44 px project target on phones: a \"Traceability\" 89×24",
       "component": "controls",
       "widths": [
         320,
@@ -5338,7 +5339,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Traceability\" 89×24",
+      "detail": "below the 44 px project target on phones: a \"Deficiencies\" 93×24",
       "component": "controls",
       "widths": [
         320,
@@ -5353,7 +5354,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Deficiencies\" 93×24",
+      "detail": "below the 44 px project target on phones: a \"Sign-off\" 68×24",
       "component": "controls",
       "widths": [
         320,
@@ -5368,27 +5369,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Sign-off\" 68×24",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-370",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/commissioning/room/R-ATL-4-218",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: input \"Note for the before-installati\" 236×35",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-371",
+      "id": "AUD-370",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5402,7 +5388,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-372",
+      "id": "AUD-371",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5412,6 +5398,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-372",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/play/expo",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -5426,7 +5427,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: button \"A3\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5441,7 +5442,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"A3\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"A4\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5456,7 +5457,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"A4\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"A5\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5471,7 +5472,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"A5\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"B3\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5486,7 +5487,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"B3\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"B4\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5501,7 +5502,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"B4\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"B5\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5516,7 +5517,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"B5\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"C2\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5531,7 +5532,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"C2\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"C3\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5546,7 +5547,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"C3\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"C4\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5561,7 +5562,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"C4\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"C5\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5576,7 +5577,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"C5\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"D2\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5591,7 +5592,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"D2\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"D3\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5606,7 +5607,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"D3\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"D4\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5621,7 +5622,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"D4\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"D5\" 28×24",
       "component": "controls",
       "widths": [
         320,
@@ -5636,7 +5637,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"D5\" 28×24",
+      "detail": "below the 44 px project target on phones: button \"E1 · Empathia\" 93×24",
       "component": "controls",
       "widths": [
         320,
@@ -5651,7 +5652,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"E1 · Empathia\" 93×24",
+      "detail": "below the 44 px project target on phones: button \"Whole hall\" 96×37",
       "component": "controls",
       "widths": [
         320,
@@ -5666,7 +5667,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Whole hall\" 96×37",
+      "detail": "below the 44 px project target on phones: button \"Full screen\" 99×37",
       "component": "controls",
       "widths": [
         320,
@@ -5681,27 +5682,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Full screen\" 99×37",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-391",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/play/expo",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: g \"E1\" 37×27",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-392",
+      "id": "AUD-391",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5715,7 +5701,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-393",
+      "id": "AUD-392",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5729,7 +5715,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-394",
+      "id": "AUD-393",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5743,7 +5729,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-395",
+      "id": "AUD-394",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5757,7 +5743,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-396",
+      "id": "AUD-395",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5771,7 +5757,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-397",
+      "id": "AUD-396",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5785,7 +5771,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-398",
+      "id": "AUD-397",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5799,7 +5785,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-399",
+      "id": "AUD-398",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5813,7 +5799,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-400",
+      "id": "AUD-399",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5827,7 +5813,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-401",
+      "id": "AUD-400",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5841,7 +5827,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-402",
+      "id": "AUD-401",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5855,7 +5841,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-403",
+      "id": "AUD-402",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5869,7 +5855,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-404",
+      "id": "AUD-403",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5883,7 +5869,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-405",
+      "id": "AUD-404",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5897,7 +5883,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-406",
+      "id": "AUD-405",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5911,7 +5897,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-407",
+      "id": "AUD-406",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5925,7 +5911,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-408",
+      "id": "AUD-407",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5939,7 +5925,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-409",
+      "id": "AUD-408",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5953,7 +5939,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-410",
+      "id": "AUD-409",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5967,7 +5953,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-411",
+      "id": "AUD-410",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5981,7 +5967,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-412",
+      "id": "AUD-411",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -5995,7 +5981,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-413",
+      "id": "AUD-412",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6009,7 +5995,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-414",
+      "id": "AUD-413",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6023,7 +6009,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-415",
+      "id": "AUD-414",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6037,7 +6023,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-416",
+      "id": "AUD-415",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6051,7 +6037,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-417",
+      "id": "AUD-416",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6065,7 +6051,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-418",
+      "id": "AUD-417",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6079,7 +6065,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-419",
+      "id": "AUD-418",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6093,7 +6079,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-420",
+      "id": "AUD-419",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6107,7 +6093,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-421",
+      "id": "AUD-420",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6121,7 +6107,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-422",
+      "id": "AUD-421",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6135,7 +6121,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-423",
+      "id": "AUD-422",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6149,7 +6135,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-424",
+      "id": "AUD-423",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6163,7 +6149,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-425",
+      "id": "AUD-424",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6177,7 +6163,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-426",
+      "id": "AUD-425",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6191,7 +6177,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-427",
+      "id": "AUD-426",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6205,7 +6191,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-428",
+      "id": "AUD-427",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6219,7 +6205,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-429",
+      "id": "AUD-428",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6233,7 +6219,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-430",
+      "id": "AUD-429",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6247,7 +6233,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-431",
+      "id": "AUD-430",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6261,7 +6247,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-432",
+      "id": "AUD-431",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6275,7 +6261,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-433",
+      "id": "AUD-432",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6289,7 +6275,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-434",
+      "id": "AUD-433",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6303,7 +6289,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-435",
+      "id": "AUD-434",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6317,7 +6303,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-436",
+      "id": "AUD-435",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6331,7 +6317,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-437",
+      "id": "AUD-436",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6345,7 +6331,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-438",
+      "id": "AUD-437",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6359,7 +6345,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-439",
+      "id": "AUD-438",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6369,6 +6355,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-439",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/play/stadium",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -6383,7 +6384,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: button \"Atmosphere\" 97×30",
       "component": "controls",
       "widths": [
         320,
@@ -6398,7 +6399,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Atmosphere\" 97×30",
+      "detail": "below the 44 px project target on phones: button \"Perspective\" 95×30",
       "component": "controls",
       "widths": [
         320,
@@ -6413,7 +6414,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Perspective\" 95×30",
+      "detail": "below the 44 px project target on phones: button \"Audio\" 58×30",
       "component": "controls",
       "widths": [
         320,
@@ -6428,7 +6429,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Audio\" 58×30",
+      "detail": "below the 44 px project target on phones: button \"Production\" 89×30",
       "component": "controls",
       "widths": [
         320,
@@ -6443,7 +6444,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Production\" 89×30",
+      "detail": "below the 44 px project target on phones: button \"Operations\" 89×30",
       "component": "controls",
       "widths": [
         320,
@@ -6458,7 +6459,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Operations\" 89×30",
+      "detail": "below the 44 px project target on phones: button \"Participation\" 99×30",
       "component": "controls",
       "widths": [
         320,
@@ -6473,7 +6474,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Participation\" 99×30",
+      "detail": "below the 44 px project target on phones: button \"Pregame\" 77×34",
       "component": "controls",
       "widths": [
         320,
@@ -6488,7 +6489,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Pregame\" 77×34",
+      "detail": "below the 44 px project target on phones: button \"Live game\" 85×34",
       "component": "controls",
       "widths": [
         320,
@@ -6503,7 +6504,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Live game\" 85×34",
+      "detail": "below the 44 px project target on phones: button \"Halftime\" 73×34",
       "component": "controls",
       "widths": [
         320,
@@ -6518,7 +6519,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Halftime\" 73×34",
+      "detail": "below the 44 px project target on phones: button \"Concert\" 71×34",
       "component": "controls",
       "widths": [
         320,
@@ -6533,7 +6534,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Concert\" 71×34",
+      "detail": "below the 44 px project target on phones: button \"Postgame\" 83×34",
       "component": "controls",
       "widths": [
         320,
@@ -6548,7 +6549,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Postgame\" 83×34",
+      "detail": "below the 44 px project target on phones: button \"Empty stadium\" 113×34",
       "component": "controls",
       "widths": [
         320,
@@ -6563,7 +6564,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Empty stadium\" 113×34",
+      "detail": "below the 44 px project target on phones: button \"Technical rehearsal\" 142×34",
       "component": "controls",
       "widths": [
         320,
@@ -6578,27 +6579,12 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Technical rehearsal\" 142×34",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-454",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/play/stadium",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: button \"19:30 Kick-off under the light\" 266×33",
       "component": "controls",
       "widths": [
         320
       ],
-      "id": "AUD-455",
+      "id": "AUD-454",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6612,7 +6598,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-456",
+      "id": "AUD-455",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6626,7 +6612,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-457",
+      "id": "AUD-456",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6640,7 +6626,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-458",
+      "id": "AUD-457",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6654,7 +6640,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-459",
+      "id": "AUD-458",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6668,7 +6654,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-460",
+      "id": "AUD-459",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6678,6 +6664,21 @@
       "rule": "A6 target size",
       "severity": "P3",
       "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-460",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/play/campus",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -6692,7 +6693,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "detail": "below the 44 px project target on phones: button \"Pause\" 60×34",
       "component": "controls",
       "widths": [
         320,
@@ -6707,7 +6708,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Pause\" 60×34",
+      "detail": "below the 44 px project target on phones: button \"Save\" 52×34",
       "component": "controls",
       "widths": [
         320,
@@ -6722,7 +6723,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Save\" 52×34",
+      "detail": "below the 44 px project target on phones: button \"Map\" 49×34",
       "component": "controls",
       "widths": [
         320,
@@ -6737,28 +6738,13 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Map\" 49×34",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-465",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/play/campus",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
       "detail": "below the 44 px project target on phones: button \"Full screen\" 89×34",
       "component": "controls",
       "widths": [
         320,
         390
       ],
-      "id": "AUD-466",
+      "id": "AUD-465",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6773,7 +6759,7 @@
         320,
         390
       ],
-      "id": "AUD-467",
+      "id": "AUD-466",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6788,7 +6774,7 @@
         320,
         390
       ],
-      "id": "AUD-468",
+      "id": "AUD-467",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6803,7 +6789,7 @@
         320,
         390
       ],
-      "id": "AUD-469",
+      "id": "AUD-468",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6818,7 +6804,7 @@
         320,
         390
       ],
-      "id": "AUD-470",
+      "id": "AUD-469",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6833,7 +6819,7 @@
         320,
         390
       ],
-      "id": "AUD-471",
+      "id": "AUD-470",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6848,7 +6834,7 @@
         320,
         390
       ],
-      "id": "AUD-472",
+      "id": "AUD-471",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6863,7 +6849,7 @@
         320,
         390
       ],
-      "id": "AUD-473",
+      "id": "AUD-472",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6878,7 +6864,7 @@
         320,
         390
       ],
-      "id": "AUD-474",
+      "id": "AUD-473",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6893,7 +6879,7 @@
         320,
         390
       ],
-      "id": "AUD-475",
+      "id": "AUD-474",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6908,7 +6894,7 @@
         320,
         390
       ],
-      "id": "AUD-476",
+      "id": "AUD-475",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6923,7 +6909,7 @@
         320,
         390
       ],
-      "id": "AUD-477",
+      "id": "AUD-476",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6938,7 +6924,7 @@
         320,
         390
       ],
-      "id": "AUD-478",
+      "id": "AUD-477",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6953,7 +6939,7 @@
         320,
         390
       ],
-      "id": "AUD-479",
+      "id": "AUD-478",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6967,7 +6953,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-480",
+      "id": "AUD-479",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6981,7 +6967,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-481",
+      "id": "AUD-480",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -6995,7 +6981,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-482",
+      "id": "AUD-481",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -7009,7 +6995,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-483",
+      "id": "AUD-482",
       "reproducible": "yes (deterministic, local build)"
     }
   ]
