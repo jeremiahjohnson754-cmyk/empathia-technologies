@@ -72,17 +72,22 @@ In Season 2 they sound different. The player names the voice of each season.
 4. The silence at both ends is trimmed. Each take is brought to −18 LUFS and encoded as 96 kbps mono MP3 at 44.1 kHz. Season 1 measures
    −17.5 LUFS.
 
-**Where it stands:**
+**Where it stands (20 Nov 2026):**
 
-- 210 of the 339 lines were generated before the run stopped at its two-hour limit (20 Nov 03:13). These are episodes 1 to 6 and 12
-  of the 34 lines of episode 7.
-- Of those 210 takes, 202 pass the check. That includes three the check flagged that I read as false alarms: a sound-alike ("wear" for
+- All 339 lines are generated, in two runs. The first stopped at its two-hour limit (20 Nov 03:13) with 210 takes: episodes 1 to 6
+  and 12 of the 34 lines of episode 7. The second (from 05:40) generated the other 129: the rest of episode 7 and episodes 8 to 11.
+- First run: 202 of 210 pass the check. That includes three the check flagged that I read as false alarms: a sound-alike ("wear" for
   "where"), a digit ("7" for "seven's"), and a take where every word was heard but the score was thrown by "job's" and spelled numbers.
-- The other eight were generated once more. Four second takes pass and are used: Ben "You didn't have to back me in front of her.",
-  Sofia "You backed Ben.", Leah "Jordan." and the houseperson's line. Four lines failed both takes and are captions: Kim "A photo isn't a
-  rating.", Marisol "It dies when I turn?", Sofia "That's cowardice in a hard hat." and Sofia "Eight counts. Okay. Eight counts."
-- 206 takes are heard in the demonstration.
-- The rest of episode 7, and episodes 8 to 11 (129 lines), are captions until they are voiced.
+  The other eight were generated once more. Four second takes pass and are used: Ben "You didn't have to back me in front of her.",
+  Sofia "You backed Ben.", Leah "Jordan." and the houseperson's line. Four lines failed both takes and are captions: Kim "A photo isn't
+  a rating.", Marisol "It dies when I turn?", Sofia "That's cowardice in a hard hat." and Sofia "Eight counts. Okay. Eight counts."
+- Second run: 120 of 129 pass. Two more flags I read as false alarms: Graham's "The C-E-O will be a speck." (Whisper wrote "CEO" and
+  "spec") and Rosa's standby call (Whisper wrote "Qs" for "cues"). The other seven were generated once more. One second take passes and
+  is used: the video operator's "The reveal's on input six. I checked twice." Six lines failed both takes and are captions: Rosa "Cue
+  3… go." (Whisper could not transcribe the second take at all), Rosa "Cue 4, go.", Maya "…Their DHCP only. Ours off. Our gear on
+  .240 up.", Imani "Maya. Bed." and both of Rosa's "Riverbend — we are back!"
+- **329 takes are heard in the demonstration; 10 lines are captions.** Four of the ten are Rosa's (the Sohee preset struggles with
+  short cue calls and the name "Riverbend").
 
 Files: `media/signal/s02/lines.json` (each line, its spoken form and its preset), `media/signal/s02/build-takes.py`,
 `media/signal/s02/CHECKS.json` (each take's check), the takes in `apps/demo/public/media/signal/s02/`.

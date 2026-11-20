@@ -58,8 +58,8 @@ test('Season 1 footage: every clip exists, is labelled as generated, and opens o
 // no voice is a clone (the CustomVoice presets only).
 test('Season 2: every take is its chapter\'s canon line, in the canon speaker, with its file, in a named preset AI voice', () => {
   const PRESETS = ['Vivian', 'Serena', 'Uncle Fu', 'Dylan', 'Eric', 'Ryan', 'Aiden', 'Ono Anna', 'Sohee'];
-  // voiced so far: episodes 1–6 whole and part of 7 (generation stopped at its time limit, 20 Nov 03:13; the rest are captions until voiced)
-  const chapters = Object.keys(C.TAKES).filter((k) => /^s02e/.test(k)); assert.ok(chapters.length >= 7, chapters.join());
+  // all eleven episodes voiced (20 Nov 2026: 339 lines generated; ten lines failed both takes and are captions, so 329 takes are heard)
+  const chapters = Object.keys(C.TAKES).filter((k) => /^s02e/.test(k)); assert.ok(chapters.length >= 11, chapters.join());
   const V = C.voicesFor('s02e01'); assert.match(V.maya, /^Qwen3-TTS Vivian, AI voice$/); assert.match(V.ben, /^Qwen3-TTS Aiden, AI voice$/);
   assert.equal(C.voicesFor('s01e01'), C.VOICES, 'Season 1 keeps its own cast');
   let n = 0;
@@ -72,5 +72,5 @@ test('Season 2: every take is its chapter\'s canon line, in the canon speaker, w
       assert.ok(fs.existsSync(path.join(repo, 'apps/demo/public', t.src)), t.src);
       assert.ok(V[t.who] && PRESETS.some((p) => V[t.who] === `Qwen3-TTS ${p}, AI voice`), `${t.who}: ${V[t.who]}`); }
   }
-  assert.ok(n >= 200, `${n} takes`);
+  assert.ok(n >= 320, `${n} takes`);
 });
