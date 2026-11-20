@@ -55,7 +55,7 @@ const vw = (p) => p.evaluate(() => [innerWidth, innerHeight]);
   ok('GS-map-06', 'phone: in full screen every control is inside the window and the picture takes the room left', ctl === 0, `${ctl} off-screen`);
   [x, y] = await centre(p, 'emap-full'); await f.tap(p, x, y); await p.waitForTimeout(300);
   const left = await p.evaluate(() => !document.querySelector('[data-testid=emap]').classList.contains('is-full') && !document.documentElement.classList.contains('has-full'));
-  ok('GS-map-07', 'phone: Done leaves full screen and the page scrolls again', left && (await p.getByTestId('emap-full').innerText()).trim() !== 'Done', '');
+  ok('GS-map-07', 'phone: Done leaves full screen and the page scrolls again', left && (await p.getByTestId('emap-full').getAttribute('aria-pressed')) === 'false', '');
   ok('GS-map-08', 'phone: no console error', !t.errs.length, t.errs.slice(0, 2).join(' | ')); await t.close(); }
 
 // ---- the campus map with a mouse ------------------------------------------------------------------------------------------------------
