@@ -48,7 +48,11 @@ const parseHash = (hash: string): { q: string; focus: NodeRef | null; type: stri
 /** The search's own address (founder's master directive, 20 Nov 2026: return "to the original search without unexpectedly losing the
  *  selected room, filters, or navigation context"): the query, the type filter, the record chosen and the one inspected, so Back, a
  *  refresh, a shared link and the trail all come back to the same search. */
-const addressOf = (path: string, s: { q: string; type: string; focus: NodeRef | null; sel: string | null }) => { const p = new URLSearchParams(); if (s.q.trim()) p.set('q', s.q.trim().slice(0, 80)); if (s.type) p.set('type', s.type); if (s.focus) p.set('focus', nodeKey(s.focus)); if (s.sel) p.set('sel', s.sel); const qs = p.toString(); return qs ? `${path}?${qs}` : path; };
+// written the way the app's own links write it (encodeURIComponent; a record's key keeps its colon), so an address that already says
+// what is on screen is never rewritten: the tours and the welcome page link to #/search?q=Atlas%204.218 and ?focus=NetworkNode:SW-ATL-4A
+const enc = (v: string) => encodeURIComponent(v).replace(/%3A/gi, ':');
+const addressOf = (path: string, s: { q: string; type: string; focus: NodeRef | null; sel: string | null }) => { const p: string[] = []; if (s.q.trim()) p.push(`q=${enc(s.q.trim().slice(0, 80))}`); if (s.type) p.push(`type=${enc(s.type)}`); if (s.focus) p.push(`focus=${enc(nodeKey(s.focus))}`); if (s.sel) p.push(`sel=${enc(s.sel)}`); return p.length ? `${path}?${p.join('&')}` : path; };
+const sameAddress = (hash: string, s: { q: string; type: string; focus: NodeRef | null; sel: string | null }) => { const a = parseHash(hash); return a.q.trim() === s.q.trim() && a.type === s.type && (a.focus ? nodeKey(a.focus) : '') === (s.focus ? nodeKey(s.focus) : '') && (a.sel || null) === (s.sel || null); };
 
 export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }) {
   const opens = (href: string) => { if (!role) return true; const r = resolve(href); return !!r && canOpen(role, r); };
@@ -74,7 +78,9 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
   // keep the address in step with what is on screen (replaceState: no new history entry, no page change), a moment after typing stops
   useEffect(() => { if (PANE[tab]) return; const id = setTimeout(() => {
     const path = (location.hash || '#/search').split('?')[0]!; if (!/^#\/search(\/|$)/.test(path)) return;
-    const next = addressOf(path, { q, type, focus, sel }); if (next !== location.hash) { try { history.replaceState(history.state, '', next); } catch { /* refused: the search simply is not kept */ } }
+    // the graph tab's own starting record and the type a Search Party area implies are what its address already means: not written
+    const st = { q, type: type === subType(location.hash, est) ? '' : type, focus: focus && tab === 'graph' && nodeKey(focus) === nodeKey(START) && !parseHash(location.hash).focus ? null : focus, sel };
+    const next = sameAddress(location.hash, st) ? location.hash : addressOf(path, st); if (next !== location.hash) { try { history.replaceState(history.state, '', next); } catch { /* refused: the search simply is not kept */ } }
     const chosen = focus && !(tab === 'graph' && nodeKey(focus) === nodeKey(START) && !q.trim()) ? focus : null; const tname = type ? NODE_TYPES[type]?.[0] || type : '';
     noteSearch(next, chosen ? label(chosen) : q.trim() ? `“${q.trim().slice(0, 40)}”` : tname, [chosen && q.trim() ? `“${q.trim().slice(0, 30)}”` : '', chosen || q.trim() ? tname : ''].filter(Boolean).join(' · '));
   }, 300); return () => clearTimeout(id); }, [q, type, focus, sel, tab]);   // eslint-disable-line react-hooks/exhaustive-deps
