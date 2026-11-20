@@ -127,4 +127,35 @@ for (const [w, h, tag] of [[390, 844, 'phone'], [360, 740, 'p360']]) { // a phon
   const v = await q.evaluate(() => { const r = (s) => { const b = document.querySelector(s)?.getBoundingClientRect(); return b && b.width ? { s, l: b.left, t: b.top, r: b.right, b: b.bottom } : null; }; const xs = ['.emap__search', '.emap__crumbs', '.emap__layers', '.emap__ctrl', '.emap__card', '.emap__lens', '.emap__legend'].map(r).filter(Boolean); const hit = []; for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i], b = xs[j]; if (a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1) hit.push(`${a.s}×${b.s}`); } const small = [...document.querySelectorAll('.emap button, .emap input, .emap a')].filter((e) => { const b = e.getBoundingClientRect(); return b.width && b.height && !e.closest('.emap__pins') && (b.width < 44 || b.height < 36); }).map((e) => e.textContent || e.getAttribute('aria-label')); return { n: xs.length, hit, small, over: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
   ok(`MAP-${tag}`, `${w} × ${h}: search, levels, layers, zoom, the lens, its legend and the place card all show, none overlaps another, controls are touch-sized, no sideways scroll`, v.n === 7 && !v.hit.length && !v.small.length && v.over <= 0, JSON.stringify(v));
   await ph.close(); }
+
+// Readable on a phone (founder, 19 Nov 2026 20:16: "the building labels, route contrast, and controls need to remain readable on a real
+// mobile viewport, not just in a scaled screenshot"). At 360, 390 and 412 px, on Lite's campus with the visitor's route and with the
+// engineer's links to the campus core, on a building's floors and on one floor: every label drawn inside the picture, none over another or
+// over a control, at 11 px or more; every control 44 px; the line saying the picture is synthetic shown in full; each lens line drawn on
+// a dark casing at least 3 px wider than it (the casing is what makes it stand out from grass, paving and roofs alike; measured from the
+// pixels by the mobile check that found it, scratch mobilemaps.mjs). Added; nothing above relaxed.
+for (const [w, h] of [[360, 740], [390, 844], [412, 915]]) {
+  const bad = [];
+  for (const [hash, lens, sel] of [['#/lite', 'visitor', '[data-testid=lite-campus-card]'], ['#/lite', 'engineer', '[data-testid=lite-campus-card]'], ['#/lite/b/ATL', null, '[data-testid=lite-building-3d]'], ['#/lite/b/ATL/4', null, '[data-testid=lite-floor-3d]']]) {
+    const t2 = await open(hash, { role: 'syseng', sw: false, w, h, reduced: true }); const q = t2.page; const where = `${w} ${hash}${lens ? ` ${lens}` : ''}`;
+    if (lens) await q.getByTestId(`lite-lens-${lens}`).click();
+    await q.waitForSelector(`${sel} [data-testid=emap][data-ready=true], ${sel}.l3-stage`, { timeout: 30000 }).catch(() => bad.push(`${where}: not drawn`)); await q.waitForTimeout(1600);
+    const r = await q.evaluate((sel) => { const root = document.querySelector(sel); if (!root) return ['no picture']; const out = [];
+      const V = (root.querySelector('.emap__view, .l3-frame') || root).getBoundingClientRect(); const vis = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
+      const rect = (e) => e.getBoundingClientRect(); const over = (a, b, t = 1) => a.left < b.right - t && b.left < a.right - t && a.top < b.bottom - t && b.top < a.bottom - t;
+      const labels = [...root.querySelectorAll('.emap__pin, .emap__ovt, .l3-tag')].filter(vis); const name = (e) => (e.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 24);
+      const groups = [...root.querySelectorAll('.emap__ctrl, .emap__layers, .emap__search, .emap__crumbs, .l3-ctl')].filter(vis);
+      labels.forEach((a, i) => { const ra = rect(a);
+        if (ra.left < V.left - 1 || ra.right > V.right + 1 || ra.top < V.top - 1 || ra.bottom > V.bottom + 1) out.push(`${name(a)} runs out of the picture`);
+        if (parseFloat(getComputedStyle(a.querySelector('b') || a).fontSize) < 11) out.push(`${name(a)} under 11 px`);
+        labels.slice(i + 1).forEach((b) => { if (over(ra, rect(b))) out.push(`${name(a)} over ${name(b)}`); });
+        groups.forEach((g) => { if (over(ra, rect(g))) out.push(`${name(a)} under ${g.className.split(' ')[0]}`); }); });
+      [...root.querySelectorAll('.emap__ctrl button, .emap__layers button, .emap__crumbs button, .emap__search input, .l3-btn')].filter(vis).forEach((c) => { const b = rect(c); if (b.width < 43.5 || b.height < 43.5) out.push(`${c.getAttribute('aria-label') || c.textContent?.trim() || 'control'} ${Math.round(b.width)}×${Math.round(b.height)}`); });
+      const cr = [...root.querySelectorAll('.emap__credit, .l3-credit')].filter(vis); if (cr.length !== 1 || !/synthetic/.test(cr[0].textContent || '') || cr[0].scrollWidth > cr[0].clientWidth + 1 || cr[0].scrollHeight > cr[0].clientHeight + 1) out.push(`the synthetic line is not shown in full (${cr.length})`);
+      const cases = [...root.querySelectorAll('.emap__ovc')]; [...root.querySelectorAll('.emap__ovl')].forEach((l, i) => { const c = cases[i]; if (!c || c.getAttribute('points') !== l.getAttribute('points') || parseFloat(getComputedStyle(c).strokeWidth) < parseFloat(getComputedStyle(l).strokeWidth) + 3) out.push('a lens line without its casing'); });
+      return out; }, sel);
+    r.forEach((x) => bad.push(`${where}: ${x}`)); if (t2.errs.length) bad.push(`${where}: ${t2.errs[0]}`);
+    await t2.close(); }
+  ok(`MAP-read-${w}`, `${w} px: on Lite's campus (the visitor's route, the engineer's links), a building's floors and one floor, every label is inside the picture, clear of the others and of the controls, 11 px or more; controls 44 px; the synthetic line in full; lens lines cased`, !bad.length, bad.slice(0, 6).join(' | '));
+}
 await done();
