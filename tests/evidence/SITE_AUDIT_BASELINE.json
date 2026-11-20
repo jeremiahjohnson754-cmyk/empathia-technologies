@@ -1,0 +1,6330 @@
+{
+  "label": "baseline",
+  "at": "2026-10-31T21:06:41.794Z",
+  "widths": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "pagesChecked": 108,
+  "method": "in-house Playwright rules A1–A10 (not axe-core)",
+  "totals": {
+    "P0": 0,
+    "P1": 99,
+    "P2": 0,
+    "P3": 324
+  },
+  "defects": [
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A1 horizontal scroll",
+      "severity": "P1",
+      "detail": "page is 51px wider than the viewport",
+      "component": "layout",
+      "widths": [
+        320
+      ],
+      "id": "AUD-001",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A1 horizontal scroll",
+      "severity": "P1",
+      "detail": "page is 296px wider than the viewport",
+      "component": "layout",
+      "widths": [
+        320
+      ],
+      "id": "AUD-002",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 390,
+      "rule": "A1 horizontal scroll",
+      "severity": "P1",
+      "detail": "page is 226px wider than the viewport",
+      "component": "layout",
+      "widths": [
+        390
+      ],
+      "id": "AUD-003",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A1 horizontal scroll",
+      "severity": "P1",
+      "detail": "page is 69px wider than the viewport",
+      "component": "layout",
+      "widths": [
+        320
+      ],
+      "id": "AUD-004",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A1 horizontal scroll",
+      "severity": "P1",
+      "detail": "page is 293px wider than the viewport",
+      "component": "layout",
+      "widths": [
+        320
+      ],
+      "id": "AUD-005",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 390,
+      "rule": "A1 horizontal scroll",
+      "severity": "P1",
+      "detail": "page is 223px wider than the viewport",
+      "component": "layout",
+      "widths": [
+        390
+      ],
+      "id": "AUD-006",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A1 horizontal scroll",
+      "severity": "P1",
+      "detail": "page is 51px wider than the viewport",
+      "component": "layout",
+      "widths": [
+        320
+      ],
+      "id": "AUD-007",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-008",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-009",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-010",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-011",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-012",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Coverage · 37 edges\" 355×21",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-013",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"SW-ATL-4A\" 75×16",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-014",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Coverage · 37 edges\" 358×21",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-015",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-016",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 768,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Coverage · 37 edges\" 736×21",
+      "component": "controls",
+      "widths": [
+        768
+      ],
+      "id": "AUD-017",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 1440,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Coverage · 37 edges\" 365×21",
+      "component": "controls",
+      "widths": [
+        1440
+      ],
+      "id": "AUD-018",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-019",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"APEX diagnosis\" 100×16",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-020",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Search Party\" 82×16",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-021",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"History (1)\" 288×23",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-022",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Report a problem in a room\" 254×23",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-023",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"History (1)\" 358×23",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-024",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Report a problem in a room\" 324×23",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-025",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-026",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 768,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Context packet — read from the\" 426×23",
+      "component": "controls",
+      "widths": [
+        768
+      ],
+      "id": "AUD-027",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 768,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"History (1)\" 452×23",
+      "component": "controls",
+      "widths": [
+        768
+      ],
+      "id": "AUD-028",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 768,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Report a problem in a room\" 702×23",
+      "component": "controls",
+      "widths": [
+        768
+      ],
+      "id": "AUD-029",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 1440,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Context packet — read from the\" 705×23",
+      "component": "controls",
+      "widths": [
+        1440
+      ],
+      "id": "AUD-030",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 1440,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"History (1)\" 731×23",
+      "component": "controls",
+      "widths": [
+        1440
+      ],
+      "id": "AUD-031",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 1440,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Report a problem in a room\" 1086×23",
+      "component": "controls",
+      "widths": [
+        1440
+      ],
+      "id": "AUD-032",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-033",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-034",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-035",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-036",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-037",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"The whole ledger →\" 254×23",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-038",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"The whole ledger →\" 324×23",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-039",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-040",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 768,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"The whole ledger →\" 418×23",
+      "component": "controls",
+      "widths": [
+        768
+      ],
+      "id": "AUD-041",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 1440,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"The whole ledger →\" 697×23",
+      "component": "controls",
+      "widths": [
+        1440
+      ],
+      "id": "AUD-042",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-043",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-044",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-045",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-046",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-047",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-048",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-049",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-050",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-051",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-052",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-053",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-054",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-055",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-056",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"EmpathiaLiving Campus\" 195×23",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-057",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Coverage · 37 edges\" 355×21",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-058",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Access switch ATL-4A\" 46×19",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-059",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"UC room compute (4.21…\" 52×14",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-060",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Audio processor (4.21…\" 48×14",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-061",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Touch panel (4.218)\" 41×14",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-062",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"UC room compute (4.22…\" 53×14",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-063",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Control processor (4.…\" 47×14",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-064",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Power panel ATL-4\" 39×14",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-065",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Core switch ATL-CORE\" 47×14",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-066",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Display 1 (4.218)\" 33×14",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-067",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Atlas 4.218 Boardroom\" 46×14",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-068",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Ceiling microphone (4…\" 49×14",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-069",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Far-end audio drops o…\" 49×14",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-070",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Atlas 4.220 Huddle\" 39×14",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-071",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Atlas 4.231 Training\" 40×14",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-072",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Coverage · 37 edges\" 358×21",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-073",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"UC room compute (4.21…\" 53×14",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-074",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Audio processor (4.21…\" 49×14",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-075",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Control processor (4.…\" 48×14",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-076",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Display 1 (4.218)\" 34×14",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-077",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): g \"Atlas 4.220 Huddle\" 40×14",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-078",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Back to the start\" 104×16",
+      "component": "controls",
+      "widths": [
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-079",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 768,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Coverage · 37 edges\" 736×21",
+      "component": "controls",
+      "widths": [
+        768
+      ],
+      "id": "AUD-080",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 1440,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): summary \"Coverage · 37 edges\" 365×21",
+      "component": "controls",
+      "widths": [
+        1440
+      ],
+      "id": "AUD-081",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A1 horizontal scroll",
+      "severity": "P1",
+      "detail": "page is 12px wider than the viewport",
+      "component": "layout",
+      "widths": [
+        320
+      ],
+      "id": "AUD-082",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Intake Portal\" 111×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-083",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Build a Room with Lite\" 192×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-084",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Scouter\" 69×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-085",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Universal Commissioning\" 224×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768
+      ],
+      "id": "AUD-086",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Search Party\" 113×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-087",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"ServiceHands\" 124×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-088",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Assurance and APEX\" 186×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-089",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"CIOs and CTOs\" 133×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-090",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"AV systems integrators\" 206×21",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-091",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Managed service providers\" 240×21",
+      "component": "controls",
+      "widths": [
+        390,
+        768
+      ],
+      "id": "AUD-092",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"Facilities and workplace teams\" 270×21",
+      "component": "controls",
+      "widths": [
+        390,
+        768
+      ],
+      "id": "AUD-093",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): input \"consent\" 18×18",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-094",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"privacy notice\" 90×22",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-095",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): input \"consent\" 18×18",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-096",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"privacy notice\" 90×22",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-097",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): input \"consent\" 18×18",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-098",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P1",
+      "detail": "below 24×24 (WCAG 2.5.8): a \"privacy notice\" 90×22",
+      "component": "controls",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-099",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A3 headings",
+      "severity": "P3",
+      "detail": "skipped level h1→h3",
+      "component": "content structure",
+      "widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "id": "AUD-100",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-101",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-102",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-103",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-104",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-105",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-106",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-107",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-108",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-109",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-110",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/investor",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-111",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-112",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-113",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-114",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-115",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-116",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-117",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-118",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-119",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-120",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-121",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"\" 288×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-122",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Huddle RoomSmall Conference Ro\" 288×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-123",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"metresfeet (24' 6\" accepted)\" 288×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-124",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"rectangleL-shape\" 288×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-125",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Create the room\" 139×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-126",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-127",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"\" 358×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-128",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Huddle RoomSmall Conference Ro\" 358×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-129",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"metresfeet (24' 6\" accepted)\" 358×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-130",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/build",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"rectangleL-shape\" 358×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-131",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-132",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-133",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-134",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-135",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-136",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-137",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-138",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-139",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-140",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-141",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"\" 120×40",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-142",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Every typeBuilding (2)Commissi\" 160×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-143",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"SiteNorth CampusSITE-NORTH\" 355×41",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-144",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"RoleService Technicianservice\" 355×41",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-145",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Who is responsible for this?\" 185×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-146",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Who approved the current desig\" 227×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-147",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"What is connected to this devi\" 221×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-148",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"What depends on this?\" 157×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-149",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Who can approve this exception\" 218×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-150",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Which technician is qualified \" 278×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-151",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Which vendor supports this sys\" 237×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-152",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"What changed between baseline \" 275×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-153",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Question\" 262×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-154",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Ask\" 59×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-155",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-156",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"\" 190×40",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-157",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"SiteNorth CampusSITE-NORTH\" 358×41",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-158",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"PersonService Manager (synthet\" 358×41",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-159",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"RoleService Technicianservice\" 358×41",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-160",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/search",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Question\" 265×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-161",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-162",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-163",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-164",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-165",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-166",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-167",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-168",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-169",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-170",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-171",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Reset workspace\" 130×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-172",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Queue3\" 96×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-173",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Closed2\" 99×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-174",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 254×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-175",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Title\" 262×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-176",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Summary\" 262×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-177",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Raise\" 59×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-178",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-179",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 324×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-180",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Title\" 324×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-181",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/service",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Summary\" 324×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-182",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-183",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-184",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-185",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-186",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-187",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-188",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-189",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-190",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-191",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-192",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/apex",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-193",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-194",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-195",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-196",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-197",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-198",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-199",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-200",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-201",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-202",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-203",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Cases0\" 94×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-204",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Lessons\" 82×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-205",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Drills\" 61×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-206",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Casebook\" 94×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-207",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Formulas & glossary\" 160×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-208",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/learn",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-209",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-210",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-211",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-212",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-213",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-214",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-215",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-216",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-217",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-218",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-219",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-220",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-221",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-222",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-223",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-224",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-225",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-226",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-227",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-228",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-229",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-230",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/exec",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-231",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-232",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-233",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-234",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-235",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-236",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-237",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-238",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-239",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-240",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-241",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Events1\" 97×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-242",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Policy\" 67×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-243",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Filter events\" 376×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-244",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"all\" 40×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-245",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"ALLOWED\" 88×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-246",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"DENIED\" 72×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-247",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/ledger",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-248",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-249",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-250",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-251",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-252",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-253",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-254",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-255",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-256",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-257",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-258",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Events1\" 97×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-259",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Policy\" 67×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-260",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/policy",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-261",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-262",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-263",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-264",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-265",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-266",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-267",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-268",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-269",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-270",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-271",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-272",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"v1.3 declarations and plan\" 198×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-273",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"v1.4 Physical Validation0\" 207×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-274",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-275",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-276",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-277",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-278",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-279",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-280",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-281",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-282",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-283",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-284",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-285",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-286",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"v1.3 declarations and plan\" 198×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-287",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"v1.4 Physical Validation0\" 207×43",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-288",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Propose a session for R-ATL-4-\" 254×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-289",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-290",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Propose a session for R-ATL-4-\" 261×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-291",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-292",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-293",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-294",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-295",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-296",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-297",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-298",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-299",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-300",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-301",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 141×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-302",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-303",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-304",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-305",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-306",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-307",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-308",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-309",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-310",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-311",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-312",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-313",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 141×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-314",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/pro",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-315",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-316",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Mission Control\" 115×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-317",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Pro\" 39×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-318",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Lite\" 41×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-319",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Search Party\" 98×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-320",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Commissioning & Assurance\" 196×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-321",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Field Intelligence\" 123×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-322",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Learn\" 54×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-323",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Investor start\" 101×32",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-324",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"visitoremployeeexecservicesvcm\" 107×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-325",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Previous\" 79×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-326",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Next\" 54×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-327",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"1\" 24×24",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-328",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"2\" 24×24",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-329",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"3\" 24×24",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-330",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"4\" 24×24",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-331",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"5\" 24×24",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-332",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"6\" 24×24",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-333",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"7\" 24×24",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-334",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Reset & replay scenario\" 168×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-335",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Close\" 60×28",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-336",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"\" 120×40",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-337",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Every typeBuilding (2)Commissi\" 160×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-338",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"SiteNorth CampusSITE-NORTH\" 355×41",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-339",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"RoleService Technicianservice\" 355×41",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-340",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Who is responsible for this?\" 185×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-341",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Who approved the current desig\" 227×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-342",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"What is connected to this devi\" 221×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-343",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"What depends on this?\" 157×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-344",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Who can approve this exception\" 218×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-345",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Which technician is qualified \" 278×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-346",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Which vendor supports this sys\" 237×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-347",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"What changed between baseline \" 275×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-348",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Question\" 262×36",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-349",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Ask\" 59×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-350",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Back to the start\" 148×37",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-351",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"\" 190×40",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-352",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"SiteNorth CampusSITE-NORTH\" 358×41",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-353",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"PersonService Manager (synthet\" 358×41",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-354",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"RoleService Technicianservice\" 358×41",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-355",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/tours/investor?scenario=1",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"Question\" 265×36",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-356",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-357",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-358",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-359",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Request a demonstration\" 231×42",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-360",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"See the platform\" 169×42",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-361",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/about/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-362",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/about/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-363",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/about/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-364",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-365",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-366",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-367",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"name\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-368",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"organization\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-369",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"email\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-370",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Send\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-371",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"name\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-372",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"organization\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-373",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"email\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-374",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/contact/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Send\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-375",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/how-it-works/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-376",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/how-it-works/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-377",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/how-it-works/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-378",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/legal/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-379",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/legal/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-380",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/legal/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-381",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-382",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-383",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-384",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"name\" 316×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-385",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"organization\" 316×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-386",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"email\" 316×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-387",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Choose…One buildingOne site (s\" 316×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-388",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Send\" 316×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-389",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"name\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-390",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"organization\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-391",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"email\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-392",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Choose…One buildingOne site (s\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-393",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/pilot-partners/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Send\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-394",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/platform/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-395",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/platform/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-396",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/platform/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-397",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/privacy/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-398",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/privacy/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-399",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/privacy/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-400",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-401",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-402",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-403",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"name\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-404",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"organization\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-405",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"email\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-406",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Choose…CIO / CTO / IT leadersh\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-407",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Send\" 288×42",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-408",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"name\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-409",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"organization\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-410",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: input \"email\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-411",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Choose…CIO / CTO / IT leadersh\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-412",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/request-demo/",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Send\" 358×42",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-413",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/solutions/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-414",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/solutions/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-415",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/solutions/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-416",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/technology/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-417",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/technology/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-418",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/technology/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-419",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/trust/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-420",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/trust/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Empathia\" 108×29",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-421",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/trust/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: button \"Menu\" 63×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-422",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-website",
+      "page": "/trust/",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Privacy notice\" 153×42",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-423",
+      "reproducible": "yes (deterministic, local build)"
+    }
+  ]
+}

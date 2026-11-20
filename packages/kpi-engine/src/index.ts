@@ -9,7 +9,8 @@
 export interface Win { from: string; to: string; days: number }
 export interface Records {
   now: string;
-  projects: Array<{ id: string; governance: string; delivery: string | null; updatedAt: string; fundedAt?: string | null; requestId?: string | null; history: Array<{ to: string; at: string }> }>;
+  /** `governance` null: no governance record (decision or funding) exists for the project — not recorded, never assumed */
+  projects: Array<{ id: string; governance: string | null; delivery: string | null; updatedAt: string; fundedAt?: string | null; requestId?: string | null; history: Array<{ to: string; at: string }> }>;
   decisions: Array<{ projectId: string; decision: string; scopeRev: number; at: string }>;
   funding: Array<{ projectId: string; kind: 'AUTHORIZED' | 'WITHDRAWN'; amount: number; currency: string; at: string }>;
   workOrders: Array<{ id: string; state: string; openedAt: string; resolvedAt?: string | null; closedAt?: string | null; kind?: string; roomId?: string | null }>;

@@ -1,0 +1,62 @@
+# Outstanding work at the pause (14 Nov 2026)
+
+Pause: the founder returns on 16 Nov 2026. Everything below is committed on `v18/continuation`.
+
+## Staging update (14 Nov 2026, afternoon): `bfdda7b`
+
+`bfdda7b` adds the Phase 1 field record and redlines, and the refresh-planning browser suite. Its full regression ran on `bfdda7b` itself:
+
+- Build ok. Unit, integration and security tests: PASS 117, FAIL 0.
+- Every light and dark browser batch passes, the new `demo-refresh` (5/0) and `demo-field-redline` (7/0) included. The one exception
+  is `founder-studio` in the worktree (missing private assets); in the main tree on `bfdda7b` it passes in light and dark, 19/0 each.
+- Pushed to `phase3/legendary-experience` for both `-next` sites.
+
+## Staging (14 Nov 2026, 09:14 CT)
+
+Both `-next` sites serve **`7b212a4`**. Render reports the `empathia-demo-next` and `empathia-website-next` deploys `live` on that
+commit. Its regression ran on 553ff0a and then on 7b212a4. The two commits differ only in the generated API schemas and the website's
+product screenshots.
+
+- **Build, and the unit, integration and security tests** (7b212a4): build ok; PASS 116, FAIL 0.
+- **Browser, light** (553ff0a): all four batches pass, with two exceptions:
+  - `demo-room-jumps` timed out once under load. Rerun on its own on 7b212a4: 11/0.
+  - `founder-studio` fails in the regression worktree, which lacks local, engineer-private assets. Rerun in the main tree on 7b212a4:
+    19/0.
+- **Browser, light, the website suites** (rerun on 7b212a4): website 250/0, fold 37/0, pilot 54/0, brand ok.
+- **Browser, dark** (7b212a4): all four batches pass, except `founder-studio` in the worktree (same reason). Rerun in the main tree on
+  7b212a4: 19/0.
+- **Production (`main`)** is unchanged. It waits for the founder's word.
+- **Cross-links between the staging sites** (founder, 14 Nov 2026, 09:22: "the corporate website … is still going to the old demo
+  site"):
+  - The two sites build their links to each other from environment variables. Unset, they default to the production sites.
+  - Set on Render on 14 Nov:
+    - `empathia-website-next`: `WEBSITE_DEMO_URL=https://empathia-demo-next.onrender.com`.
+    - `empathia-demo-next`: `DEMO_WEBSITE_URL=https://empathia-website-next.onrender.com`.
+  - Each service then redeployed `7b212a4`. No code changed. Production keeps its defaults.
+
+## Built since the candidate
+
+- **Device register gate before commissioning** (task #158). Built in the engine, the API and the demonstration, with tests.
+  `REGISTERS.md` has the detail.
+- **Lifecycle refresh planning in Pro** (task #159). Built at `#/pro/refresh`, with unit tests. `REFRESH_PLANNING.md` lists what is
+  still to do.
+
+## To do
+
+- **Phase 1 installation documentation** (founder, 14 Nov, 06:25). **Built** in `bfdda7b` (`FIELD_RECORD_AND_REDLINES.md`); the server-side record is still to do: how every device is mounted, and the Lite design used as a redlining
+  document. Field changes are marked on the plan: a device moved during installation or commissioning because of a sprinkler or another
+  site condition, with the reason, a photograph and who approved it. What each device is hooked up to is recorded, and so is whatever
+  else a technician needs. Not started.
+- **Regression.** Finish the full regression of the head commit (light and dark matrices), stage it, and verify both `-next` deploys.
+- **Refresh planning.** The browser suite, and the export added to the format verification.
+- **Earlier items:**
+  - APEX by asset ID.
+  - The Pro restyle to match V2.5.3.
+  - The zipped evidence package.
+  - Imports from other products (#144).
+  - The university flagship (#142).
+  - SIGNAL/Learn (#146).
+  - Figma × Lite parity (#147).
+  - Website screenshots (#137).
+  - The Phase A state document (#141).
+  - The films (they need the founder's re-upload).

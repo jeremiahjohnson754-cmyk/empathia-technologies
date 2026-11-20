@@ -24,8 +24,10 @@ const good = (over = {}) => ({ iss: ISS, aud: AUD, sub: 'sub-designer', iat: now
 let h, c, jwks, me;
 before(async () => {
   jwks = http.createServer((req, res) => { fetches += 1; res.setHeader('content-type', 'application/json'); res.end(JSON.stringify(served)); });
-  await new Promise((r) => jwks.listen(4187, '127.0.0.1', r));
-  h = await setup({ db: 'empathia_test_oidc', port: 4186, env: { AUTH_MODE: 'oidc', OIDC_ISSUER: ISS, OIDC_AUDIENCE: AUD, OIDC_JWKS_URL: 'http://127.0.0.1:4187/jwks', OIDC_LINK_BY_EMAIL: 'on' } });
+  // 4160 (was 4187): the connected-demonstration browser suite serves its API on 4187. The two never ran together until a base run
+  // of one checkout overlapped a browser run of another (18 Nov 2026) and the browser suite failed to listen. Nothing else changed.
+  await new Promise((r) => jwks.listen(4160, '127.0.0.1', r));
+  h = await setup({ db: 'empathia_test_oidc', port: 4186, env: { AUTH_MODE: 'oidc', OIDC_ISSUER: ISS, OIDC_AUDIENCE: AUD, OIDC_JWKS_URL: 'http://127.0.0.1:4160/jwks', OIDC_LINK_BY_EMAIL: 'on' } });
   c = client(h.base);
   h.asSuper("UPDATE app.person SET external_subject = 'sub-designer' WHERE email = 'designer@empathia-demo.empathia.invalid'");
   me = (token, headers = {}) => c.call('GET', '/v1/me', { token, headers });

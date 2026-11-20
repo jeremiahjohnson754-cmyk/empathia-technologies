@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1DirectoryOrganizations/0.1.0.json",
+  "title": "POST /v1/directory/organizations request body",
+  "description": "Record an organization: owner, integrator, vendor, manufacturer or service provider",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "kind"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 120
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "OWNER",
+        "INTEGRATOR",
+        "VENDOR",
+        "MANUFACTURER",
+        "SERVICE_PROVIDER"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}

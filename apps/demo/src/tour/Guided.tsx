@@ -1,0 +1,142 @@
+/**
+ * The runner for tours A, B and C: a persistent panel (docked at the bottom on phones) with previous / next, pause and resume, skip to a
+ * stop, and exit; ← / → move between stops and Esc exits while the panel has focus. Each stop is announced politely; focus moves to the
+ * panel at a stop change without trapping it. The stop's element is outlined (no animation under reduced motion). Narration plays only
+ * from a VERIFIED take, muted until the visitor presses play, with captions and a transcript.
+ */
+import { useEffect, useRef, useState } from 'react';
+import { Button, Tag } from '@empathia/ui';
+import { TOURS, NARRATION, CAPTIONS_ONLY, CAPTION_WPS, tourByKey, type Tour } from './tours.js';
+import { NATIVE, areaKey } from '../registry.js';
+import { resolve } from '../registry.pages.js';
+
+const KEY = 'empathia.demo.guided.v1';
+interface Run { tour: Tour['key']; i: number; paused: boolean }
+const load = (): Run | null => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || 'null') as Run | null; const t = v && typeof v === 'object' ? tourByKey(v.tour) : undefined; return t && Number.isInteger(v!.i) && v!.i >= 0 && v!.i < t.stops.length ? v : null; } catch { return null; } };   // a stop outside the tour is no tour (SA-09)
+const save = (r: Run | null) => { try { if (r) sessionStorage.setItem(KEY, JSON.stringify(r)); else sessionStorage.removeItem(KEY); } catch { /* storage unavailable: the tour lasts the page */ } };
+export const stopNative = (href: string) => !!resolve(href) || NATIVE.has(areaKey(href));
+/** Bring the stop's element into the part of the screen the panel leaves free: below the shell bar and the panel where the panel sticks
+ *  to the top (wide screens), above the panel where it is docked at the bottom (phones). scrollIntoView knew about neither, so on a
+ *  phone the spotlit element could sit entirely under the panel (found 18 Nov in a first-time-viewer pass of Tour G). */
+function place(el: Element, p: HTMLElement | null) {
+  const bar = document.querySelector('.shell__bar')?.getBoundingClientRect().bottom ?? 0;
+  const docked = !!p && getComputedStyle(p).position === 'fixed';
+  const ph = p ? p.getBoundingClientRect().height : 0;
+  const top = docked || !p ? bar : Math.max(bar, (parseFloat(getComputedStyle(p).top) || 0) + ph);
+  const bottom = docked && p ? p.getBoundingClientRect().top : innerHeight;
+  const r = el.getBoundingClientRect();
+  if (r.top >= top + 8 && (r.bottom <= bottom - 8 || r.top <= top + 40)) return;   // already where it can be seen
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  scrollTo({ top: Math.max(0, scrollY + r.top - top - 12), behavior: reduce ? 'auto' : 'smooth' });
+}
+
+export function GuidedPanel({ hash }: { hash: string }) {
+  const [run, setRun] = useState<Run | null>(load);
+  const panel = useRef<HTMLElement>(null);
+  // #/tours/a…g[?stop=n] starts (or restarts) a tour
+  useEffect(() => { const m = /^#\/tours\/([abcdefg])(?:\?stop=(\d+))?$/.exec(hash); if (m) { const t = tourByKey(m[1]!)!; const i = Math.min(t.stops.length - 1, Math.max(0, Number(m[2] || 1) - 1)); goto({ tour: t.key, i, paused: false }); } }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const t = run ? tourByKey(run.tour)! : null; const s = t && run ? t.stops[run.i]! : null;
+  const goto = (r: Run) => { setRun(r); save(r); const st = tourByKey(r.tour)!.stops[r.i]!; if (location.hash !== st.href) location.hash = st.href; setTimeout(() => panel.current?.focus({ preventScroll: true }), 50); };
+  const exit = () => { setRun(null); save(null); };
+  // outline the stop's element once it is on the page
+  useEffect(() => {
+    if (!s?.spot || run?.paused) return;
+    let n = 0; let el: Element | null = null;
+    const tick = setInterval(() => { el = document.querySelector(`[data-testid="${s.spot}"]`); if (el || ++n > 20) { clearInterval(tick); if (el) { el.classList.add('tour-spot'); place(el, panel.current); } } }, 100);
+    return () => { clearInterval(tick); document.querySelectorAll('.tour-spot').forEach((x) => x.classList.remove('tour-spot')); };
+  }, [s?.spot, s?.id, run?.paused, hash]);
+  if (!run || !t || !s) return null;
+  const last = run.i === t.stops.length - 1; const native = stopNative(s.href); const take = s.narration ? NARRATION[s.narration] : undefined;
+  return (
+    <aside ref={panel} tabIndex={-1} className={`tour guided${run.paused ? ' paused' : ''}`} aria-label={t.title} data-testid="guided"
+      onKeyDown={(e) => { if ((e.target as HTMLElement).closest('audio, input, select, textarea')) return; if (e.key === 'ArrowRight' && !last) { e.preventDefault(); goto({ ...run, i: run.i + 1, paused: false }); } else if (e.key === 'ArrowLeft' && run.i > 0) { e.preventDefault(); goto({ ...run, i: run.i - 1, paused: false }); } else if (e.key === 'Escape') { e.preventDefault(); exit(); } }}>
+      <div className="tour__head"><span className="tour__k">{t.title} · stop {run.i + 1} of {t.stops.length}</span>{run.paused && <Tag tone="muted">paused</Tag>}{!native && <Tag tone="warn">address without its own page</Tag>}</div>
+      <p className="ui-visually-hidden" role="status" aria-live="polite">{`Stop ${run.i + 1} of ${t.stops.length}: ${s.title}${run.paused ? ', paused' : ''}`}</p>
+      {!run.paused && <>
+        <h2 className="tour__title">{s.title}</h2>
+        <p className="tour__text">{s.text}</p>
+        {!native && <p className="ui-meta">This stop’s address has no page of its own; it lands on the address map instead of pretending.</p>}
+        {s.tries && <ul className="tour__tries" aria-label="Searches to try" data-testid="tour-tries">{s.tries.map((q) => <li key={q}><a className="ui-btn ui-btn--sm" href={`#/search?q=${encodeURIComponent(q)}`}>{q}</a></li>)}</ul>}
+        {s.ask && <details key={s.id} className="tour__ask" data-testid="tour-ask"><summary>{s.ask.q}</summary><p>{s.ask.a}</p></details>}
+        {take && <Narration key={s.narration} id={s.narration!} />}
+        {!take && s.captionsOnly && CAPTIONS_ONLY[s.captionsOnly] && <ReadAlong key={s.captionsOnly} id={s.captionsOnly} />}
+      </>}
+      <div className="tour__acts">
+        <Button small onClick={() => goto({ ...run, i: run.i - 1, paused: false })} disabled={run.i === 0}>Previous</Button>
+        {last ? <Button small kind="primary" onClick={exit}>Finish · explore freely</Button> : <Button small kind="primary" onClick={() => goto({ ...run, i: run.i + 1, paused: false })}>Next</Button>}
+        <Button small kind="quiet" onClick={() => { const r = { ...run, paused: !run.paused }; setRun(r); save(r); }}>{run.paused ? 'Resume' : 'Pause'}</Button>
+        <label className="tour__skip">Skip to <select value={run.i} onChange={(e) => goto({ ...run, i: Number(e.target.value), paused: false })}>{t.stops.map((x, i) => <option key={x.id} value={i}>{x.id} · {x.title}</option>)}</select></label>
+        <Button small kind="quiet" onClick={exit}>Exit tour</Button>
+      </div>
+    </aside>
+  );
+}
+
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+/** A compact player (one row, so the panel leaves room for the page): Listen / Pause, progress, time, and the caption of the moment
+ *  shown as text while it plays — an <audio> element draws no captions of its own, so before 18 Nov the captions file was never seen.
+ *  Nothing plays until the visitor presses Listen. */
+function Narration({ id }: { id: string }) {
+  const n = NARRATION[id]!; const a = useRef<HTMLAudioElement>(null);
+  const [failed, setFailed] = useState(false); const [playing, setPlaying] = useState(false); const [at, setAt] = useState(0); const [cue, setCue] = useState('');
+  useEffect(() => {
+    const tr = a.current?.textTracks[0]; if (!tr) return undefined;
+    tr.mode = 'hidden'; const on = () => { const c = tr.activeCues && tr.activeCues.length ? (tr.activeCues[0] as VTTCue) : null; setCue(c ? c.text : ''); };
+    tr.addEventListener('cuechange', on); return () => tr.removeEventListener('cuechange', on);
+  }, [id, failed]);
+  const toggle = () => { const el = a.current; if (!el) return; if (el.paused) el.play().catch(() => setFailed(true)); else el.pause(); };
+  return (
+    <div className="narr" data-testid="narration">
+      {failed ? <p className="ui-meta">The narration audio could not be loaded; the transcript below is the same words.</p> : <>
+        <div className="narr__row">
+          <button type="button" className="narr__play" onClick={toggle} aria-pressed={playing} data-testid="narr-play">{playing ? 'Pause narration' : 'Listen'}</button>
+          <span className="narr__bar" aria-hidden="true"><i style={{ width: `${Math.min(100, (at / n.seconds) * 100)}%` }} /></span>
+          <span className="narr__t ui-meta">{mmss(at)} / {mmss(n.seconds)}</span>
+        </div>
+        <audio ref={a} preload="none" src={n.src} aria-label="Narration of this stop" onError={() => setFailed(true)} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
+          onEnded={() => { setPlaying(false); setAt(0); setCue(''); }} onTimeUpdate={(e: { currentTarget: HTMLAudioElement }) => setAt(e.currentTarget.currentTime)}><track kind="captions" src={n.captions} srcLang="en" label="English" default /></audio>
+        {playing && cue && <p className="narr__cue" data-testid="narr-cue">{cue}</p>}
+      </>}
+      <div className="narr__foot"><details><summary>Transcript</summary><p>{n.transcript}</p></details><p className="ui-meta narr__who">{n.voice}</p></div>
+    </div>
+  );
+}
+
+/** A stop whose line has no recorded voice: the same words as timed captions with no sound (founder 18 Nov 16:41), at the pace of the
+ *  recorded takes, labelled as captions only. Read along starts it; nothing moves on its own. */
+function ReadAlong({ id }: { id: string }) {
+  const cues = CAPTIONS_ONLY[id]!;
+  const times = cues.map((c) => Math.max(1.2, c.split(/\s+/).length / CAPTION_WPS) + 0.35);
+  const total = times.reduce((a, b) => a + b, 0);
+  const [at, setAt] = useState(0); const [running, setRunning] = useState(false);
+  useEffect(() => {
+    if (!running) return undefined;
+    const t0 = performance.now() - at * 1000;
+    const tick = setInterval(() => { const s = (performance.now() - t0) / 1000; if (s >= total) { setAt(0); setRunning(false); } else setAt(s); }, 100);
+    return () => clearInterval(tick);
+  }, [running]);   // eslint-disable-line react-hooks/exhaustive-deps
+  let acc = 0; let i = 0; while (i < cues.length - 1 && at >= acc + times[i]!) { acc += times[i]!; i += 1; }
+  return (
+    <div className="narr narr--captions" data-testid="captions-only">
+      <div className="narr__row">
+        <button type="button" className="narr__play" onClick={() => setRunning(!running)} aria-pressed={running} data-testid="read-along">{running ? 'Pause captions' : 'Read along'}</button>
+        <span className="narr__bar" aria-hidden="true"><i style={{ width: `${Math.min(100, (at / total) * 100)}%` }} /></span>
+        <span className="narr__t ui-meta">{mmss(at)} / {mmss(total)}</span>
+      </div>
+      {running && <p className="narr__cue" data-testid="narr-cue" aria-live="off">{cues[i]}</p>}
+      <div className="narr__foot"><details><summary>Transcript</summary><p>{cues.join(' ')}</p></details><p className="ui-meta narr__who">No recorded voice for this stop: captions only, no sound.</p></div>
+    </div>
+  );
+}
+
+export function ToursPage() {
+  return (
+    <section className="tours" data-native="" data-testid="tours-index">
+      <p className="kicker">Guided experiences</p><h1>{TOURS.length} guided tours, or explore on your own</h1>
+      <p className="ui-muted">Each tour can be paused, resumed, skipped and left at any stop. Nothing in the demonstration needs a tour.</p>
+      <ul className="tours__list">{TOURS.map((t) => <li key={t.key}><a href={`#/tours/${t.key}`} className="campus__card" data-testid={`tour-start-${t.key}`}><b>{t.title}</b><span className="ui-muted">{t.goal}</span><span className="ui-meta">{t.audience} · {t.stops.length} stops</span></a></li>)}</ul>
+      <h2 className="build__h">Or start where you are</h2>
+      <ul className="tours__free"><li><a href="#/campus">Walk the campus</a> — for a first look</li><li><a href="#/v25/exec">Executive intelligence</a> — for executives</li><li><a href={'#/search/scenarios'}>Search Party scenarios</a> — for engineers</li><li><a href="#/tours/investor">The seven investor scenarios</a></li></ul>
+    </section>
+  );
+}

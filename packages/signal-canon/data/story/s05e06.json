@@ -1,0 +1,1042 @@
+{
+ "chapter": {
+  "id": "s05e06",
+  "kicker": "S05 · E06",
+  "title": "Professor Grant",
+  "pill": "S05E06 · Professor Grant",
+  "sub": "Three years of recordings that fade at the whiteboard — and a dashboard that stayed green the whole time.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S05E06",
+   "RT-03",
+   "RV-120",
+   "RV-121",
+   "RV-130",
+   "RV-131",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#10B981"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 5 · EPISODE 6 · DRAFT · CASE-028  Cold case · Professor Grant, Maya and Wes · Level L4 · Intermediate support  For three years Professor Grant has said his lecture recordings fade whenever he walks to the whiteboard. For three years he has been shown a green dashboard.  ⚑ RV-130: auto-mixer simplified. RV-131: levels, not listening. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Professor Grant",
+   "kind": "COLD CASE · THREE YEARS",
+   "level": "L4 · INTERMEDIATE",
+   "party": [
+    "maya",
+    "grant",
+    "wes"
+   ],
+   "stakes": "A professor has reported the same fault for three years and been shown the same green dashboard every time. He is out of patience, and he is right.",
+   "clock": "Before Thursday's 11:00 lecture.",
+   "reward": "Recordings that hold steady wherever Grant stands. A dashboard that checks what students get. Grant's trust — from almost nothing.",
+   "objectives": [
+    {
+     "key": "BR-S05E06-01",
+     "text": "Answer three years"
+    },
+    {
+     "key": "twist",
+     "text": "Find out what green means"
+    },
+    {
+     "key": "core",
+     "text": "Bring the whiteboard into the recording"
+    },
+    {
+     "key": "BR-S05E06-02",
+     "text": "Cover the board without feedback"
+    },
+    {
+     "key": "BR-S05E06-03",
+     "text": "Teach the dashboard the outcome"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things about Hall D"
+    }
+   ],
+   "rumor": "The dashboard isn't lying. It's answering a different question."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “I become a ghost”",
+   "sub": "Tuesday · 1:45 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A recording's level over time: tall and full while Grant is at the lectern, collapsing to a thin line in two shaded stretches labeled 'at the board'.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Organic chemistry. The reaction mechanisms are on the whiteboard. In the recording, that's where he disappears.",
+   "flags": [
+    "RV-130"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8748
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "AV office · Tuesday 1:50",
+   "lines": [
+    {
+     "who": "grant",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I have filed eleven tickets. I have been told eleven times that the microphones are working."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "They probably were. That's not the same as you being heard."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The AV office. Professor Grant, gray-bearded, stands at Maya's desk; behind them the wall of room tiles is entirely green.",
+   "characters": [
+    {
+     "id": "grant",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Professor Grant",
+     "kind": "speech",
+     "text": "Eleven tickets. Three years. Every one closed ‘no fault found’."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then we've been looking at the wrong thing."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-130"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "dashboard: all green"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 7007
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S5-06",
+   "who": "grant",
+   "prompt": "Are you going to show me the green screen too?",
+   "options": [
+    {
+     "label": "“No. I'm going to ask you to show me. Can we record you walking the room — now?”",
+     "who": "grant",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Nobody has asked me to show them. Lead the way.",
+     "trust": {
+      "Grant": 2
+     }
+    },
+    {
+     "label": "“The dashboard does say the mics are fine.”",
+     "who": "grant",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Then the dashboard and I have nothing further to discuss.",
+     "trust": {
+      "Grant": -2
+     }
+    },
+    {
+     "label": "“What exactly happens when you go to the board?”",
+     "who": "grant",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "My students tell me I become a ghost. Their word.",
+     "trust": {
+      "Grant": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  How far is too far from the microphone?  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Grant beside a board. Inverse square: level drops twenty log of d-two over d-one. From one metre to four, that's twelve dB. So when I walk to the whiteboard the microphone thinks I've left the room. The auto-mixer does, yes. For three years.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "grant",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s5kit.bg_lecture",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Inverse square: level drops twenty log of d-two over d-one. From one metre to four, that's twelve dB."
+    },
+    {
+     "side": "R",
+     "who": "Professor Grant",
+     "kind": "speech",
+     "text": "So when I walk to the whiteboard the microphone thinks I've left the room."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The auto-mixer does, yes. For three years."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1841
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Auto-mixer   Coverage   Pickup lobe   Formula and variables   ƒ FORMULA · Inverse-square law  ΔL = 20·log 10 (d 2  ÷ d 1 )   d 1   starting distance  d 2   new distance  ΔL  level lost, dB     ƒ FORMULA · Open microphones and gain before feedback  ΔGBF = −10·log 10 (N open )   N open   how many times more mics are open  ΔGBF  change in gain before feedback, dB"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S05E06",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Show me”",
+   "sub": "1:55 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E06-01",
+   "prompt": "1:55. Grant is at your desk with three years of tickets. What do you do?",
+   "happening": "Grant at your desk.",
+   "clock": "Tuesday 13:55",
+   "known": [
+    "◉ Eleven tickets, all ‘no fault found’",
+    "◉ Dashboard green"
+   ],
+   "unknown": [
+    "What happens at the board"
+   ],
+   "risk": "Grant stops reporting — and 240 students keep revising from ghost recordings.",
+   "timer_s": 20,
+   "timeout": [
+    "Grant waits, then leaves.",
+    "He was offering you the evidence."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who knows the outcome best?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Show him the dashboard: the mics are online",
+     "result": "Grant: “That is exactly what I was shown last year.” He leaves.",
+     "consequence": "The proxy again, to the one person who knows the outcome.",
+     "chips": [
+      "Proxy"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Twelve tickets, same answer.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Grant": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask him to show you: record a walk test with him in Hall D, now",
+     "result": "Grant, surprised: “Nobody has asked me to show them.” At the board: 12 dB down, then the mixer gates him out.",
+     "consequence": "The person reporting the outcome is your best instrument.",
+     "chips": [
+      "User as evidence",
+      "Walk test"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Grant": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Give him a lapel mic",
+     "result": "He wears it Tuesday, forgets it Thursday.",
+     "consequence": "Moves the problem onto him.",
+     "chips": [
+      "Burden on the user"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Open ticket #12",
+     "result": "It is closed in two days: ‘no fault found’.",
+     "consequence": "The same process, the same result.",
+     "chips": [
+      "Repeat"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Tickets closed against the proxy.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Grant": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Hall D. Grant at the whiteboard, pointing at a mechanism; Maya at the lectern with a tablet showing the recording level: minus 12 dB, gated.",
+   "characters": [
+    {
+     "id": "grant",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "s5kit.bg_lecture",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "At the lectern: fine. Here: twelve dB down, and the mixer decides you've left."
+    },
+    {
+     "side": "R",
+     "who": "Professor Grant",
+     "kind": "speech",
+     "text": "I have not left. I am teaching the important part."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-130"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "whiteboard: −12 dB"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1745
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Green for three years.",
+   "body": "The dashboard has been green every day Grant complained. Mic online, file exists — and since the spring (S05E01), ‘audio present’, averaged over the whole hour. Grant's loud lectern minutes carry the average. The check fixed after Engineering's silent recordings can't see a professor who fades for ten minutes at a time.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S05E06-1",
+   "label": "Test: what does green actually rule out?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The dashboard's check list for Hall D: mic array online, recording file exists, audio present averaged over the hour — all ticked green. Speech steady throughout: not checked.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The spring's audio check averages the hour. Grant's loud minutes hide his silent ones.",
+   "flags": [
+    "RV-130"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1260
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S5-06a",
+   "teaser": "ticket #11",
+   "title": "Closed · ‘no fault found’",
+   "body": "Grant's eleventh ticket, closed eight months ago: *Checked dashboard. Mic online, recordings present. No fault found.* Every ticket closed the same way, by a different person, each checking the same two things. Maya reads all eleven. Wes: “We kept asking the dashboard instead of him.”",
+   "thread": "Proxy vs outcome",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A16",
+   "label": "**Learn it now:** auto-mixers, coverage and open microphones.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Sound that brings people in     What the room is telling you     Point it at people, not at the ceiling"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "demo-note",
+   "cls": "demo-note",
+   "text": "🎚 EQ and the analyser · HANDS-ON DEMO  Shape a voice, a kick drum or a ringing mic with a four-band EQ, and watch the analyser bars in the colours of the spectrum. Then listen.  Open the demo ▸",
+   "opens": {
+    "kind": "demo",
+    "id": "eq"
+   }
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 2  Record the panel discussion  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-panel"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Revisit”",
+   "sub": "3:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Hall D's commissioning file, three years old: lobe 3 at the whiteboard switched off because of ventilation noise, with a note to revisit after the ventilation was balanced.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Facilities rebalanced the ventilation two years ago. Nobody revisited.",
+   "flags": [
+    "RV-130"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "lobe 3 OFF · ‘revisit’"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1263
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Lobe 3 was always there.",
+   "body": "The array has a lobe aimed at the whiteboard. It was switched off at installation because the ventilation was noisy, with a note: *revisit after HVAC balance.* Facilities balanced it two years ago. The fix was one setting and one walk test away — for two years.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S05E06-2",
+   "label": "Test: what went wrong — and why not open everything?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E06-02",
+   "prompt": "3:15. The ventilation noise is gone. How do you cover the whiteboard?",
+   "happening": "Lobe 3 off; HVAC rebalanced.",
+   "clock": "15:15",
+   "known": [
+    "◉ −12 dB at the board",
+    "◉ Lobe 3 exists",
+    "◉ HVAC noise gone"
+   ],
+   "unknown": [
+    "The right gain"
+   ],
+   "risk": "Feedback in a 240-seat hall.",
+   "timer_s": 25,
+   "timeout": [
+    "Thursday arrives with lobe 3 still off.",
+    "Grant is a ghost again."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What does each extra open microphone cost?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Turn every lobe on at full gain",
+     "result": "The room hisses, the PA rings at 2.1 kHz, the lectern goes thin.",
+     "consequence": "More open mics cost gain before feedback.",
+     "chips": [
+      "Feedback",
+      "Noise"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Cover where people stand, not everywhere.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Enable lobe 3 aimed at the board, set its gain from the walk test, and check the auto-mixer keeps open mics low",
+     "result": "Lobe 3 opens when he's at the board, closes when he's back at the lectern.",
+     "consequence": "Coverage where he stands, headroom kept.",
+     "chips": [
+      "Targeted coverage"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask Grant to teach from the lectern",
+     "result": "He moves the mechanisms to slides. His students say they understand less.",
+     "consequence": "Changes his teaching to fit our room.",
+     "chips": [
+      "Burden on the user"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Replace the array",
+     "result": "Nine weeks and a budget request.",
+     "consequence": "The array isn't the problem.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "The first public-address systems",
+   "body": "In the early 1920s, amplified public-address systems let a single speaker be heard by crowds of thousands — as long as he stayed at the microphone. Step back and the sound fell away, exactly as the inverse square predicts. A hundred years later, lecturers still walk out of their microphones' reach.",
+   "flag": "RV-27",
+   "when": "1920s",
+   "lab": "PHY-S05E06"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #47 · AVERY'S LENS  Measure the outcome, not the proxy  A status check should ask whether the person got what they came for — not only whether the device is on.  Hall D's dashboard checked that the mic was online and a file existed. For three years, neither was the problem."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S05E06",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of Hall D from above: the lectern lobe covers the lectern; the whiteboard lobe is dashed and off; Grant's path to the board leaves every open lobe, 4 m out, −12 dB, gated.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "He isn't quiet. He's outside the room's hearing.",
+   "flags": [
+    "RV-130",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1762
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "flat",
+   "where": "Hall D · 3:10",
+   "lines": [
+    {
+     "who": "wes",
+     "pose": "N",
+     "expr": "surprised",
+     "text": "Lobe three was just… off? The whole time?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "With a note saying ‘revisit’. Nobody owned the word."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-17",
+   "label": "**Fix it:** bring the whiteboard into the recording.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E06-03",
+   "prompt": "Wednesday. What should the dashboard check from now on?",
+   "happening": "Hall D proven.",
+   "clock": "Wednesday",
+   "known": [
+    "◉ Dashboard checks only proxies",
+    "◉ ‘Revisit’ had no owner"
+   ],
+   "unknown": [
+    "How many other Hall Ds"
+   ],
+   "risk": "Thirty-seven more professors, waiting.",
+   "timer_s": 25,
+   "timeout": [
+    "The dashboard stays as it is.",
+    "It stays green over the next Grant."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would have turned Grant's first ticket red?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Speech level minute by minute in every recording, flagging any fade longer than a minute — levels only, agreed with the teaching office — and a ‘revisit’ field with an owner and a date in every commissioning file",
+     "result": "Night one: 37 rooms fade somewhere. Nobody listened to a single lecture.",
+     "consequence": "Green now means students can hear.",
+     "chips": [
+      "Outcome check",
+      "Revisits owned"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Team": 2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Raise the hour-average threshold",
+     "result": "Grant still passes: his lectern minutes carry any average.",
+     "consequence": "A stricter average is still an average.",
+     "chips": [
+      "Still averaged"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Wait for complaints",
+     "result": "Grant waited three years.",
+     "consequence": "The people who give up stop complaining.",
+     "chips": [
+      "Reactive"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Complaints measure patience, not quality.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Grant": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Listen to a sample of lectures every week",
+     "result": "The faculty union hears about it by Friday.",
+     "consequence": "Listening to content without agreement.",
+     "chips": [
+      "Privacy"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Levels, not listening.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-54",
+   "label": "**Sort it:** proxy or outcome?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-506",
+   "label": "**Service Mode:** run Grant's Tuesday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-028 · SIGNAL original  The Green Dashboard, Again  For three years a professor said his recordings faded. For three years the dashboard said everything was fine. Both were right about different things.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-028"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Thursday · 12:10 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View after the fix: lobe 3 on at the whiteboard; Grant's path stays inside an open lobe the whole way. Steady.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Thursday's walk test: within 3 dB from lectern to board.",
+   "flags": [
+    "RV-130"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "walk test · steady ±3 dB"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1740
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Hall D after Thursday's lecture. Grant listens to the recording on headphones, smiling; Maya beside him.",
+   "characters": [
+    {
+     "id": "grant",
+     "pose": "L",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s5kit.bg_lecture",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Professor Grant",
+     "kind": "speech",
+     "text": "There. The end of my sentence. First time in three years."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Thank you for not giving up on telling us."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-131"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1327
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S5-06b",
+   "teaser": "a student's email",
+   "title": "Forwarded by Grant",
+   "body": "Grant forwards an email from a student, sent after Thursday: *Professor — the recording worked today. I'm deaf in one ear and I revise from these. I never heard your mechanisms before, only the lectern parts.* Grant's note on top: *Please pass this to whoever fixed it.*",
+   "thread": "Access",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The campus quad at midday, the signage kiosk in the middle of the path. Delgado on his phone beside it.",
+   "characters": [
+    {
+     "id": "delgado",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "s5kit.bg_quad",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Officer Delgado",
+     "kind": "phone",
+     "text": "Noon test of the emergency alerts. The shelter message took a minute and a half to reach these signs. The phones had it in five seconds."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Signal, Delayed.*",
+   "flags": [
+    "RV-120"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2904
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Distance costs about 6 dB per doubling: cover where people actually stand, and remember every extra open mic costs headroom. A dashboard should check the outcome — speech in the recording — not only that the device is on. Revisits need owners and dates."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Grant filed eleven tickets. What makes someone stop reporting a problem — and how would you know they had?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S05E06",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

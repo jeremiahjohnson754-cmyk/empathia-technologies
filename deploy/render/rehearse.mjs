@@ -44,6 +44,8 @@ try {
   step('V-1 gate: the role step refuses (and would fail the deploy) when the default user cannot create roles', asOwner.status !== 0 && /V-1 failed/.test(asOwner.stderr), asOwner.stderr.trim().slice(0, 160));
   const badUser = node(['services/enterprise-api/dist/src/db/bootstrap.js', '--roles'], { DATABASE_URL: SUPER, APP_DATABASE_URL: OWNER, WORKER_DATABASE_URL: WORKER });
   step('the role step refuses a runtime URL that names any user but empathia_app / empathia_worker (e.g. the owner)', badUser.status !== 0 && /must be empathia_app/.test(badUser.stderr), badUser.stderr.trim().slice(0, 160));
+  // Stated: this stand-in is the development cluster's superuser. The path a managed platform takes — an owner that is NOT a superuser,
+  // creating the roles on the first run and re-passwording them on the next — is rehearsed in rehearse-demo.mjs (R-01, R-03).
   const asCreator = node(['services/enterprise-api/dist/src/db/bootstrap.js', '--roles'], { DATABASE_URL: SUPER, EMPATHIA_APP_PASSWORD: creds.appPassword, EMPATHIA_WORKER_PASSWORD: creds.workerPassword });
   step('the role step passes for a role-creating user: both roles NOBYPASSRLS NOSUPERUSER, CONNECT granted, PUBLIC revoked', asCreator.status === 0 && /"v1":"PASS"/.test(asCreator.stdout), (asCreator.stdout || asCreator.stderr).trim().slice(0, 200));
   // migrations, from the runtime tree, as the owner (Render: the pre-deploy command)

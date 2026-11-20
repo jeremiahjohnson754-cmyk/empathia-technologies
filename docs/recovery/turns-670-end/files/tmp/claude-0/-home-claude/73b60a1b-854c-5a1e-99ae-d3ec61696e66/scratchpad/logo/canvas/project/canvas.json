@@ -1,0 +1,45 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Artboard-6omf.dc.html": {
+      "h": 600,
+      "page": "page-6dqbol",
+      "title": "Artboard 1",
+      "w": 800,
+      "x": 0,
+      "y": 0
+    },
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1440, "h": 900, "page": "page-1", "title": "Flagship: the compass on the aspis"},
+    "Concepts.dc.html": {"x": 0, "y": 1020, "w": 1440, "h": 640, "page": "page-1", "title": "Five concepts, one emblem"},
+    "Lineage.dc.html": {"x": 0, "y": 1780, "w": 1440, "h": 560, "page": "page-1", "title": "From the V2.5.3 mark to the flagship"},
+    "Voice.dc.html": {"x": 1520, "y": 0, "w": 1080, "h": 1080, "page": "page-1", "title": "Playful voice: poster"},
+    "Owl.dc.html": {"x": 2680, "y": 0, "w": 390, "h": 844, "page": "page-1", "title": "The Agora Owl on a not-found screen"}
+  },
+  "createdOnFiles": {
+    "at": "2026-11-03T10:13:15.914Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {"view": "canvas", "page": "page-1"},
+  "notes": {},
+  "order": [
+    "Artboard-6omf.dc.html",
+    "Main.dc.html",
+    "Concepts.dc.html",
+    "Lineage.dc.html",
+    "Voice.dc.html",
+    "Owl.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Page 1"
+    },
+    {
+      "id": "page-6dqbol",
+      "name": "Page 2"
+    }
+  ],
+  "title": "Design"
+}

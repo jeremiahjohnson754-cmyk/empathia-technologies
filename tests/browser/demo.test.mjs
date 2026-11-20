@@ -3,11 +3,12 @@
 // launch action largest on a phone), every legacy area address resolves to a page that states its migration status (never a blank or an
 // error), the perspective picker says it grants nothing, no console error, no request leaves the page.
 //   node tests/browser/demo.test.mjs [dist] [evidence-dir]
-import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url'; import net from 'node:net';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/demo/dist')); const out = path.resolve(process.argv[3] || path.join(repo, 'tests/evidence/demo')); fs.mkdirSync(out, { recursive: true });
-const PORT = 4398; const results = []; let failed = 0;
+// a free port (QA round 1, R1-01): the fixed 4398 collided with another worktree's server and failed the suite at its first check
+const PORT = await new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); }); const results = []; let failed = 0;
 const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 400) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${name}${cond ? '' : ' — ' + String(detail).slice(0, 300)}`); };
 const srv = spawn(process.execPath, [path.join(repo, 'apps/demo/server/serve.mjs'), `--port=${PORT}`], { stdio: ['ignore', 'pipe', 'pipe'] });
 await new Promise((r) => { srv.stdout.on('data', () => r()); srv.stderr.on('data', () => r()); setTimeout(r, 2500); });
@@ -18,14 +19,17 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h } }); const page = await ctx.newPage(); const errs = []; const ext = [];
   page.on('pageerror', (e) => errs.push(e.message)); page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); }); page.on('request', (r) => { if (!r.url().startsWith(base)) ext.push(r.url()); });
   await page.goto(base); await page.waitForTimeout(600);
-  const land = await page.evaluate(() => ({ hash: location.hash, banner: !!Array.from(document.querySelectorAll('.ui-tag')).find((t) => /SYNTHETIC DATA/.test(t.textContent)), actions: Array.from(document.querySelectorAll('.start .go')).map((a) => ({ text: a.querySelector('b').textContent, h: a.getBoundingClientRect().height })), note: (document.getElementById('persp-note') || {}).textContent || '', over: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+  const land = await page.evaluate(() => ({ hash: location.hash, banner: !!Array.from(document.querySelectorAll('.ui-tag, .synth-chip')).find((t) => /synthetic data/i.test(t.textContent)) /* QUALITY_UPLIFT: the bar chip and the footer line, no per-page banner */, actions: Array.from(document.querySelectorAll('.start .go')).map((a) => ({ text: a.querySelector('b').textContent, h: a.getBoundingClientRect().height })), note: (document.getElementById('persp-note') || {}).textContent || '', over: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
   ok(`D-${tag}-01`, 'lands on the investor start with the synthetic banner and three start actions', land.hash === '#/investor' && land.banner && land.actions.length === 3 && land.over <= 0, JSON.stringify(land));
   ok(`D-${tag}-02`, 'the launch action comes first and, on a phone, is the tallest', land.actions[0] && /Launch interactive room builder/.test(land.actions[0].text) && (tag !== 'phone' || land.actions[0].h >= Math.max(...land.actions.map((a) => a.h))), JSON.stringify(land.actions));
   ok(`D-${tag}-03`, 'the perspective picker says it grants nothing', /grants nothing/.test(land.note), land.note);
   await page.screenshot({ path: path.join(out, `${tag}-start.png`) });
   if (tag === 'desktop') {
-    let bad = []; for (const a of areas.filter((x) => x.key !== 'investor')) { const hash = '#/' + (a.key === 'none' ? 'no-such-area' : a.key.replace('.', '/')); await page.evaluate((x) => { location.hash = x; }, hash); await page.waitForTimeout(120);
-      const v = await page.evaluate(() => ({ h1: (document.querySelector('main h1') || {}).textContent || '', text: document.querySelector('main').innerText })); if (!(v.h1.length > 2 && /(Not migrated yet|Native page|Unknown address|interactive demonstration|Acting as)/.test(v.text))) bad.push(`${hash}: ${v.h1}`); }
+    let bad = []; for (const a of areas.filter((x) => x.key !== 'investor')) { const hash = '#/' + (a.key === 'none' ? 'no-such-area' : a.key.replace('.', '/')); const prevH1 = await page.evaluate(() => (document.querySelector('main h1') || {}).textContent || ''); await page.evaluate((x) => { location.hash = x; }, hash); await page.waitForTimeout(120);
+      // 14 Nov 2026: a page's code loads on first use; under a busy machine 120 ms was not always enough, so wait (up to 3 s) for a new
+      // heading before reading it (two areas with the same heading simply wait out the 3 s). What a page must show is unchanged.
+      await page.waitForFunction((prev) => { const t = (document.querySelector('main h1') || {}).textContent || ''; return t.length > 2 && t !== prev; }, prevH1, { timeout: 3000 }).catch(() => undefined);
+      const v = await page.evaluate(() => ({ h1: (document.querySelector('main h1') || {}).textContent || '', text: document.querySelector('main').innerText, native: !!document.querySelector('main [data-native]') })); if (!(v.h1.length > 2 && (v.native || /(Not migrated yet|Native page|Unknown address|interactive demonstration|Acting as)/.test(v.text)))) bad.push(`${hash}: ${v.h1}`); }   // rebuild/demo-spaces: the campus and tours pages are native and declare it with data-native (assertion unchanged otherwise)
     ok('D-04', `every one of the ${areas.length} legacy areas resolves to a native page or one that states its migration status`, !bad.length, bad.slice(0, 5).join(' | '));
     await page.evaluate(() => { location.hash = '#/assurance/room/R-1/history'; }); await page.waitForTimeout(150);
     ok('D-05', 'a deep legacy address resolves to its area (assurance.history)', /baseline history/i.test(await page.evaluate(() => document.querySelector('main').innerText)));
@@ -39,13 +43,27 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     const persp = async (p) => { await page.selectOption('.persp select', p); await page.waitForTimeout(150); };
     const refusal = async () => { const el = page.locator('[role=alert]'); return (await el.count()) ? await el.first().innerText() : ''; };
     await page.evaluate(() => { try { localStorage.removeItem('empathia.demo.build-a-room.v1'); } catch {} location.hash = '#/v25/build'; }); await page.waitForTimeout(300);
-    await persp('visitor');
-    ok('B-01', 'the builder opens from the launch address and says the visitor perspective cannot create a room', /Build a Room/.test(await main()) && /does not hold room\.design/.test(await main()));
-    await persp('designer'); await page.fill('#b-length', 'abc'); await page.click('button:has-text("Create the room")'); await page.waitForTimeout(200);
+    await persp('visitor'); await page.evaluate(() => { location.hash = '#/v25/build'; }); await page.waitForTimeout(300);
+    // changed for D44 (founder, 2026-11-03 09:39: a role never sees a screen it cannot use): the visitor now gets the Agora Owl access
+    // page for Build a Room (V2.5.3 area v25.build excludes the visitor) instead of the builder with a refusal; the designer then opens it
+    ok('B-01', 'the launch address is refused to the visitor with the owl access page, which names the designer among the roles whose work it is', /Build a Room is not open to the Visitor/.test(await main()) && (await page.locator('[data-testid=access-page]').count()) === 1 && (await page.locator('[data-testid=access-who] [data-role-key=designer]').count()) === 1);
+    await persp('designer'); await page.evaluate(() => { location.hash = '#/v25/build'; }); await page.waitForTimeout(400); await page.fill('#b-length', 'abc'); await page.click('button:has-text("Create the room")'); await page.waitForTimeout(200);
     ok('B-02', 'an unreadable dimension is refused, never substituted', /not readable/.test(await refusal()), await refusal());
     await page.fill('#b-length', "19' 8\""); await page.fill('#b-width', '4'); await page.selectOption('#b-unit', 'ft'); await page.fill('#b-width', '13'); await page.click('button:has-text("Create the room")'); await page.waitForTimeout(400);
     const t1 = await main();
     ok('B-03', 'the room is created from the template with declared and modeled dimensions labelled, devices placed and connections proposed', /PLANNED/.test(t1) && /length DECLARED/.test(t1) && /ceiling MODELED/.test(t1) && /Devices \(\d+\) and proposed connections \(\d+\)/.test(t1) && /Huddle Room/.test(t1), t1.slice(0, 200));
+    // 12 Nov 2026: V2.5.3's editing verbs restored in Build a Room: select, move in 25 cm steps, duplicate, undo (state is left as it was)
+    { const n0 = await page.locator('.build__list li[data-dev]').count(); await page.locator('.build__list li[data-dev] button[aria-pressed]').first().click();
+      const at0 = await page.getByTestId('build-sel').innerText(); await page.getByTestId('build-move-right').click(); await page.waitForTimeout(120); const at1 = await page.getByTestId('build-sel').innerText();
+      await page.getByTestId('build-dup').click(); await page.waitForTimeout(120); const n1 = await page.locator('.build__list li[data-dev]').count();
+      await page.getByTestId('build-undo').click(); await page.waitForTimeout(120); await page.getByTestId('build-undo').click(); await page.waitForTimeout(120);
+      const n2 = await page.locator('.build__list li[data-dev]').count(); const at2 = await page.getByTestId('build-sel').innerText(); const ledger = await main();
+      ok('B-03b', 'the designer selects a device, moves it 25 cm and duplicates it; undo walks both back', at1 !== at0 && n1 === n0 + 1 && n2 === n0 && at2 === at0 && (await page.getByTestId('build-undo').count()) === 0, JSON.stringify([at0.slice(0, 60), at1.slice(0, 60), n0, n1, n2])); void ledger;
+      await page.locator('.build__list li[data-dev] button[aria-pressed=true]').first().click(); }
+    { await page.locator('[data-testid=build-outline] summary').click(); await page.fill('[aria-label="Outline corners"]', '0,0; 4,4; 4,0; 0,4'); await page.getByTestId('build-outline-go').click(); await page.waitForTimeout(120); const bow = await refusal();
+      await page.fill('[aria-label="Outline corners"]', '0,0; 6,0; 6,4; 3,4; 3,7; 0,7'); await page.getByTestId('build-outline-go').click(); await page.waitForTimeout(150); const t2 = await main();
+      await page.getByTestId('build-undo').click(); await page.waitForTimeout(150); const t3 = await main();
+      ok('B-03c', 'an outline that crosses itself is refused; a valid one is drawn, its length and width DECLARED; undo puts the template outline back', /cross/.test(bow) && /outline DECLARED/.test(t2) && /2\.13 × 1\.83 ×/.test(t2) && /5\.99\d? × 3\.96\d? ×/.test(t3) /* the room was created in feet (B-02/B-03): 7 ft × 6 ft is 2.13 × 1.83 m */, `${bow.replace(/\n/g, ' ')} | ${(t2.match(/\d+(\.\d+)? × \d+(\.\d+)? × [^\n]*/) || [''])[0]}`); }
     await page.click('button:has-text("Approve the suggestion")'); await page.waitForTimeout(150);
     ok('B-04', 'the designer cannot approve the classification (authority)', /room\.classify\.approve/.test(await refusal()), await refusal());
     await page.fill('[aria-label="Revision reason"]', 'initial layout'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
@@ -65,7 +83,17 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await persp('installer'); await page.click('button:has-text("Move to INSTALLED_UNVERIFIED")'); await page.waitForTimeout(150);
     await persp('cxeng'); await page.click('button:has-text("Record as")'); await page.waitForTimeout(150);
     ok('B-09', 'nothing passes from a design: recording before COMMISSIONING is refused', /COMMISSIONING/.test(await refusal()), await refusal());
+    // 14 Nov 2026 (founder): the device register gates commissioning: refused while units still need registering; the installer registers them
     await persp('syseng'); await page.click('button:has-text("Move to COMMISSIONING")'); await page.waitForTimeout(150);
+    ok('B-09R', 'commissioning is held until the device register is complete; the refusal names the register', /device register is not complete/.test(await refusal()) && /INSTALLED_UNVERIFIED/.test(await page.locator('.build__state').innerText()), await refusal());
+    await persp('installer'); await page.click('button:has-text("Register every open device with synthetic values")'); await page.waitForTimeout(150);
+    ok('B-09G', 'the installer registers every device (serial; hostname and IP for networked units)', (await page.getByTestId('build-register').getAttribute('data-open')) === '0', await refusal());
+    await persp('syseng'); await page.click('button:has-text("Move to COMMISSIONING")'); await page.waitForTimeout(150);
+    // 12 Nov 2026: commissioning deficiencies (V2.5.3 v25RoomCxIssue): a failed test opens one; a verified retest resolves it (checked after B-12)
+    await persp('cxeng'); await page.selectOption('#b-state', 'FAIL'); await page.fill('#b-ref', 'photo 7'); if (await page.locator('#b-inst').count()) await page.fill('#b-inst', 'meter M-1, calibrated 2026-06');
+    await page.click('button:has-text("Record as")'); await page.waitForTimeout(150); const iss1 = await page.getByTestId('build-issues').innerText().catch(() => '');
+    await page.selectOption('#b-state', 'PASS'); await page.click('button:has-text("Record as")'); await page.waitForTimeout(150);
+    ok('B-09b', 'a failed test opens a commissioning deficiency, OPEN and unassigned', /CXI-1/.test(iss1) && /OPEN/.test(iss1) && /unassigned/.test(iss1), iss1.slice(0, 160) || await refusal());
     await persp('cxeng'); await page.click('button:has-text("Record all untested as PASS")'); await page.waitForTimeout(400);
     const recorded = () => page.locator('.build__list').last().innerText();
     const rec = await recorded();
@@ -74,6 +102,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('B-11', 'the recorder cannot verify their own results', /independent/.test(await refusal()), await refusal());
     await persp('architect'); await page.click('button:has-text("Verify all unverified")'); await page.waitForTimeout(400);
     ok('B-12', 'a different person verifies every PASS', (await recorded()).includes('PASS_VERIFIED') && !(await recorded()).includes('PASS_UNVERIFIED'));
+    { const iss2 = await page.getByTestId('build-issues').innerText().catch(() => ''); ok('B-12b', 'the deficiency is resolved by the retest once someone else verified it', /CXI-1/.test(iss2) && /RESOLVED/.test(iss2) && /verified by/.test(iss2), iss2.slice(0, 200)); }
     await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(200);
     ok('B-13', 'the verifier cannot accept the room (separation of duties)', /separation of duties/.test(await refusal()), await refusal());
     await persp('cxeng'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(200);
@@ -97,6 +126,13 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('B-15f', 're-acceptance publishes baseline v2 (v1 superseded) and the lineage lists both', /ACCEPTED/.test(st2) && /baseline v2/.test(st2) && /v1/.test(await page.locator('[data-testid=lineage]').innerText()) && /v2/.test(await page.locator('[data-testid=lineage]').innerText()), (await refusal()) || st2);
     const diff = await page.locator('[data-testid=baseline-diff]').innerText();
     ok('B-15g', 'the comparison between v1 and v2 names the added device and the results that changed', /v1 and v2/.test(diff) && /1 added/.test(diff), diff.slice(0, 200));
+    // 12 Nov 2026: redlines on the drawings (V2.5.3 v25RoomRedline): text required, open until resolved with what was done
+    await persp('designer'); await page.click('#tab-drawings'); await page.waitForTimeout(150); await page.getByTestId('build-redline').click(); await page.waitForTimeout(100); const empty = await refusal();
+    await page.fill('[aria-label="Redline text"]', 'the camera bracket is drawn on the wrong wall'); await page.getByTestId('build-redline').click(); await page.waitForTimeout(150);
+    const rl = await page.getByTestId('build-redlines').innerText(); await page.fill('[aria-label="Resolution for RL-1"]', 'moved to the front wall'); await page.click('button:has-text("Resolve RL-1")'); await page.waitForTimeout(150);
+    ok('B-15h', 'a redline needs text; it is recorded OPEN against the revision and resolved with what was done', /needs text/.test(empty) && /RL-1/.test(rl) && /OPEN/.test(rl) && /RESOLVED/.test(await page.getByTestId('build-redlines').innerText()) && /moved to the front wall/.test(await page.getByTestId('build-redlines').innerText()), `${empty} | ${rl.slice(0, 120)}`);
+    { const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 5000 }).catch(() => null), page.getByTestId('build-workbook').click()]); const b = dl ? fs.readFileSync(await dl.path()) : Buffer.alloc(0);
+      ok('B-15i', 'the commissioning workbook downloads as an .xlsx (a zip) with its sheets; nothing leaves the page', !!dl && /\.xlsx$/.test(dl.suggestedFilename()) && b.subarray(0, 2).toString() === 'PK' && /Testing/.test(b.toString('latin1')) && !ext.length, `${dl?.suggestedFilename()} ${b.length}`); }
     await page.click('#tab-ledger'); await page.waitForTimeout(150);
     const led = await main();
     ok('B-16', 'the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes', (led.match(/DENIED/g) || []).length >= 5 && (led.match(/ALLOWED/g) || []).length >= 10, `${(led.match(/DENIED/g) || []).length} denied`);
@@ -161,8 +197,13 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('V-07', 'dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named', /booked/.test(pf0) && /processor: stock check is 3[0-9] days old/.test(pf0) && /missing: audio analyser/.test(pf0), pf0.slice(0, 300));
     await page.click('[data-testid=preflight] button:has-text("Start the work")'); await page.waitForTimeout(250);
     ok('V-08', 'a failed preflight blocks IN_PROGRESS (guard preflight_passed) and the refusal is in the ledger', /preflight has a failed check/.test(await refusal()), await refusal());
-    // the manager re-plans the window outside the booking and the stock is rechecked; the technician confirms tools and starts
-    await page.evaluate(() => { const w = JSON.parse(localStorage.getItem('empathia.demo.workspace.v1')); const wo = w.workOrders.find((x) => x.id === 'WO-0088'); const d = new Date(Date.now() + 2 * 864e5); wo.window = { from: d.toISOString().slice(0, 16), to: new Date(d.getTime() + 3 * 36e5).toISOString().slice(0, 16) }; w.stock.processor.checkedAt = new Date().toISOString(); localStorage.setItem('empathia.demo.workspace.v1', JSON.stringify(w)); location.hash = '#/v25/service?id=ISS-0417'; }); await page.reload(); await page.waitForTimeout(600); await persp('service'); await page.waitForSelector('[data-testid=preflight]');
+    // the manager re-plans the window outside the booking and rechecks the stale stock through the page (12 Nov 2026: these were done by
+    // editing storage, which hid a dead end the staging journey found; the page now has the controls); the technician confirms tools and starts
+    await persp('svcmgr'); await page.waitForSelector('[data-testid=dispatch-plan]');
+    await page.click('[data-testid=dispatch-plan] button:has-text("Propose the next free window")'); await page.waitForTimeout(250);
+    while (await page.locator('[data-testid=dispatch-plan] button:has-text("Recheck stock")').count()) { await page.locator('[data-testid=dispatch-plan] button:has-text("Recheck stock")').first().click(); await page.waitForTimeout(200); }
+    ok('V-08b', 'the service manager re-plans the window clear of the room\u2019s bookings and rechecks the stale stock on the page; the plan card then goes away', (await page.locator('[data-testid=dispatch-plan]').count()) === 0, await refusal());
+    await persp('service'); await page.waitForSelector('[data-testid=preflight]');
     for (const t of ['audio analyser', 'laptop with the DSP tool']) await page.locator(`[data-testid=preflight] label:has-text("${t}") input`).check();
     await page.click('[data-testid=preflight] button:has-text("Start the work")'); await page.waitForTimeout(300);
     ok('V-09', 'with every check clear the technician starts the work (ACCEPTED → IN_PROGRESS)', /IN_PROGRESS/.test(await page.locator('[data-testid=incident] h2').innerText()), await refusal());
@@ -199,7 +240,9 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.click('[data-testid=hypothesis] .apex__tier:has-text("A3") button'); await page.waitForTimeout(250);
     ok('A-08', 'A3 stages a draft work order that stays OPEN until the service manager triages it', /DRAFT_STAGED[\s\S]*work order WO-\d+ drafted/.test(await page.locator('[data-testid=apex-log] li >> nth=0').innerText()));
     await persp('visitor'); await page.waitForTimeout(200);
-    ok('A-09', 'a visitor cannot act on a case', /cannot act on an APEX case/.test(await page.locator('[data-testid=apex-case]').innerText()) && !(await page.locator('[data-testid=hypothesis] .apex__tier button').count()));
+    // changed for D44: APEX (V2.5.3 area pro.issues) is not the visitor's, so the visitor no longer sees the case at all — not even a refusal
+    await page.evaluate(() => { location.hash = '#/v25/apex'; }); await page.waitForTimeout(300);
+    ok('A-09', 'a visitor cannot act on a case: the screen is not shown to the visitor (owl access page), so no tier button exists', (await page.locator('[data-testid=access-page]').count()) === 1 && !(await page.locator('[data-testid=hypothesis] .apex__tier button').count()));
 
     // ---------------------------------------------------------------- Learn: the governed case, then the library
     await page.evaluate(() => { location.hash = '#/v25/learn'; }); await page.waitForTimeout(500); await persp('cxeng'); await page.waitForTimeout(200); await page.waitForSelector('[data-testid=propose]');
@@ -209,8 +252,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('L-01', 'a case needs permission, de-identification and no names: the refusal names all three', /customer permission/.test(lr) && /de-identified/.test(lr) && /still names a building, room or person/.test(lr), lr);
     await page.fill('[data-testid=propose] input', 'Echo after a configuration change'); await page.locator('[data-testid=propose] label:has-text("permission") input').check(); await page.locator('[data-testid=propose] label:has-text("De-identified") input').check(); await page.click('[data-testid=propose] button:has-text("Propose")'); await page.waitForTimeout(300);
     ok('L-02', 'the case is PROPOSED from the resolved incident', /PROPOSED/.test(await page.locator('[data-testid=learn-case]').innerText()) && /from ISS-0417/.test(await page.locator('[data-testid=learn-cases]').innerText()), await refusal());
-    await page.click('[data-testid=learn-case] button:has-text("SME review: approve")'); await page.waitForTimeout(250);
-    ok('L-03', 'the proposer cannot be the SME reviewer of their own case', /separation of duties/.test(await refusal()), await refusal());
+    // 14 Nov 2026: the page no longer offers the proposer a review the rule refuses; it says why instead (the store still refuses it:
+    // tests/browser/demo-workflows.test.mjs W4 and the unit suite)
+    const offered = await page.locator('[data-testid=learn-case] button:has-text("SME review: approve")').count(); const own = await page.locator('[data-testid=learn-own]').innerText().catch(() => '');
+    ok('L-03', 'the proposer cannot be the SME reviewer of their own case: the review is not offered to them, and the page says why', offered === 0 && /separation of duties/.test(own), own);
     await persp('syseng'); await page.waitForTimeout(200); await page.click('[data-testid=learn-case] button:has-text("SME review: approve")'); await page.waitForTimeout(250);
     ok('L-04', 'a different subject-matter reviewer records the SME review', /SME_REVIEWED/.test(await page.locator('[data-testid=learn-case]').innerText()), await refusal());
     await persp('steward'); await page.waitForTimeout(200); await page.click('[data-testid=learn-case] button:has-text("Approve for Learn")'); await page.waitForTimeout(250);
@@ -225,7 +270,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.click('[data-testid=drills] li >> nth=3 >> a'); await page.waitForSelector('[data-testid=drill]');
     await page.click('[data-testid=drill] .learn__stages li >> nth=3 >> button'); await page.waitForTimeout(300);
     const drill = await page.locator('[data-testid=drill]').innerText();
-    ok('L-08', 'a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only', /No picture on input 3/.test(drill) && /Right\./.test(drill) && /one-cable failure/.test(drill), drill.slice(0, 200));
+    ok('L-08', 'a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only', /No picture on input 3/.test(drill) && /Passed · first failure found/.test(drill) /* was “Right.”: changed 11 Nov 2026 when the runner took the reference’s verdict words (packages/ui/src/drills.ts) */ && /one-cable failure/.test(drill), drill.slice(0, 200));
     await page.evaluate(() => { location.hash = '#/v25/ledger'; }); await page.waitForTimeout(500);
     ok('L-09', 'the ledger carries the training completion with the note that it never grants authorization', /training\.drill_completed/.test(await page.locator('[data-testid=ledger]').innerText()) && /never grants work authorization/.test(await page.locator('[data-testid=ledger]').innerText()));
 
@@ -238,12 +283,15 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.click('[data-testid=passports] .exec__tile:has-text("Median restoration time")'); await page.waitForSelector('[data-testid=passport]');
     const pp = await page.locator('[data-testid=passport]').innerText();
     ok('M-03', 'a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down', /Numerator \/ denominator/.test(pp) && /90 days/.test(pp) && /Coverage/.test(pp) && /Confidence/.test(pp) && /Exclusions/.test(pp) && /ISS-0417/.test(pp), pp.slice(0, 300));
-    await persp('service'); await page.waitForTimeout(200);
-    ok('M-04', 'a technician does not see executive passports', /this perspective does not see executive passports/.test(await page.locator('main').innerText()) && !(await page.locator('[data-testid=passports]').count()));
+    await persp('service'); await page.evaluate(() => { location.hash = '#/v25/exec'; }); await page.waitForTimeout(300);   // D44: a switch lands on the role's home; reopen the address
+    // changed for D44: the Executive page (V2.5.3 pro.exec) is not the technician's, so the screen is not shown at all (owl access page)
+    ok('M-04', 'a technician does not see executive passports: the screen is not shown (owl access page)', (await page.locator('[data-testid=access-page]').count()) === 1 && !(await page.locator('[data-testid=passports]').count()));
     await page.evaluate(() => { location.hash = '#/v25/ledger'; }); await page.waitForTimeout(400); await persp('steward'); await page.waitForTimeout(200);
     await page.click('button:has-text("DENIED")'); await page.waitForTimeout(150);
     const led = await page.locator('[data-testid=ledger]').innerText();
-    ok('M-05', 'the ledger filters to the refusals, each with actor, UTC and local time and the reason', /DENIED/.test(led) && /hard gate/.test(led) && /preflight has a failed check/.test(led) && /separation of duties/.test(led) && (led.match(/ALLOWED/g) || []).length === 0, led.slice(0, 300));
+    // changed 14 Nov 2026: the separation-of-duties refusal in this ledger came only from L-03, where the proposer clicked an SME review the
+    // page now no longer offers; the store's refusal and its DENIED ledger event are kept under test in tests/unit/learn-separation.test.mjs
+    ok('M-05', 'the ledger filters to the refusals, each with actor, UTC and local time and the reason', /DENIED/.test(led) && /hard gate/.test(led) && /preflight has a failed check/.test(led) && /no field evidence recorded/.test(led) && (led.match(/ALLOWED/g) || []).length === 0, [['DENIED', /DENIED/], ['hard gate', /hard gate/], ['preflight', /preflight has a failed check/], ['evidence', /no field evidence recorded/]].filter(([, r]) => !r.test(led)).map(([n]) => `missing ${n}`).join(', ') + ` · ALLOWED×${(led.match(/ALLOWED/g) || []).length} · ${led.length} chars`);
     await page.evaluate(() => { location.hash = '#/v25/policy'; }); await page.waitForTimeout(400);
     ok('M-06', 'the policy page shows what each native page checks and the demonstrator’s role × area matrix verbatim (86 areas × 14 roles)', (await page.locator('[data-testid=policy-gates] tbody tr').count()) === 6 && (await page.locator('[data-testid=policy-matrix] tbody tr').count()) === 86 && (await page.locator('[data-testid=policy-matrix] thead th').count()) === 15);
     // ---------------------------------------------------------------- Field Intelligence v1.3 plan and v1.4 Physical Validation session
@@ -287,10 +335,12 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     const ab = await page.locator('[data-testid=fi-session]').innerText();
     ok('F-13', 'the E-stop aborts: output terminated, restore requested, the session ended; nothing can be stepped afterwards', /ABORTED/.test(ab) && /restore requested/.test(ab) && !(await page.locator('[data-testid=fi-run]').count()), ab.slice(0, 200));
     await persp('visitor'); await page.waitForTimeout(200); await page.evaluate(() => { location.hash = '#/v25/fipv?room=R-NST-2-101'; }); await page.waitForTimeout(400);
-    ok('F-14', 'the town hall is not licensed at this site, and a visitor cannot change that', /NOT LICENSED/.test(await page.locator('[data-testid=fi-licence]').innerText()) && /Security \/ Platform Admin/.test(await page.locator('[data-testid=fi-licence]').innerText()));
+    // changed for D44: Physical Validation (V2.5.3 area agent) is not the visitor's, so the visitor gets the owl page and cannot change the licence
+    ok('F-14', 'a visitor cannot change the town hall licence: Physical Validation is not shown to the visitor (owl access page)', (await page.locator('[data-testid=access-page]').count()) === 1 && !(await page.locator('[data-testid=fi-licence]').count()));
 
-    await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
-    ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-/.test(await page.locator('main').innerText()));
+    // changed for D44: ServiceHands is not the visitor's (the owl page would show), so the reset is done as the service manager
+    await persp('svcmgr'); await page.evaluate(() => { location.hash = '#/v25/service'; }); await page.waitForTimeout(400); await page.click('button:has-text("Reset workspace")'); await page.waitForTimeout(300);
+    ok('M-07', 'Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone', /OPEN[\s\S]*ISS-0417/.test(await page.locator('[data-testid=incidents]').innerText()) && !/APX-0(0[2-9]|[1-9]\d)/.test(await page.locator('main').innerText()));   // 13 Nov 2026: the seed holds V2.5.3's worked case APX-001; the cases this run opened (APX-002 on) are gone
   }
   ok(`D-${tag}-07`, 'no page error, no console error, no request outside the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
   await ctx.close();

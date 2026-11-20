@@ -4,14 +4,21 @@
  * @empathia/api-client from source), demo.css (design tokens + ui.css + demo.css), and a manifest with hashes.
  *   node apps/enterprise-web/build.mjs [--dev]
  */
-import fs from 'node:fs';
+import fs from 'node:fs'; import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const app = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(app, '../..');
-const dist = path.join(app, 'dist');
+const dist = process.env.DEMO_DIST ? path.resolve(process.env.DEMO_DIST) : path.join(app, 'dist');   // a preview build elsewhere, so a test run on dist is never disturbed
 const dev = process.argv.includes('--dev');
+// the corporate website the demonstration links to (founder page, privacy notice): --website=<url>, DEMO_WEBSITE_URL, or the public site
+const website = ((process.argv.find((a) => a.startsWith('--website=')) || '').slice(10) || process.env.DEMO_WEBSITE_URL || 'https://empathia-website.onrender.com').replace(/\/$/, '');
+// the enterprise API the connected journey (#/connected, ADR-0013) talks to: DEMO_API_URL. Unset — the default, and every public build so far —
+// the bundle names no server, the page says it is not connected, and connect-src stays the page's own origin.
+const { originOf } = await import(path.join(repo, 'scripts/security/policy.mjs'));
+const apiOrigin = originOf(process.env.DEMO_API_URL);
+if (process.env.DEMO_API_URL && !apiOrigin) throw new Error(`DEMO_API_URL is not an http(s) URL: ${process.env.DEMO_API_URL}`);
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 if (!process.argv.includes('--generate-only')) { fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true }); }
 // the legacy area registry from the parity ledger (docs/legacy-parity.csv): generated, never edited
@@ -22,24 +29,88 @@ if (!process.argv.includes('--generate-only')) { fs.rmSync(dist, { recursive: tr
   // the demonstrator's role × area visibility matrix (AZ_KEYS × areas), verbatim from the inventory: the policy page shows it, never edits it
   const inv = JSON.parse(fs.readFileSync(path.join(repo, 'legacy/inventory/v253-inventory.json'), 'utf8'));
   fs.writeFileSync(path.join(app, 'src/generated/area-roles.json'), JSON.stringify({ roles: inv.uiRoles, areas: inv.areas.map((a) => ({ key: a.area, label: a.label, roles: a.roles })) }, null, 1)); }
+// the operational workspaces, each its own entry (src/hardening/opsRoutes.tsx loads them by these names); the build id versions their URLs
+// the shell's own pages are build entries too (shell/<name>.js), so a failed fetch can be retried at a fresh URL (registry.shell.ts)
+const SHELL_PAGES = { landing: 'shell/Landing.tsx', scouter: 'scouter/ScouterPage.tsx', policy: 'access/PolicyPage.tsx' };
+const WORKSPACES = { dispatch: 'dispatch/Dispatch.tsx', servicehands: 'service/ServiceHands.tsx', replay: 'replay/Replay.tsx', fiscan: 'fi/FiScan.tsx', decisions: 'decisions/Decisions.tsx', labs: 'learn/Labs.tsx', resilience: 'hardening/Resilience.tsx' };
+const buildId = crypto.createHash('sha256').update(String(Date.now())).digest('hex').slice(0, 10);
 // --generate-only: write the generated sources and stop (scripts/build.mjs runs this before type-checking, so a fresh checkout builds)
 if (process.argv.includes('--generate-only')) process.exit(0);
-// the SIGNAL library ships beside the bundle and is fetched on demand by Learn (2 MB; never inlined)
-fs.mkdirSync(dist, { recursive: true }); fs.copyFileSync(path.join(repo, 'packages/domain-data/data/SIGNAL_LIB.json'), path.join(dist, 'signal-lib.json'));
+// the SIGNAL library ships beside the bundle and is fetched on demand by Learn (never inlined). Since 12 Nov 2026 it is cut from the
+// founder's build package (packages/signal-canon/data/app-data.json, the source's own revision) instead of the earlier SIGNAL_LIB.json:
+// the same eighteen collections, in the same shapes, at the source's revision (all 693 quizzes; lesson, lab and incident text as the
+// story has it). The fieldbook plate references are left out (the plates are not shipped: founder, 11 Nov 2026).
+fs.mkdirSync(dist, { recursive: true });
+{ const app = JSON.parse(fs.readFileSync(path.join(repo, 'packages/signal-canon/data/app-data.json'), 'utf8')); const noPlates = (bag) => Object.fromEntries(Object.entries(bag).map(([k, v]) => { const { plates, ...rest } = v; void plates; return [k, rest]; }));
+  const KEYS = ['caseOrder', 'cases', 'drillOrder', 'drills', 'explorers', 'formulas', 'glossary', 'incidentOrder', 'incidents', 'labOrder', 'labs', 'layerColors', 'lessonDomains', 'lessonOrder', 'lessons', 'quizzes', 'seasonOf', 'tierOf'];
+  const lib = Object.fromEntries(KEYS.map((k) => [k, k === 'lessons' || k === 'incidents' ? noPlates(app[k]) : app[k]])); for (const k of KEYS) if (lib[k] == null) throw new Error(`SIGNAL library: ${k} missing from app-data.json`);
+  fs.writeFileSync(path.join(dist, 'signal-lib.json'), JSON.stringify(lib)); }
+// the SIGNAL story canon ships beside the bundle and is fetched one chapter at a time (build.signal.mjs)
+{ const { shipSignal } = await import('./build.signal.mjs'); const r = shipSignal(repo, dist); console.log(`SIGNAL canon: ${r.chapters} chapters, ${r.panels} panels`); }
+// static media (narration takes and captions): apps/demo/public/** ships as is beside the bundle
+if (fs.existsSync(path.join(app, 'public'))) fs.cpSync(path.join(app, 'public'), dist, { recursive: true });
+// the three other worlds' frames on the welcome (Landing.tsx Worlds3d): the website's captures of this demonstration's own 3D worlds,
+// copied so the welcome and the website show the same frame (one source: apps/website/media/product). Their provenance stays in that
+// folder's PROVENANCE.json (route, viewport, commit, time, hashes) and is checked here; it is not shipped (the public build carries no
+// stray JSON, scripts/audit/public-exposure.mjs PX-06).
+{ const src = path.join(repo, 'apps/website/media/product'); const out = path.join(dist, 'media/worlds'); fs.mkdirSync(out, { recursive: true });
+  const prov = JSON.parse(fs.readFileSync(path.join(src, 'PROVENANCE.json'), 'utf8')).captures || {};
+  for (const k of ['exp-campus', 'exp-stadium', 'exp-expo']) {
+    const f = `${k}-640.webp`; const want = prov[k]?.files?.[f];
+    if (!fs.existsSync(path.join(src, f)) || !want) throw new Error(`welcome worlds: ${f} or its provenance is missing`);
+    const got = crypto.createHash('sha256').update(fs.readFileSync(path.join(src, f))).digest('hex');
+    if (got !== want) throw new Error(`welcome worlds: ${f} does not match its provenance (${got.slice(0, 12)} ≠ ${want.slice(0, 12)})`);
+    fs.copyFileSync(path.join(src, f), path.join(out, f));
+  } }
 await esbuild.build({
-  entryPoints: [path.join(app, 'src/main.tsx')], bundle: true, minify: !dev, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic',
-  outfile: path.join(dist, 'demo.js'), define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' }, legalComments: 'linked', logLevel: 'warning',
+  // ES modules with code splitting: every page registered with a lazy `load` is its own chunk, fetched only when the role may open it
+  // (D44: a forbidden address never downloads its screen). The entry stays demo.js; pages land in chunks/.
+  entryPoints: { demo: path.join(app, 'src/main.tsx'), ...Object.fromEntries(Object.entries(WORKSPACES).map(([k, f]) => [`ws/${k}`, path.join(app, 'src', f)])), ...Object.fromEntries(Object.entries(SHELL_PAGES).map(([k, f]) => [`shell/${k}`, path.join(app, 'src', f)])) }, bundle: true, minify: !dev, sourcemap: 'external', format: 'esm', splitting: true, target: ['es2022'], jsx: 'automatic',
+  outdir: dist, entryNames: '[dir]/[name]', chunkNames: 'chunks/[name]-[hash]', define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', 'process.env.EMPATHIA_WEBSITE_URL': JSON.stringify(website), 'process.env.DEMO_BUILD_ID': JSON.stringify(buildId), 'process.env.DEMO_API_URL': JSON.stringify(apiOrigin || '') }, legalComments: 'linked', logLevel: 'warning',
+  // the operational workspaces are entries with stable names (ws/<name>.js): a failed load is retried at a fresh URL (src/hardening/lazy.tsx)
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') },
+  // the export libraries (docx, pptxgenjs, pdf-lib, jszip: src/export/render.ts) carry documentation addresses inside their error
+  // messages and one producer string. The page never requests them (connect-src 'self'), but the public bundle names no host it does not
+  // need (tests/security/public-sites.test.mjs SA-08), so each is written as plain words at build time; licences stay in *.LEGAL.txt.
+  plugins: [{ name: 'vendor-doc-links', setup(b) {
+    b.onLoad({ filter: /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(docx|pptxgenjs|pdf-lib|jszip)[\\/].*\.(m?js|cjs)$/ }, (a) => {
+      const src = fs.readFileSync(a.path, 'utf8');
+      return { contents: src.replace(/\bhttps?:\/\/(?:stuk\.github\.io|answers\.microsoft\.com|rolldown\.rs|github\.com|gitbrent\.github\.io)\b[^\s"'`)\\]*/g, 'the library documentation'), loader: 'js' };
+    });
+  } }],
 });
 
 // source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/
 { const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
   const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
   for (const f of walk(dist).filter((f) => f.endsWith('.map'))) fs.renameSync(f, path.join(maps, path.basename(f))); }
-const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(repo, 'packages/ui/src/ui.css'), path.join(app, 'src/styles/demo.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
+// brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D39): files copied into dist, the <head> decorated
+const { shipBrandAndType, tokenCss, copyBrand, shareMeta } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
+const decorate = shipBrandAndType(dist, { preload: 'app', manifest: { name: 'Empathia Living Campus — investor demonstration', shortName: 'Empathia demo' } });
+const css = [tokenCss(), ...[path.join(repo, 'packages/ui/src/ui.css'), path.join(repo, 'packages/ui/src/kit.css'), path.join(app, 'src/styles/demo.css'), path.join(app, 'src/styles/shell.css'), path.join(app, 'src/hardening/ops.css'), path.join(app, 'src/spatial/spaces.css'), path.join(app, 'src/lite/lite.css'), path.join(app, 'src/spatial/core.css'), path.join(app, 'src/spatial/mission.css'), path.join(app, 'src/pages/workspaces.css'), path.join(app, 'src/pages/learn.css'), path.join(app, 'src/parity/parity.css'), path.join(app, 'src/proof/proof.css'), path.join(app, 'src/docs5/docs5.css'), path.join(app, 'src/harmony/harmony.css'), path.join(app, 'src/onboard/onboard.css'), path.join(app, 'src/instant/instant.css'), path.join(app, 'src/drawing/drawing.css'), path.join(app, 'src/manual/manual.css'), path.join(app, 'src/worlds/worlds.css'), path.join(app, 'src/estate/estate.css'), path.join(app, 'src/optimizer/optimizer.css'), path.join(app, 'src/signal/story.css'), path.join(app, 'src/mixlab/mixlab.css'), path.join(app, 'src/gameday/gameday.css'), path.join(app, 'src/gameday/signal/signal.css'), path.join(app, 'src/offline/offline.css'), path.join(app, 'src/pages/rolehome.css'), path.join(app, 'src/intake/intake.css'), path.join(app, 'src/here/here.css'), path.join(app, 'src/control/control.css'), path.join(app, 'src/champion/champion.css'), path.join(app, 'src/connect/connect.css'), path.join(app, 'src/guides/guides.css'), path.join(app, 'src/knowledge/knowledge.css'), path.join(app, 'src/fieldtools/fieldtools.css'), path.join(app, 'src/certs/certs.css'), path.join(app, 'src/play/play.css'), path.join(app, 'src/map/map.css'), path.join(app, 'src/signal/film/film.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`)].join('\n');
 fs.writeFileSync(path.join(dist, 'demo.css'), css);
-fs.copyFileSync(path.join(app, 'src/index.html'), path.join(dist, 'index.html'));
-const files = fs.readdirSync(dist).filter((f) => fs.statSync(path.join(dist, f)).isFile());
-const manifest = { app: '@empathia/demo', builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
+// the CSP rides in the page as <meta> too (assessment SA-01): served without render.yaml's headers, nothing still leaves the page
+const { injectMetaCsp } = await import(path.join(repo, 'scripts/security/policy.mjs'));
+// link previews (founder 06:08: "so we can send and share this all with people"): a description and the Open Graph card; the image needs
+// the public base, which a Render build has (RENDER_EXTERNAL_URL)
+copyBrand(dist, ['shareDemo']);
+const demoBase = (process.env.DEMO_BASE_URL || process.env.RENDER_EXTERNAL_URL || '').replace(/\/$/, '');
+const DEMO_DESC = 'Empathia Living Campus: an interactive demonstration on a synthetic campus. Rooms, devices, commissioning, service and SIGNAL, in your browser.';
+const shareHead = (html) => html.replace('</head>', `  <meta name="description" content="${DEMO_DESC}">\n  ${shareMeta({ base: demoBase, image: 'share-demo.jpg', title: 'Empathia Living Campus — demonstration', description: DEMO_DESC, url: '/', siteName: 'Empathia Technologies' })}<meta property="og:type" content="website">\n</head>`);
+fs.writeFileSync(path.join(dist, 'index.html'), injectMetaCsp(decorate(shareHead(fs.readFileSync(path.join(app, 'src/index.html'), 'utf8'))), apiOrigin ? [apiOrigin] : []));
+// the View-as role is applied before first paint by a tiny same-origin script (the CSP forbids inline scripts), so the role colour is right on the first frame
+fs.copyFileSync(path.join(app, 'src/role-boot.js'), path.join(dist, 'role-boot.js'));
+// the Proof Registry's public projection, as data (v1.8 A): the same file the website ships, so the two can be compared claim by claim
+{ const { SEED_CLAIMS, publicProjection } = await import('@empathia/proof-registry'); const asOf = new Date().toISOString();
+  fs.mkdirSync(path.join(dist, 'proof'), { recursive: true }); fs.writeFileSync(path.join(dist, 'proof/claims.json'), JSON.stringify({ schema_version: '1.8', as_of: asOf, claims: SEED_CLAIMS.map((c) => publicProjection(c, asOf)).filter(Boolean) }, null, 1)); }
+// offline: the packs a device can keep and the worker that serves the saved app (build.offline.mjs). index.html carries the API meta
+// only when served by the local server, so the shell version is the same wherever the build is published
+const offline = (await import('./build.offline.mjs')).shipOffline(app, dist);
+console.log(`offline shell ${offline.version}: ${offline.files} files, ${(offline.bytes / 1024 / 1024).toFixed(1)} MiB; ${offline.packs} packs`);
+const files = (function walk(d, pre = '') { return fs.readdirSync(d).flatMap((f) => fs.statSync(path.join(d, f)).isDirectory() ? walk(path.join(d, f), `${pre}${f}/`) : [`${pre}${f}`]); })(dist);
+// the release this build is: Render sets RENDER_GIT_COMMIT; elsewhere git says (12 Nov 2026, so both sites can be checked to carry the same release)
+const sourceCommit = (() => { if (process.env.RENDER_GIT_COMMIT) return process.env.RENDER_GIT_COMMIT; try { return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: path.dirname(fileURLToPath(import.meta.url)), stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || null; } catch { return null; } })();
+
+const manifest = { app: '@empathia/demo', sourceCommit, builtAt: new Date().toISOString(), files: Object.fromEntries(files.map((f) => [f, { bytes: fs.statSync(path.join(dist, f)).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(dist, f))).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
 console.log(`demo built: ${files.map((f) => `${f} ${(manifest.files[f].bytes / 1024).toFixed(0)} KiB`).join(', ')}`);

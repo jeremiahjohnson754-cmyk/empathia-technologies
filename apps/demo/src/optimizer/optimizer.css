@@ -1,0 +1,19 @@
+/* The Space Optimizer (v1.8.1 §11), on the worlds' tokens. The plan is a stage and stays dark in either theme (D36). */
+.so-model { padding: var(--sp-3) var(--sp-4); border: 1px dashed var(--line3); border-radius: var(--r-md); color: var(--tx2); } .so-model b { color: var(--tx); } .so-model .ui-tag { margin-left: 6px; }
+.so-best { font-size: var(--fs-md); }
+.so-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+.so-two .w-block { display: grid; gap: var(--sp-3); }
+.so-pickb { display: inline-flex; align-items: center; text-decoration: none; } .so-pickb[aria-current="true"] { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+.so-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.so-table th, .so-table td { padding: 9px 10px; border-top: 1px solid var(--line); text-align: left; vertical-align: middle; } .so-table thead th { border-top: 0; color: var(--tx2); }
+.so-table tbody th { font-weight: 500; } .so-table .so-num { width: 22%; min-width: 74px; } .so-table thead .so-num a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; font-weight: 700; }
+.so-table [aria-current="true"] { background: var(--accent-bg); } .so-total th, .so-total td { border-top: 2px solid var(--line3); font-weight: 700; }
+.so-bar { display: block; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; margin-bottom: 4px; } .so-bar i { display: block; height: 100%; background: var(--tx2); border-radius: 2px; }
+.so-total .so-bar i { background: var(--tx); } .so-v { font-weight: 600; } .so-topmark { color: var(--tx2); font-size: 10px; }
+.so-why { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--sp-3) var(--sp-5); } .so-why dt { font-weight: 600; } .so-why dt b { margin-left: 6px; font-variant-numeric: tabular-nums; color: var(--tx2); } .so-why dd { margin: 2px 0 0; } .so-why .ui-meta { display: block; margin-top: 2px; }
+.so-room { fill: color-mix(in srgb, var(--tx) 5%, transparent); stroke: var(--line3); stroke-width: 1.5; } .so-lab { fill: var(--tx2); font: 600 12px var(--font-sans); }
+.so-seat.is-ok { fill: var(--world); stroke: none; } .so-seat.is-no circle, .so-seat.is-no rect { fill: none; stroke: var(--tx2); stroke-width: 1.5; } .so-seat.is-no line { stroke: var(--tx2); stroke-width: 1.5; }
+.so-screen { fill: var(--tx); } .so-cam { fill: none; stroke: var(--tx); stroke-width: 1.6; } .so-mic { fill: var(--bg); stroke: var(--tx); stroke-width: 1.4; } .so-spk { fill: none; stroke: var(--tx2); stroke-width: 1.4; }
+.so-reach { fill: color-mix(in srgb, var(--tx) 6%, transparent); stroke: var(--line3); stroke-width: 1; stroke-dasharray: 3 4; }
+.so-cap { display: grid; gap: 6px; } .so-cap b { color: var(--tx); } .so-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; } .so-legend span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+@media (max-width: 900px) { .so-two { grid-template-columns: minmax(0, 1fr); } }

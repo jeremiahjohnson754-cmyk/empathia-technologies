@@ -1,0 +1,802 @@
+[
+ {
+  "id": "scenes.bg_booth",
+  "function": "bg_booth",
+  "module": "scenes",
+  "panels": 142,
+  "chapters": [
+   "pro01",
+   "pro11",
+   "s01e00",
+   "s01e01",
+   "s01e02",
+   "s01e03",
+   "s01e04",
+   "s01e05",
+   "s01e06",
+   "s01e07",
+   "s01e08",
+   "s01e09",
+   "s01e10",
+   "s02e04",
+   "s03e06",
+   "s09e10"
+  ],
+  "description": null
+ },
+ {
+  "id": "scenes.bg_office",
+  "function": "bg_office",
+  "module": "scenes",
+  "panels": 102,
+  "chapters": [
+   "s03e01",
+   "s03e02",
+   "s03e03",
+   "s03e04",
+   "s03e05",
+   "s03e06",
+   "s03e07",
+   "s03e08",
+   "s03e09",
+   "s03e10",
+   "s04e04",
+   "s04e07",
+   "s04e08"
+  ],
+  "description": null
+ },
+ {
+  "id": "scenes.bg_sanctuary",
+  "function": "bg_sanctuary",
+  "module": "scenes",
+  "panels": 69,
+  "chapters": [
+   "pro05",
+   "pro09",
+   "pro11",
+   "s01e00",
+   "s01e01",
+   "s01e02",
+   "s01e03",
+   "s01e04",
+   "s01e05",
+   "s01e06",
+   "s01e07",
+   "s01e09",
+   "s01e10",
+   "s01e11",
+   "s12e10"
+  ],
+  "description": null
+ },
+ {
+  "id": "scenes.bg_mcr",
+  "function": "bg_mcr",
+  "module": "scenes",
+  "panels": 54,
+  "chapters": [
+   "s04e01",
+   "s04e02",
+   "s04e03",
+   "s04e04",
+   "s04e05",
+   "s04e07",
+   "s04e08",
+   "s04e09",
+   "s04e10",
+   "s04e11",
+   "s05e01",
+   "s05e08",
+   "s05e10"
+  ],
+  "description": "Master control: a dark room, a monitor wall (program big, sources small), a long desk. alarm=True paints a red SYNC alarm."
+ },
+ {
+  "id": "scenes.bg_truck",
+  "function": "bg_truck",
+  "module": "scenes",
+  "panels": 49,
+  "chapters": [
+   "s02e01",
+   "s02e02",
+   "s02e04",
+   "s02e05",
+   "s02e07",
+   "s02e08",
+   "s02e09",
+   "s02e10",
+   "s04e06",
+   "s04e07"
+  ],
+  "description": "Inside a production truck / monitor world: a console desk, racks, small screens."
+ },
+ {
+  "id": "scenes.bg_theater",
+  "function": "bg_theater",
+  "module": "scenes",
+  "panels": 37,
+  "chapters": [
+   "s02e01",
+   "s02e02",
+   "s02e03",
+   "s02e04",
+   "s02e11",
+   "s06e01",
+   "s06e02",
+   "s06e05",
+   "s06e06",
+   "s06e09",
+   "s06e10"
+  ],
+  "description": null
+ },
+ {
+  "id": "scenes.bg_confroom",
+  "function": "bg_confroom",
+  "module": "scenes",
+  "panels": 36,
+  "chapters": [
+   "s03e01",
+   "s03e02",
+   "s03e03",
+   "s03e05",
+   "s03e06",
+   "s03e07",
+   "s03e08",
+   "s04e07"
+  ],
+  "description": null
+ },
+ {
+  "id": "scenes.bg_stage",
+  "function": "bg_stage",
+  "module": "scenes",
+  "panels": 35,
+  "chapters": [
+   "pro03",
+   "pro10",
+   "s01e00",
+   "s01e02",
+   "s01e04",
+   "s01e05",
+   "s01e08",
+   "s01e09"
+  ],
+  "description": null
+ },
+ {
+  "id": "scenes.bg_festival",
+  "function": "bg_festival",
+  "module": "scenes",
+  "panels": 35,
+  "chapters": [
+   "s02e03",
+   "s02e05",
+   "s02e08",
+   "s02e09",
+   "s02e10",
+   "s04e06"
+  ],
+  "description": null
+ },
+ {
+  "id": "s10kit.bg_ctrl",
+  "function": "bg_ctrl",
+  "module": "s10kit",
+  "panels": 33,
+  "chapters": [
+   "s10e01",
+   "s10e02",
+   "s10e03",
+   "s10e04",
+   "s10e05",
+   "s10e06",
+   "s10e07",
+   "s10e08",
+   "s10e09",
+   "s10e10",
+   "s10e11"
+  ],
+  "description": "Studio A's control room: timber and fabric panels, a window into the live room, two monitors on stands and the console."
+ },
+ {
+  "id": "scenes.bg_boardroom",
+  "function": "bg_boardroom",
+  "module": "scenes",
+  "panels": 32,
+  "chapters": [
+   "s03e05",
+   "s03e09",
+   "s03e10",
+   "s03e11",
+   "s07e01",
+   "s09e07",
+   "s09e08",
+   "s09e09"
+  ],
+  "description": null
+ },
+ {
+  "id": "s11kit.bg_eoc",
+  "function": "bg_eoc",
+  "module": "s11kit",
+  "panels": 32,
+  "chapters": [
+   "s11e01",
+   "s11e02",
+   "s11e06",
+   "s11e07",
+   "s11e08",
+   "s11e09",
+   "s11e10",
+   "s11e11"
+  ],
+  "description": "The Brennock County EOC: a video wall across the front, agency desks in two rows, a status board on the right. state: on | dark | frozen."
+ },
+ {
+  "id": "scenes.bg_noc",
+  "function": "bg_noc",
+  "module": "scenes",
+  "panels": 29,
+  "chapters": [
+   "s03e01",
+   "s03e03",
+   "s03e04",
+   "s03e05",
+   "s03e06",
+   "s03e07",
+   "s03e08",
+   "s03e10",
+   "s05e02",
+   "s05e04",
+   "s05e07",
+   "s05e08",
+   "s07e11"
+  ],
+  "description": "Service desk / operations corner: a wall of status tiles."
+ },
+ {
+  "id": "s12kit.bg_hq",
+  "function": "bg_hq",
+  "module": "s12kit",
+  "panels": 29,
+  "chapters": [
+   "s07e03",
+   "s07e09",
+   "s12e01",
+   "s12e02",
+   "s12e04",
+   "s12e05",
+   "s12e06",
+   "s12e07",
+   "s12e08",
+   "s12e10",
+   "s12e11"
+  ],
+  "description": "Fenwright's architecture office: the estate board on the back wall, a window strip, a long table. The board sits above head height so nobody stands in front of it."
+ },
+ {
+  "id": "s6kit.bg_design",
+  "function": "bg_design",
+  "module": "s6kit",
+  "panels": 27,
+  "chapters": [
+   "s06e01",
+   "s06e02",
+   "s06e03",
+   "s06e04",
+   "s06e05",
+   "s06e07",
+   "s06e08",
+   "s06e09",
+   "s06e10",
+   "s06e11",
+   "s07e10",
+   "s11e10"
+  ],
+  "description": "Linden Row's studio: tall windows, a pin-up wall of drawing sheets, a long desk with two monitors."
+ },
+ {
+  "id": "s5kit.bg_avops",
+  "function": "bg_avops",
+  "module": "s5kit",
+  "panels": 26,
+  "chapters": [
+   "s05e01",
+   "s05e02",
+   "s05e03",
+   "s05e04",
+   "s05e05",
+   "s05e06",
+   "s05e07",
+   "s05e08",
+   "s05e09",
+   "s05e11"
+  ],
+  "description": "The campus AV operations office: a wall of room tiles (the dashboard), desks, coffee."
+ },
+ {
+  "id": "scenes.bg_newsroom",
+  "function": "bg_newsroom",
+  "module": "scenes",
+  "panels": 21,
+  "chapters": [
+   "s04e02",
+   "s04e03",
+   "s04e05",
+   "s04e07",
+   "s04e08",
+   "s04e10"
+  ],
+  "description": "The newsroom: desks, a wall of clocks, an assignment board."
+ },
+ {
+  "id": "s7kit.bg_gnoc",
+  "function": "bg_gnoc",
+  "module": "s7kit",
+  "panels": 20,
+  "chapters": [
+   "s07e01",
+   "s07e02",
+   "s07e03",
+   "s07e04",
+   "s07e05",
+   "s07e06",
+   "s07e09",
+   "s07e10"
+  ],
+  "description": "Corvane's operations centre in Harrowmere: a wide wall (estate map or tiles), three region clocks, two desks."
+ },
+ {
+  "id": "scenes.bg_ballroom",
+  "function": "bg_ballroom",
+  "module": "scenes",
+  "panels": 19,
+  "chapters": [
+   "s02e05",
+   "s02e06"
+  ],
+  "description": null
+ },
+ {
+  "id": "s8kit.bg_build",
+  "function": "bg_build",
+  "module": "s8kit",
+  "panels": 18,
+  "chapters": [
+   "s08e01",
+   "s08e02",
+   "s08e03",
+   "s08e05",
+   "s08e06",
+   "s08e09",
+   "s08e10",
+   "s08e11"
+  ],
+  "description": "The Wyndmere main hall under construction: exposed steel, a raw concrete balcony front, temporary lighting strings, a lift parked on the floor."
+ },
+ {
+  "id": "s9kit.bg_soc",
+  "function": "bg_soc",
+  "module": "s9kit",
+  "panels": 16,
+  "chapters": [
+   "s09e01",
+   "s09e02",
+   "s09e03",
+   "s09e05",
+   "s09e06",
+   "s09e10",
+   "s09e11"
+  ],
+  "description": "The Wyndmere's small security office: a desk, a wall of camera tiles and one incident screen. Nothing on the screens is readable detail."
+ },
+ {
+  "id": "scenes.bg_parking",
+  "function": "bg_parking",
+  "module": "scenes",
+  "panels": 14,
+  "chapters": [
+   "s01e00",
+   "s01e07",
+   "s01e10",
+   "s04e01",
+   "s04e06",
+   "s04e07",
+   "s04e08",
+   "s04e09",
+   "s04e10"
+  ],
+  "description": null
+ },
+ {
+  "id": "scenes.bg_backup_site",
+  "function": "bg_backup_site",
+  "module": "scenes",
+  "panels": 14,
+  "chapters": [
+   "s04e09",
+   "s04e10"
+  ],
+  "description": "The backup master control across the valley: a small room in the sister radio station, one rack, a compact monitor wall."
+ },
+ {
+  "id": "s5kit.bg_lecture",
+  "function": "bg_lecture",
+  "module": "s5kit",
+  "panels": 14,
+  "chapters": [
+   "s05e02",
+   "s05e03",
+   "s05e05",
+   "s05e06"
+  ],
+  "description": "A tiered lecture hall seen from the side of the lectern: screen, rows rising to the back."
+ },
+ {
+  "id": "s8kit.bg_mer",
+  "function": "bg_mer",
+  "module": "s8kit",
+  "panels": 13,
+  "chapters": [
+   "s08e04",
+   "s08e05",
+   "s08e06",
+   "s08e10",
+   "s09e04",
+   "s09e05",
+   "s09e06",
+   "s09e07"
+  ],
+  "description": "The main equipment room (MER): racks and a wall-mounted cooling unit."
+ },
+ {
+  "id": "s8kit.bg_foyer",
+  "function": "bg_foyer",
+  "module": "s8kit",
+  "panels": 13,
+  "chapters": [
+   "s08e10",
+   "s09e01",
+   "s09e02",
+   "s09e03",
+   "s09e04",
+   "s09e06",
+   "s09e07",
+   "s09e09",
+   "s09e10"
+  ],
+  "description": "The Wyndmere's finished lobby, months after opening: warm walls, a timber floor, a box-office counter and the lobby video wall frame. No construction."
+ },
+ {
+  "id": "s10kit.bg_live",
+  "function": "bg_live",
+  "module": "s10kit",
+  "panels": 13,
+  "chapters": [
+   "s10e02",
+   "s10e03",
+   "s10e04",
+   "s10e06",
+   "s10e07",
+   "s10e10"
+  ],
+  "description": "Studio A's live room: a slatted diffuser, a timber floor, the vocal booth door on the left and (optionally) the drum kit."
+ },
+ {
+  "id": "s8kit.bg_hall",
+  "function": "bg_hall",
+  "module": "s8kit",
+  "panels": 12,
+  "chapters": [
+   "s08e07",
+   "s08e08",
+   "s08e09",
+   "s08e10",
+   "s09e03",
+   "s09e10"
+  ],
+  "description": "The finished main hall: stage, proscenium, seats; house=True shows an audience."
+ },
+ {
+  "id": "scenes.bg_dock",
+  "function": "bg_dock",
+  "module": "scenes",
+  "panels": 11,
+  "chapters": [
+   "s02e01",
+   "s02e02",
+   "s02e03",
+   "s02e04",
+   "s02e05"
+  ],
+  "description": null
+ },
+ {
+  "id": "s6kit.bg_court",
+  "function": "bg_court",
+  "module": "s6kit",
+  "panels": 11,
+  "chapters": [
+   "s06e02",
+   "s06e03",
+   "s06e04",
+   "s06e06",
+   "s06e07"
+  ],
+  "description": "A courtroom: the judge's bench, the witness box, the jury box, two counsel tables."
+ },
+ {
+  "id": "s8kit.bg_trailer",
+  "function": "bg_trailer",
+  "module": "s8kit",
+  "panels": 11,
+  "chapters": [
+   "s08e01",
+   "s08e02",
+   "s08e03",
+   "s08e04",
+   "s08e08",
+   "s08e09",
+   "s08e10"
+  ],
+  "description": "The general contractor's site office: a trailer with drawings pinned up, a lookahead schedule on a whiteboard, hard hats on hooks."
+ },
+ {
+  "id": "s12kit.bg_room",
+  "function": "bg_room",
+  "module": "s12kit",
+  "panels": 11,
+  "chapters": [
+   "s12e02",
+   "s12e03",
+   "s12e05",
+   "s12e06",
+   "s12e08",
+   "s12e09"
+  ],
+  "description": "The standard room: one display, a camera bar, ceiling microphones, a table with a touch panel. state: ok | dark | muted | call."
+ },
+ {
+  "id": "s7kit.bg_hq",
+  "function": "bg_hq",
+  "module": "s7kit",
+  "panels": 10,
+  "chapters": [
+   "s07e01",
+   "s07e02",
+   "s07e03",
+   "s07e05",
+   "s07e06",
+   "s07e08",
+   "s07e09"
+  ],
+  "description": "Harrowmere HQ, the executive floor: glass walls, a city skyline, a long table."
+ },
+ {
+  "id": "s11kit.bg_brief",
+  "function": "bg_brief",
+  "module": "s11kit",
+  "panels": 9,
+  "chapters": [
+   "s11e03",
+   "s11e04",
+   "s11e05",
+   "s11e06"
+  ],
+  "description": "The public-information briefing room: a podium with the county seal (a plain circle), a camera, an interpreter's position and a caption monitor."
+ },
+ {
+  "id": "s5kit.bg_arena",
+  "function": "bg_arena",
+  "module": "s5kit",
+  "panels": 8,
+  "chapters": [
+   "s05e09",
+   "s05e10"
+  ],
+  "description": "The 2,000-seat arena set for commencement: stage, banners, seating bowl."
+ },
+ {
+  "id": "scenes.bg_mountain",
+  "function": "bg_mountain",
+  "module": "scenes",
+  "panels": 7,
+  "chapters": [
+   "s04e04",
+   "s04e05",
+   "s04e10"
+  ],
+  "description": "The transmitter site seen from its gravel yard: a ridge, the tower in the distance, the transmitter building, a link dish."
+ },
+ {
+  "id": "s5kit.bg_clinic",
+  "function": "bg_clinic",
+  "module": "s5kit",
+  "panels": 7,
+  "chapters": [
+   "s05e01",
+   "s05e02",
+   "s06e09"
+  ],
+  "description": "A clinic consult room: exam bed, curtain, wall sink, a telehealth cart."
+ },
+ {
+  "id": "s7kit.bg_training",
+  "function": "bg_training",
+  "module": "s7kit",
+  "panels": 7,
+  "chapters": [
+   "s07e04",
+   "s07e05",
+   "s07e07"
+  ],
+  "description": "Valmera's new training centre: ceiling LED panels, a front display, desks in rows. bands=True shows the camera's view of rolling flicker bands;"
+ },
+ {
+  "id": "s12kit.bg_townhall",
+  "function": "bg_townhall",
+  "module": "s12kit",
+  "panels": 7,
+  "chapters": [
+   "s12e03",
+   "s12e04",
+   "s12e09",
+   "s12e10"
+  ],
+  "description": "Fenwright's headquarters auditorium during the global town hall: a stage screen tiled with the thirty sites, seat backs in the foreground. dark: tile indices that are down."
+ },
+ {
+  "id": "scenes.bg_river",
+  "function": "bg_river",
+  "module": "scenes",
+  "panels": 6,
+  "chapters": [
+   "s04e03",
+   "s04e04",
+   "s04e10",
+   "s10e10",
+   "s11e09"
+  ],
+  "description": "A valley road by the river: a gauge post, a barrier, water rising (never anyone in the water)."
+ },
+ {
+  "id": "s5kit.bg_quad",
+  "function": "bg_quad",
+  "module": "s5kit",
+  "panels": 6,
+  "chapters": [
+   "s05e01",
+   "s05e06",
+   "s05e07"
+  ],
+  "description": "The campus quad: two brick buildings, a path, a signage kiosk."
+ },
+ {
+  "id": "scenes.bg_lobby",
+  "function": "bg_lobby",
+  "module": "scenes",
+  "panels": 5,
+  "chapters": [
+   "s01e00",
+   "s01e08",
+   "s02e03",
+   "s02e06",
+   "s03e08"
+  ],
+  "description": null
+ },
+ {
+  "id": "scenes.bg_newsset",
+  "function": "bg_newsset",
+  "module": "scenes",
+  "panels": 5,
+  "chapters": [
+   "s04e01",
+   "s04e02",
+   "s04e08",
+   "s04e10"
+  ],
+  "description": "The news set: a backdrop of an invented valley skyline and lighting bars high above (nobody under them)."
+ },
+ {
+  "id": "s7kit.bg_summit",
+  "function": "bg_summit",
+  "module": "s7kit",
+  "panels": 5,
+  "chapters": [
+   "s07e07",
+   "s07e08"
+  ],
+  "description": "The Valmera auditorium set for the leadership summit: a stage, a screen, and two glass interpretation booths at the back."
+ },
+ {
+  "id": "s10kit.bg_archive",
+  "function": "bg_archive",
+  "module": "s10kit",
+  "panels": 5,
+  "chapters": [
+   "s10e04",
+   "s10e05"
+  ],
+  "description": "The tape and drive store behind Studio A: thirty years of sessions on shelves."
+ },
+ {
+  "id": "s11kit.bg_radio",
+  "function": "bg_radio",
+  "module": "s11kit",
+  "panels": 5,
+  "chapters": [
+   "s11e02",
+   "s11e03"
+  ],
+  "description": "The radio room: consoles, the interoperability gateway rack and a window onto the antenna mast. Nobody climbs anything."
+ },
+ {
+  "id": "s11kit.bg_genyard",
+  "function": "bg_genyard",
+  "module": "s11kit",
+  "panels": 5,
+  "chapters": [
+   "s11e04",
+   "s11e05"
+  ],
+  "description": "Facilities' generator yard behind a fence: the generator enclosure, the transfer switch cabinet. Facilities' — nobody else touches it."
+ },
+ {
+  "id": "s10kit.bg_glass",
+  "function": "bg_glass",
+  "module": "s10kit",
+  "panels": 4,
+  "chapters": [
+   "s10e01",
+   "s10e02",
+   "s10e09",
+   "s10e10"
+  ],
+  "description": "Coldframe Sound from the lane: an old market-garden glasshouse with warm windows and a painted sign by the door."
+ },
+ {
+  "id": "s5kit.bg_exam",
+  "function": "bg_exam",
+  "module": "s5kit",
+  "panels": 3,
+  "chapters": [
+   "s05e04"
+  ],
+  "description": "A proctored exam hall: rows of single desks, a wall clock, ceiling mic arrays, a dome camera."
+ },
+ {
+  "id": "s8kit.bg_catwalk",
+  "function": "bg_catwalk",
+  "module": "s8kit",
+  "panels": 3,
+  "chapters": [
+   "s08e06",
+   "s08e07"
+  ],
+  "description": "The stage seen from the hall floor: the lighting catwalk overhead, one section unfinished behind barrier tape and a ‘NO ACCESS’ sign. Nobody on it."
+ },
+ {
+  "id": "s7kit.bg_rackroom",
+  "function": "bg_rackroom",
+  "module": "s7kit",
+  "panels": 2,
+  "chapters": [
+   "s07e06",
+   "s07e07"
+  ],
+  "description": "A small equipment room: two racks with UPS units at the bottom. hot=True adds heat shimmer over one rack (nobody touches it)."
+ },
+ {
+  "id": "s12kit.bg_cabin",
+  "function": "bg_cabin",
+  "module": "s12kit",
+  "panels": 1,
+  "chapters": [
+   "s12e10"
+  ],
+  "description": "An airliner cabin at night: a curved wall, oval windows, overhead bins. Seats go in front with seats(); the figure sits behind them."
+ }
+]

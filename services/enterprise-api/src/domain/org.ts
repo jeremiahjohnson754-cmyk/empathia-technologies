@@ -8,13 +8,13 @@ import { invalid, notFound, refused } from '../http/errors.js';
 export async function sites(ctx: RequestContext) {
   return ctx.tx(async (q) => {
     const scope = ctx.p.siteScope;
-    const rows = (await q.query<{ site: string; site_name: string; building: string | null; building_name: string | null; floors: number | null; rooms: number }>(
-      `SELECT s.code AS site, s.name AS site_name, b.code AS building, b.name AS building_name, b.floors, (SELECT count(*)::int FROM app.room r WHERE r.building_id = b.id) AS rooms
+    const rows = (await q.query<{ site: string; site_name: string; region: string | null; zone: string | null; building: string | null; building_name: string | null; floors: number | null; rooms: number }>(
+      `SELECT s.code AS site, s.name AS site_name, s.region, s.zone, b.code AS building, b.name AS building_name, b.floors, (SELECT count(*)::int FROM app.room r WHERE r.building_id = b.id) AS rooms
          FROM app.site s LEFT JOIN app.building b ON b.site_id = s.id AND b.tenant_id = s.tenant_id
         WHERE ${scope?.length ? 's.id = ANY($1::uuid[])' : 'true'} ORDER BY s.code, b.code`, scope?.length ? [scope] : [])).rows;
-    const out = new Map<string, { code: string; name: string; buildings: Array<{ code: string; name: string; floors: number | null; rooms: number }> }>();
+    const out = new Map<string, { code: string; name: string; region: string | null; zone: string | null; buildings: Array<{ code: string; name: string; floors: number | null; rooms: number }> }>();
     for (const r of rows) {
-      if (!out.has(r.site)) out.set(r.site, { code: r.site, name: r.site_name, buildings: [] });
+      if (!out.has(r.site)) out.set(r.site, { code: r.site, name: r.site_name, region: r.region, zone: r.zone, buildings: [] });
       if (r.building) out.get(r.site)!.buildings.push({ code: r.building, name: r.building_name!, floors: r.floors, rooms: r.rooms });
     }
     return { items: [...out.values()] };
@@ -74,5 +74,21 @@ export async function assignRoomToProject(ctx: RequestContext, roomCode: string,
     await q.query('UPDATE app.room SET project_id = $2 WHERE id = $1', [room.id, pid]);
     await ctx.audit(q, 'project.room', 'ALLOWED', { type: 'Room', id: roomCode }, { projectCode });
     return { room: roomCode, project: projectCode };
+  });
+}
+
+/** Name a site's region and zone (0046; the workbook's site vocabulary): an administrator who configures the organization. */
+export const SITE_AUTHORITIES = ['policy.configure'];
+export async function placeSite(ctx: RequestContext, code: string, body: { region?: string | null; zone?: string | null }) {
+  await ctx.require(SITE_AUTHORITIES, 'name a site’s region and zone', { type: 'Site', id: code });
+  const clean = (v: unknown) => (v === null || v === undefined ? null : String(v).trim() || null);
+  const region = clean(body.region); const zone = clean(body.zone);
+  if ((region && region.length > 60) || (zone && zone.length > 60)) throw invalid('a region or zone is at most 60 characters');
+  return ctx.tx(async (q) => {
+    const s = (await q.query<{ id: string; region: string | null; zone: string | null }>('SELECT id, region, zone FROM app.site WHERE code = $1 FOR UPDATE', [code])).rows[0];
+    if (!s) throw notFound(`site ${code}`);
+    await q.query('UPDATE app.site SET region = $2, zone = $3 WHERE id = $1', [s.id, region, zone]);
+    await ctx.audit(q, 'site.place', 'ALLOWED', { type: 'Site', id: code }, { from: { region: s.region, zone: s.zone }, to: { region, zone } });
+    return { site: code, region, zone };
   });
 }

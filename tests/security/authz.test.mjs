@@ -9,7 +9,7 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import { setup, client } from '../integration/harness.mjs';
+import { setup, client, registerRoom } from '../integration/harness.mjs';
 
 let h, c;
 const T = {};
@@ -271,6 +271,7 @@ test('database: self-verification violates verification_is_independent; verifyin
   await c.call('POST', `/v1/rooms/${code}/revisions`, { token: T.designer, body: {} }).catch(() => null);
   assert.equal((await c.call('POST', `/v1/rooms/${code}/classification/approve`, { token: T.syseng, body: {} })).status, 200);
   for (const [to, who] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) {
+    if (to === 'COMMISSIONING') await registerRoom(c, code, T.installer);   // the device register gates commissioning (founder, 14 Nov 2026)
     const r = await c.call('POST', `/v1/rooms/${code}/lifecycle`, { token: T[who], body: { to } }); assert.equal(r.status, 200, `${to}: ${JSON.stringify(r.body)}`);
   }
   const d = (await c.call('GET', `/v1/rooms/${code}`, { token: T.cxeng })).body.commissioning.rows.filter((x) => x.applicable);

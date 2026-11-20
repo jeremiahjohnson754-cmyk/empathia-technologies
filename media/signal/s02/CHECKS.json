@@ -1,0 +1,3492 @@
+{
+ "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice (presets only)",
+ "asr": "openai/whisper-base.en",
+ "rule": "fail if word error > 0.35 with numbers set aside, or < 3.5 or > 20 characters a second; a failed take is generated once more; a line whose second take fails stays a caption",
+ "takes": [
+  {
+   "id": "s02e01-ben-01",
+   "preset": "aiden",
+   "generated_s": 6.72,
+   "whisper": "Anything that goes over ahead gets a plan, a rating, and a signature, or it stays on the floor.",
+   "wer_raw": 0.1,
+   "first_take": "pass",
+   "at": "2026-11-20T07:21:17Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-ben-02",
+   "preset": "aiden",
+   "generated_s": 7.2,
+   "whisper": "Venue 3. Sophia wants a truss over the downstage edge. They list no points and no beam data.",
+   "wer_raw": 0.111,
+   "first_take": "pass",
+   "at": "2026-11-20T07:30:14Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-ben-03",
+   "preset": "aiden",
+   "generated_s": 3.92,
+   "whisper": "A photo isn't a rating, Kim. Can you tell me anything?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:30:48Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-ben-04",
+   "preset": "aiden",
+   "generated_s": 1.36,
+   "whisper": "That's what I said!",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:31:56Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-ben-05",
+   "preset": "aiden",
+   "generated_s": 7.28,
+   "whisper": "Good catch. Now we know less than we thought, which is more than we knew. Ground-supported fallback for City 3.",
+   "wer_raw": 0.048,
+   "first_take": "pass",
+   "at": "2026-11-20T07:35:24Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-ben-06",
+   "preset": "aiden",
+   "generated_s": 3.92,
+   "whisper": "You read the top line, most people read the numbers.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:37:43Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-dante-01",
+   "preset": "ryan",
+   "generated_s": 4.56,
+   "whisper": "If it's not on the truck, it's in your bag. Same thing, right?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:37:23Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-dante-02",
+   "preset": "ryan",
+   "generated_s": 6.8,
+   "whisper": "Maya, Channel 7 just dropped. Again, same spot in the song.",
+   "wer_raw": 0.091,
+   "first_take": "pass",
+   "at": "2026-11-20T07:38:44Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-hank-01",
+   "preset": "uncle_fu",
+   "generated_s": 9.92,
+   "whisper": "Don't plan from a ten-year-old drawing. My generator, my distro. Their electrician does the tie-in.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:33:19Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-jordan-01",
+   "preset": "dylan",
+   "generated_s": 10.8,
+   "whisper": "Load out Friday. 6am. Six cities. Three weeks. Zero spare days.",
+   "wer_raw": 0.231,
+   "first_take": "pass",
+   "at": "2026-11-20T07:18:58Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-jordan-02",
+   "preset": "dylan",
+   "generated_s": 9.28,
+   "whisper": "6 cities. 3 weeks. 0 spare days. I've color coded it.",
+   "wer_raw": 0.273,
+   "first_take": "pass",
+   "at": "2026-11-20T07:20:13Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-jordan-03",
+   "preset": "dylan",
+   "generated_s": 2.8,
+   "whisper": "It's a very organized red.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:20:42Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-jordan-04",
+   "preset": "dylan",
+   "generated_s": 8.64,
+   "whisper": "Just use Last Tour's plan. It worked for 18 months. I need an answer before I call the artist's people.",
+   "wer_raw": 0.05,
+   "first_take": "pass",
+   "at": "2026-11-20T07:23:42Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-jordan-05",
+   "preset": "dylan",
+   "generated_s": 5.04,
+   "whisper": "Fine. Scan on arrival. How long?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:24:20Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-jordan-06",
+   "preset": "dylan",
+   "generated_s": 5.76,
+   "whisper": "They send points, a thousand kilos each, Sofia gets her trust.",
+   "wer_raw": 0.182,
+   "first_take": "pass",
+   "at": "2026-11-20T07:34:17Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-jordan-07",
+   "preset": "dylan",
+   "generated_s": 2.72,
+   "whisper": "Sophia's going to hate that.",
+   "wer_raw": 0.2,
+   "first_take": "pass",
+   "at": "2026-11-20T07:35:39Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-kim-01",
+   "preset": "sohee",
+   "generated_s": 12.64,
+   "whisper": "Intermodulation. Two transmitters mix and make new frequencies. Nobody asked for. Coordination is choosing channels so those land on nothing.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:26:03Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-kim-02",
+   "preset": "sohee",
+   "generated_s": 19.92,
+   "whisper": "2 f o 1 minus f 2, transmitters on 600 and 600 1 2 times, 600 minus 600 1 is 599. In the other side, 602, check every pair.",
+   "wer_raw": 0.622,
+   "first_take": "pass",
+   "at": "2026-11-20T07:28:10Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-kim-03",
+   "preset": "sohee",
+   "generated_s": 8.24,
+   "whisper": "Without the beams rating I can't approve anything, get me drawings, or plan it on the ground.",
+   "wer_raw": 0.059,
+   "first_take": "pass",
+   "at": "2026-11-20T07:31:33Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-kim-04",
+   "preset": "sohee",
+   "generated_s": 2.72,
+   "whisper": "Ha ha, put on!",
+   "wer_raw": 1.0,
+   "first_take": "fail",
+   "at": "2026-11-20T07:31:47Z",
+   "second_take": {
+    "generated_s": 11.36,
+    "whisper": "Thank you very much.",
+    "wer_raw": 1.0,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e01-kim-05",
+   "preset": "sohee",
+   "generated_s": 4.96,
+   "whisper": "I know, I'm saying it louder from further away.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:32:23Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-leah-01",
+   "preset": "serena",
+   "generated_s": 5.36,
+   "whisper": "First tour of my own company, if this one goes wrong, there isn't a second.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:21:44Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-leah-02",
+   "preset": "serena",
+   "generated_s": 3.04,
+   "whisper": "I re-mortgage the house for the trucks.",
+   "wer_raw": 0.286,
+   "first_take": "pass",
+   "at": "2026-11-20T07:22:11Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-leah-03",
+   "preset": "serena",
+   "generated_s": 4.4,
+   "whisper": "I know, I needed to tell someone who'd make it boring.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:22:57Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-01",
+   "preset": "vivian",
+   "generated_s": 3.84,
+   "whisper": "and six advanced packets that disagree with each other.",
+   "wer_raw": 0.111,
+   "first_take": "pass",
+   "at": "2026-11-20T07:19:20Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-02",
+   "preset": "vivian",
+   "generated_s": 2.56,
+   "whisper": "Every color is red.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:20:27Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-03",
+   "preset": "vivian",
+   "generated_s": 2.0,
+   "whisper": "Then let's make it boring!",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:21:55Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-04",
+   "preset": "vivian",
+   "generated_s": 2.48,
+   "whisper": "You didn't have to tell me that.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:22:25Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-05",
+   "preset": "vivian",
+   "generated_s": 1.76,
+   "whisper": "Worked wear?",
+   "wer_raw": 0.5,
+   "first_take": "pass",
+   "at": "2026-11-20T07:23:52Z",
+   "note": "flag read as a false alarm: Whisper heard the homophone \"wear\" for \"where\"",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-06",
+   "preset": "vivian",
+   "generated_s": 6.16,
+   "whisper": "40 minutes per city before sound check, every night we'll know instead of hoping.",
+   "wer_raw": 0.231,
+   "first_take": "pass",
+   "at": "2026-11-20T07:24:54Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-07",
+   "preset": "vivian",
+   "generated_s": 2.08,
+   "whisper": "Where do they land?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:26:15Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-08",
+   "preset": "vivian",
+   "generated_s": 4.64,
+   "whisper": "It's beautiful. Ben's going to ask what it hangs from.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:29:25Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-09",
+   "preset": "vivian",
+   "generated_s": 2.32,
+   "whisper": "They sent a photo of the ceiling.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:30:27Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-10",
+   "preset": "vivian",
+   "generated_s": 4.64,
+   "whisper": "And we plug into what you hand us with a load list.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:33:44Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-11",
+   "preset": "vivian",
+   "generated_s": 3.12,
+   "whisper": "Jordan, rate the top line.",
+   "wer_raw": 0.2,
+   "first_take": "pass",
+   "at": "2026-11-20T07:34:43Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-12",
+   "preset": "vivian",
+   "generated_s": 11.68,
+   "whisper": "Six cities of radio. One file. One laptop. One bag. She knows. She tells herself she'll back it up in CD2.",
+   "wer_raw": 0.091,
+   "first_take": "pass",
+   "at": "2026-11-20T07:36:48Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-13",
+   "preset": "vivian",
+   "generated_s": 1.92,
+   "whisper": "Everything we need.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:36:58Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-maya-14",
+   "preset": "vivian",
+   "generated_s": 4.32,
+   "whisper": "The numbers were the part that wanted to be believed.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:38:07Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e01-sofia-01",
+   "preset": "ono_anna",
+   "generated_s": 8.88,
+   "whisper": "Act 2. The Lenten moment. Light from right above the lip, like the whole theatres holding its breath.",
+   "wer_raw": 0.167,
+   "first_take": "pass",
+   "at": "2026-11-20T07:29:00Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-ben-01",
+   "preset": "aiden",
+   "generated_s": 8.8,
+   "whisper": "Stand here at the wing, weighted out of the walkway, that all sign. Nothing clipped to the LED frame.",
+   "wer_raw": 0.19,
+   "first_take": "pass",
+   "at": "2026-11-20T07:51:04Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-dante-01",
+   "preset": "ryan",
+   "generated_s": 3.12,
+   "whisper": "Seven's gone, same bar as last night.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:38:59Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-dante-02",
+   "preset": "ryan",
+   "generated_s": 8.48,
+   "whisper": "Eleven seconds of piano. 1,800 people heard a woman stop existing mid-word.",
+   "wer_raw": 0.143,
+   "first_take": "pass",
+   "at": "2026-11-20T07:40:21Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-dante-03",
+   "preset": "ryan",
+   "generated_s": 4.32,
+   "whisper": "New batch of batteries went in at the Wexley. That's when it started.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:41:12Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-dante-04",
+   "preset": "ryan",
+   "generated_s": 2.8,
+   "whisper": "Did he just threaten all of us?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:44:31Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-dante-05",
+   "preset": "ryan",
+   "generated_s": 6.24,
+   "whisper": "32, 33, 34, 7 solid.",
+   "wer_raw": 0.875,
+   "first_take": "pass",
+   "at": "2026-11-20T07:54:36Z",
+   "note": "flag read as a false alarm: Whisper wrote \"7\" for \"seven's\"; every other word heard",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-dante-06",
+   "preset": "ryan",
+   "generated_s": 2.96,
+   "whisper": "Get the bar number two.",
+   "wer_raw": 0.2,
+   "first_take": "pass",
+   "at": "2026-11-20T07:55:41Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-jordan-01",
+   "preset": "dylan",
+   "generated_s": 13.12,
+   "whisper": "Front row films song 11 every night, phones, oh, the new riser fits great, we just shuffled some stands.",
+   "wer_raw": 0.053,
+   "first_take": "pass",
+   "at": "2026-11-20T07:42:27Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-jordan-02",
+   "preset": "dylan",
+   "generated_s": 5.36,
+   "whisper": "In fairness, he threatened all of us equally.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:45:02Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-jordan-03",
+   "preset": "dylan",
+   "generated_s": 5.28,
+   "whisper": "That was my riser. Nobody told me the stand mattered.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:49:32Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-jordan-04",
+   "preset": "dylan",
+   "generated_s": 6.0,
+   "whisper": "The manager said fine out loud. I'm getting it tattooed.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:55:24Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-leah-01",
+   "preset": "serena",
+   "generated_s": 10.88,
+   "whisper": "DBM is power compared with one milliwatt, received signals are negative. The noise floor is the hiss underneath. Marging is the gap between them.",
+   "wer_raw": 0.154,
+   "first_take": "pass",
+   "at": "2026-11-20T07:46:33Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-leah-02",
+   "preset": "serena",
+   "generated_s": 15.28,
+   "whisper": "Receive the minus noise floor, minus 65 dBm over a minus 95 floor, 30 dB of margin. Every wall or steel frame eats some of it.",
+   "wer_raw": 0.4,
+   "first_take": "pass",
+   "at": "2026-11-20T07:48:16Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-manager-01",
+   "preset": "uncle_fu",
+   "generated_s": 7.68,
+   "whisper": "If it happens tonight this song's gone and so are you all of you",
+   "wer_raw": 0.071,
+   "first_take": "pass",
+   "at": "2026-11-20T07:44:16Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-marisol-01",
+   "preset": "sohee",
+   "generated_s": 3.04,
+   "whisper": "Ida is when I turn.",
+   "wer_raw": 0.4,
+   "first_take": "fail",
+   "at": "2026-11-20T07:49:02Z",
+   "second_take": {
+    "generated_s": 2.48,
+    "whisper": "8 days of a night turn?",
+    "wer_raw": 1.0,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e02-marisol-02",
+   "preset": "sohee",
+   "generated_s": 7.68,
+   "whisper": "Can I still turn at the lip tonight? I thought it was me, my body, my fault.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:52:25Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-marisol-03",
+   "preset": "sohee",
+   "generated_s": 5.36,
+   "whisper": "I thought it was my body that I was, I don't know, wrong for it.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:53:36Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-01",
+   "preset": "vivian",
+   "generated_s": 5.6,
+   "whisper": "Spare handhelds in the wings. Don't touch anything else. Clock it!",
+   "wer_raw": 0.091,
+   "first_take": "pass",
+   "at": "2026-11-20T07:39:37Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-02",
+   "preset": "vivian",
+   "generated_s": 5.12,
+   "whisper": "And then they heard her come back. Hold on to that part.",
+   "wer_raw": 0.182,
+   "first_take": "pass",
+   "at": "2026-11-20T07:40:49Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-03",
+   "preset": "vivian",
+   "generated_s": 5.44,
+   "whisper": "Then, why only in song 11, they're warm for all 20.",
+   "wer_raw": 0.182,
+   "first_take": "pass",
+   "at": "2026-11-20T07:43:33Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-04",
+   "preset": "vivian",
+   "generated_s": 3.76,
+   "whisper": "That's not fairness. That's a group project.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:45:31Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-05",
+   "preset": "vivian",
+   "generated_s": 2.88,
+   "whisper": "So how much room do I have?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:46:49Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-06",
+   "preset": "vivian",
+   "generated_s": 5.28,
+   "whisper": "Stay right there, turn back toward me, and away again.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:48:45Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-07",
+   "preset": "vivian",
+   "generated_s": 6.88,
+   "whisper": "Nobody told you because nobody wrote down why it was there. That's on the plan, not on you.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:50:12Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-08",
+   "preset": "vivian",
+   "generated_s": 5.04,
+   "whisper": "Nothing on the frame. Your crew places it. I'll bring the meter.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:51:32Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-09",
+   "preset": "vivian",
+   "generated_s": 6.72,
+   "whisper": "Turn whichever way the song needs. The antennas moved for you, not the other way round.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:53:05Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-10",
+   "preset": "vivian",
+   "generated_s": 4.48,
+   "whisper": "Nobody should ever have to say that sentence about a radio.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:54:02Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-maya-11",
+   "preset": "vivian",
+   "generated_s": 2.88,
+   "whisper": "Breathe out, then log it.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:54:52Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e02-sofia-01",
+   "preset": "ono_anna",
+   "generated_s": 6.8,
+   "whisper": "It's the crowd, 1,800 warm bodies soak up radio.",
+   "wer_raw": 0.2,
+   "first_take": "pass",
+   "at": "2026-11-20T07:43:04Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-01",
+   "preset": "aiden",
+   "generated_s": 2.56,
+   "whisper": "Stop. That beam has no number.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:56:49Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-02",
+   "preset": "aiden",
+   "generated_s": 6.48,
+   "whisper": "No drawing since their innovation? Facilities will look. Nobody knows who has them.",
+   "wer_raw": 0.231,
+   "first_take": "pass",
+   "at": "2026-11-20T07:57:31Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-03",
+   "preset": "aiden",
+   "generated_s": 3.36,
+   "whisper": "I believe you hung it. I can't sign before.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:58:16Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-04",
+   "preset": "aiden",
+   "generated_s": 6.4,
+   "whisper": "Trust me, is not a load rating. I've looked, it's not in any of the tables.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T07:58:50Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-05",
+   "preset": "aiden",
+   "generated_s": 2.24,
+   "whisper": "You'll have it in 40 minutes.",
+   "wer_raw": 0.167,
+   "first_take": "pass",
+   "at": "2026-11-20T08:03:59Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-06",
+   "preset": "aiden",
+   "generated_s": 9.12,
+   "whisper": "Rigging is anything hung overhead. Every piece has a working load limit. And the decisions belong to the rigor and the engineer. That's a boundary.",
+   "wer_raw": 0.04,
+   "first_take": "pass",
+   "at": "2026-11-20T08:04:51Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-07",
+   "preset": "aiden",
+   "generated_s": 15.44,
+   "whisper": "To understand the call, 100 kilos, 1 meter from the left, support, 4 meters span. The right support carries 100 times 1 over 4. 25 kilos.",
+   "wer_raw": 0.393,
+   "first_take": "pass",
+   "at": "2026-11-20T08:06:33Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-08",
+   "preset": "aiden",
+   "generated_s": 4.88,
+   "whisper": "Stop, maybe I'm scared. I'm still not signing a guess.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:07:54Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-09",
+   "preset": "aiden",
+   "generated_s": 0.88,
+   "whisper": "Stop",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:08:15Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-10",
+   "preset": "aiden",
+   "generated_s": 3.44,
+   "whisper": "Rated for everything on it, including what's already there.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:10:52Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-11",
+   "preset": "aiden",
+   "generated_s": 2.08,
+   "whisper": "You didn't have to back me in front of her.",
+   "wer_raw": 0.0,
+   "first_take": "fail",
+   "at": "2026-11-20T08:11:37Z",
+   "second_take": {
+    "generated_s": 2.32,
+    "whisper": "You didn't have to back me in front of her.",
+    "wer_raw": 0.0,
+    "result": "pass, used"
+   },
+   "heard_in_demo": "second take"
+  },
+  {
+   "id": "s02e03-ben-12",
+   "preset": "aiden",
+   "generated_s": 3.2,
+   "whisper": "You didn't have to back me.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:12:23Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-ben-13",
+   "preset": "aiden",
+   "generated_s": 6.32,
+   "whisper": "His thumb finds the tag. For a second, he looks like he's going to say something. He doesn't.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:13:22Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-crew-01",
+   "preset": "uncle_fu",
+   "generated_s": 6.48,
+   "whisper": "Nobody moves. Somebody drops a wrench and doesn't pick it up.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:08:58Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-gil-01",
+   "preset": "eric",
+   "generated_s": 4.88,
+   "whisper": "We hung heavier from that than before! Big shows! Trust me!",
+   "wer_raw": 0.182,
+   "first_take": "pass",
+   "at": "2026-11-20T07:57:58Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-gil-02",
+   "preset": "eric",
+   "generated_s": 4.32,
+   "whisper": "2016. Before the renovation.",
+   "wer_raw": 0.4,
+   "first_take": "pass",
+   "at": "2026-11-20T08:02:50Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-jordan-01",
+   "preset": "dylan",
+   "generated_s": 7.28,
+   "whisper": "Ground support is a rental we didn't budget in three crew hours we don't have.",
+   "wer_raw": 0.067,
+   "first_take": "pass",
+   "at": "2026-11-20T07:59:27Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-jordan-02",
+   "preset": "dylan",
+   "generated_s": 2.8,
+   "whisper": "So free was the part I read.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:11:08Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-kim-01",
+   "preset": "sohee",
+   "generated_s": 6.08,
+   "whisper": "Without the beam's rating, I can't approve it, and I won't estimate from a photo.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:01:04Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-kim-02",
+   "preset": "sohee",
+   "generated_s": 9.28,
+   "whisper": "Look at the web. That opening is new. Adduct in that plate. When was before?",
+   "wer_raw": 0.188,
+   "first_take": "pass",
+   "at": "2026-11-20T08:02:18Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-kim-03",
+   "preset": "sohee",
+   "generated_s": 9.92,
+   "whisper": "What I can do tonight, a ground-supported truss. Power is on your deck, nothing on the beam. Send Ben's plan, I'll check it.",
+   "wer_raw": 0.087,
+   "first_take": "pass",
+   "at": "2026-11-20T08:03:46Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-leah-01",
+   "preset": "serena",
+   "generated_s": 2.32,
+   "whisper": "and if we cub position.",
+   "wer_raw": 0.333,
+   "first_take": "pass",
+   "at": "2026-11-20T07:59:40Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-maya-01",
+   "preset": "vivian",
+   "generated_s": 2.16,
+   "whisper": "Then why learn the math?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:05:03Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-maya-02",
+   "preset": "vivian",
+   "generated_s": 1.36,
+   "whisper": "Sofia?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:09:48Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-maya-03",
+   "preset": "vivian",
+   "generated_s": 8.08,
+   "whisper": "Sophia stops speaking to her, it lasts until opening night, the bus gets very quiet in a way buses shouldn't.",
+   "wer_raw": 0.05,
+   "first_take": "pass",
+   "at": "2026-11-20T08:10:32Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-maya-04",
+   "preset": "vivian",
+   "generated_s": 4.96,
+   "whisper": "I didn't back you. I back to the number we didn't have.",
+   "wer_raw": 0.182,
+   "first_take": "pass",
+   "at": "2026-11-20T08:12:04Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-maya-05",
+   "preset": "vivian",
+   "generated_s": 2.8,
+   "whisper": "I backed the number we didn't have.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:12:46Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-sofia-01",
+   "preset": "ono_anna",
+   "generated_s": 9.84,
+   "whisper": "Right there, the halo hangs from that beam over the lip, like two lives on it.",
+   "wer_raw": 0.062,
+   "first_take": "pass",
+   "at": "2026-11-20T07:56:35Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-sofia-02",
+   "preset": "ono_anna",
+   "generated_s": 9.52,
+   "whisper": "The whole show turns on that moment, from the side it's just light, from above it's sky.",
+   "wer_raw": 0.056,
+   "first_take": "pass",
+   "at": "2026-11-20T08:00:31Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-sofia-03",
+   "preset": "ono_anna",
+   "generated_s": 4.24,
+   "whisper": "Okay, then what can you give me?",
+   "wer_raw": 0.167,
+   "first_take": "pass",
+   "at": "2026-11-20T08:01:27Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-sofia-04",
+   "preset": "ono_anna",
+   "generated_s": 9.28,
+   "whisper": "That beam has held for a hundred years, and you're scared of it. That's cowardice in a hard hat.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:07:27Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-sofia-05",
+   "preset": "ono_anna",
+   "generated_s": 2.72,
+   "whisper": "Let's cover this in a hard hat.",
+   "wer_raw": 0.5,
+   "first_take": "fail",
+   "at": "2026-11-20T08:08:10Z",
+   "second_take": {
+    "generated_s": 3.12,
+    "whisper": "That's how it is in a hard hat.",
+    "wer_raw": 0.5,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e03-sofia-06",
+   "preset": "ono_anna",
+   "generated_s": 7.52,
+   "whisper": "Maya, you've been here all day. You know it to hold. Tell him.",
+   "wer_raw": 0.167,
+   "first_take": "pass",
+   "at": "2026-11-20T08:09:41Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e03-sofia-07",
+   "preset": "ono_anna",
+   "generated_s": 3.12,
+   "whisper": "Not tonight, Maya.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:11:25Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-01",
+   "preset": "vivian",
+   "generated_s": 4.24,
+   "whisper": "Core 15 is in 40 seconds. Talk to me.",
+   "wer_raw": 0.333,
+   "first_take": "pass",
+   "at": "2026-11-20T08:15:23Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-02",
+   "preset": "vivian",
+   "generated_s": 6.4,
+   "whisper": "Two days of silence end in one sentence, and it isn't about them.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:15:57Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-03",
+   "preset": "vivian",
+   "generated_s": 6.48,
+   "whisper": "You know this show better than the file does. Take 15 on the fader, count it from the video.",
+   "wer_raw": 0.053,
+   "first_take": "pass",
+   "at": "2026-11-20T08:16:33Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-04",
+   "preset": "vivian",
+   "generated_s": 7.44,
+   "whisper": "Fast fades, movers aimed low. We're running by hand from the dress video. Everything else is your call.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:18:08Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-05",
+   "preset": "vivian",
+   "generated_s": 3.04,
+   "whisper": "How do I know a port's full?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:19:35Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-06",
+   "preset": "vivian",
+   "generated_s": 12.16,
+   "whisper": "Roll back about 16 minutes, the 1140 file, loses today's 6 notes untested, or act 2 by hand, like act 1.",
+   "wer_raw": 0.273,
+   "first_take": "pass",
+   "at": "2026-11-20T08:22:46Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-07",
+   "preset": "vivian",
+   "generated_s": 3.36,
+   "whisper": "5, 4, 3.",
+   "wer_raw": 1.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:24:19Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-08",
+   "preset": "vivian",
+   "generated_s": 1.6,
+   "whisper": "Sofia!",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:25:31Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-09",
+   "preset": "vivian",
+   "generated_s": 5.44,
+   "whisper": "You'd ask the two o'clock on press night, that's not a sofia problem.",
+   "wer_raw": 0.231,
+   "first_take": "pass",
+   "at": "2026-11-20T08:26:18Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-10",
+   "preset": "vivian",
+   "generated_s": 7.92,
+   "whisper": "He'd ask you at two o'clock on press night. That's not a Sophia problem. That's a no freeze problem.",
+   "wer_raw": 0.158,
+   "first_take": "pass",
+   "at": "2026-11-20T08:27:02Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-maya-11",
+   "preset": "vivian",
+   "generated_s": 9.12,
+   "whisper": "I did. I backed the number. Tonight I'm backing you. Same reason. You were right about what you knew.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:28:18Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-rosa-01",
+   "preset": "sohee",
+   "generated_s": 6.48,
+   "whisper": "Booth, you two want to talk, or shall I get a mediator for the booth?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:13:58Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-rosa-02",
+   "preset": "sohee",
+   "generated_s": 6.08,
+   "whisper": "Stand by lights 14. Lights 14. Go!",
+   "wer_raw": 0.286,
+   "first_take": "pass",
+   "at": "2026-11-20T08:14:32Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-rosa-03",
+   "preset": "sohee",
+   "generated_s": 4.08,
+   "whisper": "Booze, what is the house scene?",
+   "wer_raw": 0.333,
+   "first_take": "pass",
+   "at": "2026-11-20T08:17:18Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-rosa-04",
+   "preset": "sohee",
+   "generated_s": 12.16,
+   "whisper": "Biryani keeps show traffic apart from everything else, multicast is one video stream sent to many and it floods every port unless someone manages it.",
+   "wer_raw": 0.111,
+   "first_take": "pass",
+   "at": "2026-11-20T08:19:18Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-rosa-05",
+   "preset": "sohee",
+   "generated_s": 13.68,
+   "whisper": "Utilization. Traffic over link speed. Times 100. 300 megabits on 1000 megabit port. 30%. Fine. 900. Trouble.",
+   "wer_raw": 0.455,
+   "first_take": "pass",
+   "at": "2026-11-20T08:20:53Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-rosa-06",
+   "preset": "sohee",
+   "generated_s": 6.64,
+   "whisper": "15 minutes. What are my options? And what does each one cost me?",
+   "wer_raw": 0.077,
+   "first_take": "pass",
+   "at": "2026-11-20T08:21:36Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-rosa-07",
+   "preset": "sohee",
+   "generated_s": 6.8,
+   "whisper": "By hand, nothing touches that console till the house is empty. Places in five.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:23:24Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-rosa-08",
+   "preset": "sohee",
+   "generated_s": 5.52,
+   "whisper": "The critic wrote luminous, about the part we lit by hand from a phone video.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:29:14Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-sofia-01",
+   "preset": "ono_anna",
+   "generated_s": 5.2,
+   "whisper": "That's not my cue! That's not my cue!",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:15:00Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-sofia-02",
+   "preset": "ono_anna",
+   "generated_s": 4.08,
+   "whisper": "I hate counts. Okay, it counts.",
+   "wer_raw": 0.6,
+   "first_take": "fail",
+   "at": "2026-11-20T08:16:55Z",
+   "second_take": {
+    "generated_s": 5.76,
+    "whisper": "Hate counts. Okay, it counts.",
+    "wer_raw": 0.4,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e04-sofia-03",
+   "preset": "ono_anna",
+   "generated_s": 6.72,
+   "whisper": "29. 5 count. Go.",
+   "wer_raw": 0.6,
+   "first_take": "pass",
+   "at": "2026-11-20T08:24:01Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-sofia-04",
+   "preset": "ono_anna",
+   "generated_s": 9.76,
+   "whisper": "I clicked it, it said recommended. I was typing notes and it kept asking.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:25:13Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-sofia-05",
+   "preset": "ono_anna",
+   "generated_s": 3.12,
+   "whisper": "I created it kept asking I was typing notes",
+   "wer_raw": 0.2,
+   "first_take": "pass",
+   "at": "2026-11-20T08:25:49Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-sofia-06",
+   "preset": "ono_anna",
+   "generated_s": 4.4,
+   "whisper": "You bugged Ben.",
+   "wer_raw": 0.333,
+   "first_take": "fail",
+   "at": "2026-11-20T08:27:27Z",
+   "second_take": {
+    "generated_s": 2.24,
+    "whisper": "You backed Ben.",
+    "wer_raw": 0.0,
+    "result": "pass, used"
+   },
+   "heard_in_demo": "second take"
+  },
+  {
+   "id": "s02e04-sofia-07",
+   "preset": "ono_anna",
+   "generated_s": 4.16,
+   "whisper": "You brought me the video! You didn't touch my desk!",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:28:43Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e04-sofia-08",
+   "preset": "ono_anna",
+   "generated_s": 1.84,
+   "whisper": "Don't tell her",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:29:25Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-crew-01",
+   "preset": "uncle_fu",
+   "generated_s": 12.32,
+   "whisper": "Nobody says anything. A generator hums. Somewhere a vendor is selling lemonade. Very cheerfully to nobody.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:41:55Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-01",
+   "preset": "ryan",
+   "generated_s": 4.32,
+   "whisper": "I didn't touch her mix. I swear I didn't touch it.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:30:33Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-02",
+   "preset": "ryan",
+   "generated_s": 4.96,
+   "whisper": "I've been doing this 20 years and my name's on a clip with a woman crying.",
+   "wer_raw": 0.062,
+   "first_take": "pass",
+   "at": "2026-11-20T08:31:01Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-03",
+   "preset": "ryan",
+   "generated_s": 9.84,
+   "whisper": "Tell me, I'm not crazy, no rehearsal, a snapshot on the truck, and I never touched her faders.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:32:26Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-04",
+   "preset": "ryan",
+   "generated_s": 10.96,
+   "whisper": "Latency is delay as stage adds. Sample rate is how many times a second the desk measures the sound. A mix minus is everything except your own voice.",
+   "wer_raw": 0.036,
+   "first_take": "pass",
+   "at": "2026-11-20T08:34:40Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-05",
+   "preset": "ryan",
+   "generated_s": 10.88,
+   "whisper": "Samples equal time, time sample rate. Half a second at 48,000, 24,000 samples work backwards the same way.",
+   "wer_raw": 0.318,
+   "first_take": "pass",
+   "at": "2026-11-20T08:36:13Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-06",
+   "preset": "ryan",
+   "generated_s": 8.64,
+   "whisper": "Who puts a program return in a presenter's ear? I didn't build talk stage version one. It was on the truck when I got here.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:39:21Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-07",
+   "preset": "ryan",
+   "generated_s": 3.28,
+   "whisper": "You didn't have to say it in front of everyone.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:42:56Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-08",
+   "preset": "ryan",
+   "generated_s": 5.76,
+   "whisper": "The agency called. I'm booked for next month. Odette asked for me by name.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:46:01Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-dante-09",
+   "preset": "ryan",
+   "generated_s": 5.36,
+   "whisper": "Hey hands are a coffee, it's the same thing as thank you, maybe better.",
+   "wer_raw": 0.143,
+   "first_take": "pass",
+   "at": "2026-11-20T08:47:12Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-leah-01",
+   "preset": "serena",
+   "generated_s": 8.16,
+   "whisper": "Testing 1, 2, just me. Right now, no echo. I could talk all day like this.",
+   "wer_raw": 0.125,
+   "first_take": "pass",
+   "at": "2026-11-20T08:43:45Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-leah-02",
+   "preset": "serena",
+   "generated_s": 6.16,
+   "whisper": "Next jobs tonight, hotel ballroom, easy one, two rooms, one air wall.",
+   "wer_raw": 0.273,
+   "first_take": "pass",
+   "at": "2026-11-20T08:47:48Z",
+   "note": "flag read as a false alarm: every word heard; the score counted \"job's\" and the spelled numbers",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-01",
+   "preset": "vivian",
+   "generated_s": 4.4,
+   "whisper": "Then the records will say so. Show me all of them.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:31:27Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-02",
+   "preset": "vivian",
+   "generated_s": 5.44,
+   "whisper": "Then the records will say so. Show me the logs, all of them.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:32:58Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-03",
+   "preset": "vivian",
+   "generated_s": 5.6,
+   "whisper": "The desk shows delay in samples. I think in milliseconds.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:35:11Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-04",
+   "preset": "vivian",
+   "generated_s": 2.88,
+   "whisper": "and it went straight into her ear.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:37:34Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-05",
+   "preset": "vivian",
+   "generated_s": 7.2,
+   "whisper": "A third of a second, straight into her ear, from a template that said no delay here.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:38:14Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-06",
+   "preset": "vivian",
+   "generated_s": 3.36,
+   "whisper": "Here was a theater. This is a tent.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:38:33Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-07",
+   "preset": "vivian",
+   "generated_s": 2.56,
+   "whisper": "Then, let's find out who did.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:39:36Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-08",
+   "preset": "vivian",
+   "generated_s": 9.44,
+   "whisper": "The routing that hurt Nor came from a template I wrote in March. Dante ran what I built. He did nothing wrong. It's mine.",
+   "wer_raw": 0.042,
+   "first_take": "pass",
+   "at": "2026-11-20T08:40:44Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-09",
+   "preset": "vivian",
+   "generated_s": 8.16,
+   "whisper": "It was my template. I'm sorry. It won't be in anyone's ear again, and we tested it with someone talking.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:44:53Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-maya-10",
+   "preset": "vivian",
+   "generated_s": 6.64,
+   "whisper": "Good, everyone heard the other version first. They needed to hear the true one.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:46:41Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-noor-01",
+   "preset": "sohee",
+   "generated_s": 2.88,
+   "whisper": "They told me it was the engineer.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:44:02Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-noor-02",
+   "preset": "sohee",
+   "generated_s": 6.08,
+   "whisper": "Thank you for saying it was yours, nobody ever says that, I'll go on tomorrow.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:45:28Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-odette-01",
+   "preset": "ono_anna",
+   "generated_s": 6.4,
+   "whisper": "Your mix. Your name on the call sheet. The agency is asking me who to book next month.",
+   "wer_raw": 0.118,
+   "first_take": "pass",
+   "at": "2026-11-20T08:30:00Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-odette-02",
+   "preset": "ono_anna",
+   "generated_s": 3.92,
+   "whisper": "You have 10 minutes before I call the agency.",
+   "wer_raw": 0.111,
+   "first_take": "pass",
+   "at": "2026-11-20T08:33:21Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-odette-03",
+   "preset": "ono_anna",
+   "generated_s": 2.64,
+   "whisper": "So, the stream people did it?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:33:37Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-odette-04",
+   "preset": "ono_anna",
+   "generated_s": 2.4,
+   "whisper": "Three minutes.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:39:50Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-odette-05",
+   "preset": "ono_anna",
+   "generated_s": 6.0,
+   "whisper": "That's the first trade answer I've had all morning, I'll call the agency with that.",
+   "wer_raw": 0.067,
+   "first_take": "pass",
+   "at": "2026-11-20T08:42:29Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e05-pax-01",
+   "preset": "dylan",
+   "generated_s": 10.08,
+   "whisper": "Sure, RTN1's full program back from us. Frame sync and the encoder, about a third of a second.",
+   "wer_raw": 0.19,
+   "first_take": "pass",
+   "at": "2026-11-20T08:37:19Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-association-president-01",
+   "preset": "serena",
+   "generated_s": 6.32,
+   "whisper": "Good afternoon, thank you all for coming back from lunch, some of you I hear are still at it.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:00:51Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-banquet-captain-01",
+   "preset": "ono_anna",
+   "generated_s": 6.4,
+   "whisper": "My team said 400 chairs. Nobody touched your wires.",
+   "wer_raw": 0.3,
+   "first_take": "pass",
+   "at": "2026-11-20T08:49:47Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-banquet-captain-02",
+   "preset": "ono_anna",
+   "generated_s": 4.08,
+   "whisper": "It was in the pocket, panels don't stack on the cable.",
+   "wer_raw": 0.091,
+   "first_take": "pass",
+   "at": "2026-11-20T08:54:58Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-crew-01",
+   "preset": "uncle_fu",
+   "generated_s": 12.16,
+   "whisper": "The house tech counts. Nobody breathes. It's the least dramatic thing that's ever felt this dramatic.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:06:13Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-graham-01",
+   "preset": "eric",
+   "generated_s": 8.64,
+   "whisper": "Next week, hybrid product launch, 4,000 people online. Nobody in the room is allowed to notice.",
+   "wer_raw": 0.118,
+   "first_take": "pass",
+   "at": "2026-11-20T09:10:42Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-house-tech-01",
+   "preset": "ryan",
+   "generated_s": 9.84,
+   "whisper": "That lead is the wall's brain. Sensor says closed. The system divides, says open, one big room.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:54:21Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-house-tech-02",
+   "preset": "ryan",
+   "generated_s": 8.16,
+   "whisper": "Good. Don't. The couple's mid-vows and my projector just died. 40 minutes, maybe.",
+   "wer_raw": 0.071,
+   "first_take": "pass",
+   "at": "2026-11-20T08:56:45Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-house-tech-03",
+   "preset": "ryan",
+   "generated_s": 7.92,
+   "whisper": "Whatting ran short, I plug this in, the system divides instantly, no fade.",
+   "wer_raw": 0.077,
+   "first_take": "pass",
+   "at": "2026-11-20T09:03:37Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-house-tech-04",
+   "preset": "ryan",
+   "generated_s": 3.76,
+   "whisper": "3, 2, 1, in...",
+   "wer_raw": 0.75,
+   "first_take": "pass",
+   "at": "2026-11-20T09:05:03Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-houseperson-01",
+   "preset": "ryan",
+   "generated_s": 20.0,
+   "whisper": "But I don't love him, no, no, Ancla, is do you? Uh, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm,",
+   "wer_raw": 3.111,
+   "first_take": "fail",
+   "at": "2026-11-20T09:09:26Z",
+   "second_take": {
+    "generated_s": 4.32,
+    "whisper": "Your label, next time write what you actually want.",
+    "wer_raw": 0.0,
+    "result": "pass, used"
+   },
+   "heard_in_demo": "second take"
+  },
+  {
+   "id": "s02e06-jordan-01",
+   "preset": "dylan",
+   "generated_s": 5.04,
+   "whisper": "Aim was at catering. I touched a sandwich.",
+   "wer_raw": 0.125,
+   "first_take": "pass",
+   "at": "2026-11-20T08:50:16Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-jordan-02",
+   "preset": "dylan",
+   "generated_s": 6.24,
+   "whisper": "I was at Catring. I touched a sandwich. The sandwich can vouch for me.",
+   "wer_raw": 0.071,
+   "first_take": "pass",
+   "at": "2026-11-20T08:50:53Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-jordan-03",
+   "preset": "dylan",
+   "generated_s": 3.12,
+   "whisper": "It was a very good sandwich.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:51:17Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-jordan-04",
+   "preset": "dylan",
+   "generated_s": 9.52,
+   "whisper": "Revelation is the room still ringing after the sound stops. RT-60 is how long it takes to fall 60 to shibbles.",
+   "wer_raw": 0.318,
+   "first_take": "pass",
+   "at": "2026-11-20T08:57:38Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-jordan-05",
+   "preset": "dylan",
+   "generated_s": 15.2,
+   "whisper": "Sabine, 0.161, times volume, over absorption. 500 cubic meters, 50 square meters of absorption, about 1.6 seconds.",
+   "wer_raw": 0.522,
+   "first_take": "pass",
+   "at": "2026-11-20T08:59:14Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-leah-01",
+   "preset": "serena",
+   "generated_s": 6.8,
+   "whisper": "Room A is dead silent. The keynotes at 1.30. Tell me that's related.",
+   "wer_raw": 0.214,
+   "first_take": "pass",
+   "at": "2026-11-20T08:49:09Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-leah-02",
+   "preset": "serena",
+   "generated_s": 1.12,
+   "whisper": "Jardin'!",
+   "wer_raw": 1.0,
+   "first_take": "fail",
+   "at": "2026-11-20T08:51:00Z",
+   "second_take": {
+    "generated_s": 1.12,
+    "whisper": "Jordan",
+    "wer_raw": 0.0,
+    "result": "pass, used"
+   },
+   "heard_in_demo": "second take"
+  },
+  {
+   "id": "s02e06-leah-03",
+   "preset": "serena",
+   "generated_s": 4.24,
+   "whisper": "Then it's your fit to room A, re-run it.",
+   "wer_raw": 0.1,
+   "first_take": "pass",
+   "at": "2026-11-20T08:52:48Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-leah-04",
+   "preset": "serena",
+   "generated_s": 2.16,
+   "whisper": "Options. Fast.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:59:34Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-leah-05",
+   "preset": "serena",
+   "generated_s": 8.08,
+   "whisper": "Easy one, I said, two rooms, one air wall. The captain just called us, the wire people.",
+   "wer_raw": 0.125,
+   "first_take": "pass",
+   "at": "2026-11-20T09:01:37Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-leah-06",
+   "preset": "serena",
+   "generated_s": 3.44,
+   "whisper": "The captain just caught us, the wire people.",
+   "wer_raw": 0.125,
+   "first_take": "pass",
+   "at": "2026-11-20T09:02:28Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-leah-07",
+   "preset": "serena",
+   "generated_s": 6.88,
+   "whisper": "A words at 2.15 are the captains again. He says, thank you, loudly.",
+   "wer_raw": 0.385,
+   "first_take": "pass",
+   "at": "2026-11-20T09:07:27Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-leah-08",
+   "preset": "serena",
+   "generated_s": 2.16,
+   "whisper": "Alize the easy part.",
+   "wer_raw": 0.25,
+   "first_take": "pass",
+   "at": "2026-11-20T09:10:54Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-lunch-emcee-through-room-01",
+   "preset": "sohee",
+   "generated_s": 5.12,
+   "whisper": "And a big thank you to our dessert sponsors.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:51:59Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-01",
+   "preset": "vivian",
+   "generated_s": 5.36,
+   "whisper": "My label's gone. Do not remove. And the cable it was on.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:48:19Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-02",
+   "preset": "vivian",
+   "generated_s": 2.16,
+   "whisper": "Found the label.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:51:30Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-03",
+   "preset": "vivian",
+   "generated_s": 4.16,
+   "whisper": "Room A is in silent, it's playing room B.",
+   "wer_raw": 0.25,
+   "first_take": "pass",
+   "at": "2026-11-20T08:52:23Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-04",
+   "preset": "vivian",
+   "generated_s": 5.12,
+   "whisper": "My feed's right here, plugged in, a tester at the plate read signal.",
+   "wer_raw": 0.077,
+   "first_take": "pass",
+   "at": "2026-11-20T08:53:25Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-05",
+   "preset": "vivian",
+   "generated_s": 2.24,
+   "whisper": "Then it gets a label.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:54:34Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-06",
+   "preset": "vivian",
+   "generated_s": 4.4,
+   "whisper": "You did exactly the right thing. My label didn't.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:55:23Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-07",
+   "preset": "vivian",
+   "generated_s": 6.72,
+   "whisper": "Since our leads out of the room a pocket, panel says wall open, I haven't touched it.",
+   "wer_raw": 0.188,
+   "first_take": "pass",
+   "at": "2026-11-20T08:56:00Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-08",
+   "preset": "vivian",
+   "generated_s": 2.08,
+   "whisper": "And you can predict it?",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T08:57:49Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-09",
+   "preset": "vivian",
+   "generated_s": 7.68,
+   "whisper": "One bus works and he plays in both rooms, plate B, the president goes there, or nowhere.",
+   "wer_raw": 0.059,
+   "first_take": "pass",
+   "at": "2026-11-20T09:00:16Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-10",
+   "preset": "vivian",
+   "generated_s": 5.52,
+   "whisper": "I labeled the brain of the wall at 7 and told nobody who had to move it.",
+   "wer_raw": 0.059,
+   "first_take": "pass",
+   "at": "2026-11-20T09:02:09Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-11",
+   "preset": "vivian",
+   "generated_s": 4.24,
+   "whisper": "Honestly, today we are the wire people.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:02:51Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-12",
+   "preset": "vivian",
+   "generated_s": 5.2,
+   "whisper": "Wait, don't. The keynotes on plate B right now.",
+   "wer_raw": 0.111,
+   "first_take": "pass",
+   "at": "2026-11-20T09:04:07Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-13",
+   "preset": "vivian",
+   "generated_s": 4.88,
+   "whisper": "Played A's live, played B's on my finger, your count.",
+   "wer_raw": 0.2,
+   "first_take": "pass",
+   "at": "2026-11-20T09:04:33Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-14",
+   "preset": "vivian",
+   "generated_s": 5.84,
+   "whisper": "Room B, only room B, room A, only the keynote.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:06:48Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e06-maya-15",
+   "preset": "vivian",
+   "generated_s": 4.56,
+   "whisper": "unplug me, then call Maya, printing it now.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:09:52Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-01",
+   "preset": "ryan",
+   "generated_s": 7.76,
+   "whisper": "Room's easy, small room, loud band, I've barely got them in the PA.",
+   "wer_raw": 0.143,
+   "first_take": "pass",
+   "at": "2026-11-20T09:11:40Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-02",
+   "preset": "ryan",
+   "generated_s": 3.6,
+   "whisper": "Somebody in the wings is on the stream, telling a joke.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:12:38Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-03",
+   "preset": "ryan",
+   "generated_s": 5.76,
+   "whisper": "They never are when 4,000 people hear them.",
+   "wer_raw": 0.222,
+   "first_take": "pass",
+   "at": "2026-11-20T09:13:26Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-04",
+   "preset": "ryan",
+   "generated_s": 4.24,
+   "whisper": "That mike's been muted for ten minutes. Look, red?",
+   "wer_raw": 0.111,
+   "first_take": "pass",
+   "at": "2026-11-20T09:13:50Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-05",
+   "preset": "ryan",
+   "generated_s": 2.72,
+   "whisper": "Band-Down 10. Anything?",
+   "wer_raw": 0.25,
+   "first_take": "pass",
+   "at": "2026-11-20T09:14:19Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-06",
+   "preset": "ryan",
+   "generated_s": 5.92,
+   "whisper": "Easy. Make the stems follow my faders. Now my mutes count too.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:35:05Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-07",
+   "preset": "ryan",
+   "generated_s": 2.08,
+   "whisper": "I fixed it!",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:36:24Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-08",
+   "preset": "ryan",
+   "generated_s": 5.04,
+   "whisper": "I made the stems follow my faders, that's what you wanted, right?",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:37:11Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-09",
+   "preset": "ryan",
+   "generated_s": 6.32,
+   "whisper": "I changed your settings while you were in the wings. Ah, I shouldn't have.",
+   "wer_raw": 0.077,
+   "at": "2026-11-20T11:44:46Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-dante-10",
+   "preset": "ryan",
+   "generated_s": 8.48,
+   "whisper": "I changed your settings while you were in the wings.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:46:21Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-graham-01",
+   "preset": "eric",
+   "generated_s": 10.16,
+   "whisper": "4,000 people. My CEO. A joke from the wings. Who is responsible?",
+   "wer_raw": 0.333,
+   "at": "2026-11-20T11:43:31Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-graham-02",
+   "preset": "eric",
+   "generated_s": 7.6,
+   "whisper": "Fine tonight's partner show the CEO walks on live. You'll add my new product review queue tonight",
+   "wer_raw": 0.263,
+   "at": "2026-11-20T11:47:45Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-leah-01",
+   "preset": "serena",
+   "generated_s": 9.92,
+   "whisper": "Lip Sync is voice and lips arriving together. Every box in the picture path adds latency. The audio path usually adds less.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:16:25Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-leah-02",
+   "preset": "serena",
+   "generated_s": 10.48,
+   "whisper": "By the difference, picture path 120ms, audio already 20, add 100, measured, not by ear.",
+   "wer_raw": 0.368,
+   "at": "2026-11-20T11:31:01Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-leah-03",
+   "preset": "serena",
+   "generated_s": 6.48,
+   "whisper": "Maya. Where's the band? On a stream, they're miming. There's no band.",
+   "wer_raw": 0.083,
+   "at": "2026-11-20T11:35:45Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-leah-04",
+   "preset": "serena",
+   "generated_s": 4.56,
+   "whisper": "Maya, where's the band? On the stream they're memeing.",
+   "wer_raw": 0.111,
+   "at": "2026-11-20T11:36:12Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-leah-05",
+   "preset": "serena",
+   "generated_s": 7.52,
+   "whisper": "Clean, dance there, nobody in the winds, but the words come before the lips.",
+   "wer_raw": 0.143,
+   "at": "2026-11-20T11:38:45Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-leah-06",
+   "preset": "serena",
+   "generated_s": 8.08,
+   "whisper": "Clean, bends back, but the words lend before the lips move, like a badly dubbed film.",
+   "wer_raw": 0.125,
+   "at": "2026-11-20T11:39:54Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-leah-07",
+   "preset": "serena",
+   "generated_s": 4.24,
+   "whisper": "Lips match, sauce done, clean the whole way.",
+   "wer_raw": 0.125,
+   "at": "2026-11-20T11:40:52Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-leah-08",
+   "preset": "serena",
+   "generated_s": 4.88,
+   "whisper": "Tonight, the only hour we have is the pre-show checklist.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:48:14Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-01",
+   "preset": "vivian",
+   "generated_s": 5.04,
+   "whisper": "Dante, somebody in the wings is on the stream, telling a joke.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:12:09Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-02",
+   "preset": "vivian",
+   "generated_s": 2.24,
+   "whisper": "It's not a good joke.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:12:52Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-03",
+   "preset": "vivian",
+   "generated_s": 2.56,
+   "whisper": "Not on the stream, it hasn't.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:14:04Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-04",
+   "preset": "vivian",
+   "generated_s": 4.0,
+   "whisper": "Nothing. The stream doesn't care what your faders do.",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:14:42Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-05",
+   "preset": "vivian",
+   "generated_s": 2.32,
+   "whisper": "So I delay the audio",
+   "wer_raw": 0.0,
+   "first_take": "pass",
+   "at": "2026-11-20T09:16:38Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-06",
+   "preset": "vivian",
+   "generated_s": 9.28,
+   "whisper": "Your mics muted in the room. It wasn't online. I'm sorry. That's our routing. Not you.",
+   "wer_raw": 0.062,
+   "at": "2026-11-20T11:33:09Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-07",
+   "preset": "vivian",
+   "generated_s": 2.72,
+   "whisper": "You've fixed it so hard it's gone.",
+   "wer_raw": 0.143,
+   "at": "2026-11-20T11:36:40Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-08",
+   "preset": "vivian",
+   "generated_s": 7.04,
+   "whisper": "Your band's nearly out of the PA. The room hears them through the air. The stream can't.",
+   "wer_raw": 0.111,
+   "at": "2026-11-20T11:37:53Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-09",
+   "preset": "vivian",
+   "generated_s": 4.48,
+   "whisper": "Then it's proven. Stay on through the demo anyway.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:41:54Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-10",
+   "preset": "vivian",
+   "generated_s": 6.48,
+   "whisper": "The stream's tap point was wrong and I checked the room, not the stream. That's on me.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:44:09Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-11",
+   "preset": "vivian",
+   "generated_s": 6.88,
+   "whisper": "You found half the answer. Next time, tell me first. Then we'd have found all of it together.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:45:29Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-maya-12",
+   "preset": "vivian",
+   "generated_s": 6.08,
+   "whisper": "You found half the answer! Next time tell me first, then we find all of it!",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:46:59Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-reid-01",
+   "preset": "uncle_fu",
+   "generated_s": 5.92,
+   "whisper": "Four thousand people. Oh, no. Oh, no.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:33:45Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e07-stream-vendor-1-20-p-m-01",
+   "preset": "dylan",
+   "generated_s": 7.52,
+   "whisper": "Stamps are pre, the stream's independent of the room, you'll never fight the Afo-Hado guy.",
+   "wer_raw": 0.235,
+   "first_take": "pass",
+   "at": "2026-11-20T09:15:26Z",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-camera-2-operator-01",
+   "preset": "uncle_fu",
+   "generated_s": 5.92,
+   "whisper": "Viewfinder is perfect. I'm looking at the stage right now.",
+   "wer_raw": 0.222,
+   "at": "2026-11-20T11:56:21Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-graham-01",
+   "preset": "eric",
+   "generated_s": 9.92,
+   "whisper": "The reveal, light, video, a sting, the product lands like a heartbeat. Tonight...",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:49:54Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-graham-02",
+   "preset": "eric",
+   "generated_s": 2.48,
+   "whisper": "The CEO will be a SPEC!",
+   "wer_raw": 0.5,
+   "at": "2026-11-20T11:55:16Z",
+   "first_take": "pass",
+   "note": "flag read as a false alarm: Whisper wrote \"CEO\" for the spelled \"C-E-O\" and the homophone \"spec\" for \"speck\"",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-graham-03",
+   "preset": "eric",
+   "generated_s": 5.52,
+   "whisper": "Swoop the review music to the other track. The CEO likes it better!",
+   "wer_raw": 0.333,
+   "at": "2026-11-20T12:02:25Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-graham-04",
+   "preset": "eric",
+   "generated_s": 3.2,
+   "whisper": "The CEO likes the other track better!",
+   "wer_raw": 0.333,
+   "at": "2026-11-20T12:03:26Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-graham-05",
+   "preset": "eric",
+   "generated_s": 3.84,
+   "whisper": "So the product would be revealed for 8 seconds of nothing.",
+   "wer_raw": 0.091,
+   "at": "2026-11-20T12:04:25Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-graham-06",
+   "preset": "eric",
+   "generated_s": 2.08,
+   "whisper": "The other track can go in tomorrow.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:06:37Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-imani-01",
+   "preset": "ono_anna",
+   "generated_s": 7.68,
+   "whisper": "Riverbands side network people want to share internet with our AV network. Tonight, can I say yes?",
+   "wer_raw": 0.222,
+   "at": "2026-11-20T12:07:49Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-jordan-01",
+   "preset": "dylan",
+   "generated_s": 7.36,
+   "whisper": "We program it in the Checklist Hour. Checklist of Formality. Everything worked out too.",
+   "wer_raw": 0.286,
+   "at": "2026-11-20T11:50:51Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-jordan-02",
+   "preset": "dylan",
+   "generated_s": 6.56,
+   "whisper": "It's the reveal. Your programmer patched it over input too. And do it.",
+   "wer_raw": 0.25,
+   "at": "2026-11-20T11:54:38Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-jordan-03",
+   "preset": "dylan",
+   "generated_s": 5.36,
+   "whisper": "Your card. You argued for the checklist that caught your own card.",
+   "wer_raw": 0.167,
+   "at": "2026-11-20T11:57:03Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-jordan-04",
+   "preset": "dylan",
+   "generated_s": 13.04,
+   "whisper": "A frame is one steel picture, frame rate is how many per second, makes two rates in one rig and something stutters.",
+   "wer_raw": 0.091,
+   "at": "2026-11-20T12:00:35Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-jordan-05",
+   "preset": "dylan",
+   "generated_s": 9.04,
+   "whisper": "1 over the frame rate at 25 frames a second, 1, 25, 40 milliseconds.",
+   "wer_raw": 0.438,
+   "at": "2026-11-20T12:01:51Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-leah-01",
+   "preset": "serena",
+   "generated_s": 3.44,
+   "whisper": "Graham is 40% of our year, Maya.",
+   "wer_raw": 0.25,
+   "at": "2026-11-20T11:51:52Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-leah-02",
+   "preset": "serena",
+   "generated_s": 7.04,
+   "whisper": "Bose, in that order, and at $6.55, nobody touches anything without Rosa.",
+   "wer_raw": 0.286,
+   "at": "2026-11-20T11:53:27Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-leah-03",
+   "preset": "serena",
+   "generated_s": 3.68,
+   "whisper": "It's already first on the list. We the your name on it.",
+   "wer_raw": 0.182,
+   "at": "2026-11-20T12:07:00Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-maya-01",
+   "preset": "vivian",
+   "generated_s": 6.8,
+   "whisper": "It worked at 2, then the room flipped for dinner. The checklist is how we find out what the flip broke.",
+   "wer_raw": 0.048,
+   "at": "2026-11-20T11:51:31Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-maya-02",
+   "preset": "vivian",
+   "generated_s": 3.44,
+   "whisper": "Then let's not show him a black rectangle.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:52:12Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-maya-03",
+   "preset": "vivian",
+   "generated_s": 4.72,
+   "whisper": "That's what it's for. It doesn't care whose fault it is.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:57:31Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-maya-04",
+   "preset": "vivian",
+   "generated_s": 2.4,
+   "whisper": "How long is one frame?",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:00:50Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-maya-05",
+   "preset": "vivian",
+   "generated_s": 6.56,
+   "whisper": "The reveal is time to this sting, 12 seconds, the other track is 20.",
+   "wer_raw": 0.214,
+   "at": "2026-11-20T12:03:05Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-maya-06",
+   "preset": "vivian",
+   "generated_s": 4.08,
+   "whisper": "The reveal is 12 seconds. The other track is 20.",
+   "wer_raw": 0.2,
+   "at": "2026-11-20T12:03:51Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-rosa-01",
+   "preset": "sohee",
+   "generated_s": 7.76,
+   "whisper": "Stand by Qs 1 through 4. Q1, go. Q2, go.",
+   "wer_raw": 0.818,
+   "at": "2026-11-20T12:05:14Z",
+   "first_take": "pass",
+   "note": "flag read as a false alarm: Whisper wrote \"Qs\" for the homophone \"cues\" and \"stand by\" for \"standby\"; every line of the call heard",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-rosa-02",
+   "preset": "sohee",
+   "generated_s": 7.6,
+   "whisper": "No, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no, no,",
+   "wer_raw": 74.333,
+   "at": "2026-11-20T12:06:02Z",
+   "first_take": "fail",
+   "second_take": {
+    "generated_s": 3.44,
+    "whisper": "(Whisper could not transcribe this take: its tokenizer failed)",
+    "wer_raw": null,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e08-rosa-03",
+   "preset": "sohee",
+   "generated_s": 3.44,
+   "whisper": "Careful, goal.",
+   "wer_raw": 1.0,
+   "at": "2026-11-20T12:06:24Z",
+   "first_take": "fail",
+   "second_take": {
+    "generated_s": 2.96,
+    "whisper": "kafo-gou",
+    "wer_raw": 1.0,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e08-video-operator-01",
+   "preset": "ryan",
+   "generated_s": 5.2,
+   "whisper": "Checklist line 4. Every source on the switcher. Camera 2 is black.",
+   "wer_raw": 0.167,
+   "at": "2026-11-20T11:53:58Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e08-video-operator-02",
+   "preset": "ryan",
+   "generated_s": 3.84,
+   "whisper": "The reveals on input 6 at check twice.",
+   "wer_raw": 0.5,
+   "at": "2026-11-20T11:55:01Z",
+   "first_take": "fail",
+   "second_take": {
+    "generated_s": 4.56,
+    "whisper": "The reveals on input 6. I checked twice.",
+    "wer_raw": 0.25,
+    "result": "pass, used"
+   },
+   "heard_in_demo": "second take"
+  },
+  {
+   "id": "s02e08-video-operator-03",
+   "preset": "ryan",
+   "generated_s": 6.48,
+   "whisper": "Every source full screen one at a time, all clean.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T11:58:40Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-ben-01",
+   "preset": "aiden",
+   "generated_s": 3.68,
+   "whisper": "or a flock. Now, the headliner's crew lands at 10.",
+   "wer_raw": 0.4,
+   "at": "2026-11-20T12:26:07Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-ben-02",
+   "preset": "aiden",
+   "generated_s": 8.72,
+   "whisper": "Rain after 9 tomorrow. Headliners on at 9.15. Everybody reads the weather plan tonight. Everybody.",
+   "wer_raw": 0.25,
+   "at": "2026-11-20T12:28:40Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-imani-01",
+   "preset": "ono_anna",
+   "generated_s": 10.0,
+   "whisper": "They passed it at 1240 and went home. I told them to ask you.",
+   "wer_raw": 0.2,
+   "at": "2026-11-20T12:10:21Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-imani-02",
+   "preset": "ono_anna",
+   "generated_s": 9.76,
+   "whisper": "It works. Then we're done. Make it work. Write it up tomorrow. Gates at nine. You need four hours sleep.",
+   "wer_raw": 0.05,
+   "at": "2026-11-20T12:24:34Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-imani-03",
+   "preset": "ono_anna",
+   "generated_s": 3.36,
+   "whisper": "Mia, bed.",
+   "wer_raw": 0.5,
+   "at": "2026-11-20T12:25:08Z",
+   "first_take": "fail",
+   "second_take": {
+    "generated_s": 2.72,
+    "whisper": "Nya, bed.",
+    "wer_raw": 0.5,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e09-imani-04",
+   "preset": "ono_anna",
+   "generated_s": 1.52,
+   "whisper": "We will.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:26:51Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-imani-05",
+   "preset": "ono_anna",
+   "generated_s": 3.44,
+   "whisper": "smoothest gate they've ever had.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:27:11Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-01",
+   "preset": "vivian",
+   "generated_s": 4.16,
+   "whisper": "And my stream test just dropped, same minute.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:09:18Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-02",
+   "preset": "vivian",
+   "generated_s": 5.36,
+   "whisper": "Two networks, one cable, 18 minutes.",
+   "wer_raw": 0.167,
+   "at": "2026-11-20T12:11:03Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-03",
+   "preset": "vivian",
+   "generated_s": 10.64,
+   "whisper": "Audio. She knows. Radio. She knows. At one in the morning, this is somebody else's language, and it's her stream.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:13:00Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-04",
+   "preset": "vivian",
+   "generated_s": 12.32,
+   "whisper": "Two networks, same range, two DHCP servers. I unplugged our end. Scanners fine. Stream has no internet.",
+   "wer_raw": 0.2,
+   "at": "2026-11-20T12:14:19Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-05",
+   "preset": "vivian",
+   "generated_s": 7.44,
+   "whisper": "They're DHCP only, hours off, our gear on the 240 up.",
+   "wer_raw": 0.625,
+   "at": "2026-11-20T12:16:06Z",
+   "first_take": "fail",
+   "second_take": {
+    "generated_s": 6.88,
+    "whisper": "Bear D-Hatch CP only, hours off, our gear on the 240 up.",
+    "wer_raw": 0.562,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e09-maya-06",
+   "preset": "vivian",
+   "generated_s": 2.64,
+   "whisper": "How many devices fade?",
+   "wer_raw": 0.25,
+   "at": "2026-11-20T12:18:20Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-07",
+   "preset": "vivian",
+   "generated_s": 12.96,
+   "whisper": "Tell it back, their DHCP only, ours off, our gear on.240 up, rejoin, test gates, then stream.",
+   "wer_raw": 0.333,
+   "at": "2026-11-20T12:21:55Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-08",
+   "preset": "vivian",
+   "generated_s": 2.64,
+   "whisper": "Tonight. Promise.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:23:33Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-09",
+   "preset": "vivian",
+   "generated_s": 2.16,
+   "whisper": "Priya said write it now.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:24:48Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-10",
+   "preset": "vivian",
+   "generated_s": 4.64,
+   "whisper": "It's Maya again about the addresses call me when you're",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:25:45Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-maya-11",
+   "preset": "vivian",
+   "generated_s": 5.84,
+   "whisper": "Nobody asks where it's written down. That's the dark part. Nobody asks.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:27:45Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-priya-01",
+   "preset": "serena",
+   "generated_s": 6.32,
+   "whisper": "Good evidence, not theories, now who's networks and who's awake.",
+   "wer_raw": 0.2,
+   "at": "2026-11-20T12:14:57Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-priya-02",
+   "preset": "serena",
+   "generated_s": 4.08,
+   "whisper": "Evidence, not theories, now tell you back to me.",
+   "wer_raw": 0.111,
+   "at": "2026-11-20T12:15:21Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-priya-03",
+   "preset": "serena",
+   "generated_s": 4.88,
+   "whisper": "Good. Now go to sleep before you tell it back to me wrong.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:16:37Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-priya-04",
+   "preset": "serena",
+   "generated_s": 12.4,
+   "whisper": "A subnet is a block of addresses that can talk directly. The HCP hands-out addresses automatically. A static address is typed in by hand.",
+   "wer_raw": 0.148,
+   "at": "2026-11-20T12:17:54Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-priya-05",
+   "preset": "serena",
+   "generated_s": 12.32,
+   "whisper": "2 to the 32 minus the prefix, minus 2, a slash 26, 2 to the 6 is 64, minus 2, 62 devices.",
+   "wer_raw": 0.5,
+   "at": "2026-11-20T12:19:40Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-priya-06",
+   "preset": "serena",
+   "generated_s": 9.2,
+   "whisper": "Why the top? Their pool hands out from the bottom. 60 scanners. You're nowhere near that 240 tonight.",
+   "wer_raw": 0.25,
+   "at": "2026-11-20T12:20:35Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-priya-07",
+   "preset": "serena",
+   "generated_s": 8.8,
+   "whisper": "At 7, you and the site lead reserve those addresses, or separate the networks properly, and write this down tonight.",
+   "wer_raw": 0.05,
+   "at": "2026-11-20T12:23:16Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-site-tech-01",
+   "preset": "eric",
+   "generated_s": 5.2,
+   "whisper": "Share internet. Easy, they'll thank us in the morning.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:11:34Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-site-tech-02",
+   "preset": "eric",
+   "generated_s": 3.44,
+   "whisper": "Tag it's so Maya knows we're off!",
+   "wer_raw": 0.143,
+   "at": "2026-11-20T12:11:55Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-ticketing-lead-01",
+   "preset": "dylan",
+   "generated_s": 10.16,
+   "whisper": "Half my scanners just went offline, full Wi-Fi bars, 3,000 people at 9.",
+   "wer_raw": 0.2,
+   "at": "2026-11-20T12:08:53Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-ticketing-lead-02",
+   "preset": "dylan",
+   "generated_s": 4.64,
+   "whisper": "20 test takers, every lane, all green.",
+   "wer_raw": 0.286,
+   "at": "2026-11-20T12:22:22Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e09-ticketing-lead-03",
+   "preset": "dylan",
+   "generated_s": 5.76,
+   "whisper": "Smallest gate we've had. Whatever you did at one o'clock, keep doing it.",
+   "wer_raw": 0.077,
+   "at": "2026-11-20T12:26:41Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-01",
+   "preset": "aiden",
+   "generated_s": 5.2,
+   "whisper": "Good. Radars early. First cells in 20 minutes, maybe less.",
+   "wer_raw": 0.2,
+   "at": "2026-11-20T12:29:43Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-02",
+   "preset": "aiden",
+   "generated_s": 3.92,
+   "whisper": "radars early, first cells in 20, maybe less.",
+   "wer_raw": 0.25,
+   "at": "2026-11-20T12:30:08Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-03",
+   "preset": "aiden",
+   "generated_s": 4.72,
+   "whisper": "Good! Highlighters are the most underrated safety equipment we own.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:31:03Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-04",
+   "preset": "aiden",
+   "generated_s": 2.8,
+   "whisper": "Three kilometers, plan says hold.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:36:10Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-05",
+   "preset": "aiden",
+   "generated_s": 6.56,
+   "whisper": "Hold. Weather plan. Section 3. Their production concurs. Rosa. Call it.",
+   "wer_raw": 0.2,
+   "at": "2026-11-20T12:36:50Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-06",
+   "preset": "aiden",
+   "generated_s": 1.04,
+   "whisper": "Stop!",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:37:33Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-07",
+   "preset": "aiden",
+   "generated_s": 10.64,
+   "whisper": "A delay speaker sits out in the crowd, delayed so it's sound lands just after the stages. Sound moves about 343 meters a second.",
+   "wer_raw": 0.259,
+   "at": "2026-11-20T12:38:42Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-08",
+   "preset": "aiden",
+   "generated_s": 11.6,
+   "whisper": "Distance over speed, tower 17 meters out, 17 over 343, about 50 milliseconds, and weather holds are the safety leads call.",
+   "wer_raw": 0.348,
+   "at": "2026-11-20T12:40:10Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-09",
+   "preset": "aiden",
+   "generated_s": 5.68,
+   "whisper": "Stop. It's not my opinion. It's the plan. We agreed it before doors.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:41:15Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-10",
+   "preset": "aiden",
+   "generated_s": 6.64,
+   "whisper": "Years ago, an outdoor show, the wind came up, and we were told to keep going.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:43:50Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-11",
+   "preset": "aiden",
+   "generated_s": 7.76,
+   "whisper": "A roof section came down after the audience had gone. Nobody was hurt. That was luck. Not planning.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:44:37Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-12",
+   "preset": "aiden",
+   "generated_s": 2.72,
+   "whisper": "It's why it's boring. Boring is the goal.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:45:14Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-ben-13",
+   "preset": "aiden",
+   "generated_s": 6.8,
+   "whisper": "30 minutes since the last strike, plan says clear. Nobody touches the junction until Hank says so.",
+   "wer_raw": 0.059,
+   "at": "2026-11-20T12:46:19Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-dante-01",
+   "preset": "ryan",
+   "generated_s": 5.84,
+   "whisper": "Vocal ones just dropped, and guitar too, mid chorus.",
+   "wer_raw": 0.222,
+   "at": "2026-11-20T12:31:39Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-dante-02",
+   "preset": "ryan",
+   "generated_s": 5.92,
+   "whisper": "It's the crowd. 12,000 phones. That's your RF.",
+   "wer_raw": 0.4,
+   "at": "2026-11-20T12:33:24Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-dante-03",
+   "preset": "ryan",
+   "generated_s": 6.88,
+   "whisper": "Fallbacks? Live! Her in-ears are mine now!",
+   "wer_raw": 0.125,
+   "at": "2026-11-20T12:35:23Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-dante-04",
+   "preset": "ryan",
+   "generated_s": 9.6,
+   "whisper": "Downstage right. Upstage. The lip. Behind the drum riser. Solid everywhere.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:48:34Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-dante-05",
+   "preset": "ryan",
+   "generated_s": 5.6,
+   "whisper": "7 solid. Everything's solid. I'm going to cry into a cable.",
+   "wer_raw": 0.091,
+   "at": "2026-11-20T12:51:15Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-hank-01",
+   "preset": "uncle_fu",
+   "generated_s": 5.2,
+   "whisper": "Geni 3 is showing an alarm. Who's touching it?",
+   "wer_raw": 0.375,
+   "at": "2026-11-20T12:32:10Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-hank-02",
+   "preset": "uncle_fu",
+   "generated_s": 3.12,
+   "whisper": "Best answer I've had from AV all year.",
+   "wer_raw": 0.222,
+   "at": "2026-11-20T12:32:49Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-hank-03",
+   "preset": "uncle_fu",
+   "generated_s": 10.96,
+   "whisper": "The astro beside its mine. Give me three minutes. Generator was a fuel filter. Changed.",
+   "wer_raw": 0.214,
+   "at": "2026-11-20T12:47:26Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-headliner-s-manager-01",
+   "preset": "eric",
+   "generated_s": 4.88,
+   "whisper": "12,000 people! She's fine! One more song, and we're done!",
+   "wer_raw": 0.182,
+   "at": "2026-11-20T12:40:40Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-imani-01",
+   "preset": "ono_anna",
+   "generated_s": 5.44,
+   "whisper": "And the console updated last week. That's your control.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:33:57Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-imani-02",
+   "preset": "ono_anna",
+   "generated_s": 6.24,
+   "whisper": "Forty-one photos from my walk. I haven't looked at one of them.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:42:43Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-01",
+   "preset": "vivian",
+   "generated_s": 5.12,
+   "whisper": "Weather plans printed and taped to the desk, section 3 is highlighted.",
+   "wer_raw": 0.273,
+   "at": "2026-11-20T12:29:12Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-02",
+   "preset": "vivian",
+   "generated_s": 2.64,
+   "whisper": "Section 3 is highlighted.",
+   "wer_raw": 0.667,
+   "at": "2026-11-20T12:30:35Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-03",
+   "preset": "vivian",
+   "generated_s": 3.28,
+   "whisper": "Nobody. It's yours.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:32:30Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-04",
+   "preset": "vivian",
+   "generated_s": 7.2,
+   "whisper": "Take the headliner's ears on the stage mixer, if FOH drops again, it can't reach her.",
+   "wer_raw": 0.167,
+   "at": "2026-11-20T12:34:40Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-05",
+   "preset": "vivian",
+   "generated_s": 3.52,
+   "whisper": "7, 8, 9",
+   "wer_raw": 1.0,
+   "at": "2026-11-20T12:35:53Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-06",
+   "preset": "vivian",
+   "generated_s": 2.48,
+   "whisper": "So, the delay is...",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:38:57Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-07",
+   "preset": "vivian",
+   "generated_s": 4.56,
+   "whisper": "Look now. Stage left. Anything near the ground.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:43:10Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-08",
+   "preset": "vivian",
+   "generated_s": 3.28,
+   "whisper": "So that's why stop is normal on your crew.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:44:57Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-09",
+   "preset": "vivian",
+   "generated_s": 3.84,
+   "whisper": "She will think about this sentence for the rest of her career.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:45:38Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-maya-10",
+   "preset": "vivian",
+   "generated_s": 4.72,
+   "whisper": "The napkin was in the jacket. The jacket was in the rain.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:52:15Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-priya-01",
+   "preset": "serena",
+   "generated_s": 5.2,
+   "whisper": "Before you say yes, did anyone write down the 1am fix?",
+   "wer_raw": 0.231,
+   "at": "2026-11-20T12:51:46Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-rosa-01",
+   "preset": "sohee",
+   "generated_s": 6.24,
+   "whisper": "Holding, announcement in 10, both give me the announcement.",
+   "wer_raw": 0.4,
+   "at": "2026-11-20T12:37:26Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-rosa-02",
+   "preset": "sohee",
+   "generated_s": 6.72,
+   "whisper": "Ladies and gentlemen, we're posing the show for your safety. Please follow the stewards. We'll be back.",
+   "wer_raw": 0.059,
+   "at": "2026-11-20T12:42:05Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-rosa-03",
+   "preset": "sohee",
+   "generated_s": 2.88,
+   "whisper": "Is that a report or a feeling?",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:48:52Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-rosa-04",
+   "preset": "sohee",
+   "generated_s": 5.28,
+   "whisper": "Copy, restarting in two.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:49:24Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-rosa-05",
+   "preset": "sohee",
+   "generated_s": 4.08,
+   "whisper": "I'm asking you what the booth knows.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:49:49Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e10-rosa-06",
+   "preset": "sohee",
+   "generated_s": 3.52,
+   "whisper": "Riva Band, we are back.",
+   "wer_raw": 0.5,
+   "at": "2026-11-20T12:50:10Z",
+   "first_take": "fail",
+   "second_take": {
+    "generated_s": 3.92,
+    "whisper": "Before pain, we are back.",
+    "wer_raw": 0.5,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e10-rosa-07",
+   "preset": "sohee",
+   "generated_s": 5.2,
+   "whisper": "Rebar Ben, we are back.",
+   "wer_raw": 0.5,
+   "at": "2026-11-20T12:50:41Z",
+   "first_take": "fail",
+   "second_take": {
+    "generated_s": 3.68,
+    "whisper": "He will bend! We are back!",
+    "wer_raw": 0.75,
+    "result": "fail"
+   },
+   "heard_in_demo": "caption (both takes failed)"
+  },
+  {
+   "id": "s02e11-ben-01",
+   "preset": "aiden",
+   "generated_s": 5.52,
+   "whisper": "One more fixture on my truss, while I'm at lunch. Don't even think about it.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:54:08Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e11-jordan-01",
+   "preset": "dylan",
+   "generated_s": 4.72,
+   "whisper": "Everything at once. Where do we start?",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:52:44Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e11-jordan-02",
+   "preset": "dylan",
+   "generated_s": 2.32,
+   "whisper": "And if we fail again...",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:55:32Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e11-maya-01",
+   "preset": "vivian",
+   "generated_s": 6.72,
+   "whisper": "Where the signal starts, then one thing at a time, and nothing that isn't ours.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:53:34Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e11-maya-02",
+   "preset": "vivian",
+   "generated_s": 4.32,
+   "whisper": "Wouldn't dream of it, your trust, your signature.",
+   "wer_raw": 0.125,
+   "at": "2026-11-20T12:54:35Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e11-maya-03",
+   "preset": "vivian",
+   "generated_s": 7.12,
+   "whisper": "One check per stage. If it fails, we start over from the top and we'll know why.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:55:18Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  },
+  {
+   "id": "s02e11-maya-04",
+   "preset": "vivian",
+   "generated_s": 6.16,
+   "whisper": "Then we start again. That's the job, until it passes, and we can prove it.",
+   "wer_raw": 0.0,
+   "at": "2026-11-20T12:56:10Z",
+   "first_take": "pass",
+   "heard_in_demo": "first take"
+  }
+ ]
+}

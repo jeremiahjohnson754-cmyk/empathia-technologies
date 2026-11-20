@@ -1,0 +1,1901 @@
+{
+ "chapter": {
+  "id": "s03e10",
+  "kicker": "S03 · E10 · FINALE",
+  "title": "The CEO Room",
+  "pill": "S03E10 · The CEO Room",
+  "sub": "Thirty seconds to save the room. A week to make sure it never happens in any room.",
+  "status": "**DRAFT** · scripted from the season map (MS-02) ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S03E10",
+   "RT-03",
+   "RV-77",
+   "RV-72",
+   "RV-79",
+   "Q-014",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--red)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 3 · EPISODE 10 · DRAFT · SEASON FINALE  Countdown · MS-02 · Maya, Imani and Sam · Level L3 (Technician)  Monday, 9:00. The CEO opens the board meeting. Investors are dialed in. She shares her chart — and they see nothing. Thirty seconds to save the room. A week to make sure it never happens in any room.  ⚑ RV-77 · RV-78: the capture behavior, update and every number are illustrative. Changes to a live room wait for the change process. Most choices in this episode run on a clock — one of them on fifteen seconds."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Thirty Seconds",
+   "kind": "BOSS · SEASON FINALE",
+   "level": "L3 → L4",
+   "party": [
+    "maya",
+    "sam",
+    "imani",
+    "ines",
+    "ray"
+   ],
+   "stakes": "Twelve board members in the room. Eight investors on the line. The investors see a blank window. Thirty seconds of dead air and Dana will notice. So will the markets.",
+   "clock": "Thirty seconds. Then a week.",
+   "reward": "Saved, then solved. A label that outlived an argument.",
+   "objectives": [
+    {
+     "key": "BR-S03E10-01",
+     "text": "Read three readings in six seconds"
+    },
+    {
+     "key": "BR-S03E10-02",
+     "text": "Do it — fifteen seconds"
+    },
+    {
+     "key": "twist",
+     "text": "Find why the test ring passed"
+    },
+    {
+     "key": "BR-S03E10-03",
+     "text": "Plan the fleet before the change board"
+    },
+    {
+     "key": "BR-S03E10-04",
+     "text": "Choose the five rooms that look like four hundred"
+    },
+    {
+     "key": "disc:3",
+     "text": "Look closer: three things the week uncovers"
+    }
+   ],
+   "rumor": "On the ingest box under the table is a five-year-old label. Maya would know that font anywhere."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Thirty seconds”",
+   "sub": "Monday · 9:00:40 a.m. · the boardroom, 30th floor"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The boardroom. Dana Whitcomb, the CEO, stands at the head of the long table, pointing to her chart on the big display: Q3, ahead of plan. Ines, her executive assistant, stands by the wall with a tablet. A countdown reads 00:30.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "ines",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dana Whitcomb · CEO",
+     "kind": "speech",
+     "text": "Let me share the quarter with everyone — including our friends on the line."
+    },
+    {
+     "side": "R",
+     "who": "Ines",
+     "kind": "whisper",
+     "text": "(…Maya.)"
+    }
+   ],
+   "narration": [],
+   "caption": "Twelve board members in the room. Eight investors on the line (illustrative). One chart.",
+   "flags": [
+    "RV-77",
+    "RT-03",
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1825
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close on Ines's tablet, which shows what the far end sees: four investor tiles and a large content window that is completely black. Ines, beside it, whispers.",
+   "characters": [
+    {
+     "id": "ines",
+     "pose": "L",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ines",
+     "kind": "whisper",
+     "text": "Maya. The investors see a blank window. Thirty seconds of dead air and she'll notice."
+    }
+   ],
+   "narration": [],
+   "caption": "The room sees the chart. The people the chart is for see nothing.",
+   "flags": [
+    "RV-77"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1686
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The back of the boardroom. Maya, listening hard; the table's touch panel reads SHARING. Sam, crouched by the table end, holds up the HDMI cable he's just swapped.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "worried"
+    },
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "whisper",
+     "text": "Local shows it. Panel says Sharing. Far end: nothing."
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "whisper",
+     "text": "Swapped the table cable already. No change."
+    }
+   ],
+   "narration": [],
+   "caption": "Three readings. The room is telling them exactly where the break is — if they can hear it.",
+   "flags": [
+    "RV-77"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2319
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "00:26",
+   "lines": [
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Swapped the table cable already. No change."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Local shows it. Panel says Sharing. Far end: nothing."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(Her hands are shaking. Her voice isn't. She has no idea how.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E10-01",
+   "prompt": "00:26. Local display: chart. Panel: Sharing. Far end: blank. Cable swapped, no change. What does that tell you?",
+   "happening": "The local display shows the chart; the far end sees a blank content window.",
+   "clock": "09:00:44 · 00:26 left",
+   "known": [
+    "◉ Local display: chart",
+    "◉ Panel: SHARING",
+    "◉ Far end: blank",
+    "◉ Cable swapped: no change"
+   ],
+   "unknown": [
+    "What the room computer is capturing"
+   ],
+   "risk": "A CEO, a board and eight investors.",
+   "timer_s": 20,
+   "timeout": [
+    "Sam, out of ideas, reaches for the room's power button. Maya grabs his wrist just in time — five more seconds gone.",
+    "When nobody reads the evidence out loud, somebody reaches for the reboot."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Two different things are fed: the display, and the far end. Which one is wrong?"
+    }
+   ],
+   "note": "Draft decision (DR-S03E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "The cable's still bad — swap it again",
+     "result": "Sam swaps it again. The local display blinks; Dana glances at it. Far end: still blank.",
+     "consequence": "The local display already proved the cable. Now the CEO has noticed something.",
+     "chips": [
+      "Wasted 8 s",
+      "CEO glanced"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The local path works. The cable can't be the break.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Sam": -1,
+       "Dana": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The investors' internet is slow — the guest Wi-Fi speed test is awful",
+     "result": "The speed test is awful. The room's call isn't on guest Wi-Fi.",
+     "consequence": "A red herring that feels like evidence.",
+     "chips": [
+      "Wrong network"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Measuring the wrong path proves nothing about this one.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "The room computer is sending the far end something other than what the display shows — look at what it's capturing",
+     "result": "Two paths: table → switcher → display (fine), and capture → room computer → far end (wrong). Look under the table.",
+     "consequence": "The break is split in half in one sentence.",
+     "chips": [
+      "Path split",
+      "Nothing touched"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "The calendar warned about something this morning — check that",
+     "result": "“This meeting overlaps with Q3 prep (tentative).”",
+     "consequence": "A warning isn't a cause.",
+     "chips": [
+      "Irrelevant"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Reading banners while the clock runs.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Under the table, in Sam's flashlight beam: a gray ingest box with two inputs, IN 1 and IN 2. Below them, two label-maker labels: IN 1 = TABLE HDMI. IN 2 = TABLE CUBBY.",
+   "characters": [],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Sam",
+     "kind": "whisper",
+     "text": "Two inputs. There's a label. “IN 2 = TABLE CUBBY.”"
+    }
+   ],
+   "narration": [],
+   "caption": "Label-maker tape, five years old. Maya would know that font anywhere.",
+   "flags": [
+    "RV-77"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2079
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Extreme close-up: the label, IN 2 = TABLE CUBBY, and in faded pen beside it, the initial R.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "Ray's label. Ray's label maker. The one he gave her."
+   ],
+   "caption": "“Label everything,” he'd written. “Especially what only I know.”",
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 860
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-10a",
+   "teaser": "the label under the table",
+   "title": "“IN 2 = TABLE CUBBY”",
+   "body": "Label-maker tape, five years old, in Ray's font. On the back, only visible when Sam peels it to read it: *— in case I'm not here. R.* He wrote it for exactly this Monday.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": [
+    "ray",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E10-02",
+   "prompt": "00:15. FIFTEEN SECONDS. Dana is mid-sentence. The investors see nothing. Do it.",
+   "happening": "A labeled second input, a documented laptop fallback, a reboot, a rollback.",
+   "clock": "09:00:55 · 00:15 left",
+   "known": [
+    "◉ Label: IN 2 = TABLE CUBBY",
+    "◉ Laptop join is the documented fallback",
+    "◉ Update installed overnight"
+   ],
+   "unknown": [
+    "Why the input changed"
+   ],
+   "risk": "The CEO's credibility with her investors, live.",
+   "timer_s": 15,
+   "timeout": [
+    "The fifteen seconds run out. Dana pauses: “Is everyone seeing this?” A voice on the line: “…No?”",
+    "She noticed. The only choice that loses for certain is none."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which fix restarts nothing?"
+    }
+   ],
+   "note": "Draft decision (DR-S03E10). The brutal one.",
+   "lab": "LAB-SF-06",
+   "lab_label": "thirty seconds. Patch it.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Reboot the room",
+     "result": "The call drops. The display goes black in front of the board. Three minutes, minimum, of dead air — and the room rejoins with the same update.",
+     "consequence": "Dana stops mid-word. The investors wait, then start texting.",
+     "chips": [
+      "3+ min dead air",
+      "Call dropped"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Three minutes you didn't have, and it doesn't touch the cause.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dana": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ines: Dana's laptop joins the call directly and shares",
+     "result": "A soft join tone. Ines taps Share on the laptop. The chart appears for the far end in about twenty seconds.",
+     "consequence": "The documented fallback. It works — just a little slower and a little louder.",
+     "chips": [
+      "Works",
+      "~20 s"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Sam moves Dana's cable to the table cubby — IN 2",
+     "result": "Two seconds of hands under the table. Dana never looks down. On Ines's tablet, the chart appears.",
+     "consequence": "The labeled path, found through the label. Nothing restarted, nothing noticed.",
+     "chips": [
+      "Seconds",
+      "Nothing restarted"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Sam": 2,
+       "Dana": 2,
+       "Ines": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Roll back last night's update from the admin console",
+     "result": "The rollback starts on a live room. The call stutters. Nobody approved this.",
+     "consequence": "An unauthorized change to the CEO's room, mid-meeting, with investors watching.",
+     "chips": [
+      "Unauthorized change"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "CHANGE POLICY"
+      }
+     ],
+     "canonical": false,
+     "fail": "Change policy is binding — especially here, especially now.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dana": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Under the table, Sam slides the CEO's cable into IN 2. The IN 2 port lights green.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two seconds of hands under a table. Nobody above it knew.",
+   "flags": [
+    "RV-77"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2165
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ines's tablet: the far-end content window now shows the chart. Ines, still whispering, smiles.",
+   "characters": [
+    {
+     "id": "ines",
+     "pose": "L",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ines",
+     "kind": "whisper",
+     "text": "They see it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-77"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "investor, side channel: “Q3, ahead of plan”"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1839
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dana, at the head of the table, sweeps a hand toward the chart, confident.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "W",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dana Whitcomb · CEO",
+     "kind": "speech",
+     "text": "…and as you can see, the quarter closed ahead of plan."
+    }
+   ],
+   "narration": [],
+   "caption": "Twenty-seven seconds. She never knew.",
+   "flags": [
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1487
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the corridor outside the boardroom, Maya stands alone, hands at her sides, not quite steady.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [],
+   "narration": [
+    "Maya's hands didn't stop shaking until 9:20."
+   ],
+   "caption": "Saved. Not solved.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1150
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(Her hands don't stop shaking until 9:20. Nobody in the room knows. That's the job. It's also the loneliest part of it.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-310",
+   "label": "**Service Mode:** 9:00:40. Run the thirty seconds yourself. (Relaxed timers double the clock.)",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “It says it's sharing”",
+   "sub": "9:40 · the corridor, then the service desk"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani finds Maya in the corridor.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Thirty seconds. Brilliant. Now make sure it never happens again — in any room."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Which rooms?"
+    }
+   ],
+   "narration": [],
+   "caption": "“That's the question,” Imani says. “You have a week.”",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1158
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S3-10",
+   "who": "imani",
+   "prompt": "Thirty seconds. Brilliant. Now make sure it never happens again — in any room. Where do you start?",
+   "options": [
+    {
+     "label": "“With the rooms nobody's watching. The eleven.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Good. That's the answer I'd have written on the whiteboard.",
+     "trust": {
+      "Imani": 1,
+      "Nora": 1
+     }
+    },
+    {
+     "label": "“With the update. Roll it back everywhere.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Everywhere includes three hundred rooms that are fine.",
+     "trust": {
+      "Imani": -1
+     }
+    },
+    {
+     "label": "“Can I have a minute? I'm still shaking.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Take five. Then the eleven. I'll get coffee.",
+     "trust": {
+      "Imani": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Building the fallback from what's on board",
+   "body": "In April 1970, after an oxygen tank exploded on Apollo 13, the three astronauts sheltered in the lunar module, whose carbon-dioxide scrubbers weren't meant for three people for four days. The command module had spare scrubber cartridges — square, where the lunar module's sockets were round. Engineers on the ground built an adapter from things they knew were aboard: plastic bags, cardboard, hoses and tape, then read the steps up to the crew. A fallback is only as good as what's really in the room — and whether someone wrote down how to use it.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The boardroom computer's records on a service-desk monitor, read-only: an update package installed at 02:10, ring: fleet. Capture inputs IN 1 and IN 2; content now IN 2, 'first detected'. Update notes: the default content input is now the first input detected.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Update history → two inputs → Ray's label → the notes. The evidence tree, in order.",
+   "flags": [
+    "RV-77",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "02:10 update · content = IN 2"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3678
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of the boardroom's content path after the update. The CEO's laptop feeds IN 1, the table HDMI. IN 1 feeds the switcher and the room display, which shows the chart. The room computer, after the 02:10 update, takes content from IN 2, the empty table cubby, and sends that to the far end, which is blank.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two paths from one table. The update moved one of them to an empty chair.",
+   "flags": [
+    "RV-77",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The update's ring-1 test on a monitor: five standard rooms, Aspen through Fir, all passed; inputs per room, one. Nora points at the list.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Five rooms, all pass. All five have one input. The boardroom wasn't in the ring — it isn't in the inventory. Exception room four."
+    }
+   ],
+   "narration": [],
+   "caption": "Every test passed. None of them could have failed.",
+   "flags": [
+    "RV-77",
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3578
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The test ring passed",
+   "body": "The update wasn't untested. It passed ring 1 cleanly — five standard rooms, each with a single content input, where “the first input detected” is always the right one. The failure needed a room with two inputs. The only rooms with two were the exceptions nobody had recorded, so none of them were in the ring. The boardroom was number four on Nora's list.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E10-1",
+   "label": "Test: reason from the ring. Why did it pass — and which rooms do you query now?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E10-03",
+   "prompt": "9:52. Imani needs a plan for the fleet before the 10:30 change board. What do you propose?",
+   "happening": "The boardroom is saved; the cause is in the fleet.",
+   "clock": "09:52 · change board 10:30",
+   "known": [
+    "▮ 02:10 update: content = first input detected",
+    "◉ Boardroom not in ring or inventory"
+   ],
+   "unknown": [
+    "Which other rooms have two inputs"
+   ],
+   "risk": "Every room with the boardroom's shape.",
+   "timer_s": 25,
+   "timeout": [
+    "The change board meets without a proposal and defaults to “monitor the situation.”",
+    "A week starts with one decision. Not making it spends a day."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Fix the instance safely today; hunt the class this week."
+    }
+   ],
+   "note": "Draft decision (DR-S03E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Roll the update back on every room tonight",
+     "result": "Three hundred rooms change overnight on a plan nobody has tested — and lose the security fixes the update carried.",
+     "consequence": "Mei, reading the proposal: “No.”",
+     "chips": [
+      "Untested fleet change"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "CHANGE POLICY"
+      }
+     ],
+     "canonical": false,
+     "fail": "A fleet-wide rollback is a fleet-wide change. It needs its own test — and it undoes patches.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Mei": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Emergency change today: pin the boardroom's content input explicitly; then query the fleet for every room with more than one input",
+     "result": "The change board approves in twenty minutes. The boardroom's content input is set to IN 1 by name, not by default.",
+     "consequence": "The CEO room is safe by lunch. The rest of the week goes to finding its twins.",
+     "chips": [
+      "Emergency change",
+      "Fleet query"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Imani": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Nothing — the cubby trick worked",
+     "result": "Next Monday, Dana plugs into the table HDMI again.",
+     "consequence": "The failure class is still in the building.",
+     "chips": [
+      "Unfixed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You saved a meeting and left the cause in place.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Dana": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Block all updates to the boardroom, permanently",
+     "result": "Mei: “Then it's the one room in the building that never gets security patches.”",
+     "consequence": "Exceptions made permanent become the next blind spot.",
+     "chips": [
+      "Unpatched room"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Freezing a room trades one risk for a worse one.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Mei": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-41",
+   "label": "**First failure point:** where does the content stop?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The week”",
+   "sub": "Tuesday to Friday"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tuesday. A new exception register on a monitor: room, what differs, owner, in the ring? The boardroom has two inputs; Harbor a divisible wall; Studio its own computer build; eight more. Every owner column reads question marks; every ring column, no.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Eleven rows. Every owner is a question mark."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then that's Thursday's job."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-77",
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2548
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ines and Maya beside a board. Update rings: a few rooms first, then more, so a bad update hurts a few people instead of everyone. The exception register lists every room that's different. How big is the next ring? What's left times the share. Two hundred rooms left, twenty-five percent: fifty rooms.",
+   "characters": [
+    {
+     "id": "ines",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ines",
+     "kind": "speech",
+     "text": "Update rings: a few rooms first, then more, so a bad update hurts a few people instead of everyone. The exception register lists every room that's different."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How big is the next ring?"
+    },
+    {
+     "side": "L",
+     "who": "Ines",
+     "kind": "speech",
+     "text": "What's left times the share. Two hundred rooms left, twenty-five percent: fifty rooms."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2750
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Update ring   A group of systems updated together, smallest and least critical first.   Exception register   A list of every room or system that doesn't follow the standard, each with an owner and a reason.   Formula, variables and a worked example   ƒ FORMULA · Update ring size  ring = remaining rooms × share   remaining rooms  fleet minus rooms already in earlier rings  share  fraction for this ring (10% = 0.10)    Worked example.  200 rooms left, 25% ring: 200 × 0.25 = 50 rooms in this ring."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 31 OF 31 · PP. 132–135, 160–163, 182  PART 8 VIDEO ENGINEERING · PART 10 LIGHTING ENGINEERING · PART 11 OPERATIONS  Page 182, the last page:  Good technology should disappear.  There were two names on the spine now, Ray's crossed out and Maya's under it — and room for a third."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB31",
+   "label": "**Fieldbook module 31 — Picture and light on camera.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 31 · tap a plate to open it full size     Video signal flow and science     Video systems explained     Lenses, focus and depth of field     The exposure triangle"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "demo-note",
+   "cls": "demo-note",
+   "text": "🌈 Colour temperature and mixing · HANDS-ON DEMO  Slide the colour temperature, work out the mired shift, and mix red, green and blue light.  Open the demo ▸",
+   "opens": {
+    "kind": "demo",
+    "id": "color"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "M3",
+   "label": "**Learn it now:** update rings and exception registers.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of the new update-ring design: ring 0, the lab, two rooms; ring 1, one room of every shape, five rooms; ring 2, a slice of forty rooms; ring 3, all four hundred. Ring 1 includes a standard room, a two-input room, a divisible room, a huddle room and a boardroom-type room, each with a far-end content check, a 24-hour watch, and a pause and rollback at every step.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Wednesday. Five rooms that look like four hundred, instead of five that look like each other.",
+   "flags": [
+    "RV-77",
+    "RV-78",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E10-04",
+   "prompt": "Wednesday. Which five rooms go in ring 1?",
+   "happening": "Designing ring 1.",
+   "clock": null,
+   "known": [
+    "◉ Eleven exception rooms, several shapes",
+    "◉ Ring 1 missed the two-input case"
+   ],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S03E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Five rooms picked at random from the fleet",
+     "result": "Odds are all five are standard rooms. The ring passes every update again.",
+     "consequence": "Random isn't representative when the rare rooms are the risky ones.",
+     "chips": [
+      "Same blindness"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You rebuilt the ring that missed the boardroom.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "One room of every configuration: standard, two-input, divisible, huddle, boardroom-type",
+     "result": "Every update now meets every shape of room before it meets the fleet.",
+     "consequence": "A failure that needs two inputs has somewhere to fail.",
+     "chips": [
+      "Representative"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Just the boardroom — it's the one that matters",
+     "result": "The boardroom is safe. Harbor's divisible wall isn't.",
+     "consequence": "You protected the CEO and nobody else.",
+     "chips": [
+      "Narrow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "All 400 rooms at once, with a rollback ready",
+     "result": "That isn't a ring. It's the fleet.",
+     "consequence": "Every surprise happens everywhere at once.",
+     "chips": [
+      "Not a ring"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A ring exists so a failure happens small first.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Thursday. The empty boardroom. Ray, holding his small notebook, stands at one end of the table; Mei at the other.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "mei",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Imani said you need owners for the exception rooms. Most of them are mine. I built them."
+    },
+    {
+     "side": "R",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "Then let's put them in the register. Not in the notebook."
+    }
+   ],
+   "narration": [],
+   "caption": "The first time they'd been in a room since Saturday.",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 961
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray's notebook, open: Boardroom (D.W.) — IN 2 = table cubby, her side table; admin password, dotted out; Harbor: wall makes two rooms; Studio: own computer build; and in green, 'label it! — R'.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Eleven exception rooms, each one a page in one man's notebook.",
+   "flags": [
+    "VR-08",
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2370
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-10b",
+   "teaser": "Ray's notebook, open on the table",
+   "title": "Eleven pages, eleven rooms",
+   "body": "Every exception room in the building, in one man's handwriting, with the reasons nobody else ever heard. The last page in the notebook isn't about Aldermoor at all: *Kestrel Valley — 2004 — backup MCR, REF B = house black. Keep it. Cal knows.*",
+   "thread": "Kestrel Valley",
+   "who": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #31 · AVERY'S LENS  Put the fallback where eyes land  In a crisis, the recovery step must be visible exactly where people look.  Ray's label on the ingest box — IN 2 = TABLE CUBBY — was a thirty-second fallback printed where Sam's eyes landed."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S03E10",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray turns to Maya, who has just come in. He speaks quietly.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "I made that label because I knew I'd forget. Never thought anyone else would need it. Your policy person saved my label."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You taught me to read labels. Before you taught me anything else."
+    }
+   ],
+   "narration": [],
+   "caption": "That was the whole apology. It was enough.",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 968
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "closed",
+     "text": "Your policy person saved my label."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "You taught me to read labels before you taught me anything else."
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "smile",
+     "text": "(That's the whole apology. It's enough.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mei and Ray at the table, the register open on a laptop between them. Ray tears one page out of his notebook and hands it to her.",
+   "characters": [
+    {
+     "id": "mei",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "Boardroom password: rotated, in the approved store, named accounts only. And your label goes in the register, word for word."
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "One page. The rest of this notebook is other people's buildings."
+    }
+   ],
+   "narration": [],
+   "caption": "One page came out of the notebook. The notebook went back in his pocket. (DEBT-002)",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 963
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A fleet query result late on Thursday: four rooms with more than one content input. The boardroom, pinned to IN 1. Harbor B and Studio, on the default. And Juniper — the pilot room for the new standard, version 1.0 — on the default.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Juniper. That's the standard. Section 3.4 — two inputs, for reach."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-77",
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "fleet query · 4 multi-input rooms"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3487
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The standard had the same shape",
+   "body": "The fleet query didn't just find two more exception rooms. It found Juniper — the pilot of Maya's own room standard. Section 3.4 gives every new room two content inputs, table and wall, because Participant 2 couldn't reach the old one. With the same update and an unpinned default, version 1.0 would have shipped the boardroom's failure to four hundred rooms. The requirement was right. The default was the trap.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E10-2",
+   "label": "Test: reason from the query. What would have happened, what goes in the standard — and is the second input the mistake?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The standard's revised page, version 1.1, section 3: two content inputs, table and wall, for reach; 3.4.1, content capture input set explicitly per room, never default; 3.4.2, checked in ring 1 after every update.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The second input stays. Participant 2's line survives the week.",
+   "flags": [
+    "RV-77"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1639
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A laminated card on the office wall: If the far end can't see your screen — 30 seconds. Keep talking; check the far-end view; try the other labeled input; or join from your laptop; confirm with one person. Sam holds a stack of copies; Imani nods.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Four hundred of these. One under every table, next to the labels."
+    },
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Laminated. Somebody will spill coffee on the first one by Tuesday."
+    }
+   ],
+   "narration": [],
+   "caption": "Thursday. The fallback card: written on a calm day, for a Monday like that one.",
+   "flags": [
+    "RV-77"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2445
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-44",
+   "label": "**Sequence:** the 30-second fallback card.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Friday: the update re-run through the new ring 1 — a standard room, a two-input room, a divisible room, a huddle room and a boardroom-type room, each with the far-end content check passed. Fleet query: zero unpinned multi-input rooms. Sam, on his phone as the far end, grins.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "H",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Five rooms that look like four hundred. Checked from the far end, on Sam's own screen.",
+   "flags": [
+    "RV-77",
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "ring 1 · 5/5 far end · fleet query 0"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3675
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-015 · SIGNAL original  The CEO Room  The room joined. The cameras worked. The investors saw a blank window.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-015"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief — “Nearly”",
+   "sub": "Friday · 5:10 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the corridor, Dana Whitcomb stops beside Maya on her way out.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dana Whitcomb · CEO",
+     "kind": "speech",
+     "text": "I'm told something nearly went wrong on Monday."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nearly."
+    }
+   ],
+   "narration": [],
+   "caption": "“Thank you for ‘nearly,’” Dana says, and keeps walking.",
+   "flags": [
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1163
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-41",
+   "label": "**Season review:** where did each cause really live?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S03-FINAL",
+   "label": "**Season 3 final check** — twelve questions across the whole season.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "End of Season 3",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Friday evening. On a monitor: Room Standard v1.1, approved for 400 rooms, sent to bid Monday, with rings, a register and pinned inputs. Sam, Nora, Imani and Maya stand in front of it, tired and pleased.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "nora",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Four hundred rooms. Seven years. One document, finally tested by people who didn't write it.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2244
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the dark, one printed page of the approved standard glows: section 5, network. Line 5.3: room devices, fixed addresses at the top of each automatic range. Proven at Riverbend.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "Everything else in the standard was tested this week."
+   ],
+   "caption": "*Four hundred rooms. One page nobody reviewed.*",
+   "flags": [
+    "RV-79",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1824
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-10c",
+   "teaser": "page 41, glowing",
+   "title": "Section 5.3",
+   "body": "Everything else in the standard was tested this week, by people who didn't write it. This page was tested by a festival at 1 a.m. It ships to four hundred rooms on Monday.",
+   "thread": "The 1 a.m. fix · DEBT-003",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Friday night. Maya's phone rings. Split scene: on the right, Lena, the broadcast engineer from Season 1, in a dim control room lined with small monitors, phone to her ear. Maya answers, surprised.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "surprised"
+    },
+    {
+     "id": "lena",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Lena?"
+    },
+    {
+     "side": "R",
+     "who": "Lena",
+     "kind": "phone",
+     "text": "I need you in a broadcast control room. Tonight. Our engineer walked out an hour before air."
+    }
+   ],
+   "narration": [],
+   "caption": "She's already reaching for her bag.",
+   "flags": [
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1734
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "a phone call · 5:04 p.m.",
+   "lines": [
+    {
+     "who": "lena",
+     "pose": "H",
+     "expr": "flat",
+     "text": "I need you in a broadcast control room. Tonight. Our engineer walked out an hour before air."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…Which engineer?"
+    },
+    {
+     "who": "lena",
+     "pose": "H",
+     "expr": "worried",
+     "text": "The one who knew everything. His name's Cal."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Night. Maya, phone to her ear, stands in the dark office; behind her on a desk, one page of the standard still glows. Large text: END OF SEASON 3.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "Is it working, or does it just say it is?"
+   ],
+   "caption": "END OF SEASON 3 · The boss level first. Then a broadcast control room — and page 5.3.",
+   "flags": [
+    "RV-79"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 983
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  When the room says it's sharing, check what the far end sees. Split the path: local display versus what the room computer captures. In the meeting, restart nothing: use the labeled input or the documented laptop fallback, and confirm with one remote person on their own screen — never roll back an update mid-meeting. Then eliminate the failure class: record every exception, build rings that contain one room of every shape, pin the settings that matter instead of trusting defaults, query the fleet for the same shape, and leave a 30-second card under every table."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · A label saved the CEO's meeting — written five years ago by someone who expected to forget, and read by someone he once taught. What will someone else need from you in five years that only you know today?  Boundary: this reflection doesn't prove anything about the rooms."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Season 3 review",
+   "sub": "Six ratings, one Story Score. Below 65, the story ends here — and you can retry."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "review",
+   "id": "S3",
+   "label": "**Season 3 review.** Everything you did this season — first attempts, not retries — is scored on six ratings. Your Story Score must be **65 or higher** for the story to go on.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S03E10",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

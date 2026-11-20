@@ -6,6 +6,7 @@
  */
 import { StrictMode, useState, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { KitGallery } from './kit-gallery.js';
 import {
   Badge, Button, Composition, DataTable, Drawer, Empty, ErrorState, Facts, Field, Loading, Notice, Stat, StatusBadge, Tabs, Tag,
   RESULT, LIFECYCLE, SEVERITY, INTEGRATION, LIVE, type Column, type Tone,
@@ -60,8 +61,11 @@ function Gallery() {
           {(['system', 'light', 'dark'] as Theme[]).map((t) => <button key={t} type="button" role="radio" aria-checked={theme === t} className={`ui-btn ui-btn--sm ${theme === t ? 'ui-btn--primary' : 'ui-btn--secondary'}`} onClick={() => pick(t)} data-theme-pick={t}>{t[0]!.toUpperCase() + t.slice(1)}</button>)}
         </div>
       </header>
-      <nav className="g-toc" aria-label="Sections">{['buttons', 'status', 'tags', 'states', 'figures', 'table', 'forms', 'tabs', 'drawer', 'facts', 'tokens'].map((s) => <a key={s} href={`#${s}`}>{s}</a>)}</nav>
+      <nav className="g-toc" aria-label="Sections">{['kit', 'buttons', 'status', 'tags', 'states', 'figures', 'table', 'forms', 'tabs', 'drawer', 'facts', 'tokens'].map((s) => <a key={s} href={`#${s}`}>{s}</a>)}</nav>
       <main id="g-main" tabIndex={-1}>
+        <Section id="kit" title="Kit (QUALITY_UPLIFT)" note="PageHero · Card · StatTile · ScoreRing · Donut · Sparkline · ProgressBar · MeterRow · Chip · StatusDot · Segmented · KitTabs · ListRow · EmptyState · Toast with Undo · DataTable responsive · Icon — packages/ui/README-kit.md">
+          <KitGallery />
+        </Section>
         <Section id="buttons" title="Button" note="kind: primary | secondary | quiet | danger · small · busy (aria-busy, spinner, disabled while busy) · disabled">
           <Row label="default"><Button kind="primary">Save changes</Button><Button>Cancel</Button><Button kind="quiet">Show details</Button><Button kind="danger">Remove device</Button></Row>
           <Row label="small"><Button kind="primary" small>Verify</Button><Button small>Record</Button><Button kind="quiet" small>Assign</Button><Button kind="danger" small>Remove</Button></Row>

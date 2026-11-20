@@ -1,0 +1,931 @@
+{
+ "chapter": {
+  "id": "s10e04",
+  "kicker": "S10 · E04",
+  "title": "Latency You Can Feel",
+  "pill": "S10E04 · Latency You Can Feel",
+  "sub": "Twenty-seven milliseconds, a singer behind herself, and the words ‘session singer’.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S10E04",
+   "RV-176",
+   "RV-177",
+   "RV-180",
+   "RV-181",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FB923C"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 10 · EPISODE 4 · DRAFT · CASE-053  Coldframe Sound, Studio A · week two · Maya, Esme, Corbin (the label’s product manager) and Pim · Level L6 · Mastery support (reference only — choose the tool and say why)  Esme can’t find the ballad. She says she’s behind herself; the label says she’s tired. Somebody says “session singer”, and the room goes quiet.  ⚑ RV-176: her album, her call. RV-180: her voice is shown with care, and stopping is hers to choose. RV-177: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Latency You Can Feel",
+   "kind": "STUDIO · MONITORING",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "esme",
+    "corbin"
+   ],
+   "stakes": "Esme can't sing the ballad in time, and the label is talking about a session singer.",
+   "clock": "Before today's ballad session ends.",
+   "reward": "Her own voice back in her ears — and the ballad sung by her.",
+   "objectives": [
+    {
+     "key": "BR-S10E04-01",
+     "text": "Decide what to do first"
+    },
+    {
+     "key": "twist",
+     "text": "Measure what she hears"
+    },
+    {
+     "key": "core",
+     "text": "Find every millisecond"
+    },
+    {
+     "key": "BR-S10E04-02",
+     "text": "Decide how to fix her headphones"
+    },
+    {
+     "key": "BR-S10E04-03",
+     "text": "Decide how the label hears about it"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Measure the path, not the person."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “A room next door”",
+   "sub": "Thursday · 2:00 p.m. · the live room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room with the drum kit moved aside; Esme stands at the vocal microphone, headphones on, arms wrapped round herself; Maya by the door.",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "It's like singing into a room next door. I'm always a hair behind."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then let's find out how far away the room is."
+    }
+   ],
+   "narration": [],
+   "caption": "The ballad, take eleven.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2732
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "live room · Thursday 14:00",
+   "lines": [
+    {
+     "who": "esme",
+     "pose": "N",
+     "expr": "worried",
+     "text": "It's like singing into a room next door."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then let's find out how far away the room is."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Twenty-seven milliseconds”",
+   "sub": "Thursday · 2:15 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E04-01",
+   "prompt": "14:15. Esme can't sing in time. Corbin says ‘session singer’. What first?",
+   "happening": "Singer behind herself.",
+   "clock": "Thursday 14:15",
+   "known": [
+    "◉ Esme feels late",
+    "◉ Corbin wants the date"
+   ],
+   "unknown": [
+    "How late her headphones are"
+   ],
+   "risk": "An artist replaced on her own album for a studio fault.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Corbin makes a call to a session singer."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What could you measure between her mouth and her ears?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Agree to try a session singer on the ballad",
+     "result": "Esme hears about it from the corridor. She doesn't sing again today.",
+     "consequence": "Treats a possible fault as a verdict on the artist — and it's not your call.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "ESME'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Who sings on her album is the artist's decision, not a fix for a fault.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Esme": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Measure what she hears: clap into her mic and record the headphone feed at the same moment",
+     "result": "The headphone copy lands 27.3 ms after the clap.",
+     "consequence": "Measure the path before anyone judges the person.",
+     "chips": [
+      "Measured"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Esme": 2,
+       "Corbin": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Tell her to sing a little ahead of the beat",
+     "result": "She tries. The ballad sounds anxious.",
+     "consequence": "Asks the performer to compensate for the studio.",
+     "chips": [
+      "Her problem, made"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Turn her voice down in her headphones",
+     "result": "She pushes to hear herself; by take three her voice is tired.",
+     "consequence": "Makes her work harder — and strains her voice (RV-180).",
+     "chips": [
+      "Strain"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Twenty-seven milliseconds.",
+   "body": "The clap and its copy in the headphones sit 27.3 ms apart. Maya reads every setting on the path: the buffer went from 128 to 512 samples on Tuesday — Pim, stopping the rough-mix plug-ins from crackling — which alone is 21.3 ms for the round trip. The converters add a millisecond. That leaves five.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E04-1",
+   "label": "Test: what did the buffer change cost her — and how far away does that put her?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Esme and Maya beside a board. I'm behind myself. I hear me a hair late, like a room I'm not in. Corbin thinks I'm just tired. The buffer went to five hundred and twelve samples on Tuesday, and there's a limiter with lookahead on your vocal. Is that enough to hear?",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "I'm behind myself. I hear me a hair late, like a room I'm not in. Corbin thinks I'm just tired."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The buffer went to five hundred and twelve samples on Tuesday, and there's a limiter with lookahead on your vocal."
+    },
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "Is that enough to hear?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6735
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Round-trip latency   Direct monitoring   Cue mix   Lookahead   The situation  Esme hears herself late. Her voice goes into the computer, through a 512-sample buffer each way at 48 kHz and a limiter with 5 ms of lookahead, then back to her headphones. Which relationship tells you what she's hearing?   Which relationship do you reach for?  Round-trip latency  Time between sample slips  Size of uncompressed audio     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "T4",
+   "label": "**Learn it now:** latency — what a performer can feel.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     Latency deep dive     The five fundamentals of sound"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 4  Record a clean vocal take  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-take"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-1004",
+   "label": "**Sort it:** where does the delay come from?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A timing sheet from 0 to 30 milliseconds: a bar made of the converter, a 10.7 ms input buffer, 5 ms of lookahead, a 10.7 ms output buffer and the converter again, ending at 27.3 ms; a dashed blue line at 2.9 ms marks one metre from a monitor wedge.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nine metres from her own voice.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "loopback"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4411
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-04a",
+   "teaser": "the session's settings history",
+   "title": "Tue 18:12 · buffer 128 → 512",
+   "body": "The recording program's settings history: ‘Tue 18:12 — buffer size 128 → 512 (P.)’. Pim's note beside it: ‘crackles in rough mix, fixed.’ Fixed for the mix; broken for the singer.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Playing along with yourself",
+   "body": "Tape machines record on one head and play back on another a little further along the tape, so a musician overdubbing while listening to the playback head heard the band late — and played late. In the mid-1950s Ross Snyder, an engineer at an American tape-recorder maker, let the record head itself play back the tracks being played along to. Everything lined up; multitrack overdubbing, as studios came to know it, followed.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Early and late”",
+   "sub": "Thursday · 3:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Early and late.",
+   "body": "The last five milliseconds are a limiter with lookahead on her headphone feed — Corbin's request on Monday, ‘so she sounds finished’. And there's a second copy of her voice Maya can't turn off: the one Esme hears through her own head, instantly. Anything late in the headphones combs against it. A few milliseconds sounds hollow; twenty-seven sounds like singing next door.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E04-2",
+   "label": "Test: where does a small delay land in her own head — and whose call is the ballad?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room; Corbin, arms folded, looks at the timing sheet on the screen; Maya beside it.",
+   "characters": [
+    {
+     "id": "corbin",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Corbin",
+     "kind": "speech",
+     "text": "I asked for the limiter. I wanted her to feel like a finished record."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It made her feel like a record playing in the next room."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6296
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S10-04",
+   "who": "corbin",
+   "prompt": "I wasn't trying to replace her. I was trying to hit the date.",
+   "options": [
+    {
+     "label": "“I believe you. So give her the date back — tell her, in front of me, that the fault was ours.”",
+     "who": "corbin",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Fine. Yes. She should hear it from me.",
+     "trust": {
+      "Corbin": 2
+     }
+    },
+    {
+     "label": "“It sounded like replacing her.”",
+     "who": "corbin",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Then I said it badly. It's a hard week.",
+     "trust": {
+      "Corbin": 0
+     }
+    },
+    {
+     "label": "“The date isn't my problem.”",
+     "who": "corbin",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "It's everyone's problem. That's the label.",
+     "trust": {
+      "Corbin": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E04-02",
+   "prompt": "27.3 ms: 21.3 of buffers, 5 of lookahead, 1 of converters. What's the fix?",
+   "happening": "Latency found.",
+   "clock": "Thursday 15:10",
+   "known": [
+    "◉ 21.3 ms buffers",
+    "◉ 5 ms lookahead"
+   ],
+   "unknown": [
+    "Whether she'll want to sing today"
+   ],
+   "risk": "A ballad sung against the clock and against her own ears.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "She sings take twelve into the same delay."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Does her voice need to go through the computer at all to reach her ears?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Drop the buffer to 64 samples",
+     "result": "About 8.7 ms — and the mix plug-ins crackle again.",
+     "consequence": "Trades her comfort for the mix, and still leaves the lookahead.",
+     "chips": [
+      "Half"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Direct monitoring through the personal cue mixer, before the computer; a zero-latency reverb on the cue mixer for comfort; no lookahead on her path; record her dry; leave the buffer where mixing needs it",
+     "result": "About 1.5 ms from her mouth to her ears. The buffer stays at 512 for the mix.",
+     "consequence": "Take the computer out of her ears instead of fighting it.",
+     "chips": [
+      "Direct",
+      "Dry"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Buffer to 128 and remove the limiter",
+     "result": "About 6.3 ms: better, and still hollow for a singer.",
+     "consequence": "Closer — the computer's still in the loop.",
+     "chips": [
+      "Closer"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Take her headphones off and play the band through the speakers",
+     "result": "The band bleeds into her vocal mic.",
+     "consequence": "Solves latency by ruining the recording.",
+     "chips": [
+      "Bleed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-24",
+   "label": "**Fix it:** take the computer out of Esme's ears.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #95 · AVERY'S LENS  Measure what the performer hears  A performer's headphones are part of the instrument. Measure the delay from her mouth to her ears, keep the computer out of that path, and never let a fault be mistaken for the artist.  Twenty-seven milliseconds of a singer's own voice arriving late nearly got her replaced on her own album."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S10E04",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The timing sheet after the fix: a short green bar — converter in, cue mixer, converter out — ending at 1.5 ms, well inside the 2.9 ms line for one metre from a wedge.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Closer than a wedge.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "loopback · 1.5 ms"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3738
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-04b",
+   "teaser": "Corbin's email",
+   "title": "‘make her sound finished in the cans’",
+   "body": "Corbin's email from Monday: ‘Can we put the mastering limiter on her headphone feed? She'll perform better if she sounds finished.’ Kindly meant. Five milliseconds.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E04-03",
+   "prompt": "The ballad's in, in two takes. Corbin still wants a session singer ‘as insurance’. How does the label hear what happened?",
+   "happening": "Ballad sung.",
+   "clock": "Thursday 18:00",
+   "known": [
+    "◉ Fault measured and fixed",
+    "◉ Two good takes"
+   ],
+   "unknown": [
+    "What Corbin tells head office"
+   ],
+   "risk": "An artist who believes the fault was her.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The ‘insurance’ email goes out."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who needs to hear it — and from whom will they believe it?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E04). Option B needs Authority & access at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Stay out of it — it's between Esme and the label",
+     "result": "Corbin's ‘insurance’ email goes to the label's head office that night.",
+     "consequence": "Leaves the wrong story standing.",
+     "chips": [
+      "Silence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Walk Esme and Corbin through the measurement together; say plainly that the fault was the studio's and is fixed; what happens next is Esme's call with her label",
+     "result": "Corbin reads the sheet, then says it to Esme himself: ‘It was never you.’ The insurance idea dies in the room.",
+     "consequence": "Evidence, said to the person it was about, by people the label trusts.",
+     "chips": [
+      "Evidence",
+      "Her call"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "authority": 1
+     },
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Esme": 2,
+       "Corbin": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Email the measurement to Hollis and Corbin and let Hollis argue it",
+     "result": "It takes three days. Esme sings the next song under a cloud.",
+     "consequence": "The right facts — slow, and without the trust to land them today.",
+     "chips": [
+      "Slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Record a guide vocal with a session singer ‘just in case’, without telling Esme",
+     "result": "She finds the file on Friday.",
+     "consequence": "A copy of her song made behind her back.",
+     "chips": [
+      "Betrayal"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "CONSENT"
+      }
+     ],
+     "canonical": false,
+     "fail": "Recording her song with someone else behind her back breaks her trust and isn't yours to do.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Esme": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1004",
+   "label": "**Service Mode:** run the Thursday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-053 · SIGNAL original  Latency You Can Feel  Twenty-seven milliseconds nearly replaced a singer on her own album.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-053"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Thursday · 7:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room in the evening; Esme, headphones round her neck, laughing; Maya at the console.",
+   "characters": [
+    {
+     "id": "esme",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Esme",
+     "kind": "speech",
+     "text": "‘Oh — there I am.’ That's what I said, isn't it?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Word for word. Two takes."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6293
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The tape and drive store behind Studio A: shelves of tape boxes and hard drives; Hollis points at a drive on the table; Maya looks.",
+   "characters": [
+    {
+     "id": "hollis",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s10kit.bg_archive",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "The label wants Esme's first album multitracks. Ten years old. For a reissue."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Does anything in here still open?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Archive.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6241
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A performer’s headphones are part of her instrument. Measure mouth to ear (t = 2B ÷ fₛ + converters + plug-ins); keep lookahead out of the cue path; monitor direct through the cue mixer so the computer’s buffer can be what the mix needs; record dry. A singer also hears herself through her own head, so a few milliseconds sounds hollow. Never let a studio fault become a verdict on the artist."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · When someone says “it feels wrong”, what could you measure before anyone decides it’s them?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S10E04",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

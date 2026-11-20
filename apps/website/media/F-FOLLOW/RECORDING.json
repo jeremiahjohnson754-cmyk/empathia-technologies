@@ -1,0 +1,125 @@
+{
+  "key": "F-FOLLOW",
+  "title": "Follow one microphone through five products",
+  "product": "lite",
+  "recordedAt": "2026-11-19T23:40:40.113Z",
+  "duration": 47.32,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "visitor",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T23:05:29.841Z"
+  },
+  "git": "eca7f43",
+  "steps": [
+    {
+      "at": 0,
+      "shown": 0.73,
+      "until": 13.89,
+      "say": "Ceiling microphone A-0104, asset AS-0103, in the boardroom it serves: Lite, as a Systems Engineer.",
+      "proof": "[data-testid=lite-room-3d]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&device=A-0104&from=site&li=follow-lite&back=%2Fplatform%23follow-lite"
+    },
+    {
+      "at": 13.89,
+      "shown": 14.63,
+      "until": 21.34,
+      "say": "Its own record: the position, the unit installed there, and the checks that name it.",
+      "proof": "[data-testid=lite-device]",
+      "url": "/#/lite/room/R-ATL-4-218?mode=engineer&device=A-0104&from=site&li=follow-lite&back=%2Fplatform%23follow-lite"
+    },
+    {
+      "at": 21.34,
+      "shown": 23.2,
+      "until": 29.94,
+      "say": "Its room’s commissioning record: what was required, what was observed, who verified it.",
+      "proof": "main h1:has-text(\"Commissioning: Atlas 4.218\")",
+      "url": "/#/commissioning/room/R-ATL-4-218?from=site&li=follow-commissioning&back=%2Fplatform%23follow-commissioning"
+    },
+    {
+      "at": 29.94,
+      "shown": 30.09,
+      "until": 35.24,
+      "say": "Assurance: the accepted baseline the room is checked against.",
+      "proof": "main h1:has-text(\"Assurance: Atlas 4.218\")",
+      "url": "/#/assurance/room/R-ATL-4-218?from=site&li=follow-assurance&back=%2Fplatform%23follow-assurance"
+    },
+    {
+      "at": 35.24,
+      "shown": 35.74,
+      "until": 41.07,
+      "say": "Search Party: who supports the room, who knows it, and where each fact comes from.",
+      "proof": "main h1:has-text(\"Atlas 4.218 Boardroom\")",
+      "url": "/#/search?focus=Room:R-ATL-4-218&from=site&li=follow-support&back=%2Fplatform%23follow-support"
+    },
+    {
+      "at": 41.07,
+      "shown": 41.18,
+      "until": 47.32,
+      "say": "Core Replay: the room’s life, stopped where a change reopens only the tests it touches.",
+      "proof": "[data-testid=reopened]",
+      "url": "/#/replay/R-ATL-4-218?at=change&from=site&li=follow-replay&back=%2Fplatform%23follow-replay"
+    }
+  ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 12.66,
+        "sha256": "2d116060c2528a9175cb9b7b96481b7f65812b23b6669f322f881312332de566"
+      },
+      {
+        "step": 2,
+        "seconds": 6.24,
+        "sha256": "4f8ca666bc42707333b5591030457b9ede21952d5a32a358b3660dfda247a142"
+      },
+      {
+        "step": 3,
+        "seconds": 6.27,
+        "sha256": "a952ca66bcb78c2f55381061d37f5c2ab8ae57b62211be5821ff9f6176e6cd18"
+      },
+      {
+        "step": 4,
+        "seconds": 4.7,
+        "sha256": "1da31d0fd1a71691a356e7fd64ce910ec2802a494fd5642e8fb599aefa4fbb16"
+      },
+      {
+        "step": 5,
+        "seconds": 4.87,
+        "sha256": "a250a44449987b7910cc5fd645ba1e92ddd53ccc89cd93b1efc9425d5aa4bf09"
+      },
+      {
+        "step": 6,
+        "seconds": 5.67,
+        "sha256": "62f8bdc6e81e5b04cb3a9764ec19566e3e36c00412f1fbc8af53585567f12d3e"
+      }
+    ]
+  },
+  "files": {
+    "720.mp4": {
+      "bytes": 2251658,
+      "sha256": "9903fcbd7f8a9c955ca3f6196c66d89b08d5924689f8cea79a1e1953f5aee5d9"
+    },
+    "poster.webp": {
+      "bytes": 56780,
+      "sha256": "0528fdff0d3af59440a2cef1b99834d2de228c428b823213c363488dd879578d"
+    },
+    "poster.jpg": {
+      "bytes": 108416,
+      "sha256": "76cdbecd56ab055a0e3a65e2081e452efee3dda181e725813c8b070c70336da2"
+    },
+    "captions.vtt": {
+      "bytes": 1101,
+      "sha256": "b42912fd0d71acda12f35f14d911282bdec0fd792555ae043039c9c1f5075d29"
+    }
+  }
+}

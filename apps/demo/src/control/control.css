@@ -1,0 +1,21 @@
+/* Room Control panel (#/control/<room>): the dock keeps V2.5.3's classes (.pa-dock); the rest is here. Tokens only; both themes. */
+.rc { display: grid; gap: var(--sp-4); min-width: 0; }
+.rc-cols { display: grid; gap: var(--sp-4) var(--sp-5); grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+.rc-main { display: grid; gap: var(--sp-4); min-width: 0; } .rc-side { position: sticky; top: calc(var(--shell-top, 64px) + 12px); display: grid; gap: var(--sp-2); min-width: 0; } .rc-side .stage__svg { max-height: min(56vh, 520px); }
+.rc-side .stage__bar button { min-height: var(--target-min, 44px); }
+.rc-cap { margin: 0; color: var(--tx2); font-size: var(--fs-sm); } .rc-now { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: var(--fs-sm); color: var(--tx2); } .rc-now b { color: var(--tx); font-weight: 600; }
+.rc-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.rc-btn { display: grid; gap: 2px; flex: 1 1 180px; min-height: 64px; padding: 10px 14px; text-align: start; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); color: var(--tx); font: inherit; cursor: pointer; transition: border-color .15s, background-color .15s; }
+.rc-btn span { color: var(--tx2); font-size: var(--fs-sm); line-height: 1.4; } .rc-btn:hover:not(:disabled) { border-color: var(--accent); }
+.rc-btn[aria-pressed=true] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--panel)); box-shadow: inset 0 0 0 1px var(--accent); } .rc-btn:disabled, .rc-chip:disabled, .rc-step:disabled { opacity: .55; cursor: not-allowed; }
+.rc-routes { display: grid; gap: 10px; } .rc-route { display: grid; grid-template-columns: minmax(96px, 150px) minmax(0, 1fr); gap: 6px 14px; align-items: center; } .rc-route__n { font-weight: 600; } .rc-route__o { display: flex; flex-wrap: wrap; gap: 6px; }
+.rc-chip { min-height: var(--target-min, 44px); padding: 6px 14px; border: 1px solid var(--line2); border-radius: var(--r-pill, 999px); background: var(--panel); color: var(--tx); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; transition: border-color .15s, background-color .15s; }
+.rc-chip:hover:not(:disabled) { border-color: var(--accent); } .rc-chip[aria-checked=true], .rc-chip[aria-pressed=true] { border-color: var(--accent); background: var(--accent); color: var(--accent-ink, #fff); }
+.rc-sound { display: grid; gap: var(--sp-3); } .rc-vol { display: flex; align-items: center; gap: 10px; } .rc-vol__l { flex: 1 1 auto; min-width: 0; display: flex; } .rc-vol__l input { width: 100%; min-height: var(--target-min, 44px); accent-color: var(--accent); }
+.rc-step { flex: none; width: var(--target-min, 44px); height: var(--target-min, 44px); border: 1px solid var(--line2); border-radius: 50%; background: var(--panel); color: var(--tx); font: inherit; font-size: 1.25rem; line-height: 1; cursor: pointer; } .rc-step:hover:not(:disabled) { border-color: var(--accent); }
+.rc-vol__v { flex: none; min-width: 4.2ch; text-align: end; font-size: var(--fs-xl, 1.5rem); font-weight: 700; font-variant-numeric: tabular-nums; }
+.rc-meters { display: grid; gap: 6px; } .rc-meters > div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 10px; align-items: center; font-size: var(--fs-sm); color: var(--tx2); } .rc-meters p { margin: 0; }
+.rc-meter { display: block; height: 10px; border-radius: 5px; background: var(--bg2); border: 1px solid var(--line); overflow: hidden; } .rc-meter rect { fill: var(--accent); transition: width .25s; }
+@media (prefers-reduced-motion: reduce) { .rc-meter rect { transition: none; } }
+.rc-conn { margin: var(--sp-3) 0 0; display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 6px 14px; font-size: var(--fs-sm); line-height: 1.5; } .rc-conn dt { color: var(--tx2); font-weight: 600; } .rc-conn dd { margin: 0; }
+@media (max-width: 960px) { .rc-cols { grid-template-columns: minmax(0, 1fr); } .rc-side { position: static; order: -1; } .rc-side .stage__svg { max-height: 240px; } .rc-conn { grid-template-columns: minmax(0, 1fr); } .rc-route { grid-template-columns: minmax(0, 1fr); } }

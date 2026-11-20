@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDevicesBatch/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/devices/batch request body",
+  "description": "Add 1 to 60 planned devices in one transaction: each exactly as a single add (canonical id, connections proposed, height between floor and ceiling), the room analysed once at the end; all or nothing",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "devices"
+  ],
+  "properties": {
+    "devices": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category"
+        ],
+        "properties": {
+          "category": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 30
+          },
+          "mount": {
+            "type": "string",
+            "enum": [
+              "wall",
+              "ceiling",
+              "floor",
+              "table",
+              "rack"
+            ]
+          },
+          "rot": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

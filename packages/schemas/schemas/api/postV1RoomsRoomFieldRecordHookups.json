@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordHookups/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/field-record/hookups request body",
+  "description": "Record what a device is hooked up to, as found: as designed (it names the design’s proposed connection) or recorded in the field, not in the design",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "device",
+    "port",
+    "to"
+  ],
+  "properties": {
+    "device": {
+      "type": "string",
+      "pattern": "^PA-[0-9]{4,10}$",
+      "description": "a device position of the room"
+    },
+    "port": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "to": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "description": "a device position of the room, or what is outside it"
+    },
+    "toPort": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "cable": {
+      "type": "string",
+      "maxLength": 60
+    }
+  }
+}

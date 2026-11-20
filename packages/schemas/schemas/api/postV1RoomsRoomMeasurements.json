@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomMeasurements/0.1.0.json",
   "title": "POST /v1/rooms/{room}/measurements request body",
-  "description": "Record a measurement (DESIGN_SPECIFIED / SIMULATED / INFERRED / OBSERVED / FIELD_MEASURED — never conflated; dBFS is never recorded as SPL)",
+  "description": "Record a measurement (DESIGN_SPECIFIED / SIMULATED / INFERRED / OBSERVED / FIELD_MEASURED — never conflated; dBFS is never recorded as SPL). With testId it answers that test: it rests on an evidence file, and the database works out whether it meets the room’s criterion in force. A reverberation value (t30_mid, t20_mid) is worked out again by the server from that evidence: the server’s value is recorded, and a value sent that differs is refused",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -85,6 +85,19 @@
     "testResultId": {
       "type": "string",
       "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "testId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "detail": {
+      "type": "object",
+      "description": "positions, bands and whatever else explains the value; at most 60 kB"
     }
   }
 }

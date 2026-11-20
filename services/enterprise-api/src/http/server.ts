@@ -8,11 +8,12 @@ import crypto from 'node:crypto';
 import { enforcedAuthorities, type Router, type Res } from './router.js';
 import { validate } from './schema.js';
 import { ApiError } from './errors.js';
-import { RequestContext, type Principal } from '../auth/context.js';
+import { RequestContext, IdempotencyKeyTaken, type Principal } from '../auth/context.js';
 import { OidcVerifier, type OidcClaims } from '../auth/oidc.js';
-import type { TokenVerifier } from '../auth/jwt.js';
+import { Hs256Tokens, unverifiedAudience, type TokenVerifier } from '../auth/jwt.js';
 import { resolvePrincipal, resolveOidcPrincipal } from '../domain/platform.js';
-import { asJson, type PgPool } from '../db/pg.js';
+import { sandboxLive, isSandboxTenant, assertBudget } from '../domain/demo.js';
+import { asJson, type PgPool, type Queryable } from '../db/pg.js';
 import type { Config } from '../config.js';
 import { log } from '../log.js';
 import type { Telemetry } from '@empathia/observability';
@@ -29,17 +30,51 @@ export const clientAddress = (xff: string | string[] | undefined, socketAddr: st
   return last || String(socketAddr || 'unknown');
 };
 
+/** How long a duplicate waits for the first request with its Idempotency-Key to store its response (D-35). */
+const IDEMPOTENCY_WAIT_MS = Number(process.env['IDEMPOTENCY_WAIT_MS'] || 15000);
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+/**
+ * The stored response for an Idempotency-Key, waiting while the first request holding it is still running (status_code 0: reserved, D-35).
+ * Null when the key is free (never used, or released by a request that failed). A key used with another request is refused at once (422). A
+ * reservation that outlives the wait — still running, or a process that ended after its commit and before recording the response — is a
+ * 409: the request is never run a second time.
+ */
+async function storedResponse(keyTx: <T>(fn: (q: Queryable) => Promise<T>) => Promise<T>, keyArgs: unknown[], reqHash: string): Promise<{ status_code: number; response: unknown } | null> {
+  const t0 = Date.now();
+  for (;;) {
+    const row = (await keyTx((q) => q.query<{ request_hash: string; status_code: number; response: unknown; age_ms: number }>('SELECT request_hash, status_code, response, (extract(epoch FROM now() - created_at) * 1000)::float8 AS age_ms FROM app.idempotency_key WHERE tenant_id = $1 AND person_id = $2 AND key = $3', keyArgs))).rows[0];
+    if (!row) return null;
+    if (row.request_hash !== reqHash) throw new ApiError('idempotency_mismatch', 'this Idempotency-Key was used with a different request');
+    if (row.status_code > 0) return row;
+    if (Date.now() - t0 >= IDEMPOTENCY_WAIT_MS || row.age_ms >= IDEMPOTENCY_WAIT_MS * 4) throw new ApiError('conflict', 'a request with this Idempotency-Key is still in progress, or ended without recording its response: it is not run twice — retry with the same key later, or check the record before using a new key');
+    await sleep(20);
+  }
+}
+
+/**
+ * The record a request was aimed at, when its path names one by its code. A request refused by the central authority check is then a row
+ * of that record's audit history (the room's thread shows who tried what), not only of the tenant's. A code is only a string here: it is
+ * not looked up, and the row is written in the caller's own tenant like every audit row.
+ */
+const CODE = /^[A-Z]{1,4}-[A-Z0-9-]{1,32}$/;
+function aimedAt(params: Record<string, string>): { type: string; id: string } | undefined {
+  for (const [k, type] of [['workOrder', 'WorkOrder'], ['issue', 'RoomIssue'], ['room', 'Room']] as const) { const v = params[k]; if (v && CODE.test(v)) return { type, id: v }; }
+  return undefined;
+}
+
 class Bucket { tokens: number; at = Date.now(); constructor(public cap: number) { this.tokens = cap; } take(): boolean { const now = Date.now(); this.tokens = Math.min(this.cap, this.tokens + ((now - this.at) / 60000) * this.cap); this.at = now; if (this.tokens < 1) return false; this.tokens -= 1; return true; } }
 
-export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier, telemetry: Telemetry): http.Server {
+export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: TokenVerifier, telemetry: Telemetry, gate?: { blocked(): Promise<string | null> }): http.Server {
   const buckets = new Map<string, Bucket>();
   const oidc = cfg.oidc ? new OidcVerifier({ issuer: cfg.oidc.issuer, audience: cfg.oidc.audience, jwksUrl: cfg.oidc.jwksUrl }) : null;
+  // demonstration sessions (ADR-0013): their own secret, issuer and audience — a development or provider token is never one, and the reverse
+  const demoTokens: TokenVerifier | null = cfg.demo ? new Hs256Tokens(cfg.demo.secret, cfg.demo.issuer, cfg.demo.audience, cfg.demo.ttlSeconds) : null;
   return http.createServer(async (req, res) => {
     const t0 = process.hrtime.bigint();
     const incoming = String(req.headers['x-correlation-id'] || '');
     const correlationId = /^[A-Za-z0-9._-]{8,80}$/.test(incoming) ? incoming : crypto.randomUUID();
     const origin = String(req.headers.origin || '');
-    const cors: Record<string, string> = cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin', 'access-control-allow-headers': 'authorization, content-type, idempotency-key, x-correlation-id, x-file-name', 'access-control-allow-methods': 'GET, POST, PATCH, DELETE', 'access-control-expose-headers': 'x-correlation-id' } : {};
+    const cors: Record<string, string> = cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin', 'access-control-allow-headers': 'authorization, content-type, idempotency-key, x-correlation-id, x-file-name', 'access-control-allow-methods': 'GET, POST, PUT, PATCH, DELETE', 'access-control-expose-headers': 'x-correlation-id, content-disposition, x-empathia-figures-sha256, x-empathia-file-sha256' } : {};
     let status = 500; let ctxRole = '-'; let routePath = '(unmatched)'; let tenantId: string | undefined; const startedAt = Date.now();
     const send = (r: Res) => {
       status = r.status;
@@ -56,6 +91,11 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       if (!m) throw new ApiError('not_found', `no endpoint ${url.pathname}`);
       if ('allowed' in m) { send({ status: 405, body: { ...new ApiError('validation', `method not allowed; use ${m.allowed.join(', ')}`).problem(correlationId), status: 405 }, headers: { allow: m.allowed.join(', ') } }); return; }
       const { route, params } = m; routePath = route.path;
+      // the demonstration deployment (AUTH_MODE=demo) serves the demonstration and nothing else that needs no session
+      if (cfg.authMode === 'demo' && !route.auth && route.tag !== 'demo' && route.path !== '/health' && route.path !== '/v1/openapi.json') throw new ApiError('not_found', `${route.path} is not part of the demonstration deployment`);
+      // 17 Nov 2026: a database whose privileges are not exactly what the migrations make is not operated on. Health and the API's own
+      // description still answer; everything else is refused until an operator has repaired them as the owner (src/db/privileges.ts).
+      if (gate && route.path !== '/health' && route.path !== '/v1/openapi.json') { const why = await gate.blocked(); if (why) throw new ApiError('unavailable', why); }
       const ctx = new RequestContext(pool, correlationId);
 
       // authentication
@@ -65,8 +105,18 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       if (route.auth) {
         const h = String(req.headers.authorization || '');
         if (!h.startsWith('Bearer ')) throw new ApiError('unauthenticated', 'send Authorization: Bearer <token>');
-        let p: Principal | null;
-        if (cfg.authMode === 'oidc') {
+        let p: Principal | null; const bearer = h.slice(7);
+        if (demoTokens && unverifiedAudience(bearer) === cfg.demo!.audience) {
+          // a demonstration session: verified with the demonstration secret; the person and role are resolved from the database like any
+          // other, and the tenant must be a sandbox that is open and unexpired at this moment
+          let claims;
+          try { claims = demoTokens.verify(bearer); } catch (e) { throw new ApiError('unauthenticated', (e as Error).message); }
+          p = await resolvePrincipal(pool, claims.sub, claims.tid, claims.role);
+          if (!p || !(await sandboxLive(pool, claims.tid))) throw new ApiError('unauthenticated', 'the sandbox behind this demonstration session is closed or has expired: open a new one');
+          p.demo = true;
+        } else if (cfg.authMode === 'demo') {
+          throw new ApiError('unauthenticated', 'this deployment accepts demonstration sessions only');
+        } else if (cfg.authMode === 'oidc') {
           // production identity: the provider's token names a subject; the tenant and role for this request come from headers and are checked against memberships
           let claims: OidcClaims;
           try { claims = await oidc!.verify(h.slice(7)); } catch (e) { throw new ApiError('unauthenticated', (e as Error).message); }
@@ -78,19 +128,28 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
           p = await resolvePrincipal(pool, claims.sub, claims.tid, claims.role);
           if (!p) throw new ApiError('unauthenticated', 'the membership behind this token no longer exists or the person is disabled');
         }
+        // the boundary holds in both directions: a sandbox is reached only with a demonstration session
+        if (!p.demo && await isSandboxTenant(pool, p.tenantId)) throw new ApiError('unauthenticated', 'a demonstration sandbox is reached only with a demonstration session');
         ctx.principal = p; ctxRole = p.role; tenantId = p.tenantId; bucketKey = `p:${p.personId}`;
       }
       const b = buckets.get(bucketKey) || buckets.set(bucketKey, new Bucket(cfg.rateLimitPerMinute)).get(bucketKey)!;
       if (!b.take()) throw new ApiError('rate_limited', 'slow down: the per-caller request budget is spent for this minute');
 
+      // a sandbox has a ceiling on what it may hold (0035): checked before anything is read or written for the request
+      if (ctx.principal?.demo) await assertBudget(pool, ctx.principal.tenantId, route.bodyKind === 'binary' ? 'upload' : req.method === 'GET' ? 'read' : 'write');
+
       // authority (central, before the body is read — red-team RT-03): a role without any of the route's authority keys is refused and audited
-      if (route.auth) { const keys = enforcedAuthorities(route); if (keys.length) await ctx.require(keys, route.summary.split(' (')[0]!.slice(0, 80)); }
+      if (route.auth) { const keys = enforcedAuthorities(route); if (keys.length) await ctx.require(keys, route.action ?? route.summary.split(' (')[0]!.slice(0, 80), aimedAt(params)); }
 
       // body
       let raw: Buffer | null = null; let body: unknown = null;
       if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method || '')) {
+        // a demonstration sandbox is not a file store: short JSON, and uploads that are short text notes (ADR-0013)
+        const demoCaller = !!ctx.principal?.demo; const binary = route.bodyKind === 'binary';
+        if (demoCaller && binary && !/^text\/(plain|csv)\b/.test(String(req.headers['content-type'] || ''))) throw new ApiError('unsupported_media_type', 'a demonstration sandbox stores short text notes only: send text/plain or text/csv');
+        const cap = demoCaller ? Math.min(cfg.maxBodyBytes, binary ? cfg.demo!.maxUploadBytes : cfg.demo!.maxBodyBytes) : route.tag === 'demo' ? Math.min(cfg.maxBodyBytes, 4096) : cfg.maxBodyBytes;
         const chunks: Buffer[] = []; let n = 0;
-        for await (const c of req) { n += (c as Buffer).length; if (n > cfg.maxBodyBytes) throw new ApiError('payload_too_large', `the body exceeds ${cfg.maxBodyBytes} bytes`); chunks.push(c as Buffer); }
+        for await (const c of req) { n += (c as Buffer).length; if (n > cap) throw new ApiError('payload_too_large', `the body exceeds ${cap} bytes`); chunks.push(c as Buffer); }
         raw = Buffer.concat(chunks);
         if (route.bodyKind !== 'binary' && raw.length) {
           if (!/^application\/json/.test(String(req.headers['content-type'] || ''))) throw new ApiError('unsupported_media_type', 'send JSON (content-type: application/json)');
@@ -101,23 +160,40 @@ export function createServer(cfg: Config, router: Router, pool: PgPool, tokens: 
       for (const [k, s] of Object.entries(route.query || {})) { const v = url.searchParams.get(k); if (v != null) { const errs = validate(s, v, `query.${k}`); if (errs.length) throw new ApiError('validation', errs[0]!, errs); } }
       for (const k of url.searchParams.keys()) if (!route.query || !(k in route.query)) throw new ApiError('validation', `unknown query parameter ${k}`);
 
-      // idempotency (POST)
+      // idempotency (POST) — D-35: the key is reserved in the handler's own transaction (RequestContext.tx), so exactly one request with a
+      // given key runs its handler; a concurrent duplicate waits for the stored response and replays it, or is refused 409 while the key is
+      // in use. A failed or refused request releases the key (nothing was stored before either), so the client can retry with it.
       const idem = String(req.headers['idempotency-key'] || '');
       if (route.idempotent && idem && ctx.principal) {
         if (!/^[A-Za-z0-9._:-]{8,128}$/.test(idem)) throw new ApiError('validation', 'Idempotency-Key is 8–128 characters of letters, digits and ._:-');
         const reqHash = crypto.createHash('sha256').update(`${req.method} ${url.pathname}\n`).update(raw || Buffer.alloc(0)).digest('hex');
-        const prev = (await ctx.tx((q) => q.query<{ request_hash: string; status_code: number; response: unknown }>('SELECT request_hash, status_code, response FROM app.idempotency_key WHERE person_id = $1 AND key = $2', [ctx.p.personId, idem]))).rows[0];
-        if (prev) {
-          if (prev.request_hash !== reqHash) throw new ApiError('idempotency_mismatch', 'this Idempotency-Key was used with a different request');
-          send({ status: prev.status_code, body: prev.response, headers: { 'idempotent-replay': 'true' } }); return;
+        const who = { tenantId: ctx.p.tenantId, userId: ctx.p.personId }; const keyArgs = [ctx.p.tenantId, ctx.p.personId, idem];
+        const keyTx = <T>(fn: (q: Queryable) => Promise<T>) => pool.tx(who, fn);   // never a reservation of its own
+        for (let attempt = 0; ; attempt += 1) {
+          const prev = await storedResponse(keyTx, keyArgs, reqHash);
+          if (prev) { send({ status: prev.status_code, body: prev.response, headers: { 'idempotent-replay': 'true' } }); return; }
+          ctx.idempotency = { key: idem, requestHash: reqHash, reserved: false, pending: false };
+          let out: Res;
+          try { out = await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers }); }
+          catch (e) {
+            const reserved = ctx.idempotency.reserved; ctx.idempotency = null;
+            if (e instanceof IdempotencyKeyTaken && attempt < 3) continue;   // a concurrent request with the key committed first: replay its response
+            if (reserved) await keyTx((q) => q.query('DELETE FROM app.idempotency_key WHERE tenant_id = $1 AND person_id = $2 AND key = $3 AND status_code = 0', keyArgs));
+            throw e;
+          }
+          const reserved = ctx.idempotency.reserved; ctx.idempotency = null;
+          if (out.status < 300) {
+            if (reserved) await keyTx((q) => q.query('UPDATE app.idempotency_key SET status_code = $4, response = $5 WHERE tenant_id = $1 AND person_id = $2 AND key = $3 AND status_code = 0', [...keyArgs, out.status, asJson(out.body ?? null)]));
+            else await keyTx((q) => q.query('INSERT INTO app.idempotency_key (tenant_id, person_id, key, request_hash, status_code, response) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING', [...keyArgs, reqHash, out.status, asJson(out.body ?? null)]));   // a handler that opened no transaction
+          } else if (reserved) await keyTx((q) => q.query('DELETE FROM app.idempotency_key WHERE tenant_id = $1 AND person_id = $2 AND key = $3 AND status_code = 0', keyArgs));
+          send(out); return;
         }
-        const out = await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers });
-        if (out.status < 300) await ctx.tx((q) => q.query('INSERT INTO app.idempotency_key (tenant_id, person_id, key, request_hash, status_code, response) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING', [ctx.p.tenantId, ctx.p.personId, idem, reqHash, out.status, asJson(out.body ?? null)]));
-        send(out); return;
       }
       send(await route.handler(ctx, { params, query: url.searchParams, body, raw, headers: req.headers }));
     } catch (e) {
-      const err = e instanceof ApiError ? e : (e as { code?: string }).code === '23505' ? new ApiError('conflict', 'that record already exists') : /^EM00[1-4]$/.test(String((e as { code?: string }).code)) ? new ApiError('rule_refused', (e as Error).message) : (e as { code?: string }).code === '23514' ? new ApiError('rule_refused', `a database constraint refused the change: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : new ApiError('internal', 'internal error (see the server log for this correlation id)');
+      // 23505 unique / 23P01 exclusion: the database refused a second record of something there is one of (an open installation per
+      // position or per unit, overlapping installation periods, a serial) → 409; EM009 is the installation/asset guard (ADR-0012) and EM011 the deficiency workflow guard (0032) → 422; EM012 the sandbox boundary (0033) and EM016 the field-record guard (0034) and EM019 the measurement guard (0037) → 422
+      const err = e instanceof ApiError ? e : (e as { code?: string }).code === '23505' ? new ApiError('conflict', 'that record already exists') : (e as { code?: string }).code === '23P01' ? new ApiError('conflict', `a database constraint refused an overlapping record: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : /^EM0(0[1-49]|11|12|16|19)$/.test(String((e as { code?: string }).code)) ? new ApiError('rule_refused', (e as Error).message) : (e as { code?: string }).code === '23514' ? new ApiError('rule_refused', `a database constraint refused the change: ${(e as { constraint?: string }).constraint || (e as Error).message}`) : new ApiError('internal', 'internal error (see the server log for this correlation id)');
       if (err.code === 'internal') {
         log('error', 'request failed', { correlationId, error: (e as Error).message, stack: (e as Error).stack?.split('\n').slice(0, 4).join(' | ') });
         // the same correlation id is in the problem document, the log line and the telemetry event; nothing from the request body goes with it

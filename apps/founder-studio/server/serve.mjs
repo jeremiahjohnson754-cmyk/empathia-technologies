@@ -68,6 +68,11 @@ function inside(base, urlPath) {
 const readBody = (req, limit) => new Promise((ok, bad) => { let n = 0; const chunks = []; req.on('data', (c) => { n += c.length; if (n > limit) { bad(new Error('too large')); req.destroy(); } else chunks.push(c); }); req.on('end', () => ok(Buffer.concat(chunks).toString('utf8'))); req.on('error', bad); });
 
 async function api(req, res, url) {
+  // 12 Nov 2026: which curated films are on this computer, so the studio says "not on this computer" without requesting a missing file
+  if (url.pathname === '/api/films' && req.method === 'GET') {
+    const here = (n) => fs.existsSync(path.join(filmsDir, n)) || (() => { const ws = filmIndex[n] && path.resolve(WORKSPACE, filmIndex[n]); return !!(ws && ws.startsWith(path.resolve(WORKSPACE) + path.sep) && fs.existsSync(ws)); })();
+    return json(res, 200, { available: Object.keys(filmIndex).filter(here).concat(fs.existsSync(filmsDir) ? fs.readdirSync(filmsDir).filter((n) => n.endsWith('.mp4') && !(n in filmIndex)) : []) });
+  }
   const m = url.pathname.match(/^\/api\/snapshots(?:\/([A-Za-z0-9_-]+))?$/);
   if (!m) return json(res, 404, { error: 'no such endpoint' });
   const id = m[1];

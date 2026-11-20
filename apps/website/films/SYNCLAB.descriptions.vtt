@@ -1,0 +1,46 @@
+WEBVTT
+
+NOTE
+Text description of the film "Collabora-SING SyncLab: from hypothesis to evidence" (35 seconds, 30 frames a second).
+The film has no sound: its audio stream is digital silence, so nothing here was spoken. Every cue describes what is
+shown and quotes the words written on screen. Transcribed from the picture on 2026-11-10, first from one frame per
+second (all 35 read), then from five frames per second for the times at which the text changes, and cross-checked
+against an independent reading of the same file.
+The film shows a plan. Figures appear on screen only as demonstration data, under the film's own label
+"DEMO DATA not a measurement"; none of them is repeated here. Words in square brackets are this description's own.
+
+1
+00:00:00.000 --> 00:00:04.000
+01 Hypothesis. The picture fades in from black on a dim hall drawn in 3D: a faceless figure sits at a keyboard, and a second stands beside it holding a tablet or clipboard. On screen: “What if we transmitted the performance... instead of only the sound?” Four labels follow: “Real network”, “Real instrument”, “Real musician” and “NOT YET MEASURED”. [On this site a band above the picture reads “IN DEVELOPMENT · DEMONSTRATION DATA · NO PILOT HAS BEEN RUN” for the whole film.]
+
+2
+00:00:04.000 --> 00:00:09.000
+02 Bench. On screen: “One performance, two ways to send it.” Two glowing lines, one orange and one blue, run from a laptop beside the keyboard to a single point at a second table. “MODE A: Rendered audio, Opus / WebRTC, Jitter buffer, Shared output.” “MODE B: MIDI event, DataChannel, Software instrument, Shared output.” Labels on the lines: “Jitter buffer” and “Same output”.
+
+3
+00:00:09.000 --> 00:00:14.000
+03 Network. On screen: “Five network conditions, one stage at a time.” They are shown one after another, about a second each: “1 Wired LAN”, “2 Church Wi-Fi”, “3 Hotspot / internet”, “4 Remote site” (the two ends are labelled “SITE A” and “SITE B”), “5 Controlled degradation”.
+
+4
+00:00:14.000 --> 00:00:17.000
+04 Musician. Close on the figure at the keyboard, now wearing headphones. On screen: “A real player at a real keyboard.” and “Hearing only what crossed the network.” Labels: “Wired headphones” and “Keyboard sound off”. [The figure is drawn; this scene states the plan, not a session that took place.]
+
+5
+00:00:17.000 --> 00:00:22.000
+05 Blind test. On screen: “Twenty trials. Nobody in the room knows which is which.” A badge at the top right reads “DEMO DATA not a measurement” for the whole scene. A card counts from “TRIAL 07 / 20” to “TRIAL 10 / 20” under “TRANSPORT HIDDEN”, and steps through “Getting the next trial ready”, “Play” and “How immediate does it feel?” with the choices 1 to 5. Example answers appear: “3 · Playable with effort”, “5 · Feels immediate”, “4 · Slight lag”. [These are demonstration data, not answers from a trial.]
+
+6
+00:00:22.000 --> 00:00:26.000
+06 Telemetry. On screen: “Every note is stamped at five moments.” The five are “1 Device event”, “2 Captured”, “3 Sent”, “4 Received”, “5 Triggered”. A key reads “MEASURED one clock” and “ESTIMATED two clocks”; the step from Sent to Received is drawn as estimated. Then five tiles show example values that keep changing: “Round-trip time”, “Jitter” and “Packet loss” under a chip that reads “MEASURED”, “Clock offset ±” and “One-way latency” under a chip that reads “ESTIMATED”. The badge “DEMO DATA not a measurement” is at the top right while they show. [The values are demonstration data; the chips name the kind of evidence each will be.]
+
+7
+00:00:26.000 --> 00:00:29.600
+07 Analyzer. On screen: “Exports, ratings and worksheets flow into one place.” Labels: “Ratings SUBJECTIVE”, “Worksheet OBSERVED”, “Exports MEASURED”. A panel titled “Pilot Analyzer” reads “No pilot data yet”. Its rows carry a label and no value: “Median / p95 latency ESTIMATED”, “Round-trip time MEASURED”, “Jitter MEASURED”, “Packet loss MEASURED”, “A/B preference SUBJECTIVE”, “Musician ratings SUBJECTIVE”, “Network condition OBSERVED”. Beneath them: “Thresholds fixed before the first session”.
+
+8
+00:00:29.600 --> 00:00:33.200
+08 Evidence. On screen: “From “not yet measured” to evidence.” and, in small type, “This is the plan. The pilot has not been run yet.” Six boxes each read “NOT YET MEASURED”, then change to the kind of evidence the plan assigns: “A real keyboard MEASURED”, “Real networks ESTIMATED, MEASURED”, “Facilitator’s notes OBSERVED”, “What a player feels SUBJECTIVE”, “Loss and stuck notes MEASURED, OBSERVED”. “Playing together” stays “NOT YET MEASURED”. [The change shows how results will be classified once a pilot runs. It is not a result.]
+
+9
+00:00:33.200 --> 00:00:35.000
+End card over the darkened hall. On screen: “COLLABORA-SING SYNCLAB”, “Build the hypothesis. Measure the system. Let the musicians decide.” and “REAL NETWORKS · REAL INSTRUMENTS · REAL MUSICIANS”. [The last line is the plan’s aim. The card carries no qualifier of its own: the pilot has not been run.]

@@ -1,0 +1,94 @@
+{
+ "chapter": {
+  "id": "pro02",
+  "kicker": "PROLOGUE · CH.02",
+  "title": "The OSI Model, AV Style",
+  "pill": "Prologue · Ch.02",
+  "sub": "Seven layers. One building.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--green)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback: a laptop shows the livestream stuck on BUFFERING. Maya throws her hands up, wondering what she broke.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Was that the switcher? The router? …me?"
+    }
+   ],
+   "narration": [
+    "Last week, the livestream froze mid-sermon."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": "flashback",
+   "tab": "LAST SUNDAY",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 857
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray points to a chart of the seven network layers, stacked like floors of a building: 1 physical at the bottom up to 7 application at the top.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Seven floors, one building. Floor one is cable and light. Floor seven is the app people actually see."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So I can stop blaming myself at floor four."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2242
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Every network layer fails differently. Diagnosing floor by floor beats guessing at the whole building."
+  }
+ ]
+}

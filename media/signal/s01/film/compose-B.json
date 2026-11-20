@@ -1,0 +1,104 @@
+[
+ {
+  "chapter": "s01e06",
+  "slot": "receiver",
+  "job": "job_2c6472e0-9956-494e-8269-dcbb9067e5aa",
+  "start": 0
+ },
+ {
+  "chapter": "s01e06",
+  "slot": "avery",
+  "job": "job_3d46d394-b566-4a53-94d7-7514e6515401",
+  "start": 8
+ },
+ {
+  "chapter": "s01e06",
+  "slot": "reading",
+  "job": "job_b698f4dd-3153-416d-86bf-35cccaa952d2",
+  "start": 16
+ },
+ {
+  "chapter": "s01e07",
+  "slot": "christmas",
+  "job": "job_ca27bd3b-8eca-40bb-966c-1ed0fa7b2562",
+  "start": 24
+ },
+ {
+  "chapter": "s01e07",
+  "slot": "wall",
+  "job": "job_27123d7b-2db7-4376-adec-59d07e446335",
+  "start": 32
+ },
+ {
+  "chapter": "s01e07",
+  "slot": "settings",
+  "job": "job_87a03cf8-2d02-476c-b4ac-4d84292d5689",
+  "start": 40
+ },
+ {
+  "chapter": "s01e08",
+  "slot": "board",
+  "job": "job_972e636f-fcc2-47ff-94c6-19934978ca4b",
+  "start": 48
+ },
+ {
+  "chapter": "s01e08",
+  "slot": "pages",
+  "job": "job_8e87a5c0-2a1b-4fff-b2b6-497698bb1bd3",
+  "start": 56
+ },
+ {
+  "chapter": "s01e08",
+  "slot": "card",
+  "job": "job_e259d191-0dea-4f87-b982-c45ed3c2ad5d",
+  "start": 64
+ },
+ {
+  "chapter": "s01e09",
+  "slot": "newsystem",
+  "job": "job_92334ab1-0450-48b3-a275-2f56214eb081",
+  "start": 72
+ },
+ {
+  "chapter": "s01e09",
+  "slot": "fulllook",
+  "job": "job_ee37e2fc-4090-49a2-b303-b778506403f7",
+  "start": 80
+ },
+ {
+  "chapter": "s01e09",
+  "slot": "pass",
+  "job": "job_c87943fd-e4f0-439e-a1ea-3b5e88ad1a8a",
+  "start": 88
+ },
+ {
+  "chapter": "s01e10",
+  "slot": "storm",
+  "job": "job_62a05285-65bb-4fef-8288-9aa6768d6c59",
+  "start": 96
+ },
+ {
+  "chapter": "s01e10",
+  "slot": "read",
+  "job": "job_9da44509-9042-4ca0-99d7-fd1a2ff3f695",
+  "start": 104
+ },
+ {
+  "chapter": "s01e10",
+  "slot": "call",
+  "job": "job_850322e7-22c4-41c6-ae69-dceab234c1e1",
+  "start": 112
+ },
+ {
+  "chapter": "s01e11",
+  "slot": "dawn",
+  "job": "job_57b40431-a09b-424d-a842-392fb4a99a5f",
+  "start": 120
+ },
+ {
+  "chapter": "s01e11",
+  "slot": "handover",
+  "job": "job_9ee41397-617f-40ba-92d6-c9775c6ded29",
+  "start": 128
+ }
+]

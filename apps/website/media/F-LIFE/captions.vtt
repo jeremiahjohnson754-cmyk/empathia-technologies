@@ -1,0 +1,45 @@
+WEBVTT
+
+NOTE
+Captions of "Core Replay: the life of a room". The words are shown on screen and spoken by an AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan, one line per step, as they appear;
+the recorder (scripts/media/record-product-film.mjs) drew the words above the demonstration, and each step was verified by its proof before its words appeared.
+
+1
+00:00:00.720 --> 00:00:08.280
+Every room has a story. This one starts as a request.
+
+2
+00:00:08.320 --> 00:00:19.310
+Nine requirements, six of them must-haves. Everything later is judged against them.
+
+3
+00:00:19.360 --> 00:00:23.210
+Designed: every device a numbered position.
+
+4
+00:00:24.410 --> 00:00:28.350
+The same room in Lite: one record, another view.
+
+5
+00:00:29.140 --> 00:00:43.700
+Installed: position PA-0007 holds asset AS-0097.
+
+6
+00:00:43.810 --> 00:00:49.030
+Each test recorded, then verified by someone else.
+
+7
+00:00:49.090 --> 00:00:53.520
+Baseline v1: what the room was proven to do.
+
+8
+00:00:53.560 --> 00:01:07.960
+AS-0097 out, AS-0112 in. Only the tests that name PA-0007 reopen.
+
+9
+00:01:08.010 --> 00:01:13.320
+Re-accepted: baseline v2 is current, and v1 is kept.
+
+10
+00:01:14.550 --> 00:01:19.240
+From here on, Assurance watches the room against that baseline.

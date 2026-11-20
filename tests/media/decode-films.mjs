@@ -16,7 +16,7 @@ const films = JSON.parse(fs.readFileSync(index, 'utf8'));
 const out = path.join(repo, 'tests/evidence/films'); fs.mkdirSync(out, { recursive: true });
 const results = [];
 for (const f of films) {
-  const p = path.isAbsolute(f.path) ? f.path : path.join('/home/claude', f.path);
+  const p = path.isAbsolute(f.path) ? f.path : path.join(process.env.EMPATHIA_WORKSPACE || '/home/claude', f.path);   // the founder's film folder root
   const r = { key: f.key, file: f.file, path: f.path, expectedSha256: f.sha256, durationS: f.durationS, codec: `${f.videoCodec}/${f.audioCodec || '-'}` };
   if (!fs.existsSync(p)) { results.push({ ...r, result: 'FAIL', detail: 'file not found' }); console.log(`FAIL ${f.key} missing`); continue; }
   if (!process.argv.includes('--no-hash')) {

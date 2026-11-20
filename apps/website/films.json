@@ -1,0 +1,534 @@
+{
+  "$comment": "The owner-supplied films and where each belongs on the public website. A film is built into the published site ONLY when rights.website.status is VERIFIED (the owner's rule: only VERIFIED assets authorized for the channel enter an externally distributed build). `node apps/website/build.mjs --films=preview` builds every film for a local or staging review, with a banner on every page; that build is not for publication. Renditions are produced by scripts/media/prepare-web-films.mjs into apps/website/media/ (git-ignored until a film is cleared). Rights evidence lives in the media-rights ledger; see docs/media/WEBSITE_FILM_PLACEMENT.md.",
+  "films": [
+    {
+      "key": "M2",
+      "title": "From business need to room intelligence",
+      "runtime": "2:00",
+      "placement": [
+        "/"
+      ],
+      "summary": "A building becomes rooms, a request becomes a design, and the same record follows the room into commissioning, operation, support and learning.",
+      "masterSha256": "4578aadab522076830c2ed72eccccd0b98f88cd4d0a480beeff8acae670e782e",
+      "renditionSource": "empathia-film/out/Empathia_Master_2m00_1080p_voice_no-captions.mp4 (575d8381…), captions from audio/cuts/master.srt",
+      "source": {
+        "video": "owner upload 2026-11-13 (1000039170.mp4: the master, captions burned in)",
+        "captions": "apps/website/films/M2.captions.vtt"
+      },
+      "burnedCaptions": true,
+      "posterAt": 72,
+      "disclosure": "Illustrative 3D scenes; figures on screen are demonstration data.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "owner, 2026-11-13 16:34 CT: \"M2 verified\" — accepting vidIQ's Terms of Service section 14 (evidence below) as the licence basis for the narration, as rights owner",
+          "acceptedCaveats": [
+            "narration: vidIQ \"Brian\" voice (ElevenLabs premade) — vidIQ plan/invoice for 2026-10-05 not on file; vidIQ's current terms (evidence below) grant commercial use of voice made through vidIQ, but the terms in force on 2026-10-05 are not archived and carry no warranty against third-party (voice vendor) claims",
+            "rights owner of record not established"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT), and again for the start page (2026-11-13 16:22 CT: \"Add that 2 minute to the start page of the corporate website\"), with the master attached (its sha256 matches masterSha256)",
+          "evidence": [
+            "vidIQ Terms of Service, https://vidiq.com/terms/, read 2026-11-13, section 14: \"As between you and vidIQ, you may use Content Artifacts you create through the Services for personal or commercial purposes, including in monetized and promotional content\"; Content Artifacts include voice; \"vidIQ does not require attribution or an active subscription for continued use of Content Artifacts already generated\". Subject to third-party, platform and vendor terms."
+          ]
+        }
+      }
+    },
+    {
+      "key": "FA",
+      "title": "The platform vision",
+      "runtime": "2:00",
+      "placement": [
+        "/platform"
+      ],
+      "summary": "Mission Control, Search Party, Lite, Field Intelligence, Commissioning, ServiceHands and Learn, recorded from the synthetic demonstration.",
+      "masterSha256": "a136a65cb919dcf1ecf6a01674ede82a8f06715e6462c9ceb9c5c73e89c53393",
+      "renditionSource": "Empathia_Film_Campaign/10_Final_Masters/FA/Empathia_V25_FA_16x9_1920x1080_clean.mp4 (362d6deb…) + FA.vtt",
+      "source": {
+        "video": "owner upload 2026-11-13 (1000042621.mp4: the master, captions burned in)",
+        "captions": "apps/website/films/FA.captions.vtt"
+      },
+      "burnedCaptions": true,
+      "disclosure": "Screen recordings of the demonstration on synthetic data.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below",
+          "acceptedCaveats": [
+            "narration: Kokoro local voice (model licence Apache-2.0 documented; output rights and upstream training data not documented)",
+            "not entered in the media-rights ledger",
+            "rights owner of record not established"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)"
+        }
+      }
+    },
+    {
+      "key": "F02P",
+      "title": "The living system: a divisible hall, designed to proven",
+      "runtime": "3:00",
+      "placement": [
+        "/products/commissioning",
+        "/films"
+      ],
+      "summary": "A divisible hall designed as states, its loudspeaker loads calculated, every state and transition tested on a simulated processor, then proven.",
+      "masterSha256": "46ee50741ad42d845f72c30bfec3ed2c3ba7122590e45220e9def1787a0e54f1",
+      "renditionSource": "empathia-campaign/out/F02P/Empathia_F02_The-Living-System_3m00_1080p_clean.mp4 (80a4fbaa…) + .vtt",
+      "source": {
+        "video": "owner upload 2026-11-13 (1000042618.mp4: the master, captions burned in)",
+        "captions": "apps/website/films/F02P.captions.vtt"
+      },
+      "burnedCaptions": true,
+      "disclosure": "Product demonstration on synthetic data; the processor is simulated.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below",
+          "acceptedCaveats": [
+            "narration: vidIQ \"Brian\" voice (campaign 2026-10-10) — same evidence gap as M2",
+            "ledger entry X048 UNVERIFIED"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)"
+        }
+      }
+    },
+    {
+      "key": "IE",
+      "title": "Field Intelligence: a technician's day",
+      "runtime": "5:00",
+      "placement": [
+        "/products/field-intelligence",
+        "/films"
+      ],
+      "summary": "What a collector declares, what a test observes, and what an engineer verifies — through one illustrative shift.",
+      "masterSha256": "6ee94d40ce8615f8584091cceb74adfab39f1a3faab925255b4e011dbff5fd55",
+      "renditionSource": "Empathia_FI_Film/out/IE-film-4k.mp4 (4387b1cb…, clean) + captions/IE-film.vtt, downscaled to 1080p/720p",
+      "source": {
+        "video": "owner upload 2026-11-13 (1000042624.mp4: the master, captions burned in)",
+        "captions": "apps/website/films/IE.captions.vtt"
+      },
+      "burnedCaptions": true,
+      "disclosure": "Illustrative scenario; AI-generated images of fictional people; simulated rooms and data.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below",
+          "acceptedCaveats": [
+            "narration provenance not ledgered",
+            "AI-generated photographic images: generator, terms and plan at creation not on file",
+            "not entered in the media-rights ledger"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)"
+        }
+      }
+    },
+    {
+      "key": "F01",
+      "title": "The living system: one environment, one engineering language",
+      "runtime": "4:40",
+      "placement": [
+        "/films"
+      ],
+      "summary": "The estate, Search Party relationships, a device replaced with its history kept, remote diagnostics, operations readiness and Learn, from the V1.4.1 demonstration.",
+      "masterSha256": "4d31db34fb218bed53c22b9991c253f6dfd0072efdd2bdeb81553905c8adcfc2",
+      "renditionSource": "Empathia_Film_Campaign/10_Final_Masters/F01/Empathia_V141_F01_16x9_1920x1080_clean.mp4 (e26d6b28…) + .vtt",
+      "source": {
+        "video": "owner upload 2026-11-13 (1000042623.mp4: the master, captions burned in)",
+        "captions": "apps/website/films/F01.captions.vtt"
+      },
+      "burnedCaptions": true,
+      "disclosure": "Screen recordings of the V1.4.1 demonstration on synthetic data.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below",
+          "acceptedCaveats": [
+            "narration: Kokoro local voice — output rights not documented",
+            "not entered in the media-rights ledger"
+          ],
+          "ownerChannelAuthorization": "owner asked for this film on the website (2026-10-31 15:53 CT)"
+        }
+      }
+    },
+    {
+      "key": "V141R",
+      "title": "The V1.4.1 demonstration, in three minutes",
+      "runtime": "3:18",
+      "placement": [
+        "/films"
+      ],
+      "orientation": "portrait",
+      "frame": [
+        720,
+        1280
+      ],
+      "posterAt": 40,
+      "summary": "A vertical tour of the V1.4.1 demonstration: a room concept checked against its rules, a visitor's way in, a room in Engineer mode, a room's life replayed, who supports what, who knows how, and the audio lab.",
+      "masterSha256": "c0e09e432168214d14711c96f8d921fadb26deae64ac36fe5aeda193f0916a1f",
+      "source": {
+        "video": "owner upload (1000041382.mp4: the master, captions burned in)",
+        "captions": "apps/website/films/V141R.captions.vtt"
+      },
+      "burnedCaptions": true,
+      "disclosure": "Screen recordings of the V1.4.1 demonstration on synthetic data.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below",
+          "acceptedCaveats": [
+            "narration source not recorded",
+            "not entered in the media-rights ledger"
+          ]
+        }
+      }
+    },
+    {
+      "key": "W2",
+      "title": "Behind the sound of a congregation",
+      "runtime": "2:16",
+      "placement": [
+        "/films"
+      ],
+      "sound": "none",
+      "textTrack": "descriptions",
+      "posterAt": 84,
+      "summary": "A church's sound volunteer at work: a microphone fitted for a reader, the room checked, a rehearsal timed, a meeting briefed, a service run, and the logbook written up after.",
+      "masterSha256": "5d933a431ab7b05940bc8f9e8f21a1899b1115c0ac2be2303b27f1f779c76c25",
+      "source": {
+        "video": "owner upload (i6o9serm574emwshsupqvyps.mp4)",
+        "captions": "apps/website/films/W2.captions.vtt",
+        "descriptions": "apps/website/films/W2.descriptions.vtt"
+      },
+      "disclosure": "An AI-generated film: every person and place in it is fictional. It has no sound.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "owner, 2026-11-13 17:20 CT: \"All Verified\" — accepting, as rights owner, the narration and picture sources of every film then listed (the inventory of that day), with the caveats below",
+          "acceptedCaveats": [
+            "AI-generated photographic people: the generator, its terms and the plan at creation are not on file",
+            "not entered in the media-rights ledger"
+          ]
+        }
+      }
+    },
+    {
+      "key": "P-servicehands",
+      "title": "ServiceHands: from a report to the fix, with the room’s history",
+      "runtime": "0:58",
+      "placement": [
+        "/products/servicehands"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the jobs, a problem reported in a sentence, one job through its stages, who answers for the room, the room's history step by step, the dispatch board and coverage.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-servicehands); apps/website/media/P-servicehands/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-commissioning",
+      "title": "Commissioning and assurance: from the campus to one check, and back",
+      "runtime": "0:52",
+      "placement": [
+        "/products/commissioning"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the command centre, one room through its phases and checks, traceability, its deficiencies, assurance in four states, the campus's open deficiencies by owner, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-commissioning); apps/website/media/P-commissioning/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-learn",
+      "title": "Learn: from what actually happened, to the lab, and back",
+      "runtime": "0:45",
+      "placement": [
+        "/products/learn"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: reviewed cases, the labs by subject, one lab, the Audio and Camera Labs, the onboarding guide and the standards manual, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-learn); apps/website/media/P-learn/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-mission-control",
+      "title": "Mission Control: what changed, what matters, what needs action",
+      "runtime": "0:55",
+      "placement": [
+        "/products/mission-control"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the overview, every stage with what is waiting, the decision desk and its log, the executive measures, the ledger, service and commissioning, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-mission-control); apps/website/media/P-mission-control/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-pro",
+      "title": "Pro: executive measures that show their work",
+      "runtime": "0:44",
+      "placement": [
+        "/products/pro"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the executive measures, their filters, the measure passports, what waits for funding, the decision behind a figure, its readiness, the ledger, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-pro); apps/website/media/P-pro/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-apex",
+      "title": "APEX: cited hypotheses, bounded actions, blocked outcomes",
+      "runtime": "0:47",
+      "placement": [
+        "/products/apex"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the cases, one case, its cited layers and hypotheses, what it may and may never do, its log, across to Search Party, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-apex); apps/website/media/P-apex/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-field-intelligence",
+      "title": "Field Intelligence: what the collector declares, and what it may not do",
+      "runtime": "0:49",
+      "placement": [
+        "/products/field-intelligence"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: what the collector declares, the plan against what was executed, where a finding goes, the room's history and the room itself, and back.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-field-intelligence); apps/website/media/P-field-intelligence/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-search-party",
+      "title": "Search Party: ask, follow the connections, and come back",
+      "runtime": "1:00",
+      "placement": [
+        "/products/search-party"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: a question in plain words, the people who answer for the room, the room and everything linked to it, a person's page, what fails if a switch fails, into one affected room on the campus, and back to its relationships.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-search-party); apps/website/media/P-search-party/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "key": "P-lite",
+      "title": "Lite: from the campus to one seat, and back",
+      "runtime": "1:03",
+      "placement": [
+        "/products/lite"
+      ],
+      "exclusive": true,
+      "productFilm": true,
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: the campus in 3D, down through Atlas HQ and floor 4 to room 4.218, Engineer mode, coverage on the room, the layers, the plan to scale, the back row at eye level, and back up to the campus.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, P-lite); apps/website/media/P-lite/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-13 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-13 17:14 CT, asked for these films)"
+        }
+      }
+    },
+    {
+      "$comment": "Collabora-SING is a product in development, not one of the nine. `exclusive` keeps this film to the pages in `placement` and off /films (the build fails if any other page carries it). `sound: none` and `textTrack: descriptions`: the film is silent, so captions.vtt holds one cue that says so, and descriptions.vtt describes what is shown and quotes the on-screen words (the page prints the same text under the player). `burnedLabel` is burned into the web rendition and its posters for the whole duration (founder, 2026-11-10: the labelling of figures must be in the film, not only beside it), on a 56 px band added above the picture so that it covers nothing and the player's controls never cover it: the rendition differs from the master by that band, the 720p scale and the absent silent audio stream, and by nothing else; the master is untouched. `frame` is the rendition's size with the band. `qualifier` is also printed directly above the player at all times, because the film's own disclaimers are on screen only briefly (its figures sit under a \"MEASURED\" chip, its last labels turn to \"MEASURED\", and its end card has no qualifier). `source.captions` and `source.descriptions` are those two files, kept in the repository; `source.video` is the master under the production root.",
+      "key": "SYNCLAB",
+      "title": "Collabora-SING SyncLab: from hypothesis to evidence",
+      "runtime": "0:35",
+      "placement": [
+        "/collabora-sing"
+      ],
+      "exclusive": true,
+      "sound": "none",
+      "textTrack": "descriptions",
+      "posterAt": 3,
+      "burnedLabel": {
+        "text": "IN DEVELOPMENT · DEMONSTRATION DATA · NO PILOT HAS BEEN RUN",
+        "band": 56
+      },
+      "frame": [
+        1280,
+        776
+      ],
+      "summary": "The research plan behind Collabora-SING, in eight short scenes: a hypothesis, two ways to send one performance, five network conditions, a player at a keyboard, a blind test, telemetry, an analyzer, and what is not yet measured.",
+      "masterSha256": "853f3436b21a500c8cb41f82b44d91d5c6a88b6dc99f1df2ace7533e094f15ff",
+      "renditionSource": "collabora-sing-synclab-3d/video/Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p.mp4 (853f3436…), the file the founder supplied on 2026-11-10; text tracks written from the picture (apps/website/films/SYNCLAB.captions.vtt and SYNCLAB.descriptions.vtt)",
+      "source": {
+        "video": "collabora-sing-synclab-3d/video/Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p.mp4",
+        "captions": "apps/website/films/SYNCLAB.captions.vtt",
+        "descriptions": "apps/website/films/SYNCLAB.descriptions.vtt"
+      },
+      "disclosure": "An animated explainer of a research plan. The pilot has not been run yet; the figures on screen are labelled demo data, not measurements.",
+      "qualifier": "Read this with the film. Every figure shown in it is demonstration data, not a measurement. The labels in it (measured, estimated, observed, subjective) show how results will be classified once a pilot runs. No pilot has been run.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "basis": "rights confirmed by the founder, 2026-11-10; supplied for the Collabora-SING In Development section of the corporate website",
+          "scope": "the Collabora-SING In Development section of the corporate website (/collabora-sing) only: no other page, product or channel",
+          "evidence": [
+            "the founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films, music and creative assets he supplied, for authorised use in Empathia (his statement, relayed by the integrator; no separate document is on file)",
+            "the supplied file's SHA-256 is masterSha256, the same file catalogued as Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p in media/manifests/MEDIA_MANIFEST.json",
+            "sound: the audio stream is digital silence (ffmpeg astats on 2026-11-10: peak -inf dB on both channels for the whole 35.0 s), so the film carries no narration, music or sound effect; the web rendition has no audio stream",
+            "picture: a 3D animation with drawn figures and on-screen text; in the 35 one-per-second frames read on 2026-11-10 there is no photograph, no recording of a person and no third party's name, logo or mark"
+          ],
+          "notEvidenced": [
+            "beyond the founder's confirmation, no licence or authorship document was supplied; music and sound rights are covered by that confirmation and not exercised here (the file is silent)",
+            "the 3D library and typeface used to render the picture were not examined",
+            "not entered in the media-rights ledger: MEDIA_MANIFEST.json still lists the master as NOT_IN_LEDGER, rights owner NOT ESTABLISHED, distribution NOT_ELIGIBLE"
+          ],
+          "ownerChannelAuthorization": "founder, 2026-11-10: \"The 35 second video with the piano player is for Collabora-SING, an in-development product, just for the corporate website section for Collabora-SING.\""
+        }
+      }
+    },
+    {
+      "key": "F-LIFE",
+      "title": "Core Replay: the life of a room",
+      "runtime": "1:19",
+      "placement": [
+        "/how-it-works"
+      ],
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: one boardroom from its request, requirements and design, through its build and tests, to baseline v1, a like-for-like camera change that reopens only the tests it touches, baseline v2, and Assurance.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, F-LIFE); apps/website/media/F-LIFE/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-18 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-18 17:25 CT, §13: \"Core Replay — The Life of a Room\")"
+        }
+      }
+    },
+    {
+      "key": "F-FOLLOW",
+      "title": "Follow one microphone through five products",
+      "runtime": "0:47",
+      "placement": [
+        "/platform"
+      ],
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: ceiling microphone A-0104 in Lite, its room's commissioning record, Assurance, Search Party and Core Replay, each opened the way the website opens it, as its own perspective.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, F-FOLLOW); apps/website/media/F-FOLLOW/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-18 with synthetic data; no third-party music or imagery; the voice is an AI-generated preset voice of an Apache-2.0 model, generated by the project (founder, 2026-11-18 17:25 CT, §6: \"Open This Exact Demonstration\")"
+        }
+      }
+    },
+    {
+      "key": "F-SIGNAL",
+      "title": "SIGNAL: Ten Seats, played",
+      "runtime": "0:45",
+      "placement": [
+        "/products/learn"
+      ],
+      "burnedCaptions": true,
+      "summary": "Recorded from the demonstration: Ten Seats as a player meets it, from its title and its case to generated footage of a fictional sanctuary, a decision in the frame, and three playable scenes: measuring each seat's notch, testing the fill, and verifying the re-aim.",
+      "source": {
+        "video": "recorded by scripts/media/record-product-film.mjs (scripts/media/product-films.mjs, F-SIGNAL); apps/website/media/F-SIGNAL/RECORDING.json holds every step, its proof and the hashes",
+        "audio": "the step’s on-screen words read by Qwen3-TTS (Qwen3-TTS-12Hz-0.6B-CustomVoice, Apache-2.0, preset voice Ryan), generated by the project on 2026-11-19 (founder 09:48 and 10:12); docs/media/QWEN_TOUR_NARRATION.md"
+      },
+      "disclosure": "Recorded from the demonstration on synthetic data; every step was checked before its words appeared. The footage inside it is SIGNAL Season 1’s AI-generated footage of a fictional place, labelled as such in the film. The voice reading the words on screen is AI-generated (synthetic, not a real person): Qwen3-TTS preset voice Ryan.",
+      "rights": {
+        "website": {
+          "status": "VERIFIED",
+          "verifiedBy": "Empathia's own demonstration, recorded on 2026-11-18 in quiet mode with synthetic data. The one moving picture inside it is Ten Seats' generated establishing footage of a fictional sanctuary, already published in the demonstration with its label (docs/SIGNAL_MEDIA_ASSET_LEDGER.md); no voice, music or third-party imagery (founder, 2026-11-18 17:25 CT, §13: \"SIGNAL — Cinematic Learning and Interactive Gameplay\"); the voice (19 Nov 2026) is an AI-generated preset voice of an Apache-2.0 model, generated by the project"
+        }
+      }
+    }
+  ]
+}

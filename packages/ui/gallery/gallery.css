@@ -26,3 +26,9 @@ main { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column;
 .g-radius { display: inline-block; width: 44px; height: 26px; background: var(--panel2); border: 1px solid var(--line2); }
 .g-tokens td { vertical-align: middle; }
 .g-foot { max-width: 1200px; margin: 40px auto 0; color: var(--tx3); font-size: var(--fs-xs); }
+
+/* kit section */
+.g-kit { display: grid; gap: var(--sp-4); } .g-kit-row { align-items: start; }
+.g-stack { display: grid; gap: var(--sp-4); } .g-chips { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.g-icons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; }
+.g-icons li { display: flex; align-items: center; gap: 8px; color: var(--tx2); font-size: var(--fs-xs); padding: 6px; border-radius: var(--r-sm); }

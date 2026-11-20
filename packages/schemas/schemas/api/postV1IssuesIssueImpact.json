@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueImpact/0.1.0.json",
+  "title": "POST /v1/issues/{issue}/impact request body",
+  "description": "Record the user impact of a deficiency (none, minor annoyance, moderate or major disruption, executive impact) with why; each change is an issue event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "impact",
+    "why"
+  ],
+  "properties": {
+    "impact": {
+      "type": "string",
+      "enum": [
+        "none",
+        "minor_annoyance",
+        "moderate_disruption",
+        "major_disruption",
+        "executive_impact"
+      ]
+    },
+    "why": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}

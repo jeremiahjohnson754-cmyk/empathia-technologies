@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FILMS_DATA, MEDIA, type Film } from '../data/generated';
 import { href, useRoute } from '../lib/router';
 
@@ -13,12 +13,18 @@ async function diagnose(f: Film): Promise<'missing' | 'codec' | 'unknown'> {
   try { const r = await fetch(filmSrc(f), { method: 'HEAD' }); if (!r.ok) return 'missing'; return canH264 ? 'unknown' : 'codec'; } catch { return canH264 ? 'missing' : 'codec'; }
 }
 
+/** The launcher says which films are on this computer (12 Nov 2026), so a missing film is reported without requesting it; opened from disk
+ *  there is no launcher, and the player falls back to trying the file. */
+let availability: Promise<Set<string> | null> | null = null;
+const filmsHere = () => (availability ||= fetch('api/films').then((r) => (r.ok ? r.json() : null)).then((j) => (j ? new Set<string>(j.available) : null)).catch(() => null));
 function Player({ f }: { f: Film }) {
   const [err, setErr] = useState<false | 'missing' | 'codec' | 'unknown'>(false);
+  const [known, setKnown] = useState(false);
+  useEffect(() => { let live = true; setErr(false); setKnown(false); void filmsHere().then((s) => { if (!live) return; if (s && !s.has(f.file)) setErr('missing'); setKnown(true); }); return () => { live = false; }; }, [f.file]);
   return (
     <div className="player-wrap">
       <div className="player">
-        {f.found && !err ? (
+        {f.found && !known && !err ? <div className="notice" role="status"><p className="muted">Looking for the file on this computer…</p></div> : f.found && !err ? (
           <video key={f.key} controls preload="metadata" src={filmSrc(f)} onError={() => { void diagnose(f).then(setErr); }} aria-label={f.title} />
         ) : (
           <div className="notice warn" role="status"><p className="muted">

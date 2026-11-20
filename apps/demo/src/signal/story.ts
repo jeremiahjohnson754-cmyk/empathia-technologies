@@ -1,0 +1,298 @@
+/**
+ * The SIGNAL story engine: pure functions over the founder's canon (packages/signal-canon), which the page fetches a chapter at a time.
+ * The canon is never edited here; this file only decides what a reader has reached, what a choice does, and what is remembered.
+ *
+ * Rules, from the founder's build package (`docs/04-engine-specs.md` §1, and its reference runtime, which wins where they differ):
+ *  - A decision is a gate: the story waits until a choice is RECORDED. Any option records, the failing ones too. A failing option is a
+ *    costly call: it is kept, with its negative merit and trust, and the story goes on with it. The reader may tap another option,
+ *    which replaces the record (as the reference does); the first choice is kept separately, because ratings read first choices.
+ *  - A timed decision that runs out is recorded as TIMEOUT (merit −2, severity 2, no trust) and the card turns to review: tapping an
+ *    option shows what it would have meant without recording it, and Replay removes the record and starts the clock again.
+ *  - Hints are revealed one at a time and state the credit kept. The credit is applied to positive merit here; the reference build does
+ *    not apply it (its own open issue OI-ENG-02), which would make the label untrue.
+ *  - Clock: on (canon seconds), extended (doubled) or off. Progress lives in this browser only; it is practice, never a credential.
+ * Before 11 November 2026 this engine made a reader choose again after a failing option until a passing one; that was not the canon's
+ * behaviour and stored progress of that shape is read as the first and final choices it records.
+ */
+export interface Bubble { side: string; who: string; kind: 'speech' | 'radio' | 'phone' | 'hollow' | 'whisper'; text: string }
+export interface Option { letter: string; label: string; result: string; consequence: string; chips: string[]; badges: { kind: string; text: string }[]; canonical: boolean; fail: string | null; requires_loadout: Record<string, number> | null; weight: { merit?: number; sev?: number; trust?: Record<string, number> } }
+export type Item =
+  | { type: 'heading'; text: string; sub: string | null }
+  | { type: 'panel'; alt: string; characters: { id: string; pose: string; expr: string }[]; bubbles: Bubble[]; narration: string[]; caption: string | null; flags: string[]; kind: string | null; tab: string | null; system_view: boolean; evidence: { state: string; label: string }[]; confidence: number | null }
+  | { type: 'note'; role: string; text: string; opens?: { kind: string; id: string }; case?: string }
+  | { type: 'quest'; title: string; kind: string; level: string; party: string[]; stakes: string; clock: string; reward: string; objectives: { key: string; text: string }[]; rumor: string }
+  | { type: 'discovery'; id: string; teaser: string; title: string; body: string; thread: string; who: string[] | null }
+  | { type: 'beat'; mood: string; where: string | null; lines: { who: string; pose: string; expr: string; text: string }[] }
+  | { type: 'decision'; id: string; prompt: string; happening: string; clock: string | null; known: string[]; unknown: string[]; risk: string; timer_s: number; timeout: string[] | null; hints: { id: string; keep: number; text: string }[]; note: string; lab: string | null; lab_label: string | null; options: Option[] }
+  | { type: 'twist'; title: string; body: string; test_kind: string; test_id: string; label: string | null }
+  | { type: 'talk'; id: string; who: string; prompt: string; options: { label: string; who: string; pose: string; expr: string; reply: string; trust: Record<string, number> }[] }
+  | { type: 'history'; title: string; body: string; flag: string; when: string | null; lab: string | null }
+  | { type: 'mount'; kind: string; id: string; label: string | null; gate: string | null };
+export interface Chapter { chapter: { id: string; kicker: string; title: string; pill: string; sub: string; status: string; flags: string[]; accent: string }; items: Item[] }
+export interface ChapterRef { id: string; season: number; episode: number; title: string; kicker: string; sub: string; level: string | null; tier: string; flags: number; panels: number; decisions: number; timed: number; quest: string | null; boss: boolean; meltdown: boolean; /** hard and soft gates, [kind, id, tier], for chapter locks */ gates?: Array<[string, string, Tier]> }
+export interface StoryIndex { stats: Record<string, number>; seasons: Record<string, string>; cast: Record<string, string>; chapters: ChapterRef[]; lessonQuiz?: Record<string, string> }
+
+export const TIMEOUT = 'TIMEOUT';
+/** `letter` is the option recorded now, or TIMEOUT; `first` is the first one recorded; `changes` counts later replacements. */
+export interface Choice { letter: string; first: string; changes: number; hints: number }
+export interface ChapterState { choices: Record<string, Choice>; talks: Record<string, number>; found: string[]; done: boolean }
+export type Clock = 'on' | 'extended' | 'off';
+/** A quiz's record, as the reference keeps it: best score, number of questions, and the first score (ratings read first attempts). */
+export interface QuizRecord { best: number; total: number; first: number }
+export interface Progress { v: 2; chapters: Record<string, ChapterState>; clock: Clock; gates: boolean; last: string | null; quizzes: Record<string, QuizRecord>; skips: Record<string, 1>; drills: Record<string, DrillRecord>; incidents: Record<string, IncidentRecord>; labs: Record<string, LabRecord>; reviews: Record<string, ReviewRecord>; meltdowns: Record<string, MeltdownRecord>; bosses: Record<string, BossRecord>; challenges: Record<string, ChalRecord>; /** Mission Control: the role path and the support level (auto, or 1 Beginner … 4 Mastery) */ role?: string; support?: 'auto' | '1' | '2' | '3' | '4' }
+/** One soft or hard gate tier as the reader sees it. */
+export const TIER_WORD: Record<Tier, string> = { hard: 'Core: the story goes on when you finish this', soft: 'Recommended: the pages wait for you, or skip it for now', opt: 'Optional: do it now or come back; it stays here' };
+export const emptyChapter = (): ChapterState => ({ choices: {}, talks: {}, found: [], done: false });
+export const emptyProgress = (): Progress => ({ v: 2, chapters: {}, clock: 'on', gates: true, last: null, quizzes: {}, skips: {}, drills: {}, incidents: {}, labs: {}, reviews: {}, meltdowns: {}, bosses: {}, challenges: {} });
+const KEY = 'empathia.signal.story.v1';
+type OldChoice = { letter?: unknown; tries?: unknown; failed?: unknown; hints?: unknown; timedOut?: unknown; first?: unknown; changes?: unknown };
+/** Read one stored choice of either shape; anything else reads as no choice. */
+export function readChoice(x: unknown): Choice | null {
+  const c = (x && typeof x === 'object' ? x : {}) as OldChoice; const hints = Number.isInteger(c.hints) && (c.hints as number) >= 0 ? Math.min(c.hints as number, 9) : 0;
+  const ok = (v: unknown): v is string => typeof v === 'string' && /^([A-F]|TIMEOUT)$/.test(v);
+  if (ok(c.first) && ok(c.letter)) return { letter: c.letter, first: c.first, changes: Number.isInteger(c.changes) && (c.changes as number) >= 0 ? (c.changes as number) : 0, hints };
+  // the earlier shape: failed attempts, then the passing letter. Its first choice was the first failed letter, if any.
+  const failed = Array.isArray(c.failed) ? (c.failed as unknown[]).filter(ok) : [];
+  if (ok(c.letter)) return { letter: c.letter, first: failed[0] || c.letter, changes: failed.length, hints };
+  if (failed.length) return { letter: failed[failed.length - 1]!, first: failed[0]!, changes: failed.length - 1, hints };
+  return null;
+}
+export function load(): Progress {
+  try { const p = JSON.parse(localStorage.getItem(KEY) || 'null') as (Omit<Progress, 'v'> & { v: number }) | null;
+    if (p && (p.v === 1 || p.v === 2) && p.chapters && typeof p.chapters === 'object') {
+      const chapters: Record<string, ChapterState> = {};
+      for (const [id, c] of Object.entries(p.chapters)) { if (!c || typeof c !== 'object') continue; const choices: Record<string, Choice> = {};
+        for (const [d, x] of Object.entries(c.choices || {})) { const r = readChoice(x); if (r) choices[d] = r; }
+        chapters[id] = { choices, talks: c.talks && typeof c.talks === 'object' ? c.talks : {}, found: Array.isArray(c.found) ? c.found : [], done: !!c.done }; }
+      const quizzes: Record<string, QuizRecord> = {}; for (const [id, r] of Object.entries((p as { quizzes?: unknown }).quizzes && typeof (p as { quizzes?: unknown }).quizzes === 'object' ? (p as { quizzes: Record<string, unknown> }).quizzes : {})) { const q = readQuiz(r); if (q) quizzes[id] = q; }
+      const skips: Record<string, 1> = {}; for (const k of Object.keys((p as { skips?: Record<string, unknown> }).skips || {})) if (/^(quiz|lesson|drill|incident|lab):[\w.-]{1,40}$/.test(k)) skips[k] = 1;
+      const drills: Record<string, DrillRecord> = {}; for (const [id, r] of Object.entries((p as { drills?: unknown }).drills && typeof (p as { drills?: unknown }).drills === 'object' ? (p as { drills: Record<string, unknown> }).drills : {})) { const d = readDrill(r); if (d && /^[\w.-]{1,40}$/.test(id)) drills[id] = d; }
+      const incidents: Record<string, IncidentRecord> = {}; for (const [id, r] of Object.entries((p as { incidents?: unknown }).incidents && typeof (p as { incidents?: unknown }).incidents === 'object' ? (p as { incidents: Record<string, unknown> }).incidents : {})) { const d = readIncident(r); if (d && /^[\w.-]{1,40}$/.test(id)) incidents[id] = d; }
+      const labs: Record<string, LabRecord> = {}; for (const [id, r] of Object.entries((p as { labs?: unknown }).labs && typeof (p as { labs?: unknown }).labs === 'object' ? (p as { labs: Record<string, unknown> }).labs : {})) { const d = readLab(r); if (d && /^[\w.-]{1,40}$/.test(id)) labs[id] = d; }
+      const reviews: Record<string, ReviewRecord> = {}; for (const [id, r] of Object.entries((p as { reviews?: unknown }).reviews && typeof (p as { reviews?: unknown }).reviews === 'object' ? (p as { reviews: Record<string, unknown> }).reviews : {})) { const d = readReview(r); if (d && /^S\d{1,2}$/.test(id)) reviews[id] = d; }
+      const meltdowns: Record<string, MeltdownRecord> = {}; for (const [id, r] of Object.entries((p as { meltdowns?: unknown }).meltdowns && typeof (p as { meltdowns?: unknown }).meltdowns === 'object' ? (p as { meltdowns: Record<string, unknown> }).meltdowns : {})) { const d = readMeltdown(r); if (d && /^MD-S\d{2}$/.test(id)) meltdowns[id] = d; }
+      const bosses: Record<string, BossRecord> = {}; for (const [id, r] of Object.entries((p as { bosses?: unknown }).bosses && typeof (p as { bosses?: unknown }).bosses === 'object' ? (p as { bosses: Record<string, unknown> }).bosses : {})) { const d = readBoss(r); if (d && /^S\d{2}$/.test(id)) bosses[id] = d; }
+      const challenges: Record<string, ChalRecord> = {}; for (const [id, r] of Object.entries((p as { challenges?: unknown }).challenges && typeof (p as { challenges?: unknown }).challenges === 'object' ? (p as { challenges: Record<string, unknown> }).challenges : {})) { const d = readChal(r); if (d && /^[a-z]+-[a-z]+@[1-4]$/.test(id)) challenges[id] = d; }
+      const role = typeof (p as { role?: unknown }).role === 'string' && ((p as { role: string }).role).length <= 40 ? (p as { role: string }).role : undefined; const sup = (p as { support?: unknown }).support; const support = ['auto', '1', '2', '3', '4'].includes(sup as string) ? (sup as Progress['support']) : undefined;
+      return { ...emptyProgress(), ...(role ? { role } : {}), ...(support ? { support } : {}), drills, incidents, labs, reviews, meltdowns, bosses, challenges, clock: p.clock === 'extended' || p.clock === 'off' ? p.clock : 'on', gates: p.gates !== false, last: typeof p.last === 'string' ? p.last : null, chapters, quizzes, skips }; } }
+  catch { /* a blocked or corrupted store reads as a fresh start */ }
+  return emptyProgress();
+}
+export function save(p: Progress): void { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* reading still works without storage */ } }
+
+export function readQuiz(x: unknown): QuizRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const n = (v: unknown) => (Number.isInteger(v) && (v as number) >= 0 ? (v as number) : -1);
+  const total = n(r['total']), best = n(r['best']), first = n(r['first']); return total >= 1 && total <= 50 && best >= 0 && best <= total && first >= 0 && first <= best ? { best, total, first } : null; }
+/** A drill's record in the story, the reference's shape (recordDrill): passed once stays passed, tries count, the first never changes.
+ *  The same rule as packages/ui/src/drills.ts recordDrill, kept here so the story's stored progress has one reader. */
+export interface DrillRecord { passed: boolean; tries: number; first: boolean }
+export function readDrill(x: unknown): DrillRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; return typeof r['passed'] === 'boolean' && typeof r['first'] === 'boolean' && Number.isInteger(r['tries']) && (r['tries'] as number) >= 1 && (r['tries'] as number) <= 9999 ? { passed: r['passed'], tries: r['tries'] as number, first: r['first'] } : null; }
+export function recordDrillTry(p: Progress, id: string, pass: boolean): Progress { const prev = p.drills[id]; return { ...p, drills: { ...p.drills, [id]: { passed: !!(prev?.passed || pass), tries: (prev?.tries || 0) + 1, first: prev ? prev.first : !!pass } } }; }
+/** A live incident's record, the reference's shape: the best outcome (proven > partial > fail), runs, and the first outcome with why it
+ *  ended. Same rule as packages/ui/src/incidents.ts recordIncident, kept here so the story's stored progress has one reader. */
+export type Ending = 'proven' | 'partial' | 'fail';
+export interface IncidentRecord { best: Ending; runs: number; first: Ending; firstWhy: 'declared' | 'clock' | 'boundary' }
+const RANK: Record<Ending, number> = { fail: 0, partial: 1, proven: 2 };
+export function readIncident(x: unknown): IncidentRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const o = (v: unknown): v is Ending => v === 'proven' || v === 'partial' || v === 'fail';
+  return o(r['best']) && o(r['first']) && (r['firstWhy'] === 'declared' || r['firstWhy'] === 'clock' || r['firstWhy'] === 'boundary') && Number.isInteger(r['runs']) && (r['runs'] as number) >= 1 && (r['runs'] as number) <= 9999 ? { best: r['best'], runs: r['runs'] as number, first: r['first'], firstWhy: r['firstWhy'] } : null; }
+export function recordIncidentRun(p: Progress, id: string, outcome: Ending, why: IncidentRecord['firstWhy']): Progress { const prev = p.incidents[id];
+  return { ...p, incidents: { ...p.incidents, [id]: { best: prev && RANK[prev.best] > RANK[outcome] ? prev.best : outcome, runs: (prev?.runs || 0) + 1, first: prev ? prev.first : outcome, firstWhy: prev ? prev.firstWhy : why } } }; }
+/** A lab's record, the reference's shape (recordLab): passed once stays passed; done once it ended; tries; the try that first passed. */
+export interface LabRecord { passed: boolean; done: boolean; tries: number; passTry: number }
+export function readLab(x: unknown): LabRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const n = (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 9999;
+  return typeof r['passed'] === 'boolean' && typeof r['done'] === 'boolean' && n(r['tries']) && (r['tries'] as number) >= 1 && n(r['passTry']) ? { passed: r['passed'], done: r['done'], tries: r['tries'] as number, passTry: r['passTry'] as number } : null; }
+export function recordLabTry(p: Progress, id: string, pass: boolean, fin: boolean): Progress { const prev = p.labs[id]; const tries = (prev?.tries || 0) + 1;
+  return { ...p, labs: { ...p.labs, [id]: { passed: !!(prev?.passed || pass), done: !!(prev?.done || fin || pass), tries, passTry: prev?.passTry || (pass ? tries : 0) } } }; }
+/** A season review as submitted: the Story Score, whether it passed (65 or more), when, the six ratings, and at Season 9 the loadout. */
+export interface ReviewRecord { score: number; pass: boolean; at: number; dims: Record<string, number>; loadout?: Record<string, { lvl: 0 | 1 | 2; v: number; label: string; text: string }> }
+export function readReview(x: unknown): ReviewRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const d = r['dims'];
+  if (!Number.isInteger(r['score']) || (r['score'] as number) < 0 || (r['score'] as number) > 100 || typeof r['pass'] !== 'boolean' || typeof r['at'] !== 'number' || !d || typeof d !== 'object') return null;
+  if (r['pass'] !== (r['score'] as number) >= 65) return null;
+  const dims = Object.fromEntries(Object.entries(d as Record<string, unknown>).filter(([k, v]) => /^(comp|evid|trust|safe|debt|lead)$/.test(k) && Number.isInteger(v)).map(([k, v]) => [k, v as number]));
+  const out: ReviewRecord = { score: r['score'] as number, pass: r['pass'] as boolean, at: r['at'] as number, dims };
+  if (r['loadout'] && typeof r['loadout'] === 'object') { const lo: NonNullable<ReviewRecord['loadout']> = {}; for (const [k, v] of Object.entries(r['loadout'] as Record<string, Record<string, unknown>>)) if (/^\w{1,20}$/.test(k) && v && [0, 1, 2].includes(v['lvl'] as number)) lo[k] = { lvl: v['lvl'] as 0 | 1 | 2, v: Number(v['v']) || 0, label: String(v['label'] || k).slice(0, 40), text: String(v['text'] || '').slice(0, 200) }; out.loadout = lo; }
+  return out; }
+/** A meltdown's record, the reference's shape: best outcome and grade, runs, last, and the first outcome, grade and why it ended. */
+export interface MeltdownRecord { best: Ending; grade: 'S' | 'A' | 'B' | 'C' | 'D'; runs: number; last: Ending; first: Ending; firstGrade: 'S' | 'A' | 'B' | 'C' | 'D'; firstWhy: 'boundary' | 'mission' | 'end' }
+export function readMeltdown(x: unknown): MeltdownRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const o = (v: unknown): v is Ending => v === 'proven' || v === 'partial' || v === 'fail'; const g = (v: unknown) => typeof v === 'string' && /^[SABCD]$/.test(v);
+  return o(r['best']) && o(r['last']) && o(r['first']) && g(r['grade']) && g(r['firstGrade']) && ['boundary', 'mission', 'end'].includes(r['firstWhy'] as string) && Number.isInteger(r['runs']) && (r['runs'] as number) >= 1 && (r['runs'] as number) <= 9999 ? (r as unknown as MeltdownRecord) : null; }
+/** A boss level's record, the reference's shape: runs, passed once stays passed, the furthest stage reached, and the run that first cleared it. */
+export interface BossRecord { tries: number; passed: boolean; best: number; at?: number; firstRun?: number }
+export function readBoss(x: unknown): BossRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const n = (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 9999;
+  if (!n(r['tries']) || !n(r['best']) || typeof r['passed'] !== 'boolean' || (r['best'] as number) > 20) return null;
+  return { tries: r['tries'] as number, passed: r['passed'], best: r['best'] as number, ...(typeof r['at'] === 'number' ? { at: r['at'] } : {}), ...(n(r['firstRun']) ? { firstRun: r['firstRun'] as number } : {}) }; }
+/** A challenge's record per id@level, the reference's shape: tries, best, first, passed once stays passed, last, when. */
+export interface ChalRecord { tries: number; best: number; first: number; passed: boolean; last: number; at: number }
+export function readChal(x: unknown): ChalRecord | null { const r = (x && typeof x === 'object' ? x : {}) as Record<string, unknown>; const sc = (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 100;
+  return Number.isInteger(r['tries']) && (r['tries'] as number) >= 1 && (r['tries'] as number) <= 9999 && sc(r['best']) && sc(r['first']) && sc(r['last']) && typeof r['passed'] === 'boolean' && typeof r['at'] === 'number' && (r['first'] as number) <= (r['best'] as number) && (r['last'] as number) <= (r['best'] as number)
+    ? { tries: r['tries'] as number, best: r['best'] as number, first: r['first'] as number, passed: r['passed'], last: r['last'] as number, at: r['at'] as number } : null; }
+export function recordChalTry(p: Progress, key: string, score: number, pass: boolean, now: number): Progress { const prev = p.challenges[key];
+  return { ...p, challenges: { ...p.challenges, [key]: { tries: (prev?.tries || 0) + 1, best: Math.max(prev?.best || 0, score), first: prev ? prev.first : score, passed: !!(prev?.passed || pass), last: score, at: now } } }; }
+/** What gate checks read: quiz records, skips and drill records. */
+export type Done = Pick<Progress, 'quizzes' | 'skips'> & { drills?: Progress['drills']; incidents?: Progress['incidents']; labs?: Progress['labs']; reviews?: Progress['reviews']; meltdowns?: Progress['meltdowns']; bosses?: Progress['bosses'] };
+/** Record a finished quiz: the best score is kept and the first score never changes. */
+export function recordQuiz(p: Progress, id: string, right: number, total: number): Progress {
+  const prev = p.quizzes[id]; const r = Math.max(0, Math.min(right, total)); return { ...p, quizzes: { ...p.quizzes, [id]: { best: Math.max(prev?.best ?? 0, r), total, first: prev ? prev.first : r } } };
+}
+
+// ------------------------------------------------------------------------------------------------- pieces inside a chapter, and gates
+export interface QuizQ { q: string; o: string[]; a: number; why: string; f?: string; tier?: number }
+export interface Quiz { title: string; domain?: string; qs: QuizQ[] }
+export interface Lesson { title: string; domain: string; sum?: string; cards: string[]; quiz: string; flag?: string; src?: string }
+export type Tier = 'hard' | 'soft' | 'opt';
+export interface Gate { index: number; kind: string; id: string; tier: Tier; twist: boolean; core: boolean }
+export interface Pieces { gates: Gate[]; quizzes: Record<string, Quiz>; lessons: Record<string, Lesson>; drills?: Record<string, { id: string; type: string; [k: string]: unknown }>; incidents?: Record<string, { id: string; title: string; [k: string]: unknown }>; labs?: Record<string, { id: string; type: string; title: string; [k: string]: unknown }>; meltdowns?: Record<string, { id: string; title: string; [k: string]: unknown }>; bosses?: Record<string, { se: number; lv: number; title: string; steps: unknown[]; [k: string]: unknown }>; formulas?: Record<string, { name: string; eq: string; [k: string]: unknown }>; tiers?: Record<string, number> }
+/** The kinds this build plays in place. A gate of any other kind is shown and does not hold the story, and the page says so. */
+export const PLAYABLE: ReadonlySet<string> = new Set(['decision', 'quiz', 'lesson', 'drill', 'incident', 'lab', 'review', 'meltdown', 'boss']);   // labs: every kind is drawn now; physics labs (all optional) have controls and readouts, not yet the animated drawings
+export const gateKey = (g: Pick<Gate, 'kind' | 'id'>) => `${g.kind}:${g.id}`;
+export function gateDone(g: Gate, s: ChapterState, p: Done, pieces: Pieces): boolean {
+  if (g.kind === 'decision') return passed(s, g.id); if (g.kind === 'quiz') return !!p.quizzes[g.id];
+  if (g.kind === 'lesson') { const L = pieces.lessons[g.id]; return !!(L && p.quizzes[L.quiz]); }
+  if (g.kind === 'drill') return !!p.drills?.[g.id];
+  if (g.kind === 'incident') return !!p.incidents?.[g.id];   // gate.js: run to its end, whatever the outcome
+  if (g.kind === 'lab') { const r = p.labs?.[g.id]; return !!(r && (r.passed || r.done)); }
+  if (g.kind === 'review') return !!p.reviews?.[g.id]?.pass;
+  if (g.kind === 'boss') return !!p.bosses?.[g.id]?.passed;   // chal_boss.js: clearing the boss opens the next season; a failed run starts over
+  if (g.kind === 'meltdown') return !!p.meltdowns?.[g.id];   // gate.js: survive it — or fail it — to continue   // gate.js: the next season opens only with a Story Score of 65 or more   // gate.js: fixed, or ended (clock out or the fix shown)   // reference gate.js: a drill gate is done once a try is recorded, passed or not
+  return false;
+}
+/** Cleared: done, or a soft gate skipped. */
+export const gateCleared = (g: Gate, s: ChapterState, p: Done, pieces: Pieces) => gateDone(g, s, p, pieces) || (g.tier === 'soft' && !!p.skips[gateKey(g)]);
+/** The first gate that holds the story: hard or soft, playable here, not cleared. */
+export function blocking(s: ChapterState, p: Done, pieces: Pieces): Gate | null {
+  return [...pieces.gates].sort((a, b) => a.index - b.index).find((g) => g.tier !== 'opt' && PLAYABLE.has(g.kind) && !gateCleared(g, s, p, pieces)) || null;
+}
+export function skip(p: Progress, g: Gate): Progress { return g.tier === 'soft' ? { ...p, skips: { ...p.skips, [gateKey(g)]: 1 } } : p; }
+/** Gates that count toward a chapter: hard and soft, of the kinds played here. */
+export function gateCount(s: ChapterState, p: Done, pieces: Pieces): { cleared: number; total: number } {
+  const gs = pieces.gates.filter((g) => g.tier !== 'opt' && PLAYABLE.has(g.kind)); return { cleared: gs.filter((g) => gateCleared(g, s, p, pieces)).length, total: gs.length };
+}
+
+/** A decision is passed once a choice is recorded: any option, or the clock running out. */
+export const passed = (s: ChapterState, id: string): boolean => !!s.choices[id]?.letter;
+/** How many items the reader has reached: everything up to and including the first gate that holds the story. Without the chapter's
+ *  gate list (still loading, or offline), the decisions alone hold it. */
+export function reached(items: readonly Item[], s: ChapterState, gates: boolean, ctx?: { pieces: Pieces; progress: Done }): number {
+  if (!gates) return items.length;
+  if (ctx) { const b = blocking(s, ctx.progress, ctx.pieces); return b ? b.index + 1 : items.length; }
+  for (let i = 0; i < items.length; i += 1) { const it = items[i]!; if (it.type === 'decision' && !passed(s, it.id)) return i + 1; }
+  return items.length;
+}
+type Decision = Extract<Item, { type: 'decision' }>;
+/** canonical: the professional call; costly: a failing option, kept; neutral: it works, not the best. */
+export type Verdict = 'canonical' | 'neutral' | 'costly';
+export const verdictOf = (o: Option): Verdict => (o.fail ? 'costly' : o.canonical ? 'canonical' : 'neutral');
+export type Outcome = { kind: 'recorded'; option: Option; verdict: Verdict; changed: boolean } | { kind: 'refused'; why: string };
+/** Record a choice. Any option records and opens the gate. Tapping another option later replaces it; the first is kept. After a timeout nothing records until Replay. */
+export function choose(s: ChapterState, d: Decision, letter: string, meta: { hints?: number } = {}): { state: ChapterState; outcome: Outcome } {
+  const o = d.options.find((x) => x.letter === letter); if (!o) return { state: s, outcome: { kind: 'refused', why: 'That is not one of the options.' } };
+  const prev = s.choices[d.id];
+  if (prev?.letter === TIMEOUT) return { state: s, outcome: { kind: 'refused', why: 'The clock ran out on this decision. Replay it to make a choice count.' } };
+  if (prev?.letter === letter) return { state: s, outcome: { kind: 'recorded', option: o, verdict: verdictOf(o), changed: false } };
+  const next: Choice = prev ? { ...prev, letter, changes: prev.changes + 1, hints: Math.max(prev.hints, meta.hints || 0) } : { letter, first: letter, changes: 0, hints: meta.hints || 0 };
+  return { state: { ...s, choices: { ...s.choices, [d.id]: next } }, outcome: { kind: 'recorded', option: o, verdict: verdictOf(o), changed: !!prev } };
+}
+/** The clock ran out before a choice: recorded as TIMEOUT, a failing call. Does nothing if a choice is already recorded. */
+export function timeOut(s: ChapterState, d: Decision, hints = 0): ChapterState {
+  if (s.choices[d.id]) return s; return { ...s, choices: { ...s.choices, [d.id]: { letter: TIMEOUT, first: TIMEOUT, changes: 0, hints } } };
+}
+/** Replay one decision: its record is removed and the clock starts again. */
+export function replayDecision(s: ChapterState, id: string): ChapterState { if (!s.choices[id]) return s; const choices = { ...s.choices }; delete choices[id]; return { ...s, choices }; }
+/** What a recorded choice weighs. TIMEOUT: merit −2, severity 2, no trust (the reference's values). */
+export function weightOf(d: Decision, c: Choice): { merit: number; sev: number; trust: Record<string, number>; verdict: Verdict; option: Option | null } {
+  if (c.letter === TIMEOUT) return { merit: -2, sev: 2, trust: {}, verdict: 'costly', option: null };
+  const o = d.options.find((x) => x.letter === c.letter); if (!o) return { merit: 0, sev: 1, trust: {}, verdict: 'neutral', option: null };
+  const m = o.weight.merit || 0; const keep = c.hints > 0 ? (d.hints[Math.min(c.hints, d.hints.length) - 1]?.keep ?? 1) : 1;
+  return { merit: m > 0 ? Math.round(m * keep) : m, sev: o.weight.sev || 1, trust: o.weight.trust || {}, verdict: verdictOf(o), option: o };
+}
+export const SEVERITY: Record<number, string> = { 1: 'Minor call', 2: 'Significant', 3: 'Major: this changes the room' };
+/** The reference's line under a weight. */
+export function weightLine(v: Verdict, sev: number): string {
+  if (v === 'costly') return sev >= 3 ? 'This will cost you — and people saw it.' : 'This costs you something.';
+  if (v === 'canonical') return sev >= 3 ? 'People will remember this for a long time.' : sev === 2 ? 'People noticed.' : 'A small call. It still counts.';
+  return 'Not wrong, not the best. Nobody will say anything — this time.';
+}
+export function answerTalk(s: ChapterState, id: string, option: number): ChapterState { return id in s.talks ? s : { ...s, talks: { ...s.talks, [id]: option } }; }
+export function find(s: ChapterState, id: string): ChapterState { return s.found.includes(id) ? s : { ...s, found: [...s.found, id] }; }
+
+export interface Tally { merit: number; trust: Record<string, number>; decisions: number; made: number; canonical: number; neutral: number; costly: number; timedOut: number; changed: number; hints: number; found: number; discoveries: number; talks: number; talked: number }
+/** What a chapter's choices add up to, from the canon's own weights, as the reference counts them: the choices recorded now. */
+export function tally(items: readonly Item[], s: ChapterState): Tally {
+  const t: Tally = { merit: 0, trust: {}, decisions: 0, made: 0, canonical: 0, neutral: 0, costly: 0, timedOut: 0, changed: 0, hints: 0, found: 0, discoveries: 0, talks: 0, talked: 0 };
+  const add = (tr?: Record<string, number>) => { for (const [k, v] of Object.entries(tr || {})) t.trust[k] = (t.trust[k] || 0) + v; };
+  for (const it of items) {
+    if (it.type === 'decision') { t.decisions += 1; const c = s.choices[it.id]; if (!c) continue; const w = weightOf(it, c);
+      t.made += 1; t[w.verdict] += 1; if (c.letter === TIMEOUT) t.timedOut += 1; if (c.changes) t.changed += 1; t.hints += c.hints; t.merit += w.merit; add(w.trust); }
+    else if (it.type === 'talk') { t.talks += 1; const a = s.talks[it.id]; if (a !== undefined && it.options[a]) { t.talked += 1; add(it.options[a]!.trust); } }
+    else if (it.type === 'discovery') { t.discoveries += 1; if (s.found.includes(it.id)) t.found += 1; }
+  }
+  return t;
+}
+export const complete = (items: readonly Item[], s: ChapterState, ctx?: { pieces: Pieces; progress: Done }): boolean =>
+  items.every((it) => it.type !== 'decision' || passed(s, it.id)) && (!ctx || !blocking(s, ctx.progress, ctx.pieces));
+/** The reference's verdict on a chapter's choices, said before the debrief. */
+export function chapterVerdict(t: Pick<Tally, 'decisions' | 'made' | 'canonical' | 'costly'>): string {
+  if (t.costly === 0 && t.canonical === t.decisions) return 'You ran this episode the way a professional would. The room felt it.';
+  if (t.costly >= 2) return 'Rough episode. The fixes still happened — but you spent trust getting there. That’s how people learn; it’s also why they remember.';
+  if (t.costly === 1) return 'Mostly steady, one costly call. Look at it again: what did you know at that moment?';
+  return 'Solid. Not every call was the best one, and nobody got hurt by it.';
+}
+export interface Echo { id: string; prompt: string; verdict: Verdict; timedOut: boolean; label: string; consequence: string }
+/** What the previous chapter's recorded choices were, to open the next chapter with (the reference's "previously"). */
+export function echoes(items: readonly Item[], s: ChapterState | undefined): { made: Echo[]; merit: number; trust: Record<string, number> } {
+  const made: Echo[] = []; let merit = 0; const trust: Record<string, number> = {};
+  for (const it of items) { if (it.type !== 'decision') continue; const c = s?.choices[it.id]; if (!c) continue; const w = weightOf(it, c);
+    made.push({ id: it.id, prompt: it.prompt, verdict: w.verdict, timedOut: c.letter === TIMEOUT, label: w.option?.label || '', consequence: w.option?.consequence || '' });
+    merit += w.merit; for (const [k, v] of Object.entries(w.trust)) trust[k] = (trust[k] || 0) + v; }
+  return { made, merit, trust };
+}
+/**
+ * Callbacks (founder, 12 Nov 2026: "prove that a major decision changes something later in the episode, not just the next ten seconds"):
+ * at a later decision in the same chapter, the briefing recalls what an earlier significant or major call set in motion, in the canon's
+ * own words (that option's result and consequence; for a missed clock, the canon's timeout lines). Nothing is invented and no canon text
+ * is changed; what changes is what the reader knows when the next call comes, and it differs with what they chose. Latest first.
+ */
+export interface Callback { id: string; prompt: string; letter: string; label: string; result: string; consequence: string; verdict: Verdict; sev: number; timedOut: boolean; gap: number }
+export function callbacksBefore(items: readonly Item[], s: ChapterState | undefined, decisionId: string, max = 2): Callback[] {
+  const at = items.findIndex((i) => i.type === 'decision' && i.id === decisionId); if (at < 0 || !s) return [];
+  const out: Callback[] = [];
+  for (let k = at - 1; k >= 0 && out.length < max; k--) { const it = items[k]!; if (it.type !== 'decision') continue; const c = s.choices[it.id]; if (!c) continue; const w = weightOf(it, c); if (w.sev < 2) continue;
+    const timedOut = c.letter === TIMEOUT;
+    out.push({ id: it.id, prompt: it.prompt, letter: c.letter, label: timedOut ? 'The clock ran out' : w.option?.label || '', result: timedOut ? (it.timeout || ['Someone else decided for you.']).join(' ') : w.option?.result || '', consequence: timedOut ? '' : w.option?.consequence || '', verdict: w.verdict, sev: w.sev, timedOut, gap: at - k - 1 }); }
+  return out;
+}
+export const trustLine = (trust: Record<string, number>): string => Object.entries(trust).filter(([, v]) => v !== 0).map(([k, v]) => `${k} ${v > 0 ? `+${v}` : v}`).join(', ');
+export const seconds = (d: { timer_s: number }, clock: Clock): number | null => (clock === 'off' || !d.timer_s ? null : clock === 'extended' ? d.timer_s * 2 : d.timer_s);
+export const BANDS = [['Beginner', [1, 2, 3]], ['Intermediate', [4, 5, 6]], ['Advanced', [7, 8, 9]], ['Mastery', [10, 11, 12]]] as const;
+/** Where to go next: the chapter after this one in canon order. */
+/** The chapter before this one in canon order. */
+export const prevOf = (ix: StoryIndex, id: string): ChapterRef | null => { const i = ix.chapters.findIndex((c) => c.id === id); return i > 0 ? ix.chapters[i - 1]! : null; };
+export const nextOf = (ix: StoryIndex, id: string): ChapterRef | null => { const i = ix.chapters.findIndex((c) => c.id === id); return i >= 0 && i + 1 < ix.chapters.length ? ix.chapters[i + 1]! : null; };
+/** Where to pick up: the chapter last opened if it is unfinished, else the first unfinished chapter after it, else the first unfinished one. */
+export const resume = (ix: StoryIndex, p: Progress): ChapterRef => { const i = p.last ? ix.chapters.findIndex((c) => c.id === p.last) : -1;
+  if (i >= 0 && !p.chapters[p.last!]?.done) return ix.chapters[i]!;
+  return ix.chapters.slice(i + 1).find((c) => !p.chapters[c.id]?.done) || ix.chapters.find((c) => !p.chapters[c.id]?.done) || ix.chapters[0]!; };
+/** Canon text marks emphasis with **bold** and *italic*; split it without interpreting anything else. */
+export function emphasis(text: string): { t: string; b?: boolean; i?: boolean }[] {
+  const out: { t: string; b?: boolean; i?: boolean }[] = []; const re = /\*\*([^*]+)\*\*|\*([^*]+)\*/g; let at = 0; let m: RegExpExecArray | null;
+  while ((m = re.exec(text))) { if (m.index > at) out.push({ t: text.slice(at, m.index) }); out.push(m[1] !== undefined ? { t: m[1], b: true } : { t: m[2]!, i: true }); at = m.index + m[0].length; }
+  if (at < text.length) out.push({ t: text.slice(at) }); return out;
+}
+
+// ------------------------------------------------------------------------------------------------- chapter locks (reference gate.js)
+/** Every chapter's lock, in reading order: a chapter is locked unless every hard and soft gate of the chapter before is cleared (done, or a
+ *  soft gate skipped), and once one is locked every later one is too. Reviewer mode (gates off) removes every lock without touching progress. */
+export function chapterLocks(ix: Pick<StoryIndex, 'chapters' | 'lessonQuiz'>, p: Progress): Record<string, boolean> {
+  const out: Record<string, boolean> = {}; let prevDone = true;
+  const lite: Pieces = { gates: [], quizzes: {}, lessons: Object.fromEntries(Object.entries(ix.lessonQuiz || {}).map(([k, q]) => [k, { title: '', domain: '', cards: [], quiz: q }])) };
+  for (const c of ix.chapters) {
+    if (!p.gates) { out[c.id] = false; continue; }
+    if (!prevDone) { out[c.id] = true; continue; }
+    out[c.id] = false; prevDone = cleared(c, p, lite);
+  }
+  return out;
+}
+const cleared = (c: Pick<ChapterRef, 'id' | 'gates'>, p: Progress, lite: Pieces) => { const s = p.chapters[c.id] || emptyChapter(); return (c.gates || []).every(([kind, id, tier], index) => gateCleared({ index, kind, id, tier, twist: false, core: false }, s, p, lite)); };
+/** A chapter is done once every hard and soft gate in it is cleared (the reference's data-done). */
+export const chapterCleared = (c: Pick<ChapterRef, 'id' | 'gates'>, p: Progress, lessonQuiz: Record<string, string> = {}) => cleared(c, p, { gates: [], quizzes: {}, lessons: Object.fromEntries(Object.entries(lessonQuiz).map(([k, q]) => [k, { title: '', domain: '', cards: [], quiz: q }])) });
+/** The chapter a locked one waits on: the first locked chapter's predecessor (the last open one). */
+export function lockedBehind(ix: Pick<StoryIndex, 'chapters'>, locks: Record<string, boolean>): ChapterRef | null { const i = ix.chapters.findIndex((c) => locks[c.id]); return i > 0 ? ix.chapters[i - 1]! : null; }

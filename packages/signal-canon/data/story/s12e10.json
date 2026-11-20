@@ -1,0 +1,999 @@
+{
+ "chapter": {
+  "id": "s12e10",
+  "kicker": "S12 · E10",
+  "title": "The Inheritance",
+  "pill": "S12E10 · The Inheritance",
+  "sub": "Maya's last week. The biggest event of the year is the day after she flies.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S12E10",
+   "RV-187",
+   "RV-188",
+   "RV-191",
+   "MD-01",
+   "MD-02",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#E5E7EB"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 12 · EPISODE 10 · DRAFT · SERIES FINALE  Fenwright Group · month twelve, Maya's last week · Maya, Rashida, Noor, Pim, Galen, Sabine, Lian and Teodor · Level L6 · Mastery support (reference only — choose the tool and say why)  The contract's last line read: “Leave it so it doesn't need you.” The global town hall is on Thursday. Maya's flight leaves on Wednesday night.  ⚑ RV-187: every decision has an owner; access leaves with the person. RV-188: figures illustrative. MD-01 / MD-02: the season boss — a different kind of boss. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Inheritance",
+   "kind": "BOSS · SERIES FINALE",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "rashida",
+    "noor",
+    "pim"
+   ],
+   "stakes": "Maya's last week. The biggest event of the year is the day after she flies.",
+   "clock": "The town hall, Thursday at 14:00.",
+   "reward": "A town hall held by what the year built and the people it trained — and an architect who leaves properly.",
+   "objectives": [
+    {
+     "key": "BR-S12E10-01",
+     "text": "Decide what your last week is for"
+    },
+    {
+     "key": "twist",
+     "text": "Work out how far away you'll be"
+    },
+    {
+     "key": "BR-S12E10-02",
+     "text": "Answer the CEO"
+    },
+    {
+     "key": "core",
+     "text": "Sort what held"
+    },
+    {
+     "key": "meltdown",
+     "text": "Hand the year to the team (season boss)"
+    },
+    {
+     "key": "BR-S12E10-03",
+     "text": "Decide how you leave"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Let the architecture answer."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “If the town hall needs me”",
+   "sub": "Month twelve · Monday · 9:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The headquarters auditorium, empty on a Monday; the stage screen tiled with thirty offices; Rashida gestures at it; Maya, relaxed.",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_townhall",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "Four thousand people, thirty offices — and you'll be over the ocean when it starts."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "That's the test. If the town hall needs me, the year didn't work."
+    }
+   ],
+   "narration": [],
+   "caption": "The last week.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6231
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "Fenwright HQ · month twelve, Monday",
+   "lines": [
+    {
+     "who": "rashida",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Four thousand people, thirty offices — and you'll be over the ocean when it starts."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "That's the test. If the town hall needs me, the year didn't work."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Over the ocean”",
+   "sub": "Month twelve · Monday"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E10-01",
+   "prompt": "Your last week. What is it for?",
+   "happening": "Last week begins.",
+   "clock": "Month twelve · Monday · town hall Thursday",
+   "known": [
+    "◉ Flight Wednesday night",
+    "◉ Town hall Thursday 14:00"
+   ],
+   "unknown": [
+    "What will go wrong"
+   ],
+   "risk": "A town hall that still needs its architect.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Maya spends the week fixing things herself."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would prove the year worked — before you go?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Write one last complete document of everything you know",
+     "result": "Three hundred pages, finished at 2 a.m. Wednesday. Nobody reads it.",
+     "consequence": "Knowledge written in a hurry is not knowledge held.",
+     "chips": [
+      "Document"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Nothing new: the team runs everything this week — including the town-hall rehearsal — while you only watch and answer what they bring you; anything that still carries only your name gets an owner",
+     "result": "Monday's rehearsal: Noor runs it, Pim runs the failover drill, Galen runs the change freeze. Maya writes down two things that still have only her name.",
+     "consequence": "A last week spent being unnecessary.",
+     "chips": [
+      "Watch",
+      "Owners"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Noor": 1,
+       "Pim": 1,
+       "Galen": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Fix the last three things yourself, properly",
+     "result": "Three things fixed that nobody else has ever touched.",
+     "consequence": "Adds your name to three more things.",
+     "chips": [
+      "Only you"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask to extend your contract a month, to be safe",
+     "result": "Rashida: “And next month you'll want another.”",
+     "consequence": "Safety that never ends is dependence.",
+     "chips": [
+      "Extend"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Over the ocean.",
+   "body": "Maya checks the flight: it leaves Wednesday at 23:00 and lands Thursday late afternoon — twelve hours, most of them over water. The town hall starts at 14:00 headquarters time, when she'll be well out over the ocean. The airline's messaging works above 10,000 feet; on her last trip a message took about five minutes to arrive and a reply another five. Any question to Maya on Thursday costs ten minutes before an answer — longer than the stream can stay dark. Whatever answers first has to be what she built.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E10-1",
+   "label": "Test: the round trip — and how much of the flight the town hall fills."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Rashida and Maya beside a board. Four thousand people, thirty offices, and you'll be over the ocean when it starts. That's the test. If the town hall needs me, the year didn't work. And if it goes wrong?",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_townhall",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "Four thousand people, thirty offices, and you'll be over the ocean when it starts."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "That's the test. If the town hall needs me, the year didn't work."
+    },
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "And if it goes wrong?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6868
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Succession   Runbook   Outcome monitoring   Stop-work authority   The situation  The global town hall runs on the standard, the runbooks, the monitoring and the people — while its architect is on a twelve-hour flight. Which relationships would you use to judge whether the year worked?   Which relationship do you reach for?  Payback time  Rate  Time budget     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "W10",
+   "label": "**Learn it now:** the principal's test.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     Case study: an update the day of the event     What the room is telling you"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E10-02",
+   "prompt": "Wednesday. The CEO asks Maya to delay her flight and run the town hall herself — ‘just this once’. What do you say?",
+   "happening": "The CEO asks.",
+   "clock": "Wednesday 11:00 · flight 23:00",
+   "known": [
+    "◉ Five drills passed this year",
+    "◉ The rota is Rashida's"
+   ],
+   "unknown": [
+    "Thursday"
+   ],
+   "risk": "A town hall that never tests what the year built.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody answers.",
+    "The CEO books Maya a later flight himself."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would staying prove — and what would it cost?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E10). Option B needs Authority & access at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Delay the flight and run it",
+     "result": "It goes perfectly. Nobody learns whether it would have without her.",
+     "consequence": "Saves today, spends the proof.",
+     "chips": [
+      "Only you"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Decline, with respect: the team has run harder things without her — the failover in month five, the rotation in month nine — the rota is Rashida's to set; Maya will be reachable by satellite only as a last resort",
+     "result": "The CEO looks at Rashida. Rashida: “She's right. And it's my rota.” The CEO nods.",
+     "consequence": "Trust the architecture, through its owner.",
+     "chips": [
+      "Trust",
+      "Owner"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "authority": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Rashida": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Agree to dial in from the airport lounge until boarding",
+     "result": "The rehearsal pauses every time Maya's face appears on screen.",
+     "consequence": "The best you can do without the standing to say no — present, and in the way.",
+     "chips": [
+      "Present"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell the CEO the team isn't ready",
+     "result": "It is. And now the CEO doesn't think so.",
+     "consequence": "Undermines the people you trained.",
+     "chips": [
+      "Undermines"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The architect's models",
+   "body": "When Antoni Gaudí died in 1926, his basilica in Barcelona, the Sagrada Família, was nowhere near finished. He had spent his last years making detailed plaster models and drawings, knowing he wouldn't see it done. In 1936, during the Spanish Civil War, his workshop was burned and many models smashed; builders pieced the fragments back together. A century later, the work still goes on — from what he left behind.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An airliner cabin at night, oval windows dark with a few stars; Maya in her seat behind a row of seat backs, looking at the seat-back screen's flight map.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_cabin",
+   "bubbles": [],
+   "narration": [
+    "Thursday, 13:30 at headquarters. Somewhere over the ocean, Maya watches a little aeroplane crawl across a map. Everything below this line happens without her — unless she chooses otherwise."
+   ],
+   "caption": "Out of reach.",
+   "flags": [
+    "MD-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1861
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-10a",
+   "teaser": "the airline's connectivity card",
+   "title": "‘messages may take several minutes’",
+   "body": "The card in the seat pocket: ‘Messaging available above 10,000 feet. Messages may take several minutes to send and receive.’ Maya had tested it on the way out: five minutes each way, give or take.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-1210",
+   "label": "**Sort it:** held by the year — or by Maya?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Season boss — “The Inheritance”",
+   "sub": "The year · then Thursday 13:30 – 14:40"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The headquarters auditorium during the town hall: the stage screen tiled with thirty live offices and a LIVE light; Noor with the runbook binder, Pim on the phone to APAC, Galen explaining something with open hands.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "pim",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "galen",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_townhall",
+   "bubbles": [],
+   "narration": [
+    "This boss is different. First you decide the year — what the architecture gets. Then you mostly watch."
+   ],
+   "caption": "Nobody here can reach Maya in less than ten minutes.",
+   "flags": [
+    "MD-01",
+    "MD-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6492
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "meltdown",
+   "id": "MD-S12",
+   "label": "**☢ The Inheritance:** phase 1, the year — choose what the architecture gets. Phase 2, the town hall — watch what it does without you. Stepping in from the plane always works, and always costs.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #121 · AVERY'S LENS  Design so the day goes right without you  The principal's test isn't whether you can save the day. It's whether what you built — the standard, the runbooks, the monitoring, the records and the people you trained — saves it while you're unreachable.  The biggest event of the year ran while its architect was over the ocean — and every save was made by someone else."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S12E10",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Nobody called”",
+   "sub": "Thursday · 6:10 p.m. · arrivals"
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Nobody called.",
+   "body": "Maya switches her phone on at the gate. No missed calls from the team. One message from Noor, sent at 14:41: ‘Town hall done. Five things went wrong. We held all five. Nothing needed you. — N.’ The log, when she reads it on the train, says the same in timestamps: an encoder failed and Pim was on the backup path in three minutes; monitoring heard an echo before any user did and Noor restored the template from DR-07; Galen turned down the CEO's office; captions were already in every room; Sabine found an expiring certificate in the records.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E10-2",
+   "label": "Test: the share held — and how much of the stream's allowance was used."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A table of the town hall from 13:30 to 14:40: 13:35 primary encoder fails — Pim, RB-07, warm backup (E04); 13:45 EMEA template wiped — monitoring hears it, Noor restores DR-07 (E05, E06); 13:55 CEO's office wants firmware — Galen says not without a ticket (E03); 14:01 twenty-two rooms without captions — prevented, captions already everywhere (E09); 14:15 certificate expires — Sabine finds it in the records (E01, E05). Five of five held without Maya.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nothing needed her.",
+   "flags": [
+    "RV-188"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "the town-hall log"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5394
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-10b",
+   "teaser": "Noor's message",
+   "title": "‘Nothing needed you.’",
+   "body": "Waiting on Maya's phone when she lands, sent at 14:41 headquarters time: ‘Town hall done. Five things went wrong. We held all five. Nothing needed you. — N.’",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E10-03",
+   "prompt": "Friday, your last day. What happens to your access — and to your name?",
+   "happening": "Last day.",
+   "clock": "Friday 09:00 · leaving at 17:00",
+   "known": [
+    "◉ Five of five held",
+    "◉ Two items still with your name"
+   ],
+   "unknown": [
+    "—"
+   ],
+   "risk": "An architect who is still the system.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "Maya's accounts are still active in March."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What should be true at 17:01?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Keep your admin access for a month, just in case",
+     "result": "Sabine: “That's how the envelope happened.”",
+     "consequence": "Makes you the case.",
+     "chips": [
+      "Just in case"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "SECURITY'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Access is security's, and it ends with the person.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sabine": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Security disables every account of yours at 17:00 by their process; the last two items with only your name — a booking integration and a vendor contact — go to Pim and to a role in the records; your number comes out of every runbook; the team presents the town-hall log to Rashida, not you",
+     "result": "Pim configures the integration while Maya watches in silence. At 17:00:00 Sabine's log shows every account disabled. Rashida: “Nothing needs you.”",
+     "consequence": "Leaving is the last design step.",
+     "chips": [
+      "Owners",
+      "Access ends"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Pim": 2,
+       "Rashida": 2,
+       "Sabine": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Hand your password-vault entries to Galen so nothing's lost",
+     "result": "One single point of failure swapped for another.",
+     "consequence": "Moves your keys instead of retiring them.",
+     "chips": [
+      "Swap"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "SECURITY'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Credentials are security's to retire, not the architect's to pass on.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Galen": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Leave quietly — they know where to find you",
+     "result": "They do. And for a year, they ring.",
+     "consequence": "An architect who never quite left.",
+     "chips": [
+      "Reachable"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1210",
+   "label": "**Service Mode:** run the last day yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 5:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The architecture office at five on Friday; every dot on the estate board green; Noor, now the EMEA technician lead, grins; Maya with an empty lanyard in her hand.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "You didn't ring once. Were you worried?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Every minute. And I didn't ring, because you didn't need me to."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3268
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S12-10",
+   "who": "noor",
+   "prompt": "You didn't ring once. Were you worried?",
+   "options": [
+    {
+     "label": "“Every minute. And I didn't ring, because you didn't need me to — that was the whole year.”",
+     "who": "noor",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Then we'll keep not needing you. It's a compliment.",
+     "trust": {
+      "Noor": 2
+     }
+    },
+    {
+     "label": "“Not at all.”",
+     "who": "noor",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Liar.",
+     "trust": {
+      "Noor": 1
+     }
+    },
+    {
+     "label": "“I nearly messaged you about the template.”",
+     "who": "noor",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "I had DR-07 open before you'd have finished typing.",
+     "trust": {
+      "Noor": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "End of Season 12",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The architecture office the next Monday, without Maya: Rashida with the first lifecycle report of the new year; Galen; Pim briefing the week's rota.",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "galen",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "pim",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "January's page is ready. Same three numbers."
+    },
+    {
+     "side": "C",
+     "who": "Galen",
+     "kind": "speech",
+     "text": "Drill on Tuesday. Noor's running it."
+    },
+    {
+     "side": "R",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "APAC on-call: me, this week. Somebody else next week."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3343
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Epilogue — “Page one”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The CityLight sanctuary, where it all began: the sound desk at the back, rows of empty chairs; Ray, older now, grinning; Maya holding a single sheet of paper — page one of a runbook.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Heard you built something that doesn't need you."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "That was the job. Now — who wants to learn the sound desk? I'll write it down so they won't need me either."
+    }
+   ],
+   "narration": [],
+   "caption": "Signal.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1290
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  The principal's test is not whether you can save the day. It's whether what you built — standards with owned exceptions, a reserve the board sees, the right to stop, drilled runbooks that name roles, warm backups, monitoring aimed at people, decision records, access that works for everyone, and a team that can do every critical task twice over — saves it while you're out of reach. Stepping in always works for today and always costs tomorrow. Leaving is the last design step: your access ends on your last day, and nothing keeps only your name."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · If you were over the ocean tomorrow, what would still work — and who would make it work?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Season 12 review",
+   "sub": "Six ratings, one Story Score. Below 65, the story ends here — and you can retry."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "review",
+   "id": "S12",
+   "label": "**Season 12 review.** Everything you did this season — first attempts, not retries — is scored on six ratings. Your Story Score must be **65 or higher** for the story to go on.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S12E10",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

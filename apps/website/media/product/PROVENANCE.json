@@ -1,0 +1,442 @@
+{
+ "$description": "Captures of the synthetic investor demonstration for the website (dark only, D43). The website build admits only these files with these hashes.",
+ "captures": {
+  "mission-control": {
+   "route": "#/campus",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:32:42.056Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "mission-control-1280.webp": "6be09b30e972614c22e20fcaa437bd7e85f146ebf6a3cf5e0c2d1a36c1892ef4",
+    "mission-control-640.webp": "c39bec9f9de4c8cbd2da8ba5895383268c7eaf83798b4bcdce3da20031a8d334"
+   }
+  },
+  "lite": {
+   "route": "#/v25/build",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:32:45.140Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "lite-1280.webp": "b654de5c91663af6908140b350034f5247925511e02f827530f04258e776aa8f",
+    "lite-640.webp": "53c938dc7687be506f8c6d11995f569f5bb4b463f335d0c1cc305c3ff67e571a"
+   }
+  },
+  "pro": {
+   "route": "#/v25/exec",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:32:47.683Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "pro-1280.webp": "09aaed8fa8386d7e8a92cba15cfb6837fec79eef0a163ff228ab4e0d1ed5869b",
+    "pro-640.webp": "96400b5c42a4ced20ac411cc247cc829e8a09e53aa170f80dba3b2490fcd38eb"
+   }
+  },
+  "search-party": {
+   "route": "#/search",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:32:50.177Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "search-party-1280.webp": "dfaf7f1ddc741ad91ea0cd9293b5293fc843b27685710eeb2d9e75e49a8851c4",
+    "search-party-640.webp": "f7a89c2cca28d3eb5874c2d63b070b75416594d0eda9d316bffb0970a7a6bc0b"
+   }
+  },
+  "servicehands": {
+   "route": "#/servicehands",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:32:52.673Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "servicehands-1280.webp": "4acd246bf0accead6c71b552da8b8bc19faa440697289e82927e0ce44ea73140",
+    "servicehands-640.webp": "a0591ce3e76aabdd23df6d51524910e566ad7b0a546cb189d7937ee4078bdc6d"
+   }
+  },
+  "apex": {
+   "route": "#/v25/apex",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:32:58.753Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "apex-1280.webp": "3771431976e15ec66232fae121d0a3aea08367fabab907e498f1aac3a3a73f79",
+    "apex-640.webp": "afc42ec0779b203aa724528febf23f31ad663c723fd7c60c4a346ac16bb646ae"
+   }
+  },
+  "learn": {
+   "route": "#/film/s01e01",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:33:03.748Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "learn-1280.webp": "f6a6b1f85f2a03beb0aa88fdc205c127449535b2db689b7ab9cd987d2b633962",
+    "learn-640.webp": "89bc971dca564952cc43977f471bf1848484f00c7fbe7811513135e212988d57"
+   }
+  },
+  "commissioning": {
+   "route": "#/v25/build",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:32:56.346Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "commissioning-1280.webp": "0e1e72dbed9d43ef214966091c038450dab2c63d2a0b4c06da68b102d9a9995e",
+    "commissioning-640.webp": "081086fb047f89bfa2b973d5514869d23f757b1061e13920389bc68efd9085b8"
+   }
+  },
+  "field": {
+   "route": "#/v25/fi",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:33:01.218Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "field-1280.webp": "0c86421cfc5a7830ab41941210e4f3bec4a4cec571c40090349165124a5d7d15",
+    "field-640.webp": "03e855017fe2551df21c72dfd6eb7d8d1c6832622b5b344e9076533fae7a2cd0"
+   }
+  },
+  "room": {
+   "route": "#/room",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:33:06.250Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "room-1280.webp": "fbfab9dcbf431a3fb8a5baa50b44d7211d898323a51d7807b81cb6a9eb4bd1c7",
+    "room-640.webp": "8008b16543f05223cfe460075f4c44be59bca417e913d4588cb652743e6bcc78"
+   }
+  },
+  "exp-campus": {
+   "route": "#/play/campus",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "af1f13b",
+   "capturedAt": "2026-11-18T19:16:13.622Z",
+   "data": "synthetic demonstration data",
+   "venues": "fictional",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "exp-campus-1280.webp": "4303803b889bae0a6376723bee5d31d2687819bd6b043143b248eeca4004587b",
+    "exp-campus-640.webp": "46fd071adecf6224fbd6b569f4cb1a66c85a367a41df83363e8a8374c790e0bb"
+   }
+  },
+  "exp-stadium": {
+   "route": "#/play/stadium",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "af1f13b",
+   "capturedAt": "2026-11-18T19:16:19.938Z",
+   "data": "synthetic demonstration data",
+   "venues": "fictional",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "exp-stadium-1280.webp": "a1e03e527d3a952a45f2e6625fba598ffe15169d19c54b09d1a9b55357ad9a3b",
+    "exp-stadium-640.webp": "cd8036c7d31158e38c905a6b66ca1ef237c79251e68b283ef33273cb9b4efb10"
+   }
+  },
+  "exp-expo": {
+   "route": "#/play/expo",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "af1f13b",
+   "capturedAt": "2026-11-18T19:16:27.659Z",
+   "data": "synthetic demonstration data",
+   "venues": "fictional",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "exp-expo-1280.webp": "d4c065972f732205151f2367f12f4ce8670d12a228abf8219346c96615f93bb7",
+    "exp-expo-640.webp": "61b19a6ede8cb510808fd950353b803466f22402212deb11a5129348e8aa0802"
+   }
+  },
+  "follow-lite": {
+   "route": "#/lite/room/R-ATL-4-218?mode=engineer&device=A-0104",
+   "framing": "scrolled to [data-testid=lite-room-3d]",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:33:09.969Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-lite-1280.webp": "21de4ec320fb4e6e8c16ed8810a949d242c285a82ef64cee93ee0dc33273daca",
+    "follow-lite-640.webp": "a69ef15f10a19bf65248c7866d79ef92642f48e7d70db0e21c576f9333aeb0d7"
+   }
+  },
+  "follow-commissioning": {
+   "route": "#/commissioning/room/R-ATL-4-218",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:33:12.448Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-commissioning-1280.webp": "e62449d223d472441807f51fdaa241714423d50b26f1e8f754539575d10810a8",
+    "follow-commissioning-640.webp": "4b5387cea169ba8192d277439c1a1a72299282b9d2bfd962d6e4146adf7594cc"
+   }
+  },
+  "follow-assurance": {
+   "route": "#/assurance/room/R-ATL-4-218",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:33:14.920Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-assurance-1280.webp": "e2340af1e38fabaeb3efa0a1e06951533312bca9192fb7253b568f66241f1175",
+    "follow-assurance-640.webp": "17115af58955e294aa5c2605ac51c444732d9ebd198bb5980c6207f2e05262d2"
+   }
+  },
+  "follow-support": {
+   "route": "#/search?focus=Room:R-ATL-4-218",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:33:17.324Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-support-1280.webp": "b70076555288fb1757591ab82df3201e028928e7155c7deb377c338e9e905b93",
+    "follow-support-640.webp": "4a373bf34645585067b0c29e572eaad3d264cf273d0906098e64b938e5c1fb77"
+   }
+  },
+  "follow-replay": {
+   "route": "#/replay/R-ATL-4-218?at=change",
+   "framing": "scrolled to [data-testid=rp-card]",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "c610a19",
+   "capturedAt": "2026-11-19T01:33:20.519Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "follow-replay-1280.webp": "9a3551fdcd54ea894c110ce140e0d46b6dec490b5b8fecf19fcecd7ad477101e",
+    "follow-replay-640.webp": "92463eb8c9f10dd1a2b007c4b57e7eb8728c5ca65bb12fac49c258fba60e7160"
+   }
+  },
+  "intake-1": {
+   "route": "#/request",
+   "step": "Describe it",
+   "shows": "The front door: the person types what they need; Intake reads it by word lists, not AI, and suggests where to start.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:10.131Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-1-1280.webp": "98909ffb0ce0e9575488f09a5ccf61b3cdf1ae28fed0d08aeb72a20d0fe88fc8",
+    "intake-1-640.webp": "14686be89fcc106dc8db59ed8c3de221605950e9c5f691d9283a17b7c6d6287c"
+   }
+  },
+  "intake-2": {
+   "route": "#/request/new?draft=…&step=what",
+   "step": "What you need",
+   "shows": "Step 1 of 5: the kind of request, the person’s own words and what should be better, already filled in from what they typed.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:10.971Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-2-1280.webp": "aa413146459f8223363f7386eaf52b97e4942adc6d84dce08e7ad8c4fb783eac",
+    "intake-2-640.webp": "bb4646232733a2508bc04a955e562dfa8360904b2f7d17c831723ed37b9f5960"
+   }
+  },
+  "intake-3": {
+   "route": "#/request/new?draft=…&step=where",
+   "step": "Where",
+   "shows": "Step 2: the building, the floor and a name for the space. It becomes a provisional space: requested, not built.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:12.427Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-3-1280.webp": "1c474817e54bd03adc4a78a1f258f90c7d650d2726cc6b2a48ff8dcc05b68537",
+    "intake-3-640.webp": "7348df04295f0512f597f960ac96c5e1a7e8c4e1fbf36869938b71af066935e3"
+   }
+  },
+  "intake-4": {
+   "route": "#/request/new?draft=…&step=needs",
+   "step": "What it should do",
+   "shows": "Step 3: what the room is for and how many people. The room is drawn as the answers change.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:14.114Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-4-1280.webp": "e103128d46a6af78717e598c073c3604f39c12a2e7e43a18f22ff566724ab021",
+    "intake-4-640.webp": "781b4854cc72fed6ca54c34bb8e56e0fe01c94e9e533cf8c3b97d2927a42222a"
+   }
+  },
+  "intake-5": {
+   "route": "#/request/new?draft=…&step=photos",
+   "step": "Show us the space",
+   "shows": "Step 4: the photographs that would help, for this kind of request only, and why. Optional to send.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:15.154Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-5-1280.webp": "8f4a5f8fba5caa4c349d67e97da01783b7553e187735982c471e0a8637ecda8b",
+    "intake-5-640.webp": "8412f4d53f3bff6c5de1884adb70fba72aa780d7429a659a28d62cc07dd1ce0d"
+   }
+  },
+  "intake-6": {
+   "route": "#/request/new?draft=…&step=review",
+   "step": "Review",
+   "shows": "Step 5: every answer, each changeable, and the proposed room in Empathia Lite’s 3D room view.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:16.730Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-6-1280.webp": "68fa9947ed0e584eec139d4beb324a90b466c8077b07611ec4bf14dfcfac3bca",
+    "intake-6-640.webp": "34c8c60b8ac69d1c1d5f54985c714c5fcc65ce4cbe459354a3a32dda0f2c19ef"
+   }
+  },
+  "intake-7": {
+   "route": "#/requests/REQ-0001 (received)",
+   "step": "Received",
+   "shows": "“Your request has been received.” The request id, where it stands, who acts next, and the proposed room.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:18.266Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-7-1280.webp": "6ab5f60ea714b38cf85780301d4d108c670909b188f88fb145b3d116db3bd2b7",
+    "intake-7-640.webp": "63a8373edc13dbf86cf86c661f62a9268a7a3360f08e3e5102030044ae69b928"
+   }
+  },
+  "intake-8": {
+   "route": "#/request?room=R-ATL-4-218 (replace a device)",
+   "step": "A device, from the room",
+   "shows": "From a device in a room: the room and the device are already known, so the person says what is wrong and sends it.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:21.564Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-8-1280.webp": "1b4e3eed1ea38c87a1a1d4970b83bb1bbde5c543486905d3eb051b39ef21ed62",
+    "intake-8-640.webp": "71678e1b08d2f32a9c3b3d14c6c6175e050e9cfa704c5e729114f1f670d1a1dd"
+   }
+  },
+  "intake-9": {
+   "route": "#/requests/REQ-0002",
+   "step": "Following it",
+   "shows": "The request’s own page: what is happening, who acts next, what is needed, what happens next, and its history.",
+   "perspective": "employee",
+   "viewport": "1280x800",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:43:23.306Z",
+   "data": "synthetic demonstration data",
+   "width": 1280,
+   "height": 800,
+   "files": {
+    "intake-9-1280.webp": "380d9ce53621c26b2bbecda399b185382df5298f59e2c271fe66f5ebd09cd600",
+    "intake-9-640.webp": "33d9ad8eeb9fbc4033355c350281fca83361be1316b3f2be74379a31bec31b38"
+   }
+  }
+ }
+}

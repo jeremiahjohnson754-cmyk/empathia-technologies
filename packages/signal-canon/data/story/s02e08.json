@@ -1,0 +1,1581 @@
+{
+ "chapter": {
+  "id": "s02e08",
+  "kicker": "S02 · E08",
+  "title": "Doors in Four Cues",
+  "pill": "S02E08 · Four Cues",
+  "sub": "The client wants a new cue tonight. The only hour left is the one that proves the show works.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · CASE-009 mechanism is the SIGNAL adaptation (Q-004) · IDs provisional",
+  "flags": [
+   "DR-S02E08",
+   "RT-03",
+   "RV-53",
+   "RV-54",
+   "Q-004",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--violet)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 8 · DRAFT  Owner board · Jordan, Leah and Maya · Level L3 · CASE-009  Graham wants a new cue tonight. The only hour left is the one Maya uses to prove the show works. Something in the room has already broken, and nobody knows yet.  ⚑ RV-53 · RV-54 · Q-004: checklist practice and the camera fault are illustrative SIGNAL adaptations. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Hour That Proves the Show",
+   "kind": "STRATEGY · COUNTDOWN",
+   "level": "L3 · SYSTEMS TECH",
+   "party": [
+    "maya",
+    "leah",
+    "jordan",
+    "rosa",
+    "graham"
+   ],
+   "stakes": "Graham wants a new reveal cue tonight. The only hour left is the pre-show checklist. Graham is forty percent of Halyard's year.",
+   "clock": "One hour. Doors in four cues.",
+   "reward": "A CEO who walks on to a face, not a black rectangle.",
+   "objectives": [
+    {
+     "key": "BR-S02E08-01",
+     "text": "Recommend how to spend the hour"
+    },
+    {
+     "key": "BR-S02E08-02",
+     "text": "Find why Camera 2 is black"
+    },
+    {
+     "key": "twist",
+     "text": "Find out whose cart it was"
+    },
+    {
+     "key": "BR-S02E08-03",
+     "text": "Run the spare where nothing moves"
+    },
+    {
+     "key": "BR-S02E08-04",
+     "text": "Hold the freeze against the client"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things that moved at 5:40"
+    }
+   ],
+   "rumor": "This is the version that didn't happen. The other version is sixty minutes away."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “One version of 7:28”",
+   "sub": "Partner night · the launch venue · 7:28 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A dark ballroom stage. The CEO, in silhouette, walks toward center. The two big IMAG screens either side show nothing but NO SIGNAL.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "This is the version that didn't happen."
+   ],
+   "caption": "The CEO walks on. Both screens show nothing. Six hundred partners look at a black rectangle.",
+   "flags": [
+    "RV-54"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4001
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Title card: Ninety-three minutes earlier. 5:55 p.m., the production office.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 400
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The board”",
+   "sub": "5:55 p.m. · doors at 7:00"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The production office. A whiteboard shows the run of show: 7:00 doors; cue 1 house to half; cue 2 video roll; cue 3 reveal, new, with a question mark; cue 4 CEO walk-on on IMAG camera 2. Graham points at cue 3.",
+   "characters": [
+    {
+     "id": "graham",
+     "pose": "P",
+     "expr": "talk"
+    },
+    {
+     "id": "jordan",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Graham",
+     "kind": "speech",
+     "text": "The reveal. Light, video, a sting — the product lands like a heartbeat. Tonight."
+    },
+    {
+     "side": "R",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "We program it in the checklist hour. Checklist's a formality — everything worked at two."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-53"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1777
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya faces Leah across the office table.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "leah",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It worked at two. Then the room flipped for dinner. The checklist is how we find out what the flip broke."
+    },
+    {
+     "side": "R",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Graham is forty percent of our year, Maya."
+    }
+   ],
+   "narration": [],
+   "caption": "Jordan wants the schedule. Maya wants proof. Leah owns the company, and the call.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1775
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "leah",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Graham is forty percent of our year, Maya."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then let's not show him a black rectangle."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E08-01",
+   "prompt": "Leah looks at you. Sixty minutes, one hour, two things that both matter. Your recommendation — now.",
+   "happening": "Graham wants a new show-control cue; the only hour is the pre-show checklist.",
+   "clock": "5:57 p.m. · doors at 7:00",
+   "known": [
+    "◉ Everything worked at 2 p.m.",
+    "◉ The room flipped for dinner at 5:40",
+    "◉ Camera 2 is the CEO's IMAG"
+   ],
+   "unknown": [
+    "What the flip broke, if anything"
+   ],
+   "risk": "The CEO's walk-on in front of six hundred partners; Halyard's biggest client.",
+   "timer_s": 25,
+   "timeout": [
+    "Jordan takes the silence as a yes and sends the programmer to start the reveal. The checklist never starts.",
+    "In an owner meeting, the person with the evidence has to say it out loud, in time."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which part of the checklist retires the most risk per minute?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "It doesn't have to be all or nothing."
+    }
+   ],
+   "note": "Draft decision (DR-S02E08). Owner board: Leah makes the call; you recommend.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Program the reveal; skip the checklist — it all worked at two",
+     "result": "The reveal is gorgeous and rehearsed three times. Nobody looks at camera 2 until the CEO walks on.",
+     "consequence": "7:28: two black IMAG screens. (That's the cold open.)",
+     "chips": [
+      "Reveal perfect",
+      "Camera 2 dies live"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The checklist exists for the thing you don't know broke.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Leah": -1,
+       "Graham": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Split the hour: critical checklist lines first (30 min), then program and rehearse the reveal once, freeze at 6:55",
+     "result": "6:05: checklist line four — every source on the switcher — finds camera 2 black. You have fifty-five minutes, not zero.",
+     "consequence": "The reveal gets programmed and rehearsed once. Both happen.",
+     "chips": [
+      "Fault found early",
+      "Reveal rehearsed once",
+      "Freeze"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Leah": 1,
+       "Graham": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Refuse the reveal — the checklist is the whole hour",
+     "result": "Graham hears “no.” Leah hears “I don't care about your company.”",
+     "consequence": "The checklist finds camera 2 anyway. The client relationship takes a hit it didn't need to.",
+     "chips": [
+      "Client hurt"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Program the reveal during doors, with the house open",
+     "result": "Guests walk in to strobes and a sting firing at random while the operator tests.",
+     "consequence": "An untested change, during the show, in front of the audience.",
+     "chips": [
+      "Change during show"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Show day is the worst day to test, and doors is the worst hour of it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Leah": -1,
+       "Graham": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The whiteboard rewritten: 6:00 comms, every source, mics; 6:20 floor walk; 6:30 program the reveal; 6:45 rehearse once with Rosa; 6:55 freeze. Leah taps the last line.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Both. In that order. And at 6:55 nobody touches anything without Rosa."
+    }
+   ],
+   "narration": [],
+   "caption": "The owner decides. The plan says what it isn't doing: no full rehearsal, no stream re-proof.",
+   "flags": [
+    "RV-53"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1695
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "T-21",
+   "label": "**Triage:** build the hour yourself. What fits in sixty minutes before doors?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Every source on the switcher”",
+   "sub": "6:05 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The switcher's multiview: camera 1 with a person, camera 2 black with NO SIGNAL, playback, graphics. The video operator points at the black tile.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "P",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Video operator",
+     "kind": "speech",
+     "text": "Checklist line four: every source on the switcher. Camera 2 is black."
+    }
+   ],
+   "narration": [],
+   "caption": "Fifty-five minutes before doors, not zero.",
+   "flags": [
+    "RV-54"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "switcher · CAM 2 · no signal"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2767
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Why theater people say “break a leg”",
+   "body": "Many performers consider it bad luck to wish someone “good luck” before a show, so they say “break a leg” instead. Nobody knows for certain where the phrase came from. Suggested origins include the old idea that wishing for the opposite fools bad fortune, a bow deep enough to “break” the line of the leg, and the “legs” — the side curtains — an actor passes to reach the stage. The phrase appears in print in the twentieth century; the earlier stories are unproven. Like a checklist, it's a ritual for a nervous hour.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Jordan and the video operator at the desk.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "crew",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "It's the reveal. Your programmer patched it over input 2. Undo it."
+    },
+    {
+     "side": "R",
+     "who": "Video operator",
+     "kind": "speech",
+     "text": "The reveal's on input 6. I checked twice."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1208
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E08-02",
+   "prompt": "6:06. Camera 2 is black. Everyone's looking at the new cue. Your first move?",
+   "happening": "Camera 2 is black on the switcher; the new cue is the obvious suspect.",
+   "clock": null,
+   "known": [
+    "◉ Camera 2 worked at 2 p.m.",
+    "◉ The reveal was just programmed"
+   ],
+   "unknown": [
+    "Where the picture stops"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Swap camera 2 for the spare body",
+     "result": "Fifteen minutes of unscrewing. New camera, same black.",
+     "consequence": "You replaced a working camera.",
+     "chips": [
+      "15 min"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Random swaps move parts, not causes.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask the camera op about the viewfinder; read the router; then walk a field monitor down the path",
+     "result": "Viewfinder: perfect. Router: CAM 2 on IN 2, reveal on IN 6. The suspect is cleared in ninety seconds.",
+     "consequence": "Now you know where not to look.",
+     "chips": [
+      "Evidence",
+      "Suspect cleared"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Reboot the switcher",
+     "result": "Every source goes black for ninety seconds, the programmer's unsaved reveal work with it. Camera 2 comes back black.",
+     "consequence": "Two problems now.",
+     "chips": [
+      "Work lost"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "You restarted the part that was working and erased the part you needed.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Graham: IMAG on camera 1 only tonight",
+     "result": "Graham: “The CEO will be a speck.”",
+     "consequence": "It's a fallback, not a fix, with fifty minutes still on the clock.",
+     "chips": [
+      "Fallback"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The router's screen: camera 1 to input 1, camera 2 to input 2, playback to input 3, the new reveal to input 6. Maya on the radio to the camera op.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Camera 2 operator",
+     "kind": "radio",
+     "text": "Viewfinder's perfect. I'm looking at the stage right now."
+    }
+   ],
+   "narration": [],
+   "caption": "The camera is fine. The router is fine. The new cue is innocent.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "router · CAM 2 → IN 2 · reveal → IN 6"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2027
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The new cue didn't do it.",
+   "body": "Everyone blamed the change they could see: Graham's reveal. The router says otherwise — the reveal went to input 6, and camera 2 is still patched to input 2. The camera sees the stage. Somewhere between a working camera and a correct router, the picture stops. Find the first failure point.",
+   "test_kind": "drill",
+   "test_id": "F-22",
+   "label": "Test: walk the path with the field monitor before you read on."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On the ballroom floor near the stage, Maya kneels by a floor pocket with a field monitor: picture on the camera side, NO SIGNAL on the house side.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Last good reading, first bad one: the connection through the floor pocket.",
+   "flags": [
+    "RV-54"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "field monitor · picture in, none out"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4141
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close on the open floor pocket. The AV side: an SDI connector crushed flat, a dark caster mark across it. The power side stays shut, labeled venue power, electrician only.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Crushed flat. The power side stays closed: it's the venue's.",
+   "flags": [
+    "RV-54"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "SDI connector · crushed · caster mark"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1382
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback, 5:40 p.m.: the room flips for dinner. Carts roll everywhere. Maya's own systems road case, on its casters, is parked with a wheel square on the floor-pocket lid while she talks to catering.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "5:40. Everything on wheels moves at once. Maya parks her systems cart where it's out of the caterers' way.",
+   "flags": [
+    "RV-54"
+   ],
+   "kind": "flashback",
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4435
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-08a",
+   "teaser": "the floor pocket",
+   "title": "Tyre marks",
+   "body": "Two parallel lines across the cable, the width of a systems cart. Maya's cart. She parked it “out of the caterers' way.” It was out of their way. It was in the camera's.",
+   "thread": "The as-built",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It was Maya's cart.",
+   "body": "The caster mark matches Maya's own systems road case, parked on the pocket lid during the dinner flip at 5:40 — twenty minutes after the last time anyone looked at camera 2. The woman who argued hardest for the checklist is the one whose cart made it necessary. And a checklist run at 5:30 would have passed, then failed live.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E08-2",
+   "label": "Test: what does this tell you about when checks must run?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Back at the desk. Maya tells Jordan straight.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "W",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Your cart. You argued for the checklist that caught your own cart."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "That's what it's for. It doesn't care whose fault it is."
+    }
+   ],
+   "narration": [],
+   "caption": "Nobody is above the checklist. That's the only reason it works.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1213
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-08",
+   "who": "jordan",
+   "prompt": "Your cart. You argued for the checklist that caught your own cart.",
+   "options": [
+    {
+     "label": "“That's what it's for. It doesn't care whose fault it is.”",
+     "who": "jordan",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…I'm putting that on the checklist. At the top.",
+     "trust": {
+      "Jordan": 1,
+      "Leah": 1
+     }
+    },
+    {
+     "label": "“The caterers moved it.”",
+     "who": "jordan",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I watched you park it, Maya.",
+     "trust": {
+      "Jordan": -2
+     }
+    },
+    {
+     "label": "“Can we not do this right now?”",
+     "who": "jordan",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "We're doing it right now because it's right now.",
+     "trust": {
+      "Jordan": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E08-03",
+   "prompt": "6:40. The spare SDI is in your hands. Where does it run?",
+   "happening": "The crushed connector is found; the spare is ready.",
+   "clock": "6:40 p.m. · rehearsal at 6:45",
+   "known": [
+    "▮ Original path: 65 m",
+    "◉ Wall route: 85 m",
+    "◉ Guest path runs from the doors to the tables"
+   ],
+   "unknown": [],
+   "risk": "Six hundred guests walking in at 7:00; the CEO's IMAG.",
+   "timer_s": 20,
+   "timeout": [
+    "Jordan tapes the spare straight across the aisle while you think. At 7:02 a guest catches a heel on it.",
+    "A route decided by default goes the shortest way — through the people."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Where will nothing roll over it tonight?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Back through the same floor pocket, a new connector",
+     "result": "It works — on the same lane every cart uses.",
+     "consequence": "At the load-out, the next cart finds it.",
+     "chips": [
+      "Same risk"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You fixed the connector and kept the cause.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Along the wall, under ramps at the service door, outside the guest path — 85 m, inside the cable's reach",
+     "result": "Twenty meters longer and nowhere a guest or a cart will roll.",
+     "consequence": "Camera 2 lights up on the switcher at 6:44.",
+     "chips": [
+      "Out of traffic",
+      "Within reach"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Crew": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Straight across the aisle, taped flat",
+     "result": "It's the path every guest takes from the doors.",
+     "consequence": "A trip hazard for six hundred people — and the next cart crushes it.",
+     "chips": [
+      "Guest path"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "TRIP HAZARD"
+      }
+     ],
+     "canonical": false,
+     "fail": "A cable across a guest path isn't a route. It's an incident waiting for doors.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "The 40 m consumer display cable from the truck",
+     "result": "Sparkles, then dropouts.",
+     "consequence": "Built for a few meters.",
+     "chips": [
+      "Dropouts"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Use a transport built for the distance.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Crew": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View plan of the room: stage at top, FOH at bottom, guest doors on the left with the guest path; camera 2's old run through the crushed pocket, and the spare running along the right and back walls under ramps.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Twenty meters longer. Out of every lane that moves.",
+   "flags": [
+    "RV-54",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The multiview again: all four tiles live, camera 2 showing the stage.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "N",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Video operator",
+     "kind": "speech",
+     "text": "Every source, full screen, one at a time. All clean."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "every source · full screen · 6:44 p.m."
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2664
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Jordan and Maya beside a board. A frame is one still picture. Frame rate is how many per second. Mix two rates in one rig and something stutters. How long is one frame? One over the frame rate. At twenty-five frames a second: one twenty-fifth — forty milliseconds.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "A frame is one still picture. Frame rate is how many per second. Mix two rates in one rig and something stutters."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How long is one frame?"
+    },
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "One over the frame rate. At twenty-five frames a second: one twenty-fifth — forty milliseconds."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1459
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Frame rate   How many pictures per second a video system shows, in fps.   Frame   One still picture in a video sequence.   Formula, variables and a worked example   ƒ FORMULA · Frame period  T = 1 ÷ fps   T  one frame, s (× 1,000 for ms)  fps  frames per second    Worked example.  At 25 fps: 1 ÷ 25 = 0.04 s = 40 ms per frame."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 19 OF 31 · PP. 132–138  PART 8 VIDEO ENGINEERING  Page 136. Rosa, who never wrote in anyone's book, had written: “Spare cable, labeled, at the switcher. You're welcome.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB19",
+   "label": "**Fieldbook module 19 — Getting the picture there — HDMI, SDI, IP, fiber.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 19 · tap a plate to open it full size     Video signal flow and science     Video systems explained     Lenses, focus and depth of field     The exposure triangle"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "L8",
+   "label": "**Learn it now:** show control, cue lists and change freezes.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Doors in four cues”",
+   "sub": "6:55 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A yellow card taped across the console: Show file frozen, 6:55. Changes go to the log, then to Rosa. Rosa, the stage manager, stands beside it in her headset.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Rehearsed once. Frozen. Now it's Rosa's show.",
+   "flags": [
+    "RV-53"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1670
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-CAM-02",
+   "label": "**Fix-It Lab:** the rental camera that stutters on the switcher.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "7:24 p.m. Doors are open; the room is filling. Graham leans over the frozen console.",
+   "characters": [
+    {
+     "id": "graham",
+     "pose": "P",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Graham",
+     "kind": "speech",
+     "text": "Swap the reveal music to the other track. The CEO likes it better."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The reveal is timed to this sting — twelve seconds. The other track is twenty."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-53"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1444
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "graham",
+     "pose": "N",
+     "expr": "smile",
+     "text": "The CEO likes the other track better."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "The reveal is twelve seconds. The other track is twenty."
+    },
+    {
+     "who": "graham",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…So the product would be revealed for eight seconds of nothing."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E08-04",
+   "prompt": "7:24. The show is frozen. Graham wants a different track on the reveal. Four minutes to the walk-on.",
+   "happening": "Doors are open; the show file is frozen; the client wants a change.",
+   "clock": "7:24 p.m. · walk-on 7:28",
+   "known": [
+    "◉ Reveal timed to a 12 s sting",
+    "◉ Other track: 20 s",
+    "◉ Rosa calls the show"
+   ],
+   "unknown": [],
+   "risk": "The CEO's entrance; the only cue added today.",
+   "timer_s": 20,
+   "timeout": [
+    "Graham asks his assistant to do it. You look up as she opens the playback folder.",
+    "A freeze needs someone to say it out loud."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose call is a change after the freeze?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Swap it — it's only audio",
+     "result": "The new track runs twenty seconds. The light bump lands mid-phrase; the CEO walks on into eight seconds of leftover music.",
+     "consequence": "The one cue you rehearsed is now the one you didn't.",
+     "chips": [
+      "Untested"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A frozen cue changed four minutes before it fires is an untested cue.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Graham": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“It's frozen. I'll log it and ask Rosa: if she holds, we test it on headphones; otherwise it's tomorrow's first change.”",
+     "result": "Rosa, on headset: “No hold. Tomorrow.” Maya writes it in the log with Graham's name and the time.",
+     "consequence": "Graham exhales, and lets it go.",
+     "chips": [
+      "Freeze held",
+      "Logged"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Rosa": 2,
+       "Graham": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Let Graham's assistant swap the file on the playback laptop",
+     "result": "An unfamiliar hand in a frozen show file.",
+     "consequence": "Nobody knows what else she clicked.",
+     "chips": [
+      "Not theirs"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "The show file has an owner. It isn't the client's assistant.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Graham": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Say nothing and hope he forgets",
+     "result": "He doesn't. He asks again at 7:27, louder.",
+     "consequence": "Now it's a scene at FOH.",
+     "chips": [
+      "Scene"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Silence isn't a freeze; it's a fight later.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Graham": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #19 · AVERY'S LENS  Checklists are interfaces  A good checklist is short, ordered and chunked for the moment it's used.  The pre-show checklist found camera 2 black an hour before doors. Its best line was one line long."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E08",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Rosa at the stage manager's desk in the wings, one hand on her headset. The house lights are going down.",
+   "characters": [
+    {
+     "id": "rosa",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Rosa",
+     "kind": "radio",
+     "text": "Standby cues 1 through 4… Cue 1, go. Cue 2, go."
+    }
+   ],
+   "narration": [
+    "Doors in four cues."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3437
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Cue 3: the reveal. The LED wall bursts with the new product; beams snap across the stage; the sting lands exactly on the light bump.",
+   "characters": [],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Rosa",
+     "kind": "radio",
+     "text": "Cue 3… go."
+    }
+   ],
+   "narration": [],
+   "caption": "Twelve seconds. Rehearsed once. Exactly as rehearsed.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4184
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Cue 4: the CEO walks on. Both IMAG screens show her, large and clear, from camera 2.",
+   "characters": [],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Rosa",
+     "kind": "radio",
+     "text": "Cue 4, go."
+    }
+   ],
+   "narration": [
+    "The version that happened."
+   ],
+   "caption": "Camera 2, on both screens. Six hundred partners see a face, not a black rectangle.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "IMAG · camera 2 · live · 7:28 p.m."
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4148
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the walk-on. Graham and Leah at FOH, quieter now.",
+   "characters": [
+    {
+     "id": "graham",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "leah",
+     "pose": "N",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Graham",
+     "kind": "speech",
+     "text": "The other track can go in tomorrow."
+    },
+    {
+     "side": "R",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "It's already first on the list. With your name on it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1209
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-08b",
+   "teaser": "tomorrow's list",
+   "title": "Item one",
+   "body": "*Swap reveal track (Graham's request) — test in the checklist hour.* Leah wrote his name next to it. Not as blame. As an owner. He notices, and for the first time all week, he nods.",
+   "thread": "People",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-208",
+   "label": "**Service Mode:** it's 6:05 and camera 2 is black. Your clock.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-009 · SIGNAL original  One SDI Cable Took Out the Camera  An hour before doors, the CEO's IMAG camera goes black. The camera is fine.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-009"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's checklist, version 3: run it after the last room change. Comms, every source full screen, every mic at show level, the floor, freeze at doors with changes to the log and the stage manager. At the bottom: carts never park on pockets — mine.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-53",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2649
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Midnight. An empty festival main stage under work lights. Imani, on the phone, walks the site.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Imani",
+     "kind": "phone",
+     "text": "Riverbend's site network people want to “share internet” with our AV network. Tonight. Can I say yes?"
+    }
+   ],
+   "narration": [],
+   "caption": "Riverbend Festival, load-in, midnight. Next: *1 A.M.*",
+   "flags": [
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3372
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A checklist proves the room at the moment you ran it, so run it after the last change and freeze at doors. When a source is black, clear the suspect everyone is blaming, then walk a field monitor down the path: last good reading, first bad one. Reroute outside every lane that moves. After the freeze, changes go to the log and the stage manager. Nobody is above the checklist — including the person who wrote it."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Maya argued for the checklist and her own cart made it necessary. Does a rule you believe in still apply when it catches you?  Boundary: this reflection proves nothing about the camera."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E08",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

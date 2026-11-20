@@ -26,14 +26,18 @@ const step = (name, cmd, args, opts = {}) => {
   steps.push({ name, command: [cmd, ...args].join(' '), exit: r.status, seconds: Math.round((Date.now() - s) / 100) / 10 });
   console.log(`${r.status === 0 ? 'ok  ' : 'FAIL'} ${name} (${steps.at(-1).seconds} s)`); return r.status === 0;
 };
-const env = { EMPATHIA_PG_PORT: '55433' };
+// --ci reproduces the GitHub Actions job on this machine: nothing outside the clone may be read — no film masters (EMPATHIA_WORKSPACE
+// and EMPATHIA_V25_SOURCE point at empty directories) — then the release-control gate runs with the platform profile.
+const ci = process.argv.includes('--ci'); const empty = path.join(os.tmpdir(), `empathia-empty-${short}`); fs.rmSync(empty, { recursive: true, force: true }); fs.mkdirSync(empty, { recursive: true });
+const env = { EMPATHIA_PG_PORT: '55433', ...(ci ? { EMPATHIA_WORKSPACE: empty, EMPATHIA_V25_SOURCE: empty, MMDC: path.join(empty, 'no-mmdc') } : {}) };
 let ok = step('clone', 'git', ['clone', '--quiet', '--no-hardlinks', root, dir], { cwd: root });
 ok = ok && step('bootstrap', process.execPath, ['scripts/bootstrap.mjs']);
 ok = ok && step('database', process.execPath, ['scripts/db.mjs', 'up'], { env });
 ok = ok && step('build', process.execPath, ['scripts/build.mjs', '--studio'], { env });
 // derived inputs regenerated from committed scripts (git-ignored outputs), exactly as a new machine would
-ok = ok && step('ml dataset', process.execPath, ['ml/datasets/generate_synthetic.mjs']) && step('ml training', 'python3', ['-I', 'ml/training/train.py']);
+ok = ok && step('ml dataset', process.execPath, ['ml/datasets/generate_synthetic.mjs'], { env }) && step('ml training', 'python3', ['-I', 'ml/training/train.py'], { env });
 const ran = ok && (step('test', process.execPath, ['scripts/test.mjs', '--browser', '--studio'], { env }), true);
+const gate = ran && ci ? step('release gate (platform)', process.execPath, ['scripts/verify/no-unexpected-skips.mjs', '--profile=platform'], { env }) : null;
 spawnSync(process.execPath, ['scripts/db.mjs', 'down'], { cwd: dir, env: { ...process.env, ...env } });
 
 const read = (p) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return null; } };
@@ -46,7 +50,7 @@ const differences = [...new Set([...Object.keys(F), ...Object.keys(H)])].filter(
 // inputs from outside the repository (named, never copied into it): the Founder Studio is generated from the founder's own edition file
 const FE = '/home/claude/Empathia_V25/work/source-254/dist/Empathia-Living-Campus-v2.5.4-nomedia.html';
 const external = [{ input: 'Founder Edition HTML (founder-supplied, outside the repository)', path: FE, present: fs.existsSync(FE) }];
-const report = { at: new Date().toISOString(), commit, directory: dir, node: process.version, steps, externalInputs: external, seconds: Math.round((Date.now() - t0) / 1000),
+const report = { at: new Date().toISOString(), mode: ci ? 'ci (no inputs from outside the clone)' : 'workspace inputs allowed', releaseGate: gate === null ? 'NOT_RUN' : gate ? 'RELEASABLE' : 'NOT RELEASABLE', commit, directory: dir, node: process.version, steps, externalInputs: external, seconds: Math.round((Date.now() - t0) / 1000),
   fresh: fresh ? { pass: fresh.pass, fail: fresh.fail, notRun: fresh.notRun, suites: fresh.suites.map((s) => ({ suite: s.suite, result: s.result, pass: s.pass, tests: s.tests, why: s.why })) } : null,
   workspace: here ? { at: here.at, pass: here.pass, fail: here.fail, notRun: here.notRun } : null, differences,
   verdict: !fresh ? 'NOT_RUN: the fresh build did not reach the test stage (see steps)' : fresh.fail ? `FAIL: ${fresh.fail} suite(s) failed in the fresh copy` : differences.length ? 'PASS with differences (see the table)' : 'PASS: the fresh copy reproduces this workspace suite by suite' };

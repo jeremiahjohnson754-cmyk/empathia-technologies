@@ -1,0 +1,77 @@
+{
+ "what": "FieldLink product family concept render, resized and cropped for the website",
+ "source": "FieldLink_Product_Family_Concept_Render.png from the founder's FieldLink investor and engineering packet (Rev 0.9 concept, 18 Nov 2026), supplied by the founder 18 Nov 2026 17:25",
+ "source_sha256": "1d8cad51ee670bd6aaf68353bae48acc78d0666892f31878f573952174591f1e",
+ "nature": "AI-generated industrial-design concept render (the packet says so). Not a photograph of manufactured hardware; no FieldLink unit has been built.",
+ "label_on_site": "Concept render \u2014 not a photograph of manufactured hardware",
+ "files": {
+  "nano-720.webp": {
+   "bytes": 8620,
+   "sha256": "73e25e26afd7b22bdd8e394775cbcb68d832869d316d5fc835ecd27b1adea3ee",
+   "w": 451,
+   "h": 320
+  },
+  "edge-720.webp": {
+   "bytes": 23960,
+   "sha256": "8da07e14c83a06b65f55fd8156f9dd7c4bb047b1d6c456d0d9a90ed9b289e810",
+   "w": 720,
+   "h": 432
+  },
+  "pulse-720.webp": {
+   "bytes": 13850,
+   "sha256": "3d75bee73a94d9c3bd8712e4118bf6593a15bc231214af69f2e203ac42f27b75",
+   "w": 519,
+   "h": 396
+  },
+  "family-prices-640.webp": {
+   "bytes": 31344,
+   "sha256": "55fef4b114eed4ac7ed67c4ff7620dd056ed76771b03acbfcb3ad27e5fd7f34b",
+   "w": 640,
+   "h": 327
+  },
+  "family-prices-640.jpg": {
+   "bytes": 49174,
+   "sha256": "e8adfb9c66d21b52dca17fec2c0e7b6bd358e80ed2f0379db1780f0d9da650e7",
+   "w": 640,
+   "h": 327
+  },
+  "family-prices-960.webp": {
+   "bytes": 52782,
+   "sha256": "e750127b3d4754b2a01b71f1c1fa315bd7ee1e49ec560fb2f1a1917bc84b355b",
+   "w": 960,
+   "h": 490
+  },
+  "family-prices-960.jpg": {
+   "bytes": 87608,
+   "sha256": "55dc5bea2dd1bf14325cb4087559366d7af65af0ad2c8c0a88e7a75117ac41c6",
+   "w": 960,
+   "h": 490
+  },
+  "family-prices-1600.webp": {
+   "bytes": 101060,
+   "sha256": "80444edb75fc3d3c4cfbb0edcf1c1451a53c389e829bd69f0645ceb29f5fc5c4",
+   "w": 1600,
+   "h": 816
+  },
+  "family-prices-1600.jpg": {
+   "bytes": 188602,
+   "sha256": "52a8d4f383c36a56e41b2ff70be1ca9587e1190b90a154efce0933e2e2442eba",
+   "w": 1600,
+   "h": 816
+  }
+ },
+ "hero": {
+  "files": [
+   "family-prices-1600.jpg",
+   "family-prices-1600.webp",
+   "family-prices-640.jpg",
+   "family-prices-640.webp",
+   "family-prices-960.jpg",
+   "family-prices-960.webp"
+  ],
+  "source": "the FieldLink family picture with proposed prices and each device's purpose, supplied by the founder on 18 Nov 2026 19:39 (\"I really like the picture of the hardware devices their prices and sole purpose to the first picture people see on the field page\")",
+  "source_sha256": "2ddcaeb2004d3e1adef35d8a790dc44a6b76bbad75dfc027338e27af5a661823",
+  "edit": "the top title band (a logo variant with a registered-trademark sign and the words 'FIELDLINK | Physical Intelligence for Every Room') cropped off: the page carries the name and the brand itself; nothing else changed",
+  "nature": "AI-generated concept image with proposed prices and an on-image note that the hardware is optional and the products and prices are concepts"
+ }
+}

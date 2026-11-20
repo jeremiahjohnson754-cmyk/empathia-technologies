@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1AssetsAssetRetire/0.1.0.json",
+  "title": "POST /v1/assets/{asset}/retire request body",
+  "description": "Retire a unit that is not installed (work.evidence): out of the inventory for good, with its reason (REPLACED, FAILED, DISPOSED, RETURNED_TO_VENDOR, LOST). Final: a retired unit is never installed again and its code is never reused; its history stays readable. A like-for-like replacement retires the unit it takes out unless the body says outgoing SPARE.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason"
+  ],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "enum": [
+        "REPLACED",
+        "FAILED",
+        "DISPOSED",
+        "RETURNED_TO_VENDOR",
+        "LOST"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 500
+    }
+  }
+}

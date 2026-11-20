@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/putV1RoomsRoomFieldRecordMountingAsset/0.1.0.json",
+  "title": "PUT /v1/rooms/{room}/field-record/mounting/{asset} request body",
+  "description": "Record how a device is mounted (a new version; earlier versions are kept). While the room is being installed or commissioned",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "method"
+  ],
+  "properties": {
+    "method": {
+      "type": "string",
+      "enum": [
+        "ceiling-tile",
+        "ceiling-structure",
+        "wall-bracket",
+        "wall-box",
+        "under-table",
+        "rack",
+        "credenza",
+        "floor",
+        "other"
+      ]
+    },
+    "heightM": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 15
+    },
+    "fixing": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "backing": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "tether": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no",
+        "n/a"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

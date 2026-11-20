@@ -1,0 +1,856 @@
+{
+ "chapter": {
+  "id": "s09e05",
+  "kicker": "S09 · E05",
+  "title": "The Commissioning Record That Wasn't",
+  "pill": "S09E05 · The Record",
+  "sub": "An amplifier dies, the warranty needs the data, and the record says PASS with nothing behind it — and Maya’s initials on the front.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S09E05",
+   "RV-170",
+   "RV-172",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#F472B6"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 9 · EPISODE 5 · DRAFT · CASE-049  The MER · Maya, Nkechi (the commissioning agent), Dario and Odile · Level L5 · Advanced support (formulas on request)  An amplifier channel dies. The warranty needs the commissioning data. The record says PASS — and there’s no file. Then Maya finds her own initials.  ⚑ RV-170: the owner accepts the record; warranty terms are the manufacturer’s. RV-172: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Commissioning Record That Wasn't",
+   "kind": "LIVE VENUE · RECORDS",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "nkechi",
+    "odile"
+   ],
+   "stakes": "A dead amplifier channel, a warranty that needs the test data, and a record that says more than was ever tested — with your name on the summary.",
+   "clock": "Before Friday's warranty claim.",
+   "reward": "A record where every line points at its evidence — and a signature you've owned.",
+   "objectives": [
+    {
+     "key": "BR-S09E05-01",
+     "text": "Decide what happens first"
+    },
+    {
+     "key": "twist",
+     "text": "Find how much of the record is real"
+    },
+    {
+     "key": "core",
+     "text": "Pick the clues that decide it"
+    },
+    {
+     "key": "BR-S09E05-02",
+     "text": "Decide what you do about your signature"
+    },
+    {
+     "key": "BR-S09E05-03",
+     "text": "Decide what a record must be"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Real measurements scatter."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “No file”",
+   "sub": "Monday · 9:00 a.m. · MER"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The main equipment room; Nkechi points at an amplifier with a red fault light; Maya holds the thick commissioning record.",
+   "characters": [
+    {
+     "id": "nkechi",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "s8kit.bg_mer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nkechi",
+     "kind": "speech",
+     "text": "Amp four, channel three. The balcony's silent. The record says PASS."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And the file?"
+    }
+   ],
+   "narration": [],
+   "caption": "The balcony has a show tonight.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3237
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "MER · Monday 09:00",
+   "lines": [
+    {
+     "who": "nkechi",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Forty-eight lines say PASS. I have thirty files."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Then eighteen of them are words."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Thirty of forty-eight”",
+   "sub": "Monday · 9:10 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E05-01",
+   "prompt": "09:10. The balcony zone is silent and the warranty needs data. What happens first?",
+   "happening": "Amp 4 ch 3 dead.",
+   "clock": "Monday 09:10 · show 19:30",
+   "known": [
+    "◉ Record: 48 PASS",
+    "◉ No file for ch 3"
+   ],
+   "unknown": [
+    "How many lines have files"
+   ],
+   "risk": "A silent balcony tonight — or a false claim to the manufacturer.",
+   "timer_s": 20,
+   "timeout": [
+    "The balcony waits.",
+    "Tonight's show starts with a silent balcony."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What matters tonight, and what proves the record?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Send the manufacturer the record as it is",
+     "result": "Nkechi: “Not with eighteen tests that never happened.”",
+     "consequence": "Sends a claim you can't stand behind.",
+     "chips": [
+      "False record"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Never send what you can't stand behind.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Nkechi": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Put the balcony on the spare amplifier channel and test it; then match every PASS line in the record against a test file",
+     "result": "The balcony plays by eleven. By noon: 30 files for 48 lines.",
+     "consequence": "The audience first, then the evidence.",
+     "chips": [
+      "People first",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Retest all 48 channels today and replace the record",
+     "result": "The new record is fine — and the old one, the evidence of what was claimed, is gone.",
+     "consequence": "Overwrites the evidence.",
+     "chips": [
+      "Evidence lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Dario to send the missing files",
+     "result": "He looks. There aren't any.",
+     "consequence": "Asks for what may not exist.",
+     "chips": [
+      "Hope"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Thirty of forty-eight.",
+   "body": "Thirty test files, spread over five days the week before handover. Eighteen PASS lines with nothing behind them — every one of them exactly the design value, to a tenth of a decibel. Dario pulls the tester's own memory: thirty sessions, not forty-eight. The eighteen were typed on handover eve by the technician who later left the integrator. Real measurements scatter. These didn't.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E05-1",
+   "label": "Test: how much has no evidence — and why the values give it away."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Nkechi and Maya beside a board. Forty-eight amplifier channels marked PASS. Test files for thirty. Sixty-two and a half percent with evidence. Eighteen without — and my name is on the summary. Then we retest the eighteen and you say so, in writing.",
+   "characters": [
+    {
+     "id": "nkechi",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_mer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nkechi",
+     "kind": "speech",
+     "text": "Forty-eight amplifier channels marked PASS. Test files for thirty."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sixty-two and a half percent with evidence. Eighteen without — and my name is on the summary."
+    },
+    {
+     "side": "L",
+     "who": "Nkechi",
+     "kind": "speech",
+     "text": "Then we retest the eighteen and you say so, in writing."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3690
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Commissioning agent   Certification test   Audit log   If you need it   ƒ Ask for the formula · Percentage   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of      ƒ Ask for the formula · Rate   ƒ FORMULA · Rate  rate = count ÷ time   count  how many events  time  over how long"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "G5",
+   "label": "**Learn it now:** records as evidence.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     The OSI model applied to video and wireless     The OSI model applied to the whole system"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A commissioning grid of 48 cells, twelve amplifiers by four channels: 30 green with ticks, 18 pink with question marks; 48 PASS, 30 test files, 62.5%, 18 typed on handover eve; the summary line ‘commissioning record reviewed — M. · 03:10’ in red.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Eighteen claims, and a signature on top of them.",
+   "flags": [
+    "RV-172"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "files + tester memory"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 13350
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-905",
+   "label": "**Clue board:** which PASS lines are real?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Your signature”",
+   "sub": "Monday · 2:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Your signature.",
+   "body": "The front page of the record: ‘Commissioning record reviewed — all amplifier channels PASS.’ Initialled M. Timed 03:10 on handover eve. Maya remembers the night — the punch list, the marshal due in the morning, the pen. She remembers signing. She doesn't remember opening page 7.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E05-2",
+   "label": "Test: the retest time — and what she does about the signature."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E05-02",
+   "prompt": "14:10. Nobody has noticed the initials but you. What do you do?",
+   "happening": "Your initials on the summary.",
+   "clock": "Monday 14:10",
+   "known": [
+    "◉ Signed 03:10 on handover eve"
+   ],
+   "unknown": [
+    "What the retest will find"
+   ],
+   "risk": "A record nobody trusts — including your next signature.",
+   "timer_s": 25,
+   "timeout": [
+    "You wait for someone to ask.",
+    "Odile finds it herself on Thursday."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would you want to hear from someone else in your place?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Say nothing — the technician typed the lines",
+     "result": "True, and the summary still has your name.",
+     "consequence": "Leaves your part unsaid.",
+     "chips": [
+      "Unowned"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Tell Odile and Nkechi in writing, today: you signed the summary at 03:10 without opening the detail pages. Then the witnessed retest",
+     "result": "Odile: “Thank you for telling me before I found it.” Nkechi books the retest for tomorrow.",
+     "consequence": "Own your part before anyone asks.",
+     "chips": [
+      "Owned",
+      "In writing"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Odile": 1,
+       "Nkechi": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Re-sign the summary with today's date after the retest",
+     "result": "Odile, later: “That's rewriting the record.”",
+     "consequence": "Hides what happened.",
+     "chips": [
+      "Rewriting"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Never rewrite a record; correct it openly.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Odile": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Dario to take the blame for the page",
+     "result": "He won't, and he shouldn't.",
+     "consequence": "Moves your part onto someone else.",
+     "chips": [
+      "Deflect"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The test that said perfect",
+   "body": "In 1990 a space telescope reached orbit with a main mirror ground to the wrong shape by about two micrometres. The instrument used to test the mirror during manufacture had been assembled with one lens out of position by about 1.3 millimetres, so the tests said the mirror was perfect. Other checks that disagreed were set aside. A servicing mission fitted corrective optics in 1993. The test was precise. It was measuring the wrong thing.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #86 · AVERY'S LENS  A record is only as true as its evidence  Every line in a record should point at the evidence behind it — and a signature should mean the signer looked.  Forty-eight lines said PASS. Thirty had tests behind them. The summary had Maya's name on it."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S09E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The commissioning grid after the witnessed retest: all 48 cells linked to a file, two amber cells marking faults found and fixed; re-issued with exceptions listed and accepted by the owner.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Every line points at its evidence.",
+   "flags": [
+    "RV-170"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "witnessed retest"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 13344
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-05a",
+   "teaser": "the tester's session list",
+   "title": "30 sessions · 5 days",
+   "body": "The cable-and-amplifier tester's own session list, exported by Dario: 30 sessions over five days the week before handover. Nothing on handover eve.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E05-03",
+   "prompt": "Friday. What must a record be from now on?",
+   "happening": "Record re-issued.",
+   "clock": "Friday 10:00",
+   "known": [
+    "◉ Two hidden faults found"
+   ],
+   "unknown": [
+    "What other records say PASS"
+   ],
+   "risk": "The next record that claims more than was tested.",
+   "timer_s": 25,
+   "timeout": [
+    "The standard isn't changed.",
+    "The lighting record is signed the same way next month."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would have stopped you signing blind at 03:10?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Signed by two people instead of one",
+     "result": "Two people who don't open the pages.",
+     "consequence": "More signatures, same problem.",
+     "chips": [
+      "More ticks"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Every line links the evidence file behind it; a summary is signed only by someone who opened the files — and says which ones; exceptions are listed, not hidden",
+     "result": "Nkechi writes it into the commissioning standard; Dario's team uses it next week.",
+     "consequence": "Evidence, not ticks.",
+     "chips": [
+      "Linked evidence",
+      "Honest signatures"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Nkechi": 1,
+       "Dario": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "No more summaries",
+     "result": "Forty-eight pages nobody reads.",
+     "consequence": "Throws away the useful page.",
+     "chips": [
+      "Overcorrection"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Blame the technician who left",
+     "result": "He did type them. The system let a summary be signed blind.",
+     "consequence": "Blame isn't a control.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-905",
+   "label": "**Service Mode:** run the week yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-049 · SIGNAL original  The Commissioning Record That Wasn't  Forty-eight PASS lines, thirty test files, and a summary with Maya's name on it.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-049"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 4:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The MER; Nkechi hands Maya the re-issued record with coloured tabs on every page; the amplifier's fault light is off.",
+   "characters": [
+    {
+     "id": "nkechi",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s8kit.bg_mer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nkechi",
+     "kind": "speech",
+     "text": "Forty-eight lines, forty-eight files, two exceptions. Signed by someone who read it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Page seven included."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3236
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S9-05",
+   "who": "nkechi",
+   "prompt": "You didn't have to tell Odile about the summary. Nobody would have noticed.",
+   "options": [
+    {
+     "label": "“I'd have noticed. And the next time I sign something, you'd have to wonder.”",
+     "who": "nkechi",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "I won't have to. That's worth more than the page.",
+     "trust": {
+      "Nkechi": 2
+     }
+    },
+    {
+     "label": "“It was 3 a.m.”",
+     "who": "nkechi",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "It was. That's the reason, not the excuse.",
+     "trust": {
+      "Nkechi": 0
+     }
+    },
+    {
+     "label": "“The technician lied first.”",
+     "who": "nkechi",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "He did. You still signed.",
+     "trust": {
+      "Nkechi": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-05b",
+   "teaser": "the summary sheet",
+   "title": "reviewed — M. — 03:10",
+   "body": "The record's front page: ‘Commissioning record reviewed — all amplifier channels PASS.’ Initialled M., timed 03:10, on handover eve. Maya remembers signing it. She doesn't remember opening page 7.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The security office; Raffa holds up three printouts side by side; Maya reads them.",
+   "characters": [
+    {
+     "id": "raffa",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Raffa",
+     "kind": "speech",
+     "text": "Someone changed the lobby processor overnight. 02:10 — or 07:10, or 01:58. Depends which log you believe."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Three clocks."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Logs & Evidence.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2111
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A record line is a claim until it links its evidence (% = part ÷ whole × 100 of lines with files). Real measurements scatter; identical design values weren’t measured. Keep the original record as evidence and issue a corrected one; plan the witnessed retest (time = count ÷ rate). If your name is on a summary you didn’t check, say so first, in writing. Sign only what you opened."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What have you signed at 3 a.m. — and would you want someone to open page seven?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S09E05",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

@@ -1,0 +1,860 @@
+{
+ "chapter": {
+  "id": "s08e08",
+  "kicker": "S08 · E08",
+  "title": "The Relay",
+  "pill": "S08E08 · The Relay",
+  "sub": "The fire marshal pulled a station. The evacuation message played — with music under it.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S08E08",
+   "RV-160",
+   "RV-161",
+   "RV-163",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FACC15"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 8 · EPISODE 8 · DRAFT  The main hall and the stage-left rack · Maya, Dario, Nkechi and Marshal Lindqvist · Level L5 · Advanced support (formulas on request)  The fire marshal pulled a station on her walkthrough. The evacuation message played — with the program music still playing under it.  ⚑ RV-163: the fire alarm system is the fire alarm contractor’s and its acceptance the marshal’s; nothing in a life-safety interface is ever jumpered, bypassed or disabled. RV-161: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Relay",
+   "kind": "LIVE BUILD · LIFE SAFETY",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya_site",
+    "dario_site",
+    "nkechi_site",
+    "lindqvist"
+   ],
+   "stakes": "The fire marshal pulled a station and heard music under the evacuation message. No pass, no occupancy.",
+   "clock": "Friday, 10:00.",
+   "reward": "An interface that mutes when it should, fails safe when it breaks, and can't be ‘tidied’ out of existence.",
+   "objectives": [
+    {
+     "key": "BR-S08E08-01",
+     "text": "Decide what you tell the marshal"
+    },
+    {
+     "key": "twist",
+     "text": "Find the jumper"
+    },
+    {
+     "key": "core",
+     "text": "Find where the mute got lost"
+    },
+    {
+     "key": "BR-S08E08-02",
+     "text": "Decide how it's fixed"
+    },
+    {
+     "key": "BR-S08E08-03",
+     "text": "Decide what protects it next time"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things in the rack"
+    }
+   ],
+   "rumor": "The safest wire is the one that shouts when it's cut."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Under the message”",
+   "sub": "Wednesday · 10:02 a.m. · main hall"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The main hall; the fire alarm panel shows ALARM; musical notes drift from the ceiling; Marshal Lindqvist points up; Maya stares.",
+   "characters": [
+    {
+     "id": "lindqvist",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya_site",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s8kit.bg_hall",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Marshal Lindqvist",
+     "kind": "speech",
+     "text": "Evacuation message — and music under it. Why?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It should have muted."
+    }
+   ],
+   "narration": [],
+   "caption": "No pass, no occupancy.",
+   "flags": [
+    "RV-163"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4703
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "main hall · Wednesday 10:04",
+   "lines": [
+    {
+     "who": "lindqvist",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I'll be back Friday at ten. If your music plays under my message, there's no occupancy."
+    },
+    {
+     "who": "maya_site",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Understood. You'll have evidence before you have my word."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The jumper”",
+   "sub": "Wednesday · 10:05 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E08-01",
+   "prompt": "10:05. The marshal has stopped the test. What do you tell her?",
+   "happening": "Program played through the alarm.",
+   "clock": "Wednesday 10:05 · retest Friday 10:00",
+   "known": [
+    "◉ Alarm sounded",
+    "◉ Program didn't mute"
+   ],
+   "unknown": [
+    "Where the mute got lost"
+   ],
+   "risk": "An unoccupiable building on opening week — or a hidden fault in a life-safety system.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody answers her.",
+    "She writes ‘interface — FAIL’ and leaves."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose side of the interface do you start on — and who touches it?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Show her the commissioning record — the interface passed three weeks ago",
+     "result": "Marshal Lindqvist: “That's paper. I just heard music.”",
+     "consequence": "A record isn't the room.",
+     "chips": [
+      "Paper"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Evidence is what works now.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Lindqvist": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“It failed. We'll find out why and show you the evidence before Friday.” Then: the fire alarm contractor confirms the relay; Dario's tech traces the wiring at the rack; nobody but the fire alarm contractor touches their side",
+     "result": "She nods once: “Friday at ten.”",
+     "consequence": "Own the failure; follow the signal; stay on your side of the line.",
+     "chips": [
+      "Honest",
+      "Trace"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Dario": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Program the DSP to mute when it hears the evacuation message instead",
+     "result": "A redesign of a life-safety interface, by the wrong person, in a morning.",
+     "consequence": "The sequence is the fire alarm designer's.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "LIFE SAFETY"
+      }
+     ],
+     "canonical": false,
+     "fail": "The sequence belongs to the fire alarm designer.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Turn the program audio off until opening",
+     "result": "Silence isn't a fix; opening night the fault is still there.",
+     "consequence": "Hides the fault.",
+     "chips": [
+      "Hidden"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The jumper.",
+   "body": "The fire alarm contractor's meter: relay K3 opens in alarm, exactly as designed. At the stage-left rack, Dario's tech finds the relay pair on logic input 7 — and a short jumper across input 3, the input the DSP watches, tagged ‘TEMP — punch 188’. Punch 188 said ‘tidy logic terminal strip’. Moving the pair left input 3 open; the interface is normally closed, so open means alarm and the program muted all day. The fail-safe worked. Then someone ‘fixed’ it.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S08E08-1",
+   "label": "Test: how long did the music play — and why was it silent?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Lindqvist and Maya beside a board. The sequence says program audio mutes within two seconds of alarm. Show me the numbers, then show me the room. Relay five hundredths, the DSP's input scan a tenth, the ramp half a second. About point six five seconds. On paper. Now we pull the station and I listen.",
+   "characters": [
+    {
+     "id": "lindqvist",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_hall",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Marshal Lindqvist",
+     "kind": "speech",
+     "text": "The sequence says program audio mutes within two seconds of alarm. Show me the numbers, then show me the room."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Relay five hundredths, the DSP's input scan a tenth, the ramp half a second. About point six five seconds."
+    },
+    {
+     "side": "L",
+     "who": "Marshal Lindqvist",
+     "kind": "speech",
+     "text": "On paper. Now we pull the station and I listen."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4336
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Fire alarm control panel   Sequence of operations   Normally closed   Voice evacuation   If you need it   ƒ Ask for the formula · Time budget   ƒ FORMULA · Time budget  T = Σ (count × time each)   count  how many of each task  time each  minutes or seconds per task — keep units the same"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "F8",
+   "label": "**Learn it now:** fire alarm interfaces — sequence, fail-safe wiring and re-tests.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Audio signal flow and gain structure — every stage     What “ready” looks like     Case study: an update the day of the event"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-808",
+   "label": "**Find it:** where did the mute get lost?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An interface sheet before the fix: pull station, fire alarm panel and relay K3 — the fire alarm contractor's — in red; DSP logic input 3 and program mute — the AV contractor's — in blue; the link into the DSP is broken: input 3 jumpered, the relay on input 7, from punch 188 ‘tidy terminal strip’; a mute-time bar of relay 0.05 s, scan 0.1 s and ramp 0.5 s totalling 0.65 s against a 2 s line; the record says PASS, three weeks before punch 188.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The design was right. The rack wasn't.",
+   "flags": [
+    "RV-163"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "meter + rack + punch list"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5007
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Every change re-opens the test”",
+   "sub": "Wednesday · 2:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Every change re-opens the test.",
+   "body": "Nkechi lays two papers side by side: the interface test, PASS, 0.7 s, witnessed — and punch 188, closed nineteen days later. Nothing connected them. The punch list didn't know the rack held a life-safety interface, and the tech didn't either. On paper it still passes. In the hall it plays music.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S08E08-2",
+   "label": "Test: the margin — and why the PASS doesn't count."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E08-02",
+   "prompt": "14:10. How is it fixed?",
+   "happening": "The fault found.",
+   "clock": "Wednesday 14:10",
+   "known": [
+    "◉ Pair on 7; jumper on 3",
+    "◉ Relay fine"
+   ],
+   "unknown": [
+    "What else punch 188 touched"
+   ],
+   "risk": "A fix nobody can prove on Friday.",
+   "timer_s": 25,
+   "timeout": [
+    "The fix waits for Thursday.",
+    "Thursday's test runs out of time."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would you show the marshal besides your word?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Dario's tech moves it back tonight; the record already says PASS",
+     "result": "No witness, no timing, and the same record that was wrong this morning.",
+     "consequence": "Fixed on trust.",
+     "chips": [
+      "Unwitnessed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Dario's tech re-lands the pair on input 3 per the as-built and removes the jumper, with the fire alarm contractor witnessing; then an end-to-end test — the fire alarm contractor at the panel, Nkechi timing — before the marshal returns",
+     "result": "Pair on input 3, jumper bagged, program mutes 0.7 s after the relay opens.",
+     "consequence": "Back to the design, witnessed and timed.",
+     "chips": [
+      "As-built",
+      "Witnessed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Nkechi": 1,
+       "Dario": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Leave the jumper and point the DSP at input 7",
+     "result": "It mutes — and the drawings, the DSP file and the rack now disagree.",
+     "consequence": "Works until the next tidy-up.",
+     "chips": [
+      "Undocumented"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the fire alarm contractor to move their relay closer",
+     "result": "Their relay was never the problem.",
+     "consequence": "Moves the wrong thing.",
+     "chips": [
+      "Wrong side"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The telegraph that rang the bells",
+   "body": "In 1852 Boston switched on the first city-wide fire-alarm telegraph, designed by William Channing and Moses Farmer. Turning the crank in a street box sent the box's number down a wire to a central office, and from there the alarm was struck on bells across the city. For the first time, news of a fire travelled faster than a runner — and every box had to work every time, so they were tested.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #79 · AVERY'S LENS  A safety interface fails safe — and stays tested  Design life-safety interfaces so a fault is loud (a cut wire mutes), and treat every change near them as a reason to test again.  The interface was designed to fail safe. A tidy-up broke it, the fail-safe muted the program, and a jumper ‘fixed’ the mute — silently removing the safety."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S08E08",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The interface sheet after the fix: the whole chain green, from pull station to program mute; relay pair on logic input 3, jumper removed, terminals labelled; the mute time of 0.65 s well inside the 2 s line; the marshal's retest PASS, and any change to this rack re-opens the test.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Muted in under a second — and harder to break.",
+   "flags": [
+    "RV-163"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "marshal's retest"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4783
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S8-08",
+   "who": "dario",
+   "prompt": "My tech thought he was helping. The program kept muting and the painters were complaining. Do I let him go?",
+   "options": [
+    {
+     "label": "“He fixed the symptom he could see. The gap is ours: nobody told him that rack holds a life-safety interface. Label it, train him, keep him.”",
+     "who": "dario",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "He'll be the one who never touches it again. And he'll tell the others.",
+     "trust": {
+      "Dario": 2
+     }
+    },
+    {
+     "label": "“That's your call.”",
+     "who": "dario",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "It is. I was asking what you'd do.",
+     "trust": {
+      "Dario": 0
+     }
+    },
+    {
+     "label": "“Yes. That can't happen.”",
+     "who": "dario",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "And the next tech won't know either.",
+     "trust": {
+      "Dario": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S8-08a",
+   "teaser": "the jumper",
+   "title": "TEMP — punch 188",
+   "body": "A three-centimetre jumper across logic input 3, with a paper tag in marker: ‘TEMP — punch 188 — prog kept muting’. Two weeks old. It held the safety input closed for every alarm since.",
+   "thread": "Safety",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E08-03",
+   "prompt": "Friday, after the marshal signs. What protects the interface from the next tidy-up?",
+   "happening": "Interface accepted.",
+   "clock": "Friday 11:00",
+   "known": [
+    "◉ Punch list blind to life safety"
+   ],
+   "unknown": [
+    "Which other racks hold interfaces"
+   ],
+   "risk": "The same fault after the next tidy-up.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "Another rack gets ‘tidied’ next week."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "How would the next tech know?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "A stern email",
+     "result": "Read once, forgotten by the next crew.",
+     "consequence": "Hope isn't a control.",
+     "chips": [
+      "Hope"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Terminals labelled LIFE SAFETY — DO NOT RE-PATCH; the DSP's logic page locked and documented; any punch item touching that rack flagged and followed by a re-test with the fire alarm contractor",
+     "result": "Nkechi writes the rule into the commissioning plan; Dario briefs every tech.",
+     "consequence": "Make the safe thing obvious and the change visible.",
+     "chips": [
+      "Labelled",
+      "Re-test rule"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Nkechi": 1,
+       "Dario": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Padlock the rack for ever",
+     "result": "Nobody can maintain anything in it.",
+     "consequence": "Safe until the first real fault.",
+     "chips": [
+      "Unmaintainable"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing — it passed",
+     "result": "Until the next punch item.",
+     "consequence": "The gap stays open.",
+     "chips": [
+      "Repeat"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-808",
+   "label": "**Service Mode:** run the two days yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 10:20 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The main hall during the retest; the panel in ALARM; no music notes this time; Marshal Lindqvist nods; Nkechi holds a stopwatch.",
+   "characters": [
+    {
+     "id": "lindqvist",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "nkechi_site",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s8kit.bg_hall",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Marshal Lindqvist",
+     "kind": "speech",
+     "text": "Just my message. Good. Now do it for the whole building on opening day."
+    },
+    {
+     "side": "R",
+     "who": "Nkechi",
+     "kind": "speech",
+     "text": "Zero point seven seconds. Witnessed."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-163"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4493
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S8-08b",
+   "teaser": "the commissioning record",
+   "title": "Interface test · PASS",
+   "body": "The commissioning record: ‘Sequence item 7 — program mute on alarm — PASS — 0.7 s — witnessed.’ Dated nineteen days before punch 188 was closed. No link between the two.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The site trailer; the punch list printed on a long roll across the table; Nkechi points at a number; Maya reads it.",
+   "characters": [
+    {
+     "id": "nkechi",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s8kit.bg_trailer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nkechi",
+     "kind": "speech",
+     "text": "Four hundred and twelve open items. Nineteen working days. And sixty that say ‘closed’ I've never seen."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sixty?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Punch List.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3257
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  The sequence of operations is the fire alarm designer’s; acceptance is the marshal’s. Wire the interface normally closed so a fault mutes and shows. Time the chain (T = Σ stage times) against the sequence. Never jumper, bypass or disable anything in it. Any change in the chain re-opens the test — so label the rack, lock the config, and make the next change visible."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What “temporary” fix in your world is quietly holding a safety open?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S08E08",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

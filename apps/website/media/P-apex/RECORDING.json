@@ -1,0 +1,151 @@
+{
+  "key": "P-apex",
+  "title": "APEX: cited hypotheses, bounded actions, blocked outcomes",
+  "product": "apex",
+  "recordedAt": "2026-11-19T23:37:13.820Z",
+  "duration": 47.21,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T23:05:29.841Z"
+  },
+  "git": "eca7f43",
+  "steps": [
+    {
+      "at": 0,
+      "shown": 0.01,
+      "until": 8.1,
+      "say": "APEX: cited hypotheses, bounded actions, and outcomes it is not allowed to take.",
+      "proof": "[data-testid=apex-cases]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 8.1,
+      "shown": 9.22,
+      "until": 14.75,
+      "say": "Drill down: one case, far-end audio dropping out.",
+      "proof": "[data-testid=apex-case]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 14.75,
+      "shown": 15.55,
+      "until": 19.21,
+      "say": "The layers it reasons over, each one cited.",
+      "proof": "[data-testid=layers]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 19.21,
+      "shown": 19.93,
+      "until": 25.76,
+      "say": "A hypothesis, with the evidence for and against it.",
+      "proof": "[data-testid=hypothesis]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 25.76,
+      "shown": 26.55,
+      "until": 33.11,
+      "say": "What it may do alone, what needs a person, and what it may never do.",
+      "proof": "[data-testid=apex-tiers]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 33.11,
+      "shown": 33.84,
+      "until": 37.2,
+      "say": "Every step it took, in its log.",
+      "proof": "[data-testid=apex-log]",
+      "url": "/#/v25/apex"
+    },
+    {
+      "at": 37.2,
+      "shown": 38.22,
+      "until": 42.88,
+      "say": "Across to Search Party: the room and who answers for it.",
+      "proof": "[data-testid=impact]",
+      "url": "/#/search?focus=Room:R-ATL-4-218"
+    },
+    {
+      "at": 42.88,
+      "shown": 42.95,
+      "until": 47.21,
+      "say": "And back: a person decides; APEX shows its work.",
+      "proof": "[data-testid=apex-cases]",
+      "url": "/#/v25/apex"
+    }
+  ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 7.62,
+        "sha256": "ef06206d940ab164d2b779d835a1102afa3fbee696af0a02c74d6911edcddf41"
+      },
+      {
+        "step": 2,
+        "seconds": 5.07,
+        "sha256": "3da506c45fc412c32d75f7a1b9b61779d80d0e7ea9b4072333f888d7ce0e5b6c"
+      },
+      {
+        "step": 3,
+        "seconds": 3.21,
+        "sha256": "6386713d8ba434569aa932cc3661ab149200a2de77287bbb266b2ff10ad5740d"
+      },
+      {
+        "step": 4,
+        "seconds": 5.36,
+        "sha256": "e4a41e1ec53094b426f48bf91177bf17d4dc13b8bfc9b22f44a931f62c58daa5"
+      },
+      {
+        "step": 5,
+        "seconds": 6.09,
+        "sha256": "1ad96d929b00edfc201ec7741ba1b5599f1eb4f3e33bab9f6375675e1d935dff"
+      },
+      {
+        "step": 6,
+        "seconds": 2.91,
+        "sha256": "b892bea74b72753ea42f61913de2996c2a18deb0eba3ae6112f6d690f30d509d"
+      },
+      {
+        "step": 7,
+        "seconds": 4.2,
+        "sha256": "3957bb409bbc8b6623748cfd7f19a7463225867c9c70bb5ce6da91e737ba52d6"
+      },
+      {
+        "step": 8,
+        "seconds": 3.8,
+        "sha256": "67e94005fd6dd72b078016646c07d79bedea5fb653d46a83499070f624ba8e81"
+      }
+    ]
+  },
+  "files": {
+    "720.mp4": {
+      "bytes": 2238398,
+      "sha256": "3cf22e9459cff9ff5cd96355d01e80ffab3602856dfd157de5486332ec67b1c3"
+    },
+    "poster.webp": {
+      "bytes": 60286,
+      "sha256": "4e606a7e9f8751a2eb5ff066f0db925ea2c1f8e67d6b18394a57940a6e573e61"
+    },
+    "poster.jpg": {
+      "bytes": 111881,
+      "sha256": "6207c856b6a1b1e20d4216ba67a695ce42826eed0e315edd6f0f1927098ac378"
+    },
+    "captions.vtt": {
+      "bytes": 1106,
+      "sha256": "0f5202fa69dc66f8bac124d86b61f83d6f68a5642a8e398557d8af57c537e326"
+    }
+  }
+}

@@ -3,3 +3,6 @@ packages:
   - services/*
   - packages/*
   - integrations/*
+# Supply chain (docs/security/ASSESSMENT_2026-11-04.md SA-03): until pnpm-lock.yaml is committed every install resolves afresh, so a
+# version published less than 24 hours ago is never installed (a compromised release is usually caught and pulled within hours).
+minimumReleaseAge: 1440

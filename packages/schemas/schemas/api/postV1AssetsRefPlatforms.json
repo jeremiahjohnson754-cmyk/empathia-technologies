@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1AssetsRefPlatforms/0.1.0.json",
+  "title": "POST /v1/assets/{ref}/platforms request body",
+  "description": "Record where this device is in a platform (https only; replaces the current address, which is kept): someone who designs, installs, serves or triages it",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "platform",
+    "url"
+  ],
+  "properties": {
+    "platform": {
+      "type": "string",
+      "enum": [
+        "xio-cloud",
+        "utelogy",
+        "teams-rooms-pro",
+        "m365-admin",
+        "sharepoint",
+        "xyte",
+        "q-sys-reflect",
+        "dante",
+        "appspace",
+        "signage",
+        "sennheiser",
+        "autodesk",
+        "servicenow"
+      ]
+    },
+    "url": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 400,
+      "pattern": "^https://"
+    }
+  }
+}

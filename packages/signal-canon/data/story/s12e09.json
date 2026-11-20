@@ -1,0 +1,851 @@
+{
+ "chapter": {
+  "id": "s12e09",
+  "kicker": "S12 · E09",
+  "title": "Accessibility Debt",
+  "pill": "S12E09 · Accessibility Debt",
+  "sub": "Twenty-two rooms without the captions the standard promised — and not one complaint.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S12E09",
+   "RV-187",
+   "RV-188",
+   "RV-190",
+   "RV-191",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#E5E7EB"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 12 · EPISODE 9 · DRAFT  Fenwright Group · month ten · Maya, Lian (accessibility lead), Aksel (an engineer in Oslo, hard of hearing), Teodor and Noor · Level L6 · Mastery support (reference only — choose the tool and say why)  The standard's first promise, in month one, was captions everywhere. In month ten, Lian runs the audit nobody had run.  ⚑ RV-190: access is a requirement of the standard; nothing here is legal advice. RV-187: requirements are the accessibility lead's; installs each site's facilities'. RV-188: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Accessibility Debt",
+   "kind": "ESTATE · ACCESS",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "lian",
+    "aksel"
+   ],
+   "stakes": "Twenty-two rooms without the captions the standard promises — and nobody has complained.",
+   "clock": "The accessibility review is Friday.",
+   "reward": "Every gap owned and closed, the alerts live — and the rooms tested by the people who use them.",
+   "objectives": [
+    {
+     "key": "BR-S12E09-01",
+     "text": "Decide what the silence means"
+    },
+    {
+     "key": "twist",
+     "text": "Find out why the alerts were ignored"
+    },
+    {
+     "key": "core",
+     "text": "Fund the gaps"
+    },
+    {
+     "key": "BR-S12E09-02",
+     "text": "Decide how the gaps are treated"
+    },
+    {
+     "key": "BR-S12E09-03",
+     "text": "Decide how access stays fixed"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Silence isn't satisfaction."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Since when?”",
+   "sub": "Month ten · Monday · 9:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A meeting room; Lian, the accessibility lead, points at the display, where a meeting runs with no caption strip; Maya follows her finger.",
+   "characters": [
+    {
+     "id": "lian",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "s12kit.bg_room",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lian",
+     "kind": "speech",
+     "text": "The standard says captions in every room. Twenty-two rooms don't have them."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And nobody's complained. Since when?"
+    }
+   ],
+   "narration": [],
+   "caption": "Silence.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1584
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "flat",
+   "where": "Fenwright HQ · month ten, Monday",
+   "lines": [
+    {
+     "who": "lian",
+     "pose": "N",
+     "expr": "flat",
+     "text": "The standard says captions in every room. Twenty-two rooms don't have them."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "And not one complaint. Since when?"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Suppressed as expected”",
+   "sub": "Month ten · Monday"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E09-01",
+   "prompt": "Twenty-two rooms without captions, and no complaints. What does the silence mean?",
+   "happening": "22 rooms without captions.",
+   "clock": "Month ten · Monday",
+   "known": [
+    "◉ Standard: captions everywhere",
+    "◉ No complaints"
+   ],
+   "unknown": [
+    "Why it wasn't caught"
+   ],
+   "risk": "Colleagues shut out of meetings — quietly.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "The gap stays silent."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who would complain — and why might they not?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Nobody in those rooms needs captions",
+     "result": "Aksel, in Oslo, has needed them in every meeting for a year.",
+     "consequence": "Reads silence as satisfaction.",
+     "chips": [
+      "Silence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The gap is real whether or not anyone complains — measure it with Lian, room by room, and find out why nothing flagged it",
+     "result": "Twenty-two rooms without captions; nine of fourteen large rooms without assistive listening. And something did flag it.",
+     "consequence": "Measure; don't wait for complaints.",
+     "chips": [
+      "Measure",
+      "Why"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Lian": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Survey users: ‘do you need captions?’",
+     "result": "Most who need them don't fill in surveys about needing them.",
+     "consequence": "Asks people to prove their need.",
+     "chips": [
+      "Burden"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Wait until the refresh puts captions in",
+     "result": "The refresh reaches the last of those rooms in five years.",
+     "consequence": "Five more years of silence.",
+     "chips": [
+      "Wait"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Suppressed as expected.",
+   "body": "The synthetic tests from month seven check that captions appear. In twenty-two rooms, from their very first night, they didn't — and the monitoring said so. In the first week the team, tidying noisy alerts, added a rule: ‘captions not configured — expected, these rooms never had them’. Suppressed. Nobody asked why they never had them. Procurement's answer, when Maya asks: the caption licence was bought for the thirty-eight rooms on a six-year-old room list. Twenty-two rooms had been built since.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E09-1",
+   "label": "Test: the rooms left out — and the alerts nobody saw."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sixty squares, one per room: 38 green with captions, 22 red without — alerts suppressed as ‘expected’; circles mark the 14 rooms over twelve seats, nine of them amber with no assistive listening. 22 of 60 without captions (37%); 9 of 14 large rooms without assistive listening (64%).",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Thirty-seven percent.",
+   "flags": [
+    "RV-188",
+    "RV-190"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "Lian's audit"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 7279
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-09a",
+   "teaser": "the monitoring's suppression list",
+   "title": "‘captions: not configured — expected (22 rooms)’",
+   "body": "A rule in the monitoring platform, added in month seven's first week: ‘Suppress: captions not configured — expected, rooms never had them. 22 rooms.’ Nobody had asked why they never had them.",
+   "thread": "Access",
+   "who": null
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Lian and Maya beside a board. The standard says captions in every room. Twenty-two rooms don't have them. The licence was bought for the old room list — thirty-eight rooms. And one of Teodor's engineers has used his phone for a year rather than ask.",
+   "characters": [
+    {
+     "id": "lian",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_room",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lian",
+     "kind": "speech",
+     "text": "The standard says captions in every room. Twenty-two rooms don't have them."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The licence was bought for the old room list — thirty-eight rooms."
+    },
+    {
+     "side": "L",
+     "who": "Lian",
+     "kind": "speech",
+     "text": "And one of Teodor's engineers has used his phone for a year rather than ask."
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2025
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Accessibility gap   Captions   Hearing loop   The situation  Captions are promised in 60 rooms and work in 38; large rooms need assistive listening and 9 of 14 lack it. Which relationships size the gap and its cost — and why didn't the gap show up as a complaint?   Which relationship do you reach for?  Usable hosts in a subnet  Last usable address  Percentage     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "W9",
+   "label": "**Learn it now:** accessibility debt.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Point it at people, not at the ceiling     What the room is telling you     Sound, rooms and signals — five views"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "T-1209",
+   "label": "**Fund it:** ninety thousand for access.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E09-02",
+   "prompt": "How are the gaps treated from now on?",
+   "happening": "Why found: suppressed alerts.",
+   "clock": "Month ten · Tuesday",
+   "known": [
+    "◉ 22 no captions",
+    "◉ 9 large rooms no assistive listening"
+   ],
+   "unknown": [
+    "Who's been adapting quietly"
+   ],
+   "risk": "Access that stays optional in practice.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The suppression rule stays."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would you do if twenty-two rooms had no audio?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "As a wish list for when there's money",
+     "result": "The list is still there next year.",
+     "consequence": "Optional in practice, required on paper.",
+     "chips": [
+      "Wish list"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "As defects against the standard: every gap recorded with an owner and a date; the caption alerts un-suppressed and paged to the on-call role like any other failure; Lian owns the requirements",
+     "result": "Thirty-one defects by Tuesday lunch. The caption alerts page the rota again that night.",
+     "consequence": "A defect like any other.",
+     "chips": [
+      "Defect",
+      "Owned"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Lian": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Fix the twenty-two caption rooms and leave the rest",
+     "result": "Nine large rooms still without assistive listening.",
+     "consequence": "Half a fix to the loudest half.",
+     "chips": [
+      "Partial"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Keep the alerts suppressed until the rooms are fixed, to avoid noise",
+     "result": "The next gap is silent too.",
+     "consequence": "Hides the next one.",
+     "chips": [
+      "Hidden"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The island where everyone signed",
+   "body": "For much of the eighteenth and nineteenth centuries, some villages on Martha's Vineyard, an island off Massachusetts, had so many deaf residents that hearing and deaf people alike used a local sign language. Deaf islanders farmed, fished, voted and held office; visitors recalled hearing people signing to each other out of habit. Access wasn't an accommodation someone had to ask for. It was simply how the place worked.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #120 · AVERY'S LENS  An accessibility gap is a defect, even when nobody complains  Access promised by the standard is a requirement. Gaps rarely show up as complaints — people adapt in silence — so measure them, own them, date them and test them with the people who use them.  Monitoring had flagged the missing captions for three months — and the team had marked the alerts ‘expected’."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S12E09",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “He never asked”",
+   "sub": "Month ten · Wednesday"
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "He never asked.",
+   "body": "Teodor mentions it almost in passing: one of his engineers in Oslo, Aksel, who is hard of hearing, has used a caption app on his phone, propped against his laptop, in every meeting for a year — about twelve a week. He never raised it. When Lian asks him why, he says: “I didn't want to be the problem. Everyone else just hears the meeting.” The gap had a person in it all along. It just didn't have a complaint.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E09-2",
+   "label": "Test: how many meetings — and why it never showed up as a complaint."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E09-03",
+   "prompt": "How does access stay fixed after this year — and after you?",
+   "happening": "Gaps funded.",
+   "clock": "Month ten · Friday",
+   "known": [
+    "◉ $89k approved",
+    "◉ Aksel willing to test"
+   ],
+   "unknown": [
+    "The next gap"
+   ],
+   "risk": "A standard that promises what nobody checks.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "Next year's audit finds new gaps."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who checks access in a room nobody's complained about?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E09). Option B needs Team at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Lian checks every room herself once a year",
+     "result": "Sixty rooms, one person, once a year.",
+     "consequence": "One person's diary.",
+     "chips": [
+      "Only her"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Accessibility checks in every technician's acceptance checklist — captions tested, assistive listening checked — trained by Lian, and tested regularly by the people who use them, with Aksel invited first",
+     "result": "Aksel tests Oslo's rooms and asks for speaker names in the captions. Lian adds them to the standard. No room is accepted without the checks.",
+     "consequence": "Everyone checks; users test; the owner sets the requirement.",
+     "chips": [
+      "Checklist",
+      "Users"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "team": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Lian": 1,
+       "Aksel": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "A reminder in the standard that captions are required",
+     "result": "It was already in the standard.",
+     "consequence": "The best you can do without training the team — words, again.",
+     "chips": [
+      "Words"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Buy a caption app for everyone who asks",
+     "result": "Aksel still has to ask. So does everyone after him.",
+     "consequence": "Puts the burden back on the person who needs access.",
+     "chips": [
+      "Burden"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same sixty squares after the fix: all green, captions tested in 60 of 60; all fourteen large rooms circled white with assistive listening. Every gap a defect with an owner and a date; alerts live; checked at every acceptance; tested by the people who use them.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Sixty of sixty.",
+   "flags": [
+    "RV-188",
+    "RV-190"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "tested by users"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 6974
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1209",
+   "label": "**Service Mode:** run the week yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Month eleven"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "An Oslo meeting room, captions running on the display with speaker names; Aksel, a hearing aid visible, gestures at them; Lian beside him.",
+   "characters": [
+    {
+     "id": "aksel",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "lian",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_room",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Aksel",
+     "kind": "speech",
+     "text": "Speaker names. First meeting in a year I haven't had my phone out."
+    },
+    {
+     "side": "R",
+     "who": "Lian",
+     "kind": "speech",
+     "text": "And it's in the acceptance checklist now. Every room, every time."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1584
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S12-09",
+   "who": "aksel",
+   "prompt": "I didn't want to be the problem. Everyone else just hears the meeting.",
+   "options": [
+    {
+     "label": "“You weren't the problem. The rooms were — and the standard already said so. Will you help us test them?”",
+     "who": "aksel",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Yes. And can the captions show who's talking?",
+     "trust": {
+      "Aksel": 2
+     }
+    },
+    {
+     "label": "“You should have told us.”",
+     "who": "aksel",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I know. That's why I didn't.",
+     "trust": {
+      "Aksel": -1
+     }
+    },
+    {
+     "label": "“We'll sort it.”",
+     "who": "aksel",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "People have said that before.",
+     "trust": {
+      "Aksel": 0
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The headquarters auditorium, empty, the big screen tiled with thirty offices; Rashida and Maya look up at it.",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_townhall",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "The global town hall is on the fourteenth. Four thousand people, thirty offices. Your flight is on the thirteenth."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Good. Then we'll find out."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Inheritance.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6230
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-09b",
+   "teaser": "the caption licence order",
+   "title": "‘quantity: 38 · per room list, six years ago’",
+   "body": "Procurement's caption licence order: ‘Quantity 38 — per the room list.’ The room list was six years old. Twenty-two rooms had been built since.",
+   "thread": "Access",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Access the standard promises is a requirement, and a room without it is a defect — even when nobody complains, because the people who need it usually adapt quietly rather than be ‘the problem’. Measure the gap, never suppress an access alert as ‘expected’, give every gap an owner and a date, put accessibility checks in every acceptance, and have the people who rely on captions and assistive listening test them."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Who in your meetings might be adapting quietly?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S12E09",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

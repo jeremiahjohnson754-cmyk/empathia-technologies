@@ -42,7 +42,12 @@ In the starter the envelope is stored as columns of `app.outbox_event` (`schema_
 the business transaction. An unknown type, a missing aggregate, a negative revision, a missing required payload field, or a
 `resultLabel` of bare `PASS` aborts the whole transaction with a 500 — a change can never commit with a corrupt event. Delivery is
 at-least-once (outbox worker, 8 attempts, then DEAD_LETTER); handlers must be idempotent (the read-model handler recomputes from the
-canonical tables; notifications are unique per event, kind and role).
+canonical tables; notifications are unique per event, kind and role). Per aggregate, delivery follows commit order (`aggregate_seq`, assigned by the database at COMMIT; `aggregateRevision` is carried unchanged but not used for ordering, since several producers hard-code it) and a later
+event is held behind an undelivered earlier one; each handler's effect is recorded by a delivery receipt, and a consumer outside the
+database receives the idempotency key `outbox:<event id>:<sink>` to deduplicate on (`worker/outbox.ts`, migration 0027).
+The worker validates every event again before delivery (the same `validateEvent`, a schema version of MAJOR 1, a known tenant, and
+rooms that belong to the event's tenant): an event that fails is never handed to a handler; it is dead-lettered as `NON_RETRYABLE`,
+and a replay is refused (422) while it still fails. Events are never edited — fix the producer and emit a new event.
 
 ## Compatibility rules
 

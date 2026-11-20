@@ -1,0 +1,867 @@
+{
+ "_source": "Fix-It Lab fixes recorded by the founder's SIGNAL build package QA (reference/source/tools/labtest.py and labspecs_extra.py), extracted as data on 11 Nov 2026. wires: taps [from label, to label] that toggle a connection; gains: {block label: dB}; nums: {control label: value}; ips/vsel/psel: per-device settings; math: answers in order. Labs absent here have fixes derived in the unit tests from their own data, marked as derived.",
+ "labs": {
+  "LAB-SF-07": {
+   "ch": "s04e01",
+   "wires": [
+    [
+     "REF A · holdover (drifting)",
+     "Gateway reference input"
+    ],
+    [
+     "HOUSE REF B · black burst",
+     "Gateway reference input"
+    ]
+   ],
+   "math": [
+    56.4
+   ]
+  },
+  "PHY-S04E01": {
+   "ch": "s04e01",
+   "nums": {
+    "Clock error": 3
+   },
+   "math": [
+    2.16
+   ]
+  },
+  "LAB-EQ-04": {
+   "ch": "s04e02",
+   "first_num": 166.8,
+   "math": [
+    166.83
+   ]
+  },
+  "PHY-S04E02": {
+   "ch": "s04e02",
+   "nums": {
+    "Audio path delay": 180
+   },
+   "math": [
+    15.4
+   ]
+  },
+  "LAB-SF-08": {
+   "ch": "s04e03",
+   "wires": [
+    [
+     "Flood PSA (mastered hot)",
+     "Break bus"
+    ],
+    [
+     "Flood PSA (mastered hot)",
+     "Loudness processor"
+    ],
+    [
+     "Loudness processor",
+     "Break bus"
+    ]
+   ],
+   "gains": {
+    "Loudness processor": -10
+   },
+   "math": [
+    -10
+   ]
+  },
+  "PHY-S04E03": {
+   "ch": "s04e03",
+   "nums": {
+    "Gain on Flood PSA": -10
+   },
+   "math": [
+    2
+   ]
+  },
+  "LAB-SF-09": {
+   "ch": "s04e04",
+   "wires": [
+    [
+     "Caption inserter",
+     "Profile: SPORTS TEST (drops captions)"
+    ],
+    [
+     "Caption inserter",
+     "Profile: NEWS (keeps captions)"
+    ],
+    [
+     "Profile: NEWS (keeps captions)",
+     "Stream"
+    ]
+   ],
+   "math": []
+  },
+  "LAB-SF-10": {
+   "ch": "s04e05",
+   "wires": [
+    [
+     "Program (studio)",
+     "IP link · other carrier"
+    ],
+    [
+     "IP link · other carrier",
+     "Receive buffer (2 s)"
+    ],
+    [
+     "Receive buffer (2 s)",
+     "Transmitter input"
+    ]
+   ],
+   "math": [
+    4.5,
+    3.5
+   ]
+  },
+  "PHY-S04E05": {
+   "ch": "s04e05",
+   "nums": {
+    "Rain rate": 30,
+    "Dish height (both ends)": 40
+   },
+   "math": [
+    13.9
+   ]
+  },
+  "LAB-SF-11": {
+   "ch": "s04e06",
+   "wires": [
+    [
+     "Program return (2 s late)",
+     "IFB · reporter"
+    ],
+    [
+     "Studio anchor",
+     "IFB · reporter"
+    ],
+    [
+     "Director cues",
+     "IFB · reporter"
+    ]
+   ],
+   "math": []
+  },
+  "PHY-S04E06": {
+   "ch": "s04e06",
+   "nums": {
+    "Bonded links": 3
+   },
+   "math": [
+    6.85
+   ]
+  },
+  "LAB-NET-04": {
+   "ch": "s04e07",
+   "ips": {
+    "Juniper controller": "10.60.20.251",
+    "Harbor controller": "10.60.20.252",
+    "Forum controller": "10.60.20.253",
+    "30-East controller (exception)": "10.60.20.254"
+   },
+   "math": [
+    4
+   ]
+  },
+  "LAB-NET-05": {
+   "ch": "s04e08",
+   "vsel": {
+    "Graphics playout PC": 70,
+    "Prompter laptop (offline copy)": 70
+   },
+   "ips": {
+    "Graphics playout PC": "10.20.70.21",
+    "Prompter laptop (offline copy)": "10.20.70.22"
+   },
+   "math": []
+  },
+  "LAB-SF-12": {
+   "ch": "s04e09",
+   "wires": [
+    [
+     "REF B · house black (backup)",
+     "Timecode generator"
+    ],
+    [
+     "Timecode generator",
+     "Broadcast (backup)"
+    ],
+    [
+     "Timecode generator",
+     "Stream (backup)"
+    ],
+    [
+     "Caption encoder (backup)",
+     "Caption inserter"
+    ],
+    [
+     "Caption inserter",
+     "Stream (backup)"
+    ],
+    [
+     "Program (backup)",
+     "Stream (backup)"
+    ]
+   ],
+   "math": [
+    2.6
+   ]
+  },
+  "PHY-S04E09": {
+   "ch": "s04e09",
+   "nums": {
+    "Clock error": 1
+   },
+   "math": [
+    17.3
+   ]
+  },
+  "LAB-SF-13": {
+   "ch": "s04e10",
+   "wires": [
+    [
+     "Main audio bus",
+     "Broadcast · 2nd-language channel"
+    ],
+    [
+     "Second-language interpreter",
+     "Second-language bus"
+    ],
+    [
+     "Second-language bus",
+     "Broadcast · 2nd-language channel"
+    ],
+    [
+     "Second-language bus",
+     "Stream · alternate audio"
+    ]
+   ],
+   "math": []
+  },
+  "LAB-SF-14": {
+   "ch": "s05e01",
+   "wires": [
+    [
+     "Room DSP",
+     "Capture · LINE in"
+    ],
+    [
+     "Capture · LINE in",
+     "Recording (student portal)"
+    ],
+    [
+     "Capture · USB in",
+     "Recording (student portal)"
+    ]
+   ],
+   "math": [
+    5.5,
+    132
+   ]
+  },
+  "LAB-SF-15": {
+   "ch": "s05e03",
+   "wires": [
+    [
+     "Room DSP",
+     "Supplementary loop · rows 8–12"
+    ],
+    [
+     "Supplementary loop · rows 8–12",
+     "Seat · row 10"
+    ]
+   ],
+   "gains": {
+    "Main loop amplifier": 5,
+    "Supplementary loop · rows 8–12": 5
+   },
+   "math": [
+    -12.0,
+    25
+   ]
+  },
+  "LAB-PWR-02": {
+   "ch": "s05e04",
+   "psel": {
+    "Cameras · room 202 (3 × 25 W at night)": "SEC",
+    "Cameras · room 203 (3 × 25 W at night)": "SEC",
+    "Cameras · room 204 (3 × 25 W at night)": "SEC"
+   },
+   "math": [
+    -120,
+    24
+   ]
+  },
+  "LAB-SF-16": {
+   "ch": "s05e05",
+   "wires": [
+    [
+     "Program bus (local)",
+     "AEC reference input"
+    ],
+    [
+     "Far end · remote students",
+     "AEC reference input"
+    ]
+   ],
+   "math": [
+    300,
+    51.5
+   ]
+  },
+  "LAB-SF-17": {
+   "ch": "s05e06",
+   "wires": [
+    [
+     "Grant at the whiteboard",
+     "Lobe 3 · whiteboard"
+    ],
+    [
+     "Lobe 3 · whiteboard",
+     "Auto-mixer"
+    ]
+   ],
+   "gains": {
+    "Lobe 3 · whiteboard": 0
+   },
+   "math": [
+    12.0,
+    -3.0
+   ]
+  },
+  "PHY-S05E06": {
+   "ch": "s05e06",
+   "nums": {
+    "Listener distance": 4
+   },
+   "math": [
+    2
+   ]
+  },
+  "LAB-NET-07": {
+   "ch": "s05e07",
+   "vsel": {
+    "Quad kiosk · north": 410,
+    "Quad kiosk · fountain": 410,
+    "Quad kiosk · south gate": 410
+   },
+   "math": [
+    93,
+    9
+   ]
+  },
+  "LAB-SF-18": {
+   "ch": "s05e08",
+   "wires": [
+    [
+     "Hub time service (drifting)",
+     "Campus time servers (Tomas)"
+    ],
+    [
+     "Arena GPS clock (campus)",
+     "Campus time servers (Tomas)"
+    ],
+    [
+     "National time servers",
+     "Campus time servers (Tomas)"
+    ]
+   ],
+   "math": [
+    180,
+    5.4
+   ]
+  },
+  "PHY-S05E08": {
+   "ch": "s05e08",
+   "nums": {
+    "Clock error": 8
+   },
+   "math": [
+    5.4
+   ]
+  },
+  "LAB-SF-19": {
+   "ch": "s05e10",
+   "wires": [
+    [
+     "Arena PA mix",
+     "Interpreter's headphones"
+    ],
+    [
+     "Names reader mic",
+     "Clean reader feed"
+    ],
+    [
+     "Clean reader feed",
+     "Interpreter's headphones"
+    ],
+    [
+     "Interpreter (Spanish)",
+     "Second-language bus"
+    ],
+    [
+     "Second-language bus",
+     "Stream · alternate audio"
+    ],
+    [
+     "Second-language bus",
+     "Room headsets (Spanish)"
+    ]
+   ],
+   "math": [
+    17,
+    25
+   ]
+  },
+  "LAB-CON-01": {
+   "ch": "s06e01",
+   "psel": {
+    "Table A · 2 × network (Cat 6A)": "C2",
+    "Table A · 2 × microphone": "C2",
+    "Table A · display link (Cat 6A)": "C2",
+    "Table A · control (Cat 6)": "C2",
+    "Table B · 2 × microphone": "C1",
+    "Table B · display link (Cat 6A)": "C1",
+    "Table B · control (Cat 6)": "C2"
+   },
+   "math": [
+    40.9,
+    23.6
+   ]
+  },
+  "LAB-NET-06": {
+   "ch": "s05e02",
+   "vsel": {
+    "Cart · C-104": 210,
+    "Cart · C-106": 210,
+    "Cart · C-110": 210
+   },
+   "math": [
+    95,
+    94
+   ]
+  },
+  "PHY-S06E02": {
+   "ch": "s06e02",
+   "nums": {
+    "Projector distance": 10.8,
+    "Throw ratio (lens)": 1.8
+   },
+   "math": [
+    10.8
+   ]
+  },
+  "LAB-SF-20": {
+   "ch": "s06e03",
+   "wires": [
+    [
+     "Recorder A · UPS 1",
+     "Official record · copy 2"
+    ],
+    [
+     "Judge's mic",
+     "Passive mic splitter"
+    ],
+    [
+     "Witness mic",
+     "Passive mic splitter"
+    ],
+    [
+     "Counsel mics",
+     "Passive mic splitter"
+    ],
+    [
+     "Passive mic splitter",
+     "Recorder B · UPS 2"
+    ],
+    [
+     "Recorder B · UPS 2",
+     "Official record · copy 2"
+    ]
+   ],
+   "math": [
+    0.994,
+    0.3
+   ]
+  },
+  "LAB-PWR-03": {
+   "ch": "s06e05",
+   "psel": {
+    "Courtroom 3 ceiling · 20 × 6 W": "CH1",
+    "Courtroom 3 gallery · 12 × 6 W": "CH2",
+    "Lobby · 10 × 10 W": "CH3",
+    "Corridor A · 16 × 6 W": "CH2",
+    "Corridor B · 16 × 6 W": "CH4",
+    "Jury room · 6 × 3 W": "CH1",
+    "Stairs · 8 × 3 W": "CH1"
+   },
+   "math": [
+    100,
+    384
+   ]
+  },
+  "PHY-S06E06": {
+   "ch": "s06e06",
+   "nums": {
+    "Absorption added (panels)": 330
+   },
+   "math": [
+    1.84
+   ]
+  },
+  "PHY-S06E07": {
+   "ch": "s06e07",
+   "nums": {
+    "Loudspeaker spacing": 4.2
+   },
+   "math": [
+    6.0,
+    4.24
+   ]
+  },
+  "LAB-RF-02": {
+   "ch": "s06e08",
+   "freqs": {
+    "V3": 544.325,
+    "V4": 555.325,
+    "V5": 555.95
+   },
+   "math": [
+    545.0,
+    561.0
+   ]
+  },
+  "LAB-NET-08": {
+   "ch": "s06e10",
+   "vsel": {
+    "Lighting console": 20,
+    "Lighting node · stage left": 20,
+    "Lighting node · stage right": 20
+   },
+   "ips": {
+    "Lighting console": "10.20.0.11",
+    "Lighting node · stage left": "10.20.0.21",
+    "Lighting node · stage right": "10.20.0.22"
+   },
+   "math": [
+    240,
+    0.9
+   ]
+  },
+  "LAB-SF-21": {
+   "ch": "s07e01",
+   "wires": [
+    [
+     "Hearing-loop mix",
+     "Echo canceller reference"
+    ],
+    [
+     "Loudspeaker mix (far end)",
+     "Echo canceller reference"
+    ]
+   ],
+   "math": [
+    78,
+    22
+   ]
+  },
+  "PHY-S07E05": {
+   "ch": "s07e05",
+   "nums": {
+    "Polling interval": 5
+   },
+   "math": [
+    53.3,
+    7200
+   ]
+  },
+  "LAB-NET-09": {
+   "ch": "s07e06",
+   "vsel": {
+    "Control processor · management": 40,
+    "DSP · management": 40,
+    "Codec · management": 40,
+    "Jump host · device side": 40,
+    "Jump host · vendor side": 50,
+    "Integrator VPN landing": 50
+   },
+   "ips": {
+    "Control processor · management": "10.40.0.21",
+    "DSP · management": "10.40.0.22",
+    "Codec · management": "10.40.0.23",
+    "Jump host · device side": "10.40.0.5",
+    "Jump host · vendor side": "10.50.0.6"
+   },
+   "math": [
+    64.3,
+    28.6
+   ]
+  },
+  "LAB-PWR-04": {
+   "ch": "s07e07",
+   "psel": {
+    "Amplifier": "C2"
+   },
+   "math": [
+    14.8,
+    140
+   ]
+  },
+  "PHY-S07E07": {
+   "ch": "s07e07",
+   "sels": {
+    "Frame rate": "50"
+   },
+   "nums": {
+    "Shutter speed 1/x — x": 100
+   },
+   "math": [
+    100,
+    215.8
+   ]
+  },
+  "LAB-SF-22": {
+   "ch": "s07e08",
+   "wires": [
+    [
+     "Booth monitor bus (floor + Valmeran)",
+     "Stream track 1 · English"
+    ],
+    [
+     "Booth monitor bus (floor + Valmeran)",
+     "Captioner's feed (CART)"
+    ],
+    [
+     "Floor bus (clean, undelayed)",
+     "Stream track 1 · English"
+    ],
+    [
+     "Floor bus (clean, undelayed)",
+     "Captioner's feed (CART)"
+    ]
+   ],
+   "math": [
+    384,
+    1.152
+   ]
+  },
+  "PHY-S08E01": {
+   "ch": "s08e01",
+   "sels": {
+    "Route": "2"
+   },
+   "math": [
+    1.92,
+    4.28
+   ]
+  },
+  "LAB-NET-10": {
+   "ch": "s08e06",
+   "vsel": {
+    "Decoders · fw 3.8": 61,
+    "Firmware update tool": 61,
+    "Lighting console": 70,
+    "Lighting nodes": 70
+   },
+   "ips": {
+    "Firmware update tool": "10.61.0.20",
+    "Lighting console": "10.70.0.40",
+    "Lighting nodes": "10.70.0.41"
+   },
+   "math": [
+    45,
+    54
+   ]
+  },
+  "LAB-NET-11": {
+   "ch": "s09e04",
+   "vsel": {
+    "Paging station · FOH": 30,
+    "Paging station · box office": 30,
+    "DSP · paging input": 30,
+    "Guest Wi-Fi AP · lobby": 90,
+    "Guest Wi-Fi AP · bar": 90
+   },
+   "ips": {
+    "Paging station · FOH": "10.30.0.31",
+    "Paging station · box office": "10.30.0.32",
+    "DSP · paging input": "10.30.0.10"
+   },
+   "math": [
+    1080,
+    108
+   ]
+  },
+  "LAB-NET-12": {
+   "ch": "s09e07",
+   "vsel": {
+    "Control processor": 40,
+    "DSP · control port": 40,
+    "Jump host · device side": 40,
+    "Signage server": 50,
+    "Signage players (40)": 50,
+    "Jump host · vendor side": 95,
+    "Integrator VPN landing": 95
+   },
+   "ips": {
+    "Control processor": "10.40.0.21",
+    "DSP · control port": "10.40.0.22",
+    "Jump host · device side": "10.40.0.5",
+    "Signage server": "10.50.0.30",
+    "Jump host · vendor side": "10.95.0.6"
+   },
+   "math": [
+    62.4,
+    48
+   ]
+  },
+  "LAB-SF-23": {
+   "ch": "s10e01",
+   "wires": [
+    [
+     "Converter · internal clock",
+     "Converter clock select"
+    ],
+    [
+     "Interface word-clock out",
+     "Converter clock select"
+    ]
+   ],
+   "math": [
+    0.96,
+    66.7
+   ]
+  },
+  "LAB-SF-24": {
+   "ch": "s10e04",
+   "wires": [
+    [
+     "Recording computer (≈27 ms round trip)",
+     "Esme's headphones"
+    ],
+    [
+     "Esme's vocal (mic → converter)",
+     "Personal cue mixer (≈1.5 ms)"
+    ],
+    [
+     "Band playback (computer outputs)",
+     "Personal cue mixer (≈1.5 ms)"
+    ],
+    [
+     "Personal cue mixer (≈1.5 ms)",
+     "Esme's headphones"
+    ]
+   ],
+   "math": [
+    21.3,
+    27.3
+   ]
+  },
+  "LAB-SF-25": {
+   "ch": "s10e06",
+   "wires": [
+    [
+     "Single · hot master (−7 LUFS)",
+     "Playlist · hot master"
+    ],
+    [
+     "Single · hot master (−7 LUFS)",
+     "Normalizer A"
+    ],
+    [
+     "Normalizer A",
+     "Playlist · hot master"
+    ],
+    [
+     "Single · dynamic master (−12 LUFS)",
+     "Playlist · dynamic master"
+    ],
+    [
+     "Single · dynamic master (−12 LUFS)",
+     "Normalizer B"
+    ],
+    [
+     "Normalizer B",
+     "Playlist · dynamic master"
+    ]
+   ],
+   "gains": {
+    "Normalizer A": -7,
+    "Normalizer B": -2
+   },
+   "math": [
+    -7,
+    1.8
+   ]
+  },
+  "LAB-SF-26": {
+   "ch": "s11e06",
+   "wires": [
+    [
+     "Program bus",
+     "Stream · audio 2 (Spanish)"
+    ],
+    [
+     "Program bus",
+     "Partner feed · main"
+    ],
+    [
+     "Spanish interpreter (−14)",
+     "Second-language bus"
+    ],
+    [
+     "Second-language bus",
+     "Stream · audio 2 (Spanish)"
+    ],
+    [
+     "Second-language bus",
+     "Partner loudness · SAP"
+    ],
+    [
+     "Partner loudness · SAP",
+     "Partner feed · SAP"
+    ],
+    [
+     "Program bus",
+     "Partner loudness · main"
+    ],
+    [
+     "Partner loudness · main",
+     "Partner feed · main"
+    ]
+   ],
+   "gains": {
+    "Partner loudness · main": -10,
+    "Partner loudness · SAP": -10
+   },
+   "math": [
+    -10,
+    200
+   ]
+  },
+  "LAB-PWR-06": {
+   "ch": "s10e07",
+   "psel": {
+    "Studio valve amp (280 W)": "T2",
+    "Monitor power amps (600 W)": "T2"
+   },
+   "math": [
+    19.6,
+    16
+   ]
+  },
+  "LAB-PWR-05": {
+   "ch": "s08e02",
+   "psel": {
+    "Rack A burn-in": "T5",
+    "Rack B burn-in": "T1",
+    "Work lights": "T2",
+    "LED washes · group 2 (4 × 96 W)": "T4",
+    "LED washes · group 3 (4 × 96 W)": "T4"
+   },
+   "math": [
+    16.7,
+    192
+   ]
+  }
+ }
+}

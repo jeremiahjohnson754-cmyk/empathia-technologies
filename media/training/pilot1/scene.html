@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Pilot 1 scene</title>
+<!-- Original, generic illustration of a meeting-room console for the Pilot 1 training film (12 Nov 2026). It is NOT any vendor's
+     interface: no vendor logo, icon, colour scheme or layout is reproduced; the button words are the control names the vendor's own
+     article uses (docs/training/TEAMS_ROOMS_PILOT1_SOURCES.md). Rendered frame by frame by render.mjs. -->
+<style>
+@font-face { font-family: Inter; src: url(../../../apps/demo/dist/fonts/inter-400.woff2) format('woff2'); font-weight: 400; }
+@font-face { font-family: Inter; src: url(../../../apps/demo/dist/fonts/inter-600.woff2) format('woff2'); font-weight: 600; }
+@font-face { font-family: Inter; src: url(../../../apps/demo/dist/fonts/inter-700.woff2) format('woff2'); font-weight: 700; }
+:root { --wall: #1d2a33; --wall2: #24343f; --table: #6b5a48; --table2: #5a4a3a; --ink: #f4f6f7; --muted: #a9b6be; --panel: #0f171c; --panel2: #18232a;
+  --line: #2f3f49; --accent: #3fb6a8; --accent2: #e8b04a; --warn: #e07a5f; }
+* { box-sizing: border-box; } html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--wall); font-family: Inter, system-ui, sans-serif; color: var(--ink); }
+.room { position: absolute; inset: 0; background: linear-gradient(180deg, var(--wall2) 0%, var(--wall) 62%, #141e24 100%); }
+.floorline { position: absolute; left: 0; right: 0; top: 640px; height: 2px; background: #10181d; opacity: .6; }
+/* front display */
+.display { position: absolute; left: 150px; top: 120px; width: 760px; height: 428px; border-radius: 10px; background: #0b1013; box-shadow: 0 0 0 10px #090d10, 0 30px 60px rgba(0,0,0,.45); overflow: hidden; }
+.display .scr { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--muted); font-size: 30px; }
+.display .scr b { display: block; color: var(--ink); font-size: 40px; font-weight: 600; margin-bottom: 10px; }
+.qr { width: 150px; height: 150px; margin: 18px auto 0; background:
+  conic-gradient(from 90deg at 25% 25%, #fff 0 25%, #000 0 50%, #fff 0 75%, #000 0) 0 0/30px 30px; border: 10px solid #fff; image-rendering: pixelated; }
+/* table */
+.table { position: absolute; left: 60px; right: 60px; top: 640px; height: 440px; border-radius: 50% 50% 0 0 / 30% 30% 0 0; background: linear-gradient(180deg, var(--table) 0%, var(--table2) 100%); box-shadow: 0 -6px 0 #7a6855 inset; }
+/* console */
+.console { position: absolute; left: 1120px; top: 420px; width: 640px; height: 400px; border-radius: 22px; background: #0c1215; box-shadow: 0 0 0 8px #0a0f12, 0 24px 50px rgba(0,0,0,.5); transform-origin: 50% 100%; transition: none; }
+.ui { position: absolute; inset: 14px; border-radius: 12px; background: var(--panel); padding: 22px 26px; display: grid; grid-template-rows: auto 1fr auto; gap: 14px; }
+.ui .top { display: flex; justify-content: space-between; color: var(--muted); font-size: 20px; }
+.ui .row { display: flex; gap: 14px; flex-wrap: wrap; align-content: flex-start; }
+.mtg { width: 100%; display: flex; align-items: center; justify-content: space-between; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; font-size: 22px; }
+.mtg small { display: block; color: var(--muted); font-size: 17px; margin-top: 4px; }
+.empty { width: 100%; color: var(--muted); font-size: 22px; padding: 18px; border: 1px dashed var(--line); border-radius: 12px; text-align: center; }
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 58px; padding: 0 22px; border-radius: 12px; background: var(--panel2); border: 1px solid var(--line); font-size: 22px; font-weight: 600; color: var(--ink); }
+.btn.pri { background: var(--accent); border-color: var(--accent); color: #062521; }
+.btn.danger { background: var(--warn); border-color: var(--warn); color: #2a0d06; }
+.bar { display: flex; gap: 12px; justify-content: center; }
+.ico { width: 26px; height: 26px; margin-right: 10px; }
+/* laptop */
+.laptop { position: absolute; left: 640px; top: 600px; width: 380px; height: 230px; }
+.laptop .lid { position: absolute; left: 30px; top: 0; width: 320px; height: 200px; background: #2a3238; border-radius: 10px 10px 0 0; box-shadow: inset 0 0 0 10px #1a2025; }
+.laptop .lid .s { position: absolute; inset: 14px; border-radius: 4px; background: linear-gradient(135deg, #2c5d64, #1e3d4a); display: grid; place-items: center; color: #dfeceb; font-size: 18px; text-align: center; }
+.laptop .base { position: absolute; left: 0; top: 200px; width: 380px; height: 22px; background: #39424a; border-radius: 0 0 14px 14px; }
+.cable { position: absolute; left: 1018px; top: 812px; width: 140px; height: 6px; background: #0a0d0f; border-radius: 3px; transform: rotate(-8deg); }
+.badge { position: absolute; display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 999px; background: rgba(15,23,28,.92); border: 1px solid var(--line); font-size: 22px; font-weight: 600; }
+.badge.off { border-color: var(--warn); }
+/* help card */
+.card { position: absolute; left: 560px; top: 200px; width: 800px; padding: 34px 40px; border-radius: 18px; background: #f7f4ee; color: #182126; box-shadow: 0 30px 70px rgba(0,0,0,.5); }
+.card h2 { margin: 0 0 8px; font-size: 40px; } .card p { margin: 6px 0; font-size: 26px; color: #3b464c; } .card .k { font-weight: 700; color: #182126; }
+/* tap ring */
+.ring { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; border: 6px solid var(--accent2); pointer-events: none; opacity: 0; }
+/* title and illustration label */
+.label { position: absolute; left: 48px; top: 40px; font-size: 22px; color: var(--muted); letter-spacing: .02em; }
+.label b { color: var(--ink); font-weight: 600; }
+.step { position: absolute; right: 48px; top: 40px; font-size: 22px; color: var(--muted); font-variant-numeric: tabular-nums; }
+[hidden] { display: none !important; }
+</style></head>
+<body>
+<div class="room"><div class="floorline"></div></div>
+<div class="display"><div class="scr" id="scr"></div></div>
+<div class="table"></div>
+<div class="cable" id="cable" hidden></div>
+<div class="laptop" id="laptop" hidden><div class="lid"><div class="s" id="lapscr">Your laptop</div></div><div class="base"></div></div>
+<div class="console" id="console"><div class="ui" id="ui"></div></div>
+<div class="card" id="card" hidden><h2>This room's help card</h2><p>Atlas 4.218 · Executive Boardroom</p><p><span class="k">Report a problem:</span> scan the code on the card, or call the service desk on the card</p><p><span class="k">Owner:</span> named on the room's record</p><p style="font-size:20px;color:#6b767b;margin-top:14px">Synthetic example from the Empathia demonstration</p></div>
+<div class="label"><b>Run a meeting from the room console</b> · Illustration, not the actual screen</div>
+<div class="step" id="step"></div>
+<div class="ring" id="ring"></div>
+<script>
+const MIC = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+const VOL = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>';
+const bar0 = (t) => `<div class="top"><span>Atlas 4.218</span><span>${t}</span></div>`;
+const HOME = (list) => bar0('10:02') + `<div class="row">${list}</div><div class="bar"><span class="btn" data-k="meetnow">Meet now</span><span class="btn" data-k="joinid">Join with an ID</span><span class="btn" data-k="share">Share</span></div>`;
+const MEETING = '<div class="mtg"><div>Weekly planning<small>10:00 – 10:45 · this room is invited</small></div><span class="btn pri" data-k="join">Join</span></div>';
+const INCALL = (extra = '') => bar0('In a meeting · 10:06') + `<div class="row"><div class="mtg"><div>Weekly planning<small>4 people · camera on</small></div></div>${extra}</div><div class="bar"><span class="btn" data-k="mic">${MIC}Mic</span><span class="btn" data-k="vol">${VOL}Volume</span><span class="btn" data-k="share">Share</span><span class="btn danger" data-k="leave">Leave</span></div>`;
+const SCENES = {
+  room: { ui: HOME(MEETING), scr: '<div><b>Atlas 4.218</b>Ready for your meeting</div>', zoom: 1 },
+  'home-meeting': { ui: HOME(MEETING), scr: '<div><b>Atlas 4.218</b>Ready for your meeting</div>', zoom: 1.12 },
+  'home-empty': { ui: HOME('<div class="empty">No meetings for this room right now</div>'), scr: '<div><b>Join from your phone</b>Scan to join a meeting in this room<div class="qr"></div></div>', zoom: 1.12 },
+  'laptop-audio': { ui: INCALL(), scr: '<div><b>Weekly planning</b>4 people</div>', laptop: '<div>Joined on your laptop<br><b style="color:#ffb4a2">Laptop audio: off</b></div>', zoom: 1 , badge: true },
+  meetnow: { ui: HOME('<div class="empty">No meetings for this room right now</div>'), scr: '<div><b>Atlas 4.218</b>Ready for your meeting</div>', zoom: 1.12, after: 'meetnow2' },
+  meetnow2: { ui: bar0('10:03') + '<div class="row"><div class="mtg" style="display:block">Add people<small>Type a name…</small></div></div><div class="bar"><span class="btn pri" data-k="meetnow">Meet now</span><span class="btn" data-k="joinid">Join with an ID</span></div>', scr: '<div><b>Meeting started</b>Waiting for others</div>', zoom: 1.12 },
+  share: { ui: INCALL(), scr: '<div><b>Weekly planning</b>4 people</div>', laptop: 'Your laptop', cable: true, zoom: 1.08 },
+  sharing: { ui: INCALL().replace('data-k="share">Share', 'data-k="stopshare">Stop sharing'), scr: '<div><b>Your laptop screen</b>is showing in the room</div>', laptop: 'Sharing', cable: true, zoom: 1.08 },
+  incall: { ui: INCALL(), scr: '<div><b>Weekly planning</b>4 people</div>', zoom: 1.12 },
+  'incall-leave': { ui: INCALL(), scr: '<div><b>Weekly planning</b>4 people</div>', zoom: 1.12 },
+  help: { ui: HOME(MEETING), scr: '<div><b>Atlas 4.218</b>Ready for your meeting</div>', card: true, zoom: 1 },
+};
+window.setBeat = (b, total, t) => {
+  const s0 = SCENES[b.scene]; const s = s0.after && t >= 1.25 ? { ...SCENES[s0.after], zoom: s0.zoom } : s0; if (s !== s0) b = { ...b, tap: null }; const ui = document.getElementById('ui'); ui.innerHTML = s.ui; document.getElementById('scr').innerHTML = s.scr;
+  document.getElementById('laptop').hidden = !s.laptop; if (s.laptop) document.getElementById('lapscr').innerHTML = s.laptop;
+  document.getElementById('cable').hidden = !s.cable; document.getElementById('card').hidden = !s.card;
+  document.getElementById('step').textContent = `${b.n} of ${total}`;
+  const c = document.getElementById('console'); const z = 1 + (s.zoom - 1) * Math.min(1, t / 0.6); c.style.transform = `scale(${z})`;
+  const ring = document.getElementById('ring'); ring.style.opacity = 0;
+  if (b.tap) { const el = ui.querySelector(`[data-k="${b.tap}"]`); if (el) { const r = el.getBoundingClientRect(); const p = Math.max(0, Math.min(1, (t - 0.7) / 0.6));
+    ring.style.left = `${r.left + r.width / 2}px`; ring.style.top = `${r.top + r.height / 2}px`; ring.style.opacity = t < 0.7 ? 0 : String(1 - 0.6 * p); ring.style.transform = `scale(${0.7 + 0.6 * p})`;
+    el.style.outline = t >= 0.7 ? '4px solid #e8b04a' : 'none'; el.style.outlineOffset = '4px'; } }
+};
+</script>
+</body></html>

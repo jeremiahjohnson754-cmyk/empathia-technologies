@@ -1,0 +1,59 @@
+{
+ "step": 4,
+ "title": "Approve the classification (an engineer, not the author of the revision)",
+ "room": "R-PLN-0004",
+ "at": "2026-11-14T12:19:10.709Z",
+ "assertions": [
+  {
+   "id": "C-10",
+   "name": "the designer cannot approve the classification (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-11",
+   "name": "the systems engineer approves the suggested classification",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/classification/approve",
+   "persona": "designer",
+   "status": 403,
+   "request": {},
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "designer may not Approve the suggested room type, or override it with a reason (needs room.classify.approve)",
+    "code": "forbidden",
+    "correlationId": "0992c6a7-6ce7-473a-8998-90f0d2405504"
+   },
+   "correlationId": "0992c6a7-6ce7-473a-8998-90f0d2405504"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/classification/approve",
+   "persona": "syseng",
+   "status": 200,
+   "request": {},
+   "body": {
+    "approved": {
+     "archetype": "HUD",
+     "archetypeName": "Huddle Room",
+     "override": false,
+     "reason": "suggestion accepted",
+     "by": "5ae0efc6-7e37-40bb-8ea7-5788d5d4aea5",
+     "byRole": "syseng",
+     "at": "2026-11-14T12:19:01.151Z",
+     "suggestedWas": "HUD"
+    },
+    "applicable": 75,
+    "openIssues": 0,
+    "planChanged": false
+   },
+   "correlationId": "889624e3-fc02-4722-b3b6-04c6adaacb5b"
+  }
+ ]
+}

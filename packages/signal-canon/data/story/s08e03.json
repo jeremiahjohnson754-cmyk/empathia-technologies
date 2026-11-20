@@ -1,0 +1,876 @@
+{
+ "chapter": {
+  "id": "s08e03",
+  "kicker": "S08 · E03",
+  "title": "The Ceiling Went Up First",
+  "pill": "S08E03 · Ceiling",
+  "sub": "The studio theatre ceiling closed two weeks early. The supports are on a pallet, and one hatch opens onto nothing.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S08E03",
+   "RV-160",
+   "RV-161",
+   "RV-162",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FACC15"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 8 · EPISODE 3 · DRAFT · CASE-042  Studio theatre · Maya, Kit, Bram and Odile · Level L5 · Advanced support (formulas on request)  The studio theatre ceiling closed two weeks early. The loudspeaker supports are still on a pallet — and one hatch opens onto nothing.  ⚑ RV-160: sequence is the general contractor’s. RV-162: nobody in the story works at height; lifts belong to the trade using them. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Ceiling Went Up First",
+   "kind": "LIVE BUILD · SEQUENCE",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya_site",
+    "kit_site",
+    "bram"
+   ],
+   "stakes": "A finished ceiling, sixteen missing loudspeaker supports — and a hatch that opens onto nothing.",
+   "clock": "Before the ceiling contractor leaves site on Friday.",
+   "reward": "Supports in, a room with no holes, and a ceiling that never closes early again.",
+   "objectives": [
+    {
+     "key": "BR-S08E03-01",
+     "text": "Decide how the ceiling gets reopened"
+    },
+    {
+     "key": "twist",
+     "text": "Find why it closed early"
+    },
+    {
+     "key": "core",
+     "text": "Open the ceiling without making it worse"
+    },
+    {
+     "key": "BR-S08E03-02",
+     "text": "Decide what happens to S-9"
+    },
+    {
+     "key": "BR-S08E03-03",
+     "text": "Decide when ceilings may close"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Everything behind a ceiling is somebody's."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Closed”",
+   "sub": "Wednesday · 10:00 a.m. · studio theatre"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The studio theatre with seats going in and a finished, closed acoustic ceiling overhead; Kit points up at it; Maya looks up.",
+   "characters": [
+    {
+     "id": "kit_site",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya_site",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Closed. All of it. Our supports are still on the pallet."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Who closed it?"
+    }
+   ],
+   "narration": [],
+   "caption": "Two weeks ahead of the schedule everyone else was using.",
+   "flags": [
+    "RV-162"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6002
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "Studio theatre · Wednesday 10:00",
+   "lines": [
+    {
+     "who": "kit_site",
+     "pose": "P",
+     "expr": "worried",
+     "text": "Closed. All of it. Our supports are still on the pallet."
+    },
+    {
+     "who": "maya_site",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then nobody cuts anything until Bram sequences it. Get me the hatch schedule."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The ceiling went up first”",
+   "sub": "Wednesday · 10:15 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E03-01",
+   "prompt": "10:15. The AV contractor wants to cut in from below “where the loudspeakers go”. What do you do?",
+   "happening": "Ceiling closed over missing supports.",
+   "clock": "Wednesday 10:15 · ceiling contractor leaves Friday",
+   "known": [
+    "◉ 16 supports on a pallet",
+    "◉ Ceiling closed"
+   ],
+   "unknown": [
+    "Why it closed early",
+    "What else is behind it"
+   ],
+   "risk": "A ceiling cut up by the wrong trade — or a theatre without loudspeakers.",
+   "timer_s": 20,
+   "timeout": [
+    "The AV crew starts marking circles on the tiles.",
+    "The ceiling contractor sees them and stops work in protest."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who owns the order of trades — and what does he need from you?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Let them cut in",
+     "result": "Bram: “Nobody cuts my ceiling contractor's work.”",
+     "consequence": "Directing one trade into another's work.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "GC'S SEQUENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Sequence and trades are the GC's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Bram": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask Bram to stop any further closure; give him exact loudspeaker positions and the hatch schedule so he can sequence the ceiling contractor to reopen",
+     "result": "Bram holds the last two bays and asks for positions by tonight.",
+     "consequence": "Stop it growing, through its owner, with the information he needs.",
+     "chips": [
+      "GC sequences",
+      "Positions"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Bram": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Surface-mount loudspeakers below the ceiling instead",
+     "result": "Odile: “Not in my room.”",
+     "consequence": "Changes the design to hide a sequence error.",
+     "chips": [
+      "Design changed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Leave it until after opening",
+     "result": "A theatre with no loudspeakers in its ceiling.",
+     "consequence": "Deferred into the preview.",
+     "chips": [
+      "Deferred"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The ceiling went up first.",
+   "body": "The GC's lookahead moved the studio ceiling from week 21 to week 19 to recover float. The change note went to the ceiling contractor — not to AV, electrical, mechanical or fire, all of whom had work above it. The gap between two trades was a line on a schedule nobody else saw.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S08E03-1",
+   "label": "Test: whose gap is it — and what should have come first?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya_Site and Kit_Site beside a board. Five-metre ceiling, ears at one point two, ninety-degree loudspeakers. RFI fifty-eight took out S-9. What does that do? Coverage across is two times three point eight — seven point six, so each cone reaches three point eight. Without S-9, the seats under it are five metres from the nearest loudspeaker. A hole right where the critics sit. S-9 goes back — and the hatch schedule gets fixed with it.",
+   "characters": [
+    {
+     "id": "maya_site",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "kit_site",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Five-metre ceiling, ears at one point two, ninety-degree loudspeakers. RFI fifty-eight took out S-9. What does that do?"
+    },
+    {
+     "side": "R",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Coverage across is two times three point eight — seven point six, so each cone reaches three point eight. Without S-9, the seats under it are five metres from the nearest loudspeaker."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "A hole right where the critics sit. S-9 goes back — and the hatch schedule gets fixed with it."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2339
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Access hatch   Backbox   Ceiling loudspeaker   Construction sequence   If you need it   ƒ Ask for the formula · Ceiling loudspeaker spacing   ƒ FORMULA · Ceiling loudspeaker spacing  D = 2 × (H c  − H e ) × tan(θ ÷ 2)   D  spacing for edge-to-edge coverage at ear height, m  H c   ceiling height, m  H e   ear height — about 1.2 m seated  θ  the loudspeaker's coverage angle, degrees      ƒ Ask for the formula · Percentage   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "F3",
+   "label": "**Learn it now:** sequence, hold points and hatch schedules.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     The OSI model, AV style — an introduction     The OSI model applied to video and wireless"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "👂 HEAR IT · CHALLENGE · LEVEL 3  Undo the bad guitar EQ  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "hear-eq"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-803",
+   "label": "**Sequence it:** open a finished ceiling without making it worse.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The hatch over nothing”",
+   "sub": "Wednesday · 3:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The hatch over nothing.",
+   "body": "Kit checks positions against the RFI log. RFI 58, answered in March as value engineering, deleted S-9 and moved S-8 a metre east. Nobody updated the hatch schedule: one hatch was cut over empty space, and S-8 has no hatch at all. And without S-9, the seats beneath it — rows F to H — are 5.0 m from the nearest loudspeaker, whose coverage at ear height reaches 3.8.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S08E03-2",
+   "label": "Test: are those seats covered — and what did the RFI leave behind?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A reflected ceiling plan: sixteen loudspeaker positions on a 5.0 m grid with their coverage circles; S-9 crossed out in red with a hole in coverage; notes: RFI 58 deleted S-9, seats 5.0 m from a loudspeaker.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A hole where the critics sit.",
+   "flags": [
+    "RV-161"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "coverage without S-9"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5555
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E03-02",
+   "prompt": "Wednesday evening. What happens to S-9?",
+   "happening": "S-9 deleted; hole found.",
+   "clock": "Wednesday 18:00",
+   "known": [
+    "◉ 5.0 m vs 3.8 m",
+    "◉ Ceiling open now"
+   ],
+   "unknown": [
+    "Dario's view on cost"
+   ],
+   "risk": "A permanent hole in the studio theatre's coverage.",
+   "timer_s": 25,
+   "timeout": [
+    "The RFI waits for next week's meeting.",
+    "The ceiling closes again without S-9."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "When will fixing S-9 ever be cheaper?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Leave it out — don't add work while the ceiling's open",
+     "result": "Rows F–H hear the show 6 dB down and muddy.",
+     "consequence": "Keeps the hole to save a support.",
+     "chips": [
+      "Hole kept"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A coverage hole is a design failure.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Restore S-9 by RFI response through Odile while the ceiling is open — the cheapest moment it will ever have — and re-issue the hatch schedule so S-8 gets its hatch",
+     "result": "Odile issues it that night; Dario agrees the small cost; the hatch schedule is re-issued.",
+     "consequence": "Fix the design while it's cheapest; fix the documents with it.",
+     "chips": [
+      "Design fixed",
+      "Documents true"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Odile": 1,
+       "Dario": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Turn S-5, S-10 and S-13 up 6 dB",
+     "result": "The seats under them get loud; the hole stays a hole.",
+     "consequence": "Level can't replace coverage.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Dario to decide, without numbers",
+     "result": "Dario: “What does it cost, and what does it fix?”",
+     "consequence": "An owner can't decide on adjectives.",
+     "chips": [
+      "No numbers"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The acoustic tile",
+   "body": "In 1914 the acoustician Wallace Sabine and the vault builder Rafael Guastavino Jr. patented a sound-absorbing ceramic tile, used to tame echoing stone churches and halls. It was one of the first ‘acoustic’ ceilings — and it raised the question every ceiling since has had to answer: what has to go in behind it before it closes?",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #74 · AVERY'S LENS  Close nothing until everything behind it is signed  A finished surface hides everything behind it. Make closing it a checkpoint every trade behind it signs.  The studio theatre ceiling closed two weeks early. Sixteen loudspeaker supports were still on a pallet — and one hatch opened onto nothing."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S08E03",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The reflected ceiling plan after the fix: all sixteen positions with overlapping coverage circles, S-9 restored; notes: hatches re-issued, survey rows F–H within 3 dB.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Sixteen loudspeakers, sixteen hatches.",
+   "flags": [
+    "RV-161"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "coverage survey"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5552
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S8-03",
+   "who": "bram",
+   "prompt": "I closed it to save two weeks. You want me to lose them again?",
+   "options": [
+    {
+     "label": "“Four days, not two weeks — if we do it once, in order, while your ceiling crew is still here. And we fix S-9 while it's open.”",
+     "who": "bram",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Four days. Once. Positions on my desk by tonight.",
+     "trust": {
+      "Bram": 2
+     }
+    },
+    {
+     "label": "“You shouldn't have resequenced without asking.”",
+     "who": "bram",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Noted. Doesn't open a ceiling.",
+     "trust": {
+      "Bram": -1
+     }
+    },
+    {
+     "label": "“Who else is above that ceiling?”",
+     "who": "bram",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Fire, electrical, mechanical. Let me call them.",
+     "trust": {
+      "Bram": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S8-03a",
+   "teaser": "RFI 58",
+   "title": "delete S-9 (VE)",
+   "body": "RFI 58, March, answered by the previous design lead: ‘Delete S-9, move S-8 1.0 m east — saves 2,400 (illustrative).’ No coverage check attached. The hatch schedule, sheet A-522, wasn't touched.",
+   "thread": "Room",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S08E03-03",
+   "prompt": "Friday. When may a ceiling close from now on?",
+   "happening": "Ceiling reopened, fixed, closed.",
+   "clock": "Friday 14:00",
+   "known": [
+    "◉ No hold point for closure"
+   ],
+   "unknown": [
+    "Which ceiling is next"
+   ],
+   "risk": "The next early closure.",
+   "timer_s": 25,
+   "timeout": [
+    "The lookahead template doesn't change.",
+    "The rehearsal room ceilings close early."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What check would have stopped this on Monday of week 19?"
+    }
+   ],
+   "note": "Draft decision (DR-S08E03).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Ask the ceiling contractor to wait for AV next time",
+     "result": "Next time it's the sprinkler fitter who's behind.",
+     "consequence": "One trade, one conversation.",
+     "chips": [
+      "Partial"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ceiling closure becomes a hold point on the GC's schedule: no area closes until AV, electrical, mechanical and fire sign above it and the hatch schedule is checked against the latest RFIs",
+     "result": "Bram adds it to the lookahead template that afternoon.",
+     "consequence": "Hidden work signed before it's hidden.",
+     "chips": [
+      "Hold point",
+      "Every trade"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Bram": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "AV installs first everywhere",
+     "result": "The sprinkler mains go in after your loudspeakers — through them.",
+     "consequence": "One trade's convenience.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing — it was a one-off",
+     "result": "The rehearsal rooms close early the week after.",
+     "consequence": "It wasn't.",
+     "chips": [
+      "Repeat"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-803",
+   "label": "**Service Mode:** run the week yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-042 · SIGNAL original  The Ceiling Went Up First  A ceiling closed two weeks early over missing loudspeaker supports — and one hatch opened onto a loudspeaker that no longer existed.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-042"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 4:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The studio theatre on Friday afternoon, ceiling closed again with sixteen tidy loudspeaker grilles; Bram and Maya on the floor.",
+   "characters": [
+    {
+     "id": "bram",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya_site",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Bram",
+     "kind": "speech",
+     "text": "Four days. Once. And a hold point in my template I'll pretend was my idea."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It was. On Wednesday."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5037
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S8-03b",
+   "teaser": "the lookahead schedule",
+   "title": "ceiling · studio · wk 21 → wk 19",
+   "body": "The GC's three-week lookahead: ‘Ceiling · studio theatre · moved wk 21 → wk 19 (recover float).’ The trades above the ceiling weren't on the change note.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The site trailer; Nkechi, the commissioning agent, holds a thick stack of cable test reports, one page pulled out.",
+   "characters": [
+    {
+     "id": "nkechi",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s8kit.bg_trailer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nkechi",
+     "kind": "speech",
+     "text": "Forty-eight cable certifications. All pass. Eleven of them are the same test."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The same test?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Pull Test.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3254
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Sequence belongs to the general contractor; closing a ceiling should be a hold point every trade above it signs. Hatch schedules follow the equipment through every RFI. When value engineering deletes a loudspeaker, check coverage: D = 2 × (H c  − H e ) × tan(θ ÷ 2), and spacing ≤ D ÷ √2 on a square grid. Fix the design while the ceiling is open — it will never be cheaper."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What gets “closed” at your work — a release, a report, a room — before everyone behind it has signed?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S08E03",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

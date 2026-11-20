@@ -6,16 +6,20 @@
  * more.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Facts, Notice, Tag, Tabs, QuizRunner, DrillRunner, DRILL_KINDS, type Quiz, type Drill } from '@empathia/ui';
+import { Button, Facts, Notice, Tag, Tabs, QuizRunner, DrillRunner, DRILL_KINDS, PageHero, StatTile, Card, Chip, List, ListRow, MeterRow, Icon, type Quiz, type Drill } from '@empathia/ui';
+import { loadLabs, DOMAIN_COMPETENCY } from '../learn/store.js';
+import { plural } from './viz.js';
 import * as S from '../workspace/store.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
+import { ExportMenu } from '../export/ExportMenu.js';
+import { learnPackage } from '../export/learn.js';
 
 interface Lesson { domain: string; title: string; sum: string; cards: string[]; quiz?: string }
 interface CanonCase { title: string; episode: string; hook: string; learn: string[]; id: string; canon: boolean }
 interface Lib { lessons: Record<string, Lesson>; lessonOrder: string[]; lessonDomains: string[]; quizzes: Record<string, Quiz>; drills: Record<string, Drill>; drillOrder: string[]; cases: Record<string, CanonCase>; caseOrder: string[]; formulas: Record<string, { name: string; eq: string; where: Array<[string, string]>; ex: string }>; glossary: Array<{ id: string; term: string; d: string; dom: string }> }
 let cache: Lib | null = null; let pending: Promise<Lib> | null = null;
-export function loadLib(): Promise<Lib> { if (cache) return Promise.resolve(cache); if (!pending) pending = fetch('signal-lib.json').then((r) => { if (!r.ok) throw new Error(`signal-lib.json ${r.status}`); return r.json(); }).then((j: Lib) => { cache = j; return j; }); return pending; }
+export function loadLib(): Promise<Lib> { if (cache) return Promise.resolve(cache); if (!pending) pending = fetch('signal-lib.json').then((r) => { if (!r.ok) throw new Error(`signal-lib.json ${r.status}`); return r.json(); }).then((j: Lib) => { cache = j; return j; }, (e) => { pending = null; throw e; }); return pending; }   // a failed load can be retried (it was kept as a rejected promise)
 const html = (s: string) => ({ __html: s });   // first-party library text (lesson cards carry <b> and formula spans), shipped with the build, never user input
 const TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { PROPOSED: 'warn', SME_REVIEWED: 'info', REJECTED: 'bad', APPROVED: 'ok' };
 const when = (s: string) => s.slice(0, 16).replace('T', ' ');
@@ -28,17 +32,67 @@ export function LearnPage({ perspective, hash }: { perspective: string; hash: st
   const wantCase = /[?&]case=([A-Z0-9-]+)/.exec(hash)?.[1];
   const [tab, setTab] = useState(hash.startsWith('#/learn') ? 'lessons' : 'cases');
   return (
-    <section className="learn">
-      <header className="build__head"><div><p className="kicker">Empathia Learn · SIGNAL</p><h1>Reviewed cases from what actually happened</h1>
-        <p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>. A case needs customer permission, de-identification, an SME review and the steward's approval. Training performance never grants work authorization.</p></div>
-        {lib && <div className="build__state"><Tag tone="muted">{Object.keys(lib.lessons).length} lessons</Tag><Tag tone="muted">{Object.keys(lib.drills).length} drills</Tag><Tag tone="muted">{Object.keys(lib.cases).length} canon cases</Tag></div>}
-      </header>
+    <section className="learn wk" data-native="workspace">
+      <PageHero product="learn" icon="book" eyebrow="Empathia Learn · SIGNAL" title="Reviewed cases from what actually happened"
+        lede={<>SIGNAL: the same Core that runs the estate, read as something to practise on. A case needs customer permission, de-identification, an SME review and the steward's approval. Training performance never grants work authorization. Acting as <b>{personaLabel(persona)}</b>.</>}
+        meta={lib ? [<Chip key="l" small tone="muted">{Object.keys(lib.lessons).length} lessons</Chip>, <Chip key="d" small tone="muted">{Object.keys(lib.drills).length} drills</Chip>, <Chip key="c" small tone="muted">{Object.keys(lib.cases).length} canon cases</Chip>, <Chip key="s" small tone="accent">Scores stay in this browser</Chip>] : [<Chip key="s" small tone="accent">Scores stay in this browser</Chip>]}
+        actions={<><a className="ui-btn ui-btn--primary" href="#/learn/labs">Open the labs</a><a className="ui-btn" href="#/story" data-testid="learn-story">Read the SIGNAL story</a><a className="ui-btn" href="#/onboard" data-testid="learn-onboard">IT Onboarding Success Guide</a><a className="ui-btn" href="#/manual" data-testid="learn-manual">Engineering standards manual</a><a className="ui-btn" href="#/servicehands">ServiceHands</a></>} />
+      <Overview w={w} persona={persona} lib={lib} />
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.why.map((x) => <li key={x}>{x}</li>)}</ul></Notice></div>}
       <Tabs label="Learn" active={tab} onChange={setTab} tabs={[{ key: 'cases', label: 'Cases', count: w.learnCases.length }, { key: 'lessons', label: 'Lessons' }, { key: 'drills', label: 'Drills' }, { key: 'canon', label: 'Casebook' }, { key: 'reference', label: 'Formulas & glossary' }]} />
       {tab === 'cases' && <Cases w={w} apply={apply} persona={persona} want={wantCase || null} />}
+      {tab === 'cases' && <ExportMenu testId="learn-export" title="Learn record" by={personaLabel(persona)} sub={`The governed cases, and ${personaLabel(persona)}’s readiness, drills and labs (no one else’s), as six files`}
+        make={() => { const labs = Object.values(loadLabs().results); return learnPackage(w, { persona, personaLabel, labs, drillTitle: (id) => lib?.drills[id]?.title, readiness: readiness(w, persona, labs.filter((r) => r.persona === persona && r.passed).length) }, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }); }} />}
       {tab !== 'cases' && (err ? <Notice tone="bad">The SIGNAL library did not load: {err}</Notice> : !lib ? <p className="ui-meta">Loading the SIGNAL library…</p> : tab === 'lessons' ? <Lessons lib={lib} /> : tab === 'drills' ? <Drills lib={lib} w={w} apply={apply} persona={persona} /> : tab === 'canon' ? <Canon lib={lib} /> : <Reference lib={lib} />)}
     </section>
   );
+}
+
+// ------------------------------------------------------------------------------------------------------------ overview: readiness, competencies, learn from a room
+/** Readiness points (the demonstration's stated rule; practice evidence only, never an authorization): a drill answered correctly 5,
+ * a lab passed 10, a case this person proposed that reached APPROVED 20. Levels at 30, 90 and 200 points. */
+export const POINTS = { drill: 5, lab: 10, case: 20 } as const;
+export const LEVELS: Array<[number, string]> = [[0, 'Shadowing'], [30, 'Assisted'], [90, 'Independent'], [200, 'Trusted']];
+export function readiness(w: S.Workspace, persona: string, labsPassed: number) {
+  const drills = new Set(w.training.filter((t) => t.by === persona && t.correct).map((t) => t.drillId));
+  const cases = w.learnCases.filter((c) => c.proposedBy === persona && c.state === 'APPROVED').length;
+  const points = drills.size * POINTS.drill + labsPassed * POINTS.lab + cases * POINTS.case;
+  const k = LEVELS.filter(([p]) => points >= p).length - 1; const next = LEVELS[k + 1];
+  return { points, level: LEVELS[k]![1], next: next ? { at: next[0], name: next[1], need: next[0] - points } : null, drills: drills.size, cases };
+}
+function Overview({ w, persona, lib }: { w: S.Workspace; persona: string; lib: Lib | null }) {
+  const labs = Object.values(loadLabs().results).filter((r) => r.persona === persona);
+  const passed = labs.filter((r) => r.passed);
+  const R = readiness(w, persona, passed.length);
+  const drillTotal = lib ? lib.drillOrder.length : null; const labTotal = 3 + (lib && (lib as unknown as { labOrder?: string[] }).labOrder ? (lib as unknown as { labOrder: string[] }).labOrder.length : 0);
+  const comps = [...new Set(Object.values(DOMAIN_COMPETENCY))].map((c) => ({ c, labs: passed.filter((r) => DOMAIN_COMPETENCY[r.domain] === c) }));
+  const rooms = [...new Set(w.incidents.map((i) => i.roomId))].map((id) => { const inc = w.incidents.filter((i) => i.roomId === id); const kase = w.learnCases.find((c) => inc.some((i) => i.id === c.incidentId)); return { id, name: inc[0]!.roomName, inc, kase, eligible: inc.filter((i) => ['RESOLVED', 'CLOSED'].includes(i.state) && !i.learnCaseId) }; });
+  const nextDrill = lib?.drillOrder.find((id) => !w.training.some((t) => t.by === persona && t.drillId === id && t.correct));
+  const tech = S.techForPersona(persona);
+  return (<>
+    <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="learn-tiles">
+      <StatTile label="Readiness" value={R.level} icon="spark" tone="learn" hint={`${R.points} points${R.next ? ` · ${R.next.need} to ${R.next.name.toLowerCase()}` : ''}`} />
+      <StatTile label="Cases proven" value={w.learnCases.filter((c) => c.state === 'APPROVED').length} unit={`of ${w.learnCases.length}`} icon="book" tone="ok" hint={`${R.cases} proposed by you`} />
+      <StatTile label="Drills passed" value={R.drills} unit={drillTotal === null ? undefined : `of ${drillTotal}`} icon="check" tone="info" hint="Six kinds, from the SIGNAL library" />
+      <StatTile label="Labs passed" value={passed.length} unit={`of ${labTotal}`} icon="play" tone="indigo" href="#/learn/labs" hint={`${labs.length - passed.length} attempted, not yet passed`} />
+    </div>
+    <div className="wk-g3">
+      <Card icon="arrow-right" tone="learn" title="What to do next" sub="The next step for this perspective">
+        <List label="Next steps">
+          {rooms.some((r) => r.eligible.length) && S.LEARN_PROPOSE.some((a) => holds(persona, a)) ? <ListRow title="Write a case from a resolved incident" sub={`${rooms.flatMap((r) => r.eligible).length} incident(s) eligible`} href="#/v25/learn" chevron leading={<Icon name="book" />} /> : null}
+          {nextDrill && lib ? <ListRow title={`Drill: ${lib.drills[nextDrill]!.title}`} sub={`${lib.drills[nextDrill]!.domain} · not passed yet`} href="#/learn" chevron leading={<Icon name="check" />} /> : null}
+          <ListRow title={passed.length < 3 ? 'Open a lab: Audio, Camera or Lighting' : 'Try a SIGNAL fault lab'} sub="Simulated instruments; the result is evidence on your record" href="#/learn/labs" chevron leading={<Icon name="play" />} />
+        </List>
+      </Card>
+      <Card icon="shield" title="Competencies" sub={tech ? 'Evidenced by passed labs on this person’s internal record' : 'Labs evidence the technicians’ internal records'}>
+        <ul className="kit-meters">{comps.map(({ c, labs: l }) => <MeterRow key={c} label={c.replace('cert.', '').replace('_', ' ')} sub={l.length ? `lab-evidenced: ${l.map((x) => x.title.split(':')[0]).join(', ')}` : 'no lab evidence yet'} value={l.length ? 100 : 0} state={l.length ? 'healthy' : 'modelled'} />)}</ul>
+        <p className="wk-note">Lab evidence is never a credential and never an authorization to work.</p>
+      </Card>
+      <Card icon="room" title="Learn from a room" sub="Rooms whose service history can become a reviewed case" testId="learn-rooms">
+        <List label="Rooms with service history">{rooms.map((r) => <ListRow key={r.id} title={r.name} sub={`${plural(r.inc.length, 'service job')}${r.kase ? ` · case ${r.kase.id} ${r.kase.state}` : r.eligible.length ? ` · ${r.eligible.length} eligible for a case` : ''}`} href={`#/replay/${r.id}`} chevron leading={<Icon name="room" />} trailing={r.kase ? <Chip small tone={r.kase.state === 'APPROVED' ? 'ok' : 'warn'}>{r.kase.state === 'APPROVED' ? 'Case proven' : 'In review'}</Chip> : <Chip small tone="muted">Not taken</Chip>} />)}</List>
+      </Card>
+    </div>
+  </>);
 }
 
 // ------------------------------------------------------------------------------------------------------------ governed cases
@@ -67,8 +121,9 @@ function Cases({ w, apply, persona, want }: { w: S.Workspace; apply: ReturnType<
         <h2 className="build__h">{c.title} <Tag tone={TONE[c.state]}>{c.state}</Tag></h2>
         <p>{c.lesson}</p>
         <Facts items={[['Source incident', `${c.incidentId}${c.apexId ? ` · APEX ${c.apexId}` : ''}`], ['Permission', c.permission ? `obtained · recorded by ${personaLabel(c.permission.by)} ${when(c.permission.at)}` : 'not obtained'], ['De-identified', c.deidentified ? 'yes' : 'no'], ['Proposed by', `${personaLabel(c.proposedBy)} · ${when(c.proposedAt)}`], ['SME review', c.smeReview ? `${c.smeReview.decision} by ${personaLabel(c.smeReview.by)} ${when(c.smeReview.at)}${c.smeReview.note ? ` — ${c.smeReview.note}` : ''}` : 'pending'], ['Steward approval', c.approvedBy ? personaLabel(c.approvedBy) : 'pending']]} />
-        {c.state === 'PROPOSED' && (canSme ? <div className="build__row"><input aria-label="Review note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="SME note" /><Button small kind="primary" onClick={() => apply((x) => S.smeReview(x, persona, c.id, 'approve', note))}>SME review: approve</Button><Button small onClick={() => apply((x) => S.smeReview(x, persona, c.id, 'reject', note))}>Reject</Button></div> : <p className="ui-meta">SME review pending — a subject-matter reviewer (commissioning, DSP, camera, control or assurance) records it.</p>)}
-        {c.state === 'SME_REVIEWED' && (canApprove ? <Button small kind="primary" onClick={() => apply((x) => S.approveCase(x, persona, c.id))}>Approve for Learn (training.case_approved)</Button> : <p className="ui-meta">Awaiting the data steward's approval (case.approve).</p>)}
+        {c.state === 'PROPOSED' && c.proposedBy === persona && canSme && <p className="ui-meta" data-testid="learn-own">You proposed this case, so another subject-matter reviewer reviews it (separation of duties).</p>}
+        {c.state === 'PROPOSED' && c.proposedBy !== persona && (canSme ? <div className="build__row"><input aria-label="Review note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="SME note" /><Button small kind="primary" onClick={() => apply((x) => S.smeReview(x, persona, c.id, 'approve', note))}>SME review: approve</Button><Button small onClick={() => apply((x) => S.smeReview(x, persona, c.id, 'reject', note))}>Reject</Button></div> : <p className="ui-meta">SME review pending — a subject-matter reviewer (commissioning, DSP, camera, control or assurance) records it.</p>)}
+        {c.state === 'SME_REVIEWED' && (canApprove && c.proposedBy !== persona && c.smeReview?.by !== persona ? <Button small kind="primary" onClick={() => apply((x) => S.approveCase(x, persona, c.id))}>Approve for Learn (training.case_approved)</Button> : <p className="ui-meta">Awaiting the data steward's approval (case.approve).</p>)}
         {c.state === 'APPROVED' && <Notice tone="ok">Published to Learn. It links the lesson to the incident's evidence chain; it grants nobody any authority.</Notice>}
         <div className="svc__links"><a href={`#/v25/service?id=${c.incidentId}`}>ServiceHands {c.incidentId}</a>{c.apexId ? <> · <a href={`#/v25/apex?case=${c.apexId}`}>APEX {c.apexId}</a></> : null}</div>
       </div> : <Notice tone="info">Cases are written from resolved incidents. {eligible.length} incident(s) are eligible right now.</Notice>}</div>

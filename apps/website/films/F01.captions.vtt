@@ -1,0 +1,142 @@
+WEBVTT
+
+NOTE
+Captions of "The living system: one environment, one engineering language" (F01, 4:40). The cues are the captions burned into the
+master (sha256 4d31db34fb21…), read from its frames on 2026-11-13 and checked by eye between every pair of cues; on-screen labels
+and interface text are not captioned.
+
+1
+00:00:02.250 --> 00:00:08.250
+Every space has a design. Every device has a purpose. Every system has dependencies.
+
+2
+00:00:09.000 --> 00:00:12.750
+But understanding how they fit together has never been simple.
+
+3
+00:00:21.750 --> 00:00:24.750
+Empathia begins with the environment itself.
+
+4
+00:00:25.000 --> 00:00:30.250
+Open the estate. Choose a building. Step onto a floor. Enter a room.
+
+5
+00:00:41.000 --> 00:00:45.750
+Every count here is a recorded relationship that this role is allowed to open.
+
+6
+00:00:50.750 --> 00:00:54.000
+The same estate welcomes a visitor: check in, meet a host,
+
+7
+00:00:54.000 --> 00:00:58.000
+and Lite shows the way to the room. The check-in is simulated.
+
+8
+00:01:10.250 --> 00:01:14.500
+Atlas 4.218 is not an isolated record. It has devices,
+
+9
+00:01:14.750 --> 00:01:18.000
+a switch, a power panel, an owner and a support path.
+
+10
+00:01:19.000 --> 00:01:21.750
+Ask in your own words — who supports this room —
+
+11
+00:01:21.750 --> 00:01:26.000
+and Empathia shows how it read them, and which record they resolved to.
+
+12
+00:01:32.250 --> 00:01:35.500
+Step back, and the same relationships become a graph.
+
+13
+00:01:43.000 --> 00:01:50.000
+Open the Device Register, and it is the same microphone, with the same identity: D-0097.
+
+14
+00:01:53.000 --> 00:01:57.500
+Replace it, and the old record is kept. The new device gets its own identity,
+
+15
+00:01:57.500 --> 00:02:00.250
+and the room is flagged for revalidation.
+
+16
+00:02:04.000 --> 00:02:06.750
+Open the room, and the change is already in its history:
+
+17
+00:02:07.000 --> 00:02:10.000
+who recorded it, why, and the retest it set.
+
+18
+00:02:13.000 --> 00:02:18.000
+Telemetry says the room is reachable. Reachable is not the same as working.
+
+19
+00:02:24.250 --> 00:02:29.000
+Remote diagnostics go only as far as the evidence allows. Three checks fail,
+
+20
+00:02:29.000 --> 00:02:33.750
+five are not authorized, and where remote evidence stops, a work order begins.
+
+21
+00:02:46.000 --> 00:02:51.250
+Operations Ready will not call this room ready while a mandatory criterion is failing.
+
+22
+00:02:53.750 --> 00:02:58.500
+In Beacon 3.101, sign-off is blocked: the rear rows fall below the
+
+23
+00:02:58.500 --> 00:03:02.750
+speech intelligibility standard. The refusal stays on the record.
+
+24
+00:03:05.000 --> 00:03:07.000
+ServiceHands routes the fix in the open,
+
+25
+00:03:07.000 --> 00:03:11.000
+with an engineer's approval wherever the baseline changes.
+
+26
+00:03:16.250 --> 00:03:19.750
+In Empathia Lite, the same room becomes a space you can see:
+
+27
+00:03:19.750 --> 00:03:22.750
+its geometry, its equipment, its coverage.
+
+28
+00:03:29.250 --> 00:03:34.250
+Optimize models alternatives and shows its working. Every input is cited.
+
+29
+00:03:34.250 --> 00:03:38.000
+Every projection is labeled as modeled, never as measured.
+
+30
+00:03:46.750 --> 00:03:49.750
+And what the estate knows does not stay with one engineer.
+
+31
+00:03:50.000 --> 00:03:54.750
+SIGNAL turns the same records into cases, labs and drills for the next one.
+
+32
+00:04:06.750 --> 00:04:09.500
+And Core Replay plays a room's whole life back,
+
+33
+00:04:09.500 --> 00:04:12.500
+from the first request through commissioning to today.
+
+34
+00:04:31.000 --> 00:04:37.000
+This is Empathia. One environment. One engineering language. A living system.

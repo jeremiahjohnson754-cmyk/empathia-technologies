@@ -1,0 +1,909 @@
+{
+ "chapter": {
+  "id": "s10e02",
+  "kicker": "S10 · E02",
+  "title": "The Mix That Only Sounded Good Here",
+  "pill": "S10E02 · The Mix That Only Sounded Good Here",
+  "sub": "Thirty years of good ears, and a chair in the one place the room swallows the bass.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S10E02",
+   "RV-176",
+   "RV-177",
+   "RV-181",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#FB923C"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 10 · EPISODE 2 · DRAFT · CASE-051  Coldframe Sound, Studio A · week one · Maya, Hollis and Pim · Level L6 · Mastery support (reference only — choose the tool and say why)  Hollis has mixed in this room for thirty years. For the last two, every mix has sounded perfect in here and wrong everywhere else. He blames the earbuds.  ⚑ RV-176: the room is Hollis’s; wall work is the builder’s, to the acoustician’s design. RV-177: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Mix That Only Sounded Good Here",
+   "kind": "STUDIO · ROOM",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "hollis",
+    "pim"
+   ],
+   "stakes": "Every rough mix is lovely in Studio A and heavy everywhere else. The label hears them on Friday.",
+   "clock": "Before Friday's rough mixes.",
+   "reward": "A chair where the room tells the truth — and mixes that sound right where people listen.",
+   "objectives": [
+    {
+     "key": "BR-S10E02-01",
+     "text": "Decide how to find out"
+    },
+    {
+     "key": "twist",
+     "text": "Find the chair's problem"
+    },
+    {
+     "key": "core",
+     "text": "Cut, move or treat"
+    },
+    {
+     "key": "BR-S10E02-02",
+     "text": "Decide the fix"
+    },
+    {
+     "key": "BR-S10E02-03",
+     "text": "Decide what makes mixes translate"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "The ears were right about what they heard."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Lovely in here”",
+   "sub": "Tuesday · 10:00 a.m. · Studio A"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room; a measurement microphone on a thin stand stands exactly where the mix chair was, in the middle of the room; Hollis, arms folded, beside the console; Maya with a laptop.",
+   "characters": [
+    {
+     "id": "hollis",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "It's the earbuds. Everyone listens on rubbish now."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then the earbuds are consistent. Let's ask the room what it's doing to you."
+    }
+   ],
+   "narration": [],
+   "caption": "Where the chair was.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6438
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "flat",
+   "where": "Studio A · Tuesday 10:00",
+   "lines": [
+    {
+     "who": "hollis",
+     "pose": "N",
+     "expr": "flat",
+     "text": "It's the earbuds. Everyone listens on rubbish now."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Maybe. Let's ask the room first."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The middle of the room”",
+   "sub": "Tuesday · 10:20 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E02-01",
+   "prompt": "10:20. Hollis says the rough mixes are right and the world's earbuds are wrong. What first?",
+   "happening": "Mixes don't translate.",
+   "clock": "Tuesday 10:20 · rough mixes Friday",
+   "known": [
+    "◉ Lovely in Studio A",
+    "◉ Heavy everywhere else"
+   ],
+   "unknown": [
+    "What the room does at the chair",
+    "When it started"
+   ],
+   "risk": "Five weeks of mixes made to fix a problem that isn't in the mix.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Friday's mixes go out heavy."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would tell you whether the room or the ears changed?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Mix with 4 dB less low end, by ear, and see what the label says",
+     "result": "Friday's mixes come back ‘thinner, still weird’.",
+     "consequence": "A guess at the answer with no picture of the problem.",
+     "chips": [
+      "Guess"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Measure at the chair and three spots around it; play a 2019 mix and a 2023 mix in the car, on earbuds and on a small speaker",
+     "result": "At the chair: −14 dB at 40 Hz, −9 at 120, +6 at 80. The 2019 mix sits right everywhere; the 2023 one doesn't.",
+     "consequence": "Measure where the ears are, then compare before and after the change nobody remembered.",
+     "chips": [
+      "Measured",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Hollis": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Buy new monitors",
+     "result": "New monitors, same chair, same holes.",
+     "consequence": "Money on the wrong part of the chain.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Hollis the problem is his hearing",
+     "result": "He goes quiet. His hearing test in the spring was fine.",
+     "consequence": "A personal verdict with no evidence behind it.",
+     "chips": [
+      "Unkind",
+      "No evidence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The middle of the room.",
+   "body": "Two years ago the new, deeper desk pushed the mix chair back a metre, to 2.15 m in a 4.3 m room — the exact middle. That's where the first and third length modes cancel. Hollis has spent two years adding the bass the chair couldn't hear. The 2019 mixes, made a metre further forward, still sit right everywhere.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E02-1",
+   "label": "Test: which modes cancel at the chair — and where else could it go?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Hollis and Maya beside a board. Thirty years I've mixed in this room. Now every mix is huge in a car and lovely in here. Two years ago you moved the chair to the middle of the room for the new desk. The room is four point three metres long. And that matters because…?",
+   "characters": [
+    {
+     "id": "hollis",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "Thirty years I've mixed in this room. Now every mix is huge in a car and lovely in here."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Two years ago you moved the chair to the middle of the room for the new desk. The room is four point three metres long."
+    },
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "And that matters because…?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6737
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Axial mode   Acoustic null   Listening position   Mix translation   The situation  The mix chair moved to the exact middle of a 4.3 m room two years ago; since then, mixes carry too much deep bass everywhere else. Which relationship tells you what the room does to the bass at that spot?   Which relationship do you reach for?  Notch spacing  Axial room mode  First comb-filter notch     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "T2",
+   "label": "**Learn it now:** rooms — modes, nulls and where you sit.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Sound pressure, room modes and the spectrum     What the room is telling you     Sound, rooms and signals — five views"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "👂 HEAR IT · CHALLENGE · LEVEL 4  Undo the bad guitar EQ  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "hear-eq"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-1002",
+   "label": "**Sort it:** cut, move or treat?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A measurement sheet with two plots. Left: pressure along the room's 4.3 m length for the first three length modes — the first and third fall to zero at the centre, where a dashed red line marks the old chair at 2.15 m. Right: the level at that chair from 20 to 200 Hz — a 14 dB hole at 40 Hz, a 6 dB bump at 80 Hz and a 9 dB hole at 120 Hz.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The chair was sitting in two holes.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "at the chair"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 12945
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-02a",
+   "teaser": "the desk's delivery note",
+   "title": "2022 · ‘moved listening position’",
+   "body": "The delivery note for the new desk, two years ago, in Hollis's handwriting at the bottom: ‘Deeper desk — moved listening position back 1 m to fit. Sounds fine.’",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The mathematics of a box of air",
+   "body": "In 1877 the physicist John William Strutt, Lord Rayleigh, published <i>The Theory of Sound</i>. Among much else, it worked out how the air inside a closed box can only ring at certain frequencies, set by the box's dimensions — and where in the box each one is loud or silent. Every studio designer who calculates a room's modes is still doing Rayleigh's sum.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The boost that filled nothing”",
+   "sub": "Tuesday · 2:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The boost that filled nothing.",
+   "body": "Pim admits it before Maya asks: last month the chair sounded thin, so Pim put +10 dB at 40 Hz into the monitor controller. At the chair the hole barely moved — −13 dB instead of −14. On the sofa at the back, where the band sit during playbacks, 40 Hz is now ten decibels louder. ‘The band kept saying it was boomy,’ Pim says. ‘I thought they meant the song.’",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S10E02-2",
+   "label": "Test: what did the boost cost — and where did it go?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The control room; Pim points at the monitor controller's screen; Hollis stares at it.",
+   "characters": [
+    {
+     "id": "pim",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "hollis",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s10kit.bg_ctrl",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Pim",
+     "kind": "speech",
+     "text": "Plus ten at forty. It still sounded thin in the chair."
+    },
+    {
+     "side": "R",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "And the band on the sofa have been sitting in a bass drum for a month."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6300
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S10-02",
+   "who": "hollis",
+   "prompt": "Thirty years, and a chair fooled me. What does that say about my ears?",
+   "options": [
+    {
+     "label": "“That they heard exactly what the chair gave them. The room lied; your ears told the truth about the lie.”",
+     "who": "hollis",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Ha. I'll have that on a mug.",
+     "trust": {
+      "Hollis": 2
+     }
+    },
+    {
+     "label": "“Maybe get them tested.”",
+     "who": "hollis",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Did that in the spring. They're fine. The chair isn't.",
+     "trust": {
+      "Hollis": -1
+     }
+    },
+    {
+     "label": "“Nothing. It says rooms are hard.”",
+     "who": "hollis",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Rooms are hard. Chairs, apparently, are harder.",
+     "trust": {
+      "Hollis": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E02-02",
+   "prompt": "Holes at 40 and 120 Hz at the chair, a boom on the sofa, and Pim's +10 dB still in the monitoring. What's the fix?",
+   "happening": "The boost filled nothing.",
+   "clock": "Tuesday 14:20",
+   "known": [
+    "◉ Chair on the centre line",
+    "◉ +10 dB boost in the monitoring"
+   ],
+   "unknown": [
+    "How smooth the new spot is"
+   ],
+   "risk": "Five more weeks of mixes judged in a hole.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The boost stays in; the band stay in the bass drum."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which problems depend on where you sit — and which would EQ make worse?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Boost 40 Hz another 6 dB",
+     "result": "The amplifier's clip light flickers. The chair stays hollow.",
+     "consequence": "Feeds the cancellation, works the woofers hard, and booms everywhere else.",
+     "chips": [
+      "Feeds the null"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Take the boost out; move the chair to about 38% of the room length (1.63 m); re-aim the monitors at the new spot; measure again; then cut the 80 Hz bump by 3 dB",
+     "result": "The 40 Hz hole shrinks to −5 dB; 120 Hz comes back within a decibel; the sofa stops booming.",
+     "consequence": "Clean start, move the listener, then the gentlest EQ.",
+     "chips": [
+      "Move",
+      "Measure"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Pim": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Move the chair right up against the back wall",
+     "result": "At the wall every length mode is at its loudest: a wall of boom.",
+     "consequence": "Out of the holes and into every peak.",
+     "chips": [
+      "Too far"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Mix on headphones from now on",
+     "result": "No room problems — and no feel of the low end in the body. The room is still wrong for every playback.",
+     "consequence": "Avoids the room instead of fixing it.",
+     "chips": [
+      "Avoids it"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #93 · AVERY'S LENS  Know what the room is doing before you judge a mix  In a small room the bass you hear depends on where you sit. Measure at the chair, check on other systems, and move the listener before you reach for EQ.  Two years of mixes were made on the one spot in the room where the deepest notes cancel — so every mix carried too much of them everywhere else."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S10E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The measurement sheet again, after the move: on the left, a green dashed line marks the new chair at 1.63 m, away from the centre where the first and third modes cancel; on the right, a green curve at the new chair — the 40 Hz hole down to −5 dB, 120 Hz within a decibel — over the old red one.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Off the centre line.",
+   "flags": [
+    "RV-177"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "at the new chair"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 14478
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S10-02b",
+   "teaser": "the 2019 session sheet",
+   "title": "chair at 1.15 m",
+   "body": "A 2019 session sheet taped inside the patchbay door: ‘Chair 1.15 m off the front wall — DON'T MOVE.’ Someone had. The note was behind the door.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S10E02-03",
+   "prompt": "Friday's mixes are due. What makes every mix translate from now on?",
+   "happening": "Chair moved; mixes better.",
+   "clock": "Thursday 16:00",
+   "known": [
+    "◉ Chair at 1.63 m",
+    "◉ 80 Hz bump cut 3 dB"
+   ],
+   "unknown": [
+    "How long the bass rings"
+   ],
+   "risk": "The room drifting back into lying.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "The next mix is judged by the room alone."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What fixes the room itself — and what catches the next problem before the label does?"
+    }
+   ],
+   "note": "Draft decision (DR-S10E02). Option B needs Budget at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Nothing more — the chair move did it",
+     "result": "The 80 Hz bump and the long bass ring are still there; the next mix is a little heavy at 80.",
+     "consequence": "Half a fix.",
+     "chips": [
+      "Unfinished"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Corner bass trapping designed by the acoustician and fitted by the builder, a follow-up measurement — and a translation routine: every mix checked in the car, on earbuds and a small speaker, against two reference tracks at matched loudness",
+     "result": "Hollis signs for the traps. The acoustician measures after; the bass stops ringing. The routine goes on the wall.",
+     "consequence": "Fix the room at its source, then check every mix where people listen.",
+     "chips": [
+      "Treated",
+      "Routine"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "budget": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Hollis": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "The translation routine only; bass traps ‘next year’",
+     "result": "Mixes translate better. The ringing bass stays, so problems are caught late — at the car, not at the chair.",
+     "consequence": "The best you can do without the money — and it catches problems at the end, not the start.",
+     "chips": [
+      "Routine only"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Room-correction software that flattens the response at the chair",
+     "result": "It trims the peaks and can't fill the holes — and it only knows one spot.",
+     "consequence": "A filter can't change where the room cancels.",
+     "chips": [
+      "Filter only"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1002",
+   "label": "**Service Mode:** run the Tuesday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-051 · SIGNAL original  The Mix That Only Sounded Good Here  Thirty years of good ears — sitting in the one chair where the room swallowed the bass.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-051"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 5:30 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Outside Coldframe Sound in late afternoon light; Hollis leans on his car, grinning; Maya beside him.",
+   "characters": [
+    {
+     "id": "hollis",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s10kit.bg_glass",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hollis",
+     "kind": "speech",
+     "text": "Same speakers. Same ears. It sits right in the car."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Different chair. Your ears were never the problem."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1303
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The live room: a timber floor, a slatted diffuser and a drum kit in the middle. Dez, the drummer, in a red shirt and cap, points at the snare.",
+   "characters": [
+    {
+     "id": "dez",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s10kit.bg_live",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dez",
+     "kind": "speech",
+     "text": "New snare head, and now it sounds like a cardboard box."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Solo or with the overheads?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Phase at the Drum Kit.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3470
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  In a small room, where you sit decides what bass you hear. Find the room’s modes (fₙ = n × c ÷ 2L), measure at the chair and around it, and move the listener before you touch an EQ: EQ can cut a peak, never fill a null. Treat long bass decay with the acoustician. Check every mix where people listen, against references at matched loudness."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Where do you judge your own work from — and does anyone ever check it from somewhere else?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S10E02",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

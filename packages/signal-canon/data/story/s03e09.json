@@ -1,0 +1,1675 @@
+{
+ "chapter": {
+  "id": "s03e09",
+  "kicker": "S03 · E09",
+  "title": "Who Approved This?",
+  "pill": "S03E09 · Who Approved This?",
+  "sub": "A fast way in, a trusted friend, and a door that was already open.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S03E09",
+   "RT-03",
+   "RV-75",
+   "RV-72",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--magenta)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 3 · EPISODE 9 · DRAFT  Owner board · Mei, Ray and Maya · Level L3 (Technician)  A vendor can fix the boardroom tonight if someone clicks one link. Ray, who built the room, says click it. Mei says no. Maya has to say which way she goes — and the boardroom has a secret of its own.  ⚑ RV-75: security content is generic and non-instructional. Security owns access decisions. Some choices in this episode run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "A Door That Was Already Open",
+   "kind": "OWNER BOARD · SECURITY",
+   "level": "L3 · SYSTEMS ENGINEER",
+   "party": [
+    "maya",
+    "ray",
+    "mei"
+   ],
+   "stakes": "The board meets in the boardroom on Monday. Ray, the man who gave Maya her label maker, wants her to click Install.",
+   "clock": "The vendor's clock: nearly midnight their time.",
+   "reward": "A safe yes. Maybe not Ray, tonight.",
+   "objectives": [
+    {
+     "key": "BR-S03E09-01",
+     "text": "Decide what to do before anyone clicks"
+    },
+    {
+     "key": "BR-S03E09-02",
+     "text": "Name whose decision it is"
+    },
+    {
+     "key": "twist",
+     "text": "Find what's already on the boardroom computer"
+    },
+    {
+     "key": "BR-S03E09-03",
+     "text": "Handle the unrecorded agent"
+    },
+    {
+     "key": "BR-S03E09-04",
+     "text": "Answer Ray"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things with Ray's initial on them"
+    }
+   ],
+   "rumor": "The boardroom is exception room four. Owner: blank."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Just click it”",
+   "sub": "Friday · 5:40 p.m. · the boardroom, 30th floor"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The executive boardroom: dark wood, a long table. On the big display, the processor maker's engineer on a video call, late in her own evening. Ray, relaxed, gestures at the room computer; Maya hesitates beside it.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Just click it, Maya. I've worked with these people ten years. Ten minutes and Monday's sorted."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It wants to install something on the boardroom computer."
+    }
+   ],
+   "narration": [],
+   "caption": "Monday, 9 a.m.: the board meets here. The processor's echo settings are wrong for the new table.",
+   "flags": [
+    "RV-72",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1596
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Just click it, Maya. Ten years I've worked with these people."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(Ray has never asked her to skip a step. Not once. That's what makes it frightening.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The engineer on the display holds up a hand-written sign: my day ends in 20 minutes. Maya looks at the room computer's screen.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Vendor engineer",
+     "kind": "phone",
+     "text": "Sorry — it's nearly midnight here. Install the link, I connect, done. Otherwise it's Monday morning your time."
+    }
+   ],
+   "narration": [],
+   "caption": "Nobody here is a villain. Everyone here is in a hurry.",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1513
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up of the room computer's install dialog: install remote support agent? It stays running after the session, runs as administrator, lets the vendor connect any time, with no approval step. Install and Cancel buttons.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Four lines of small print. Every one of them is a door.",
+   "flags": [
+    "RV-75",
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1514
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-09a",
+   "teaser": "the small print",
+   "title": "Four lines, four doors",
+   "body": "*Persistent agent. Unattended access. Runs as administrator. Survives reboot.* The kind of sentences that sound like features until you imagine someone you don't know reading them.",
+   "thread": "Exception rooms",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E09-01",
+   "prompt": "17:42. Ray says click. The vendor's clock is running. What does Maya do?",
+   "happening": "An always-on remote-access agent, one click from the boardroom computer.",
+   "clock": "17:42 · vendor's day ends 18:00",
+   "known": [
+    "◉ Agent runs as administrator, always on",
+    "◉ Ray vouches for the vendor",
+    "◉ Board meeting Monday 9:00"
+   ],
+   "unknown": [
+    "What security will allow",
+    "What's already on that computer"
+   ],
+   "risk": "The boardroom — and everything it's connected to.",
+   "timer_s": 25,
+   "timeout": [
+    "Ray reaches past Maya and clicks Install himself. “There. Done.”",
+    "If you don't decide, the most confident person in the room decides for you."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who owns the decision to let someone in?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "The fastest yes is a phone call away."
+    }
+   ],
+   "note": "Draft decision (DR-S03E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Click Install — Ray's trusted, and Monday matters",
+     "result": "The agent installs. The fix is done by six. The door stays open all weekend, and after.",
+     "consequence": "The boardroom now accepts connections from outside, as administrator, any time.",
+     "chips": [
+      "Door left open"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Trust in a person isn't approval. Access decisions belong to security.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ray": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Cancel. Tell the vendor you'll get security's answer in minutes; call Mei now",
+     "result": "The engineer sighs, then nods: “Fifteen minutes, then I'm gone.” Mei picks up on the second ring.",
+     "consequence": "Slower. Also the only path that's yours to take.",
+     "chips": [
+      "Escalated",
+      "Nothing installed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Mei": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Read the room's shared admin password from Ray's notebook so she can log in her usual way",
+     "result": "The password goes out over a video call to another continent.",
+     "consequence": "Now a shared administrator credential lives in one more place nobody controls.",
+     "chips": [
+      "Credential shared"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "You gave away the keys instead of a door.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ray": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Install it on a spare laptop on the office network “just to see what it does”",
+     "result": "Security's monitoring flags an unapproved agent on the production network within minutes.",
+     "consequence": "“Just to see” is still installed.",
+     "chips": [
+      "Unapproved software"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "A test on the production network is production.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ray": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya on the phone by the window. Ray, arms folded, watches her.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Mei, it's Maya. Boardroom. The vendor wants an always-on agent installed tonight. Can you look before anyone clicks?"
+    },
+    {
+     "side": "R",
+     "who": "Mei",
+     "kind": "phone",
+     "text": "Don't click anything. I'm two floors down."
+    }
+   ],
+   "narration": [],
+   "caption": "Ray doesn't say anything. He doesn't need to.",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1331
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Who owns the yes”",
+   "sub": "5:52 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mei arrives with a tablet, reading the agent's description. Ray turns to her, open-handed.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "mei",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "It's a ten-minute job, Mei. I've used this tool in a hundred rooms."
+    },
+    {
+     "side": "R",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "Then a hundred rooms have a door that opens from outside, any time, as administrator. Let's talk about this one."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-75",
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1330
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S3-09",
+   "who": "ray",
+   "prompt": "It's a ten-minute job, Mei. Maya — tell her. You know me.",
+   "options": [
+    {
+     "label": "“I know you. That's why I'm asking Mei to look first.”",
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "(He doesn't answer. He looks at the floor, then at the vendor, then at the door.)",
+     "trust": {
+      "Mei": 1,
+      "Ray": -1
+     }
+    },
+    {
+     "label": "“Ray's right, Mei. It's fine.”",
+     "who": "mei",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Then you won't mind me looking first.",
+     "trust": {
+      "Mei": -2,
+      "Ray": 1
+     }
+    },
+    {
+     "label": "“Can we all just… look together?”",
+     "who": "mei",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Read-only. I'll drive. That's a good sentence.",
+     "trust": {
+      "Mei": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View comparing two access models. Left, in red, the always-on agent: open from outside any time, runs as administrator, shared vendor account, reaches the whole room network, no record on our side, nobody here can end it. Right, in green, a supervised session: named account with a second factor, approved by security, a two-hour window that expires, the processor only via the approved path, recorded with Maya watching, and it can be ended any second.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Same vendor, same fix. Two very different doors.",
+   "flags": [
+    "RV-75",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E09-02",
+   "prompt": "Ray, Maya, Mei and a vendor on a screen. Whose decision is it whether this tool is allowed?",
+   "happening": "An access decision, four people in the room.",
+   "clock": null,
+   "known": [
+    "◉ Security owns access decisions",
+    "◉ AV owns what the work needs"
+   ],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S03E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Ray's — he installed the room and knows the vendor",
+     "result": "Ray knows the room better than anyone. He doesn't answer for what happens on the company's network.",
+     "consequence": "Expertise about the room isn't authority over access.",
+     "chips": [
+      "Wrong owner"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Knowing a system well doesn't make you its gatekeeper.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Ray": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Maya's — she runs AV now",
+     "result": "Maya owns what the work needs. She doesn't own who gets into the network.",
+     "consequence": "Half the question.",
+     "chips": [
+      "Wrong owner"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "AV says what the job needs; it doesn't grant access.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Ray": -1,
+       "Mei": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Mei's — security decides access, with Maya and Ray telling her exactly what the work needs",
+     "result": "Mei: “Tell me the job in one sentence and I'll find you a way in.”",
+     "consequence": "The right owner, with the right information.",
+     "chips": [
+      "Right owner"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Ray": 1,
+       "Mei": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "The vendor's — it's their product",
+     "result": "The vendor's job is to fix the processor, not to set Aldermoor's access policy.",
+     "consequence": "Their door, their rules — in someone else's building.",
+     "chips": [
+      "Wrong owner"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A vendor proposes. The organization decides.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Ray": -1,
+       "Mei": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mei, reading the boardroom computer's installed software without changing anything, points at the list: an older remote-support agent, installed at commissioning five years ago, under a shared account, last inbound connection three weeks ago at 23:40. Maya's arms go up.",
+   "characters": [
+    {
+     "id": "mei",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "Before we add a door, let's see what doors it has. Read-only. I'll drive."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "…It's already here."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-75"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "old agent · shared account · 23:40, 3 weeks ago"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2278
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It's already here",
+   "body": "The question was whether to let a remote agent into the boardroom. One has been there for five years — installed at commissioning under a shared account, never recorded, last used three weeks ago at 23:40. Nobody scanned it because the boardroom isn't on the inventory: it's one of the eleven exception rooms Nora found on the green dashboard.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E09-1",
+   "label": "Test: reason from the new fact. What do you do first — and why did nobody see it?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray, genuinely startled, looks at the list; Maya, beside him, is quiet.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "That's from the install. We always put one on, so we could help if something broke. Everyone did."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Five years, Ray. Nobody wrote it down. The boardroom isn't even on the list."
+    }
+   ],
+   "narration": [],
+   "caption": "The boardroom: exception room number four on Nora's list. Owner: blank.",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1336
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E09-03",
+   "prompt": "18:03. An unrecorded remote agent with a shared account sits on the boardroom computer. What now?",
+   "happening": "An unrecorded access path, last used three weeks ago at 23:40.",
+   "clock": "18:03",
+   "known": [
+    "◉ Installed at commissioning",
+    "◉ Shared account",
+    "◉ Last inbound 3 weeks ago, 23:40"
+   ],
+   "unknown": [
+    "Who connected at 23:40"
+   ],
+   "risk": "The boardroom, and everyone who assumed it was closed.",
+   "timer_s": 20,
+   "timeout": [
+    "Ray, embarrassed, starts uninstalling it himself. “Let me just clean that up.”",
+    "When nobody decides, the person who feels worst reaches for the delete button."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Evidence first. Whose incident is this?"
+    }
+   ],
+   "note": "Draft decision (DR-S03E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Uninstall it right now",
+     "result": "It's gone in thirty seconds — with its install record and its session history.",
+     "consequence": "If the 23:40 session was someone who shouldn't have been there, you just erased the trail.",
+     "chips": [
+      "Evidence erased"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "You destroyed the evidence, and containment is security's decision.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Log in through it with the shared account to see what it can reach",
+     "result": "Now there's a second unexplained session in its log — yours.",
+     "consequence": "You became part of the incident you're investigating.",
+     "chips": [
+      "Muddied logs"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Using a suspicious access path to investigate it is using it.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Touch nothing. Write down what you saw. Mei takes it from here",
+     "result": "Mei photographs the list, preserves the logs and opens a security case. “Mine now. Thank you.”",
+     "consequence": "Evidence intact, in the right hands.",
+     "chips": [
+      "Evidence kept",
+      "Right owner"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Mei": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Unplug the boardroom computer from the network yourself",
+     "result": "The boardroom goes dark three days before the board meeting, and nobody in security knows why.",
+     "consequence": "Containment by the wrong person, at the wrong time.",
+     "chips": [
+      "Room offline"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Isolating a system is security's call — and it runs Monday's meeting.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-43",
+   "label": "**Clue Board:** who approved this? Which clues tell you where the agent came from?",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Mei and Maya beside a board. Least privilege: each account gets only the access its job needs. Admin everywhere is how one mistake becomes a hundred. How do I show how bad it is? A percentage: part over whole times a hundred. Forty-five over-privileged out of three hundred: fifteen percent.",
+   "characters": [
+    {
+     "id": "mei",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "Least privilege: each account gets only the access its job needs. Admin everywhere is how one mistake becomes a hundred."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How do I show how bad it is?"
+    },
+    {
+     "side": "L",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "A percentage: part over whole times a hundred. Forty-five over-privileged out of three hundred: fifteen percent."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1677
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Least privilege   Giving each account only the access its job needs.   Named account   A login for one person, with only the access they need.   Formula, variables and a worked example   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of    Worked example.  45 dark rooms out of 300: 45 ÷ 300 × 100 = 15%."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 30 OF 31 · PP. 28–31, 40  PART 2 AV NETWORKING & DATA  Page 31 has a sticky note from the network team: “Ask before you draw on our network.” Maya left it there."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB30",
+   "label": "**Fieldbook module 30 — Network reliability for AV — VLANs, QoS and multicast.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 30 · tap a plate to open it full size     AV networking 101     AV networking — the church network     AV networking — a typical AV network     Mid-level AV networking"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "S2",
+   "label": "**Learn it now:** least privilege for AV devices — named accounts, narrow doors, and who decides.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Policy person”",
+   "sub": "6:20 p.m. · the corridor outside the boardroom"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the corridor, Ray keeps his voice low and angry; Maya stands her ground.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "She's blocking a ten-minute fix over a form. And you're agreeing with her."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "I'm agreeing that nobody should walk into the boardroom from outside without anyone knowing. Including us."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1219
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The least set of privileges",
+   "body": "In 1975, Jerome Saltzer and Michael Schroeder published “The Protection of Information in Computer Systems,” a paper whose design principles are still quoted. One is least privilege: every program and every user should operate with the least set of privileges needed to complete the job. Another is complete mediation: check every access, every time. They were writing about shared mainframes. The ideas fit a boardroom's audio processor just as well.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray, alone in the frame, says it quietly.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "When did you become a policy person?"
+    }
+   ],
+   "narration": [],
+   "caption": "It hurt because he'd taught her everything that wasn't in a policy.",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1146
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "worried",
+     "text": "When did you become a policy person?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(It hurts because he taught her everything that wasn't in a policy.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E09-04",
+   "prompt": "Ray is hurt and angry. The vendor is waiting. What does Maya say?",
+   "happening": "Ray feels betrayed. The boundary is still the boundary.",
+   "clock": "18:22 · vendor waiting",
+   "known": [
+    "◉ Security owns the decision",
+    "◉ Mei is working on an alternative"
+   ],
+   "unknown": [],
+   "risk": "A friendship, and the boardroom.",
+   "timer_s": 20,
+   "timeout": [
+    "Ray takes the silence as an answer and walks toward the elevator.",
+    "Hard conversations don't wait for the right words."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Hold the line and keep the door open for him."
+    }
+   ],
+   "note": "Draft decision (DR-S03E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“You're right. Let's just do it your way this once.”",
+     "result": "Ray relaxes. Mei, in the doorway, closes her tablet.",
+     "consequence": "You kept the peace by giving away the decision that wasn't yours.",
+     "chips": [
+      "Peace, wrong"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Choosing a friend over the boundary doesn't make the boundary go away.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Ray": -1,
+       "Mei": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Say nothing and wait for it to blow over",
+     "result": "Ray walks off. The vendor's clock runs out.",
+     "consequence": "Nobody got hurt more. Nothing got fixed.",
+     "chips": [
+      "Silence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“The rule protects you too, Ray. Let Mei give us a way in with edges — I'll watch every minute of it.”",
+     "result": "Ray doesn't answer. He doesn't leave, either.",
+     "consequence": "The work goes ahead through the right door, and he's still in the room.",
+     "chips": [
+      "Boundary kept",
+      "Door offered"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Ray": 1,
+       "Mei": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Report Ray to Imani for trying to bypass security",
+     "result": "Imani is confused: the only thing Ray bypassed was a conversation.",
+     "consequence": "You turned a disagreement into a disciplinary matter.",
+     "chips": [
+      "Relationship broken"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Ray asked; he didn't cross the line. Punishing a question teaches people to stop asking.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Ray": -1,
+       "Imani": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #30 · AVERY'S LENS  Usable security gets used  Security that fits how people work is followed; security that fights them is bypassed.  Mei's supervised, time-limited session was almost as easy as the risky tool. That's why it worked."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S03E09",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mei at a whiteboard: named vendor account, second factor, two-hour window until 20:30, processor only, recorded, Maya watching.",
+   "characters": [
+    {
+     "id": "mei",
+     "pose": "P",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "Here's my yes. It just has edges. Approved path, one device, one evening, and we can end it any second."
+    }
+   ],
+   "narration": [],
+   "caption": "Twelve minutes from “no” to a better yes.",
+   "flags": [
+    "RV-75"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2438
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The supervised session on the boardroom display: the vendor engineer, with a banner reading session, processor only, recording. Maya watches closely; Ray stands at the back, arms folded, watching too.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Vendor engineer",
+     "kind": "phone",
+     "text": "Echo reference on the board preset was pointing at the old table mics. Corrected. Want me to walk you through it?"
+    }
+   ],
+   "narration": [],
+   "caption": "Forty minutes. She explained every step. Ray, at the back, took notes.",
+   "flags": [
+    "RV-75"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1852
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The board preset under test: Sam on a phone as the far end appears on the display. Maya speaks at the table; Mei checks the session record.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "mei",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sam, from the far end — how's the room?"
+    },
+    {
+     "side": "R",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "Clear voices, no echo, slides fine. And the vendor account just expired. Right on time."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-75"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "board preset · far end · 19:55"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1313
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-309",
+   "label": "**Service Mode:** Friday, 5:45 p.m. The vendor's day is ending. Get the work done through the right door.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-43",
+   "label": "**Sequence:** a supervised vendor session, step by step.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “23:40”",
+   "sub": "Saturday · 11 a.m. · Mei's desk"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mei's security case on her monitor: the session three weeks ago at 23:40, shared account, and the vendor's own log giving its origin: the contractor's home connection. Mei holds the printed log.",
+   "characters": [
+    {
+     "id": "mei",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Mei",
+     "kind": "phone",
+     "text": "I asked the vendor for their side of the log. The midnight session came from Ray's home."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-75",
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "vendor log · origin: contractor's home"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2216
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Saturday, 11:40. Ray has come in on his day off, to Mei's desk. Neither sits.",
+   "characters": [
+    {
+     "id": "mei",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "The session at 23:40, three weeks ago. That was you."
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "I was checking the room before I quoted the refresh. I didn't think to tell anyone. I never have."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1158
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-09b",
+   "teaser": "the vendor's session log",
+   "title": "23:40, three weeks ago",
+   "body": "From Ray's home connection. He was checking the room before quoting the refresh. He didn't think to tell anyone. He never has. Which, Maya realizes, is the whole of DEBT-002 in one line.",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": [
+    "ray",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The visitor was Ray",
+   "body": "The unexplained late-night session into the boardroom wasn't an attacker. It was Ray — trusted, well-meaning, checking the room before quoting its refresh, on the same shared account he created five years ago. No harm done. And from the company's side of the log, he was indistinguishable from anyone else who ever saw that password.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E09-2",
+   "label": "Test: reason from the new fact. If it was Ray, why does it still matter — and what fixes it?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: what a log can say. Left, the shared account 'aldermoor-av': was it Ray, the vendor, a former technician, anyone who saw the notebook? Right, a named account: who, when, what device, approved by whom, ended by expiry. Caption: trust isn't the question; telling people apart is.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "“I believe you,” Mei says. “That's not the point.”",
+   "flags": [
+    "RV-75",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mei, not unkind, asks the last question. Ray answers by touching his jacket pocket, where a small notebook sits.",
+   "characters": [
+    {
+     "id": "mei",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "The shared account's password. Who else has it?"
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Me. It's in my notebook. It's always been in my notebook."
+    }
+   ],
+   "narration": [],
+   "caption": "DEBT-002: the notebook from row 12, five years older and thirty floors higher.",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1155
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray waits for the elevator, notebook in his pocket. Maya watches from down the corridor; she doesn't call after him.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [],
+   "narration": [],
+   "caption": "He didn't say goodbye. The elevator took a long time.",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1392
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "closed",
+     "text": "…"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(The elevator takes a long time. Nobody says goodbye. The doors close on the most awkward silence of her career.)"
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mei's handwritten case summary: old agent preserved then removed by security; shared account disabled; vendor access named and supervised; boardroom not on the inventory, exception owner unknown; notebook password to be rotated Monday.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Rotate Monday. Monday is also the board meeting.",
+   "flags": [
+    "RV-75",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1804
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mei and Maya at the end of the day.",
+   "characters": [
+    {
+     "id": "mei",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Mei",
+     "kind": "speech",
+     "text": "Thank you for calling before anyone clicked. Most people call after."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "He thinks I chose you over him."
+    }
+   ],
+   "narration": [],
+   "caption": "“You chose the boardroom,” Mei says. “He'll see it. Give him a reason to.”",
+   "flags": [
+    "RV-72"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1157
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The boardroom, lights low. The display reads Board meeting, Monday, 9:00. Ines, the CEO's executive assistant, holds her run sheet; Maya listens.",
+   "characters": [
+    {
+     "id": "ines",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ines",
+     "kind": "speech",
+     "text": "Monday, 9 a.m. The CEO opens the board meeting. Investors dial in. Thirty seconds of dead air and she'll notice. So will the markets."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then we'll make sure there isn't any."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The CEO Room.* Season finale.",
+   "flags": [
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1346
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Security owns access decisions; AV owns what the work needs. Before you add a way in, look at the ways in that already exist — read-only. If you find something unexpected, keep the evidence, touch nothing, and hand it over. Give vendors a yes with edges: named, approved, time-limited, one device, supervised, recorded, expired afterward. Shared accounts don't make anyone a villain; they make everyone indistinguishable."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Ray was right that the vendor was trustworthy and wrong that it mattered. Maya was right and it still cost her. Which of your habits would look like Ray's from the other side of a log?  Boundary: this reflection doesn't prove anything about the boardroom."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S03E09",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

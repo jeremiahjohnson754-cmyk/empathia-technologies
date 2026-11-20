@@ -1,0 +1,112 @@
+# Static extraction of the V2.5.3 authorization tables into apps/demo/src/access/v253.ts.
+#   python3 -I apps/demo/src/access/extract-v253.py legacy/source/v253/Empathia-Living-Campus-V2.5.3-offline.html \
+#       legacy/inventory/v253-inventory.json apps/demo/src/access/v253.ts
+# Parses JavaScript literal syntax only (arrays, objects, strings, azAnd(...), .concat(...), one .filter form); the legacy file is never
+# executed. The legacy HTML is not committed (it is .gitignored), so the generated v253.ts is committed with this script as its provenance.
+import sys, re, json
+s = open(sys.argv[1], encoding='utf8', errors='replace').read()
+a = s.find('const AZ_KEYS=[') + len('const ')
+b = s.find(',AZ_GUIDES_STAFF=', a)
+c = s.find('AZ_LENS={', b)
+d = s.find(',AZ_ACT={', c)
+src = s[a:b] + ',' + s[c:d]
+# drop the helper arrow functions declared between the tables (azAnd, azLens, azLenses, azLayer)
+src = re.sub(r',?az\w+=\([^)]*\)=>.*?(?=,AZ_|$)', '', src)
+src = re.sub(r',?az\w+=\w+=>.*?(?=,AZ_|$)', '', src)
+tok_re = re.compile(r'\s*(?:(?P<str>"(?:[^"\\]|\\.)*")|(?P<id>[A-Za-z_$][\w$]*)|(?P<p>=>|[\[\]{}(),:=.!]))')
+toks = []; i = 0
+while i < len(src):
+    m = tok_re.match(src, i)
+    if not m or m.end() == i:
+        raise SystemExit('tokenize fail at %d: %r' % (i, src[i:i+60]))
+    i = m.end()
+    if m.group('str') is not None: toks.append(('s', json.loads(m.group('str'))))
+    elif m.group('id') is not None: toks.append(('i', m.group('id')))
+    else: toks.append(('p', m.group('p')))
+env = {}; pos = 0
+def peek(): return toks[pos] if pos < len(toks) else (None, None)
+def take(v=None):
+    global pos
+    t = toks[pos]; pos += 1
+    if v is not None and t[1] != v: raise SystemExit('expected %s got %r at %d' % (v, t, pos))
+    return t
+def uniq(l):
+    out = []
+    for x in l:
+        if x not in out: out.append(x)
+    return out
+def flat(l):
+    out = []
+    for x in l: out.extend(x if isinstance(x, list) else [x])
+    return out
+def args():
+    take('('); r = []
+    while peek()[1] != ')':
+        r.append(expr())
+        if peek()[1] == ',': take(',')
+    take(')'); return r
+def expr():
+    t = peek()
+    if t[0] == 's': take(); v = t[1]
+    elif t[1] == '[':
+        take('['); v = []
+        while peek()[1] != ']':
+            v.append(expr())
+            if peek()[1] == ',': take(',')
+        take(']')
+    elif t[1] == '{':
+        take('{'); v = {}
+        while peek()[1] != '}':
+            k = take()[1]; take(':'); v[k] = expr()
+            if peek()[1] == ',': take(',')
+        take('}')
+    elif t[1] == 'azAnd':
+        take(); v = uniq(flat(args()))
+    elif t[0] == 'i' and t[1] in env:
+        take(); v = env[t[1]]
+    else:
+        raise SystemExit('unexpected %r at %d' % (t, pos))
+    while peek()[1] == '.':
+        take('.'); meth = take()[1]
+        if meth == 'concat': v = v + flat(args())
+        elif meth == 'filter':
+            take('('); take(); take('=>'); take(); take('!'); take('='); take('='); lit = take()[1]; take(')')
+            v = [x for x in v if x != lit]
+        else: raise SystemExit('method ' + meth)
+    return v
+while pos < len(toks):
+    name = take()[1]; take('=')
+    env[name] = expr()
+    if pos < len(toks): take(',')
+out = {k: env[k] for k in env if k.startswith('AZ_')}
+
+# ---- roles, role UI and home tabs (regular expressions over literal object syntax)
+i = s.find('const ROLE={visitor:{label'); seg = s[i:i+40000]
+ROLE = {}
+for m in re.finditer(r'(\w+):\{label:"([^"]+)",ava:"(\w+)",home:"([^"]+)",blurb:"([^"]+)"', seg):
+    k, label, ava, home, blurb = m.groups()
+    ROLE[k] = dict(label=label, ava=ava, home=json.loads('"%s"' % home), blurb=json.loads('"%s"' % blurb))
+i = s.find('ROLE_UI={'); seg = s[i:s.find('},SKIN_SWATCH', i)]
+UI = {}
+for m in re.finditer(r'(\w+):\{skin:"(\w+)",tone:"(\w+)",sub:"([^"]+)",look:"([^"]+)"\}', seg):
+    k, skin, tone, sub, look = m.groups(); UI[k] = dict(skin=skin, tone=tone, sub=sub, look=json.loads('"%s"' % look))
+i = s.find('function tabsFor(role)'); j = s.find('}[role]||', i); seg = s[i:j]
+TABS = {}
+for m in re.finditer(r'(\w+):\[((?:T\([^)]*\),?)+)M\]', seg):
+    TABS[m.group(1)] = [list(json.loads('[' + t + ']')) for t in re.findall(r'T\(([^)]*)\)', m.group(2))]
+assert len(ROLE) == 14 and len(UI) == 14 and len(TABS) == 14, (len(ROLE), len(UI), len(TABS))
+inv = json.load(open(sys.argv[2]))
+extra = {x['area']: [x['roles'], x['label']] for x in inv['areas'] if x['area'] not in out['AZ_AREA']}
+for k, v in out['AZ_AREA'].items():
+    m = next((x for x in inv['areas'] if x['area'] == k), None)
+    assert m is None or sorted(m['roles']) == sorted(v[0]), k   # the committed inventory agrees with this parse
+data = dict(out); data['AZ_AREA_V25'] = extra; data['ROLE'] = ROLE; data['ROLE_UI'] = UI; data['TABS'] = TABS
+order = ['AZ_KEYS', 'AZ_ROLE', 'AZ_AREA', 'AZ_AREA_V25', 'AZ_ENTITY', 'AZ_LENS', 'AZ_LENS_HOME', 'AZ_LAYER', 'AZ_COMPARE', 'AZ_FIELD', 'AZ_ACTION', 'ROLE', 'ROLE_UI', 'TABS']
+ts = ['/* GENERATED by apps/demo/src/access/extract-v253.py from legacy/source/v253/Empathia-Living-Campus-V2.5.3-offline.html',
+      ' * (12-authz.js: the AZ_* tables; ROLE, ROLE_UI and tabsFor from the shell modules) and legacy/inventory/v253-inventory.json',
+      ' * (AZ_AREA_V25: areas that later modules added). Read statically: the legacy file is parsed as data and never executed.',
+      ' * Do not edit by hand; apps/demo/src/access/policy.ts is the only reader. */']
+for k in order:
+    ts.append('export const %s = %s as const;' % (k, json.dumps(data[k], ensure_ascii=False)))
+open(sys.argv[3], 'w').write('\n'.join(ts) + '\n')
+print(' '.join('%s=%d' % (k, len(data[k])) for k in order))

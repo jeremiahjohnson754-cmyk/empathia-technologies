@@ -1,16 +1,38 @@
 #!/usr/bin/env node
 /**
- * Build the public site into apps/website/dist: one pre-rendered index.html per page, site.css (tokens + site styles), site.js
- * (menu + lead forms), sitemap.xml, robots.txt, and a manifest with hashes. Budget: the home page document under 40 KB, site.js under
- * 8 KB — the public site carries no demo data.
- *   node apps/website/build.mjs [--api=https://api.example] [--base=https://www.example]
+ * Build the public site into apps/website/dist: one pre-rendered index.html per page, 404.html, site.css (tokens + site styles), theme-init.js
+ * (the shared theme script, before first paint), site.js (menu, theme switch, lead forms), the brand marks, the product captures, sitemap.xml, robots.txt
+ * and a manifest with hashes. Budgets: home document 48 KB (it now carries the nine product tiles), site.js 8 KB, theme-init.js 512 B, the
+ * three preloaded faces 88 KB (D38), product captures 1.4 MB. The public site carries no demo data.
+ *   node apps/website/build.mjs [--api=https://api.example] [--base=https://www.example] [--demo=https://demo.example] [--films=auto|preview|off]
+ * Films enter the site only when VERIFIED for the website in films.json (auto); --films=preview is an owner-review build (noindex).
+ * A film marked `exclusive` in films.json plays only on the pages in its `placement` (never on /films): the build checks it.
  */
-import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
-const app = path.dirname(fileURLToPath(import.meta.url)); const repo = path.resolve(app, '../..'); const dist = path.join(app, 'dist');
+import fs from 'node:fs'; import { execFileSync } from 'node:child_process'; import path from 'node:path'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
+const app = path.dirname(fileURLToPath(import.meta.url)); const repo = path.resolve(app, '../..');
 const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
+// --out=<dir>: build elsewhere (the runner checks the budgets with the staging URLs this way, without touching apps/website/dist)
+const dist = path.resolve(arg('out', path.join(app, 'dist')));
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(dist, { recursive: true });
 await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], jsx: 'automatic', outfile: path.join(dist, 'site.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
+
+// the founder page's introduction is its own small script, loaded in <head> on /founder only (src/reveal.ts; site.js keeps its 8 KB budget)
+await esbuild.build({ entryPoints: [path.join(app, 'src/reveal.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'founder.js'), legalComments: 'linked', logLevel: 'warning' });
+// v18/pilot: the Pilot Readiness check is its own script, loaded on /pilots only (site.js keeps its 8 KB budget)
+// FieldLink's concept enclosures you can turn (17:25 §10, Version D): its own script, on /fieldlink only
+await esbuild.build({ entryPoints: [path.join(app, 'src/viewer.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'fieldlink.js'), legalComments: 'linked', logLevel: 'warning' });
+await esbuild.build({ entryPoints: [path.join(app, 'src/pilot.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'pilot.js'), define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
+// Build Your Empathia (founder 18 Nov 2026 19:39, 20:51): the pricing builder's script, loaded on /pricing only; it bundles the one estimate() engine.
+// The browser never shows a product's scope text, a pilot's scope or caveat, or a bundle's summary (the pre-rendered pages print them), so
+// the script's copy of the generated catalogue carries them empty: the same SKUs, prices, units, families and bundle rules, ~3.8 KB lighter.
+// The count is checked, so a change in the generator's format stops the build instead of shipping a half-stripped list.
+const displayOnly = { name: 'catalogue-display-text', setup(b) { b.onLoad({ filter: /packages[\\/]commercial[\\/]src[\\/]generated[\\/]catalog\.ts$/ }, (a) => {
+  let n = 0; const src = fs.readFileSync(a.path, 'utf8').replace(/"(scope|caveat|summary)":"(?:[^"\\]|\\.)*"/g, (_, k) => { n += 1; return `"${k}":""`; });
+  const keys = (src.match(/"(scope|caveat|summary)":/g) || []).length;
+  if (n < 40 || n !== keys) throw new Error(`catalogue-display-text: stripped ${n} of ${keys} display fields`);
+  return { contents: src, loader: 'ts' }; }); } };
+await esbuild.build({ entryPoints: [path.join(app, 'src/build.ts')], bundle: true, minify: true, sourcemap: 'external', format: 'iife', target: ['es2022'], outfile: path.join(dist, 'build.js'), plugins: [displayOnly], define: { 'process.env.NODE_ENV': '"production"' }, legalComments: 'linked', logLevel: 'warning' });
 
 // source maps never ship (red-team RT-20): moved out of dist, kept for an error tracker under .local/sourcemaps/<app>/
 { const maps = path.join(repo, '.local/sourcemaps', path.basename(app)); fs.mkdirSync(maps, { recursive: true });
@@ -19,17 +41,112 @@ await esbuild.build({ entryPoints: [path.join(app, 'src/main.ts')], bundle: true
 // the pre-renderer runs in Node: bundle it to a temporary ESM file and import it
 const tmp = path.join(repo, '.local/website-prerender.mjs'); fs.mkdirSync(path.dirname(tmp), { recursive: true });
 await esbuild.build({ entryPoints: [path.join(app, 'src/prerender.tsx')], bundle: true, platform: 'node', format: 'esm', target: ['node22'], jsx: 'automatic', outfile: tmp, banner: { js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" }, define: { 'process.env.NODE_ENV': '"production"' }, logLevel: 'warning' });
-const { renderPage, PATHS } = await import(tmp + '?t=' + Date.now());
+const { renderAll } = await import(tmp + '?t=' + Date.now());
 // the public URL and the lead API: --base/--api, else the environment (a Render static site provides RENDER_EXTERNAL_URL at build time)
 const base = arg('base', process.env.WEBSITE_BASE_URL || process.env.RENDER_EXTERNAL_URL || '').replace(/\/$/, ''); const api = arg('api', process.env.WEBSITE_API_URL || '').replace(/\/$/, '');
-for (const p of PATHS) { const dir = path.join(dist, p === '/' ? '' : p); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), renderPage(p, { api: api || null, base }).html); }
-const css = [path.join(repo, 'packages/design-tokens/dist/tokens.css'), path.join(app, 'src/styles/site.css')].map((f) => `/* ${path.relative(repo, f)} */\n${fs.readFileSync(f, 'utf8')}`).join('\n');
+const demoUrl = arg('demo', process.env.WEBSITE_DEMO_URL || 'https://empathia-demo.onrender.com').replace(/\/$/, '');
+// films: a film enters the published site only when its rights for the website are VERIFIED (apps/website/films.json). --films=preview
+// builds every film whose renditions exist, marks every page as a preview and keeps search engines out; it is for owner review only.
+const filmsMode = arg('films', process.env.WEBSITE_FILMS || 'auto'); if (!['auto', 'preview', 'off'].includes(filmsMode)) { console.error('--films is auto, preview or off'); process.exit(2); }
+const catalogue = JSON.parse(fs.readFileSync(path.join(app, 'films.json'), 'utf8')).films; const mediaSrc = path.join(app, 'media');
+// a film's files: the rendition, two posters and its captions; a silent film (textTrack "descriptions") also carries the description of what it shows
+const filesOf = (f) => ['720.mp4', 'poster.webp', 'poster.jpg', 'captions.vtt', ...(f.textTrack === 'descriptions' ? ['descriptions.vtt'] : [])];
+const hasMedia = (f) => filesOf(f).every((x) => fs.existsSync(path.join(mediaSrc, f.key, x)));
+const films = filmsMode === 'off' ? [] : catalogue.filter((f) => filmsMode === 'preview' ? hasMedia(f) : f.rights?.website?.status === 'VERIFIED');
+for (const f of films) if (!hasMedia(f)) { console.error(`film ${f.key} is VERIFIED for the website but its renditions are missing in apps/website/media/${f.key} (node scripts/media/prepare-web-films.mjs)`); process.exit(1); }
+const excluded = catalogue.filter((f) => !films.includes(f)).map((f) => ({ key: f.key, status: f.rights?.website?.status || 'NONE', media: hasMedia(f) }));
+const copy = (from, to) => { fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(from, to); };
+const vttText = (t) => { const lines = []; for (const block of t.replace(/\r/g, '').split(/\n\n+/)) { if (/^NOTE\b/.test(block)) continue; const l = block.split('\n').filter((x) => x && !/-->/.test(x) && !/^WEBVTT/.test(x) && !/^\d+$/.test(x) && !/^NOTE/.test(x)); if (l.length) lines.push(l.join(' ').replace(/<[^>]+>/g, '')); } return lines; };
+const transcripts = Object.fromEntries(films.map((f) => [f.key, vttText(fs.readFileSync(path.join(mediaSrc, f.key, 'captions.vtt'), 'utf8'))]));
+// a silent film's description, cue by cue with its times: printed under the player, and the same file is the film's descriptions track
+const clock = (t) => { const [h, m, s] = t.split(':').map(Number); const sec = Math.round(h * 3600 + m * 60 + s); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; };
+const vttCues = (t) => t.replace(/\r/g, '').split(/\n\n+/).filter((b) => /-->/.test(b) && !/^NOTE\b/.test(b)).map((b) => { const l = b.split('\n'); const i = l.findIndex((x) => /-->/.test(x)); const [from, to] = l[i].split('-->').map((x) => clock(x.trim().split(' ')[0])); return { from, to, text: l.slice(i + 1).join(' ').replace(/<[^>]+>/g, '') }; });
+const cues = Object.fromEntries(films.filter((f) => f.textTrack === 'descriptions').map((f) => [f.key, vttCues(fs.readFileSync(path.join(mediaSrc, f.key, 'descriptions.vtt'), 'utf8'))]));
+// brand (D39): the shared helper when the tokens package carries it; otherwise the same files copied directly (small shield as favicon)
+// brand, Inter and the theme script from @empathia/design-tokens (D7, D9, D38, D39): brand/, fonts/ and theme-init.js copied into dist;
+// decorate() puts theme-init (blocking, before first paint), the three website preloads and the icon links into every page's <head>
+const { shipBrandAndType, tokenCss } = await import(path.join(repo, 'packages/design-tokens/brand.mjs'));
+const decorate = shipBrandAndType(dist, { base: '/', preload: 'website', themeInit: true });
+{ const { copyBrand } = await import(path.join(repo, 'packages/design-tokens/brand.mjs')); copyBrand(dist, ['shareWebsite']); }   // the link-preview image (prerender's og:image)
+// product captures of the investor demonstration (dark, D43): only those listed with their hashes in PROVENANCE.json enter the site
+const capDir = path.join(mediaSrc, 'product'); const prov = fs.existsSync(path.join(capDir, 'PROVENANCE.json')) ? JSON.parse(fs.readFileSync(path.join(capDir, 'PROVENANCE.json'), 'utf8')) : { captures: {} };
+const captures = {};
+for (const [id, c] of Object.entries(prov.captures || {})) {
+  const files = Object.entries(c.files || {}); if (!files.length || !files.every(([f]) => fs.existsSync(path.join(capDir, f)))) continue;
+  for (const [f, sha] of files) { const buf = fs.readFileSync(path.join(capDir, f)); if (crypto.createHash('sha256').update(buf).digest('hex') !== sha) { console.error(`capture ${f} does not match its PROVENANCE.json hash`); process.exit(1); } copy(path.join(capDir, f), path.join(dist, 'media/product', f)); }
+  captures[id] = { w: c.width, h: c.height, route: c.route };
+}
+// the home page's opening sequence (founder 18 Nov 2026 17:25 §4): element captures of the running demonstration, listed with their hashes
+// in media/hero/PROVENANCE.json (apps/website/scripts/hero-frames.mjs); only those enter the site, in the order that file lists them
+const heroDir = path.join(mediaSrc, 'hero'); const heroProv = fs.existsSync(path.join(heroDir, 'PROVENANCE.json')) ? JSON.parse(fs.readFileSync(path.join(heroDir, 'PROVENANCE.json'), 'utf8')) : { frames: {} };
+const hero = [];
+for (const [id, f] of Object.entries(heroProv.frames || {})) {
+  const files = Object.entries(f.files || {}); if (!files.length || !files.every(([x]) => fs.existsSync(path.join(heroDir, x)))) continue;
+  for (const [x, sha] of files) { const buf = fs.readFileSync(path.join(heroDir, x)); if (crypto.createHash('sha256').update(buf).digest('hex') !== sha) { console.error(`hero frame ${x} does not match its PROVENANCE.json hash`); process.exit(1); } copy(path.join(heroDir, x), path.join(dist, 'media/hero', x)); }
+  hero.push({ id, shows: f.shows, route: f.route });
+}
+// films not yet cleared are listed on /films by title and summary only (no frame, no file): the page always exists and says why they do not play
+// (a film marked `exclusive` belongs to its own section and is never listed on /films, cleared or not)
+const pendingFilms = catalogue.filter((f) => !films.includes(f) && !f.exclusive).map(({ key, title, runtime, summary, disclosure }) => ({ key, title, runtime, summary, disclosure }));
+// short scenes (apps/website/broll.json): silent loops, only those VERIFIED for the website and only when their files exist; the page
+// says under each that it is an AI-generated scene of fictional people and places
+const brollCat = fs.existsSync(path.join(app, 'broll.json')) ? JSON.parse(fs.readFileSync(path.join(app, 'broll.json'), 'utf8')).clips : [];
+const broll = filmsMode === 'off' ? [] : brollCat.filter((c) => c.rights?.website?.status === 'VERIFIED' && ['720.mp4', 'poster.webp'].every((x) => fs.existsSync(path.join(mediaSrc, 'broll', c.key, x)))).map(({ key, title }) => ({ key, title }));
+for (const c of broll) for (const x of ['720.mp4', 'poster.webp']) copy(path.join(mediaSrc, 'broll', c.key, x), path.join(dist, 'media/broll', c.key, x));
+const asOf = new Date().toISOString();
+// the guides as printed booklets (scripts/media/make-booklets.mjs): only those listed in BOOKLETS.json whose files exist, copied as they are
+const bookletsDir = path.join(mediaSrc, 'booklets'); const BLURB = { 'end-user-guide': 'How to use one room: what is in it, how to start, share and finish, and what to do when something does not work; with the room in Lite and its plan.', 'it-onboarding-success-guide': 'Ninety days by phase, with the knowledge checks and answers, and what good looks like at 30, 60 and 90 days.' };
+const booklets = fs.existsSync(path.join(bookletsDir, 'BOOKLETS.json')) ? JSON.parse(fs.readFileSync(path.join(bookletsDir, 'BOOKLETS.json'), 'utf8')).booklets.filter((b) => fs.existsSync(path.join(bookletsDir, b.file)) && fs.existsSync(path.join(bookletsDir, b.cover))).map((b) => ({ ...b, blurb: Object.entries(BLURB).find(([k]) => b.file.startsWith(k))?.[1] || '' })) : [];
+for (const b of booklets) for (const f of [b.file, b.cover]) copy(path.join(bookletsDir, f), path.join(dist, 'media/booklets', f));
+const rendered = renderAll({ asOf, films, pendingFilms, transcripts, cues, demoUrl, preview: filmsMode === 'preview', captures, broll, booklets, hero }, { api: api || null, base });
+// an `exclusive` film plays on the pages in its `placement` and nowhere else (founder, 2026-11-10: the Collabora-SING film is "just for"
+// its section). The build fails rather than ship it on another page, or ship its own page without it when the film is built in.
+for (const f of catalogue.filter((x) => x.exclusive)) {
+  const carries = rendered.filter((r) => r.html.includes(`/media/${f.key}/`) || r.html.includes(`film-${f.key}`)).map((r) => r.path);
+  const stray = carries.filter((p) => !f.placement.includes(p)); const absent = films.includes(f) ? f.placement.filter((p) => !carries.includes(p)) : [];
+  if (stray.length || absent.length) { console.error(`film ${f.key} is exclusive to ${f.placement.join(', ')}:${stray.length ? ` it also appears on ${stray.join(', ')}` : ''}${absent.length ? ` it is missing from ${absent.join(', ')}` : ''}`); process.exit(1); }
+}
+const PATHS = rendered.map((r) => r.path).filter((p) => p !== '/404');
+// every page carries its CSP as <meta> too (assessment SA-01): a host that drops render.yaml's headers still cannot load or send off-origin
+const { injectMetaCsp, originOf } = await import(path.join(repo, 'scripts/security/policy.mjs')); const page = (h) => injectMetaCsp(decorate(h), [originOf(api)].filter(Boolean));
+for (const r of rendered) { if (r.path === '/404') { fs.writeFileSync(path.join(dist, '404.html'), page(r.html)); continue; } const dir = path.join(dist, r.path === '/' ? '' : r.path); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), page(r.html)); }
+// media: the founder portrait (owner-supplied for the website, metadata stripped) and the films built in
+for (const f of fs.readdirSync(path.join(mediaSrc, 'founder'))) copy(path.join(mediaSrc, 'founder', f), path.join(dist, 'media/founder', f));
+// the founder's keepsake: his photograph of the fortune-cookie slip on the founder page (founderQuote.ts)
+for (const f of fs.readdirSync(path.join(mediaSrc, 'keepsake'))) copy(path.join(mediaSrc, 'keepsake', f), path.join(dist, 'media/keepsake', f));
+// FieldLink concept renders (founder 18 Nov 2026 17:25), resized from the packet's clean render; PROVENANCE.json says what they are
+for (const f of fs.readdirSync(path.join(mediaSrc, 'fieldlink')).filter((x) => /\.(webp|jpg)$/.test(x))) copy(path.join(mediaSrc, 'fieldlink', f), path.join(dist, 'media/fieldlink', f));
+for (const f of films) for (const x of filesOf(f)) copy(path.join(mediaSrc, f.key, x), path.join(dist, 'media', f.key, x));
+const css = [tokenCss(), `/* apps/website/src/styles/site.css */\n${fs.readFileSync(path.join(app, 'src/styles/site.css'), 'utf8')}`, `/* apps/website/src/styles/founder.css */\n${fs.readFileSync(path.join(app, 'src/styles/founder.css'), 'utf8')}`, `/* apps/website/src/styles/fieldlink.css */\n${fs.readFileSync(path.join(app, 'src/styles/fieldlink.css'), 'utf8')}`, `/* apps/website/src/styles/follow.css */\n${fs.readFileSync(path.join(app, 'src/styles/follow.css'), 'utf8')}`, `/* apps/website/src/styles/home.css */\n${fs.readFileSync(path.join(app, 'src/styles/home.css'), 'utf8')}`, `/* apps/website/src/styles/pricing.css */\n${fs.readFileSync(path.join(app, 'src/styles/pricing.css'), 'utf8')}`].join('\n');
 fs.writeFileSync(path.join(dist, 'site.css'), css);
+// the Proof Registry's public projection, as data (v1.8 A): the same file the demonstration ships, so the two can be compared
+{ const { SEED_CLAIMS, publicProjection } = await import('@empathia/proof-registry');
+  const claims = SEED_CLAIMS.map((c) => publicProjection(c, asOf)).filter(Boolean);
+  fs.mkdirSync(path.join(dist, 'proof'), { recursive: true }); fs.writeFileSync(path.join(dist, 'proof/claims.json'), JSON.stringify({ schema_version: '1.8', as_of: asOf, claims }, null, 1)); }
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${PATHS.map((p) => `  <url><loc>${base}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
-fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
+fs.writeFileSync(path.join(dist, 'robots.txt'), filmsMode === 'preview' ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
 const walk = (d) => fs.readdirSync(d).flatMap((f) => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walk(p) : [p]; });
-const files = walk(dist); const manifest = { app: '@empathia/website', builtAt: new Date().toISOString(), base: base || null, api: api || null, pages: PATHS.length, files: Object.fromEntries(files.map((f) => [path.relative(dist, f), { bytes: fs.statSync(f).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex') }])) };
+// the release this build is: Render sets RENDER_GIT_COMMIT; elsewhere git says (12 Nov 2026, so both sites can be checked to carry the same release)
+const sourceCommit = (() => { if (process.env.RENDER_GIT_COMMIT) return process.env.RENDER_GIT_COMMIT; try { return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: path.dirname(fileURLToPath(import.meta.url)), stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || null; } catch { return null; } })();
+
+const files = walk(dist); const manifest = { app: '@empathia/website', sourceCommit, builtAt: new Date().toISOString(), base: base || null, api: api || null, demoUrl, films: { mode: filmsMode, included: films.map((f) => f.key), excluded }, pages: PATHS.length, files: Object.fromEntries(files.map((f) => [path.relative(dist, f), { bytes: fs.statSync(f).size, sha256: crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex') }])) };
 fs.writeFileSync(path.join(dist, 'BUILD_MANIFEST.json'), JSON.stringify(manifest, null, 2));
 const home = manifest.files['index.html'].bytes, js = manifest.files['site.js'].bytes;
-if (home > 40 * 1024 || js > 8 * 1024) { console.error(`BUDGET EXCEEDED: index.html ${home} B (limit 40960), site.js ${js} B (limit 8192)`); process.exit(1); }
-console.log(`website built: ${PATHS.length} pages, index.html ${(home / 1024).toFixed(1)} KiB, site.js ${(js / 1024).toFixed(1)} KiB, site.css ${(manifest.files['site.css'].bytes / 1024).toFixed(1)} KiB`);
+const themeJs = manifest.files['theme-init.js'].bytes; const fonts = ['inter-400.woff2', 'inter-600.woff2', 'inter-display-800.woff2'].reduce((a, f) => a + manifest.files[`fonts/${f}`].bytes, 0);   // the three preloaded faces (D38)
+const capBytes = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/product/') && !f.startsWith('media/product/intake-')).reduce((a, [, v]) => a + v.bytes, 0);
+// 19 Nov 2026 (founder 13:28: Intake "given its own space … screenshots only"): the /intake page's nine screenshots are lazy, shown on that
+// page only, and counted in a budget of their own rather than the product captures'
+{ const ib = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/product/intake-')).reduce((a, [, v]) => a + v.bytes, 0); if (ib > 640 * 1024) { console.error(`BUDGET EXCEEDED: Intake screenshots ${ib} B (limit 655360)`); process.exit(1); } }
+{ const hb = Object.entries(manifest.files).filter(([f]) => f.startsWith('media/hero/')).reduce((a, [, v]) => a + v.bytes, 0); if (hb > 400 * 1024) { console.error(`BUDGET EXCEEDED: home opening frames ${hb} B (limit 409600)`); process.exit(1); } }   // six frames, two sizes
+// CHANGED 19 Nov 2026: home 48 → 50 KB for the founder-requested three-worlds section (09:09 G, 1.4 KB of HTML after trimming); the
+// images it shows are lazy and counted in the captures budget, which is unchanged.
+if (home > 50 * 1024 || js > 8 * 1024 || themeJs > 512 || fonts > 88 * 1024 || capBytes > 1400 * 1024) { console.error(`BUDGET EXCEEDED: index.html ${home} B (limit 51200), site.js ${js} B (limit 8192), theme-init.js ${themeJs} B (limit 512), fonts ${fonts} B (limit 90112, D38), captures ${capBytes} B (limit 1433600)`); process.exit(1); }
+{ const fj = manifest.files['founder.js'].bytes; if (fj > 4 * 1024) { console.error(`BUDGET EXCEEDED: founder.js ${fj} B (limit 4096)`); process.exit(1); } }   // the founder page's introduction
+{ const fj = manifest.files['fieldlink.js'].bytes; if (fj > 4 * 1024) { console.error(`BUDGET EXCEEDED: fieldlink.js ${fj} B (limit 4096)`); process.exit(1); } }   // FieldLink's concept viewer
+{ const pj = manifest.files['pilot.js'].bytes; if (pj > 16 * 1024) { console.error(`BUDGET EXCEEDED: pilot.js ${pj} B (limit 16384)`); process.exit(1); } }   // v18/pilot
+// Build Your Empathia: it carries the one estimate() engine and the v1.5 list it prices add-ons from. Raised from 32 KB to 38 KB on 19 Nov 2026
+// for price book 3 (founder 04:45), which adds room groups with their devices, the volume and bundle discount lines, Search Party's count and
+// the bundle choice to the same engine: 39.9 KB as first built, 36.1 KB (12.3 KB compressed) once the catalogue's display-only text was left
+// out above. The engine is not split or duplicated to fit; the limit keeps the same ~5 % headroom over what it carries.
+{ const bj = manifest.files['build.js'].bytes; if (bj > 38 * 1024) { console.error(`BUDGET EXCEEDED: build.js ${bj} B (limit 38912)`); process.exit(1); } }
+console.log(`website built: ${PATHS.length} pages, films ${filmsMode}: ${films.map((f) => f.key).join(', ') || 'none'} (excluded: ${excluded.map((e) => `${e.key} ${e.status}`).join(', ') || 'none'}), index.html ${(home / 1024).toFixed(1)} KiB, site.js ${(js / 1024).toFixed(1)} KiB, site.css ${(manifest.files['site.css'].bytes / 1024).toFixed(1)} KiB`);

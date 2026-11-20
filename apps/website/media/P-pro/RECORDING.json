@@ -1,0 +1,151 @@
+{
+  "key": "P-pro",
+  "title": "Pro: executive measures that show their work",
+  "product": "pro",
+  "recordedAt": "2026-11-19T23:36:17.454Z",
+  "duration": 43.56,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T23:05:29.841Z"
+  },
+  "git": "eca7f43",
+  "steps": [
+    {
+      "at": 0,
+      "shown": 0.01,
+      "until": 3.93,
+      "say": "Pro: executive measures that show their work.",
+      "proof": "[data-testid=tiles]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 3.93,
+      "shown": 4.67,
+      "until": 8.17,
+      "say": "Filter by period and by building.",
+      "proof": "[data-testid=exec-filters]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 8.17,
+      "shown": 8.9,
+      "until": 18.64,
+      "say": "Twenty-seven measures, each a passport: numerator, denominator, window and coverage.",
+      "proof": "[data-testid=passports]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 18.64,
+      "shown": 19.37,
+      "until": 22.87,
+      "say": "What is waiting for funding, and why.",
+      "proof": "[data-testid=pending-funding]",
+      "url": "/#/v25/exec"
+    },
+    {
+      "at": 22.87,
+      "shown": 23.35,
+      "until": 28.59,
+      "say": "Drill down: the decision behind a figure.",
+      "proof": "[data-testid=pending]",
+      "url": "/#/v25/decisions"
+    },
+    {
+      "at": 28.59,
+      "shown": 29.34,
+      "until": 32.84,
+      "say": "Its readiness, before anyone approves it.",
+      "proof": "[data-testid=readiness]",
+      "url": "/#/v25/decisions"
+    },
+    {
+      "at": 32.84,
+      "shown": 32.88,
+      "until": 36.39,
+      "say": "The ledger each measure is counted from.",
+      "proof": "[data-testid=ledger]",
+      "url": "/#/v25/ledger"
+    },
+    {
+      "at": 36.39,
+      "shown": 36.44,
+      "until": 43.56,
+      "say": "Back up: missing data is shown as missing, never as success.",
+      "proof": "[data-testid=passports]",
+      "url": "/#/v25/exec"
+    }
+  ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 3.46,
+        "sha256": "246816f7ed278369046b34f916e72866b605ccec55da33c9a7f6dab52ad562cd"
+      },
+      {
+        "step": 2,
+        "seconds": 3,
+        "sha256": "87eda1a5fad26201f89d31d95277631de9762a0b1866aa49f8be21fd389d656a"
+      },
+      {
+        "step": 3,
+        "seconds": 9.29,
+        "sha256": "a28f45b313d3dd0f4dfb35f22901190b2bad26f40a64fc1f912d3e5ed6b16d48"
+      },
+      {
+        "step": 4,
+        "seconds": 2.94,
+        "sha256": "56f0d1587a0e5ddda91a4887a884b1ac5695dd6bf5ad8b8e7cc6d37da2c0fecc"
+      },
+      {
+        "step": 5,
+        "seconds": 4.79,
+        "sha256": "bebe96bd27f27d7340967f69ab15a409f06a63461b5ae48ec59d7a652ab615e5"
+      },
+      {
+        "step": 6,
+        "seconds": 2.68,
+        "sha256": "669c0c3237573307b6915e028f46d4c0d9d89b47e7cee61592b4715f020ebac1"
+      },
+      {
+        "step": 7,
+        "seconds": 2.63,
+        "sha256": "a2c771932ea5a2022a1d3c3d66df6819e049aff62ba924f4bbac589211432df3"
+      },
+      {
+        "step": 8,
+        "seconds": 6.65,
+        "sha256": "c71bbd7e3c91f9a1a898ba67faeb6e81e4179082f90ea50279448e91fc2e3cd5"
+      }
+    ]
+  },
+  "files": {
+    "720.mp4": {
+      "bytes": 1889106,
+      "sha256": "9b16f368743b874fd6209ef2b878681fafa1be9b8e56fd1e2ad2ebc0b3974db0"
+    },
+    "poster.webp": {
+      "bytes": 54808,
+      "sha256": "4ab24cf820cae6461d63ad57c4c89d6cb08d6e5cf5de17e9273f30cc680c153a"
+    },
+    "poster.jpg": {
+      "bytes": 101548,
+      "sha256": "1997c068dda425ced1d073fddbe719d9395010c2d6f719b3bc89af134489cba8"
+    },
+    "captions.vtt": {
+      "bytes": 1048,
+      "sha256": "8a316d9836c150eadf0e47e320ad8f045cca55b36ac868f4f61930a4bc5b2136"
+    }
+  }
+}

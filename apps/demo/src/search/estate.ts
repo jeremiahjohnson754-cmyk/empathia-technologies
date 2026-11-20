@@ -7,19 +7,26 @@
 import { Graph, nodeKey, type Catalogue, type SearchNode, type Edge } from '@empathia/search-party';
 import { loadDraft, live } from '../build/store.js';
 import type { PlannedDevice, Connection } from '@empathia/domain-types';
+import { BUILDINGS as CAMPUS_BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, SITE, fullName, roomHref, buildingByKey, roomById } from '../campus/canon.js';
+/** the campus buildings and the fictional regional sites of the rooms plan (rows 40, 42, 45 sit on them) */
+const BUILDINGS = [...CAMPUS_BUILDINGS, ...REGIONAL_SITES];
+import { roomRecord } from '../campus/design.js';
+import { involvement } from '../people/involvement.js';
+import { syntheticHistory } from '../service/history.js';
 
 const N = (type: string, id: string, label: string, extra: Partial<SearchNode> = {}): SearchNode => ({ type, id, label, provenance: 'synthetic seed (demonstration)', ...extra });
 const E = (from: [string, string], rel: string, to: [string, string], provenance = 'DECLARED (synthetic seed)'): Edge => ({ from: { type: from[0], id: from[1] }, rel, to: { type: to[0], id: to[1] }, provenance });
 
 export function buildEstate(): Catalogue & { graph: Graph } {
   const nodes: SearchNode[] = [
-    N('Site', 'SITE-NORTH', 'North Campus', { facets: { site: 'SITE-NORTH' } }),
-    N('Building', 'ATL', 'Atlas Tower', { subtitle: 'North Campus · 12 floors', facets: { site: 'SITE-NORTH' } }),
-    N('Building', 'NST', 'Northstar Annex', { subtitle: 'North Campus · 3 floors', facets: { site: 'SITE-NORTH' } }),
-    N('Room', 'R-ATL-4-218', 'Atlas 4.218 Boardroom', { subtitle: 'Atlas Tower · floor 4 · OPERATIONAL', facets: { site: 'SITE-NORTH', building: 'ATL', lifecycle: 'OPERATIONAL' }, href: '#/suite/lite' }),
-    N('Room', 'R-ATL-4-220', 'Atlas 4.220 Huddle', { subtitle: 'Atlas Tower · floor 4 · OPERATIONAL', facets: { site: 'SITE-NORTH', building: 'ATL', lifecycle: 'OPERATIONAL' } }),
-    N('Room', 'R-ATL-4-231', 'Atlas 4.231 Training', { subtitle: 'Atlas Tower · floor 4 · ACCEPTED', facets: { site: 'SITE-NORTH', building: 'ATL', lifecycle: 'ACCEPTED' } }),
-    N('Room', 'R-NST-2-101', 'Northstar Town Hall', { subtitle: 'Northstar Annex · floor 2 · COMMISSIONING', facets: { site: 'SITE-NORTH', building: 'NST', lifecycle: 'COMMISSIONING' } }),
+    N('Site', 'SITE-NORTH', SITE.name, { facets: { site: 'SITE-NORTH' } }),
+    N('Building', 'ATL', 'Atlas HQ', { subtitle: `${SITE.name} · 7 floors`, facets: { site: 'SITE-NORTH' }, href: '#/campus/ATL' }),
+    N('Building', 'NST', 'Northstar Annex', { subtitle: `${SITE.name} · 3 floors`, facets: { site: 'SITE-NORTH' }, href: '#/campus/NST' }),
+    // the reference room's status comes from its record (recommissioning held), never from a hand-typed label
+    N('Room', 'R-ATL-4-218', 'Atlas 4.218 Boardroom', { subtitle: `Atlas HQ · floor 4 · ${roomRecord('R-ATL-4-218')!.lifecycle} (recommissioning held)`, facets: { site: 'SITE-NORTH', building: 'ATL', lifecycle: roomRecord('R-ATL-4-218')!.lifecycle }, href: roomHref(roomById('R-ATL-4-218')!) }),
+    N('Room', 'R-ATL-4-220', 'Atlas 4.220 Huddle', { subtitle: 'Atlas HQ · floor 4 · OPERATIONAL', facets: { site: 'SITE-NORTH', building: 'ATL', lifecycle: 'OPERATIONAL' }, href: roomHref(roomById('R-ATL-4-220')!) }),
+    N('Room', 'R-ATL-4-231', 'Atlas 4.231 Training', { subtitle: 'Atlas HQ · floor 4 · ACCEPTED', facets: { site: 'SITE-NORTH', building: 'ATL', lifecycle: 'ACCEPTED' }, href: roomHref(roomById('R-ATL-4-231')!) }),
+    N('Room', 'R-NST-2-101', 'Northstar Town Hall', { subtitle: 'Northstar Annex · floor 2 · COMMISSIONING', facets: { site: 'SITE-NORTH', building: 'NST', lifecycle: 'COMMISSIONING' }, href: roomHref(roomById('R-NST-2-101')!) }),
     N('NetworkNode', 'SW-ATL-4A', 'Access switch ATL-4A', { subtitle: 'IDF 4 · 48 ports · PoE', facets: { building: 'ATL' } }),
     N('NetworkNode', 'SW-ATL-CORE', 'Core switch ATL-CORE', { subtitle: 'MDF · uplink for every floor', facets: { building: 'ATL' } }),
     N('PowerNode', 'PDU-ATL-4', 'Power panel ATL-4', { subtitle: 'IDF 4 · UPS-backed', facets: { building: 'ATL' } }),
@@ -58,6 +65,41 @@ export function buildEstate(): Catalogue & { graph: Graph } {
     E(['RoomIssue', 'ISS-0417'], 'REMEDIED_BY', ['WorkOrder', 'WO-0088'], 'DERIVED work_order.issue'), E(['WorkOrder', 'WO-0088'], 'ASSIGNED_TO', ['PersonRole', 'service'], 'DECLARED work_order.assigned_role'), E(['WorkOrder', 'WO-0088'], 'RESOLVED_BY', ['Person', 'p-svcmgr'], 'DECLARED work_order.created_by'),
     E(['Room', 'R-ATL-4-231'], 'APPROVED_BY', ['Person', 'p-syseng'], 'DECLARED room.approved_class'), E(['CommissioningBaseline', 'BL-4-231-v1'], 'DOCUMENTS', ['Room', 'R-ATL-4-231'], 'DERIVED baseline.room'), E(['CommissioningBaseline', 'BL-4-231-v1'], 'APPROVED_BY', ['Person', 'p-syseng'], 'DECLARED baseline.published_by'),
   ];
+  // the canonical campus: every building and room, and each room's device positions (position code · asset code · identity state)
+  const have = new Set(nodes.map((n) => nodeKey(n)));
+  for (const b of [...BUILDINGS, ...REGIONAL_SITES]) if (!have.has(`Building:${b.key}`)) { nodes.push(N('Building', b.key, b.name, { subtitle: `${SITE.name} · ${b.floors} floors`, facets: { site: 'SITE-NORTH' }, href: `#/campus/${b.key}` })); edges.push(E(['Building', b.key], 'LOCATED_IN', ['Site', 'SITE-NORTH'], 'DERIVED building.site')); }
+  const posNode = new Map<string, string>();
+  for (const o of ROOMS) {
+    const rec = roomRecord(o.id)!;
+    if (!have.has(`Room:${o.id}`)) { nodes.push(N('Room', o.id, fullName(o), { subtitle: `${buildingByKey(o.building)!.name} · floor ${o.floor} · ${rec.lifecycle}`, facets: { site: 'SITE-NORTH', building: o.building, lifecycle: rec.lifecycle }, href: roomHref(o), provenance: o.kind === 'designed' ? 'MODELED room (designed from its archetype)' : 'synthetic seed (demonstration)' })); edges.push(E(['Room', o.id], 'LOCATED_IN', ['Building', o.building])); }
+    for (const p of rec.positions) {
+      if (p.furniture) continue;
+      const id = have.has(`PlannedAsset:${p.code}`) ? p.code : `${o.id}/${p.code}`; posNode.set(`${o.id}:${p.code}`, id);
+      if (id === p.code) { const n = nodes.find((x) => x.type === 'PlannedAsset' && x.id === id); if (n) { n.subtitle = `${n.subtitle} · position ${p.code} · asset ${p.asset || '—'} · identity ${p.identity}`; n.href = `${roomHref(o)}?device=${p.code}`; } continue; }
+      nodes.push(N('PlannedAsset', id, `${p.label} (${o.number})`, { subtitle: `${p.catLabel} · position ${p.code} · asset ${p.asset || '—'} · identity ${p.identity}`, facets: { building: o.building, category: p.cat }, href: `${roomHref(o)}?device=${p.code}`, provenance: p.provenance }));
+      edges.push(E(['Room', o.id], 'PLANS_DEVICE', ['PlannedAsset', id], o.kind === 'designed' ? 'MODELED (archetype template)' : 'DECLARED (room record)'));
+    }
+  }
+  // every physical unit by its asset ID (founder, 14 Nov 2026: the asset ID connects everything end to end): in service or retired,
+  // the position it is (or was) installed at, and the unit that replaced it; a retired ID stays findable and is never reissued
+  for (const o of ROOMS) {
+    const rec = roomRecord(o.id)!;
+    for (const i of rec.installations) {
+      if (have.has(`Asset:${i.asset}`)) continue; have.add(`Asset:${i.asset}`);
+      const p = rec.positions.find((x) => x.code === i.position); const retired = !!i.removedAt;
+      nodes.push(N('Asset', i.asset, `${i.asset} · ${p?.label || i.position} (${o.number})`, { subtitle: `${retired ? `RETIRED ${i.removedAt!.slice(0, 10)} (${(i.removalReason || 'removed').toLowerCase()}) · never reissued` : 'IN SERVICE'} · position ${i.position} · ${fullName(o)}`, facets: { building: o.building, category: p?.cat || 'device', state: retired ? 'RETIRED' : 'IN_SERVICE' }, href: `#/v25/asset?a=${i.asset}`, provenance: 'DECLARED (installation record, synthetic)' }));
+      const pos = posNode.get(`${o.id}:${i.position}`); if (pos) edges.push(E(['PlannedAsset', pos], 'TRACKED_AS', ['Asset', i.asset], retired ? `DECLARED installation (held until ${i.removedAt!.slice(0, 10)})` : 'DECLARED installation'));
+      const next = retired ? rec.installations.find((x) => x.position === i.position && x.installedAt === i.removedAt && x !== i) : null;
+      if (next) edges.push(E(['Asset', next.asset], 'SUCCEEDS', ['Asset', i.asset], 'DECLARED replacement'));
+    }
+  }
+  // the people who worked the jobs (synthetic service history): the rooms they touched and the units they worked on
+  const keys = new Set(nodes.map((n) => nodeKey(n)));
+  for (const x of involvement(syntheticHistory())) {
+    const k = `Person:${x.person.id}`; if (!keys.has(k)) { keys.add(k); nodes.push(N('Person', x.person.id, x.person.name, { subtitle: `${x.person.org} · ${x.jobs.length} jobs · ${x.rooms.length} rooms · ${x.level} (experience, not a credential)`, href: `#/v25/people?p=${x.person.id}`, provenance: 'synthetic service history (roster assignment)' })); }
+    for (const r of x.rooms) if (keys.has(`Room:${r}`)) edges.push(E(['Room', r], 'INVOLVES', ['Person', x.person.id], 'DERIVED service history (synthetic)'));
+    for (const a of new Set(x.jobs.map((j) => j.asset).filter((v): v is string => !!v))) if (keys.has(`Asset:${a}`)) edges.push(E(['Asset', a], 'INVOLVES', ['Person', x.person.id], 'DERIVED service history (synthetic)'));
+  }
   // the Build a Room draft of this browser, as a live room of the Northstar Annex
   const d = loadDraft();
   if (d) {

@@ -1,0 +1,227 @@
+/**
+ * #/dossier/<report> — the commissioning dossier of Atlas 4.218 (v1.6 reference SIM-REPORT-2026-11-08-001): 27 pass, 3 pending, 2 fail,
+ * 29 of 32 evidence records, final acceptance HELD. The snapshot never changes. What a role does after it (record a retest, attach
+ * evidence, raise a deficiency, verify independently, record acceptance) is replayed over it by @empathia/proof-registry, which also
+ * refuses what the rules forbid: a pass without evidence, self-verification, acceptance while a blocker stands. The page shows a
+ * step only to a role that may take it (D44); a rule's refusal, which the role is entitled to hear, is shown as an alert.
+ */
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { PageHero, Chip, Card, StatTile, Segmented, EmptyState, Icon } from '@empathia/ui';
+import { DOSSIER_4218 as D, WAIVER_MAX_DAYS, waiverKind, type Authority, type DossierEvent, type WorkingTest, type WorkingWaiver } from '@empathia/proof-registry';
+import type { PageProps, RoleKey } from '../registry.types.js';
+import { ROLES, allows, roleTitle } from '../access/policy.js';
+import { useViewAs } from '../viewas/context.js';
+import { Crumbs, Zone, honest } from '../parity/ui.js';
+import { useDossier, nowIso } from './store.js';
+import { make, download, type Artifact, type Redaction } from './exports.js';
+import { readDocs } from '../docs5/store.js';
+import { docOfTest } from '../docs5/model.js';
+import { ReleaseControls } from '../docs5/ui.js';
+import { ExportMenu } from '../export/ExportMenu.js';
+import { dossierPackage } from '../export/dossier.js';
+
+type Filter = 'attention' | 'all' | 'FAIL' | 'PENDING' | 'PASS';
+const RESULT_TONE = { PASS: 'ok', PENDING: 'warn', FAIL: 'bad' } as const;
+const RESULT_LABEL = { PASS: 'Pass', PENDING: 'Pending', FAIL: 'Fail' } as const;
+const FIRST: RoleKey[] = ['svcmgr', 'exec']; const SECOND: RoleKey[] = ['ops', 'syseng']; const RECORDERS: RoleKey[] = ['cxeng', 'syseng', 'architect']; const VERIFIERS: RoleKey[] = ['qa', 'svcmgr', 'ops', 'architect']; const BUSINESS: RoleKey[] = ['exec']; const TECHNICAL: RoleKey[] = ['ops']; const REVIEWERS: RoleKey[] = ['architect']; const OWNERS: RoleKey[] = ['cxeng', 'syseng', 'installer', 'svcmgr'];
+const names = (r: RoleKey[]) => r.map((k) => ROLES[k].label).join(', ');
+const either = (r: RoleKey[]) => r.map((k) => roleTitle(k)).join(' or the ');
+const day = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const plusDays = (n: number) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+const WAIVER_WORD: Record<WorkingWaiver['state'], string> = { STANDING: 'Standing', AWAITING_REVIEW: 'Awaiting engineering review', EXPIRED: 'Run out', MOOT: 'No longer needed', VOID: 'Covers nothing' };
+const KIND_WORD = { technical: 'Technical deviation', business: 'Business-risk acceptance' } as const;
+const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
+const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+function describe(e: DossierEvent): string {
+  switch (e.kind) {
+    case 'RETEST': return `${e.by.label} retested ${e.test}: ${e.result === 'PASS' ? 'pass' : 'fail'}${e.evidence ? `, evidence ${e.evidence}` : ''}`;
+    case 'EVIDENCE': return `${e.by.label} attached evidence ${e.evidence} to ${e.test}`;
+    case 'VERIFY': return `${e.by.label} verified ${e.test}`;
+    case 'RAISE': return `${e.by.label} raised ${e.id} against ${e.test}`;
+    case 'WAIVE': return `${e.by.label} waived ${e.test} until ${day(e.expires)}: ${e.reason}`;
+    case 'REVIEW_WAIVER': return `${e.by.label} gave the engineering review of the waiver on ${e.test}: ${e.finding}`;
+    case 'ATTEST': return `${e.by.label}, as site champion, attested: ${e.statement}`;
+    case 'ACCEPT': return `${e.by.label} gave the first approval of the final sign-off${e.waivers ? `, over ${plural(e.waivers, 'waiver')}` : ''}`;
+    case 'COUNTERSIGN': return `${e.by.label} gave the second approval${e.waivers ? `, over ${plural(e.waivers, 'waiver')}` : ''}: final acceptance recorded`;
+  }
+}
+
+export default function Dossier({ role, params, query, can, sees }: PageProps) {
+  const va = useViewAs();
+  const { events, working: w, act, reset } = useDossier();
+  const [filter, setFilter] = useState<Filter>('attention');
+  const [refusal, setRefusal] = useState<string | null>(null); const [done, setDone] = useState<string | null>(null);
+  const [made, setMade] = useState<Artifact[]>([]); const [busy, setBusy] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null); const alertRef = useRef<HTMLDivElement>(null);
+  const me = useMemo(() => ({ role, label: ROLES[role].label }), [role]);
+  const may: Authority = { record: can('dossier.record'), verify: can('dossier.verify'), raise: can('dossier.raise'), accept: can('dossier.accept'), countersign: can('dossier.countersign'), waiveBusiness: can('dossier.waive.business'), waiveTechnical: can('dossier.waive.technical'), reviewWaiver: can('dossier.waive.review') };
+  const [wTest, setWTest] = useState(''); const [wWhy, setWWhy] = useState(''); const [wBasis, setWBasis] = useState(''); const [wRisk, setWRisk] = useState(''); const [wFinding, setWFinding] = useState(''); const [wPlan, setWPlan] = useState(''); const [wOwner, setWOwner] = useState<RoleKey>('cxeng'); const [wUntil, setWUntil] = useState(() => plusDays(30));
+  useEffect(() => { setRefusal(null); setDone(null); }, [role]);
+  useEffect(() => { if (query.get('focus') === 'export') exportRef.current?.scrollIntoView({ block: 'start' }); }, [query]);
+  useEffect(() => { if (refusal) alertRef.current?.focus(); }, [refusal]);
+
+  if (params['id'] && params['id'] !== D.id) return <div className="pa pf" data-native="" data-testid="dossier-missing"><Crumbs items={[['Commissioning & Assurance', '#/commissioning'], ['Dossier']]} /><h1 className="ui-visually-hidden">Dossier not found</h1><EmptyState title="No dossier with that report number" icon="search" action={<a className="ui-btn" href={`#/dossier/${D.id}`}>Open {D.id}</a>}>The demonstration holds one commissioning dossier, for {D.room.name}.</EmptyState></div>;
+
+  const docs = readDocs(undefined, w)!;   // the room's documentation, read against these tests
+  const step = (e: DossierEvent, ok: string) => { const r = act(e, may); setRefusal(r); setDone(r ? null : ok); };
+  const nextEvidence = (t: WorkingTest) => `EV-SIM-1${t.id.slice(-2)}`;
+  const nextDef = () => `DEF-SIM-${String(w.deficiencies.length + 1).padStart(3, '0')}`;
+  const attention = (t: WorkingTest) => t.result !== 'PASS' || !t.evidence || (t.changed && !t.verifiedBy);
+  const shown = w.tests.filter((t) => (filter === 'all' ? true : filter === 'attention' ? attention(t) : t.result === filter));
+  const held = w.acceptance === 'HELD';
+  const standing = w.waivers.filter((x) => x.state === 'STANDING'); const waiverOf = (id: string) => standing.find((x) => x.test === id);
+  // what the rules would let THIS role waive: an open item that is not a control, not an unraised failure, not missing its evidence or
+  // verification, has no open P1 against it and no waiver already awaiting review, and whose kind this role may give
+  const kindOf = (id: string) => { const t = w.tests.find((x) => x.id === id); return t ? waiverKind(t) : 'technical'; };
+  const waivable = [...new Set(w.blockers.filter((b) => b.test && (kindOf(b.test) === 'business' ? may.waiveBusiness : may.waiveTechnical) && !w.waivers.some((x) => x.test === b.test && x.state === 'AWAITING_REVIEW') && b.reason !== 'fails with no deficiency raised' && b.reason !== 'passes with no evidence record' && b.reason !== 'awaits independent verification' && !w.tests.find((t) => t.id === b.test)?.control && !w.deficiencies.some((x) => x.test === b.test && x.state !== 'CLOSED' && x.severity === 'P1')).map((b) => b.test as string))];
+  const pick = waivable.includes(wTest) ? wTest : (waivable[0] || '');
+  const over = standing.length ? `, with ${plural(standing.length, 'waiver')}` : '';
+  const redactions: Redaction[] = sees('dossier.evidence') ? ['engineering', 'executive'] : ['executive'];
+  const doExport = async (kind: 'json' | 'csv', r: Redaction) => { setBusy(true); try { const a = await make(kind, w, r, me.label); download(a); setMade((m) => [a, ...m].slice(0, 6)); } catch { setRefusal('The file could not be made in this browser. Nothing was exported.'); } finally { setBusy(false); } };
+
+  const rowActions = (t: WorkingTest) => {
+    const out: JSX.Element[] = [];
+    if (may.record && !(t.result === 'PASS' && t.evidence && !t.changed)) {
+      if (t.result === 'PASS' && !t.evidence) out.push(<button key="ev" type="button" className="ui-btn ui-btn--sm" data-act="evidence" onClick={() => step({ kind: 'EVIDENCE', test: t.id, evidence: nextEvidence(t), by: me, at: nowIso() }, `Evidence ${nextEvidence(t)} attached to ${t.id}. It now awaits independent verification.`)}>Attach evidence</button>);
+      else {
+        out.push(<button key="p" type="button" className="ui-btn ui-btn--sm" data-act="pass" onClick={() => step({ kind: 'RETEST', test: t.id, result: 'PASS', evidence: nextEvidence(t), by: me, at: nowIso() }, `${t.id} retested: pass, with evidence ${nextEvidence(t)}. It now awaits independent verification.`)}>Retest: pass with evidence</button>);
+        out.push(<button key="n" type="button" className="ui-btn ui-btn--sm" data-act="pass-bare" onClick={() => step({ kind: 'RETEST', test: t.id, result: 'PASS', evidence: null, by: me, at: nowIso() }, '')}>Retest: pass, no evidence</button>);
+        if (t.result !== 'FAIL') out.push(<button key="f" type="button" className="ui-btn ui-btn--sm" data-act="fail" onClick={() => step({ kind: 'RETEST', test: t.id, result: 'FAIL', evidence: null, by: me, at: nowIso() }, `${t.id} retested: fail.`)}>Retest: fail</button>);
+      }
+    }
+    if (may.raise && t.result === 'FAIL' && !w.deficiencies.some((x) => x.test === t.id && x.state !== 'CLOSED')) out.push(<button key="r" type="button" className="ui-btn ui-btn--sm" data-act="raise" onClick={() => step({ kind: 'RAISE', test: t.id, id: nextDef(), statement: `${t.name}: ${t.note || 'the test fails'}.`, by: me, at: nowIso() }, `${nextDef()} raised against ${t.id}.`)}>Raise a deficiency</button>);
+    if (may.verify && t.changed && t.result === 'PASS' && t.evidence && !t.verifiedBy) out.push(<button key="v" type="button" className="ui-btn ui-btn--sm ui-btn--primary" data-act="verify" onClick={() => step({ kind: 'VERIFY', test: t.id, by: me, at: nowIso() }, `${t.id} verified by the ${me.label}.`)}>Verify</button>);
+    return out;
+  };
+  const anyRowActions = may.record || may.raise || may.verify;
+
+  return (
+    <div className="pa pf" data-native="" data-testid="dossier" data-acceptance={w.acceptance} data-waivers={standing.length}>
+      <Crumbs items={[['Commissioning & Assurance', allows({ area: 'commissioning' }, role) ? '#/commissioning' : undefined], [D.room.name, `#/room/${D.room.id}`], ['Dossier']]} />
+      <PageHero compact eyebrow={`${D.project} · commissioning`} title={held ? 'Acceptance held pending corrective action' : `Final acceptance recorded${over}`} product="commissioning" icon="shield"
+        lede={`${D.scope}. Asset ${D.asset.id}, ${D.asset.kind.toLowerCase()}.`}
+        meta={[<Chip key="s" small tone={held ? 'bad' : standing.length ? 'warn' : 'ok'}>{held ? 'Held' : standing.length ? `Accepted${over}` : 'Accepted'}</Chip>, ...honest(['Synthetic data', 'warn'], [`Report ${D.id}`, 'muted'])]} />
+
+      <div className="kit-grid kit-grid--tiles" data-testid="dossier-totals">
+        <StatTile testId="dossier-pass" label="Pass" value={w.totals.pass} tone="ok" hint={w.changed ? `snapshot ${D.totals.pass}` : `of ${w.totals.tests} tests`} />
+        <StatTile testId="dossier-pending" label="Pending" value={w.totals.pending} tone="warn" hint={w.changed ? `snapshot ${D.totals.pending}` : 'not yet run or not complete'} />
+        <StatTile testId="dossier-fail" label="Fail" value={w.totals.fail} tone="bad" hint={w.changed ? `snapshot ${D.totals.fail}` : 'each needs a deficiency'} />
+        <StatTile testId="dossier-evidence" label="Evidence records" value={`${w.totals.evidence} of ${w.totals.tests}`} hint={w.changed ? `snapshot ${D.totals.evidence} of ${D.totals.tests}` : 'a pass counts only with one'} />
+      </div>
+
+      <section className={`pf-decision${held ? ' pf-decision--held' : ''}`} aria-labelledby="dec-h" data-testid="dossier-decision">
+        <h2 id="dec-h">{held ? 'Decision required' : standing.length ? `Accepted${over}` : 'Accepted'}</h2>
+        {held ? <p>{w.blockers.length ? D.acceptanceReason : w.signoff === 'AWAITING_SECOND' ? `${standing.length ? `Nothing stops acceptance: ${plural(standing.length, 'open item')} ${standing.length === 1 ? 'is' : 'are'} under a waiver` : 'Commissioning is complete'} and the first approval is given. Acceptance stays held until the second.` : `${standing.length ? `Nothing stops acceptance: ${plural(standing.length, 'open item')} ${standing.length === 1 ? 'is' : 'are'} under a waiver.` : 'Commissioning is complete.'} Acceptance stays held until both approvals of the final sign-off are given.`}</p>
+          : <p>First approval by the {w.firstApproval?.by.label}{w.firstApproval ? ` on ${when(w.firstApproval.at)}` : ''}; second by the {w.secondApproval?.by.label}{w.secondApproval ? ` on ${when(w.secondApproval.at)}` : ''}. {standing.length ? `${plural(standing.length, 'item')} stayed open under a documented waiver and ${standing.length === 1 ? 'is' : 'are'} listed below with ${standing.length === 1 ? 'its' : 'their'} end date; every other test passes with evidence, and every result recorded after the snapshot was independently verified.` : 'Every test passes with evidence, and every result recorded after the snapshot was independently verified.'} The record is closed.</p>}
+        {held ? <>
+          <h3 className="pf-h">{w.blockers.length} {w.blockers.length === 1 ? 'blocker' : 'blockers'} to acceptance</h3>
+          {w.blockers.length ? <ul className="pf-blockers" data-testid="dossier-blockers">{w.blockers.map((b, i) => !b.test ? <li key={`doc-${i}`} data-blocker="document"><a href={`#/docs/${D.id}`}>Documentation</a> {b.reason}</li> : <li key={`${b.test}-${i}`}><a href={`#t-${b.test}`} onClick={(e) => { e.preventDefault(); setFilter('all'); setTimeout(() => document.getElementById(`t-${b.test}`)?.scrollIntoView({ block: 'center' }), 0); }}><code>{b.test}</code></a> {b.reason}</li>)}</ul> : <p className="pf-note">None. Acceptance can be recorded.</p>}
+          {(may.waiveBusiness || may.waiveTechnical) && waivable.length ? <form className="pf-waive" data-testid="dossier-waive" aria-labelledby="waive-h" noValidate onSubmit={(e) => { e.preventDefault(); const t = pick; const r = act({ kind: 'WAIVE', test: t, reason: wWhy.trim(), basis: wBasis.trim(), risk: wRisk.trim(), owner: ROLES[wOwner].label, plan: wPlan.trim(), expires: wUntil, by: me, at: nowIso() }, may); setRefusal(r); setDone(r ? null : kindOf(t) === 'technical' ? `The waiver on ${t} is recorded. It is a technical deviation, so it covers nothing until the ${either(REVIEWERS)} has given an engineering review.` : `${t} is waived until ${day(wUntil)}. It stays open and is listed as waived; the approvals are given over it by other roles.`); if (!r) { setWWhy(''); setWBasis(''); setWPlan(''); setWRisk(''); } }}>
+            <h3 className="pf-h" id="waive-h">Waive an open item</h3>
+            <p className="pf-note">A waiver lets the room be accepted with one item still open. It does not pass the test. It is a documented exception: the reason, the evidence it relies on, the risk, an owner, how the item will be closed, and an end date. The {ROLES[role].label} who gives it does not also approve. Security, authorisation, record-integrity, accessibility and safety tests, missing evidence, P1 deficiencies and failures nobody has raised are never offered here: they are corrected.</p>
+            {pick ? <p className="pf-waive__kind" data-testid="dossier-waive-kind" data-kind={kindOf(pick)}><b>{KIND_WORD[kindOf(pick)]}.</b> {kindOf(pick) === 'technical' ? `It will cover nothing until the ${either(REVIEWERS)} has given an engineering review.` : 'Late paperwork or handover, not a failing test: the business decision is yours.'}</p> : null}
+            <div className="pf-waive__row">
+              <div className="ui-field"><label htmlFor="waive-test">Item</label><select id="waive-test" value={pick} onChange={(e) => setWTest(e.target.value)} data-testid="dossier-waive-test">{waivable.map((id) => <option key={id} value={id}>{id} · {w.tests.find((t) => t.id === id)?.name}</option>)}</select></div>
+              <div className="ui-field"><label htmlFor="waive-until">Stands until</label><input id="waive-until" type="date" value={wUntil} min={plusDays(1)} max={plusDays(WAIVER_MAX_DAYS)} onChange={(e) => setWUntil(e.target.value)} data-testid="dossier-waive-until" /><p className="ui-field__hint">At most {WAIVER_MAX_DAYS} days.</p></div>
+            </div>
+            <div className="ui-field"><label htmlFor="waive-why">Why the room can be accepted with this open</label><textarea id="waive-why" rows={2} maxLength={600} value={wWhy} onChange={(e) => setWWhy(e.target.value)} data-testid="dossier-waive-why" /></div>
+            <div className="ui-field"><label htmlFor="waive-risk">What could go wrong while it is open, and for whom</label><textarea id="waive-risk" rows={2} maxLength={400} value={wRisk} onChange={(e) => setWRisk(e.target.value)} data-testid="dossier-waive-risk" /></div>
+            <div className="ui-field"><label htmlFor="waive-basis">What it relies on</label><input id="waive-basis" type="text" maxLength={200} value={wBasis} onChange={(e) => setWBasis(e.target.value)} data-testid="dossier-waive-basis" /><p className="ui-field__hint">A record someone else can read: the deficiency, an attestation, a booked visit.</p></div>
+            <div className="pf-waive__row">
+              <div className="ui-field"><label htmlFor="waive-plan">How it will be closed, and by when</label><textarea id="waive-plan" rows={2} maxLength={400} value={wPlan} onChange={(e) => setWPlan(e.target.value)} data-testid="dossier-waive-plan" /></div>
+              <div className="ui-field"><label htmlFor="waive-owner">Who closes it</label><select id="waive-owner" value={wOwner} onChange={(e) => setWOwner(e.target.value as RoleKey)} data-testid="dossier-waive-owner">{OWNERS.map((k) => <option key={k} value={k}>{ROLES[k].label}</option>)}</select></div>
+            </div>
+            <div className="pf-actions"><button type="submit" className="ui-btn" data-testid="dossier-waive-go">Record the waiver</button></div>
+          </form> : null}
+        </> : null}
+        {w.waivers.length ? <><h3 className="pf-h" id="waivers-h">Waivers</h3>
+          <ul className="pf-waivers" aria-labelledby="waivers-h" data-testid="dossier-waivers">{w.waivers.map((x) => <li key={x.test} data-waiver={x.test} data-state={x.state}>
+            <header><code>{x.test}</code><Chip small tone="muted">{KIND_WORD[x.kind]}</Chip><Chip small tone={x.state === 'STANDING' || x.state === 'AWAITING_REVIEW' ? 'warn' : x.state === 'MOOT' ? 'ok' : 'bad'}>{WAIVER_WORD[x.state]}</Chip><span className="pf-note">{x.state === 'MOOT' ? 'the item was closed' : `until ${day(x.expires)}`} · given by the {x.by.label} on {when(x.at)}</span></header>
+            <p>{x.reason}</p><dl className="pf-waivers__facts"><div><dt>Risk</dt><dd>{x.risk}</dd></div><div><dt>Relies on</dt><dd>{x.basis}</dd></div><div><dt>Closed by</dt><dd>{x.owner}</dd></div><div><dt>How</dt><dd>{x.plan}</dd></div>{x.review ? <div><dt>Engineering</dt><dd>{x.review.finding} <span className="pf-note">· the {x.review.by.label}, {when(x.review.at)}</span></dd></div> : null}</dl>
+            {x.state === 'AWAITING_REVIEW' ? (may.reviewWaiver ? <form className="pf-review" data-testid="dossier-waive-review" noValidate onSubmit={(e) => { e.preventDefault(); const r = act({ kind: 'REVIEW_WAIVER', test: x.test, finding: wFinding.trim(), by: me, at: nowIso() }, may); setRefusal(r); setDone(r ? null : `Engineering review recorded. The waiver on ${x.test} now stands until ${day(x.expires)}.`); if (!r) setWFinding(''); }}>
+              <div className="ui-field"><label htmlFor={`rev-${x.test}`}>Engineering review: what the deviation means for the room, and any condition</label><textarea id={`rev-${x.test}`} rows={2} maxLength={400} value={wFinding} onChange={(e) => setWFinding(e.target.value)} data-testid="dossier-waive-finding" /></div>
+              <div className="pf-actions"><button type="submit" className="ui-btn" data-testid="dossier-waive-review-go">Record the engineering review</button></div>
+            </form> : <p className="pf-note">A technical deviation covers nothing until the {either(REVIEWERS)} has given an engineering review.</p>) : null}{x.covers.length ? <p className="pf-note">Still open: {x.test} {x.covers.join('; ')}.{x.state === 'EXPIRED' ? ' The waiver has run out, so this stops acceptance again.' : x.state === 'VOID' ? ' A waiver cannot cover this.' : ''}</p> : null}
+          </li>)}</ul></> : null}
+        <h3 className="pf-h" id="signoff-h">Phase 6 · Final sign-off</h3>
+        <ol className="pf-signoff" aria-labelledby="signoff-h" data-testid="dossier-signoff" data-signoff={w.signoff}>
+          <li data-step="tests" data-state={w.blockers.length ? 'open' : 'done'}><b>Commissioning complete</b><span>{w.blockers.length ? `${w.blockers.length} ${w.blockers.length === 1 ? 'blocker stands' : 'blockers stand'}` : standing.length ? `Nothing stops acceptance; ${plural(standing.length, 'item')} open under a waiver` : 'Every test passes with evidence, and every new result is verified'}</span></li>
+          <li data-step="first" data-state={w.firstApproval ? 'done' : w.signoff === 'AWAITING_FIRST' ? 'next' : 'open'}><b>First approval</b><span>{w.firstApproval ? `Given by the ${w.firstApproval.by.label} on ${when(w.firstApproval.at)}` : `The ${either(FIRST)}`}</span>
+            {held && !w.firstApproval && may.accept ? <button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-accept" onClick={() => step({ kind: 'ACCEPT', by: me, at: nowIso(), ...(standing.length ? { waivers: standing.length } : {}) }, `First approval recorded by the ${me.label}${over}. The dossier now waits for the ${either(SECOND)}.`)}>Give the first approval{over}</button> : null}</li>
+          <li data-step="second" data-state={w.secondApproval ? 'done' : w.signoff === 'AWAITING_SECOND' ? 'next' : 'open'}><b>Second approval</b><span>{w.secondApproval ? `Given by the ${w.secondApproval.by.label} on ${when(w.secondApproval.at)}` : `The ${either(SECOND)}, after the first`}</span>
+            {held && may.countersign ? <button type="button" className="ui-btn ui-btn--primary" data-testid="dossier-countersign" onClick={() => step({ kind: 'COUNTERSIGN', by: me, at: nowIso(), ...(standing.length ? { waivers: standing.length } : {}) }, `Second approval recorded${over}. Final acceptance is recorded and the dossier is closed.`)}>Give the second approval{over}</button> : null}</li>
+        </ol>
+        {w.attestations.length ? <><h3 className="pf-h" id="attest-h">From the room’s site champion</h3>
+          <ul className="pf-attest" aria-labelledby="attest-h" data-testid="dossier-attestations">{w.attestations.map((a, i) => <li key={i}><p>“{a.statement}”</p><span className="pf-note">{when(a.at)} · local attestation. It is read by the approvers and approves nothing.</span></li>)}</ul></> : null}
+        {held && !may.accept && !may.countersign ? <p className="pf-note">The {ROLES[role].label} does not approve. The first approval is the {either(FIRST)}’s; the second is the {either(SECOND)}’s.</p> : null}
+        {refusal ? <div ref={alertRef} tabIndex={-1} role="alert" className="pf-refusal" data-testid="dossier-refusal"><Icon name="alert" size={18} /><span>{refusal}</span></div> : null}
+        {done && !refusal ? <p role="status" className="pf-done" data-testid="dossier-done"><Icon name="check" size={18} /><span>{done}</span></p> : null}
+      </section>
+
+      <Zone id="release" title="Release controls" note="Ten checks before acceptance, each computed from this dossier and the room’s documentation (Phase 5)">
+        <ReleaseControls dossier={w} docs={docs} link />
+      </Zone>
+
+      <Zone id="tests" title="Tests" note={`${w.totals.tests} acceptance tests in seven disciplines`}>
+        <Segmented<Filter> label="Which tests" value={filter} onChange={setFilter} small options={[{ value: 'attention', label: 'Needs attention', count: w.tests.filter(attention).length }, { value: 'all', label: 'All', count: w.totals.tests }, { value: 'FAIL', label: 'Fail', count: w.totals.fail }, { value: 'PENDING', label: 'Pending', count: w.totals.pending }, { value: 'PASS', label: 'Pass', count: w.totals.pass }]} />
+        {shown.length ? <div className="pa-table-wrap"><table className="pa-table pf-tests" data-testid="dossier-tests">
+          <thead><tr><th scope="col">Test</th><th scope="col">Discipline</th><th scope="col">Result</th>{sees('dossier.evidence') ? <th scope="col">Evidence</th> : null}<th scope="col">State</th>{anyRowActions ? <th scope="col"><span className="ui-visually-hidden">Steps</span></th> : null}</tr></thead>
+          <tbody>{shown.map((t) => { const acts = rowActions(t); return (
+            <tr key={t.id} id={`t-${t.id}`} data-test={t.id} data-result={t.result} className={t.changed ? 'pf-changed' : undefined}>
+              <th scope="row"><code>{t.id}</code><span className="pf-tests__name">{t.name}</span>{docOfTest(t.id) ? <a className="pf-tests__doc" href={`#/docs/${D.id}/${docOfTest(t.id)}`} data-testid={`doc-of-${t.id}`}>Its document</a> : null}<span className="pf-tests__res"><Chip small tone={RESULT_TONE[t.result]}>{RESULT_LABEL[t.result]}</Chip> {t.discipline}</span>{t.note ? <span className="pf-note">{t.note}</span> : null}</th>
+              <td>{t.discipline}</td>
+              <td><Chip small tone={RESULT_TONE[t.result]}>{RESULT_LABEL[t.result]}</Chip></td>
+              {sees('dossier.evidence') ? <td>{t.evidence ? <code>{t.evidence}</code> : <span className="pf-missing">None</span>}</td> : null}
+              <td>{waiverOf(t.id) ? <span data-waived={t.id}>Open · waived until {day(waiverOf(t.id)!.expires)}</span> : t.result !== 'PASS' ? '—' : !t.evidence ? 'Cannot be verified' : !t.changed ? 'In the snapshot' : t.verifiedBy ? `Verified by ${t.verifiedBy.label}` : `Recorded by ${t.recordedBy?.label}; awaits verification`}</td>
+              {anyRowActions ? <td>{acts.length ? <div className="pa-row-actions">{acts}</div> : null}</td> : null}
+            </tr>); })}</tbody>
+        </table></div> : <EmptyState title="No test in this view" icon="check">Choose All to see every test.</EmptyState>}
+      </Zone>
+
+      <Zone title="Deficiencies" note="A failure is owned, corrected, retested and verified before it closes">
+        <ul className="pf-defs" data-testid="dossier-defs">{w.deficiencies.map((x) => (
+          <li key={x.id} data-def={x.id} data-state={x.state}>
+            <header><code>{x.id}</code><Chip small tone={x.severity === 'P1' ? 'bad' : 'warn'}>{x.severity}</Chip><Chip small tone={x.state === 'CLOSED' ? 'ok' : 'muted'}>{x.state === 'CLOSED' ? 'Closed' : x.state === 'OPEN' ? 'Open' : 'Corrected, awaiting retest'}</Chip><span className="pf-note">against <code>{x.test}</code></span></header>
+            <p>{x.statement}</p><p className="pf-note">Owner: {x.owner}. {x.action}</p>
+          </li>))}</ul>
+        {!w.changed ? <><h3 className="pf-h">Gaps in the snapshot itself</h3><ul className="pf-limits" data-testid="dossier-gaps">{D.gaps.map((g) => <li key={g}>{g}</li>)}</ul></> : null}
+      </Zone>
+
+      <Zone title="Who does what" note="A role sees a step only if it may take it">
+        <div className="pf-who">
+          <p><b>Record a result, attach evidence, raise a deficiency:</b> {names(RECORDERS)}.</p>
+          <p><b>Verify a new result:</b> {names(VERIFIERS)}, and never the role that recorded it.</p>
+          <p><b>Final sign-off, first approval:</b> the {either(FIRST)}; only when no blocker stands.</p>
+          <p><b>Final sign-off, second approval:</b> the {either(SECOND)}; only after the first, from a different role. Neither approval comes from a role that recorded or verified a result here, and a new result withdraws an approval already given.</p>
+          <p><b>Waive an open item:</b> a business risk (late paperwork or handover) is the {either(BUSINESS)}’s to accept; a technical deviation is the {either(TECHNICAL)}’s and stands only after an engineering review by the {either(REVIEWERS)}. Every waiver records its reason, the evidence it relies on, the risk, an owner, how the item will be closed, and an end date at most {WAIVER_MAX_DAYS} days on. A waived item stays open and is counted as open.</p>
+          <p><b>Never waived:</b> a security, authorisation, record-integrity, accessibility or safety test; a pass with no evidence or awaiting verification; a failure with no deficiency raised; an item with a P1 deficiency. Nobody waives an exception they own or worked on, neither the giver nor the reviewer of a waiver approves, and each approval says how many waivers it is given over.</p>
+          <p><b>Local attestation:</b> the room’s site champion, from the room’s label in the QR Hub. It is shown to the approvers and does not replace either of them.</p>
+          <div className="pf-actions" role="group" aria-label="View this dossier as another role">{(['cxeng', 'qa', 'svcmgr', 'exec', 'ops', 'architect', 'syseng'] as RoleKey[]).filter((k) => k !== role).map((k) => <button key={k} type="button" className="ui-btn ui-btn--sm" data-viewas={k} onClick={() => va.switchTo(k)}>View as {roleTitle(k)}</button>)}</div>
+        </div>
+      </Zone>
+
+      {events.length ? <Zone title="Recorded after the snapshot" note="In this browser only; the snapshot is unchanged">
+        <ol className="pf-history" data-testid="dossier-history">{events.map((e, i) => <li key={i}><time dateTime={e.at}>{when(e.at)}</time><span>{describe(e)}</span></li>)}</ol>
+        <p><button type="button" className="ui-btn ui-btn--sm" data-testid="dossier-reset" onClick={() => { reset(); setRefusal(null); setDone('The working record was cleared. The dossier shows the reference snapshot again.'); setFilter('attention'); }}>Return to the reference snapshot</button></p>
+      </Zone> : null}
+
+      {can('dossier.export') ? <div ref={exportRef}><Zone id="export" title="Export" note="One record, one replay: every file states the same numbers">
+        <div className="kit-grid">{redactions.map((r) => (
+          <Card key={r} title={r === 'engineering' ? 'Engineering export' : 'Executive export'} icon="download" sub={r === 'engineering' ? 'Every test with its evidence reference and who verified it' : 'Totals, blockers and deficiencies; no evidence references'}>
+            <div className="pf-actions"><button type="button" className="ui-btn" disabled={busy} data-export={`json-${r}`} onClick={() => doExport('json', r)}>JSON snapshot</button><button type="button" className="ui-btn" disabled={busy} data-export={`csv-${r}`} onClick={() => doExport('csv', r)}>CSV of the tests</button></div>
+          </Card>))}
+        </div>
+        <div className="kit-grid" data-testid="dossier-reports">{redactions.map((r) => (
+          <ExportMenu key={r} testId={`dossier-export-${r}`} by={me.label} title={r === 'engineering' ? 'Engineering report' : 'Executive report'}
+            sub={r === 'engineering' ? 'The dossier with evidence references, as PDF, Word, Excel, PowerPoint, CSV and JSON' : 'The dossier without evidence references, as PDF, Word, Excel, PowerPoint, CSV and JSON'}
+            make={() => dossierPackage(w, r, { role: me.label, at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' })} />))}
+          <Card title="Not built yet" icon="info" sub="Specified in the v1.6 Export Center"><p className="pf-note">The zipped evidence package (the report with every evidence file inside it) is specified and not built. It is listed here rather than offered as a button that does nothing.</p></Card>
+        </div>
+        {made.length ? <div className="pa-table-wrap"><table className="pa-table" data-testid="dossier-exports"><caption className="ui-visually-hidden">Files made in this session</caption><thead><tr><th scope="col">File</th><th scope="col">Basis</th><th scope="col">Size</th><th scope="col">SHA-256</th></tr></thead>
+          <tbody>{made.map((a) => <tr key={a.at + a.name}><th scope="row">{a.name}</th><td>{a.basis === 'snapshot' ? 'Reference snapshot' : 'Working record'}</td><td className="num">{a.bytes.toLocaleString('en-GB')} bytes</td><td><code className="pf-wrap">{a.sha256}</code></td></tr>)}</tbody></table></div> : null}
+        <p className="pf-note">Files are made in this browser and nothing is uploaded. The checksum is of exactly the bytes saved.</p>
+      </Zone></div> : null}
+    </div>
+  );
+}

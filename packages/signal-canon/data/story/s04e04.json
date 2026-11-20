@@ -1,0 +1,1279 @@
+{
+ "chapter": {
+  "id": "s04e04",
+  "kicker": "S04 · E04",
+  "title": "Twelve Minutes",
+  "pill": "S04E04 · Twelve Minutes",
+  "sub": "Captions on air, none on the stream — for twelve minutes of a road-closure bulletin.",
+  "status": "**DRAFT** · scripted from the owner's request to continue the story · IDs provisional",
+  "flags": [
+   "DR-S04E04",
+   "RT-03",
+   "RT-04",
+   "RV-81",
+   "RV-82",
+   "RV-83",
+   "RV-84",
+   "RV-89",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--green)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 4 · EPISODE 4 · DRAFT  Accessibility · Maya and June · Level L3  For twelve minutes last night, deaf viewers on the stream didn’t see the Route 9 closure. The captioner typed every word. Somewhere, the words were thrown away.  ⚑ RV-89: caption transport simplified. RV-81: Deaf and hard-of-hearing representation. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Twelve Minutes",
+   "kind": "MAIN QUEST · ACCESS",
+   "level": "L3 · BROADCAST",
+   "party": [
+    "maya",
+    "june",
+    "dolores"
+   ],
+   "stakes": "Deaf viewers on the stream missed a road-closure bulletin. One of them was Dolores. She drove to the barrier before she found out. She's eighty-one.",
+   "clock": "Before the 10 p.m. news.",
+   "reward": "Captions on every path, proven with the person who knows. June's respect — which you have to earn.",
+   "objectives": [
+    {
+     "key": "BR-S04E04-01",
+     "text": "Find the missing captions without blaming the captioner"
+    },
+    {
+     "key": "twist",
+     "text": "Read June's log"
+    },
+    {
+     "key": "core",
+     "text": "Route the stream through a profile that keeps captions"
+    },
+    {
+     "key": "BR-S04E04-02",
+     "text": "Roll back tonight — not Monday"
+    },
+    {
+     "key": "BR-S04E04-03",
+     "text": "Prove it the way June would"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two people who noticed"
+    }
+   ],
+   "rumor": "The profile that ate the captions has a name. Somebody applied it on a Saturday and called it 'quality'."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “22:14”",
+   "sub": "Wednesday · 10:14 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A living room up the valley. On the TV, streaming: a bulletin card, Route 9 closed. The caption bar is empty. Dolores leans toward the screen, hearing aid in, catching nothing.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "L",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "10:14 p.m. The bulletin is on screen. The words aren't.",
+   "flags": [
+    "RV-81",
+    "RV-89"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1145
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Night, rain, headlights on an orange barrier across Route 9: ROAD CLOSED. Beyond it, the dark shine of water where the road should be.",
+   "characters": [],
+   "location": "scenes.bg_river",
+   "bubbles": [],
+   "narration": [
+    "Seventeen minutes after the bulletin, Dolores's headlights find the barrier. She reads it twice. Then she turns around, very slowly, in the rain."
+   ],
+   "caption": "The barrier knew before she did.",
+   "flags": [
+    "RV-81",
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5725
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The next morning. June at her desk, on a video call with Dolores.",
+   "characters": [
+    {
+     "id": "june",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "June",
+     "kind": "speech",
+     "text": "You drove to the barrier?"
+    },
+    {
+     "side": "R",
+     "who": "Dolores",
+     "kind": "phone",
+     "text": "I turned around. I'm fine. I just didn't know."
+    }
+   ],
+   "narration": [],
+   "caption": "Dolores missed it. She's fine. This time.",
+   "flags": [
+    "RV-81",
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1899
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "a video call · 8:40 a.m.",
+   "lines": [
+    {
+     "who": "dolores",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I'm fine. I turned around at the barrier. I'm eighty-one, June. I shouldn't have been out there at all."
+    },
+    {
+     "who": "june",
+     "pose": "N",
+     "expr": "worried",
+     "text": "You shouldn't have had to find out from a barrier."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #35 · AVERY'S LENS  Test the path the person uses  Accessibility is proven on the output the person actually uses — not on the one that's easiest to check.  Captions were checked on broadcast every night. Deaf viewers on the stream had none for twelve minutes, and nobody's monitor showed it."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S04E04",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Every word”",
+   "sub": "9:10 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "June in master control, arms folded, facing Maya.",
+   "characters": [
+    {
+     "id": "june",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "June",
+     "kind": "speech",
+     "text": "Twelve minutes. Everyone's first question is going to be about my encoder."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Mine's about where the words stopped. Can I see your log?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-81"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8290
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S4-04",
+   "who": "june",
+   "prompt": "Say it. You think it was my encoder. Everyone thinks it's the captioner first.",
+   "options": [
+    {
+     "label": "“I think your log will tell us. Can I see it?”",
+     "who": "june",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Finally. Someone asks for the log before the apology.",
+     "trust": {
+      "June": 2
+     }
+    },
+    {
+     "label": "“It might be. Let's restart it and see.”",
+     "who": "june",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Touch my encoder and you lose my proof. No.",
+     "trust": {
+      "June": -2
+     }
+    },
+    {
+     "label": "“It's probably the stream.”",
+     "who": "june",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Probably. Measure it.",
+     "trust": {
+      "June": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E04-01",
+   "prompt": "9:12. The late news is tonight. What's your first move?",
+   "happening": "Captions missing on the stream for 12 min last night. Broadcast looked fine.",
+   "clock": "9:12 · late news 10 p.m.",
+   "known": [
+    "◉ June's report",
+    "◉ Broadcast captions fine in MCR"
+   ],
+   "unknown": [
+    "Where the words stopped"
+   ],
+   "risk": "Deaf and hard-of-hearing viewers, during emergency bulletins.",
+   "timer_s": 20,
+   "timeout": [
+    "Lena, hearing nothing, restarts June's encoder 'to be safe.'",
+    "If you don't choose the evidence, someone else will erase it."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What proves the captions left the captioner?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Restart June's caption encoder to clear any fault",
+     "result": "June: “My logs!” Gone.",
+     "consequence": "The one record that clears the captioner is erased — and she knows you thought it was her.",
+     "chips": [
+      "Log erased",
+      "June"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Her encoder was the part that worked. You destroyed its proof.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "June": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask June to re-caption last night's bulletin live now",
+     "result": "June: “I'll do it. It'll vanish again.”",
+     "consequence": "The captioner treated as the fault; the path unchanged.",
+     "chips": [
+      "June burdened"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "It fixes nothing and puts the work back on the person who did it right.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "June": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask for June's log, check broadcast, then watch the stream from a phone off the network",
+     "result": "Log: every word sent. Broadcast: captions throughout. Stream on a phone: none.",
+     "consequence": "In ten minutes the captioner is cleared and the stream path is the suspect.",
+     "chips": [
+      "June cleared",
+      "Stream suspected"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "June": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell Vera captions are a nice-to-have for tonight",
+     "result": "June hears it.",
+     "consequence": "You'll never be trusted with access again — and shouldn't be.",
+     "chips": [
+      "Access"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "For deaf viewers, captions are the bulletin.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Vera": -2,
+       "June": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "June's caption encoder log: every line sent from 22:14 to 22:26 — Route 9 is closed between Old Mill and Cedar Row, use… — nineteen hundred more lines, back to you, Omar.",
+   "characters": [
+    {
+     "id": "june",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Every word left her desk.",
+   "flags": [
+    "RV-81",
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "encoder log · every word sent"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 9530
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-04a",
+   "teaser": "June's desk at home",
+   "title": "A second screen, always on the stream",
+   "body": "She watches her own captions on the stream while she types them — has for three years. Last night her second screen was showing a documentary about glaciers. Her mother was visiting. The one night she didn't check.",
+   "thread": "People",
+   "who": [
+    "june",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "She sent every word.",
+   "body": "June's log and the broadcast recording agree: the captions left her encoder and reached broadcast perfectly. Whatever threw them away sits on the stream path alone — downstream of the split, in a box nobody watches for captions.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E04-1",
+   "label": "Test: what does this rule out?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A split panel. Left, what hearing viewers got: a sound wave and the words 'Route 9 is closed between Old Mill and Cedar Row. Use the county road.' Right, what Dolores got: the same picture, an empty caption bar, twelve minutes, zero words.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Same bulletin. Same minute. Two different nights.",
+   "flags": [
+    "RV-81",
+    "RV-89"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1541
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Captions on the air",
+   "body": "In March 1980, closed captions — text hidden in the television signal and shown only by viewers with a decoder — began appearing on scheduled national U.S. broadcasts. Deaf and hard-of-hearing viewers had campaigned for years for access to news and entertainment. Live captioning of news, typed in real time, followed soon after. The principle hasn't changed: the words travel with the picture, and every box in between has to carry them.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: June's captions and the program video meet at the caption inserter; the broadcast chain passes caption data; the stream path runs through transcoder profile SPORTS TEST, which discards ancillary data. Monitoring checks captions on broadcast only.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Picture perfect. Sound perfect. Captions: gone.",
+   "flags": [
+    "RV-89",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "june",
+     "pose": "W",
+     "expr": "flat",
+     "text": "Hearing people think captions are a nice extra. For me they're the audio. For Dolores they're the road."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Maya thinks of AUX 4, and nine years of readings nobody heard.)"
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and June beside a board. Vera wants one number for the board. Percent equals part over whole, times a hundred. Part is the twelve minutes. Whole is the bulletin. Work it out — then we make it zero.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "june",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Vera wants one number for the board. Percent equals part over whole, times a hundred."
+    },
+    {
+     "side": "R",
+     "who": "June",
+     "kind": "speech",
+     "text": "Part is the twelve minutes. Whole is the bulletin."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Work it out — then we make it zero."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8829
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Captions   Ancillary data   Monitoring   Formula and variables   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "V12",
+   "label": "**Learn it now:** captions and accessible media paths.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Low voltage and aerospace engineering in audio     The OSI model applied to video and wireless     Microphones: from sound to signal"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🎥 SEE IT · CHALLENGE · LEVEL 2  Colour the promo so it reads  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "see-promo"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Stream quality”",
+   "sub": "11:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The stream transcoder's profile page: SPORTS TEST, ancillary data discard, since Saturday 13:02; change record says stream quality, vendor.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [],
+   "caption": "A weekend test, never rolled back. The record said 'quality'. It didn't say 'captions'.",
+   "flags": [
+    "RV-83",
+    "RV-89"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9312
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-04b",
+   "teaser": "the vendor's session notes",
+   "title": "“Sports mode A/B — revert Mon (probably)”",
+   "body": "The engineer on the vendor side meant to roll it back. They went on leave on Monday. *(probably)* is doing a lot of work in that sentence.",
+   "thread": "Temporary things",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It was called “quality.”",
+   "body": "On Saturday a vendor's remote session switched the stream to a sports-mode test profile. The change record said 'stream quality improvements'. Nobody reading it would think of captions — and the profile threw them away. It's warning #9 on the wall: nobody monitors captions on the stream.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E04-2",
+   "label": "Test: what rule would have caught it?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The vendor's automatic reply on a master-control screen: on leave until Monday; for urgent matters please contact my colleague, who is also on leave. Maya and June read it with identical expressions.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "june",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "June",
+     "kind": "speech",
+     "text": "Well. At least it's honest."
+    }
+   ],
+   "narration": [],
+   "caption": "The system is working exactly as designed. Nobody designed it for tonight.",
+   "flags": [
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9590
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E04-02",
+   "prompt": "11:10. The vendor is out until Monday. The late news is tonight. What do you do?",
+   "happening": "SPORTS TEST profile discards captions.",
+   "clock": "11:10 · late news 10 p.m.",
+   "known": [
+    "◉ Profile changed Sat by vendor",
+    "◉ Record: 'stream quality'"
+   ],
+   "unknown": [
+    "When the vendor can help"
+   ],
+   "risk": "Tonight's deaf viewers.",
+   "timer_s": 20,
+   "timeout": [
+    "The decision drifts to 'after lunch', then 'Monday'.",
+    "Access problems wait longest when nobody owns them."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose stream chain is it?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Wait for the vendor — it's their profile",
+     "result": "Tonight's late news runs without captions on the stream.",
+     "consequence": "Deaf viewers pay for a calendar.",
+     "chips": [
+      "Captions missing"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The stream chain is the station's to run. The vendor can be told, not waited for.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Roll the stream back to the NEWS profile now, tell the vendor why, and verify from a phone",
+     "result": "Captions return on the stream within a minute.",
+     "consequence": "Fixed tonight, owner-to-owner record sent.",
+     "chips": [
+      "Captions back",
+      "Vendor told"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "ESCALATE"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Turn the stream off tonight to be safe",
+     "result": "Stream viewers get nothing — captions or not.",
+     "consequence": "You fixed access by removing the service.",
+     "chips": [
+      "Stream dark"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Removing the service removes access too.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask June to type into the stream's chat box instead",
+     "result": "June: “Into a chat. During an emergency.”",
+     "consequence": "A workaround that puts the burden back on June and on viewers.",
+     "chips": [
+      "Workaround"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Chat isn't captions.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "June": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View after the rollback: the stream now runs through the NEWS profile, which passes caption data, and caption-present monitoring covers every output.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Every path carries the words.",
+   "flags": [
+    "RV-89",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-09",
+   "label": "**Fix it:** route the stream through a profile that keeps captions.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A phone off the station network shows the stream with captions: Route 9 closed. June points at it.",
+   "characters": [
+    {
+     "id": "june",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Proof where Dolores watches — confirmed by the person who knows.",
+   "flags": [
+    "RV-81",
+    "RV-89"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "stream captions · phone off-network"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 8753
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "june",
+     "pose": "N",
+     "expr": "smile",
+     "text": "There. Every word."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Every word, where Dolores watches."
+    },
+    {
+     "who": "june",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Don't get sentimental. Get the alarm on every output."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "June lines up two more devices: a TV app and an old tablet, both on the stream, both showing captions. She's not smiling yet.",
+   "characters": [
+    {
+     "id": "june",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "June",
+     "kind": "speech",
+     "text": "One phone isn't 'every path.' Dolores uses the TV app. Her neighbour uses a tablet older than Tess."
+    }
+   ],
+   "narration": [],
+   "caption": "June's rule: test the path the person actually uses — all of them.",
+   "flags": [
+    "RV-81",
+    "RV-89"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9423
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E04-03",
+   "prompt": "The captions are back. What do you set up before tonight?",
+   "happening": "Captions verified on the stream.",
+   "clock": "4:30 p.m.",
+   "known": [
+    "▮ Stream captions verified",
+    "◉ Warning #9: nobody monitors stream captions"
+   ],
+   "unknown": [
+    "Next change"
+   ],
+   "risk": "The next twelve minutes.",
+   "timer_s": 25,
+   "timeout": [
+    "The day ends with the fix and no alarm.",
+    "Fixed isn't safe until something tells you when it breaks."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would have alarmed at 22:14:10?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "A caption-present alarm on every output, test profiles that roll back automatically, and June on the approval list for any stream change",
+     "result": "June: “Put me on the list. I'll read every one.”",
+     "consequence": "Access gets a monitor and an owner.",
+     "chips": [
+      "Every output",
+      "June approves"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "June": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask June to keep a second screen on the stream forever",
+     "result": "June: “I type 200 words a minute. I can't also be your monitor.”",
+     "consequence": "A person as the only alarm.",
+     "chips": [
+      "June as monitor"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "People aren't monitoring systems — especially the one doing the job.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "June": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Nothing — it's fixed",
+     "result": "Next test profile, same silence.",
+     "consequence": "Unmonitored again.",
+     "chips": [
+      "Repeat"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The same path can fail the same way tomorrow.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ban all vendor changes",
+     "result": "The vendor can't fix the encoder next month either.",
+     "consequence": "A wall instead of a door.",
+     "chips": [
+      "Brittle"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-51",
+   "label": "**Clue Board:** where did twelve minutes of captions go?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-404",
+   "label": "**Service Mode:** run the morning yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-018 · SIGNAL original  Twelve Minutes  Perfect captions on air. None on the stream. Twelve minutes of a road-closure bulletin that deaf viewers never saw.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-018"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "10:30 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dolores at home watching the late news on the stream, captions showing: the Old Mill gauge is rising.",
+   "characters": [
+    {
+     "id": "dolores",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The captions are back. So is the river.",
+   "flags": [
+    "RV-81",
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1150
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "a text message · 10:31 p.m.",
+   "lines": [
+    {
+     "who": "dolores",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Tell June I read every word tonight."
+    },
+    {
+     "who": "dolores",
+     "pose": "N",
+     "expr": "flat",
+     "text": "And tell her the river's in the words now. The gauge man said 'rising' twice."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the late news. June has taken her headset off and sits with her hands flat on the desk. Maya sits nearby and says nothing.",
+   "characters": [
+    {
+     "id": "june",
+     "pose": "N",
+     "expr": "closed"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "June",
+     "kind": "speech",
+     "text": "Twelve minutes. I'll count them for a year. I'll count them when I'm eighty-one."
+    }
+   ],
+   "narration": [
+    "Maya doesn't say it's not her fault. June knows that. That isn't the part that hurts."
+   ],
+   "caption": "Some silences are the right answer.",
+   "flags": [
+    "RV-81"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1289
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Cal's warnings on the wall; June herself crosses out number nine.",
+   "characters": [
+    {
+     "id": "june",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Warning #9: crossed off — by June.",
+   "flags": [
+    "RV-81",
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3627
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Night at the mountain transmitter site in a storm: wind streaks, rain, the tower in the distance with its red beacon. Felix, hard hat and vest, on a radio, standing by the building, far from the tower.",
+   "characters": [
+    {
+     "id": "felix",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_mountain",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Felix",
+     "kind": "radio",
+     "text": "Channel's off the air. Wind's at seventy up here. Nobody's climbing anything."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Mountain.*",
+   "flags": [
+    "RV-80"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5973
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  When captions vanish on one output, clear the captioner with her log, compare outputs, and look for the box that changed on the failing path. Roll it back tonight, verify from where deaf viewers watch — with the person who knows — and alarm on caption presence at every output."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · The one night June didn't watch her own captions was the night they vanished. What are you the only alarm for?  Boundary: this reflection doesn't monitor anything."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S04E04",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

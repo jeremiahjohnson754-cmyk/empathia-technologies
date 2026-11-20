@@ -1,0 +1,267 @@
+{
+ "chapter": {
+  "id": "s08e11",
+  "kicker": "S08 · E11 · BOSS LEVEL",
+  "title": "Handover Eve",
+  "pill": "S08E11 · Boss",
+  "sub": "Build and commissioning catastrophe — and a design commission due at dawn.",
+  "status": "**DRAFT** · boss level (owner request) · physics challenges are teaching models (CH-01)",
+  "flags": [
+   "DR-S08E11",
+   "CH-01",
+   "BOSS-01",
+   "BOSS-02"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 8 · EPISODE 11 · BOSS LEVEL · DRAFT  Build and commissioning catastrophe — and a design commission due at dawn · Level 3  The Wyndmere Centre opens tomorrow night. Tonight is commissioning: the fire-alarm interface, the house wireless, the focus, the broadcast camera, and a punch list longer than the building. And at 7 a.m. Odile takes one thing to the board: a turn-key design and price for the 200-seat Studio Theatre next door. No answer by seven, and the second room stays a concrete shell for five years.  ⚑ This season the run also carries a design commission — a client meeting, a turn-key scope, a full system design inside hard limits and a priced estimate. Every one of them is do or die.  ⚑ CH-01 · BOSS-01: five physics challenges, a signal trace and the calls that aren't yours to make — on the clock. Fail anything and the run starts over. The edge of the screen glows yellow under pressure, red when time is short or the run fails, green when you clear it; it pulses no faster than once a second, and holds steady if you prefer reduced motion."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Everything at once”",
+   "sub": "Handover Eve"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light at the edge of everything turns yellow. The Wyndmere Centre opens tomorrow night. Tonight is commissioning: the fire-alarm interface, the house wireless, the fo…",
+   "characters": [
+    {
+     "id": "kit_site",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya_site",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "Everything, at once. Where do we start?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where the signal starts. Then one thing at a time — and nothing that isn't ours."
+    }
+   ],
+   "narration": [],
+   "caption": "Five modes, one clock, no second chances inside a run.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5400
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light turns red. The catwalk still has no toe boards, and the focus is tonight.",
+   "characters": [
+    {
+     "id": "bram",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya_site",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Bram",
+     "kind": "speech",
+     "text": "The catwalk still has no toe boards, and the focus is tonight."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then the focus isn't tonight. It isn't handed over."
+    }
+   ],
+   "narration": [],
+   "caption": "Trace · hear · see · reach · build · record. The boss isn't the fault — it's the pressure to cut a corner.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5149
+  },
+  {
+   "origin": "authored",
+   "type": "beat",
+   "mood": "dark",
+   "where": "Handover Eve",
+   "lines": [
+    {
+     "who": "maya_site",
+     "pose": "W",
+     "expr": "flat",
+     "text": "One check per stage. If it fails, we start over from the top — and we'll know why."
+    },
+    {
+     "who": "kit_site",
+     "pose": "N",
+     "expr": "worried",
+     "text": "And if we fail again?"
+    },
+    {
+     "who": "maya_site",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Then we start again. That's the job: until it passes, and we can prove it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The commission — “Design it, scope it, price it”",
+   "sub": "Act II of the same run"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A second clock inside the same run. Odile (the Wyndmere's technical director) and the resident company's production manager — twenty minutes at 2 a.m., after the dress rehearsal. A budget chip reads the client's number.",
+   "characters": [
+    {
+     "id": "kit_site",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya_site",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "They want a design, a scope and a price — before the deadline."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then we ask before we draw, and we draw before we price. And nothing that isn't ours goes in it."
+    }
+   ],
+   "narration": [],
+   "caption": "6 questions, 4 you can't skip. 9 scope lines. 5 design blocks. One budget.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5390
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "⚑ BOSS-02: every price, hour, watt, kilogram and megabit in the commission is illustrative. Season 8: six questions, nine scope lines (one slip allowed), five design blocks, three constraints, and an estimate with contingency."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The run",
+   "sub": "5 stages · a trace · 2 calls · the commission: ask · scope · design · cost"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "boss",
+   "id": "S08",
+   "label": "**Boss level: Handover Eve.** Clear every stage in one run to open the next season. Fail anything and you start again from the top.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief — “Until it passes”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light fades to green. Everything that was tested works, everything that wasn't is written down, and the fire-alarm interface does exactly what the fire engineer a…",
+   "characters": [
+    {
+     "id": "maya_site",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s8kit.bg_build",
+   "bubbles": [],
+   "narration": [
+    "Everything that was tested works, everything that wasn't is written down, and the fire-alarm interface does exactly what the fire engineer asked. At 7 a.m. the board reads a Studio Theatre design that meets every need, fits every limit and comes in under $130,000 — and approves it before the coffee's cold."
+   ],
+   "caption": "Cleared. Written down. Handed over.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5079
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE · THE COMMISSION —  Ask before you draw: what the room is for, who runs it, who needs access support, what it must survive and what it can cost — never lead the client to gear, never ask for what isn't yours to know. Scope it end to end: ours arrives designed, installed, tested, documented, taught and supported; everything else is named to its owner. Design inside the limits other people set — the electrician's circuit, the structural engineer's rating, the mechanical engineer's cooling, the network owner's capacity — and meet every requirement. Price it honestly (T = (E × (1 + t) + L) × (1 + c), plus running and later costs for ownership), then save money without cutting a requirement or the contingency."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Under pressure, the method doesn't change: trace the signal from source to destination, fix one thing at a time and prove it where the people are, and hand every decision that isn't yours to the person who owns it — the electrician, the rigger and structural engineer, the network owner, security, the emergency managers, the clinical and privacy owners, the artist. Then write it down."
+  }
+ ]
+}

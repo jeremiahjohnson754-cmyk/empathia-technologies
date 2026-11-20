@@ -1,0 +1,2714 @@
+[
+ {
+  "id": "s02e01-jordan-01",
+  "chapter": "s02e01",
+  "who": "jordan",
+  "text": "Load-out Friday, six a.m. Six cities, three weeks, zero spare days.",
+  "say": "Load-out Friday, six a.m. Six cities, three weeks, zero spare days.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e01-maya-01",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "And six advance packets that disagree with each other.",
+  "say": "And six advance packets that disagree with each other.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-jordan-02",
+  "chapter": "s02e01",
+  "who": "jordan",
+  "text": "Six cities. Three weeks. Zero spare days. I've color-coded it.",
+  "say": "Six cities. Three weeks. Zero spare days. I've color-coded it.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e01-maya-02",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "Every color is red.",
+  "say": "Every color is red.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-jordan-03",
+  "chapter": "s02e01",
+  "who": "jordan",
+  "text": "It's a very organized red.",
+  "say": "It's a very organized red.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e01-ben-01",
+  "chapter": "s02e01",
+  "who": "ben",
+  "text": "Anything that goes over a head gets a plan, a rating and a signature. Or it stays on the floor.",
+  "say": "Anything that goes over a head gets a plan, a rating and a signature. Or it stays on the floor.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e01-leah-01",
+  "chapter": "s02e01",
+  "who": "leah",
+  "text": "First tour of my own company. If this one goes wrong, there isn't a second.",
+  "say": "First tour of my own company. If this one goes wrong, there isn't a second.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e01-maya-03",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "Then let's make it boring.",
+  "say": "Then let's make it boring.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-leah-02",
+  "chapter": "s02e01",
+  "who": "leah",
+  "text": "I remortgaged the house for the trucks.",
+  "say": "I remortgaged the house for the trucks.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e01-maya-04",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "…You didn't have to tell me that.",
+  "say": "... You didn't have to tell me that.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-leah-03",
+  "chapter": "s02e01",
+  "who": "leah",
+  "text": "I know. I needed to tell someone who'd make it boring.",
+  "say": "I know. I needed to tell someone who'd make it boring.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e01-jordan-04",
+  "chapter": "s02e01",
+  "who": "jordan",
+  "text": "Just use last tour's plan. It worked for eighteen months. I need an answer before I call the artist's people.",
+  "say": "Just use last tour's plan. It worked for eighteen months. I need an answer before I call the artist's people.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e01-maya-05",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "Worked where?",
+  "say": "Worked where?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-jordan-05",
+  "chapter": "s02e01",
+  "who": "jordan",
+  "text": "Fine. Scan on arrival. How long?",
+  "say": "Fine. Scan on arrival. How long?",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e01-maya-06",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "Forty minutes per city, before soundcheck. Every night we'll know instead of hoping.",
+  "say": "Forty minutes per city, before soundcheck. Every night we'll know instead of hoping.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-kim-01",
+  "chapter": "s02e01",
+  "who": "kim",
+  "text": "Intermodulation: two transmitters mix and make new frequencies nobody asked for. Coordination is choosing channels so those land on nothing.",
+  "say": "Intermodulation: two transmitters mix and make new frequencies nobody asked for. Coordination is choosing channels so those land on nothing.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e01-maya-07",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "Where do they land?",
+  "say": "Where do they land?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-kim-02",
+  "chapter": "s02e01",
+  "who": "kim",
+  "text": "Two f-one minus f-two. Transmitters on 600 and 601: two times 600 minus 601 is 599. And the other side, 602. Check every pair.",
+  "say": "Two f-one minus f-two. Transmitters on six hundred and six hundred one: two times six hundred minus six hundred one is five hundred ninety-nine. And the other side, six hundred two. Check every pair.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e01-sofia-01",
+  "chapter": "s02e01",
+  "who": "sofia",
+  "text": "Act 2. The lantern moment. Light from right above the lip — like the whole theater's holding its breath.",
+  "say": "Act two. The lantern moment. Light from right above the lip — like the whole theater's holding its breath.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e01-maya-08",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "It's beautiful. Ben's going to ask what it hangs from.",
+  "say": "It's beautiful. Ben's going to ask what it hangs from.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-ben-02",
+  "chapter": "s02e01",
+  "who": "ben",
+  "text": "Venue three. Sofia wants a truss over the downstage edge. They list no points and no beam data.",
+  "say": "Venue three. Sofia wants a truss over the downstage edge. They list no points and no beam data.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e01-maya-09",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "They sent a photo of the ceiling.",
+  "say": "They sent a photo of the ceiling.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-ben-03",
+  "chapter": "s02e01",
+  "who": "ben",
+  "text": "A photo isn't a rating, Kim. Can you tell me anything?",
+  "say": "A photo isn't a rating, Kim. Can you tell me anything?",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e01-kim-03",
+  "chapter": "s02e01",
+  "who": "kim",
+  "text": "Without the beam's rating I can't approve anything. Get me drawings — or plan it on the ground.",
+  "say": "Without the beam's rating I can't approve anything. Get me drawings — or plan it on the ground.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e01-kim-04",
+  "chapter": "s02e01",
+  "who": "kim",
+  "text": "A photo isn't a rating.",
+  "say": "A photo isn't a rating.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e01-ben-04",
+  "chapter": "s02e01",
+  "who": "ben",
+  "text": "That's what I said.",
+  "say": "That's what I said.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e01-kim-05",
+  "chapter": "s02e01",
+  "who": "kim",
+  "text": "I know. I'm saying it louder, from further away.",
+  "say": "I know. I'm saying it louder, from further away.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e01-hank-01",
+  "chapter": "s02e01",
+  "who": "hank",
+  "text": "Don't plan from a ten-year-old drawing. My generator, my distro. Their electrician does the tie-in.",
+  "say": "Don't plan from a ten-year-old drawing. My generator, my distro. Their electrician does the tie-in.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e01-maya-10",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "And we plug into what you hand us, with a load list.",
+  "say": "And we plug into what you hand us, with a load list.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-jordan-06",
+  "chapter": "s02e01",
+  "who": "jordan",
+  "text": "They sent points! A thousand kilos each! Sofia gets her truss!",
+  "say": "They sent points! A thousand kilos each! Sofia gets her truss!",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e01-maya-11",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "Jordan. Read the top line.",
+  "say": "Jordan. Read the top line.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-ben-05",
+  "chapter": "s02e01",
+  "who": "ben",
+  "text": "Good catch. Now we know less than we thought — which is more than we knew. Ground-supported fallback for city three.",
+  "say": "Good catch. Now we know less than we thought — which is more than we knew. Ground-supported fallback for city three.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e01-jordan-07",
+  "chapter": "s02e01",
+  "who": "jordan",
+  "text": "Sofia's going to hate that.",
+  "say": "Sofia's going to hate that.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e01-maya-12",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "(Six cities of radio. One file. One laptop. One bag. She knows. She tells herself she'll back it up in city two.)",
+  "say": "Six cities of radio. One file. One laptop. One bag. She knows. She tells herself she'll back it up in city two.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-maya-13",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "Everything we need?",
+  "say": "Everything we need?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-dante-01",
+  "chapter": "s02e01",
+  "who": "dante",
+  "text": "If it's not on the truck, it's in your bag. Same thing, right?",
+  "say": "If it's not on the truck, it's in your bag. Same thing, right?",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e01-ben-06",
+  "chapter": "s02e01",
+  "who": "ben",
+  "text": "You read the top line. Most people read the numbers.",
+  "say": "You read the top line. Most people read the numbers.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e01-maya-14",
+  "chapter": "s02e01",
+  "who": "maya",
+  "text": "The numbers were the part that wanted to be believed.",
+  "say": "The numbers were the part that wanted to be believed.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e01-dante-02",
+  "chapter": "s02e01",
+  "who": "dante",
+  "text": "Maya. Channel 7 just dropped. Again. Same spot in the song.",
+  "say": "Maya. Channel seven just dropped. Again. Same spot in the song.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e02-dante-01",
+  "chapter": "s02e02",
+  "who": "dante",
+  "text": "Seven's gone! Same bar as last night!",
+  "say": "Seven's gone! Same bar as last night!",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e02-maya-01",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "Spare handheld's in the wings. Don't touch anything else — clock it.",
+  "say": "Spare handheld's in the wings. Don't touch anything else — clock it.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-dante-02",
+  "chapter": "s02e02",
+  "who": "dante",
+  "text": "Eleven seconds of piano. Eighteen hundred people heard a woman stop existing mid-word.",
+  "say": "Eleven seconds of piano. Eighteen hundred people heard a woman stop existing mid-word.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e02-maya-02",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "And then they heard her come back. Hold onto that part.",
+  "say": "And then they heard her come back. Hold onto that part.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-dante-03",
+  "chapter": "s02e02",
+  "who": "dante",
+  "text": "New batch of batteries went in at the Wexley. That's when it started.",
+  "say": "New batch of batteries went in at the Wexley. That's when it started.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e02-jordan-01",
+  "chapter": "s02e02",
+  "who": "jordan",
+  "text": "Front row films song eleven every night. Phones. Oh — the new riser fits great. We just shuffled some stands.",
+  "say": "Front row films song eleven every night. Phones. Oh — the new riser fits great. We just shuffled some stands.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e02-sofia-01",
+  "chapter": "s02e02",
+  "who": "sofia",
+  "text": "It's the crowd. Eighteen hundred warm bodies soak up radio.",
+  "say": "It's the crowd. Eighteen hundred warm bodies soak up radio.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e02-maya-03",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "Then why only in song eleven? They're warm for all twenty.",
+  "say": "Then why only in song eleven? They're warm for all twenty.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-manager-01",
+  "chapter": "s02e02",
+  "who": "manager",
+  "text": "If it happens tonight, the song's gone. And so are you. All of you.",
+  "say": "If it happens tonight, the song's gone. And so are you. All of you.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e02-dante-04",
+  "chapter": "s02e02",
+  "who": "dante",
+  "text": "Did he just threaten all of us?",
+  "say": "Did he just threaten all of us?",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e02-jordan-02",
+  "chapter": "s02e02",
+  "who": "jordan",
+  "text": "In fairness, he threatened all of us equally.",
+  "say": "In fairness, he threatened all of us equally.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e02-maya-04",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "That's not fairness. That's a group project.",
+  "say": "That's not fairness. That's a group project.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-leah-01",
+  "chapter": "s02e02",
+  "who": "leah",
+  "text": "dBm is power compared with one milliwatt — received signals are negative. The noise floor is the hiss underneath. Margin is the gap between them.",
+  "say": "D-B-M is power compared with one milliwatt — received signals are negative. The noise floor is the hiss underneath. Margin is the gap between them.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e02-maya-05",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "So how much room do I have?",
+  "say": "So how much room do I have?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-leah-02",
+  "chapter": "s02e02",
+  "who": "leah",
+  "text": "Received minus noise floor. Minus sixty-five dBm over a minus-ninety-five floor: thirty dB of margin. Every wall or steel frame eats some of it.",
+  "say": "Received minus noise floor. Minus sixty-five D-B-M over a minus-ninety-five floor: thirty D-B of margin. Every wall or steel frame eats some of it.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e02-maya-06",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "Stay right there. Turn back toward me… and away again.",
+  "say": "Stay right there. Turn back toward me... and away again.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-marisol-01",
+  "chapter": "s02e02",
+  "who": "marisol",
+  "text": "It dies when I turn?",
+  "say": "It dies when I turn?",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e02-jordan-03",
+  "chapter": "s02e02",
+  "who": "jordan",
+  "text": "That was my riser. Nobody told me the stand mattered.",
+  "say": "That was my riser. Nobody told me the stand mattered.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e02-maya-07",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "Nobody told you because nobody wrote down why it was there. That's on the plan, not on you.",
+  "say": "Nobody told you because nobody wrote down why it was there. That's on the plan, not on you.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-ben-01",
+  "chapter": "s02e02",
+  "who": "ben",
+  "text": "Stand here at the wing, weighted, out of the walkway. That I'll sign. Nothing clipped to the LED frame.",
+  "say": "Stand here at the wing, weighted, out of the walkway. That I'll sign. Nothing clipped to the L-E-D frame.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e02-maya-08",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "Nothing on the frame. Your crew places it; I'll bring the meter.",
+  "say": "Nothing on the frame. Your crew places it; I'll bring the meter.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-marisol-02",
+  "chapter": "s02e02",
+  "who": "marisol",
+  "text": "Can I still turn at the lip tonight? I thought it was me. My body, my fault.",
+  "say": "Can I still turn at the lip tonight? I thought it was me. My body, my fault.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e02-maya-09",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "Turn whichever way the song needs. The antennas moved for you — not the other way round.",
+  "say": "Turn whichever way the song needs. The antennas moved for you — not the other way round.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-marisol-03",
+  "chapter": "s02e02",
+  "who": "marisol",
+  "text": "I thought it was my body. That I was — I don't know — wrong for it.",
+  "say": "I thought it was my body. That I was — I don't know — wrong for it.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e02-maya-10",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "(Nobody should ever have to say that sentence about a radio.)",
+  "say": "Nobody should ever have to say that sentence about a radio.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-dante-05",
+  "chapter": "s02e02",
+  "who": "dante",
+  "text": "Thirty-two. Thirty-three. Thirty-four. Seven's solid.",
+  "say": "Thirty-two. Thirty-three. Thirty-four. Seven's solid.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e02-maya-11",
+  "chapter": "s02e02",
+  "who": "maya",
+  "text": "Breathe out. Then log it.",
+  "say": "Breathe out. Then log it.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e02-jordan-04",
+  "chapter": "s02e02",
+  "who": "jordan",
+  "text": "The manager said “fine.” Out loud. I'm getting it tattooed.",
+  "say": "The manager said \"fine.\" Out loud. I'm getting it tattooed.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e02-dante-06",
+  "chapter": "s02e02",
+  "who": "dante",
+  "text": "Get the bar number too.",
+  "say": "Get the bar number too.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e03-sofia-01",
+  "chapter": "s02e03",
+  "who": "sofia",
+  "text": "Right there. The halo hangs from that beam, over the lip. Act 2 lives on it.",
+  "say": "Right there. The halo hangs from that beam, over the lip. Act two lives on it.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e03-ben-01",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "Stop. That beam has no number.",
+  "say": "Stop. That beam has no number.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-ben-02",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "“No drawings since the renovation. Facilities will look.” Nobody knows who has them.",
+  "say": "\"No drawings since the renovation. Facilities will look.\" Nobody knows who has them.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-gil-01",
+  "chapter": "s02e03",
+  "who": "gil",
+  "text": "We've hung heavier from that beam before. Big shows. Trust me.",
+  "say": "We've hung heavier from that beam before. Big shows. Trust me.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e03-ben-03",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "I believe you hung it. I can't sign “before”.",
+  "say": "I believe you hung it. I can't sign \"before\".",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-ben-04",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "“Trust me” is not a load rating. I've looked. It's not in any of the tables.",
+  "say": "\"Trust me\" is not a load rating. I've looked. It's not in any of the tables.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-jordan-01",
+  "chapter": "s02e03",
+  "who": "jordan",
+  "text": "Ground support is a rental we didn't budget and three crew hours we don't have.",
+  "say": "Ground support is a rental we didn't budget and three crew hours we don't have.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e03-leah-01",
+  "chapter": "s02e03",
+  "who": "leah",
+  "text": "And if we cut the position?",
+  "say": "And if we cut the position?",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e03-sofia-02",
+  "chapter": "s02e03",
+  "who": "sofia",
+  "text": "The whole show turns on that moment. From the side it's just light. From above it's a sky.",
+  "say": "The whole show turns on that moment. From the side it's just light. From above it's a sky.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e03-kim-01",
+  "chapter": "s02e03",
+  "who": "kim",
+  "text": "Without the beam's rating I can't approve it. And I won't estimate from a photo.",
+  "say": "Without the beam's rating I can't approve it. And I won't estimate from a photo.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e03-sofia-03",
+  "chapter": "s02e03",
+  "who": "sofia",
+  "text": "Then what can you give me?",
+  "say": "Then what can you give me?",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e03-kim-02",
+  "chapter": "s02e03",
+  "who": "kim",
+  "text": "Look at the web. That opening is new — a duct. And that plate. When was “before”?",
+  "say": "Look at the web. That opening is new — a duct. And that plate. When was \"before\"?",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e03-gil-02",
+  "chapter": "s02e03",
+  "who": "gil",
+  "text": "…Twenty-sixteen. Before the renovation.",
+  "say": "... Twenty-sixteen. Before the renovation.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e03-kim-03",
+  "chapter": "s02e03",
+  "who": "kim",
+  "text": "What I can do tonight: a ground-supported truss. Towers on your deck, nothing on the beam. Send Ben's plan; I'll check it.",
+  "say": "What I can do tonight: a ground-supported truss. Towers on your deck, nothing on the beam. Send Ben's plan; I'll check it.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e03-ben-05",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "You'll have it in forty minutes.",
+  "say": "You'll have it in forty minutes.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-ben-06",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "Rigging is anything hung overhead. Every piece has a working load limit. And the decisions belong to the rigger and the engineer — that's a boundary.",
+  "say": "Rigging is anything hung overhead. Every piece has a working load limit. And the decisions belong to the rigger and the engineer — that's a boundary.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-maya-01",
+  "chapter": "s02e03",
+  "who": "maya",
+  "text": "Then why learn the math?",
+  "say": "Then why learn the math?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e03-ben-07",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "To understand the call. Hundred kilos, one metre from the left support, four-metre span: the right support carries a hundred times one over four — twenty-five kilos.",
+  "say": "To understand the call. Hundred kilos, one metre from the left support, four-metre span: the right support carries a hundred times one over four — twenty-five kilos.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-sofia-04",
+  "chapter": "s02e03",
+  "who": "sofia",
+  "text": "That beam has held for a hundred years and you're scared of it. That's cowardice in a hard hat.",
+  "say": "That beam has held for a hundred years and you're scared of it. That's cowardice in a hard hat.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e03-ben-08",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "Stop. Maybe I'm scared. I'm still not signing a guess.",
+  "say": "Stop. Maybe I'm scared. I'm still not signing a guess.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-sofia-05",
+  "chapter": "s02e03",
+  "who": "sofia",
+  "text": "That's cowardice in a hard hat.",
+  "say": "That's cowardice in a hard hat.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e03-ben-09",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "Stop.",
+  "say": "Stop.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-crew-01",
+  "chapter": "s02e03",
+  "who": "crew",
+  "text": "(Nobody moves. Somebody drops a wrench and doesn't pick it up.)",
+  "say": "Nobody moves. Somebody drops a wrench and doesn't pick it up.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e03-sofia-06",
+  "chapter": "s02e03",
+  "who": "sofia",
+  "text": "Maya. You've been here all day. You know it'll hold. Tell him.",
+  "say": "Maya. You've been here all day. You know it'll hold. Tell him.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e03-maya-02",
+  "chapter": "s02e03",
+  "who": "maya",
+  "text": "Sofia…",
+  "say": "Sofia...",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e03-maya-03",
+  "chapter": "s02e03",
+  "who": "maya",
+  "text": "(Sofia stops speaking to her. It lasts until Opening Night. The bus gets very quiet in a way buses shouldn't.)",
+  "say": "Sofia stops speaking to her. It lasts until Opening Night. The bus gets very quiet in a way buses shouldn't.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e03-ben-10",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "Rated for everything on it. Including what's already there.",
+  "say": "Rated for everything on it. Including what's already there.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-jordan-02",
+  "chapter": "s02e03",
+  "who": "jordan",
+  "text": "So “free” was… the part I read.",
+  "say": "So \"free\" was... the part I read.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e03-sofia-07",
+  "chapter": "s02e03",
+  "who": "sofia",
+  "text": "Not tonight, Maya.",
+  "say": "Not tonight, Maya.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e03-ben-11",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "You didn't have to back me in front of her.",
+  "say": "You didn't have to back me in front of her.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-maya-04",
+  "chapter": "s02e03",
+  "who": "maya",
+  "text": "I didn't back you. I backed the number we didn't have.",
+  "say": "I didn't back you. I backed the number we didn't have.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e03-ben-12",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "You didn't have to back me.",
+  "say": "You didn't have to back me.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e03-maya-05",
+  "chapter": "s02e03",
+  "who": "maya",
+  "text": "I backed the number we didn't have.",
+  "say": "I backed the number we didn't have.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e03-ben-13",
+  "chapter": "s02e03",
+  "who": "ben",
+  "text": "(His thumb finds the tag. For a second he looks like he's going to say something. He doesn't.)",
+  "say": "His thumb finds the tag. For a second he looks like he's going to say something. He doesn't.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e04-rosa-01",
+  "chapter": "s02e04",
+  "who": "rosa",
+  "text": "Booth, you two want to talk, or shall I get a mediator for the booth?",
+  "say": "Booth, you two want to talk, or shall I get a mediator for the booth?",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e04-rosa-02",
+  "chapter": "s02e04",
+  "who": "rosa",
+  "text": "Stand by lights fourteen… Lights fourteen — GO.",
+  "say": "Stand by lights fourteen... Lights fourteen — go.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e04-sofia-01",
+  "chapter": "s02e04",
+  "who": "sofia",
+  "text": "That's not my cue. That's not my cue.",
+  "say": "That's not my cue. That's not my cue.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e04-maya-01",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "Cue 15 is in forty seconds. Talk to me.",
+  "say": "Cue fifteen is in forty seconds. Talk to me.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-maya-02",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "(Two days of silence end in one sentence, and it isn't about them.)",
+  "say": "Two days of silence end in one sentence, and it isn't about them.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-maya-03",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "You know this show better than the file does. Take fifteen on the fader. Count it from the video.",
+  "say": "You know this show better than the file does. Take fifteen on the fader. Count it from the video.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-sofia-02",
+  "chapter": "s02e04",
+  "who": "sofia",
+  "text": "…Eight counts. Okay. Eight counts.",
+  "say": "... Eight counts. Okay. Eight counts.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e04-rosa-03",
+  "chapter": "s02e04",
+  "who": "rosa",
+  "text": "Booth. What is the house seeing?",
+  "say": "Booth. What is the house seeing?",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e04-maya-04",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "Fast fades, movers aimed low. We're running by hand from the dress video. Everything else is your call.",
+  "say": "Fast fades, movers aimed low. We're running by hand from the dress video. Everything else is your call.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-rosa-04",
+  "chapter": "s02e04",
+  "who": "rosa",
+  "text": "A VLAN keeps show traffic apart from everything else. Multicast is one video stream sent to many — and it floods every port unless someone manages it.",
+  "say": "A V-LAN keeps show traffic apart from everything else. Multicast is one video stream sent to many — and it floods every port unless someone manages it.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e04-maya-05",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "How do I know a port's full?",
+  "say": "How do I know a port's full?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-rosa-05",
+  "chapter": "s02e04",
+  "who": "rosa",
+  "text": "Utilization: traffic over link speed, times a hundred. Three hundred megabits on a thousand-megabit port: thirty percent. Fine. Nine hundred: trouble.",
+  "say": "Utilization: traffic over link speed, times a hundred. Three hundred megabits on a thousand-megabit port: thirty percent. Fine. Nine hundred: trouble.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e04-rosa-06",
+  "chapter": "s02e04",
+  "who": "rosa",
+  "text": "Fifteen minutes. What are my options, and what does each one cost me?",
+  "say": "Fifteen minutes. What are my options, and what does each one cost me?",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e04-maya-06",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "Roll back: about sixteen minutes. The 11:40 file: loses today's six notes, untested. Or Act 2 by hand, like Act 1.",
+  "say": "Roll back: about sixteen minutes. The eleven forty file: loses today's six notes, untested. Or Act two by hand, like Act one.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-rosa-07",
+  "chapter": "s02e04",
+  "who": "rosa",
+  "text": "By hand. Nothing touches that console till the house is empty. Places in five.",
+  "say": "By hand. Nothing touches that console till the house is empty. Places in five.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e04-sofia-03",
+  "chapter": "s02e04",
+  "who": "sofia",
+  "text": "Twenty-nine. Five count. Go.",
+  "say": "Twenty-nine. Five count. Go.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e04-maya-07",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "Five… four… three…",
+  "say": "Five... four... three...",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-sofia-04",
+  "chapter": "s02e04",
+  "who": "sofia",
+  "text": "I clicked it. It said “recommended”. I was typing notes and it kept asking.",
+  "say": "I clicked it. It said \"recommended\". I was typing notes and it kept asking.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e04-maya-08",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "Sofia —",
+  "say": "Sofia —",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-sofia-05",
+  "chapter": "s02e04",
+  "who": "sofia",
+  "text": "I clicked it. It kept asking. I was typing notes.",
+  "say": "I clicked it. It kept asking. I was typing notes.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e04-maya-09",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "It asked at two o'clock on press night. That's not a Sofia problem.",
+  "say": "It asked at two o'clock on press night. That's not a Sofia problem.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-maya-10",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "It asked you at two o'clock on press night. That's not a Sofia problem. That's a no-freeze problem.",
+  "say": "It asked you at two o'clock on press night. That's not a Sofia problem. That's a no-freeze problem.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-sofia-06",
+  "chapter": "s02e04",
+  "who": "sofia",
+  "text": "You backed Ben.",
+  "say": "You backed Ben.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e04-maya-11",
+  "chapter": "s02e04",
+  "who": "maya",
+  "text": "I did. I backed the number. Tonight I'm backing you. Same reason: you were right about what you knew.",
+  "say": "I did. I backed the number. Tonight I'm backing you. Same reason: you were right about what you knew.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e04-sofia-07",
+  "chapter": "s02e04",
+  "who": "sofia",
+  "text": "You brought me the video. You didn't touch my desk.",
+  "say": "You brought me the video. You didn't touch my desk.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e04-rosa-08",
+  "chapter": "s02e04",
+  "who": "rosa",
+  "text": "The critic wrote “luminous.” About the part we lit by hand from a phone video.",
+  "say": "The critic wrote \"luminous.\" About the part we lit by hand from a phone video.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e04-sofia-08",
+  "chapter": "s02e04",
+  "who": "sofia",
+  "text": "Don't tell her.",
+  "say": "Don't tell her.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e05-odette-01",
+  "chapter": "s02e05",
+  "who": "odette",
+  "text": "Your mix. Your name on the call sheet. The agency's asking me who to book next month.",
+  "say": "Your mix. Your name on the call sheet. The agency's asking me who to book next month.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e05-dante-01",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "I didn't touch her mix. I swear I didn't touch it.",
+  "say": "I didn't touch her mix. I swear I didn't touch it.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-dante-02",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "I've been doing this twenty years and my name's on a clip with a woman crying.",
+  "say": "I've been doing this twenty years and my name's on a clip with a woman crying.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-maya-01",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "Then the records will say so. Show me all of them.",
+  "say": "Then the records will say so. Show me all of them.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-dante-03",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "Tell me I'm not crazy. No rehearsal, a snapshot on the truck, and I never touched her faders.",
+  "say": "Tell me I'm not crazy. No rehearsal, a snapshot on the truck, and I never touched her faders.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-maya-02",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "Then the records will say so. Show me the logs. All of them.",
+  "say": "Then the records will say so. Show me the logs. All of them.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-odette-02",
+  "chapter": "s02e05",
+  "who": "odette",
+  "text": "You have ten minutes before I call the agency.",
+  "say": "You have ten minutes before I call the agency.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e05-odette-03",
+  "chapter": "s02e05",
+  "who": "odette",
+  "text": "So the stream people did it?",
+  "say": "So the stream people did it?",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e05-dante-04",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "Latency is delay a stage adds. Sample rate is how many times a second the desk measures the sound. A mix-minus is everything except your own voice.",
+  "say": "Latency is delay a stage adds. Sample rate is how many times a second the desk measures the sound. A mix-minus is everything except your own voice.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-maya-03",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "The desk shows delay in samples. I think in milliseconds.",
+  "say": "The desk shows delay in samples. I think in milliseconds.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-dante-05",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "Samples equal time times sample rate. Half a second at forty-eight thousand: twenty-four thousand samples. Work backwards the same way.",
+  "say": "Samples equal time times sample rate. Half a second at forty-eight thousand: twenty-four thousand samples. Work backwards the same way.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-pax-01",
+  "chapter": "s02e05",
+  "who": "pax",
+  "text": "Sure, RTN 1's full program back from us. Frame sync and the encoder — about a third of a second.",
+  "say": "Sure, R-T-N one's full program back from us. Frame sync and the encoder — about a third of a second.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e05-maya-04",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "And it went straight into her ear.",
+  "say": "And it went straight into her ear.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-maya-05",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "A third of a second. Straight into her ear. From a template that said *no delay here.*",
+  "say": "A third of a second. Straight into her ear. From a template that said *no delay here.*",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-maya-06",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "(Here was a theater. This is a tent.)",
+  "say": "Here was a theater. This is a tent.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-dante-06",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "Who puts a program return in a presenter's ear? I didn't build TALK STAGE v1. It was on the truck when I got here.",
+  "say": "Who puts a program return in a presenter's ear? I didn't build talk stage version one. It was on the truck when I got here.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-maya-07",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "Then let's find out who did.",
+  "say": "Then let's find out who did.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-odette-04",
+  "chapter": "s02e05",
+  "who": "odette",
+  "text": "Three minutes.",
+  "say": "Three minutes.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e05-maya-08",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "The routing that hurt Noor came from a template I wrote in March. Dante ran what I built. He did nothing wrong. It's mine.",
+  "say": "The routing that hurt Noor came from a template I wrote in March. Dante ran what I built. He did nothing wrong. It's mine.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-crew-01",
+  "chapter": "s02e05",
+  "who": "crew",
+  "text": "(Nobody says anything. A generator hums. Somewhere a vendor is selling lemonade, very cheerfully, to nobody.)",
+  "say": "Nobody says anything. A generator hums. Somewhere a vendor is selling lemonade, very cheerfully, to nobody.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e05-odette-05",
+  "chapter": "s02e05",
+  "who": "odette",
+  "text": "That's the first straight answer I've had all morning. I'll call the agency — with that.",
+  "say": "That's the first straight answer I've had all morning. I'll call the agency — with that.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e05-dante-07",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "You didn't have to say it in front of everyone.",
+  "say": "You didn't have to say it in front of everyone.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-leah-01",
+  "chapter": "s02e05",
+  "who": "leah",
+  "text": "Testing, one, two… Just me. Right now. No echo. I could talk all day like this.",
+  "say": "Testing, one, two... Just me. Right now. No echo. I could talk all day like this.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e05-noor-01",
+  "chapter": "s02e05",
+  "who": "noor",
+  "text": "They told me it was the engineer.",
+  "say": "They told me it was the engineer.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e05-maya-09",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "It was my template. I'm sorry. It won't be in anyone's ear again — and we tested it with someone talking.",
+  "say": "It was my template. I'm sorry. It won't be in anyone's ear again — and we tested it with someone talking.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-noor-02",
+  "chapter": "s02e05",
+  "who": "noor",
+  "text": "Thank you for saying it was yours. Nobody ever says that. I'll go on tomorrow.",
+  "say": "Thank you for saying it was yours. Nobody ever says that. I'll go on tomorrow.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e05-dante-08",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "The agency called. I'm booked for next month. Odette asked for me by name.",
+  "say": "The agency called. I'm booked for next month. Odette asked for me by name.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-maya-10",
+  "chapter": "s02e05",
+  "who": "maya",
+  "text": "Good. Everyone heard the other version first. They needed to hear the true one.",
+  "say": "Good. Everyone heard the other version first. They needed to hear the true one.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e05-dante-09",
+  "chapter": "s02e05",
+  "who": "dante",
+  "text": "(He hands her a coffee. It's the same thing as thank you. Maybe better.)",
+  "say": "He hands her a coffee. It's the same thing as thank you. Maybe better.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e05-leah-02",
+  "chapter": "s02e05",
+  "who": "leah",
+  "text": "Next job's tonight. Hotel ballroom. Easy one — two rooms, one airwall.",
+  "say": "Next job's tonight. Hotel ballroom. Easy one — two rooms, one airwall.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-maya-01",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "My label's gone. “DO NOT REMOVE.” And the cable it was on.",
+  "say": "My label's gone. \"do not remove.\" And the cable it was on.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-leah-01",
+  "chapter": "s02e06",
+  "who": "leah",
+  "text": "Room A is dead silent. The keynote's at one-thirty. Tell me that's related.",
+  "say": "Room A is dead silent. The keynote's at one-thirty. Tell me that's related.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-banquet-captain-01",
+  "chapter": "s02e06",
+  "who": "banquet captain",
+  "text": "My team set four hundred chairs. Nobody touched your wires.",
+  "say": "My team set four hundred chairs. Nobody touched your wires.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e06-jordan-01",
+  "chapter": "s02e06",
+  "who": "jordan",
+  "text": "I was at catering. I touched a sandwich.",
+  "say": "I was at catering. I touched a sandwich.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e06-jordan-02",
+  "chapter": "s02e06",
+  "who": "jordan",
+  "text": "I was at catering. I touched a sandwich. The sandwich can vouch for me.",
+  "say": "I was at catering. I touched a sandwich. The sandwich can vouch for me.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e06-leah-02",
+  "chapter": "s02e06",
+  "who": "leah",
+  "text": "Jordan.",
+  "say": "Jordan.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-jordan-03",
+  "chapter": "s02e06",
+  "who": "jordan",
+  "text": "It was a very good sandwich.",
+  "say": "It was a very good sandwich.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e06-maya-02",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "Found the label.",
+  "say": "Found the label.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-lunch-emcee-through-room-01",
+  "chapter": "s02e06",
+  "who": "lunch emcee, through room a's ceiling",
+  "text": "…and a big thank-you to our dessert sponsors…",
+  "say": "... and a big thank-you to our dessert sponsors...",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e06-maya-03",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "Room A isn't silent. It's playing Room B.",
+  "say": "Room A isn't silent. It's playing Room B.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-leah-03",
+  "chapter": "s02e06",
+  "who": "leah",
+  "text": "Then it's your feed to Room A. Re-run it.",
+  "say": "Then it's your feed to Room A. Re-run it.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-maya-04",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "My feed's right here. Plugged in. A tester at the plate reads signal.",
+  "say": "My feed's right here. Plugged in. A tester at the plate reads signal.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-house-tech-01",
+  "chapter": "s02e06",
+  "who": "house tech",
+  "text": "That lead is the wall's brain. Sensor says closed, the system divides. Says open: one big room.",
+  "say": "That lead is the wall's brain. Sensor says closed, the system divides. Says open: one big room.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e06-maya-05",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "Then it gets a label.",
+  "say": "Then it gets a label.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-banquet-captain-02",
+  "chapter": "s02e06",
+  "who": "banquet captain",
+  "text": "It was in the pocket. Panels don't stack on a cable.",
+  "say": "It was in the pocket. Panels don't stack on a cable.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e06-maya-06",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "You did exactly the right thing. My label didn't.",
+  "say": "You did exactly the right thing. My label didn't.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-maya-07",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "Sensor lead's out of the Room A pocket. Panel says WALL OPEN. I haven't touched it.",
+  "say": "Sensor lead's out of the Room A pocket. Panel says wall open. I haven't touched it.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-house-tech-02",
+  "chapter": "s02e06",
+  "who": "house tech",
+  "text": "Good. Don't. The couple's mid-vows and my projector just died. Forty minutes, maybe.",
+  "say": "Good. Don't. The couple's mid-vows and my projector just died. Forty minutes, maybe.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e06-jordan-04",
+  "chapter": "s02e06",
+  "who": "jordan",
+  "text": "Reverberation is the room still ringing after the sound stops. RT-sixty is how long it takes to fall sixty decibels.",
+  "say": "Reverberation is the room still ringing after the sound stops. R-T sixty is how long it takes to fall sixty decibels.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e06-maya-08",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "And you can predict it?",
+  "say": "And you can predict it?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-jordan-05",
+  "chapter": "s02e06",
+  "who": "jordan",
+  "text": "Sabine: point-one-six-one times volume over absorption. Five hundred cubic metres, fifty square metres of absorption: about one point six seconds.",
+  "say": "Sabine: point-one-six-one times volume over absorption. Five hundred cubic metres, fifty square metres of absorption: about one point six seconds.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e06-leah-04",
+  "chapter": "s02e06",
+  "who": "leah",
+  "text": "Options. Fast.",
+  "say": "Options. Fast.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-maya-09",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "One bus works, and it plays in both rooms. Plate B. The president goes there — or nowhere.",
+  "say": "One bus works, and it plays in both rooms. Plate B. The president goes there — or nowhere.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-association-president-01",
+  "chapter": "s02e06",
+  "who": "association president",
+  "text": "Good afternoon. Thank you all for coming back from lunch — some of you, I hear, are still at it.",
+  "say": "Good afternoon. Thank you all for coming back from lunch — some of you, I hear, are still at it.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-leah-05",
+  "chapter": "s02e06",
+  "who": "leah",
+  "text": "“Easy one,” I said. Two rooms, one airwall. The captain just called us “the wire people.”",
+  "say": "\"Easy one,\" I said. Two rooms, one airwall. The captain just called us \"the wire people.\"",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-maya-10",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "I labeled the brain of the wall at seven, and told nobody who had to move it.",
+  "say": "I labeled the brain of the wall at seven, and told nobody who had to move it.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-leah-06",
+  "chapter": "s02e06",
+  "who": "leah",
+  "text": "The captain just called us “the wire people.”",
+  "say": "The captain just called us \"the wire people.\"",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-maya-11",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "Honestly? Today we are the wire people.",
+  "say": "Honestly? Today we are the wire people.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-house-tech-03",
+  "chapter": "s02e06",
+  "who": "house tech",
+  "text": "Wedding ran short. I plug this in, the system divides instantly. No fade.",
+  "say": "Wedding ran short. I plug this in, the system divides instantly. No fade.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e06-maya-12",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "Wait. Don't. The keynote's on plate B right now.",
+  "say": "Wait. Don't. The keynote's on plate B right now.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-maya-13",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "Plate A's live, plate B's on my finger. Your count.",
+  "say": "Plate A's live, plate B's on my finger. Your count.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-house-tech-04",
+  "chapter": "s02e06",
+  "who": "house tech",
+  "text": "Three. Two. One. In.",
+  "say": "Three. Two. One. In.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e06-crew-01",
+  "chapter": "s02e06",
+  "who": "crew",
+  "text": "(The house tech counts. Nobody breathes. It's the least dramatic thing that's ever felt this dramatic.)",
+  "say": "The house tech counts. Nobody breathes. It's the least dramatic thing that's ever felt this dramatic.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e06-maya-14",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "Room B: only Room B. Room A: only the keynote.",
+  "say": "Room B: only Room B. Room A: only the keynote.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-leah-07",
+  "chapter": "s02e06",
+  "who": "leah",
+  "text": "Awards at 2:15 are the captain's again. He says thank you. Loudly.",
+  "say": "Awards at two fifteen are the captain's again. He says thank you. Loudly.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e06-houseperson-01",
+  "chapter": "s02e06",
+  "who": "houseperson",
+  "text": "Your label. Next time write what you actually want.",
+  "say": "Your label. Next time write what you actually want.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e06-maya-15",
+  "chapter": "s02e06",
+  "who": "maya",
+  "text": "“Unplug me, then call Maya.” Printing it now.",
+  "say": "\"Unplug me, then call Maya.\" Printing it now.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e06-graham-01",
+  "chapter": "s02e06",
+  "who": "graham",
+  "text": "Next week. Hybrid product launch. Four thousand people online. Nobody in the room is allowed to notice.",
+  "say": "Next week. Hybrid product launch. Four thousand people online. Nobody in the room is allowed to notice.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e06-leah-08",
+  "chapter": "s02e06",
+  "who": "leah",
+  "text": "Online's the easy part.",
+  "say": "Online's the easy part.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e07-dante-01",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "Room's easy. Small room, loud band — I've barely got them in the PA.",
+  "say": "Room's easy. Small room, loud band — I've barely got them in the P-A.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-maya-01",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "Dante. Somebody in the wings is on the stream. Telling a joke.",
+  "say": "Dante. Somebody in the wings is on the stream. Telling a joke.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-dante-02",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "Somebody in the wings is on the stream? Telling a joke?",
+  "say": "Somebody in the wings is on the stream? Telling a joke?",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-maya-02",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "It's not a good joke.",
+  "say": "It's not a good joke.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-dante-03",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "They never are, when four thousand people hear them.",
+  "say": "They never are, when four thousand people hear them.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-dante-04",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "That mic's been muted for ten minutes. Look — red.",
+  "say": "That mic's been muted for ten minutes. Look — red.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-maya-03",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "Not on the stream it hasn't.",
+  "say": "Not on the stream it hasn't.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-dante-05",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "Band down ten. Anything?",
+  "say": "Band down ten. Anything?",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-maya-04",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "Nothing. The stream doesn't care what your faders do.",
+  "say": "Nothing. The stream doesn't care what your faders do.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-stream-vendor-1-20-p-m-01",
+  "chapter": "s02e07",
+  "who": "stream vendor, 1:20 p.m.",
+  "text": "Stems are pre. The stream's independent of the room — you'll never fight the FOH guy.",
+  "say": "Stems are pre. The stream's independent of the room — you'll never fight the F-O-H guy.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e07-leah-01",
+  "chapter": "s02e07",
+  "who": "leah",
+  "text": "Lip sync is voice and lips arriving together. Every box in the picture path adds latency; the audio path usually adds less.",
+  "say": "Lip sync is voice and lips arriving together. Every box in the picture path adds latency; the audio path usually adds less.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e07-maya-05",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "So I delay the audio?",
+  "say": "So I delay the audio?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-leah-02",
+  "chapter": "s02e07",
+  "who": "leah",
+  "text": "By the difference. Picture path a hundred twenty milliseconds, audio already twenty: add a hundred. Measured, not by ear.",
+  "say": "By the difference. Picture path a hundred twenty milliseconds, audio already twenty: add a hundred. Measured, not by ear.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e07-maya-06",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "Your mic's muted in the room. It wasn't online. I'm sorry — that's our routing, not you.",
+  "say": "Your mic's muted in the room. It wasn't online. I'm sorry — that's our routing, not you.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-reid-01",
+  "chapter": "s02e07",
+  "who": "reid",
+  "text": "Four thousand people. Oh no. Oh, no.",
+  "say": "Four thousand people. Oh no. Oh, no.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e07-dante-06",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "Easy. Make the stems follow my faders. Now my mutes count too.",
+  "say": "Easy. Make the stems follow my faders. Now my mutes count too.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-leah-03",
+  "chapter": "s02e07",
+  "who": "leah",
+  "text": "Maya — where's the band? On the stream, they're miming. There's no band.",
+  "say": "Maya — where's the band? On the stream, they're miming. There's no band.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e07-leah-04",
+  "chapter": "s02e07",
+  "who": "leah",
+  "text": "Maya — where's the band? On the stream they're miming.",
+  "say": "Maya — where's the band? On the stream they're miming.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e07-dante-07",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "I fixed it.",
+  "say": "I fixed it.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-maya-07",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "You fixed it so hard it's gone.",
+  "say": "You fixed it so hard it's gone.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-dante-08",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "I made the stems follow my faders. That's what you wanted, right?",
+  "say": "I made the stems follow my faders. That's what you wanted, right?",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-maya-08",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "Your band's nearly out of the PA. The room hears them through the air. The stream can't.",
+  "say": "Your band's nearly out of the P-A. The room hears them through the air. The stream can't.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-leah-05",
+  "chapter": "s02e07",
+  "who": "leah",
+  "text": "Clean. Band's there. Nobody in the wings. But the words come before the lips.",
+  "say": "Clean. Band's there. Nobody in the wings. But the words come before the lips.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e07-leah-06",
+  "chapter": "s02e07",
+  "who": "leah",
+  "text": "Clean. Band's back. But the words land before the lips move. Like a badly dubbed film.",
+  "say": "Clean. Band's back. But the words land before the lips move. Like a badly dubbed film.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e07-leah-07",
+  "chapter": "s02e07",
+  "who": "leah",
+  "text": "Lips match. Song's done. Clean the whole way.",
+  "say": "Lips match. Song's done. Clean the whole way.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e07-maya-09",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "Then it's proven. Stay on through the demo anyway.",
+  "say": "Then it's proven. Stay on through the demo anyway.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-graham-01",
+  "chapter": "s02e07",
+  "who": "graham",
+  "text": "Four thousand people. My CEO. A joke from the wings. Who is responsible?",
+  "say": "Four thousand people. My C-E-O. A joke from the wings. Who is responsible?",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e07-maya-10",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "The stream's tap point was wrong, and I checked the room, not the stream. That's on me.",
+  "say": "The stream's tap point was wrong, and I checked the room, not the stream. That's on me.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-dante-09",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "I changed your settings while you were in the wings. I shouldn't have.",
+  "say": "I changed your settings while you were in the wings. I shouldn't have.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-maya-11",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "You found half the answer. Next time, tell me first — then we'd have found all of it together.",
+  "say": "You found half the answer. Next time, tell me first — then we'd have found all of it together.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-dante-10",
+  "chapter": "s02e07",
+  "who": "dante",
+  "text": "I changed your settings while you were in the wings.",
+  "say": "I changed your settings while you were in the wings.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e07-maya-12",
+  "chapter": "s02e07",
+  "who": "maya",
+  "text": "You found half the answer. Next time tell me first. Then we find all of it.",
+  "say": "You found half the answer. Next time tell me first. Then we find all of it.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e07-graham-02",
+  "chapter": "s02e07",
+  "who": "graham",
+  "text": "Fine. Tonight's partner show, the CEO walks on live. You'll add my new product-reveal cue. Tonight.",
+  "say": "Fine. Tonight's partner show, the C-E-O walks on live. You'll add my new product-reveal cue. Tonight.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e07-leah-08",
+  "chapter": "s02e07",
+  "who": "leah",
+  "text": "Tonight? The only hour we have is the pre-show checklist.",
+  "say": "Tonight? The only hour we have is the pre-show checklist.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e08-graham-01",
+  "chapter": "s02e08",
+  "who": "graham",
+  "text": "The reveal. Light, video, a sting — the product lands like a heartbeat. Tonight.",
+  "say": "The reveal. Light, video, a sting — the product lands like a heartbeat. Tonight.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e08-jordan-01",
+  "chapter": "s02e08",
+  "who": "jordan",
+  "text": "We program it in the checklist hour. Checklist's a formality — everything worked at two.",
+  "say": "We program it in the checklist hour. Checklist's a formality — everything worked at two.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e08-maya-01",
+  "chapter": "s02e08",
+  "who": "maya",
+  "text": "It worked at two. Then the room flipped for dinner. The checklist is how we find out what the flip broke.",
+  "say": "It worked at two. Then the room flipped for dinner. The checklist is how we find out what the flip broke.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e08-leah-01",
+  "chapter": "s02e08",
+  "who": "leah",
+  "text": "Graham is forty percent of our year, Maya.",
+  "say": "Graham is forty percent of our year, Maya.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e08-maya-02",
+  "chapter": "s02e08",
+  "who": "maya",
+  "text": "Then let's not show him a black rectangle.",
+  "say": "Then let's not show him a black rectangle.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e08-leah-02",
+  "chapter": "s02e08",
+  "who": "leah",
+  "text": "Both. In that order. And at 6:55 nobody touches anything without Rosa.",
+  "say": "Both. In that order. And at six fifty-five nobody touches anything without Rosa.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e08-video-operator-01",
+  "chapter": "s02e08",
+  "who": "video operator",
+  "text": "Checklist line four: every source on the switcher. Camera 2 is black.",
+  "say": "Checklist line four: every source on the switcher. Camera two is black.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e08-jordan-02",
+  "chapter": "s02e08",
+  "who": "jordan",
+  "text": "It's the reveal. Your programmer patched it over input 2. Undo it.",
+  "say": "It's the reveal. Your programmer patched it over input two. Undo it.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e08-video-operator-02",
+  "chapter": "s02e08",
+  "who": "video operator",
+  "text": "The reveal's on input 6. I checked twice.",
+  "say": "The reveal's on input six. I checked twice.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e08-graham-02",
+  "chapter": "s02e08",
+  "who": "graham",
+  "text": "The CEO will be a speck.",
+  "say": "The C-E-O will be a speck.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e08-camera-2-operator-01",
+  "chapter": "s02e08",
+  "who": "camera 2 operator",
+  "text": "Viewfinder's perfect. I'm looking at the stage right now.",
+  "say": "Viewfinder's perfect. I'm looking at the stage right now.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e08-jordan-03",
+  "chapter": "s02e08",
+  "who": "jordan",
+  "text": "Your cart. You argued for the checklist that caught your own cart.",
+  "say": "Your cart. You argued for the checklist that caught your own cart.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e08-maya-03",
+  "chapter": "s02e08",
+  "who": "maya",
+  "text": "That's what it's for. It doesn't care whose fault it is.",
+  "say": "That's what it's for. It doesn't care whose fault it is.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e08-video-operator-03",
+  "chapter": "s02e08",
+  "who": "video operator",
+  "text": "Every source, full screen, one at a time. All clean.",
+  "say": "Every source, full screen, one at a time. All clean.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e08-jordan-04",
+  "chapter": "s02e08",
+  "who": "jordan",
+  "text": "A frame is one still picture. Frame rate is how many per second. Mix two rates in one rig and something stutters.",
+  "say": "A frame is one still picture. Frame rate is how many per second. Mix two rates in one rig and something stutters.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e08-maya-04",
+  "chapter": "s02e08",
+  "who": "maya",
+  "text": "How long is one frame?",
+  "say": "How long is one frame?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e08-jordan-05",
+  "chapter": "s02e08",
+  "who": "jordan",
+  "text": "One over the frame rate. At twenty-five frames a second: one twenty-fifth — forty milliseconds.",
+  "say": "One over the frame rate. At twenty-five frames a second: one twenty-fifth — forty milliseconds.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e08-graham-03",
+  "chapter": "s02e08",
+  "who": "graham",
+  "text": "Swap the reveal music to the other track. The CEO likes it better.",
+  "say": "Swap the reveal music to the other track. The C-E-O likes it better.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e08-maya-05",
+  "chapter": "s02e08",
+  "who": "maya",
+  "text": "The reveal is timed to this sting — twelve seconds. The other track is twenty.",
+  "say": "The reveal is timed to this sting — twelve seconds. The other track is twenty.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e08-graham-04",
+  "chapter": "s02e08",
+  "who": "graham",
+  "text": "The CEO likes the other track better.",
+  "say": "The C-E-O likes the other track better.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e08-maya-06",
+  "chapter": "s02e08",
+  "who": "maya",
+  "text": "The reveal is twelve seconds. The other track is twenty.",
+  "say": "The reveal is twelve seconds. The other track is twenty.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e08-graham-05",
+  "chapter": "s02e08",
+  "who": "graham",
+  "text": "…So the product would be revealed for eight seconds of nothing.",
+  "say": "... So the product would be revealed for eight seconds of nothing.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e08-rosa-01",
+  "chapter": "s02e08",
+  "who": "rosa",
+  "text": "Standby cues 1 through 4… Cue 1, go. Cue 2, go.",
+  "say": "Standby cues one through four... Cue one, go. Cue two, go.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e08-rosa-02",
+  "chapter": "s02e08",
+  "who": "rosa",
+  "text": "Cue 3… go.",
+  "say": "Cue three... go.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e08-rosa-03",
+  "chapter": "s02e08",
+  "who": "rosa",
+  "text": "Cue 4, go.",
+  "say": "Cue four, go.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e08-graham-06",
+  "chapter": "s02e08",
+  "who": "graham",
+  "text": "The other track can go in tomorrow.",
+  "say": "The other track can go in tomorrow.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e08-leah-03",
+  "chapter": "s02e08",
+  "who": "leah",
+  "text": "It's already first on the list. With your name on it.",
+  "say": "It's already first on the list. With your name on it.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e08-imani-01",
+  "chapter": "s02e08",
+  "who": "imani",
+  "text": "Riverbend's site network people want to “share internet” with our AV network. Tonight. Can I say yes?",
+  "say": "Riverbend's site network people want to \"share internet\" with our A-V network. Tonight. Can I say yes?",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e09-ticketing-lead-01",
+  "chapter": "s02e09",
+  "who": "ticketing lead",
+  "text": "Half my scanners just went offline. Full Wi-Fi bars. Three thousand people at nine.",
+  "say": "Half my scanners just went offline. Full Wi-Fi bars. Three thousand people at nine.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e09-maya-01",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "And my stream test just dropped. Same minute.",
+  "say": "And my stream test just dropped. Same minute.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-imani-01",
+  "chapter": "s02e09",
+  "who": "imani",
+  "text": "They patched it at 12:40 and went home. I told them to ask you.",
+  "say": "They patched it at twelve forty and went home. I told them to ask you.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e09-maya-02",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "Two networks. One cable. Eighteen minutes.",
+  "say": "Two networks. One cable. Eighteen minutes.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-site-tech-01",
+  "chapter": "s02e09",
+  "who": "site tech",
+  "text": "Share internet. Easy. They'll thank us in the morning.",
+  "say": "Share internet. Easy. They'll thank us in the morning.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e09-site-tech-02",
+  "chapter": "s02e09",
+  "who": "site tech",
+  "text": "Tag it so Maya knows. We're off.",
+  "say": "Tag it so Maya knows. We're off.",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e09-maya-03",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "(Audio, she knows. Radio, she knows. At one in the morning this is somebody else's language — and it's her stream.)",
+  "say": "Audio, she knows. Radio, she knows. At one in the morning this is somebody else's language — and it's her stream.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-maya-04",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "Two networks, same range, two DHCP servers. I unplugged our end. Scanners fine, stream has no internet.",
+  "say": "Two networks, same range, two D-H-C-P servers. I unplugged our end. Scanners fine, stream has no internet.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-priya-01",
+  "chapter": "s02e09",
+  "who": "priya",
+  "text": "Good. Evidence, not theories. Now: whose network, and who's awake?",
+  "say": "Good. Evidence, not theories. Now: whose network, and who's awake?",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e09-priya-02",
+  "chapter": "s02e09",
+  "who": "priya",
+  "text": "Evidence, not theories. Now tell it back to me.",
+  "say": "Evidence, not theories. Now tell it back to me.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e09-maya-05",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "…Their DHCP only. Ours off. Our gear on .240 up.",
+  "say": "... Their D-H-C-P only. Ours off. Our gear on dot two hundred forty up.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-priya-03",
+  "chapter": "s02e09",
+  "who": "priya",
+  "text": "Good. Now go to sleep before you tell it back to me wrong.",
+  "say": "Good. Now go to sleep before you tell it back to me wrong.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e09-priya-04",
+  "chapter": "s02e09",
+  "who": "priya",
+  "text": "A subnet is a block of addresses that can talk directly. DHCP hands out addresses automatically. A static address is typed in by hand.",
+  "say": "A subnet is a block of addresses that can talk directly. D-H-C-P hands out addresses automatically. A static address is typed in by hand.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e09-maya-06",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "How many devices fit?",
+  "say": "How many devices fit?",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-priya-05",
+  "chapter": "s02e09",
+  "who": "priya",
+  "text": "Two to the thirty-two minus the prefix, minus two. A slash-twenty-six: two to the six is sixty-four, minus two — sixty-two devices.",
+  "say": "Two to the thirty-two minus the prefix, minus two. A slash-twenty-six: two to the six is sixty-four, minus two — sixty-two devices.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e09-priya-06",
+  "chapter": "s02e09",
+  "who": "priya",
+  "text": "Why the top? Their pool hands out from the bottom. Sixty scanners. You're nowhere near .240 — tonight.",
+  "say": "Why the top? Their pool hands out from the bottom. Sixty scanners. You're nowhere near dot two hundred forty — tonight.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e09-maya-07",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "Tell it back: their DHCP only. Ours off. Our gear on .240 up. Rejoin. Test gates, then stream.",
+  "say": "Tell it back: their D-H-C-P only. Ours off. Our gear on dot two hundred forty up. Rejoin. Test gates, then stream.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-ticketing-lead-02",
+  "chapter": "s02e09",
+  "who": "ticketing lead",
+  "text": "Twenty test tickets, every lane. All green.",
+  "say": "Twenty test tickets, every lane. All green.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e09-priya-07",
+  "chapter": "s02e09",
+  "who": "priya",
+  "text": "At seven, you and the site lead reserve those addresses — or separate the networks properly. And write this down tonight.",
+  "say": "At seven, you and the site lead reserve those addresses — or separate the networks properly. And write this down tonight.",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e09-maya-08",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "Tonight. Promise.",
+  "say": "Tonight. Promise.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-imani-02",
+  "chapter": "s02e09",
+  "who": "imani",
+  "text": "It works? Then we're done. Make it work, write it up tomorrow. Gates at nine; you need four hours' sleep.",
+  "say": "It works? Then we're done. Make it work, write it up tomorrow. Gates at nine; you need four hours' sleep.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e09-maya-09",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "Priya said write it now.",
+  "say": "Priya said write it now.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-imani-03",
+  "chapter": "s02e09",
+  "who": "imani",
+  "text": "Maya. Bed.",
+  "say": "Maya. Bed.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e09-maya-10",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "…it's Maya again, about the addresses — call me when you're —",
+  "say": "... it's Maya again, about the addresses — call me when you're —",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-ben-01",
+  "chapter": "s02e09",
+  "who": "ben",
+  "text": "RF walk. Now. The headliner's crew lands at ten.",
+  "say": "R-F walk. Now. The headliner's crew lands at ten.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e09-ticketing-lead-03",
+  "chapter": "s02e09",
+  "who": "ticketing lead",
+  "text": "Smoothest gate we've had. Whatever you did at one o'clock, keep doing it.",
+  "say": "Smoothest gate we've had. Whatever you did at one o'clock, keep doing it.",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e09-imani-04",
+  "chapter": "s02e09",
+  "who": "imani",
+  "text": "We will.",
+  "say": "We will.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e09-imani-05",
+  "chapter": "s02e09",
+  "who": "imani",
+  "text": "Smoothest gate they've ever had.",
+  "say": "Smoothest gate they've ever had.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e09-maya-11",
+  "chapter": "s02e09",
+  "who": "maya",
+  "text": "(Nobody asks where it's written down. That's the dark part. Nobody asks.)",
+  "say": "Nobody asks where it's written down. That's the dark part. Nobody asks.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e09-ben-02",
+  "chapter": "s02e09",
+  "who": "ben",
+  "text": "Rain after nine tomorrow. Headliner's on at nine-fifteen. Everybody reads the weather plan tonight. Everybody.",
+  "say": "Rain after nine tomorrow. Headliner's on at nine-fifteen. Everybody reads the weather plan tonight. Everybody.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-maya-01",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "Weather plan's printed and taped to the desk. Section three's highlighted.",
+  "say": "Weather plan's printed and taped to the desk. Section three's highlighted.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-ben-01",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Good. Radar's early. First cells in twenty minutes. Maybe less.",
+  "say": "Good. Radar's early. First cells in twenty minutes. Maybe less.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-ben-02",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Radar's early. First cells in twenty. Maybe less.",
+  "say": "Radar's early. First cells in twenty. Maybe less.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-maya-02",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "Section three's highlighted.",
+  "say": "Section three's highlighted.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-ben-03",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Good. Highlighters are the most underrated safety equipment we own.",
+  "say": "Good. Highlighters are the most underrated safety equipment we own.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-dante-01",
+  "chapter": "s02e10",
+  "who": "dante",
+  "text": "Vocal one just dropped. And guitar two. Mid-chorus!",
+  "say": "Vocal one just dropped. And guitar two. Mid-chorus!",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e10-hank-01",
+  "chapter": "s02e10",
+  "who": "hank",
+  "text": "Genny three's showing an alarm. Who's touching it?",
+  "say": "Genny three's showing an alarm. Who's touching it?",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e10-maya-03",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "Nobody. It's yours.",
+  "say": "Nobody. It's yours.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-hank-02",
+  "chapter": "s02e10",
+  "who": "hank",
+  "text": "Best answer I've had from AV all year.",
+  "say": "Best answer I've had from A-V all year.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e10-dante-02",
+  "chapter": "s02e10",
+  "who": "dante",
+  "text": "It's the crowd. Twelve thousand phones. That's your RF.",
+  "say": "It's the crowd. Twelve thousand phones. That's your R-F.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e10-imani-01",
+  "chapter": "s02e10",
+  "who": "imani",
+  "text": "And the console updated last week. That's your control.",
+  "say": "And the console updated last week. That's your control.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e10-maya-04",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "Take the headliner's ears on the stage mixer. If FOH drops again, it can't reach her.",
+  "say": "Take the headliner's ears on the stage mixer. If F-O-H drops again, it can't reach her.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-dante-03",
+  "chapter": "s02e10",
+  "who": "dante",
+  "text": "Fallback's live. Her in-ears are mine now.",
+  "say": "Fallback's live. Her in-ears are mine now.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e10-maya-05",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "…seven. Eight. Nine.",
+  "say": "... seven. Eight. Nine.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-ben-04",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Three kilometers. Plan says hold.",
+  "say": "Three kilometers. Plan says hold.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-ben-05",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Hold. Weather plan, section three. Production concurs. Rosa, call it.",
+  "say": "Hold. Weather plan, section three. Production concurs. Rosa, call it.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-rosa-01",
+  "chapter": "s02e10",
+  "who": "rosa",
+  "text": "Holding. Announcement in ten. Booth, give me the announce mic.",
+  "say": "Holding. Announcement in ten. Booth, give me the announce mic.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e10-ben-06",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Stop.",
+  "say": "Stop.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-ben-07",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "A delay speaker sits out in the crowd, delayed so its sound lands just after the stage's. Sound moves about three hundred forty-three metres a second.",
+  "say": "A delay speaker sits out in the crowd, delayed so its sound lands just after the stage's. Sound moves about three hundred forty-three metres a second.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-maya-06",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "So the delay is…",
+  "say": "So the delay is...",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-ben-08",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Distance over speed. Tower seventeen metres out: seventeen over three forty-three — about fifty milliseconds. And weather holds are the safety lead's call.",
+  "say": "Distance over speed. Tower seventeen metres out: seventeen over three forty-three — about fifty milliseconds. And weather holds are the safety lead's call.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-headliner-s-manager-01",
+  "chapter": "s02e10",
+  "who": "headliner's manager",
+  "text": "Twelve thousand people! She's fine! One more song and we're done!",
+  "say": "Twelve thousand people! She's fine! One more song and we're done!",
+  "voice": "eric"
+ },
+ {
+  "id": "s02e10-ben-09",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Stop. It's not my opinion. It's the plan. We agreed it before doors.",
+  "say": "Stop. It's not my opinion. It's the plan. We agreed it before doors.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-rosa-02",
+  "chapter": "s02e10",
+  "who": "rosa",
+  "text": "Ladies and gentlemen, we're pausing the show for your safety. Please follow the stewards. We'll be back.",
+  "say": "Ladies and gentlemen, we're pausing the show for your safety. Please follow the stewards. We'll be back.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e10-imani-02",
+  "chapter": "s02e10",
+  "who": "imani",
+  "text": "Forty-one photos from my walk. I haven't looked at one of them.",
+  "say": "Forty-one photos from my walk. I haven't looked at one of them.",
+  "voice": "ono_anna"
+ },
+ {
+  "id": "s02e10-maya-07",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "Look now. Stage left. Anything near the ground.",
+  "say": "Look now. Stage left. Anything near the ground.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-ben-10",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Years ago. An outdoor show. The wind came up, and we were told to keep going.",
+  "say": "Years ago. An outdoor show. The wind came up, and we were told to keep going.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-ben-11",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "A roof section came down after the audience had gone. Nobody was hurt. That was luck, not planning.",
+  "say": "A roof section came down after the audience had gone. Nobody was hurt. That was luck, not planning.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-maya-08",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "So that's why “stop” is normal on your crew.",
+  "say": "So that's why \"stop\" is normal on your crew.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-ben-12",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "It's why it's boring. Boring is the goal.",
+  "say": "It's why it's boring. Boring is the goal.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-maya-09",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "(She will think about this sentence for the rest of her career.)",
+  "say": "She will think about this sentence for the rest of her career.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e10-ben-13",
+  "chapter": "s02e10",
+  "who": "ben",
+  "text": "Thirty minutes since the last strike. Plan says clear. Nobody touches the junction until Hank says so.",
+  "say": "Thirty minutes since the last strike. Plan says clear. Nobody touches the junction until Hank says so.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e10-hank-03",
+  "chapter": "s02e10",
+  "who": "hank",
+  "text": "Distro beside it's mine. Give me three minutes. Generator was a fuel filter — changed.",
+  "say": "Distro beside it's mine. Give me three minutes. Generator was a fuel filter — changed.",
+  "voice": "uncle_fu"
+ },
+ {
+  "id": "s02e10-dante-04",
+  "chapter": "s02e10",
+  "who": "dante",
+  "text": "Downstage right. Upstage. The lip. Behind the drum riser. Solid everywhere.",
+  "say": "Downstage right. Upstage. The lip. Behind the drum riser. Solid everywhere.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e10-rosa-03",
+  "chapter": "s02e10",
+  "who": "rosa",
+  "text": "Is that a report or a feeling?",
+  "say": "Is that a report or a feeling?",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e10-rosa-04",
+  "chapter": "s02e10",
+  "who": "rosa",
+  "text": "Copy. Restarting in two.",
+  "say": "Copy. Restarting in two.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e10-rosa-05",
+  "chapter": "s02e10",
+  "who": "rosa",
+  "text": "I'm asking you what the booth knows.",
+  "say": "I'm asking you what the booth knows.",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e10-rosa-06",
+  "chapter": "s02e10",
+  "who": "rosa",
+  "text": "Riverbend — we are back!",
+  "say": "Riverbend — we are back!",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e10-rosa-07",
+  "chapter": "s02e10",
+  "who": "rosa",
+  "text": "Riverbend — we are BACK!",
+  "say": "Riverbend — we are back!",
+  "voice": "sohee"
+ },
+ {
+  "id": "s02e10-dante-05",
+  "chapter": "s02e10",
+  "who": "dante",
+  "text": "Seven's solid. Everything's solid. I'm going to cry into a cable.",
+  "say": "Seven's solid. Everything's solid. I'm going to cry into a cable.",
+  "voice": "ryan"
+ },
+ {
+  "id": "s02e10-priya-01",
+  "chapter": "s02e10",
+  "who": "priya",
+  "text": "Before you say yes: did anyone write down the 1 a.m. fix?",
+  "say": "Before you say yes: did anyone write down the one A-M fix?",
+  "voice": "serena"
+ },
+ {
+  "id": "s02e10-maya-10",
+  "chapter": "s02e10",
+  "who": "maya",
+  "text": "(The napkin was in the jacket. The jacket was in the rain.)",
+  "say": "The napkin was in the jacket. The jacket was in the rain.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e11-jordan-01",
+  "chapter": "s02e11",
+  "who": "jordan",
+  "text": "Everything, at once. Where do we start?",
+  "say": "Everything, at once. Where do we start?",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e11-maya-01",
+  "chapter": "s02e11",
+  "who": "maya",
+  "text": "Where the signal starts. Then one thing at a time — and nothing that isn't ours.",
+  "say": "Where the signal starts. Then one thing at a time — and nothing that isn't ours.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e11-ben-01",
+  "chapter": "s02e11",
+  "who": "ben",
+  "text": "One more fixture on my truss while I'm at lunch? Don't even think about it.",
+  "say": "One more fixture on my truss while I'm at lunch? Don't even think about it.",
+  "voice": "aiden"
+ },
+ {
+  "id": "s02e11-maya-02",
+  "chapter": "s02e11",
+  "who": "maya",
+  "text": "Wouldn't dream of it. Your truss, your signature.",
+  "say": "Wouldn't dream of it. Your truss, your signature.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e11-maya-03",
+  "chapter": "s02e11",
+  "who": "maya",
+  "text": "One check per stage. If it fails, we start over from the top — and we'll know why.",
+  "say": "One check per stage. If it fails, we start over from the top — and we'll know why.",
+  "voice": "vivian"
+ },
+ {
+  "id": "s02e11-jordan-02",
+  "chapter": "s02e11",
+  "who": "jordan",
+  "text": "And if we fail again?",
+  "say": "And if we fail again?",
+  "voice": "dylan"
+ },
+ {
+  "id": "s02e11-maya-04",
+  "chapter": "s02e11",
+  "who": "maya",
+  "text": "Then we start again. That's the job: until it passes, and we can prove it.",
+  "say": "Then we start again. That's the job: until it passes, and we can prove it.",
+  "voice": "vivian"
+ }
+]

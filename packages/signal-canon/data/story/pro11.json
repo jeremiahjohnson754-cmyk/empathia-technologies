@@ -1,0 +1,86 @@
+{
+ "chapter": {
+  "id": "pro11",
+  "kicker": "PROLOGUE · CH.11",
+  "title": "Better People, Brighter Tomorrow",
+  "pill": "Prologue · Ch.11",
+  "sub": "Checklists don't slow a team down.",
+  "status": null,
+  "flags": [],
+  "accent": "var(--blue)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "After the service, Ray holds the debrief card — what broke, what almost broke, what to fix before next week. Maya listens.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Good service. What broke, what almost broke, what do we fix before next week?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2636
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The empty sanctuary in warm light. Maya stands in the aisle, proud.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "We're not just running gear. We're running a system people trust."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1280
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Checklists don't slow a team down — they're what make Sunday repeatable."
+  }
+ ]
+}

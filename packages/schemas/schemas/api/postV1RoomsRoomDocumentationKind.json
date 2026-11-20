@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDocumentationKind/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/documentation/{kind} request body",
+  "description": "Submit a version of one required document (a stored evidence file) while the room is installed or being commissioned; a new version once the last is reviewed",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceId"
+  ],
+  "properties": {
+    "evidenceId": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

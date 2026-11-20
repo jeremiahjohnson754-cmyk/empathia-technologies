@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1ProofClaimsClaimTransitions/0.1.0.json",
+  "title": "POST /v1/proof/claims/{claim}/transitions request body",
+  "description": "Request, approve, reject or revoke publication; revoke, block or degrade the claim. Refused when the rules of a claim forbid it; audited",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action"
+  ],
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "request_publication",
+        "approve_publication",
+        "reject_publication",
+        "revoke_publication",
+        "revoke",
+        "block",
+        "degrade"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

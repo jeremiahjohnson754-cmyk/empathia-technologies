@@ -3,6 +3,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--tx); font: 400 var(--fs-base)/1.55 var(--font-sans); }
 a { color: var(--accent); text-decoration: none; } :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* QA round 1 (R1-03): a heading or landmark that receives the route focus (tabindex=-1, never a tab stop) draws no ring; controls keep theirs */
+h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main[tabindex="-1"]:focus, #main:focus { outline: none; }
 .skip { position: absolute; left: -999px; top: 8px; background: var(--accent); color: var(--bg); padding: 8px 12px; border-radius: var(--r-sm); z-index: 10; } .skip:focus { left: 8px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--tx); font-weight: 700; } .mark { width: 12px; height: 12px; border-radius: 3px; background: linear-gradient(135deg, var(--accent), var(--indigo)); }
 .synthetic { margin-left: auto; } .persp { display: inline-flex; gap: 8px; align-items: center; font-size: var(--fs-sm); color: var(--tx2); }
@@ -15,10 +17,12 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .go { display: grid; gap: 4px; padding: var(--sp-4); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--panel); color: var(--tx); min-height: 68px; }
 .go span { color: var(--tx2); font-size: var(--fs-sm); } .go.launch { background: var(--accent); border-color: var(--accent); color: var(--bg); } .go.launch span { color: color-mix(in srgb, var(--bg) 75%, transparent); }
 .go:hover { border-color: var(--accent); }
+button.go { font: inherit; text-align: left; cursor: pointer; width: 100%; align-content: start; } .go .go__as { font-size: var(--fs-xs); font-weight: 600; opacity: .9; }
 .scen { margin-top: var(--sp-7); } .scen ol { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .scen li { padding: var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .scen li a { color: var(--tx); } .scen p { margin: 6px 0 0; color: var(--tx2); font-size: var(--fs-sm); } .scen i { color: var(--accent); font-style: normal; font-weight: 600; margin-right: 6px; }
 .status { margin-top: var(--sp-7); color: var(--tx2); } .boundary code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); }
 .foot { padding: var(--sp-5) 16px; color: var(--tx3); font-size: var(--fs-sm); border-top: 1px solid var(--line); text-align: center; }
+.boot { max-width: 40rem; margin: 20vh auto 0; padding: 0 16px; color: var(--tx2); text-align: center; }
 @media (max-width: 760px) { .start { grid-template-columns: 1fr; } .go.launch { min-height: 76px; font-size: var(--fs-md); } .wrap { padding-block: var(--sp-5); } }
 
 /* Build a Room */
@@ -29,7 +33,7 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .build__form input, .build__form select, .build__row input, .build__row select, .build__grid input, .build__grid select { width: 100%; min-height: 36px; padding: 0 10px; background: var(--bg2); color: var(--tx); border: 1px solid var(--line2); border-radius: var(--r-sm); font: inherit; }
 .build__two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-5); margin-top: var(--sp-4); }
 .build__h2 { font-size: var(--fs-md); margin: var(--sp-4) 0 var(--sp-2); }
-.build__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: var(--sp-2) 0; } .build__row input, .build__row select { width: auto; flex: 1 1 200px; }
+.build__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: var(--sp-2) 0; } .build__row input, .build__row select { width: auto; flex: 1 1 200px; min-width: 0; max-width: 100%; }   /* a long option no longer pushes a 320 px page sideways (SITE_AUDIT AUD-001, APEX) */
 .build__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; font-size: var(--fs-sm); } .build__list li { padding: 6px 8px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--panel); min-width: 0; overflow-wrap: anywhere; }
 .build__list code { font: 600 var(--fs-xs) var(--font-mono); color: var(--tx2); } .build__x { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; font-size: var(--fs-xs); }
 .build__table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); } .build__table th, .build__table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; } .build__table th { color: var(--tx2); font-weight: 600; }
@@ -88,3 +92,16 @@ h1 { margin: 0; font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; letter-s
 .empty { display: grid; gap: var(--sp-2); justify-items: start; padding: var(--sp-5) var(--sp-4); border: 1px dashed var(--line2); border-radius: var(--r-md); color: var(--tx2); }
 .empty > b { color: var(--tx); font-size: var(--fs-md); } .empty > p { margin: 0; max-width: 60ch; line-height: 1.5; }
 .svc__list li:has(> button) { padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .svc__list li:has(> button) > span { border: 0; padding: 0; background: transparent; }
+/* phones (site audit AUD, 2026-10-31): wide tables and cards scroll inside themselves instead of widening the page */
+@media (max-width: 760px) {
+  .build__table, .card table { display: block; overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+  .stack > *, .card, .sp__grid > *, .sp__results, .sp__detail { min-width: 0; }
+  .card pre, .stack pre { overflow-x: auto; max-width: 100%; }
+  .stack { min-width: 0; max-width: 100%; }
+}
+/* tour D: the question a stop raises, and searches to try */
+.tour__tries { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 var(--sp-2); padding: 0; }
+.tour__ask { margin: 0 0 var(--sp-2); padding: 6px 12px; border-left: 3px solid var(--accent); background: var(--panel2); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.tour__ask summary { cursor: pointer; font-weight: 600; font-size: var(--fs-sm); min-height: 32px; display: flex; align-items: center; }
+.tour__ask p { margin: 4px 0 6px; color: var(--tx2); font-size: var(--fs-sm); max-width: 68ch; }
+.svc__practice { margin: 0; padding: 8px 12px; border-radius: var(--r-md); border: 1px dashed var(--line2); color: var(--tx2); font-size: var(--fs-sm); }

@@ -1,0 +1,943 @@
+{
+ "chapter": {
+  "id": "s09e10",
+  "kicker": "S09 · E10",
+  "title": "Every Screen at Once",
+  "pill": "S09E10 · Every Screen at Once",
+  "sub": "Gala night, 1,100 guests. Every lobby screen says EVACUATE. The fire panel says normal.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S09E10",
+   "RV-170",
+   "RV-171",
+   "RV-172",
+   "RV-173",
+   "MD-01",
+   "MD-02",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#F472B6"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 9 · EPISODE 10 · DRAFT · SEASON FINALE  Gala night · Maya, Tamsin (incident commander), Solveig, Raffa, Kit and Odile · Level L5 · Advanced support (formulas on request)  Gala night, 1,100 guests. At 19:12 every lobby screen says EVACUATE. The fire panel says normal. Nobody knows yet how far it goes.  ⚑ RV-170 / RV-173: the incident commander decides; nobody counter-messages on a lying channel; evidence is security’s. RV-171: governance only. MD-01 / MD-02: the season boss. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Every Screen at Once",
+   "kind": "BOSS · SEASON FINALE",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "tamsin",
+    "solveig",
+    "raffa"
+   ],
+   "stakes": "Gala night, 1,100 guests. Every lobby screen says EVACUATE. The fire panel says normal. Nobody knows how far it goes.",
+   "clock": "The curtain was due at eight.",
+   "reward": "A house kept safe by a voice it can trust, evidence kept, a door closed by its owners — and the show, late but safe.",
+   "objectives": [
+    {
+     "key": "BR-S09E10-01",
+     "text": "Decide your first minute"
+    },
+    {
+     "key": "twist",
+     "text": "Find whose account it is"
+    },
+    {
+     "key": "BR-S09E10-02",
+     "text": "Answer the chief executive"
+    },
+    {
+     "key": "core",
+     "text": "Put the first half hour in order"
+    },
+    {
+     "key": "meltdown",
+     "text": "Survive gala night (season boss)"
+    },
+    {
+     "key": "BR-S09E10-03",
+     "text": "Decide how the review starts"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Everything this season built, tested at once."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Every screen”",
+   "sub": "Gala night · 7:12 p.m. · lobby"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The lobby during the gala, full of guests in evening dress; every screen reads EVACUATE; the fire panel reads NORMAL; Tamsin raises her radio; Maya beside her.",
+   "characters": [
+    {
+     "id": "tamsin",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_foyer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "I'm incident commander. Tell me what I can trust."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Paging and the fire interface. Nothing on a screen."
+    }
+   ],
+   "narration": [],
+   "caption": "The panel says normal. The screens say run.",
+   "flags": [
+    "RV-173"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6109
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "lobby · 19:12",
+   "lines": [
+    {
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I'm incident commander. Tell me what I can trust."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Paging and the fire interface. Nothing on a screen."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “A second account”",
+   "sub": "7:12 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E10-01",
+   "prompt": "19:12:20. Every screen lies; the panel is normal; 1,100 guests. Your first minute?",
+   "happening": "False EVACUATE, every screen.",
+   "clock": "19:12 · curtain 20:00",
+   "known": [
+    "◉ Fire panel NORMAL",
+    "◉ Paging on its own path"
+   ],
+   "unknown": [
+    "Whose account",
+    "How far it goes"
+   ],
+   "risk": "A crush on the stairs — or a lost voice.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody briefs Tamsin.",
+    "She pages blind — and the stairs keep filling a minute longer."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What can the incident commander trust, and who speaks?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Put ‘IGNORE THE SCREENS — NO FIRE’ on the wall",
+     "result": "Now there are two messages on a channel nobody can trust.",
+     "consequence": "Counter-messages on the liar.",
+     "chips": [
+      "Counter-message"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "INCIDENT COMMANDER'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Never counter-message on a compromised channel.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Tell Tamsin what she can trust — paging and the fire interface are independent and clean, the screens aren't — so she decides and speaks; then call Solveig with the facts",
+     "result": "Tamsin pages at 19:13:40 in her own words. The stairs stop filling.",
+     "consequence": "Facts to the incident commander; one trusted voice.",
+     "chips": [
+      "Facts",
+      "Trusted path"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Solveig": 2,
+       "Tamsin": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Take the paging mic yourself: “It's a hoax”",
+     "result": "Your words, not hers — and if it weren't a hoax, you'd have told people to stay.",
+     "consequence": "Announces on your own authority.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "INCIDENT COMMANDER'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "The incident commander owns what the house hears.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Pull the power on everything in the lobby",
+     "result": "Paging's amplifiers are in the same room.",
+     "consequence": "Darkens the trusted path with the liar.",
+     "chips": [
+      "Everything dark"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "A second account.",
+   "body": "Kit photographs a player's status banner before facilities cut the power: ‘Session: vsupport’. Not a venue account. Not the integrator's — that one died in the spring. It's the CMS vendor's own support account, built into the product and enabled out of the box, documented on page 214 of an admin guide nobody read. The review funded an inventory of exactly these accounts. It was due next month.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E10-1",
+   "label": "Test: the timing — and why no review found it."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Solveig beside a board. Every screen says evacuate. Paging and the fire interface are on their own paths — they're clean. Then paging is the trusted voice. Tamsin's words, not ours. I take the account; Raffa keeps the network up. And facilities blank the screens at the power. Nobody wipes anything.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "solveig",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Every screen says evacuate. Paging and the fire interface are on their own paths — they're clean."
+    },
+    {
+     "side": "R",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "Then paging is the trusted voice. Tamsin's words, not ours. I take the account; Raffa keeps the network up."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And facilities blank the screens at the power. Nobody wipes anything."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2564
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Incident commander   Holding statement   Chain of custody   If you need it   ƒ Ask for the formula · Time budget   ƒ FORMULA · Time budget  T = Σ (count × time each)   count  how many of each task  time each  minutes or seconds per task — keep units the same      ƒ Ask for the formula · Link utilization   ƒ FORMULA · Link utilization  % = traffic ÷ link speed × 100   traffic  Mb/s on the link  link speed  Mb/s the port can carry"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "G10",
+   "label": "**Learn it now:** when every screen lies — trusted paths and incident command.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Point it at people, not at the ceiling     The first step to networking, AV style     Trace energy, data and control"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E10-02",
+   "prompt": "19:19. The chief executive, on Tamsin's phone: “Pull every plug in the building. Now.” What do you give Tamsin?",
+   "happening": "The chief executive wants every plug pulled.",
+   "clock": "19:19",
+   "known": [
+    "◉ Screens dark",
+    "◉ Paging clean"
+   ],
+   "unknown": [
+    "Whether it reaches control"
+   ],
+   "risk": "A dark building without its trusted voice.",
+   "timer_s": 20,
+   "timeout": [
+    "The call goes unanswered.",
+    "The chief executive sends someone to the plant room."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What must stay up — and whose decision is it?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Agree — pull everything",
+     "result": "Paging and the fire interface go with it.",
+     "consequence": "Removes the two trusted paths.",
+     "chips": [
+      "Trusted paths lost"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "INCIDENT COMMANDER'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Paging and life safety stay up; the incident commander decides.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Tamsin": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The facts for her answer: the screens are dark at their power; paging and life safety stay up; Solveig has the account and the logs; Raffa is blocking one route, not the building — her decision",
+     "result": "Tamsin, to the chief executive: “Signage is off. Paging stays. That's my call.” He says: “Keep me told.”",
+     "consequence": "Answer pressure with facts, through the person who decides.",
+     "chips": [
+      "Facts",
+      "One commander"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Solveig": 2,
+       "Tamsin": 2,
+       "Raffa": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Reboot the signage server to throw them out",
+     "result": "Solveig: “And the evidence goes with them.”",
+     "consequence": "Wipes the only record.",
+     "chips": [
+      "Evidence lost"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "SECURITY'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Never reboot or wipe evidence.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Solveig": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Unplug the core switch",
+     "result": "Every show system and paging go dark in a full house.",
+     "consequence": "Cuts the network without its owner.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NETWORK OWNER'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "The network belongs to its owner.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Tamsin": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Paging is clean.",
+   "body": "Every screen lied. Paging didn't — because in the spring it was given its own path, and in the autumn the network was split by purpose. The page went out 100 seconds after detection, against the 225 seconds the tabletop had aimed for. The fire interface was never touched. A second session tried the control processors at 19:32 and hit Raffa's new rule. The things that saved the night were built on quiet days.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E10-2",
+   "label": "Test: how much faster — and why paging held."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-910",
+   "label": "**Order it:** every screen at once, in order.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The officer who checked the screen",
+   "body": "Just after midnight on 26 September 1983, a Soviet early-warning system reported that American missiles had been launched. The duty officer, Stanislav Petrov, judged it a false alarm — too few missiles, no confirmation from radar — and reported it as a malfunction instead of an attack. He was right: sunlight on high clouds had fooled the satellites. A screen can be wrong with great confidence. What matters is who checks it, and what they're allowed to do next.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Season boss — “Every Screen at Once”",
+   "sub": "7:12 – 8:11 p.m. · all at once"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya in the security office in magenta alarm light, radio in hand. Around her, stamped over the scene: evacuate?, vsupport, pull the plugs, viral.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "M",
+     "expr": "worried"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [],
+   "narration": [
+    "Everything above happened one call at a time. On gala night it didn't. From 19:12 to 20:11 every pressure touched every other one."
+   ],
+   "caption": "Take Maya's radio. Keep the house.",
+   "flags": [
+    "MD-01",
+    "MD-02",
+    "RV-173"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3203
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "meltdown",
+   "id": "MD-S09",
+   "label": "**☢ Meltdown:** gala night, all at once — trust, voice, darkness, evidence, the door. Almost nothing on the map is yours.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #91 · AVERY'S LENS  Build the trusted path before you need it  In the worst moment, the only systems you can rely on are the ones designed to be independent — and the people who know whose decision is whose.  Every screen lied at once. Paging didn't, because two episodes earlier it was given its own path."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S09E10",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “The review starts tonight”",
+   "sub": "10:40 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E10-03",
+   "prompt": "22:40. The gala is over; the account is closed. When does the review start?",
+   "happening": "Account closed; curtain was 20:11.",
+   "clock": "22:40",
+   "known": [
+    "◉ A default vendor account"
+   ],
+   "unknown": [
+    "What else ships with one"
+   ],
+   "risk": "The same door in another product.",
+   "timer_s": 25,
+   "timeout": [
+    "Everyone goes home.",
+    "The notes are gone by Monday."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What will you know tonight that you won't next month?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E10).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Next month, when everyone's rested",
+     "result": "Memories blur; five people's notes disappear from five phones.",
+     "consequence": "Loses the timeline.",
+     "chips": [
+      "Late"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Tonight, with Solveig: one timeline in UTC from the logs and everyone's notes, blameless, owners and dates — and the vendor-account inventory moved to Monday",
+     "result": "Line one, 19:12:00. By midnight the timeline is whole; Monday the inventory finds four more products with built-in accounts.",
+     "consequence": "The review is part of the incident.",
+     "chips": [
+      "Tonight",
+      "Blameless"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Solveig": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Find out who should have read page 214",
+     "result": "Everyone who installed the product. The finding is that nobody's job was to read it.",
+     "consequence": "A name instead of a gap.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Skip it — nobody was hurt",
+     "result": "Four more doors stay open.",
+     "consequence": "Luck isn't a lesson.",
+     "chips": [
+      "Skipped"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-910",
+   "label": "**Service Mode:** run the morning after yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "8:11 p.m. · curtain"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The main hall at 20:11; the house full and seated; the stage lit; Tamsin and Maya at the back corners of the room.",
+   "characters": [
+    {
+     "id": "tamsin",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s8kit.bg_hall",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "Eleven minutes late. Nobody hurt. Everybody heard me."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Because paging had its own path."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6095
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-10a",
+   "teaser": "the CMS banner",
+   "title": "logged in: vsupport",
+   "body": "Before facilities cut the power, Kit photographs a player's status banner: ‘Session: vsupport’. Not one of the venue's accounts. Not the integrator's. Solveig recognises the pattern at once.",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "End of Season 9",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The security office on Monday; the incident screen reads ALL CLEAR; Solveig pins a one-page timeline to the wall; Kit and Maya.",
+   "characters": [
+    {
+     "id": "solveig",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "kit",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "Four more products, four more default accounts. All off."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And a review nobody had to be blamed in."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2181
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S9-10",
+   "who": "solveig",
+   "prompt": "You kept your hands off the server all night. Most people can't.",
+   "options": [
+    {
+     "label": "“It was yours. And it was the only record of how far this went.”",
+     "who": "solveig",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Then you'll help me write the review. Starting with the account nobody knew was there.",
+     "trust": {
+      "Solveig": 2
+     }
+    },
+    {
+     "label": "“I wanted to delete that message so badly.”",
+     "who": "solveig",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Everyone does. That's why the rule exists.",
+     "trust": {
+      "Solveig": 1
+     }
+    },
+    {
+     "label": "“I nearly didn't.”",
+     "who": "solveig",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Nearly is how we train. Tonight you didn't.",
+     "trust": {
+      "Solveig": 0
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A small recording studio's control room at night — one desk, two monitors, a window into a live room; Maya alone, a phone to her ear.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "A studio owner",
+     "kind": "phone",
+     "text": "It's a small room. The album's due in six weeks. And everyone says it only sounds wrong here."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Season 10 · The Take.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1209
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-10b",
+   "teaser": "the admin guide",
+   "title": "page 214 · default accounts",
+   "body": "The CMS vendor's admin guide, page 214: ‘A support account (vsupport) is enabled by default to allow remote assistance. Disable it if not required.’ Nobody had read page 214.",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  When every screen lies: tell the incident commander what can be trusted (the independent paging path and the fire interface) and let her speak; darken the lying channel at its power, not its server; let security keep the evidence and close the account with its owner; let the network owner block one route; answer pressure through the person who decides. The trusted path has to be built on a quiet day — and the review starts the same night."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Which of your quiet-day fixes would matter most on the loudest night?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Season 9 review",
+   "sub": "Six ratings, one Story Score. Below 65, the story ends here — and you can retry."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "review",
+   "id": "S9",
+   "label": "**Season 9 review.** Everything you did this season — first attempts, not retries — is scored on six ratings. Your Story Score must be **65 or higher** for the story to go on.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S09E10",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

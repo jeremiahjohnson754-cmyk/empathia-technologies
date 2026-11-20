@@ -1,26 +1,26 @@
 {
- "at": "2026-10-31T18:28:19.470Z",
- "pass": 101,
+ "at": "2026-11-20T15:10:32.967Z",
+ "pass": 110,
  "fail": 0,
- "tests": 101,
+ "tests": 110,
  "results": [
   {
    "id": "D-desktop-01",
    "name": "lands on the investor start with the synthetic banner and three start actions",
    "result": "PASS",
-   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":103.09375},{\"text\":\"Watch a guided scenario\",\"h\":103.09375},{\"text\":\"What each workflow solves\",\"h\":103.09375}],\"note\":\"A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.\",\"over\":0}"
+   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":159.734375},{\"text\":\"What each workflow solves\",\"h\":159.734375}],\"note\":\"Everything here is invented and connected to no real system; viewing as a role grants nothing.\",\"over\":0}"
   },
   {
    "id": "D-desktop-02",
    "name": "the launch action comes first and, on a phone, is the tallest",
    "result": "PASS",
-   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":103.09375},{\"text\":\"Watch a guided scenario\",\"h\":103.09375},{\"text\":\"What each workflow solves\",\"h\":103.09375}]"
+   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":159.734375},{\"text\":\"What each workflow solves\",\"h\":159.734375}]"
   },
   {
    "id": "D-desktop-03",
    "name": "the perspective picker says it grants nothing",
    "result": "PASS",
-   "detail": "A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server."
+   "detail": "Everything here is invented and connected to no real system; viewing as a role grants nothing."
   },
   {
    "id": "D-04",
@@ -42,7 +42,7 @@
   },
   {
    "id": "B-01",
-   "name": "the builder opens from the launch address and says the visitor perspective cannot create a room",
+   "name": "the launch address is refused to the visitor with the owl access page, which names the designer among the roles whose work it is",
    "result": "PASS",
    "detail": ""
   },
@@ -56,7 +56,19 @@
    "id": "B-03",
    "name": "the room is created from the template with declared and modeled dimensions labelled, devices placed and connections proposed",
    "result": "PASS",
-   "detail": "Build a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Designer / CAD / Revit (perspective designer). The rules are the product's own engine; a refusal here is the refusal the"
+   "detail": "Back to Report a problem\n\nBuild a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Designer / CAD / Revit (perspective designer). The rules are the product's own engine; a refus"
+  },
+  {
+   "id": "B-03b",
+   "name": "the designer selects a device, moves it 25 cm and duplicates it; undo walks both back",
+   "result": "PASS",
+   "detail": "[\"Table 1 PA-0001 at 1.98, 3.30 m\\n\\n←\\n→\\n↑\\n↓\\nDuplicate\\nSwap for\\n\",\"Table 1 PA-0001 at 2.23, 3.30 m\\n\\n←\\n→\\n↑\\n↓\\nDuplicate\\nSwap for\\n\",7,8,7]"
+  },
+  {
+   "id": "B-03c",
+   "name": "an outline that crosses itself is refused; a valid one is drawn, its length and width DECLARED; undo puts the template outline back",
+   "result": "PASS",
+   "detail": "Refused. outline refused: edges 1 and 3 cross: an outline goes round the room once | 2.13 × 1.83 × 2.7 m · length DECLAREDwidth DECLAREDceiling MODELEDoutline DECLARED"
   },
   {
    "id": "B-04",
@@ -68,7 +80,7 @@
    "id": "B-05",
    "name": "the systems engineer approves the classification",
    "result": "PASS",
-   "detail": "Build a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Systems Engineer (pe"
+   "detail": "Back to No such room on record\n\nBuild a Room · interactive demonstration\n\nHarbour Huddle (synthetic)"
   },
   {
    "id": "B-06",
@@ -95,10 +107,28 @@
    "detail": "Refused.\nresults are recorded on an installed room in COMMISSIONING (this one is INSTALLED_UNVERIFIED): nothing passes from a design"
   },
   {
+   "id": "B-09R",
+   "name": "commissioning is held until the device register is complete; the refusal names the register",
+   "result": "PASS",
+   "detail": "Refused.\nthe device register is not complete: 7 of 7 positions still need registering before commissioning starts (PA-0003: serial, hostname, IP address; PA-0004: serial, hostname, IP address; PA-0005: serial, hostname, IP address; PA-0006: serial, hostname, IP address; …)"
+  },
+  {
+   "id": "B-09G",
+   "name": "the installer registers every device (serial; hostname and IP for networked units)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-09b",
+   "name": "a failed test opens a commissioning deficiency, OPEN and unassigned",
+   "result": "PASS",
+   "detail": "Commissioning deficiencies (1 open)\n\nA failed test opens one; failing again reopens it; only a retest that passes and is verified by someone else resolves it. T"
+  },
+  {
    "id": "B-10",
    "name": "every applicable test is recorded as PASS_UNVERIFIED by the commissioning engineer",
    "result": "PASS",
-   "detail": "compute_display_capability PASS_UNVERIFIED recorded by Commissioning Engineer · ENGINEER_APPROVED: synthetic observation"
+   "detail": "compute_display_capability PASS_UNVERIFIED recorded by Commissioning Engineer · ENGINEER_APPROVED: photo 7\npower_budget "
   },
   {
    "id": "B-11",
@@ -111,6 +141,12 @@
    "name": "a different person verifies every PASS",
    "result": "PASS",
    "detail": ""
+  },
+  {
+   "id": "B-12b",
+   "name": "the deficiency is resolved by the retest once someone else verified it",
+   "result": "PASS",
+   "detail": "Commissioning deficiencies (0 open)\n\nA failed test opens one; failing again reopens it; only a retest that passes and is verified by someone else resolves it. The Service Manager or Operations Lead as"
   },
   {
    "id": "B-13",
@@ -167,6 +203,18 @@
    "detail": "What changed between v1 and v2\nDesign revision\nunchanged (3)\nDevices\n1 added (Lighting control 1), 0 removed (—)\nResult labels\n3 of 76 changed\ninteg_lighting_shades — → PASS_VERIFIED\nlighting_scenes —"
   },
   {
+   "id": "B-15h",
+   "name": "a redline needs text; it is recorded OPEN against the revision and resolved with what was done",
+   "result": "PASS",
+   "detail": "Refused.\na redline needs text | RL-1 OPEN Dimensioned 2D plan · rev 3 · Designer / CAD / Revit: the camera bracket is drawn on the wrong wall  Resolve R"
+  },
+  {
+   "id": "B-15i",
+   "name": "the commissioning workbook downloads as an .xlsx (a zip) with its sheets; nothing leaves the page",
+   "result": "PASS",
+   "detail": "harbour-huddle-synthetic--workbook.xlsx 114719"
+  },
+  {
    "id": "B-16",
    "name": "the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes",
    "result": "PASS",
@@ -188,7 +236,7 @@
    "id": "S-01",
    "name": "Search Party opens on the access switch with its neighbourhood graph and the downstream impact: three rooms and their networked devices",
    "result": "PASS",
-   "detail": "Search Party · demonstration\n\nAccess switch ATL-4A\n\nNative page of this interactive demonstration: the relationship engine the product ships, on a synthetic estate held in this page. Every edge says where it comes from; what is not modelled says so.\n\nSearch\nEvery type\nBuilding (2)\nCommissioning base"
+   "detail": "Back to Report a problem\nSearch\nRelationships\nPeople and expertise\nProject map\nOrganizations\nActivity\nEvidence and artifacts\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nAsset (1512)\nBuilding (20)\nCommissioning baseline (1)"
   },
   {
    "id": "S-02",
@@ -266,7 +314,7 @@
    "id": "V-03",
    "name": "candidates are hard-gated before ranking: Ana eligible and first (based in ATL, experience, past jobs), Ben fails site access, Dev fails an expired certification, the vendor is eligible under her agreement",
    "result": "PASS",
-   "detail": "Needs: cert.av_field, cert.audio; experience SK-AUD-2 Working; tools audio analyser, laptop with the DSP tool.\n\n1. Ana Reyes (synthetic)\neligible · 63\nbased in ATL · experience depth 13/30 · 2 resolved job(s) in this room · 22 h capacity this week · internal team\nAssign\n2. Cara Lind — Brightwater AV (synthetic)\neligible · 36\nworks at ATL · experience depth 24/30 · 12 h capacity this week\nAssign\nBe"
+   "detail": "Needs: cert.av_field, cert.audio; experience SK-AUD-2 Working; tools audio analyser, laptop with the DSP tool.\n\n1. Ana Reyes (synthetic)\neligible · 63\nbased in ATL · experience depth 13/30 · 2 resolved job(s) in this room · 22 h capacity this week · internal team\n· record: Audio experience 3.4 · Practised overall\nAssign\n2. Cara Lind — Brightwater AV (synthetic)\neligible · 36\nworks at ATL · experie"
   },
   {
    "id": "V-04",
@@ -290,19 +338,25 @@
    "id": "V-06b",
    "name": "the technician sees the context packet read from the model: the switch, its uplink, the rooms sharing it and the power",
    "result": "PASS",
-   "detail": "Context packet — read from the model, not polled\nDevices\nDisplay 1 (4.218), UC room compute (4.218), Audio processor (4.218), Ceiling microphone (4.218), Touch panel (4.218)\nAccess switch\nAccess switch ATL-4A\nUplink\nCore switch ATL-CORE\nRooms sharing the switch\nAtlas 4.220 Huddle, Atlas 4.231 Training\nPower\nPower panel ATL-4\nEvidence freshness\nedges carry their provenance and date (synthetic colle"
+   "detail": "Context packet — read from the model, not polled\nDevices\nDisplay 1 (4.218), UC room compute (4.218), Audio processor (4.218), Ceiling microphone (4.218), Touch panel (4.218), Camera 1 (4.218), Ceiling microphone 2 (4.218), Loudspeaker 1 (4.218), Loudspeaker 2 (4.218), Control processor 1 (4.218), Network switch 1 (4.218)\nAccess switch\nAccess switch ATL-4A\nUplink\nCore switch ATL-CORE\nRooms sharing "
   },
   {
    "id": "V-07",
    "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
    "result": "PASS",
-   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-01T16:27 → 2026-11-01T18:27\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-21T13:09 → 2026-11-21T15:09\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
   },
   {
    "id": "V-08",
    "name": "a failed preflight blocks IN_PROGRESS (guard preflight_passed) and the refusal is in the ledger",
    "result": "PASS",
    "detail": "Refused.\ndispatch preflight has a failed check"
+  },
+  {
+   "id": "V-08b",
+   "name": "the service manager re-plans the window clear of the room’s bookings and rechecks the stale stock on the page; the plan card then goes away",
+   "result": "PASS",
+   "detail": ""
   },
   {
    "id": "V-09",
@@ -362,7 +416,7 @@
    "id": "A-03",
    "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
    "result": "PASS",
-   "detail": "COMPARED A2 H1 2026-10-31 18:27 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+   "detail": "COMPARED A2 H1 2026-11-20 15:10 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
   },
   {
    "id": "A-04",
@@ -374,7 +428,7 @@
    "id": "A-05",
    "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
    "result": "PASS",
-   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-10-31 18:27 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-20 15:10 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
   },
   {
    "id": "A-06",
@@ -396,7 +450,7 @@
   },
   {
    "id": "A-09",
-   "name": "a visitor cannot act on a case",
+   "name": "a visitor cannot act on a case: the screen is not shown to the visitor (owl access page), so no tier button exists",
    "result": "PASS",
    "detail": ""
   },
@@ -414,9 +468,9 @@
   },
   {
    "id": "L-03",
-   "name": "the proposer cannot be the SME reviewer of their own case",
+   "name": "the proposer cannot be the SME reviewer of their own case: the review is not offered to them, and the page says why",
    "result": "PASS",
-   "detail": "Refused.\nthe proposer is not the subject-matter reviewer of their own case (separation of duties)"
+   "detail": "You proposed this case, so another subject-matter reviewer reviews it (separation of duties)."
   },
   {
    "id": "L-04",
@@ -446,7 +500,7 @@
    "id": "L-08",
    "name": "a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only",
    "result": "PASS",
-   "detail": "No picture on input 3 Video · firstfail\n\nCamera 3 shows black on the switcher. You carry a small field monitor and check each point.\n\nRight. The fault sits between the last good reading and the first "
+   "detail": "No picture on input 3 Video · First failure point\n\nCamera 3 shows black on the switcher. You carry a small field monitor and check each point.\n\nUntimed here (the drill’s own clock is 0:55).\n\nTap the e"
   },
   {
    "id": "L-09",
@@ -470,11 +524,11 @@
    "id": "M-03",
    "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
    "result": "PASS",
-   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-02 18:28 → 2026-10-31 18:28\nCoverage\n4 of 4 eligible recor"
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-22 15:10 → 2026-11-20 15:10\nCoverage\n4 of 4 eligible recor"
   },
   {
    "id": "M-04",
-   "name": "a technician does not see executive passports",
+   "name": "a technician does not see executive passports: the screen is not shown (owl access page)",
    "result": "PASS",
    "detail": ""
   },
@@ -482,7 +536,7 @@
    "id": "M-05",
    "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
    "result": "PASS",
-   "detail": "When (UTC)\tLocal\tWho\tEvent\tRecord\tOutcome\tDetail\n2026-10-31 18:27:59\t10/31/2026, 13:27:59\tCommissioning Engineer\tlearn.sme_review\tLC-001\tDENIED\trefused: the proposer is not the subject-matter reviewer of their own case (separation of duties)\n2026-10-31 18:27:58\t10/31/2026, 13:27:58\tCommissioning Eng"
+   "detail": " · ALLOWED×0 · 902 chars"
   },
   {
    "id": "M-06",
@@ -570,7 +624,7 @@
   },
   {
    "id": "F-14",
-   "name": "the town hall is not licensed at this site, and a visitor cannot change that",
+   "name": "a visitor cannot change the town hall licence: Physical Validation is not shown to the visitor (owl access page)",
    "result": "PASS",
    "detail": ""
   },
@@ -590,19 +644,19 @@
    "id": "D-phone-01",
    "name": "lands on the investor start with the synthetic banner and three start actions",
    "result": "PASS",
-   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":107.734375},{\"text\":\"Watch a guided scenario\",\"h\":82.171875},{\"text\":\"What each workflow solves\",\"h\":82.171875}],\"note\":\"A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server.\",\"over\":0}"
+   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":138.8125},{\"text\":\"What each workflow solves\",\"h\":138.8125}],\"note\":\"Everything here is invented and connected to no real system; viewing as a role grants nothing.\",\"over\":0}"
   },
   {
    "id": "D-phone-02",
    "name": "the launch action comes first and, on a phone, is the tallest",
    "result": "PASS",
-   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":107.734375},{\"text\":\"Watch a guided scenario\",\"h\":82.171875},{\"text\":\"What each workflow solves\",\"h\":82.171875}]"
+   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":138.8125},{\"text\":\"What each workflow solves\",\"h\":138.8125}]"
   },
   {
    "id": "D-phone-03",
    "name": "the perspective picker says it grants nothing",
    "result": "PASS",
-   "detail": "A perspective changes what the demonstration shows; it grants nothing. Real access is decided by the authenticated application's server."
+   "detail": "Everything here is invented and connected to no real system; viewing as a role grants nothing."
   },
   {
    "id": "D-phone-07",

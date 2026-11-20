@@ -1,0 +1,1768 @@
+{
+ "chapter": {
+  "id": "s03e05",
+  "kicker": "S03 · E05",
+  "title": "The Dashboard Is Green",
+  "pill": "S03E05 · Dashboard Green",
+  "sub": "Every tile is green. The help desk is on fire. Somewhere in between, eleven rooms have disappeared.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional · CASE-014 proposed (Q-014)",
+  "flags": [
+   "DR-S03E05",
+   "RT-03",
+   "RV-64",
+   "RV-65",
+   "RV-66",
+   "RV-67",
+   "Q-014",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--violet)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 3 · EPISODE 5 · DRAFT  Cold case · Nora and Maya · Level L3 · Case File CASE-014  Every tile on the dashboard is green. The help desk has 212 room tickets. Nora wants to know which one is lying — and the Monday Ghost finally shows its face.  ⚑ RV-64 · RV-66: monitoring simplified; every figure is illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Always Green",
+   "kind": "COLD CASE · DATA",
+   "level": "L3 · SYSTEMS ENGINEER",
+   "party": [
+    "maya",
+    "nora",
+    "imani",
+    "sam"
+   ],
+   "stakes": "The dashboard says every room is healthy. The help desk says otherwise. Priya presents room reliability to Dana at four — and the room budget rides on the slide.",
+   "clock": "Seven hours to the review.",
+   "reward": "The truth on a slide — and eleven rooms the building forgot.",
+   "objectives": [
+    {
+     "key": "BR-S03E05-01",
+     "text": "Pick where to start: one morning, three sources"
+    },
+    {
+     "key": "twist",
+     "text": "Find the greenest room in the building"
+    },
+    {
+     "key": "BR-S03E05-02",
+     "text": "Make the dashboard honest"
+    },
+    {
+     "key": "BR-S03E05-03",
+     "text": "Stop Sam reimaging what nobody understands"
+    },
+    {
+     "key": "BR-S03E05-04",
+     "text": "Answer the CEO in twenty seconds"
+    },
+    {
+     "key": "disc:3",
+     "text": "Look closer: three rooms that aren't there"
+    }
+   ],
+   "rumor": "Eleven rooms aren't on any list. One of them is the boardroom. Nobody knows who decided that."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Always green”",
+   "sub": "Monday · 8:05 a.m. · the operations corner"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The operations wall: eighteen tiles, every one green. Sam spreads his arms. Imani, in purple with her hair in a bun, holds a box of desk things.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "imani",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Welcome to Aldermoor. Everything's green. It's always green. It's a Monday, and it's green."
+    },
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Four minutes on the job, and I already don't believe it."
+    }
+   ],
+   "narration": [],
+   "caption": "Imani, AV operations lead. She left touring for a job where root causes get fixed.",
+   "flags": [
+    "RV-67",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4821
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "imani",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Four minutes on the job and I already don't believe it."
+    },
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "grin",
+     "text": "You'll fit right in."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya and Imani meet by the window, both smiling.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You came."
+    },
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "At one in the morning in a field, I said “write it up tomorrow.” I wanted a job where tomorrow actually comes."
+    }
+   ],
+   "narration": [],
+   "caption": "The napkin with the 1 a.m. fix is still lost somewhere in the rain.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1161
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "imani",
+     "pose": "N",
+     "expr": "worried",
+     "text": "At one in the morning in a field I said “write it up tomorrow.” I wanted a job where tomorrow comes."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(The napkin is somewhere in a landfill. The workaround is somewhere in a building. Neither of them says so.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Nora, the data architect, points at a slide: room health over eight weeks — dashboard 100 percent healthy; help desk 212 room tickets; healthiest room 14-East, 100 percent for 64 days.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Both of these can't be true. Priya presents room reliability to Dana at four. If this slide says green, the room budget goes."
+    }
+   ],
+   "narration": [],
+   "caption": "Nora · data architect. Dry, exact, allergic to numbers without owners.",
+   "flags": [
+    "RV-64",
+    "RV-66",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2026
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani and Nora size each other up.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "nora",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "My job exists because rooms fail. If the dashboard's right, I'm a very expensive ghost-hunter."
+    },
+    {
+     "side": "R",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Then let's find out whether the ghost is real. One morning. Three sources. No opinions."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-65"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1160
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Last Monday, eight to ten”",
+   "sub": "Monday · 9:00 a.m. · a cold case"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Three boxes — dashboard snapshots every five minutes, tickets people reported, call logs of every meeting's start — over the words: last Monday, 8:00 to 10:00, one bounded window, three independent sources.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A cold case: freeze a window, gather what was recorded, and let the sources argue.",
+   "flags": [
+    "RV-64"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1707
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E05-01",
+   "prompt": "The dashboard says green; the help desk says otherwise. Seven hours to the review. Where do you start?",
+   "happening": "Dashboard 100% green; 212 room tickets in eight weeks.",
+   "clock": "9:00 · review at 16:00",
+   "known": [
+    "◉ Dashboard all green",
+    "◉ 212 tickets",
+    "◉ Snapshots, tickets and call logs exist"
+   ],
+   "unknown": [
+    "What “green” measures",
+    "Which source is wrong"
+   ],
+   "risk": "The room program's budget — and Imani's new team.",
+   "timer_s": 20,
+   "timeout": [
+    "Priya, out of time, uses last month's slide: 100% green.",
+    "Not choosing leaves the loudest number on the slide."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "When two sources disagree, add a third and shrink the window."
+    }
+   ],
+   "note": "Draft decision (DR-S03E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Trust the dashboard — it's automated",
+     "result": "Priya's slide says 100%. Dana asks why her assistant books backup rooms every Monday.",
+     "consequence": "The number nobody believes becomes the story.",
+     "chips": [
+      "Credibility lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Automated isn't accurate. You never asked what green means.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Priya": -1,
+       "Dana": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Trust the help desk — people don't lie",
+     "result": "212 tickets on a slide. Dana: “Is that a lot? Of how many meetings?”",
+     "consequence": "True, but incomplete: tickets count complaints, not meetings.",
+     "chips": [
+      "Partial"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Freeze one window and line both up against a third source",
+     "result": "Last Monday 8–10: snapshots, tickets and call logs, room by room.",
+     "consequence": "The sources start disagreeing in useful ways within the hour.",
+     "chips": [
+      "Triangulation"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Imani": 1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Rebuild the dashboard before the review",
+     "result": "Seven hours of building. At four, a new dashboard nobody has checked.",
+     "consequence": "A faster way to be wrong in a new color.",
+     "chips": [
+      "Untested"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You'd fix the display before understanding what it gets wrong.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Imani": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Nora's join of tickets to tiles for Monday 8–10: seventeen tickets; zero on a red tile; eleven on a green tile; six from rooms with no tile at all.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Seventeen tickets. Zero red tiles. Eleven were green at the time. And six come from rooms that don't have a tile."
+    }
+   ],
+   "narration": [],
+   "caption": "Park the six. They matter. First: why were eleven broken rooms green?",
+   "flags": [
+    "RV-64",
+    "RV-66",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "17 tickets · 0 red · 6 no tile"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2158
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The poller's rules: green if the controller answers a ping within five minutes; if a poll fails, keep the last state. Maya throws up her hands.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "nora",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So green means “the box is plugged in.” Not “a meeting worked.”"
+    },
+    {
+     "side": "R",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "And if the box stops answering, it stays whatever it last was. Green forever."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-64",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1081
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The wall again, now with a last-heard age: four tiles turn grey. A label: Harbor, last heard nine days ago.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "With the age showing: twenty-three tiles haven't been heard from in over a day. Harbor, nine days."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "They were never green. They were silent — and the wall filled the silence with good news."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-64"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5092
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Nora and Maya beside a board. Monitoring is only as good as what it checks. A green dashboard means 'nothing I look at is broken'. So how do I prove it's getting worse? Turn tickets into a rate: count over time. Twelve tickets in four hours is three an hour. Compare this week with last.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Monitoring is only as good as what it checks. A green dashboard means 'nothing I look at is broken'."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So how do I prove it's getting worse?"
+    },
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Turn tickets into a rate: count over time. Twelve tickets in four hours is three an hour. Compare this week with last."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2745
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Monitoring   Automatic checks that alert you when something is wrong — only as good as what they check.   Evidence   Something you observed or measured, labelled with how sure you are (observed, measured, verified …), kept before you change anything.   Formula, variables and a worked example   ƒ FORMULA · Rate  rate = count ÷ time   count  how many events  time  over how long    Worked example.  12 tickets in 4 hours: 12 ÷ 4 = 3 tickets per hour."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 26 OF 31 · P. 39  PART 2 AV NETWORKING & DATA  Page 39. Maya: “Total latency is the sum. Find the biggest number first.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB26",
+   "label": "**Fieldbook module 26 — Latency — every stage adds some.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 26 · tap a plate to open it full size     Latency deep dive"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "M1",
+   "label": "**Learn it now:** measuring what matters — proxies, stale data, coverage and user outcomes.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam, passing with coffee, stops dead at Nora's slide.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "nora",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Wait. 14-East is your healthiest room? 14-East is the mail room. Since June."
+    },
+    {
+     "side": "R",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Then something in the mail room has answered every ping for sixty-four days."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1162
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-05a",
+   "teaser": "the mail room",
+   "title": "14-East, sixty-four days of perfect uptime",
+   "body": "A room controller in a cardboard box, still plugged in, between the franking machine and a stack of returned parcels. It has answered every ping since June. It is, by every metric the building owns, the best room at Aldermoor.",
+   "thread": "The Monday Ghost",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The mail room, formerly 14-East: shelves of parcels, and on the floor a cardboard box holding a room controller with a green light, its network cable still running to a wall port.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "The healthiest room in the building."
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "It's a box. In a box."
+    }
+   ],
+   "narration": [],
+   "caption": "Sixty-four days of perfect uptime. Zero meetings.",
+   "flags": [
+    "RV-64"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2609
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S3-05",
+   "who": "nora",
+   "prompt": "The healthiest room in the building is a box in a box. Do you want to laugh or cry? I've budgeted for one of each.",
+   "options": [
+    {
+     "label": "“Laugh now. Cry at the four o'clock.”",
+     "who": "nora",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Efficient. I like you.",
+     "trust": {
+      "Nora": 1
+     }
+    },
+    {
+     "label": "“Neither. Write it down.”",
+     "who": "nora",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Already did. Timestamped. With a photo of the box.",
+     "trust": {
+      "Nora": 1
+     }
+    },
+    {
+     "label": "“It's not that funny.”",
+     "who": "nora",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "It's a little funny.",
+     "trust": {
+      "Nora": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The greenest room in the building doesn't exist.",
+   "body": "14-East became a mail room in June. Its controller went into a box, stayed plugged in, stayed in the inventory — and answered every ping. The dashboard has been measuring whether boxes answer, not whether meetings work, and the best score in the building proves it.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E05-1",
+   "label": "Test: what does the box tell you about “green” — and what doesn't it?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E05-02",
+   "prompt": "Stale tiles, a green box in the mail room. What do you do with the dashboard?",
+   "happening": "23 stale tiles; green means “answers a ping”; 14-East is a box.",
+   "clock": "11:40",
+   "known": [
+    "▮ 23 tiles stale > 24 h",
+    "◉ 14-East: a boxed controller",
+    "◉ Green = ping"
+   ],
+   "unknown": [
+    "What outcome to measure instead"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S03E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Delete the stale records and the mail-room controller so the wall is clean",
+     "result": "Twenty-three tiles vanish. The wall looks great.",
+     "consequence": "The evidence of how long it hid failures is gone too.",
+     "chips": [
+      "Evidence gone"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "Stale data is evidence. You erased the proof that the dashboard lied.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Show last-heard age on every tile, grey out anything older than a day, and add a user-outcome metric on top",
+     "result": "The wall turns honest: green, grey and a number people recognize.",
+     "consequence": "Nothing deleted; everything labelled with its age and meaning.",
+     "chips": [
+      "Honest",
+      "Evidence kept"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Require two pings in a row for green",
+     "result": "A stricter proxy for the same wrong thing.",
+     "consequence": "The box in the mail room passes this too.",
+     "chips": [
+      "Same proxy"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Tightening a proxy doesn't give it a user.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Leave the wall; just leave the tickets off the slide",
+     "result": "Dana sees 100% green.",
+     "consequence": "A number shown without its contradiction.",
+     "chips": [
+      "Hidden"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Omitting the evidence that disagrees is how the wall got here.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dana": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the inventory of 289 rooms feeds a poller that pings each controller and a dashboard with one tile per room; failed polls keep their last color. Eleven exception rooms are not in the inventory, so they get no tile, never go red and are skipped by every fleet fix. Tickets and call logs feed a user-outcome metric: meetings that started clean within two minutes.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Green = a box answered. Not: a meeting worked. And some rooms were never asked.",
+   "flags": [
+    "RV-64",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  The dashboard that blinks at the wrong time  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S03E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The six with no tiles”",
+   "sub": "1:30 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Nora's coverage check: inventory 289, facilities 300. Not in inventory, eleven rooms: Boardroom and Exec Huddle on 30, Investor Suite, Sky Lounge, Media Lab, Training A/B, Legal 1, Wellness, Lobby Theatre, Forum Annex, Visitor Briefing.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Eleven rooms aren't in the inventory. No tile. No red. No alert. Ever. The boardroom is one of them."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-64",
+    "RV-66",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "coverage 289 / 300"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2791
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-05b",
+   "teaser": "Nora's list",
+   "title": "Eleven rows, no owners",
+   "body": "Room names without tiles. The Garden Room. Juniper. 30-East. The boardroom. Next to the boardroom, in the only handwriting on a printed page: *exception — per R.?* Nora doesn't know who R. is. Maya does. She doesn't say it yet.",
+   "thread": "Exception rooms",
+   "who": [
+    "nora",
+    "N",
+    "flat"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya at the Monday Ghost whiteboard: number 7, pilot rooms, identity; 8, Harbor, update reset; 9, Studio, USB sleep; 10, Forum, desk move; and underlined: fixes scoped by inventory.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Every fix we shipped went to “rooms in the inventory.” The identity fix. The echo profile. The USB profile. The eleven got none of them."
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "So every Monday, they break the way the others used to."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-64"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2479
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's own change-log page from her first Monday: identity team moved 289 room accounts. Below it, freshly written in red: 289. About 300 rooms. I never did the subtraction.",
+   "characters": [],
+   "location": "scenes.bg_office",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The clue was in her own handwriting, three weeks ago.",
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2919
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Eleven rooms the building forgot — and the boardroom is one.",
+   "body": "The Monday Ghost isn't a different ghost each week. It's the same eleven hand-configured rooms: off the inventory, off the dashboard, and outside every fix that was scoped by an inventory query — including Maya's own identity fix on her first day. Nobody knows who made them exceptions, or why.",
+   "test_kind": "drill",
+   "test_id": "C-33",
+   "label": "Test: on the clue board, show where the ghost lives."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The executive boardroom on floor 30: dark wood, a large display reading Boardroom 30 — not in inventory. Imani and Maya stand at either end of the long table.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "L",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Who made the boardroom an exception?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nobody knows. No record, no owner, no reason. Just a room that's… different."
+    }
+   ],
+   "narration": [],
+   "caption": "Somebody knew once. Somebody always does.",
+   "flags": [
+    "RV-64"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1289
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": null,
+   "lines": [
+    {
+     "who": "imani",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Who made the boardroom an exception?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Nobody knows."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(That isn't quite true. She knows a man who labels everything except the things only he knows.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E05-03",
+   "prompt": "3:10 p.m. Sam has a plan: reimage all eleven rooms to the standard tonight. Decide.",
+   "happening": "Eleven rooms missing from the inventory; the boardroom among them.",
+   "clock": "15:10 · review at 16:00",
+   "known": [
+    "▮ 289 vs 300",
+    "◉ Every fleet fix skipped the eleven",
+    "◉ Nobody knows why they're exceptions"
+   ],
+   "unknown": [
+    "Who made them exceptions",
+    "What each one does differently"
+   ],
+   "risk": "The CEO's boardroom, the investor suite — and every Monday.",
+   "timer_s": 25,
+   "timeout": [
+    "Sam, taking silence as a yes, schedules the reimage for 1 a.m.",
+    "When a risky plan is on the table, not deciding lets it run."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "You can't safely change what you haven't recorded."
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "“Unknown” is a legitimate owner field. Blank isn't."
+    }
+   ],
+   "note": "Draft decision (DR-S03E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Reimage all eleven tonight",
+     "result": "Tomorrow, eleven rooms are standard — and the boardroom's display input, the investor suite's interpreter feed and whatever else made them different are gone.",
+     "consequence": "Nobody knows what just broke, because nobody knew what was there.",
+     "chips": [
+      "Unknown damage"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Changing rooms whose reasons nobody knows is an unauthorized change. The boardroom is the CEO's room.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Sam": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Register all eleven as exceptions — owner “unknown — investigate”, review date — put them on the dashboard, then apply fleet fixes one tested change at a time",
+     "result": "Eleven amber-outlined tiles appear. EXC-001: Boardroom. Owner: unknown — investigate. Review: two weeks.",
+     "consequence": "You can see them now, and every future change can include them on purpose.",
+     "chips": [
+      "Registered",
+      "Visible"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Sam": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Leave them alone — they're special for a reason",
+     "result": "Next Monday, Exec Huddle signs out again.",
+     "consequence": "Respecting the reason without recording it is how they got lost.",
+     "chips": [
+      "Ghost stays"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "An exception nobody can see isn't respected; it's forgotten.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Sam": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Remove the eleven from the booking system until someone claims them",
+     "result": "The boardroom disappears from Ines's calendar.",
+     "consequence": "Ines calls within four minutes.",
+     "chips": [
+      "Chaos"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You broke the building's use of eleven rooms to make a list tidy.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Ines": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Nightingale's diagrams",
+   "body": "In 1858 Florence Nightingale used her 'coxcomb' charts to show that soldiers were dying of preventable disease, not wounds. The data changed policy. A dashboard is only honest if it samples what actually hurts people, often enough to see it.",
+   "flag": "RV-27",
+   "when": "1858",
+   "lab": "PHY-S03E05"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The first exception register: EXC-001, Boardroom on 30 — owner unknown, investigate; why exception unknown; review in two weeks; on the dashboard. EXC-002 Exec Huddle through EXC-011 Visitor Briefing. At the bottom, Imani's note: Unknown is an answer. Blank is a trap.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2011
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Four o'clock”",
+   "sub": "3:40 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Nora's user-outcome numbers for Monday 8–10: 212 meetings scheduled in rooms; 172 started clean within two minutes, 81 percent, illustrative; 40 failed; 17 tickets.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "Forty meetings failed. Seventeen people told us. The other twenty-three just stopped expecting it to work."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-64",
+    "RV-66",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "81% clean starts · 17 of 40 reported"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2341
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-305",
+   "label": "**Service Mode:** run the cold case yourself before the four o'clock review.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "3:58 p.m. in the boardroom. The display reads Room reliability, Q3 review. Dana sits back; Priya stands with her notes.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "priya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dana",
+     "kind": "speech",
+     "text": "So. Are the rooms working?"
+    },
+    {
+     "side": "R",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "Maya, you've got the numbers."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-65"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1513
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E05-04",
+   "prompt": "3:58. The CEO asks, in the boardroom that isn't on anyone's dashboard: are the rooms working? You have twenty seconds.",
+   "happening": "The CEO wants a yes or no.",
+   "clock": "15:58 · the boardroom",
+   "known": [
+    "▮ 81% clean starts, Mon 8–10",
+    "▮ 11 rooms not in inventory",
+    "◉ 23 stale tiles"
+   ],
+   "unknown": [
+    "Who made the boardroom an exception"
+   ],
+   "risk": "The room program — and whether anyone believes the next number.",
+   "timer_s": 20,
+   "timeout": [
+    "Priya answers for you: “Mostly green.” Dana writes “mostly” on her notepad and underlines it.",
+    "In front of a decider, silence gets filled with the weakest version of the truth."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What you know, what you don't, and what happens next."
+    }
+   ],
+   "note": "Draft decision (DR-S03E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Yes — 100% green for eight weeks.”",
+     "result": "Dana: “Then why does Ines book backup rooms every Monday?”",
+     "consequence": "The room goes quiet; so does the budget.",
+     "chips": [
+      "Trust lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You presented the proxy as the outcome — to the person who lives with the outcome.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dana": -1,
+       "Ines": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Not well enough, and until today we couldn't see it: 81% of Monday meetings started clean; eleven rooms, including this one, were invisible. Here's the plan.”",
+     "result": "Dana looks around the boardroom for a long moment.",
+     "consequence": "A calibrated answer, a number people recognize, and a plan with owners.",
+     "chips": [
+      "Calibrated",
+      "Plan"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dana": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“The dashboard's fine; the users are the problem.”",
+     "result": "Imani, very quietly: “No.”",
+     "consequence": "Blaming users is how the camera tickets got closed.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The data you just found says the opposite.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Imani": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Give us two weeks and we'll have an answer.”",
+     "result": "Dana: “You have an answer. You just don't like it.”",
+     "consequence": "Deferring what you already know.",
+     "chips": [
+      "Evasive"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #26 · AVERY'S LENS  Measure outcomes, not devices  A dashboard is good when it reflects what people experience.  Every tile was green because it measured devices answering pings, not meetings that worked."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S03E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dana gestures around the boardroom. The display now reads 81 percent, 11 unseen.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dana",
+     "kind": "speech",
+     "text": "Eighty-one percent, and eleven rooms nobody could see — including the one I'm sitting in. Fund Imani's team."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Thank you. And the boardroom—"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-65",
+    "RV-66"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1129
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dana stands to leave. Ines, at the door, glances back at the long table.",
+   "characters": [
+    {
+     "id": "dana",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "ines",
+     "pose": "R",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dana",
+     "kind": "speech",
+     "text": "And I want to know who made my boardroom an exception. Before the board meets in it."
+    },
+    {
+     "side": "R",
+     "who": "Ines",
+     "kind": "speech",
+     "text": "The next board meeting is in this room."
+    }
+   ],
+   "narration": [],
+   "caption": "Nobody in the room knows the answer. Somebody out there does.",
+   "flags": [
+    "RV-65"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 966
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-05c",
+   "teaser": "Ines's run sheet",
+   "title": "Monday 9:00 — Board meeting (boardroom)",
+   "body": "Next to it, in pencil: *AV? who owns?* The next board meeting is in the one room nobody monitors, nobody updates, and nobody owns.",
+   "thread": "Exception rooms",
+   "who": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-014 · SIGNAL original  The Dashboard Is Green  Every tile green for eight weeks. Two hundred and twelve room tickets. Both can't be true.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-014"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The rebuilt wall: tiles show last-heard ages; stale tiles are grey; 14-East is marked retired; four exception rooms are outlined amber; a banner reads Monday 8–10, 81 percent clean starts, 300 rooms, 11 exceptions.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Not all green. Finally true.",
+   "flags": [
+    "RV-64",
+    "RV-66",
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5117
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Evening. Nora and Maya packing up.",
+   "characters": [
+    {
+     "id": "nora",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nora",
+     "kind": "speech",
+     "text": "You wrote 289 in your own log on your first day."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And never did the subtraction. I'm doing it now, every time. Out loud."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-66"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1158
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-32",
+   "label": "**Class match:** why the dashboard lied — coverage, age and meaning.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A conference room mid-call: the display shows a live call with fourteen people. On the table, the touch panel insists: SYSTEM OFF. Sam points at it.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "The panel says System Off. The meeting's live. Maya — teach me how this thing thinks."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Macro.*",
+   "flags": [
+    "RV-67"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1651
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Every metric is a proxy — write down the outcome it stands for. Show the age of every data point instead of letting old good news look current. Check what your dashboard covers against an independent list, because missing things never go red. Measure what users experienced, triangulate with tickets and logs, and register what you can't yet explain as “unknown — investigate” before anyone “fixes” it."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · The clue was in Maya's own handwriting for three weeks. What number have you written down recently without asking what it leaves out?  Boundary: this reflection doesn't prove anything about the rooms."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S03E05",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

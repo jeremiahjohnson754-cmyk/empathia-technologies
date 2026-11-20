@@ -1,0 +1,1475 @@
+{
+ "chapter": {
+  "id": "s01e04",
+  "kicker": "S01 · E04",
+  "title": "The Label",
+  "pill": "S01E04 · The Label",
+  "sub": "Neat is not the same as right.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S01E04",
+   "RV-18",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--violet)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 4 · DRAFT  Parallel lenses · Maya, Mateo, Imani · Level L1 (Foundation) · CASE-006 (structure only)  A weekday tidy-up by a well-meaning crew. On Sunday, the touch panel's “Worship” button turns on the wrong microphones. The same Tuesday, told three times."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Three Tellings of Tuesday",
+   "kind": "MYSTERY · THREE LENSES",
+   "level": "L1 · OPERATOR",
+   "party": [
+    "maya",
+    "mateo",
+    "imani",
+    "marisol"
+   ],
+   "stakes": "Marisol opens her mouth and the lectern mic answers. The preset did exactly what it was told.",
+   "clock": "Soundcheck to service: 45 minutes.",
+   "reward": "The right mics — and a rule every crew can follow.",
+   "objectives": [
+    {
+     "key": "BR-S01E04-01",
+     "text": "Decide what to do first when Worship opens the wrong mics"
+    },
+    {
+     "key": "BR-S01E04-02",
+     "text": "Put jacks 3 and 7 back — and know it's right"
+    },
+    {
+     "key": "twist",
+     "text": "Find the moment neat became wrong"
+    },
+    {
+     "key": "BR-S01E04-03",
+     "text": "Change something before the next crew touches the rack"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things Tuesday left behind"
+    }
+   ],
+   "rumor": "Kip wrote four words in the log on Tuesday. Nobody read them until Sunday."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 1 · Maya — “Worship”",
+   "sub": "Sunday, week 7 · 9:05"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Soundcheck. Lily presses WORSHIP on the touch panel. Marisol sings into her microphone and nothing comes out of the speakers. At the lectern, the pastor's microphone is live and picking up the rustle of pages.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "surprised"
+    },
+    {
+     "id": "lily",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Marisol",
+     "kind": "speech",
+     "text": "Is it me, or am I… not here?"
+    }
+   ],
+   "narration": [],
+   "caption": "[lectern mic open: page rustle] [vocal mic: silent]",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2164
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "marisol",
+     "pose": "M",
+     "expr": "worried",
+     "text": "Is it me, or am I not here?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(It was not her. It was never going to be her.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the booth Maya's first thought: the touch panel is broken. Confidence 70.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "*The touch panel glitched. Control problem.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": 70,
+   "art_bytes": 1287
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E04-01",
+   "prompt": "The Worship button turns on the wrong microphones. What do you do first?",
+   "happening": "WORSHIP opens the lectern and mutes Marisol.",
+   "clock": "55:00 to service",
+   "known": [
+    "◉ The preset recalls without errors",
+    "◉ Tuesday: rack tidy-up (Theo told Maya in advance)"
+   ],
+   "unknown": [
+    "Whether the console or the patch changed"
+   ],
+   "risk": "The first song, and every preset change after it.",
+   "timer_s": 25,
+   "timeout": [
+    "WORSHIP starts with the lectern live and Marisol silent.",
+    "Talking into each mic takes fifteen seconds."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Did the panel fail to act, or act on the wrong thing?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.85,
+     "text": "A preset recalls channel numbers. What decides which mic is on which channel?"
+    },
+    {
+     "id": "H3",
+     "keep": 0.7,
+     "text": "Talk into one mic at a time and watch which channel moves."
+    },
+    {
+     "id": "H4",
+     "keep": 0.5,
+     "text": "If the meters don't match the labels, something between the stage and the console moved."
+    },
+    {
+     "id": "H5",
+     "keep": 0.25,
+     "text": "Walkthrough, then a variant: a video switcher preset that shows the wrong camera."
+    }
+   ],
+   "note": "Draft decision (DR-S01E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Re-save the Worship preset",
+     "result": "Worship now works — for this song.",
+     "consequence": "Later, SPOKEN WORD turns the pastor's mic off mid-sermon, because every other preset still points at the old numbers.",
+     "chips": [
+      "Quick",
+      "Other presets still wrong"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Re-saving hides the patch change and leaves every other preset wrong.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Marisol": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Check which channel hears which mic",
+     "result": "Maya talks into each mic and watches the meters: Marisol's mic lights up channel 7. The lectern lights up channel 3.",
+     "consequence": "The panel did exactly what it was told. The patch under it moved.",
+     "chips": [
+      "A few minutes",
+      "Measured: 3 and 7 swapped"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Marisol": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Restart the touch panel",
+     "result": "It restarts. Same result.",
+     "consequence": "Time lost; the panel was never the problem.",
+     "chips": [
+      "About 4 minutes"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Mute and unmute by hand",
+     "result": "It works for the first song.",
+     "consequence": "Every scene change is now a memory test. At the sermon, Maya misses one.",
+     "chips": [
+      "Workload up",
+      "One missed cue"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Manual mutes turn every scene into a memory test.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Marisol": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya talks to Marisol over the radio while watching the console meters: when Marisol sings, channel 7 jumps, not channel 3.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "radio",
+     "text": "Sing again? …Channel 7. You're on 7. The lectern's on 3."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "VOX 1 lands on CH 7"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3016
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A patch diagram: Marisol's vocal mic and the lectern mic arrive at the patch, but their lines cross — the vocal lands on console channel 7 and the lectern on channel 3.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The preset did exactly what it was told. The world under it moved.",
+   "flags": [
+    "RV-18",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2421
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo, who told Maya last week that the tidy-up was happening, comes to the booth.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "theo",
+     "pose": "W",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "What changed Tuesday?"
+    },
+    {
+     "side": "R",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "I told you it was happening! I wasn't in the rack, though. Mateo's crew was."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1283
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "The panel did exactly what it was told",
+   "body": "Nothing is wrong with the touch panel. On Tuesday, a tidy-up swapped two patch cables so they'd hang straight. The preset recalled channel numbers — and the world under them had moved.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E04-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Change log entry #5, in Mateo's hand: 'Rack tidy — done. Switch moved into rack. — M.' Nothing about the patch.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Four words. None of them about the patch.",
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1137
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E04-02",
+   "prompt": "Jacks 3 and 7 are swapped. How do you put them back — and know it's right?",
+   "happening": "Two patch jacks moved on Tuesday; nobody recorded it.",
+   "clock": "45:00 to service",
+   "known": [
+    "▮ VOX 1 on CH 7, lectern on CH 3",
+    "◉ Change log #5 says nothing about the patch"
+   ],
+   "unknown": [
+    "What else moved on Tuesday"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S01E04).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Swap them back by guess",
+     "result": "The meters look right for these two mics.",
+     "consequence": "Nobody can say what else moved on Tuesday. Two weeks later a choir mic turns up on the wrong channel.",
+     "chips": [
+      "Quick",
+      "Unproven"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A guess can't be proven — nobody knows what else moved.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Use Priya's cable photos",
+     "result": "Priya photographed every cable for her drawing a month ago. The photo shows exactly where each line belongs — and that only 3 and 7 moved.",
+     "consequence": "A before-state to compare against. The fix is provable.",
+     "chips": [
+      "About 6 minutes",
+      "Before-state evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Priya": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Remap in the console",
+     "result": "Maya moves the channels inside the console instead of touching the patch. Presets work.",
+     "consequence": "The labels, the drawing and the console now disagree. The next person trusts the labels.",
+     "chips": [
+      "Quick",
+      "Documentation now wrong"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The console, labels and drawing now disagree for the next person.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Call Mateo at home",
+     "result": "Mateo, driving: “Priya's photos are better than my memory.”",
+     "consequence": "Back to the choice, with a hint.",
+     "chips": [
+      "Quick"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On Maya's phone, one of Priya's photos from a month ago shows the patch panel with every cable in its original place.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Priya photographed every cable. A month ago. Only 3 and 7 moved."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "before-state photo"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1746
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 2 · Mateo — “Neat is not the same as right”",
+   "sub": "Tuesday · 1:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback to Tuesday, from Mateo's point of view. In the equipment room, Mateo is installing a proper rack switch to replace his old TEMP one. His crew member, Kip, tidies the cables.",
+   "characters": [
+    {
+     "id": "mateo",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "usher",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Mateo",
+     "kind": "speech",
+     "text": "Old TEMP switch comes out. Three years late. Priya's plan says the rack."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-18"
+   ],
+   "kind": "flashback",
+   "tab": "TUESDAY · MATEO",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 574
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Color codes",
+   "body": "Electronics makers agreed on a color code for resistor values in the 1920s so any technician could read a part without a manual. Standards like that are labels for a whole industry: knowledge written onto the object itself.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up flashback: two cables at the patch panel cross each other. Kip unplugs both and swaps them so the lines hang straight. The masking-tape label on one jack has fallen off long ago.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Kip swaps two crossed cables so they hang straight. One tape label fell off years ago.",
+   "flags": [],
+   "kind": "flashback",
+   "tab": "TUESDAY · 1:40",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 792
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-04a",
+   "teaser": "the floor under the rack",
+   "title": "A tape label, face down",
+   "body": "*CH 3 — LECT.* It fell off years ago. It has been lying under the rack, perfectly accurate, for longer than anyone has worked here.",
+   "thread": "The building remembers",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mateo sees the neat rack and pauses.",
+   "characters": [
+    {
+     "id": "mateo",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "usher",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kip",
+     "kind": "speech",
+     "text": "Look how neat that is now."
+    },
+    {
+     "side": "R",
+     "who": "Mateo",
+     "kind": "speech",
+     "text": "Neat is not the same as right. Did you note what you moved?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": "flashback",
+   "tab": "TUESDAY · 2:10",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 574
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mateo's phone rings: another job has an emergency. He glances at the clipboard.",
+   "characters": [
+    {
+     "id": "mateo",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Mateo",
+     "kind": "speech",
+     "text": "On my way. — Kip, write it in the log. I'll check it Thursday."
+    }
+   ],
+   "narration": [],
+   "caption": "Kip writes four words. Thursday gets busy.",
+   "flags": [],
+   "kind": "flashback",
+   "tab": "TUESDAY · 2:14",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 505
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "Tuesday · 4:10 p.m. · on the phone",
+   "lines": [
+    {
+     "who": "mateo",
+     "pose": "H",
+     "expr": "flat",
+     "text": "Kip. Four words is not a log. It's a haiku."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-04b",
+   "teaser": "Kip's four words",
+   "title": "The log, Tuesday",
+   "body": "*uncrossed 2 cables. neat.* Four words, no jack numbers, no reason. It is the most honest entry in the book. It is also useless.",
+   "thread": "Temporary things",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Lens 3 · Imani — “I approved the work”",
+   "sub": "Tuesday · 12:30 p.m. and Sunday · 9:20"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback, from Imani's point of view: Tuesday at 12:30 she approves the tidy-up on a call with Mateo while Theo listens.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "H",
+     "expr": "smile"
+    },
+    {
+     "id": "theo",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Yes, do the rack. Thanks, Mateo. Theo, tell Maya it's happening."
+    }
+   ],
+   "narration": [],
+   "caption": "She approved the work. She didn't ask how anyone would know it was right.",
+   "flags": [],
+   "kind": "flashback",
+   "tab": "TUESDAY · IMANI",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1283
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sunday 9:20, Imani tells Pastor Jo the first song may start two minutes late, and why.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "jo",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "We found it. A cable moved on Tuesday. We may start two minutes late. That one's on my process."
+    },
+    {
+     "side": "R",
+     "who": "Pastor Jo",
+     "kind": "speech",
+     "text": "Two minutes I can preach into."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1280
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-04",
+   "who": "imani",
+   "prompt": "I approved the work. I didn't ask how anyone would know it was right. Say it — it's on me.",
+   "options": [
+    {
+     "label": "“It's on the process. You built half of it; we'll build the rest.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Good answer. Write that down before I forget I agreed.",
+     "trust": {
+      "Imani": 1
+     }
+    },
+    {
+     "label": "“It's a little on you.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "A little. Okay. Noted. Painfully.",
+     "trust": {
+      "Imani": -1,
+      "Ray": 1
+     }
+    },
+    {
+     "label": "“It's on Kip.”",
+     "who": "imani",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "Kip is nineteen and did exactly what we let him do.",
+     "trust": {
+      "Imani": -1,
+      "Mateo": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #5 · AVERY'S LENS  Consistency and standards  The same thing should look and work the same way everywhere.  Labels at both ends of every cable, in one format, mean anyone can trust any cable in the building."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E04",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Sunday — “Put it back, prove it”",
+   "sub": "9:24"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the equipment room Maya matches the patch to Priya's photo and moves the two cables back, one at a time.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One cable. Check the meter. The other. Check again.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 711
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The patch diagram now shows straight lines: Marisol's vocal mic to channel 3, the lectern to channel 7.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "VOX 1 → CH 3 · lectern → CH 7"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2418
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Lily presses WORSHIP again. Marisol sings and is heard; the lectern is quiet.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "grin"
+    },
+    {
+     "id": "lily",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Marisol",
+     "kind": "speech",
+     "text": "Oh, there I am."
+    }
+   ],
+   "narration": [],
+   "caption": "Soundcheck: WORSHIP recalled, right mics.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "WORSHIP · condition 1"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2159
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Lily presses every other preset in turn — SPOKEN WORD, BAPTISM, ALL OFF — while Maya watches the right channels open and close.",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [
+    "Every preset, not just the broken one."
+   ],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "all presets"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4399
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "During the service, the preset changes from worship to the sermon and back: the right microphones open each time.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "marisol",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Worship → sermon → worship. Right mics, every time.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 2 · live transitions"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1511
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. Evidence is what you saw or measured, written down before you touch anything. A change record is evidence about what somebody changed. And a label? A label is evidence left for the next person. Worked example: 'MIC 3 → IN 7 · lectern · don't repatch — R.' What it is, where it goes, why it's there.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Evidence is what you saw or measured, written down before you touch anything. A change record is evidence about what somebody changed."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And a label?"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "A label is evidence left for the next person. Worked example: 'MIC 3 → IN 7 · lectern · don't repatch — R.' What it is, where it goes, why it's there."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1044
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Evidence   Something you observed or measured, labelled with how sure you are (observed, measured, verified …), kept before you change anything.   Change record   A log entry saying what changed, when, by whom — and ideally why.   Signal flow   The path a signal takes from its source to where people receive it — every box, cable and setting in between, in order.   Worked example  MIC 3 → IN 7 · lectern · ask R. — A label is evidence left for the next person. Worked example: 'MIC 3 → IN 7 · lectern · don't repatch — R.' What it is, where it goes, why it's there."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 05 OF 31 · PP. 48, 53–58, 176  PART 4 DIGITAL CONSOLE OPERATION · PART 11 OPERATIONS  Page 176:  Label both ends.  Ray had added, in capitals: “AND CHECK THE LABEL IS TRUE.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB5",
+   "label": "**Fieldbook module 5 — The channel strip, the stagebox and the label.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 5 · tap a plate to open it full size     The audio system — console, stagebox, wireless     Console input channel and preamp     Console screen, menus and control     Console EQ, gate, dynamics and sends"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-006 · from the Empathia Learn Fieldbook, p. 176  Readiness / Preventive Maintenance  A neat rack, a missing label, and a preset that did exactly what it was told.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-006"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "lessonbreak",
+   "cls": "lessonbreak",
+   "text": "PRACTICE BREAK · S01 · E04  Your turn before the debrief  Work this episode's problem yourself: a drill, a lesson, and the live incident. Every one can be failed, and every failure explains itself."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-03",
+   "label": "**Clue Board:** WORSHIP opens the wrong mics.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-10",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief — “Plan, label, log, check”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Mateo comes by in person after the service, finally meeting Maya face to face.",
+   "characters": [
+    {
+     "id": "mateo",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Mateo",
+     "kind": "speech",
+     "text": "That's on my crew. And on me — I left before checking."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Nobody checked the middle after, remember? Nobody checked the patch after."
+    }
+   ],
+   "narration": [],
+   "caption": "Mateo laughs. “Touché.”",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1282
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E04-03",
+   "prompt": "Imani asks: “What should change before the next crew touches the rack?”",
+   "happening": "A well-meant change broke a preset, and nobody could see it until Sunday.",
+   "clock": null,
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S01E04). Owner mode.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "No volunteers in the rack",
+     "result": "Theo looks at the floor.",
+     "consequence": "Fewer hands, same problem: the next professional crew has no checklist either.",
+     "chips": [
+      "Theo trusts you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Plan, label, log, check",
+     "result": "A one-page checklist: write the patch plan, print labels for both ends, log before leaving, press every preset after.",
+     "consequence": "Imani adopts it. Mateo prints labels for the whole patch panel that week.",
+     "chips": [
+      "Checklist adopted",
+      "Owner: Imani"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Imani": 1,
+       "Mateo": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ray checks everything",
+     "result": "Ray raises an eyebrow.",
+     "consequence": "Everything now waits on one person — the same kind of risk as Ray's notebook.",
+     "chips": [
+      "One person bottleneck"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing — it was a fluke",
+     "result": "Everyone goes to lunch.",
+     "consequence": "It happens again at Easter.",
+     "chips": [
+      "No change"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani's new one-page checklist: plan the patch in writing; print labels for both ends; log it before you leave; press every preset after; compare to the photos.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2664
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya teases Ray about his labeled mug. Ray answers deadpan.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You label your mug."
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "I label everything. Labels are how the building remembers."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1685
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "smile",
+     "text": "I label everything."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "grin",
+     "text": "You labeled your label maker."
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "In case it forgets whose it is."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Thursday. Mateo, alone in the equipment room, fixes printed labels to both ends of every patch cable.",
+   "characters": [
+    {
+     "id": "mateo",
+     "pose": "P",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Thursday. Mateo prints labels for both ends of every cable. Nobody asked him to.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1523
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia, beaming, stands under two new lighting fixtures, pointing at a stack of boxes.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "Twelve more fixtures for Easter. Where's the nearest outlet?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Not Mine to Open.*",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 633
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A preset recalls numbers, not intentions. When a control does “the wrong thing,” check whether it acted wrongly or acted correctly on a world that moved. Plan the change, label both ends, log it before you leave, and check every preset after."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Three people, one Tuesday, and no villain. Each did a good thing and trusted someone else to close the loop.  Boundary: none of this explains or proves the patch fault."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E04",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

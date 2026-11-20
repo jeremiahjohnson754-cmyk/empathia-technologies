@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueDeficiency/0.1.0.json",
+  "title": "POST /v1/issues/{issue}/deficiency request body",
+  "description": "Take one step of the deficiency workflow through the engine (start · fixed · retest · verify · except · defer · resume · reopen), each by its own authority; refused with reasons when the step does not follow, rests on nothing, or the actor fixed it or recorded its retest (separation of duties); a High or Critical deficiency is never deferred; the database guard (0032) holds the same rules for every writer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "step"
+  ],
+  "properties": {
+    "step": {
+      "type": "string",
+      "enum": [
+        "start",
+        "fixed",
+        "retest",
+        "verify",
+        "except",
+        "defer",
+        "resume",
+        "reopen"
+      ]
+    },
+    "ownerRole": {
+      "type": "string",
+      "pattern": "^[a-z_]{2,40}$"
+    },
+    "targetDate": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "rootCause": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "action": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "evidence": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "exceptionRef": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "requestedBy": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "until": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  }
+}

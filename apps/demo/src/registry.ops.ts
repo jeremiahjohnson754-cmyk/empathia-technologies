@@ -1,0 +1,307 @@
+/**
+ * Pages of the operations slice (owner: rebuild/demo-ops): Mission Control, Executive, Pro, ServiceHands and dispatch, commissioning and
+ * assurance, APEX, Learn, the ledger. The shell slice created this file with the pages that already existed; from here on the ops slice
+ * owns it. Contract: registry.types.ts and README-routes.md. Every entry names its V2.5.3 authority; the policy does the rest.
+ */
+import { createElement as h } from 'react';
+import type { PageDef } from './registry.types.js';
+import { adapt } from './registry.adapt.js';
+import { opsLoad } from './hardening/opsRoutes.js';
+import { ROLE_KEYS } from './access/policy.js';
+
+// The server-backed thread (ADR-0013) exists only in a build that names a server (DEMO_API_URL). A public build without one registers
+// no such page — nothing to open, search or link to — and its bundle carries neither the page nor a host name.
+const SERVER_THREAD: PageDef[] = process.env.DEMO_API_URL ? [{
+  id: 'thread.server', title: 'One room, end to end, on the server', purpose: 'The same journey with the records kept by the enterprise API: open a sandbox, take its room from the field record to an APEX case as each person in turn, and read the durable thread and audit history back', product: 'commissioning',
+  path: '/connected', authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the record of a room across the products, on the server: everyone who works on a room or answers for it' },
+  load: adapt(() => import('./pages/Connected.js'), (m) => h(m.ConnectedPage, {})),
+  search: { keywords: 'server backed connected sandbox durable database api thread audit history resume code demonstration session role switch field record', aliases: ['server thread', 'connected demo', 'sandbox'] },
+}, {
+  // 50/10 flagship (17 Nov 2026): one university lecture hall carries the engineering demonstration, read from the server
+  id: 'flagship.room', title: 'The flagship room: Lecture Theatre SCI-110', purpose: 'The university lecture hall that carries the engineering demonstration, read from the server: its plan, its devices, its commissioning plan and its thread, as the person you choose. The same page shows any other room of the sandbox', product: 'commissioning',
+  path: '/flagship', alias: ['/flagship/:room'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the engineering record of one room on the server: everyone who works on a room or answers for it' },
+  load: adapt(() => import('./pages/Flagship.js'), (m, p) => h(m.FlagshipPage, { room: p.params['room'] })),   // #/flagship/CNV-MR-H201: another room of the sandbox, same page
+  search: { keywords: 'flagship lecture theatre hall university UNI-SCI-110 SCI-110 engineering workstation plan devices commissioning plan server', aliases: ['lecture hall', 'flagship room', 'UNI-SCI-110', 'Harbor 201', 'CNV-MR-H201'] },
+}, {
+  // OUTSTANDING 1a (18 Nov 2026): the ServiceHands queue worked on the server's records, not the browser's
+  id: 'servicehands.queue', title: 'ServiceHands on the server', purpose: 'The sandbox’s work orders and incidents across its rooms, read from the server, each worked one governed step at a time', product: 'servicehands',
+  path: '/servicehands/queue', alias: ['/service/queue'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the service record of the sandbox’s rooms, as the connected thread: the roles whose work it is (18 Nov 2026)' },
+  load: adapt(() => import('./pages/ServiceQueue.js'), (m) => h(m.ServiceQueuePage, {})),
+  search: { keywords: 'servicehands server queue work orders incidents triage assign accept preflight evidence verify close sandbox', aliases: ['service queue', 'work orders on the server', 'servicehands queue'] },
+}, {
+  // founder, 18 Nov 2026, 07:49: jumps to the organization's own portals (0047); links, not integrations
+  id: 'platforms', title: 'Platform jumps', purpose: 'Open the organization’s own portal for a room, a unit or the estate: device clouds, meeting-room portals, audio processing and networks, signage, drawings and the service desk. Links, not integrations', product: 'mission-control',
+  path: '/platforms', alias: ['/jumps', '/connected/platforms'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'where the organization’s own tools are, for everyone who works on its rooms; setting an address is the server’s decision (18 Nov 2026)' },
+  load: adapt(() => import('./pages/Platforms.js'), (m) => h(m.PlatformsPage, {})),
+  search: { keywords: 'platform jump portal xio cloud utelogy teams rooms pro microsoft 365 m365 sharepoint xyte q-sys qsys reflect dante appspace signage sennheiser autodesk servicenow open in link', aliases: ['jumps', 'open in', 'portals', 'xio cloud', 'q-sys reflect', 'servicenow'] },
+}, {
+  // founder, 18 Nov 2026, 07:49: data reports as PDF only, and a Power BI project for the customer's own Power BI; role protected on the server
+  id: 'reports.server', title: 'Reports from the server', purpose: 'The estate data report as a PDF and a Power BI project of the organization’s records, made by the server for the people who answer for the figures, each recorded in the audit history', product: 'mission-control',
+  path: '/reports/server', alias: ['/powerbi', '/reports/powerbi'], authority: { roles: ['exec', 'ops', 'svcmgr', 'architect', 'syseng', 'cxeng', 'steward'], why: 'the organization’s figures; the server decides who may export them and records refusals (18 Nov 2026)' },
+  load: adapt(() => import('./pages/ServerReports.js'), (m) => h(m.ServerReportsPage, {})),
+  search: { keywords: 'report pdf power bi powerbi pbip tmdl dax dashboard export estate figures kpi analytics', aliases: ['power bi', 'pdf report', 'estate report', 'data report'] },
+}] : [];
+export const OPS_PAGES: readonly PageDef[] = [
+  {
+    id: 'control', title: 'Mission Control', purpose: 'What changed, what matters, what needs action', product: 'mission-control', landing: true,
+    path: '/v25', authority: { area: 'home' },   // #/home is the Home page (registry.spaces.ts, uplift/core-screens); #/v25 keeps the lifecycle stations
+    load: adapt(() => import('./pages/Control.js'), (m, p) => h(m.MissionControl, { perspective: p.role })),
+    search: { keywords: 'dashboard overview today home', aliases: ['home', 'dashboard'] },
+  },
+  {
+    id: 'control.exec', title: 'Executive', purpose: '27 KPI passports with numerator, denominator and coverage', product: 'pro', landing: true,
+    path: '/v25/exec', alias: ['/pro/exec'], authority: { area: 'pro.exec' },
+    load: adapt(() => import('./pages/Control.js'), (m, p) => h(m.ExecPage, { perspective: p.role })),
+    search: { keywords: 'kpi executive portfolio passports', aliases: ['executive intelligence', 'kpis'] },
+  },
+  {
+    id: 'ledger', title: 'Ledger', purpose: 'Every event, with its time, actor and provenance', product: 'mission-control',
+    path: '/v25/ledger', authority: { area: 'ledger' },
+    load: adapt(() => import('./pages/Control.js'), (m, p) => h(m.LedgerPage, { perspective: p.role, policy: false })),
+    search: { keywords: 'events provenance audit', aliases: ['evidence ledger'] },
+  },
+  {
+    id: 'servicehands', title: 'ServiceHands', purpose: 'Hard-gated eligibility, preflight, field execution', product: 'servicehands', landing: true,
+    path: '/v25/service', authority: { area: 'servicehands' },
+    actions: [
+      { id: 'sh.triage', label: 'Triage and route', authority: { action: 'sh.triage' } },
+      { id: 'sh.authorize', label: 'Authorize the work', authority: { action: 'sh.authorize' } },
+      { id: 'sh.install', label: 'Record field execution', authority: { action: 'sh.install' } },
+      { id: 'sh.close', label: 'Close the request', authority: { action: 'sh.close' } },
+    ],
+    load: adapt(() => import('./pages/Service.js'), (m, p) => h(m.ServicePage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'service request work order dispatch field', aliases: ['service hands', 'work order'] },
+  },
+  {
+    id: 'apex', title: 'APEX', purpose: 'Diagnosis tiers A0–A5 with their evidence', product: 'apex', landing: true,
+    path: '/v25/apex', authority: { area: 'assurance.analysis' },   // diagnosis is the engineering analysis: AZ_ENG and the commissioning engineer
+    load: adapt(() => import('./pages/Apex.js'), (m, p) => h(m.ApexPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'diagnosis root cause tiers', aliases: ['diagnose'] },
+  },
+  {
+    id: 'learn', title: 'V2.5 Learn', purpose: 'Independently reviewed engineering cases, linked to lessons and labs', product: 'learn',
+    path: '/v25/learn', authority: { area: 'lessons' },   // V2.5 Learn is reviewed cases from what happened: V2.5.3 lessons (the steward approves them)
+    load: adapt(() => import('./pages/Learn.js'), (m, p) => h(m.LearnPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'training cases signal lessons', aliases: ['signal', 'training'] },
+  },
+  // ---- Empathia Learn, every V2.5.3 area (uplift/workspaces): pages/LearnAreas.tsx, content from learn/model.ts
+  ...([
+    ['learn.home', 'Empathia Learn', 'Readiness, what you proved, what to do next, competencies, learn from a room', '/learn', 'LearnHome', 'learn', 'learn home readiness competencies'],
+    ['learn.signal', 'SIGNAL', 'A story in twelve seasons: the cast, the authored episodes, competency signals', '/learn/signal', 'SignalPage', 'learn', 'signal story seasons episodes maya'],
+    ['learn.episode', 'SIGNAL episode', 'One authored episode, scene by scene, with its decisions', '/learn/signal/:ep', 'EpisodePage', 'learn', 'episode sound check'],
+    ['learn.story', 'Room story', 'A room’s history from its own records, with three decisions left to you', '/learn/story', 'StoryPage', 'learn', 'room story history decisions'],
+    ['learn.story.room', 'Room story', 'Eight panels and three decisions for one room', '/learn/story/:room', 'StoryPage', 'learn', 'story room'],
+    ['learn.practice', 'Practice', 'SIGNAL drills and drills made from each room’s records', '/learn/practice', 'PracticePage', 'learn', 'practice drills evidence signal check'],
+    ['learn.service', 'Service Mode', 'A call, a clock and ten things you can do, on a room’s records; the SIGNAL incidents', '/learn/service', 'ServiceModePage', 'learn', 'service mode incidents clock ratings'],
+    ['learn.service.run', 'Service Mode case', 'One case or SIGNAL incident on the clock, scored on six ratings', '/learn/service/:id', 'ServiceRunPage', 'learn', 'case run clock'],
+    ['learn.cases', 'Case Files', 'How an incident becomes a lesson: room cases, generalized cases, SIGNAL case files', '/learn/cases', 'CaseFilesPage', 'learn', 'case files incidents lesson'],
+    ['learn.case', 'Case file', 'Seven sources from Core, the work, and how it became a better operation', '/learn/cases/:id', 'CaseFilePage', 'learn', 'case file sources'],
+    ['learn.design', 'Design clinic', 'Eight lessons with figures worked on rooms in Core; rooms the rules flag', '/learn/design', 'DesignClinicPage', 'learn', 'design clinic acoustics microphones sightlines loudspeakers'],
+    ['learn.design.lesson', 'Design lesson', 'One design-clinic lesson and its figures', '/learn/design/:lesson', 'DesignLessonPage', 'learn', 'design lesson figures'],
+    ['learn.fieldbook', 'Fieldbook', 'The glossary and the formulas, by domain', '/learn/fieldbook', 'FieldbookPage', 'learn', 'fieldbook glossary formulas terms'],
+    ['learn.mission', 'Mission Control', 'SIGNAL: continue the story, your level, the evidence locker, crew trust, the systems map, ratings and settings', '/learn/mission', 'MissionPage', 'learn', 'mission control signal level evidence trust ratings systems map'],
+    ['learn.challenges', 'Challenges', 'Thirteen SIGNAL challenges in five modes, four levels each, scored with your best', '/learn/challenges', 'ChallengesPage', 'learn', 'challenges hear see reach build record eq compressor moire lighting wireless loudness'],
+    ['learn.library', 'Learn library', 'SIGNAL lessons, thirteen kinds of knowledge, signal flows by kind of room', '/learn/library', 'LibraryPage', 'learn', 'library lessons knowledge signal flows'],
+    ['learn.ask', 'Ask Empathia', 'Fifteen questions answered from Core, each with its sources', '/learn/ask', 'AskPage', 'ask', 'ask question answer'],
+    ['learn.explore', 'System explorer', 'The SIGNAL venues, layer by layer', '/learn/explore', 'ExplorePage', 'learn', 'explore sanctuary layers'],
+    ['learn.explore.one', 'System explorer', 'One SIGNAL venue, layer by layer', '/learn/explore/:id', 'ExplorePage', 'learn', 'explore'],
+    ['learn.academy', 'ServiceHands Academy', 'Fifteen jobs from intake to close, and the live requests waiting on each', '/learn/servicehands', 'AcademyPage', 'learn', 'academy servicehands jobs training'],
+  ] as const).map(([id, title, purpose, path, exp, area, keywords]): PageDef => ({
+    id, title, purpose, product: 'learn', path, authority: { area }, landing: id === 'learn.home' || undefined,
+    load: adapt(() => import('./pages/LearnAreas.js'), (m, p) => h((m as unknown as Record<string, (x: { perspective: string; params: Record<string, string> }) => ReturnType<typeof h>>)[exp]!, { perspective: p.role, params: p.params })),
+    search: { keywords, aliases: [title.toLowerCase()] },
+  })),
+  // ---- the estate's command centers (uplift/workspaces): computed from the thirty room records and the service workspace
+  {
+    id: 'pro.command', title: 'Pro command center', purpose: 'What is open, how it stands against its target, and where to look next', product: 'pro', landing: true,
+    path: '/pro', authority: { area: 'pro' },
+    load: adapt(() => import('./pages/Estate.js'), (m, p) => h(m.ProPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'pro command center issues target buildings lifecycle', aliases: ['pro', 'command center', 'operations'] },
+  },
+  {
+    id: 'pro.assets', title: 'Asset Intelligence', purpose: 'What the organization owns: positions, identities, installations', product: 'pro',
+    path: '/pro/assets', authority: { area: 'pro.assets' },
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.AssetsPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'assets devices positions identity', aliases: ['asset intelligence'] },
+  },
+  {
+    id: 'pro.issues', title: 'Issue Intelligence', purpose: 'How and where it fails: severity, source, building, recurrence', product: 'pro',
+    path: '/pro/issues', authority: { area: 'pro.issues' },
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.IssuesPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'issues severity recurrence patterns', aliases: ['issue intelligence'] },
+  },
+  {
+    id: 'pro.ops', title: 'Operations Hub', purpose: 'People, certifications, stock and work windows behind the work', product: 'pro',
+    path: '/pro/ops', authority: { area: 'pro.ops' },
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.OpsHubPage, { perspective: p.role })),
+    search: { keywords: 'operations hub people certifications stock bookings', aliases: ['operations hub'] },
+  },
+  {
+    id: 'pro.eng', title: 'Standards and Engineering', purpose: 'Archetypes, templates, applicable tests and conformance', product: 'pro',
+    path: '/pro/eng', authority: { area: 'pro.eng' },
+    load: adapt(() => import('./pages/ProViews.js'), (m, p) => h(m.StandardsPage, { perspective: p.role })),
+    search: { keywords: 'standards engineering archetypes templates conformance', aliases: ['standards'] },
+  },
+  {
+    id: 'commissioning', title: 'Commissioning', purpose: 'Accepted, accepted with conditions, blocked: every room and its deficiencies', product: 'commissioning', landing: true,
+    path: '/commissioning', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/Estate.js'), (m, p) => h(m.CommissioningPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'commissioning acceptance baseline deficiencies tests', aliases: ['commissioning command center', 'acceptance'] },
+  },
+  {
+    id: 'assurance', title: 'Assurance', purpose: 'Is the estate still behaving the way it was commissioned to behave', product: 'commissioning',
+    path: '/assurance', authority: { area: 'assurance' },
+    authorityFor: (_p, q) => (q.get('view') === 'analysis' ? { area: 'assurance.analysis' } : undefined),   // V2.5.3: the engineering analysis has its own authority
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => (/[?&]view=analysis/.test(p.hash) ? h(m.AssuranceAnalysisPage, { perspective: p.role }) : h(m.AssurancePage, { perspective: p.role, hash: p.hash }))),
+    search: { keywords: 'assurance drift baseline ready next session', aliases: ['assurance command center', 'drift'] },
+  },
+  {
+    id: 'assurance.ready', title: 'Ready checks', purpose: 'Eleven checks before a high or mission-critical room is trusted with its next session', product: 'commissioning',
+    path: '/assurance/ready', authority: { area: 'assurance.ready' },
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.ReadyPage, { perspective: p.role })),
+    search: { keywords: 'ready checks next session', aliases: ['ready checks'] },
+  },
+  {
+    id: 'assurance.change', title: 'Change impact', purpose: 'What a replacement or change reopens, and what waits for acceptance', product: 'commissioning',
+    path: '/assurance/change', authority: { area: 'assurance.change' },
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.ChangePage, { perspective: p.role })),
+    search: { keywords: 'change impact reopened tests replacement', aliases: ['change impact'] },
+  },
+  {
+    id: 'assurance.signals', title: 'Signals', purpose: 'Maintenance and experience signals before a room fails', product: 'commissioning',
+    path: '/assurance/signals', authority: { area: 'assurance.signals' },
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.SignalsPage, { perspective: p.role })),
+    search: { keywords: 'signals maintenance recurrence', aliases: ['early signals'] },
+  },
+  {
+    id: 'commissioning.deficiencies', title: 'Deficiencies', purpose: 'Every open commissioning deficiency, most serious first', product: 'commissioning',
+    path: '/commissioning/deficiencies', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/AssuranceViews.js'), (m, p) => h(m.DeficienciesPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'deficiencies punch list open', aliases: ['open deficiencies'] },
+  },
+  {
+    id: 'commissioning.reverb', title: 'Reverberation instrument', purpose: 'EDT, T20 and T30 by octave band from measured impulse responses, with refusals, quality notes and the mean over positions', product: 'commissioning',
+    path: '/commissioning/instruments/reverb', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/ReverbBench.js'), (m, p) => h(m.ReverbBenchPage, { perspective: p.role })),
+    search: { keywords: 'reverberation rt60 t20 t30 edt impulse response decay acoustic instrument bench schroeder octave', aliases: ['rt60', 'reverb time', 'impulse response'] },
+  },
+  {
+    id: 'assets.life', title: 'Asset life', purpose: 'One asset’s whole life by its asset ID: installation, register, baselines, service, retirement and what replaced it', product: 'commissioning',
+    path: '/v25/asset', authority: { roles: ['installer', 'cxeng', 'syseng', 'designer', 'service', 'svcmgr', 'ops', 'ipm', 'bpm', 'architect', 'exec', 'qa', 'steward'], why: 'the asset record: the people who install, commission, serve and manage the estate (founder, 14 Nov 2026: the asset ID connects everything end to end)' },
+    load: adapt(() => import('./pages/AssetLife.js'), (m, p) => h(m.AssetLifePage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'asset id unit history lifecycle replaced retired serial inventory', aliases: ['asset history', 'asset id', 'unit history'] },
+  },
+  {
+    id: 'people.experience', title: 'People intelligence', purpose: 'Who has done the work: the rooms and projects each person touched, and experience by layer and by quarter (evidence, never a credential)', product: 'servicehands',
+    path: '/v25/people', authority: { roles: ['svcmgr', 'ops', 'exec', 'ipm', 'bpm', 'architect', 'syseng', 'cxeng'], why: 'people and their work: the people who dispatch, manage service and programmes, and lead engineering (founder, 14 Nov 2026)' },
+    load: adapt(() => import('./pages/People.js'), (m, p) => h(m.PeoplePage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'people technician experience expertise who worked touched project room layer control audio video involvement', aliases: ['who worked on', 'expertise', 'technician experience'] },
+  },
+  {
+    id: 'commissioning.sti', title: 'Speech intelligibility (STI)', purpose: 'The STI meter’s readings by position against the project’s policy, with the intelligibility exception record', product: 'commissioning',
+    path: '/commissioning/instruments/sti', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/StiBench.js'), (m, p) => h(m.StiBenchPage, { perspective: p.role })),
+    search: { keywords: 'sti speech intelligibility stipa intelligibility exception policy voice', aliases: ['sti', 'speech intelligibility', 'stipa'] },
+  },
+  {
+    id: 'commissioning.scenarios', title: 'Commissioning journeys', purpose: 'Five reference journeys from request to assurance, every stage read from its room’s record, with what the system detected and blocks', product: 'commissioning',
+    path: '/commissioning/scenarios', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/Scenarios.js'), (m, p) => h(m.ScenariosPage, { perspective: p.role })),
+    search: { keywords: 'scenario journey teams boardroom lecture broadcast ballroom divisible end to end request acceptance assurance', aliases: ['commissioning scenarios', 'reference journeys'] },
+  },
+  {
+    id: 'engineer.start', title: 'Engineer start', purpose: 'Three things an engineer inspects — room design, commissioning verification, issue handoff — each with its inspection sheet, and the faults that show how each step fails', product: 'commissioning',
+    path: '/engineer', alias: ['/v25/start'], authority: { roles: ['syseng', 'cxeng', 'architect', 'qa', 'steward', 'designer', 'svcmgr'], why: 'engineering inspection: the people who design, commission, review and hand off (V2.5.5 Engineer Edition)' },
+    load: adapt(() => import('./pages/EngineerStart.js'), (m, p) => h(m.EngineerStartPage, { perspective: p.role })),
+    search: { keywords: 'engineer start inspection sheet evidence states security boundary source references tests failure handling fault injection engineering edition', aliases: ['engineer start', 'inspection sheets', 'fault injection'] },
+  },
+  {
+    id: 'thread.room', title: 'One room, end to end', purpose: 'One room’s record followed through every product: Lite, engineering, commissioning, ServiceHands, assurance and APEX, with the ids that carry it and what is recorded at each step', product: 'commissioning',
+    path: '/thread', authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the record of a room across the products: everyone who works on a room or answers for it' },
+    load: adapt(() => import('./pages/Thread.js'), (m, p) => h(m.ThreadPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'thread end to end vertical slice traceability digital thread lite engineering commissioning servicehands assurance apex one room record chain evidence', aliases: ['digital thread', 'end to end', 'traceability'] },
+  },
+  ...SERVER_THREAD,
+  {
+    id: 'install.redline', title: 'Field record and redlines', purpose: 'Phase 1 installation documentation over the Lite plan: how each device is mounted, what it is hooked up to, devices moved in the field and why, and notes pinned to the plan', product: 'lite',
+    path: '/install/redline', authority: { roles: ['installer', 'service', 'syseng', 'designer', 'cxeng', 'ops', 'svcmgr', 'architect', 'qa'], why: 'the installation record: the people who install, approve the design, commission and serve the room (founder, 14 Nov 2026)' },
+    load: adapt(() => import('./pages/FieldRedline.js'), (m, p) => h(m.FieldRedlinePage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'redline markup bluebeam field record mounting mounted bracket hooked up connection moved sprinkler as built installation phase 1', aliases: ['redlines', 'field record', 'as built', 'mounting record'] },
+  },
+  {
+    id: 'pro.refresh', title: 'Refresh planning', purpose: 'Every unit in service by asset ID with the year it falls due: the annual refresh plan room by room and the multi-year strategy, under service lives the planner sets', product: 'commissioning',
+    path: '/pro/refresh', authority: { roles: ['ops', 'syseng', 'cxeng', 'architect'], why: 'asset lifecycle planning: the operations lead and the internal engineers (founder, 14 Nov 2026)' },
+    load: adapt(() => import('./pages/RefreshPlan.js'), (m, p) => h(m.RefreshPlanPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'refresh planning lifecycle replacement end of life asset management multi year strategy budget capital plan', aliases: ['refresh plan', 'lifecycle planning', 'asset refresh'] },
+  },
+  {
+    id: 'commissioning.analytics', title: 'Commissioning analytics', purpose: 'Results recorded and verified, failures, rooms accepted and refused steps, month by month, by building', product: 'commissioning',
+    path: '/commissioning/analytics', authority: { area: 'commissioning' },
+    load: adapt(() => import('./pages/CxAnalytics.js'), (m, p) => h(m.CxAnalyticsPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'commissioning analytics trend monthly results verified accepted refused building', aliases: ['commissioning trend', 'commissioning analytics'] },
+  },
+  // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
+  {
+    id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',
+    path: '/v25/service/analytics', authority: { roles: ['svcmgr', 'ops', 'exec', 'ipm', 'bpm', 'architect'], why: 'service and vendor performance: the people who manage service, programmes and vendor agreements (founder, 14 Nov 2026)' },
+    load: adapt(() => import('./pages/ServiceAnalytics.js'), (m, p) => h(m.ServiceAnalyticsPage, { perspective: p.role, hash: p.hash })),
+    search: { keywords: 'service analytics vendor scorecard sla trend monthly quarterly mttr first time fix accountability', aliases: ['vendor scorecard', 'service analytics', 'sla trend'] },
+  },
+  {
+    id: 'servicehands.dispatch', title: 'Dispatch board', purpose: 'Queue, board, explained matching, assignment, reassignment and coverage', product: 'servicehands',
+    path: '/service', alias: ['/service/coverage', '/service/board', '/dispatch'], authority: { area: 'service' },
+    actions: [{ id: 'sh.triage', label: 'Triage and assign', authority: { action: 'sh.triage' } }],
+    load: opsLoad('dispatch'), search: { keywords: 'dispatch queue board assign technician coverage sla', aliases: ['service delivery command center', 'dispatch'] },
+  },
+  {
+    id: 'servicehands.workspace', title: 'ServiceHands workspace', purpose: 'Request to closure: the technician workspace, evidence, verification and learning', product: 'servicehands',
+    path: '/servicehands', alias: ['/servicehands/wo/:wo'], authority: { area: 'servicehands' },
+    load: opsLoad('servicehands'), search: { keywords: 'work order technician evidence closure', aliases: ['work order', 'my jobs'] },
+  },
+  {
+    id: 'servicehands.request', title: 'Report a problem', purpose: 'Structured intake: the room, the device, the category and quick checks', product: 'servicehands',
+    path: '/servicehands/new', authority: { area: 'servicehands.new' },
+    load: opsLoad('servicehands'), search: { keywords: 'report problem request change help broken', aliases: ['report a problem', 'ask for help'] },
+  },
+  {
+    id: 'replay', title: 'Core Replay', purpose: 'A room’s whole life, played back read-only', product: 'mission-control',
+    path: '/replay', alias: ['/replay/:room'], authority: { area: 'replay' },
+    load: opsLoad('replay'), search: { keywords: 'replay history timeline room life baseline', aliases: ['room history'] },
+  },
+  {
+    id: 'fi.scan', title: 'Field Intelligence scan', purpose: 'What a room scan observes, with provenance and policy limits', product: 'field',
+    path: '/v25/fi/scan', alias: ['/v25/fi/scan/:room'], authority: { area: 'agent' },
+    load: opsLoad('fiscan'), search: { keywords: 'scan replay findings provenance policy', aliases: ['room scan'] },
+  },
+  {
+    // Founder, 18 Nov 2026: "call it field tools … something people can instantly be able to jump over to … not to be confused with
+    // commissioning tools". Arithmetic for the site: every role may open it, it shows no record, and a result grants nothing.
+    id: 'fieldtools', title: 'Field Tools', purpose: 'Calculators for the site: display, projection, LED, video bandwidth, audio, acoustics, power, rigging, network, cabling; each shows its working', product: 'field',
+    path: '/field-tools', alias: ['/field-tools/:tool', '/tools', '/tools/:tool', '/calc', '/calc/:tool'],
+    authority: { roles: ROLE_KEYS, why: 'reference arithmetic with no record in it (founder, 18 Nov 2026): every role may use it, and a calculation grants nothing' },
+    load: () => import('./fieldtools/FieldTools.js'),
+    search: { keywords: 'field tools calculator calculators throw distance throw ratio lumens contrast screen size viewing distance led wall pixel pitch bandwidth hdmi sdi spl db dbu dbv impedance 70v 100v constant voltage ceiling speaker cable loss delay wavelength rt60 reverberation critical distance pag nag room modes ohms law amps watts circuits voltage drop ups btu bridle wll design factor subnet poe dante aes67 fiber loss budget cat6 100 m lux foot-candles labour crew convert units', aliases: ['field tools', 'calculator', 'calculators', 'tools', 'av calculator', 'subnet calculator', 'throw calculator', 'bandwidth calculator'] },
+  },
+  {
+    id: 'decisions.desk', title: 'Decision desk', purpose: 'Approve, hold or reject against a scope revision; fund separately', product: 'pro',
+    path: '/v25/decisions', authority: { area: 'decisions' },
+    actions: [{ id: 'budget.decide', label: 'Decide', authority: { action: 'budget.decide' } }],
+    load: opsLoad('decisions'), search: { keywords: 'approve hold reject fund governance', aliases: ['approvals', 'funding'] },
+  },
+  {
+    id: 'decisions.memory', title: 'Decision Memory', purpose: 'Who decided what, the options weighed, why, and what happened after', product: 'pro',
+    path: '/decisions', authority: { area: 'decisions' },
+    actions: [{ id: 'decision.record', label: 'Record a decision', authority: { action: 'decision.record' } }],
+    load: opsLoad('decisions'), search: { keywords: 'decision rationale memory why', aliases: ['why is it like this'] },
+  },
+  {
+    id: 'learn.labs', title: 'Learn labs', purpose: 'Audio, Camera and Lighting labs and the SIGNAL fault labs', product: 'learn',
+    path: '/learn/labs', alias: ['/learn/labs/:lab'], authority: { area: 'learn' },
+    load: opsLoad('labs'), search: { keywords: 'lab simulator audio camera lighting signal flow practice', aliases: ['labs', 'audio lab'] },
+  },
+  {
+    id: 'hardening', title: 'Resilience', purpose: 'How a part that fails to load or draw is handled, and every destructive-action safeguard', product: 'shell',
+    path: '/hardening', authority: { roles: ROLE_KEYS, why: 'a demonstration of the safeguards themselves, shown to every role like the V2.5 Policy page' },
+    load: opsLoad('resilience'), search: { keywords: 'resilience safeguards undo confirm failure', aliases: ['safeguards'] },
+  },
+];

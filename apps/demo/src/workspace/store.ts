@@ -5,15 +5,17 @@
  * (@empathia/service-engine, @empathia/apex-engine); every outcome, refusals included, is an event in the ledger. Reset returns the
  * workspace to its seed so a demonstration replays identically.
  */
-import { SERVICE_TRANSITIONS, WORK_NEEDS, candidates, preflight, serviceBlockers, type Staff, type ServiceState, type Check } from '@empathia/service-engine';
+import { SERVICE_TRANSITIONS, WORK_NEEDS, candidates, preflight, serviceBlockers, overlaps, type Staff, type ServiceState, type Check } from '@empathia/service-engine';
 import { openCase, act, type Hypothesis, type Outcome, type Layer } from '@empathia/apex-engine';
 import * as FI from '@empathia/field-intelligence';
 import { holds, personaLabel } from '../build/store.js';
 
 export interface Evt { at: string; by: string; type: string; aggregate: string; detail: string; outcome: 'ALLOWED' | 'DENIED' }
-export interface Incident { id: string; roomId: string; roomName: string; buildingKey: string; title: string; summary: string; severity: 'Mission critical' | 'High' | 'Standard'; state: ServiceState; openedAt: string; restoredAt: string | null; closedAt: string | null; recurrenceOf: string | null; reopened: boolean; workOrderId: string | null; apexId: string | null; learnCaseId: string | null; history: Array<{ to: ServiceState; at: string; by: string }>; requesterConfirmed: boolean; verifiedBy: string | null }
+export interface Incident { id: string; roomId: string; roomName: string; buildingKey: string; title: string; summary: string; severity: 'Mission critical' | 'High' | 'Standard'; state: ServiceState; openedAt: string; restoredAt: string | null; closedAt: string | null; recurrenceOf: string | null; reopened: boolean; workOrderId: string | null; apexId: string | null; learnCaseId: string | null; history: Array<{ to: ServiceState; at: string; by: string }>; requesterConfirmed: boolean; verifiedBy: string | null;
+  /** where the incident came from when it was not a request: a commissioning deficiency handed to service (the deficiency stays open until its retest is verified) */
+  source?: { kind: 'deficiency'; id: string; issue: string; lifecycle: string } }
 export interface WorkOrder { id: string; incidentId: string; roomId: string; buildingKey: string; workType: string; title: string; state: 'OPEN' | 'ASSIGNED' | 'ACCEPTED' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED'; techId: string | null; window: { from: string; to: string } | null; access: { confirmedBy: string } | null; safety: { briefed: boolean; heightPermit?: boolean } | null; toolsConfirmed: string[]; parts: Array<{ part: string; qty: number }>; evidence: Array<{ at: string; by: string; kind: string; note: string }>; preflight: Check[] | null; openedAt: string }
-export interface ApexCase { id: string; incidentId: string; roomId: string; key: string; layers: Array<{ layer: Layer; label: string; observations: string[]; cites: string[] }>; hypotheses: Hypothesis[]; actions: Array<Outcome & { at: string; by: string; hypothesisId: string }>; reviewed: { by: string; at: string; verdict: string } | null; openedAt: string }
+export interface ApexCase { id: string; incidentId: string; roomId: string; key: string; layers: Array<{ layer: Layer; label: string; observations: string[]; cites: string[] }>; hypotheses: Hypothesis[]; actions: Array<Outcome & { at: string; by: string; hypothesisId: string }>; reviewed: { by: string; at: string; verdict: string } | null; openedAt: string; /** part of the demonstration's seed, not opened by the person */ seeded?: boolean }
 export interface LearnCase { id: string; incidentId: string; apexId: string | null; title: string; lesson: string; permission: { by: string; at: string } | null; deidentified: boolean; proposedBy: string; proposedAt: string; smeReview: { decision: 'approve' | 'reject'; by: string; at: string; note: string } | null; state: 'PROPOSED' | 'SME_REVIEWED' | 'REJECTED' | 'APPROVED'; approvedBy: string | null }
 export interface Training { drillId: string; at: string; by: string; correct: boolean; elapsedS: number }
 export interface Workspace { v: 1; seededAt: string; incidents: Incident[]; workOrders: WorkOrder[]; staff: Staff[]; apexCases: ApexCase[]; learnCases: LearnCase[]; events: Evt[]; training: Training[]; fiSessions: FI.Session[]; licenses: Record<string, boolean>; adapters: Record<string, 'NOT_CONFIGURED' | 'DECLARED' | 'SUPPORTED_VERIFIED'>; stock: Record<string, { onHand: number; checkedAt: string; location: string }>; bookings: Record<string, Array<{ from: string; to: string; title: string }>>; seq: { wo: number; apex: number; learn: number; inc: number; fi: number } }
@@ -47,12 +49,16 @@ export function seed(): Workspace {
     { id: 'WO-0081', incidentId: 'ISS-0398', roomId: 'R-ATL-4-231', buildingKey: 'ATL', workType: 'break_fix', title: 'Projector input mapping · Atlas 4.231', state: 'DONE', techId: 'tech-ana', window: { from: ago(20, 10), to: ago(20, 7) }, access: { confirmedBy: 'site champion' }, safety: { briefed: true }, toolsConfirmed: ['service kit'], parts: [], evidence: [{ at: ago(20, 8), by: 'tech-ana', kind: 'photo', note: 'input mapping restored to the commissioned configuration (synthetic photo)' }], preflight: null, openedAt: ago(21) },
   ];
   incidents[0]!.workOrderId = 'WO-0088'; incidents[2]!.workOrderId = 'WO-0081';
-  return { v: 1, seededAt: t0, incidents, workOrders, staff, apexCases: [], learnCases: [], training: [], fiSessions: [], licenses: { 'SITE-NORTH:BRD': true, 'SITE-NORTH:TWN': false, 'SITE-NORTH:HUD': false },
-    events: [{ at: t0, by: 'system', type: 'workspace.seeded', aggregate: 'Workspace', detail: '5 incidents, 2 work orders, 4 people, synthetic estate', outcome: 'ALLOWED' }],
+  // V2.5.3 opened APEX on a worked case (13 Nov 2026, founder: match and surpass V2.5.3's APEX): the far-end audio fault in Atlas 4.218,
+  // its layers citing the room's own planned assets. Nothing has been acted on; the tiers start from here.
+  const a0 = incidents[0]!; const c0 = openCase(`${a0.title} ${a0.summary}`, (layer) => (layer === 'physical' ? ['A-0101', 'A-0102'] : layer === 'media' ? ['A-0103'] : layer === 'control' ? ['A-0105'] : []));
+  const apexCases: ApexCase[] = [{ id: 'APX-001', incidentId: a0.id, roomId: a0.roomId, key: c0.key, layers: c0.layers, hypotheses: c0.hypotheses, actions: [], reviewed: null, openedAt: ago(2), seeded: true }]; a0.apexId = 'APX-001';
+  return { v: 1, seededAt: t0, incidents, workOrders, staff, apexCases, learnCases: [], training: [], fiSessions: [], licenses: { 'SITE-NORTH:BRD': true, 'SITE-NORTH:TWN': false, 'SITE-NORTH:HUD': false },
+    events: [{ at: t0, by: 'system', type: 'workspace.seeded', aggregate: 'Workspace', detail: '5 incidents, 2 work orders, 1 APEX case, 4 people, synthetic estate', outcome: 'ALLOWED' }],
     adapters: { 'ADP-DSP': 'NOT_CONFIGURED', 'ADP-CAM': 'NOT_CONFIGURED', 'ADP-NET': 'NOT_CONFIGURED' },
     stock: { 'camera unit': { onHand: 2, checkedAt: ago(10), location: 'ATL store' }, 'mounting plate': { onHand: 6, checkedAt: ago(10), location: 'ATL store' }, processor: { onHand: 1, checkedAt: ago(33), location: 'MER store' }, loudspeakers: { onHand: 0, checkedAt: ago(40), location: 'ATL store' } },
     bookings: { 'R-ATL-4-218': [{ from: ago(-1, 2).slice(0, 16), to: ago(-1, 0).slice(0, 16), title: 'Board review' }], 'R-ATL-4-220': [] },
-    seq: { wo: 88, apex: 0, learn: 0, inc: 421, fi: 0 } };
+    seq: { wo: 88, apex: 1, learn: 0, inc: 421, fi: 0 } };
 }
 
 export function load(): Workspace { try { const s = localStorage.getItem(KEY); if (s) { const w = JSON.parse(s) as Workspace; if (w.v === 1) { if (!w.fiSessions) { w.fiSessions = []; w.licenses = seed().licenses; w.seq.fi = 0; } return w; } } } catch { /* storage unavailable */ } const w = seed(); save(w); return w; }
@@ -116,6 +122,29 @@ export function preflightFor(w: Workspace, woId: string, input: { access?: boole
   const parts = (wo.parts.length ? wo.parts : needs.parts.map((p) => ({ part: p, qty: 1 }))).map((p) => ({ ...p, stock: stockOf(w, p.part) }));
   return preflight({ window: wo.window, bookings: w.bookings[wo.roomId] || [], parts, access: input.access ? { confirmedBy: 'site champion (synthetic)' } : wo.access, safety: input.safety !== undefined ? { briefed: input.safety, heightPermit: input.heightPermit } : wo.safety, tools: needs.tools, toolsConfirmed: input.tools || wo.toolsConfirmed, needs, approval: { ok: true, why: 'break/fix on an operational room: no project authorization needed' } });
 }
+/** Re-plan the work window (12 Nov 2026: without it the seeded job could not pass its preflight through the page, a dead end found by the
+ *  staging journey). The service manager (service.assign) moves the window to the first three-hour slot, on the hour, at least a day
+ *  ahead, that the room's bookings leave free. The bookings are the synthetic calendar on the record; nothing is booked anywhere. */
+export function replanWindow(w: Workspace, persona: string, incidentId: string): Refusal | null {
+  const inc = incidentOf(w, incidentId); if (!inc) return refused(['no such incident']);
+  const n = need(w, persona, 'service.assign', 'service.replan', inc.id); if (n) return n;
+  const wo = workOrderOf(w, inc.workOrderId || ''); if (!wo) return deny(w, persona, 'service.replan', inc.id, ['no work order yet: assign first']);
+  const books = w.bookings[wo.roomId] || []; const t0 = new Date(Date.now() + DAY); t0.setUTCMinutes(0, 0, 0); t0.setUTCHours(t0.getUTCHours() + 1);
+  for (let h = 0; h < 24 * 14; h += 1) {
+    const from = new Date(t0.getTime() + h * 36e5), to = new Date(from.getTime() + 3 * 36e5);
+    const win = { from: from.toISOString().slice(0, 16), to: to.toISOString().slice(0, 16) };
+    if (!books.some((b) => overlaps(win, b))) { const was = wo.window; wo.window = win; log(w, persona, 'service.replan', wo.id, `window ${was ? `${was.from} → ${was.to}` : 'none'} re-planned to ${win.from} → ${win.to}, clear of the room's bookings (synthetic calendar)`); return null; }
+  }
+  return deny(w, persona, 'service.replan', wo.id, ['no free three-hour window in the next fourteen days']);
+}
+/** Recheck a part's stock (12 Nov 2026, same dead end): the count is confirmed as it stands on the synthetic record and its check date
+ *  becomes today. There is no inventory system behind it, and the ledger says so. The manager or the assigned technician may do it. */
+export function recheckStock(w: Workspace, persona: string, incidentId: string, part: string): Refusal | null {
+  const inc = incidentOf(w, incidentId); if (!inc) return refused(['no such incident']);
+  const n = need(w, persona, ['service.assign', 'work.start'], 'service.stock', inc.id); if (n) return n;
+  const s = w.stock[part]; if (!s) return deny(w, persona, 'service.stock', inc.id, [`${part} is not on the stock record`]);
+  s.checkedAt = now(); log(w, persona, 'service.stock', inc.id, `${part}: ${s.onHand} on hand at ${s.location}, rechecked (synthetic record; no inventory system)`); return null;
+}
 export function start(w: Workspace, persona: string, incidentId: string, input: { access: boolean; safety: boolean; heightPermit: boolean; tools: string[] }): Refusal | null {
   const inc = incidentOf(w, incidentId); if (!inc) return refused(['no such incident']);
   const wo = workOrderOf(w, inc.workOrderId || '')!; const pf = preflightFor(w, wo.id, input)!;
@@ -160,6 +189,24 @@ export function raiseIncident(w: Workspace, persona: string, input: { roomId: st
   const prior = w.incidents.find((i) => i.roomId === input.roomId && ['RESOLVED', 'CLOSED'].includes(i.state) && i.title.toLowerCase().split(' ')[0] === input.title.toLowerCase().split(' ')[0]);
   w.incidents.unshift({ id, roomId: input.roomId, roomName: input.roomName, buildingKey: input.buildingKey, title: input.title.trim(), summary: input.summary.trim(), severity: 'Standard', state: 'OPEN', openedAt: now(), restoredAt: null, closedAt: null, recurrenceOf: prior?.id || null, reopened: false, workOrderId: null, apexId: null, learnCaseId: null, history: [{ to: 'OPEN', at: now(), by: persona }], requesterConfirmed: false, verifiedBy: null });
   log(w, persona, 'service.raise', id, `${input.title.trim()} · ${input.roomName}${prior ? ` · recurrence of ${prior.id}` : ''}`); return { id };
+}
+
+/** Authorities that hand a commissioning deficiency to service (V2.5.5's issue handoff: the Service Manager or the Operations Lead; the Designer cannot). */
+export const HANDOFF_AUTHORITIES = ['issue.assign', 'service.triage'];
+export const incidentForDeficiency = (w: Workspace, deficiencyId: string) => w.incidents.find((i) => i.source?.kind === 'deficiency' && i.source.id === deficiencyId) || null;
+/**
+ * Hand a commissioning deficiency to ServiceHands: one incident per deficiency, linked both ways by the deficiency's id. Only a field
+ * deficiency is handed off (a room that is installed); a deficiency of a design still on paper gets a design change instead. Closing the
+ * incident does not close the deficiency: its retest, verified by someone else, does.
+ */
+export function handDeficiencyToService(w: Workspace, persona: string, input: { deficiencyId: string; issueId: string; state: string; title: string; severity: string; roomId: string; roomName: string; buildingKey: string; lifecycle: string }): Refusal | { id: string; existing: boolean } {
+  const n = need(w, persona, HANDOFF_AUTHORITIES, 'service.handoff', input.deficiencyId); if (n) return n;
+  const had = incidentForDeficiency(w, input.deficiencyId); if (had) return { id: had.id, existing: true };
+  if (['PLANNED', 'DESIGN_APPROVED', 'INSTALLATION_PENDING'].includes(input.lifecycle)) return deny(w, persona, 'service.handoff', input.deficiencyId, [`${input.roomName} is ${input.lifecycle}: nothing is installed, so this is a design deficiency and gets a design change, not a work order`]);
+  if (['CLOSED', 'ACCEPTED_EXCEPTION'].includes(input.state)) return deny(w, persona, 'service.handoff', input.deficiencyId, [`the deficiency is ${input.state.toLowerCase().replace(/_/g, ' ')}: there is nothing to hand off`]);
+  const id = `ISS-${String(++w.seq.inc).padStart(4, '0')}`;
+  w.incidents.unshift({ id, roomId: input.roomId, roomName: input.roomName, buildingKey: input.buildingKey, title: input.title.trim(), summary: `Commissioning deficiency ${input.issueId}, handed to service. Closing this job does not pass the test: the retest, verified by someone else, closes the deficiency.`, severity: input.severity === 'High' ? 'High' : 'Standard', state: 'OPEN', openedAt: now(), restoredAt: null, closedAt: null, recurrenceOf: null, reopened: false, workOrderId: null, apexId: null, learnCaseId: null, history: [{ to: 'OPEN', at: now(), by: persona }], requesterConfirmed: false, verifiedBy: null, source: { kind: 'deficiency', id: input.deficiencyId, issue: input.issueId, lifecycle: input.lifecycle } });
+  log(w, persona, 'service.handoff', id, `${input.deficiencyId} → ${id} · ${input.title.trim()} · ${input.roomName}`); return { id, existing: false };
 }
 
 // ------------------------------------------------------------------------------------------------------------ APEX

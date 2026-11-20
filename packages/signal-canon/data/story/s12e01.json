@@ -1,0 +1,881 @@
+{
+ "chapter": {
+  "id": "s12e01",
+  "kicker": "S12 · E01",
+  "title": "The Exception Register",
+  "pill": "S12E01 · The Exception Register",
+  "sub": "Twelve exceptions on paper. Forty-one in the rooms. And the best rooms are breaking the standard.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S12E01",
+   "RV-187",
+   "RV-188",
+   "RV-191",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#E5E7EB"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 12 · EPISODE 1 · DRAFT · CASE-060  Fenwright Group headquarters · month one · Maya (principal architect, one year), Rashida (CIO), Galen (senior technician), Noor (junior technician) and Teodor (head of EMEA) · Level L6 · Mastery support (reference only — choose the tool and say why)  Thirty offices, sixty meeting rooms, one standard — and a one-year contract whose last line reads: “Leave it so it doesn’t need you.” Maya starts by finding out what the rooms really are.  ⚑ RV-187: the CIO owns the standard and the change board; regional heads own their variants; each site owns its life safety. RV-188: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Exception Register",
+   "kind": "ESTATE · STANDARD",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "galen",
+    "rashida"
+   ],
+   "stakes": "A standard with twelve exceptions on paper and forty-one in the rooms — and the best rooms are the ones breaking it.",
+   "clock": "The CIO wants to know by Friday.",
+   "reward": "Every difference owned and dated, the dangerous one with its owners — and the better way on its way into the standard.",
+   "objectives": [
+    {
+     "key": "BR-S12E01-01",
+     "text": "Decide your first move"
+    },
+    {
+     "key": "twist",
+     "text": "Count what was never written down"
+    },
+    {
+     "key": "core",
+     "text": "Sort the differences"
+    },
+    {
+     "key": "BR-S12E01-02",
+     "text": "Decide what happens to EMEA's rooms"
+    },
+    {
+     "key": "BR-S12E01-03",
+     "text": "Decide how exceptions live from now on"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Exceptions are information."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Nothing here should need you”",
+   "sub": "Month one · Monday · 9:00 a.m. · Fenwright HQ"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Fenwright's architecture office: an estate board on the back wall shows thirty offices in three regions — AMERICAS, EMEA, APAC — every dot green; Rashida, the CIO, in a dark suit, gestures; Maya, new badge on her lanyard.",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "You have a year. At the end of it, nothing here should need you."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then first I need to see what's really in the rooms."
+    }
+   ],
+   "narration": [],
+   "caption": "Every dot green.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3270
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "flat",
+   "where": "Fenwright HQ · Monday 09:00",
+   "lines": [
+    {
+     "who": "rashida",
+     "pose": "N",
+     "expr": "flat",
+     "text": "You have a year. At the end of it, nothing here should need you."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Then the first thing I need is to see what's really in the rooms."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Twelve on paper”",
+   "sub": "Month one · Wednesday"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E01-01",
+   "prompt": "Wednesday. Galen and Noor's scan is back: 41 of 60 rooms differ from the standard; the register lists 12. Your first move?",
+   "happening": "Scan: 41 of 60 differ.",
+   "clock": "Month one · Wednesday",
+   "known": [
+    "◉ 41 rooms differ",
+    "◉ 12 exceptions recorded"
+   ],
+   "unknown": [
+    "Why each one differs"
+   ],
+   "risk": "Forcing back what works — or missing what's dangerous.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "The scan sits in an inbox until the quarterly review."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What do you need to know before you change anything?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Push the standard configuration to every non-conforming room tonight",
+     "result": "Galen: “Including EMEA's? The only rooms nobody complains about?”",
+     "consequence": "Enforces before understanding.",
+     "chips": [
+      "Blunt"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Read every difference with Galen and Noor: what, where, since when, why — and look for any that cross a safety or access boundary first",
+     "result": "By Thursday lunch there's a list — and one line that stops the room: a fire-alarm mute input disabled in Singapore.",
+     "consequence": "Evidence first; boundaries first.",
+     "chips": [
+      "Evidence",
+      "Boundaries"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Noor": 1,
+       "Galen": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Rewrite the standard to match the rooms",
+     "result": "The standard now includes a disabled fire-alarm input.",
+     "consequence": "Launders drift into policy.",
+     "chips": [
+      "Drift"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Send the scan to the regional heads and ask them to sort it out",
+     "result": "Three regions, three spreadsheets, three answers.",
+     "consequence": "Hands off the principal's job.",
+     "chips": [
+      "Unowned"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Twelve on paper, forty-one in the rooms.",
+   "body": "The register lists twelve exceptions. The rooms have forty-one differences: twenty-nine were never written down. Of the twelve that were, nine have no expiry date; the oldest ‘temporary’ one is six years old. And row three isn't a preference at all: a Singapore room's fire-alarm mute input — the one that silences the room when the alarm sounds — was disabled after nuisance mutes, ‘until refresh’. Nobody told the site's fire-alarm contractor.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E01-1",
+   "label": "Test: how many were never recorded — and how many never expire?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A conformance scan drawn as sixty squares, one per room: 19 green (matches), 12 amber (recorded exceptions), 29 red (unrecorded differences) and one dark red square outlined — the disabled fire-alarm mute input. 41 of 60 rooms differ (68%); 9 of 12 recorded exceptions have no expiry.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Forty-one.",
+   "flags": [
+    "RV-188"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "conformance scan"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 6087
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-01a",
+   "teaser": "the register's oldest row",
+   "title": "‘temporary — until refresh’",
+   "body": "Row 3 of the old register, six years old: ‘Singapore 2: fire-alarm mute input disabled — nuisance mutes. Temporary, until refresh.’ There was no refresh. Nobody told the fire-alarm contractor.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Galen and Maya beside a board. Twelve exceptions on the register. The scan says forty-one rooms don't match the standard. So twenty-nine differences nobody wrote down. And EMEA's rooms get a third of the complaints. Which ones do we put back?",
+   "characters": [
+    {
+     "id": "galen",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Galen",
+     "kind": "speech",
+     "text": "Twelve exceptions on the register. The scan says forty-one rooms don't match the standard."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So twenty-nine differences nobody wrote down. And EMEA's rooms get a third of the complaints."
+    },
+    {
+     "side": "L",
+     "who": "Galen",
+     "kind": "speech",
+     "text": "Which ones do we put back?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3711
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Exception register   Exception expiry   Promote to standard   The situation  A register lists 12 exceptions; a scan finds 41 of 60 rooms that differ; one region's unrecorded variant draws a third of the complaints. Which relationship shows how big the unrecorded share is — and which compares the regions fairly?   Which relationship do you reach for?  Usable hosts in a subnet  Last usable address  Percentage     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "W1",
+   "label": "**Learn it now:** exceptions — record, expire, escalate, or promote.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     The first step to networking, AV style     The OSI model applied to video and wireless"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-1201",
+   "label": "**Sort it:** back, owned — or promoted?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Paved desire lines",
+   "body": "Walk across any park and you'll find ‘desire lines’ — bare paths worn through the grass where people keep choosing a shorter way than the paved one. Some planners fence them off. Others wait a season, watch where the lines form, and pave those instead. A standard's exceptions are its desire lines. Some are shortcuts to be closed; some show you where the path should have been.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The exception that was better”",
+   "sub": "Month one · Thursday"
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The exception that was better.",
+   "body": "Noor sorts the complaints by region and divides by rooms. EMEA: seven complaints from eighteen rooms last month — 0.39 per room. Everyone else: 1.2. The eighteen EMEA rooms all run the same unrecorded DSP template, with automatic mic mixing tuned for their glass-walled rooms. Teodor approved it for his region two years ago and never told the standard. It's an exception. It's also the best-performing configuration in the estate.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E01-2",
+   "label": "Test: compare the rates — and whose decision the standard is."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #112 · AVERY'S LENS  An exception is information, not a mistake  Every difference from the standard gets an owner, a reason, a risk and an expiry. Some go back to standard, some cross a boundary and go to their owner today — and some turn out to be better than the standard.  The register said twelve exceptions; the rooms had forty-one — and the best-performing rooms in the estate were the ones breaking the standard."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S12E01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A bar chart of complaints per room per month by region: AMERICAS 1.25 (25 from 20 rooms), EMEA 0.39 (7 from 18 rooms), APAC 1.14 (25 from 22 rooms). EMEA's unrecorded template draws about a third of the complaints per room.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Rates, not totals.",
+   "flags": [
+    "RV-188"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "last month"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3974
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S12-01",
+   "who": "galen",
+   "prompt": "Twenty-five years I've kept these rooms running. And now a register tells me I've been doing it wrong in forty-one of them.",
+   "options": [
+    {
+     "label": "“It tells me you kept them running. It doesn't tell me why — that's what I need from you.”",
+     "who": "galen",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Now that I can do. Some of those twenty-nine have good reasons.",
+     "trust": {
+      "Galen": 2
+     }
+    },
+    {
+     "label": "“The standard's the standard.”",
+     "who": "galen",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Then you'll find out which of your rooms nobody complains about.",
+     "trust": {
+      "Galen": -1
+     }
+    },
+    {
+     "label": "“It's not personal.”",
+     "who": "galen",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "It's my rooms. It's a bit personal.",
+     "trust": {
+      "Galen": 0
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E01-02",
+   "prompt": "EMEA's eighteen rooms break the standard — and work better than it. What do you recommend?",
+   "happening": "EMEA's template: a third of the complaints.",
+   "clock": "Month one · Thursday",
+   "known": [
+    "◉ 0.39 vs 1.2 per room",
+    "◉ Teodor approved it locally"
+   ],
+   "unknown": [
+    "How it behaves in other rooms"
+   ],
+   "risk": "Losing the best configuration in the estate — or spreading it untested.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The template stays a secret nobody can defend."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who owns the standard, and what would convince them?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Force them back to the standard — rules are rules",
+     "result": "Complaints in EMEA triple within a month.",
+     "consequence": "Enforces the worse design.",
+     "chips": [
+      "Worse"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Record the template as a dated exception, test it in two AMERICAS rooms for a month, then take the evidence to Rashida's change board to promote it to the standard",
+     "result": "Rashida: “Two rooms, one month, then I vote.” Teodor, for once, says nothing.",
+     "consequence": "Promote with evidence, through the standard's owner.",
+     "chips": [
+      "Evidence",
+      "Owner"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Rashida": 1,
+       "Teodor": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Copy EMEA's template to all sixty rooms tonight",
+     "result": "Glass-room tuning in carpeted rooms: the APAC low rooms start pumping.",
+     "consequence": "The right idea without the test or the owner.",
+     "chips": [
+      "Untested"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Leave it as an unrecorded regional quirk",
+     "result": "Next year's architect forces it back.",
+     "consequence": "Good work that nobody can find.",
+     "chips": [
+      "Invisible"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E01-03",
+   "prompt": "How do exceptions live from now on?",
+   "happening": "Scan done; template in test.",
+   "clock": "Month one · Friday",
+   "known": [
+    "◉ 41 differences",
+    "◉ One life-safety issue"
+   ],
+   "unknown": [
+    "Next year's differences"
+   ],
+   "risk": "Twenty-nine new unrecorded differences by next January.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "The register stays at twelve."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What turns a difference into a decision someone owns?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E01). Option B needs Documentation at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "No exceptions at all — every room identical",
+     "result": "The first 50 Hz office and the first glass room break it in a week.",
+     "consequence": "A standard nobody can follow gets ignored.",
+     "chips": [
+      "Brittle"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "One register in the standard: every exception with an owner, a reason, a risk and an expiry; life-safety and access issues to their owners the same day; a quarterly review in the CIO's calendar; anything that outperforms the standard goes to the change board",
+     "result": "Rashida signs the register's first page. Forty-one rows, forty-one owners.",
+     "consequence": "Recorded, owned, dated, reviewed — and a way to learn.",
+     "chips": [
+      "Register",
+      "Expiry"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "docs": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Rashida": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "A shared spreadsheet the regional heads can edit",
+     "result": "Three regions, three styles; half the rows have no dates by spring.",
+     "consequence": "The best you can do without documentation discipline — a list, not a register.",
+     "chips": [
+      "Spreadsheet"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Let each region keep its own list",
+     "result": "Three lists, one standard, nobody sees the whole.",
+     "consequence": "Fragments the estate.",
+     "chips": [
+      "Fragmented"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same sixty squares a week later: 20 green matching the standard (Singapore's input restored), 22 green owned and dated exceptions, 18 blue EMEA rooms in test for promotion. 41 of 41 differences owned, reasoned and dated; the fire-alarm mute input restored by its owners.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Forty-one owners.",
+   "flags": [
+    "RV-188"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "register signed"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5583
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-01b",
+   "teaser": "EMEA's template file",
+   "title": "‘EMEA-DSP-2 · T. approved’",
+   "body": "The DSP template running in eighteen EMEA rooms: ‘EMEA-DSP-2 — automatic mixing tuned for glass rooms. Approved: T.’ Teodor approved it for his region. Nobody ever told the standard.",
+   "thread": "Systems",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1201",
+   "label": "**Service Mode:** run the week yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-060 · SIGNAL original  The Exception Register  Twelve exceptions on paper. Forty-one in the rooms. And the rooms breaking the rules were the best ones.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-060"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Month one · Friday · 5:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The architecture office on Friday; Noor holds the new register on a clipboard; Galen, grey beard, arms folded but smiling.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "galen",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "Forty-one rows. Every one has a name and a date."
+    },
+    {
+     "side": "R",
+     "who": "Galen",
+     "kind": "speech",
+     "text": "Twenty-two of them have my name. And a reason, for once."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3269
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The office at night; Rashida holds a single sheet from the finance office; Maya reads over the desk.",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "R",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "The board sets aside a hundred and twenty thousand a year for sixty rooms. Finance wants to know if that's enough."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "When were they bought?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Lifecycle Report.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3264
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A standard and its rooms drift apart quietly. Before enforcing anything, read every difference: what, where, since when, why. Record each with an owner, a reason, a risk and an expiry; send anything that crosses a safety or access boundary to its owner the same day; compare rooms by rates, not totals; and when an exception works better than the standard, test it and take it to the standard's owner. Exceptions are information."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Which ‘temporary’ fix in your work is older than a year?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S12E01",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

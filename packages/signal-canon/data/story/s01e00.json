@@ -1,0 +1,2646 @@
+{
+ "chapter": {
+  "id": "s01e00",
+  "kicker": "S01 · E00",
+  "title": "Signal",
+  "pill": "S01E00 · Signal",
+  "sub": "Forty-five minutes to doors.",
+  "status": "Production-bible entry v1.0 · frozen 23 Sep 2026",
+  "flags": [
+   "VR-01",
+   "VR-02",
+   "RV-01",
+   "RV-21",
+   "RV-24"
+  ],
+  "accent": "var(--cyan)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 0  Countdown mystery · Maya · Level L0 (Explorer)  Forty-five minutes before doors, rehearsal sounds perfect in the room, but the people joining from home keep losing Maya's audio — and everyone, Maya most of all, assumes the streaming computer is dying."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Stream That Keeps Dying",
+   "kind": "MAIN QUEST · PROLOGUE",
+   "level": "L0 · VOLUNTEER",
+   "party": [
+    "maya",
+    "ray",
+    "imani",
+    "theo"
+   ],
+   "stakes": "Everyone watching from home — including Walter, recovering two states away, for whom this is the only church there is.",
+   "clock": "45 minutes to doors. Two hours to air.",
+   "reward": "Ray's trust. A label maker. The first line in a change log that doesn't exist yet.",
+   "objectives": [
+    {
+     "key": "BR-S01E00-02",
+     "text": "Find out why the stream drops — without destroying the evidence"
+    },
+    {
+     "key": "twist",
+     "text": "Work out what Theo's surprise really did"
+    },
+    {
+     "key": "BR-S01E00-04",
+     "text": "Decide who gets the network: home or overflow"
+    },
+    {
+     "key": "core",
+     "text": "Stop the flood on the booth switch"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: find two things this booth is hiding"
+    }
+   ],
+   "rumor": "Last Sunday the stream froze at 10:41. At 10:43 somebody fixed it. Nobody knows who, or how."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “7:12”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback: a phone shows the livestream frozen on Pastor Jo mid-gesture with a spinning buffering wheel. Chat messages read 'Frozen again?' and 'We lost you, Pastor — Ms. Evelyn'.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "[stream frozen] “We lost you, Pastor.” — Ms. Evelyn, watching from home",
+   "flags": [
+    "VR-03",
+    "VR-01"
+   ],
+   "kind": "flashback",
+   "tab": "LAST SUNDAY · 10:41",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1317
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback in the booth: Maya's hands hover over the stream computer, frozen with worry, while Imani reaches under the desk and pulls the power on a small network switch.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "worried"
+    },
+    {
+     "id": "imani",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "10:43. Someone unplugs something. The stream comes back. Nobody ever finds out why.",
+   "flags": [],
+   "kind": "flashback",
+   "tab": "LAST SUNDAY · 10:43",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1623
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-00a",
+   "teaser": "the booth log for last Sunday",
+   "title": "“10:43 — fixed.”",
+   "body": "One line in pencil. No initials, no cause. Under it, in different handwriting: *fixed HOW?* Nobody answered. The page after it is blank for a week.",
+   "thread": "The first freeze · DEBT-001",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Early morning in the church parking lot. Maya sits in her car with cold coffee and her headset around her neck, looking at the building like it might bite.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_parking",
+   "bubbles": [],
+   "narration": [
+    "Sunday. 7:12 AM. Two hours before doors open. [COMIC]"
+   ],
+   "caption": null,
+   "flags": [
+    "Q-013"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 654
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the booth, Ray labels a cable. His mug is labeled too: RAY — NOT DECAF. Maya stands in the doorway.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "You came back."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Was I not supposed to?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1747
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "7:14 a.m. · the booth",
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Half of them don't come back after a freeze. The other half come back and click the update button."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Which half am I?"
+    },
+    {
+     "who": "ray",
+     "pose": "R",
+     "expr": "flat",
+     "text": "Ask me at eleven."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray holds out a white cable tie to Maya.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Most people don't, after a freeze. Hold this. In here, everything gets tied down or written down."
+    }
+   ],
+   "narration": [],
+   "caption": "She will keep it for twelve seasons.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1380
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-00b",
+   "teaser": "the bottom of the label maker",
+   "title": "Scratched into the plastic",
+   "body": "*R. — from D.H. · 1994 · label everything.* Ray has carried it for longer than Maya has been alive. He has never said who D.H. was.",
+   "thread": "The label maker",
+   "who": [
+    "ray",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo, a volunteer in his early twenties, backs through the door carrying a cardboard box marked MISC CABLES (GOOD ONES), grinning.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "R",
+     "expr": "grin"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "Morning! Big day! Don't look in the fellowship hall yet — it's a surprise!"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 655
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani, the technical director, passes the booth and checks in with Maya, who answers too quickly.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Stream's yours again today. You good?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Totally."
+    }
+   ],
+   "narration": [],
+   "caption": "She isn't.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1346
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “What is the system trying to do?”",
+   "sub": "7:40 · booth and stage"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A sticky note on the stream computer's monitor reads DO NOT UPDATE ON SUNDAY. An update prompt sits just under it. Maya eyes it like a suspect.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "An update prompt waits under the note. Maya eyes it the way you eye a suspect.",
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2295
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "The update prompt says it's been waiting since Thursday. Someone has clicked “Remind me tomorrow” eleven times."
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "That's not a person. That's a policy."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray pulls a stool over and doesn't sit on it. He talks to Maya.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Stop looking at the gear. Tell me what the system is trying to do."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "…Make sound?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1343
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya glances at the stream computer as she answers Ray.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "For who?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The room. And — everybody who isn't in it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1343
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray traces four things with one finger. In System View, four faint lines bloom over the booth, labeled SIGNAL, POWER, CONTROL and NETWORK. Maya writes the four words in her notebook.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Every system you'll ever touch has these four. Most have more. You'll find the rest yourself."
+    }
+   ],
+   "narration": [],
+   "caption": "Four words bloom over the booth. [COMIC Ch.01]",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1348
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At the lighting desk, Sofia calls over about the haze drifting across the stage.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_stage",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "radio",
+     "text": "Maya, is the stream picture okay with the haze?"
+    }
+   ],
+   "narration": [],
+   "caption": "It is. Remember the haze.",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 582
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Walking the center aisle during soundcheck, Maya pauses in the middle rows and tilts her head.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Huh. Kind of hollow right here."
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "radio",
+     "text": "Write it down. Not today's problem."
+    }
+   ],
+   "narration": [],
+   "caption": "(Next episode's problem.)",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1219
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Walk the paths”",
+   "sub": "8:20 · booth"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On the booth phone, the private test stream's waveform shows gaps: the sound drops out for a second or two while the picture keeps moving. Maya's hand moves toward the restart button. A confidence tick beside her reads 90.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [
+    "Soundcheck. Forty-five minutes to doors. [COMIC]"
+   ],
+   "caption": "*It's the computer. It has to be the computer.*  [audio drops out every 20–60 s — illustrative]",
+   "flags": [
+    "VR-06",
+    "RV-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": 90,
+   "art_bytes": 3195
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray asks Maya how confident she is.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "How sure?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Ninety."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": 90,
+   "art_bytes": 1355
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…Eighty-five."
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Eighty. It's eighty. Stop looking at me like that."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray asks what would change her mind. Maya has no answer.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "What would move you off ninety?"
+    }
+   ],
+   "narration": [],
+   "caption": "She doesn't have an answer.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1346
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E00-02",
+   "prompt": "Forty-five minutes to doors and the stream keeps dropping audio. What do you do first?",
+   "happening": "People at home lose the audio every 20–60 seconds.",
+   "clock": "44:12 to doors",
+   "known": [
+    "◉ The room sounds fine",
+    "◉ The picture keeps moving during gaps",
+    "? The stream computer froze last week"
+   ],
+   "unknown": [
+    "What's different from last week",
+    "Whether the internet is fine"
+   ],
+   "risk": "Everyone watching from home — including Walter, recovering two states away.",
+   "timer_s": 30,
+   "timeout": [
+    "Maya is still deciding when the next gap hits the preview. Forty-five minutes becomes forty.",
+    "Not choosing is a choice: the evidence-first move — walk the paths — was free."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Look at what's plugged into the small switch under the desk."
+    },
+    {
+     "id": "H2",
+     "keep": 0.85,
+     "text": "Some network traffic goes to every port unless the network is set up to stop it."
+    },
+    {
+     "id": "H3",
+     "keep": 0.7,
+     "text": "Compare how much traffic the stream computer is receiving with how much the stream needs."
+    },
+    {
+     "id": "H4",
+     "keep": 0.5,
+     "text": "If one kind of traffic is filling that port, the audio has to compete. What changed on Saturday?"
+    },
+    {
+     "id": "H5",
+     "keep": 0.25,
+     "text": "Full walkthrough, then a new variant where the new device is a lobby signage player."
+    }
+   ],
+   "note": "The clock can be extended or turned off in settings; scoring then rewards decisions, not speed.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Restart the stream computer",
+     "result": "Sound returns — then drops again after three minutes.",
+     "consequence": "Maya can't compare the traffic before and after, so her mechanism rests on less evidence. (CQ-S01E00-01)",
+     "chips": [
+      "About 4 minutes used",
+      "Receive history erased"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "May erase evidence"
+      }
+     ],
+     "canonical": false,
+     "fail": "Restarting erased the receive history — the one measurement that proves the cause.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Walter": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask the room what changed",
+     "result": "Theo answers on the radio: “I added overflow video Saturday!”",
+     "consequence": "She has the cause's name but not its mechanism; she still has to measure later.",
+     "chips": [
+      "Quick",
+      "Knows: ask what changed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Walk the four paths",
+     "result": "Output fine; the computer is being flooded; something new is on the switch.",
+     "consequence": "The strongest evidence trail for the rest of the morning.",
+     "chips": [
+      "About 5 minutes",
+      "Six pieces of evidence",
+      "Knows the four paths"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Walter": 2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Ray for the answer",
+     "result": "Ray: “What is the system trying to do?”",
+     "consequence": "Back to the choice. Ray never answers here.",
+     "chips": [
+      "Quick"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya walks the four paths: every power light is on, the console's stream meters are steady, the stream settings are unchanged, and the little switch under the desk has every light flickering hard and feels warm. She adds 'heat? ENVIRONMENT' to her notebook.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Is the internet down?"
+    }
+   ],
+   "narration": [],
+   "caption": "But the picture keeps flowing during every audio gap. A dead internet would take both.",
+   "flags": [
+    "VR-04",
+    "RV-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [
+    {
+     "state": "SUSPECTED",
+     "label": "network"
+    },
+    {
+     "state": "SUSPECTED",
+     "label": "heat"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2384
+  },
+  {
+   "origin": "injected",
+   "type": "twist",
+   "title": "The computer isn't broken — it's being shouted at",
+   "body": "The stream computer everyone blamed is receiving hundreds of megabits a second when it needs a few. It isn't failing; something else is flooding it. The machine you were about to restart is the only witness.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S01E00-R",
+   "label": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The stream computer's own network monitor shows it receiving hundreds of megabits per second when the stream needs only a few. Maya's confidence that the computer is at fault drops from 90 to 30.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It's not broken. It's being shouted at."
+    }
+   ],
+   "narration": [],
+   "caption": "Illustrative readout.",
+   "flags": [
+    "RV-01",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "receive rate"
+    }
+   ],
+   "confidence": 30,
+   "art_bytes": 1983
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray leans in toward the console. Maya notices the dropouts pause whenever he leans in.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It does that when you're here."
+    },
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Then we'd better not need me."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1348
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray's inventory photo from last month shows the switch with three cables. Today it has five, including a new blue one. On the back of the switch, facing the wall, a faded label: TEMP — AUDIO + STREAM ONLY — M.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Puzzle: what changed? Six differences. Three touch a path.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1140
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II (cont.) — “What changed on Saturday”",
+   "sub": "8:31 · equipment room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya follows the new blue cable out of the switch, through the floor box, into the equipment room, to a patch panel with a sticky note that says 'overflow!!'.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "She adds two more words: CONFIGURATION (something set up to send) and HUMAN WORKFLOW (someone set it up). Eight.",
+   "flags": [
+    "RV-18"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 841
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo appears in the equipment-room doorway, glowing with pride.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "S",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "You found my surprise!"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 510
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E00-03",
+   "prompt": "Theo is proud of what he built. What do you say?",
+   "happening": "",
+   "clock": "41:05 to doors",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Who plugged this in?”",
+     "result": "Theo gets defensive and explains Saturday only.",
+     "consequence": "Last Sunday's link stays blank until Season 5. Theo stops reporting changes, which makes S01E04 harder.",
+     "chips": [
+      "Theo trusts you less",
+      "A clue is lost"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "May erase evidence"
+      }
+     ],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Walk me through it”",
+     "result": "Theo explains — then admits the ten-minute test last Sunday.",
+     "consequence": "Theo tells Maya about his next change before he makes it (S01E04).",
+     "chips": [
+      "Theo trusts you more",
+      "Two pieces of evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Theo": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Trace it yourself",
+     "result": "Maya finds the patch; Theo drifts away.",
+     "consequence": "Theo reports changes to Ray instead of Maya.",
+     "chips": [
+      "A few minutes"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Hand Theo to Imani",
+     "result": "Imani takes Theo aside.",
+     "consequence": "The clue about last Sunday surfaces only at the debrief, after the decisions it could have informed.",
+     "chips": [
+      "Quick"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya speaks warmly to Theo.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "theo",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Walk me through what you set up. It looks like real work."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 512
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback, from Theo's point of view: Saturday, the empty fellowship hall. A donated video encoder and decoder; the camera picture on the big screen, perfect. He leaves a sticky note.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "theo",
+     "pose": "S",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_lobby",
+   "bubbles": [],
+   "narration": [],
+   "caption": "He never saw the label. It faces the wall.",
+   "flags": [],
+   "kind": "flashback",
+   "tab": "SATURDAY · THEO",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 951
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S1-00c",
+   "teaser": "the switch behind the desk",
+   "title": "“TEMP — M. · 3 WKS”",
+   "body": "The tape is sun-bleached. The date on it is three years old. Every building has one of these: a temporary thing that outlived the reason for it, and the person who remembered the reason.",
+   "thread": "Temporary things",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo, quieter now, admits something. Maya goes still.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "I tried it for ten minutes last Sunday too. During the sermon. Just to see."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 518
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook: 'Last week: same cause? SUSPECTED. Can't prove it — the switch was restarted.' Ray stands beside her.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Evidence you don't keep, you don't get back."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "UNKNOWN",
+     "label": "last Sunday's traffic"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1609
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo does the arithmetic out loud, stricken.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Theo",
+     "kind": "speech",
+     "text": "Grandpa's watching the stream."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 442
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S1-00",
+   "who": "theo",
+   "prompt": "Grandpa Walter watches from the hospital. It's the only church he gets right now. Is it going to work?",
+   "options": [
+    {
+     "label": "“He'll hear every word. I promise.”",
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Don't promise what you haven't proven. Promise what you'll do.",
+     "trust": {
+      "Theo": 1,
+      "Ray": -1
+     }
+    },
+    {
+     "label": "“I don't know yet. I'll know before ten — and I'll tell you either way.”",
+     "who": "theo",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Okay. That's actually better. Weirdly.",
+     "trust": {
+      "Theo": 1,
+      "Ray": 1
+     }
+    },
+    {
+     "label": "(Say nothing. Keep working.)",
+     "who": "theo",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "Right. Busy. Sorry.",
+     "trust": {
+      "Theo": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Multicast: one stream, many listeners",
+   "body": "In the late 1980s, researcher Steve Deering described IP multicast: send one copy of a stream and let the network copy it only where people asked for it. It works beautifully on switches that listen for those requests — and floods everything on switches that don't. That is Saturday's overflow video.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Whose network is it?”",
+   "sub": "8:38 · booth"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani, Ray, Theo and Maya crowd into the booth. Imani asks for one sentence.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "theo",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "One sentence."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "People at home lose the audio every twenty to sixty seconds. The room is fine."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1425
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani asks about the overflow room.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "And the overflow room?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Works perfectly. Because of the thing that's breaking the stream."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1284
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the equipment room, another switch — the church office's — has open ports. Maya looks at it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Another switch. The church office's. Open ports.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 503
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S01E00-04",
+   "prompt": "Online or overflow — this network can't carry both. What do you recommend to Imani?",
+   "happening": "The overflow video that works perfectly is what's breaking the stream.",
+   "clock": "38:40 to doors",
+   "known": [],
+   "unknown": [],
+   "risk": "Families in the overflow room, and everyone at home.",
+   "timer_s": 25,
+   "timeout": [
+    "The dropouts keep coming while you hesitate; Imani makes the call without your facts.",
+    "An owner needed a recommendation and didn't get one."
+   ],
+   "hints": [],
+   "note": "The learner recommends; Imani decides.",
+   "lab": "LAB-NET-01",
+   "lab_label": "Tuesday, with Priya: design the fix so the overflow video can never flood the stream again.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Move it to the office switch",
+     "result": "Ray: “Whose network is that?” Back to the choice.",
+     "consequence": "The boundary conversation. No credit.",
+     "chips": [
+      "Not yours: door access and giving kiosks"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "Not yours"
+      }
+     ],
+     "canonical": false,
+     "fail": "The office network isn't yours — it runs door locks and kiosks.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Ray": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Call Priya first",
+     "result": "Priya recommends unplugging the encoder and using the lobby TV, and books Tuesday.",
+     "consequence": "A Tuesday design session: the mechanism gets reproduced and the overflow path designed. (CQ-S01E00-06)",
+     "chips": [
+      "About 4 minutes",
+      "Priya trusts you more",
+      "Knows: every system has an owner"
+     ],
+     "badges": [
+      {
+       "kind": "up",
+       "text": "Escalate"
+      }
+     ],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Priya": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Restart the software, keep both",
+     "result": "Quiet for a while.",
+     "consequence": "The dropouts return at 10:41, mid-sermon. Emergency unplug on air.",
+     "chips": [
+      "Online viewers trust you less"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Restarting hid the fault; it came back mid-sermon.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Imani": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Unplug it; lobby TV",
+     "result": "Works this morning.",
+     "consequence": "Nobody owns the overflow design afterward; it resurfaces as a surprise in S01E06.",
+     "chips": [
+      "Quick",
+      "No owner"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Ray and Maya beside a board. Signal flow is the path from the source to the people — every box in between. Tonight the path ran through a switch that was full. How full is full? Utilization: traffic divided by link speed, times a hundred. Ninety megabits on a hundred-megabit port is ninety percent. A jammed hallway.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Signal flow is the path from the source to the people — every box in between. Tonight the path ran through a switch that was full."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How full is full?"
+    },
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Utilization: traffic divided by link speed, times a hundred. Ninety megabits on a hundred-megabit port is ninety percent. A jammed hallway."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1807
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Signal flow   The path a signal takes from its source to where people receive it — every box, cable and setting in between, in order.   Bandwidth   How much data a link can carry per second.   Multicast   Sending one stream to many receivers at once; floods a network unless managed.   Formula, variables and a worked example   ƒ FORMULA · Link utilization  % = traffic ÷ link speed × 100   traffic  Mb/s on the link  link speed  Mb/s the port can carry    Worked example.  300 Mb/s on a 1,000 Mb/s port: 300 ÷ 1,000 × 100 = 30%."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 01 OF 31 · PP. 8, 26–27  PART 1 CORE TECHNOLOGY FOUNDATIONS · PART 2 AV NETWORKING & DATA  Ray slid a thick, coffee-ringed binder across the desk:  EMPATHIA LEARN FIELDBOOK . His name was on the spine in marker, crossed out, and MAYA was written underneath. “Read the first page tonight. Read the rest when it happens to you.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB1",
+   "label": "**Fieldbook module 1 — One signal, four disciplines.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 1 · tap a plate to open it full size     One signal, two destinations     AV systems and networking foundations     AV, computers, networking and infrastructure"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-01",
+   "label": "**Fix-It Lab:** the stream mix is empty — rebuild it before doors.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Priya answers her phone in her kitchen, a plate of pancakes on the counter and a child negotiating in the background.",
+   "characters": [
+    {
+     "id": "priya",
+     "pose": "H",
+     "expr": "talk"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Priya",
+     "kind": "phone",
+     "text": "That office switch runs the door locks and the giving kiosks. Not on a Sunday morning, and not without a plan."
+    }
+   ],
+   "narration": [],
+   "caption": "A child negotiates pancakes in the background.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 456
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "on speaker · Priya's kitchen",
+   "lines": [
+    {
+     "who": "priya",
+     "pose": "H",
+     "expr": "talk",
+     "text": "No — pancakes are not a network protocol. Sorry. Go on. Which switch?"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Priya gives her recommendation over the phone.",
+   "characters": [
+    {
+     "id": "priya",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Priya",
+     "kind": "phone",
+     "text": "Unplug the encoder. Put the livestream on the lobby TV for the overflow room. I'll come Tuesday and we'll design it properly."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 457
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani decides.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Online gets the service. The overflow room gets the stream on the TV, a little behind — and I'll tell them why."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1210
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani speaks to everyone; Theo raises his hand to set up the lobby TV before anyone asks.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "theo",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Nobody's watching “a stream.” They're watching us."
+    }
+   ],
+   "narration": [],
+   "caption": "Theo volunteers for the lobby TV before anyone asks.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1281
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III (cont.) — “One change”",
+   "sub": "8:45 · booth"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray asks for a prediction before Maya pulls the cable.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Before you pull it — what do you expect to happen?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1343
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya states her prediction with a confidence tick of 75.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The receive rate drops to a few megabits and the audio stops dropping. If it doesn't, I'm wrong about the switch."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": 75,
+   "art_bytes": 1284
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Close-up: one hand unplugs one blue network cable from the switch. In System View the crowded traffic lane thins to a trickle; the receive rate falls; the switch is exactly as warm as before.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Only that cable. The encoder stays powered. It goes back in if she's wrong. Two minutes: no gaps.",
+   "flags": [
+    "RV-01",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "falls to a few Mbit/s"
+    },
+    {
+     "state": "CONTRADICTED",
+     "label": "heat"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 355
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya reaches for her pen to write FIXED. Ray stops her with a question.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Fixed where?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "…Here."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1342
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #1 · AVERY'S LENS  Show the real status  A system must tell people what is actually happening, in their terms, fast.  The stream software said “Healthy” while people at home heard gaps. A status that describes the machine instead of the audience is worse than none."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S01E00",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray asks who they were doing this for. Maya is already grabbing her phone and heading for the door.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Who were we doing this for?"
+    }
+   ],
+   "narration": [],
+   "caption": "She's already heading for the door.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1333
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act IV — Proof · “Listen where the people are”",
+   "sub": "9:04 · parking lot"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Proof panel S01E00-P014-PN03. The parking lot: Wi-Fi off, cellular on, earbuds in, phone at arm's length, a ten-minute timer. Families arrive in their good clothes. Ray's voice on the radio.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "ana",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "lily",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_parking",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Ray",
+     "kind": "radio",
+     "text": "What are you hearing?"
+    }
+   ],
+   "narration": [],
+   "caption": "Ten minutes. No dropouts.",
+   "flags": [
+    "RV-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 1"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1172
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Behind Maya, the church doors open at 9:12. She writes in her notebook.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_parking",
+   "bubbles": [],
+   "narration": [],
+   "caption": "*Proof = listen where the people are.*  Behind her, at 9:12, the doors open.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 591
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Back inside, Maya checks what she might have broken: the pastor's mic check from the front, middle and back rows is fine, the console tablet is still in control, and the lobby TV has picture and sound a few seconds behind, as Imani accepted.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The middle rows still sound a little hollow.",
+   "flags": [
+    "RV-18"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2018
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act IV (cont.) — “10:41”",
+   "sub": "9:58 · booth"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The stream goes live. Maya says the line this time, and means it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "We're live — to the room, and to everyone who couldn't be in it."
+    }
+   ],
+   "narration": [
+    "9:58 AM. Two minutes to air. [COMIC]"
+   ],
+   "caption": "[COMIC]",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1576
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "10:41 on the booth clock. Everyone looks at the clock except Ray, who looks at Maya. She has the stream on her phone, on cellular, in one ear.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "theo",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "ray",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The minute passes. Then five.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "condition 2"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1661
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At a distance and in silhouette: Pastor Jo baptizes Lily. The congregation watches.",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "lily",
+     "pose": "N",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [],
+   "caption": "About 11:05.",
+   "flags": [
+    "VR-05",
+    "RV-21"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1771
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Theo's phone buzzes and he holds it out to Maya. A text from Walter: 'I can see her. Clear as day. Tell Maya thank you.' Maya can't say anything at all.",
+   "characters": [
+    {
+     "id": "theo",
+     "pose": "P",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Maya can't say anything at all.",
+   "flags": [
+    "VR-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2147
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "11:40, the debrief. Imani asks the three questions.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "What broke, what almost broke, what do we fix before next week?"
+    }
+   ],
+   "narration": [],
+   "caption": "[COMIC Ch.11]",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1349
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya answers carefully.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Broke: stream audio. Cause — strongly supported, not proven: the overflow video flooding the booth switch. Priya and I test it Tuesday."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1209
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya continues, looking at Theo.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "theo",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Almost broke: we nearly put it on the office network. Fix: the overflow room needs a real design. And we need somewhere to write changes down."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1281
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A blank sheet headed in Ray's handwriting: BOOTH CHANGE LOG. Maya writes the first entry. Theo adds Saturday's, after the fact.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1370
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani opens a problem record for last Sunday. Maya writes UNKNOWN beside last week in her notebook.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "Unknown. The evidence went when I restarted the switch. That one's mine."
+    }
+   ],
+   "narration": [],
+   "caption": "For the first time since last Sunday, she breathes out.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "UNKNOWN",
+     "label": "last Sunday"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2125
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "theo",
+     "pose": "N",
+     "expr": "worried",
+     "text": "So… it's nobody's fault?"
+    },
+    {
+     "who": "ray",
+     "pose": "N",
+     "expr": "flat",
+     "text": "It's everybody's. That's the good news. Everybody can fix it."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "lessonbreak",
+   "cls": "lessonbreak",
+   "text": "PRACTICE BREAK · S01 · E00  Your turn before the debrief  Work this episode's problem yourself: a drill, a lesson, and the live incident. Every one can be failed, and every failure explains itself."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-02",
+   "label": "**Clue Board:** forty-five minutes to doors.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "N1",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's printed label wrapped on the blue cable: OVERFLOW ENC — TEMPORARY — SEE LOG #1. On the desk, Ray's old notebook lies open to a page the reader can see and Maya can't: 'console pw' followed by a blacked-out password.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Ray reads the label and nods.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1144
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ray on the phone with Mateo, whose voice we only hear.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ray",
+     "kind": "speech",
+     "text": "Your temporary switch made it three years."
+    },
+    {
+     "side": "R",
+     "who": "Mateo",
+     "kind": "phone",
+     "text": "Temporary is a promise, Ray. Somebody's got to keep it."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1209
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya threads the morning's cable tie onto her lanyard. End card: SIGNAL.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "She threads the cable tie onto her lanyard.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 366
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "7:02 p.m. · empty booth",
+   "lines": [
+    {
+     "who": "ray",
+     "pose": "R",
+     "expr": "closed",
+     "text": "(in the notebook, where nobody sees) *She asked what would move her off ninety. Keep her.*"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  The fix isn't the proof. The proof is the original symptom gone  where the people are , under two conditions, with the thing next to it checked — and an honest UNKNOWN for what you can no longer prove."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · That morning the congregation met in three places — the sanctuary, the fellowship hall and people's homes. Pastor Jo's text was 1 Corinthians 12, the body with many parts.  Boundary: none of this explains or proves the network fault."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S01E00",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

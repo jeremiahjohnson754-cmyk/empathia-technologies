@@ -1,0 +1,929 @@
+{
+ "chapter": {
+  "id": "s07e07",
+  "kicker": "S07 · E07",
+  "title": "Fifty Hertz",
+  "pill": "S07E07 · 50 Hz",
+  "sub": "The rack room smells of hot varnish, and every recording has bands rolling through it. Both came from the standard.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S07E07",
+   "RV-150",
+   "RV-151",
+   "RV-154",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#2DD4BF"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 7 · EPISODE 7 · DRAFT  Field visit · Maya, Luis, Renske (the site electrician) and Adaeze · Level L5 · Advanced support (formulas on request)  Valmera’s new training centre was fitted from HQ’s central stock. The rack room smells of hot varnish, and every recording has bands rolling through it.  ⚑ RV-154: power is the site electrician’s — nobody touches a hot unit; smoke or flame means the fire alarm. RV-151: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Fifty Hertz",
+   "kind": "FIELD VISIT · REGIONAL POWER",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "luis",
+    "adaeze"
+   ],
+   "stakes": "A rack room that smells of hot varnish, and recordings with bands rolling through every lesson. Both came from the standard.",
+   "clock": "Before Monday's course launch in Valmera.",
+   "reward": "A safe rack, clean recordings, and a standard that says where it applies.",
+   "objectives": [
+    {
+     "key": "BR-S07E07-01",
+     "text": "Decide what happens in the first minute"
+    },
+    {
+     "key": "twist",
+     "text": "Find what was in the rack"
+    },
+    {
+     "key": "core",
+     "text": "Balance the new rack loads"
+    },
+    {
+     "key": "BR-S07E07-02",
+     "text": "Decide how the power is fixed"
+    },
+    {
+     "key": "BR-S07E07-03",
+     "text": "Decide what Valmera's cameras should be"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two HQ files"
+    }
+   ],
+   "rumor": "Standard in Harrowmere. Smoking in Valmera."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Hot varnish”",
+   "sub": "Thursday · 2:10 p.m. Valmera"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Valmera rack room from its doorway: heat shimmer over the lower units of one rack, marked off. Renske, the site electrician, holds an arm out to keep people back; Luis stands well clear.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "luis",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "s7kit.bg_rackroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Renske",
+     "kind": "speech",
+     "text": "Everybody out and stay out. I'm isolating it at the board."
+    },
+    {
+     "side": "R",
+     "who": "Luis",
+     "kind": "speech",
+     "text": "Out. All of us."
+    }
+   ],
+   "narration": [],
+   "caption": "Nobody touches a hot unit.",
+   "flags": [
+    "RV-154"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2952
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "Valmera training centre · rack room corridor · Thursday 14:12",
+   "lines": [
+    {
+     "who": "luis",
+     "pose": "H",
+     "expr": "worried",
+     "text": "Everyone's out. Renske's isolating it at the board now."
+    },
+    {
+     "who": "maya",
+     "pose": "H",
+     "expr": "flat",
+     "text": "Good. Nobody goes back in until she says so."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The converter in the rack”",
+   "sub": "Thursday · 2:12 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E07-01",
+   "prompt": "14:12. Luis is on the phone: hot varnish smell, the electrician on her way. What do you tell him?",
+   "happening": "Hot varnish smell in the rack room.",
+   "clock": "Thursday 14:12 Valmera",
+   "known": [
+    "◉ Smell, no smoke yet",
+    "◉ Electrician on her way"
+   ],
+   "unknown": [
+    "What's overheating"
+   ],
+   "risk": "A fire in a rack room — or a person hurt by a hot unit.",
+   "timer_s": 20,
+   "timeout": [
+    "Someone opens the rack to look.",
+    "Renske arrives to find a person beside a scorching unit."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose is the power, and what keeps people safe until she's there?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Unplug the UPS units now",
+     "result": "A hot unit, a hand on it, a plug that might arc.",
+     "consequence": "Touching what the electrician should isolate.",
+     "chips": [
+      "Unsafe"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "ELECTRICIAN'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Nobody touches a hot unit.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Luis": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Everyone out and away from the rack; the site electrician isolates it at the board; if there's smoke or flame, pull the fire alarm and leave — and nobody goes back in until she says so",
+     "result": "The room is clear; Renske isolates the circuit at 14:25; no smoke, no flame.",
+     "consequence": "Distance, the owner of the power, and the fire alarm if it gets worse.",
+     "chips": [
+      "Safety",
+      "Owner of power"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Luis": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Open the rack and find the hot unit",
+     "result": "Someone's face is next to a scorching converter.",
+     "consequence": "Investigation before safety.",
+     "chips": [
+      "Unsafe"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Safety first, then evidence.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Luis": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Turn the air conditioning up and keep the class going",
+     "result": "The smell gets stronger during the lesson.",
+     "consequence": "Treating heat as comfort.",
+     "chips": [
+      "Unsafe"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A burning smell is not a comfort problem.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Luis": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The converter in the rack.",
+   "body": "Renske's findings: HQ's central stock sent the standard UPS — a 120 V-only unit. The local installer, handed a 120 V box in a 230 V building, ran two of them from small 1,000 VA travel converters. Recharging, each UPS drew about 1,400 W: at least 140% of the converter's rating. One scorched. The parts list had no voltage column; ‘standard’ meant ‘standard in Harrowmere’.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S07E07-1",
+   "label": "Test: how overloaded were the converters — and whose call is it?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A rack power sheet: two red boxes, UPS A and UPS B, both 120 V only and fed through 1,000 VA converters; 1,400 W on 1,000 VA is at least 140%; the parts list has one UPS model for every country; isolated by the site electrician.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Standard in Harrowmere. Scorched in Valmera.",
+   "flags": [
+    "RV-154"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "electrician's findings"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2050
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Luis and Maya beside a board. Fifty-hertz mains here. The LED panels pulse a hundred times a second. Your HQ profile shoots at a sixtieth. A sixtieth holds one and two-thirds pulses — the leftover shows as bands. A hundredth holds exactly one. Or we shoot fifty frames, like everyone else in Valmera. Either way it's design, not drift. Write it down.",
+   "characters": [
+    {
+     "id": "luis",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s7kit.bg_training",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Luis",
+     "kind": "speech",
+     "text": "Fifty-hertz mains here. The LED panels pulse a hundred times a second. Your HQ profile shoots at a sixtieth."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "A sixtieth holds one and two-thirds pulses — the leftover shows as bands. A hundredth holds exactly one."
+    },
+    {
+     "side": "L",
+     "who": "Luis",
+     "kind": "speech",
+     "text": "Or we shoot fifty frames, like everyone else in Valmera. Either way it's design, not drift. Write it down."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1831
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Mains frequency   Flicker   Shutter angle   Step-down transformer   If you need it   ƒ Ask for the formula · Flicker-free shutter   ƒ FORMULA · Flicker-free shutter  f flicker  = 2 × f mains  · no bands when t s  × f flicker  is a whole number   f mains   mains frequency, Hz (50 or 60)  f flicker   how often the light's output pulses, Hz  t s   shutter (exposure) time, s      ƒ Ask for the formula · Current from power   ƒ FORMULA · Current from power  I = P ÷ V   I  current, A  P  power, W  V  voltage, V"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "E7",
+   "label": "**Learn it now:** fifty hertz, flicker and regional variants.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Hear it right — EQ it right (the ear)     Sound pressure, room modes and the spectrum     Point it at people, not at the ceiling"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🎥 SEE IT · CHALLENGE · LEVEL 3  Fix the unfocused camera  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "see-focus"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E07-02",
+   "prompt": "Thursday evening. The UPS units are isolated. How is the power fixed?",
+   "happening": "Converters removed; two 120 V UPS units unusable here.",
+   "clock": "Thursday 18:00 Valmera · launch Monday",
+   "known": [
+    "◉ 230 V site, 120 V parts",
+    "◉ Converters ≥ 140% loaded"
+   ],
+   "unknown": [
+    "The rack's circuit loads with new units"
+   ],
+   "risk": "An unprotected launch — or improvised power again.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody orders anything.",
+    "Monday's launch runs without UPS protection."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What's the right part — and who installs it?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Buy bigger converters so the 120 V units can stay",
+     "result": "Renske: “No. The fix for the wrong part is the right part.”",
+     "consequence": "Improvised power in someone else's building.",
+     "chips": [
+      "Improvised"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "ELECTRICIAN'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Power fixes are the electrician's — and the right part.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Region-rated 230 V UPS units from a regional parts list, installed and signed by the site electrician on a load plan she checks — and the standard's parts list gets voltage, frequency, plug and a regional equivalent for every item",
+     "result": "The units arrive Friday; Renske installs them Saturday and signs the work.",
+     "consequence": "The right part, by the right person, and a standard that says where it applies.",
+     "chips": [
+      "Right part",
+      "Electrician signs"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Team": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Run the racks without a UPS until HQ decides",
+     "result": "The first power blip drops every class and corrupts two recordings.",
+     "consequence": "Removes the protection to avoid the question.",
+     "chips": [
+      "Unprotected"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ship the 120 V units back and wait for HQ to choose",
+     "result": "Three weeks of waiting; the launch slips.",
+     "consequence": "Slow, and the standard stays wrong.",
+     "chips": [
+      "Slow"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-PWR-04",
+   "label": "**Plan it:** balance the new 230 V rack loads for the electrician.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Fifty and sixty",
+   "body": "In the 1890s the companies building the first alternating-current systems tried many frequencies. North America settled on 60 Hz; most of Europe, and much of the world after it, on 50 Hz — choices made by competing manufacturers and engineers, not by physics. More than a century later, every camera that crosses between them has to be told which one it's in.",
+   "flag": "RV-27",
+   "when": "1890s",
+   "lab": "PHY-S07E07"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “A hundred pulses a second”",
+   "sub": "Friday · 10:00 a.m. Valmera"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A training room with the camera's view on the front display: pale horizontal bands rolling down the picture of the presenter. Adaeze points at them; Maya frowns.",
+   "characters": [
+    {
+     "id": "adaeze",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "s7kit.bg_training",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Adaeze",
+     "kind": "speech",
+     "text": "Every recording. Bands, rolling. HQ's camera profile, untouched."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Untouched — in a fifty-hertz building."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2041
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S7-07",
+   "who": "luis",
+   "prompt": "HQ ships us kit for another continent, then calls my fixes ‘drift’.",
+   "options": [
+    {
+     "label": "“Then the standard's wrong, not Valmera. Let's write the regional variants — voltage, frequency, cameras — and make the scanner read them.”",
+     "who": "luis",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "I've waited three years to hear someone from HQ say ‘the standard's wrong’.",
+     "trust": {
+      "Luis": 2
+     }
+    },
+    {
+     "label": "“The installer shouldn't have used converters.”",
+     "who": "luis",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "The installer was handed a 120 V box in a 230 V building and told it was standard.",
+     "trust": {
+      "Luis": 0
+     }
+    },
+    {
+     "label": "“Why didn't you flag it?”",
+     "who": "luis",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I did. The ticket was closed as ‘non-standard request’.",
+     "trust": {
+      "Luis": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S7-07a",
+   "teaser": "the central-stock parts list",
+   "title": "UPS-1500 (all sites)",
+   "body": "The HQ central-stock parts list: ‘UPS-1500 · all sites’. Columns: part number, quantity, price. No voltage. No frequency. No plug. A list written in a 120 V building.",
+   "thread": "Power",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "A hundred pulses a second.",
+   "body": "The LED panels run on Valmera's 50 Hz mains and pulse a hundred times a second. The HQ camera profile — 59.94 frames a second, a 1/60 s shutter — holds one and two-thirds pulses per exposure; the leftover third shows as bands, rolling because the frame rate doesn't divide the pulses evenly. The scanner flags any change to that profile as drift.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S07E07-2",
+   "label": "Test: why the bands — and what is a 50 fps profile here?"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S07E07",
+   "label": "**Work it out:** stop the bands on Valmera's recordings.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E07-03",
+   "prompt": "Friday. What should Valmera's cameras be?",
+   "happening": "Bands on every recording.",
+   "clock": "Friday 11:00 Valmera",
+   "known": [
+    "◉ 100 Hz pulses",
+    "◉ 1/60 s holds 1.67"
+   ],
+   "unknown": [
+    "What the change board will say"
+   ],
+   "risk": "A course launched with unusable recordings — or a fix the scanner calls drift.",
+   "timer_s": 25,
+   "timeout": [
+    "The weekend comes first.",
+    "Monday's recordings band."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which shutter holds a whole number of pulses — and where does that get written down?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Keep the HQ profile — the standard is the standard",
+     "result": "Every lesson recorded with bands through it.",
+     "consequence": "A rule that's wrong here.",
+     "chips": [
+      "Wrong here"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A standard must say where it applies.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "A Valmera regional variant — 50 fps with a 1/100 s shutter (1/100 s at 59.94 for anything HQ must receive at 59.94) — approved by the change board, recorded, and read by the scanner",
+     "result": "Approved Friday afternoon. The scanner turns Valmera's cameras from red to ‘variant · approved’.",
+     "consequence": "Design, recorded where the tools can read it.",
+     "chips": [
+      "Regional variant",
+      "Scanner reads it"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Switch the LED panels off and teach by daylight",
+     "result": "November. Four o'clock sunsets.",
+     "consequence": "Removes the light to fix the camera.",
+     "chips": [
+      "Workaround"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Fix it in the edit",
+     "result": "Forty hours of lessons a week, each hand-cleaned.",
+     "consequence": "Cleaning the symptom forever.",
+     "chips": [
+      "Workaround"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #68 · AVERY'S LENS  A standard must say where it applies  A part number, a camera profile or a setting is only ‘standard’ where its assumptions hold — voltage, frequency, language, law.  The HQ standard UPS was a 120 V part. In Valmera it arrived with a pair of travel converters, and one of them scorched."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S07E07",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The rack power sheet after the fix: two green boxes, UPS A and UPS B at 230 V on Circuit 1 at 12.2 A; region-rated, installed and signed by the electrician; the parts list now has voltage, frequency, plug and regional equivalents.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The right part, signed by the right person.",
+   "flags": [
+    "RV-154"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "electrician signed · clean recording"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1874
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S7-07b",
+   "teaser": "the camera profile file",
+   "title": "// global",
+   "body": "The camera profile, distributed to every site: ‘59.94 fps · shutter 1/60 · // global’. Correct for Harrowmere's 60 Hz lights. Wrong for Valmera's and Tahvara's 50 Hz ones — and ‘global’ means the scanner flags any change.",
+   "thread": "Video",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-707",
+   "label": "**Service Mode:** run the two days yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Monday · course launch"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Monday: the course launches in a lit training room; the front display shows a clean picture of the presenter; Luis and Maya at the back.",
+   "characters": [
+    {
+     "id": "luis",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s7kit.bg_training",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Luis",
+     "kind": "speech",
+     "text": "A clean picture, a cool rack, and my cameras aren't red on your scanner any more."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "They were never wrong. The standard was."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1660
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Valmera auditorium, empty: a stage, a screen, two glass interpretation booths at the back. Adaeze on the phone, walking the room with Maya.",
+   "characters": [
+    {
+     "id": "adaeze",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s7kit.bg_summit",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Adaeze",
+     "kind": "phone",
+     "text": "The leadership summit's here next month. Three languages, one stream — and they want captions."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Who's interpreting?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Three Languages.*",
+   "flags": [
+    "RV-155"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1097
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A part or setting is only “standard” where its assumptions hold: list voltage, frequency, plug and the regional equivalent. Never improvise power — the fix for the wrong part is the right part, installed and signed by the site electrician; a hot unit is theirs to isolate. Lights on mains pulse at 2 × f mains ; a shutter that holds a whole number of pulses removes the bands. Record regional variants so the scanner reads design as design."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Which of your “standard” settings quietly assume the place where they were written?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S07E07",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

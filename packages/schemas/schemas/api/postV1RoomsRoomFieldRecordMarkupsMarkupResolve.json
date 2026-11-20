@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMarkupsMarkupResolve/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/field-record/markups/{markup}/resolve request body",
+  "description": "Resolve a note with what was done",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "resolution"
+  ],
+  "properties": {
+    "resolution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+ "$description": "The home page opening sequence: element captures of the running demonstration (dark, reduced motion, synthetic data). The website build copies only these files with these hashes.",
+ "frames": {
+  "room": {
+   "route": "#/lite/room/R-ATL-4-218",
+   "element": "[data-testid=lite-room-3d]",
+   "trim": [
+    0.07,
+    0.12,
+    0,
+    0.02
+   ],
+   "perspective": "employee",
+   "shows": "Atlas 4.218, furnished, in 3D",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:41.575Z",
+   "data": "synthetic demonstration data",
+   "files": {
+    "room-1200.webp": "bb8c9de9a934ea36c92ed7cc30ddbf7c94c30c3da602c67de0add8144c9078c3"
+   }
+  },
+  "overlays": {
+   "route": "#/lite/room/R-ATL-4-218?mode=engineer",
+   "element": "[data-testid=lite-room-3d]",
+   "trim": [
+    0.07,
+    0.12,
+    0,
+    0.02
+   ],
+   "perspective": "syseng",
+   "shows": "the same room with camera coverage and microphone pickup drawn on it",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:45.067Z",
+   "data": "synthetic demonstration data",
+   "files": {
+    "overlays-1200.webp": "5649fa2cd49d50a26b2b0f28a16ebf489fd388024ee7553813ef84068ca4ba03"
+   }
+  },
+  "floor": {
+   "route": "#/lite/b/ATL/4",
+   "element": "[data-testid=lite-floor-3d]",
+   "trim": [
+    0.02,
+    0.09,
+    0,
+    0
+   ],
+   "perspective": "syseng",
+   "shows": "floor 4 of Atlas HQ, every room on it",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:48.814Z",
+   "data": "synthetic demonstration data",
+   "files": {
+    "floor-1200.webp": "25be4b7394e3ebe7e848b4f78ee3a8ea178c0cc0bf981f8b460685b44809f385"
+   }
+  },
+  "building": {
+   "route": "#/lite/b/ATL",
+   "element": "[data-testid=lite-building-3d]",
+   "trim": [
+    0.02,
+    0.09,
+    0,
+    0
+   ],
+   "perspective": "syseng",
+   "shows": "Atlas HQ, its floors drawn apart",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:52.556Z",
+   "data": "synthetic demonstration data",
+   "files": {
+    "building-1200.webp": "f198badc700806199fa8a6faa86a96fccc88620b5d20d6e76d9ed55ed97efe24"
+   }
+  },
+  "campus": {
+   "route": "#/lite",
+   "element": "[data-testid=lite-campus-3d]",
+   "trim": [
+    0.17,
+    0.09,
+    0,
+    0
+   ],
+   "perspective": "syseng",
+   "shows": "the demonstration campus, every building",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:44:56.159Z",
+   "data": "synthetic demonstration data",
+   "files": {
+    "campus-1200.webp": "e695388a4ccd5660b29c892e5a468ea526b4724ec00485611f1a8602532c449e"
+   }
+  },
+  "estate": {
+   "route": "#/pro/issues",
+   "element": "[data-testid=pro-failure-map]",
+   "trim": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "perspective": "ops",
+   "shows": "the failure map: every building’s open issues, from the same records",
+   "colorScheme": "dark",
+   "reducedMotion": true,
+   "commit": "eca7f43",
+   "capturedAt": "2026-11-19T23:45:00.654Z",
+   "data": "synthetic demonstration data",
+   "files": {
+    "estate-1200.webp": "0c8aaa34272ededcb52d933a15e7fba52cdbac3325265266cc6e4c251ba02d95"
+   }
+  }
+ }
+}

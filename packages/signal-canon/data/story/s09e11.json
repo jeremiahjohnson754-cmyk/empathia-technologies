@@ -1,0 +1,274 @@
+{
+ "chapter": {
+  "id": "s09e11",
+  "kicker": "S09 · E11 · BOSS LEVEL",
+  "title": "Every Door at Once",
+  "pill": "S09E11 · Boss",
+  "sub": "Security and infrastructure compromise.",
+  "status": "**DRAFT** · boss level (owner request) · physics challenges are teaching models (CH-01)",
+  "flags": [
+   "DR-S09E11",
+   "CH-01",
+   "BOSS-01",
+   "BOSS-02"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 9 · EPISODE 11 · BOSS LEVEL · DRAFT  Security and infrastructure compromise · Level 3  The Wyndmere, months after opening. At 7:12 p.m. every lobby screen says EVACUATE. There is no fire. The show starts at eight. And on Monday at nine the board will fund a secured signage and remote-access redesign — only if you bring them a turn-key design and a three-year price they can defend.  ⚑ This season the run also carries a design commission — a client meeting, a turn-key scope, a full system design inside hard limits and a priced estimate. Every one of them is do or die.  ⚑ CH-01 · BOSS-01: five physics challenges, a signal trace and the calls that aren't yours to make — on the clock. Fail anything and the run starts over. The edge of the screen glows yellow under pressure, red when time is short or the run fails, green when you clear it; it pulses no faster than once a second, and holds steady if you prefer reduced motion."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Everything at once”",
+   "sub": "Every Door at Once"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light at the edge of everything turns yellow. The Wyndmere, months after opening. At 7:12 p.m. every lobby screen says EVACUATE. There is no fire. The show starts at …",
+   "characters": [
+    {
+     "id": "tamsin",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "Everything, at once. Where do we start?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where the signal starts. Then one thing at a time — and nothing that isn't ours."
+    }
+   ],
+   "narration": [],
+   "caption": "Five modes, one clock, no second chances inside a run.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2467
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light turns red. Every screen says EVACUATE — and there's no fire alarm.",
+   "characters": [
+    {
+     "id": "solveig",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Solveig",
+     "kind": "speech",
+     "text": "Every screen says EVACUATE — and there's no fire alarm."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Security and the duty manager, now. Their plan decides."
+    }
+   ],
+   "narration": [],
+   "caption": "Trace · hear · see · reach · build · record. The boss isn't the fault — it's the pressure to cut a corner.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2221
+  },
+  {
+   "origin": "authored",
+   "type": "beat",
+   "mood": "dark",
+   "where": "Every Door at Once",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "W",
+     "expr": "flat",
+     "text": "One check per stage. If it fails, we start over from the top — and we'll know why."
+    },
+    {
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "worried",
+     "text": "And if we fail again?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Then we start again. That's the job: until it passes, and we can prove it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The commission — “Design it, scope it, price it”",
+   "sub": "Act II of the same run"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A second clock inside the same run. Sunday afternoon: Odile (director of operations), Solveig (head of security) and Raffa (IT director, the network owner). They meet the board on Monday at nine. A budget chip reads the client's number.",
+   "characters": [
+    {
+     "id": "tamsin",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "They want a design, a scope and a price — before the deadline."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then we ask before we draw, and we draw before we price. And nothing that isn't ours goes in it."
+    }
+   ],
+   "narration": [],
+   "caption": "7 questions, 6 you can't skip. 10 scope lines. 7 design blocks. One budget.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2457
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "⚑ BOSS-02: every price, hour, watt, kilogram and megabit in the commission is illustrative. Harder than Season 8: seven questions with a follow-up and three traps, ten scope lines with no slips, seven blocks and four constraints, and a three-year cost of ownership."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The run",
+   "sub": "5 stages · a trace · 2 calls · the commission: ask · scope · design · cost"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "boss",
+   "id": "S09",
+   "label": "**Boss level: Every Door at Once.** Clear every stage in one run to open the next season. Fail anything and you start again from the top.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     AV, computers, networking and infrastructure     Audio signal flow and gain structure — every stage"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief — “Until it passes”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light fades to green. Security isolated the path, the evidence is intact, the verified message went up, and the show started eleven minutes late — safely. On Mond…",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [],
+   "narration": [
+    "Security isolated the path, the evidence is intact, the verified message went up, and the show started eleven minutes late — safely. On Monday the board funds a redesign where signage can repeat a safety message but never start one, and every integrator session has an approver and a record."
+   ],
+   "caption": "Cleared. Written down. Handed over.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2148
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE · THE COMMISSION —  Ask before you draw: what the room is for, who runs it, who needs access support, what it must survive and what it can cost — never lead the client to gear, never ask for what isn't yours to know. Scope it end to end: ours arrives designed, installed, tested, documented, taught and supported; everything else is named to its owner. Design inside the limits other people set — the electrician's circuit, the structural engineer's rating, the mechanical engineer's cooling, the network owner's capacity — and meet every requirement. Price it honestly (T = (E × (1 + t) + L) × (1 + c), plus running and later costs for ownership), then save money without cutting a requirement or the contingency."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Under pressure, the method doesn't change: trace the signal from source to destination, fix one thing at a time and prove it where the people are, and hand every decision that isn't yours to the person who owns it — the electrician, the rigger and structural engineer, the network owner, security, the emergency managers, the clinical and privacy owners, the artist. Then write it down."
+  }
+ ]
+}

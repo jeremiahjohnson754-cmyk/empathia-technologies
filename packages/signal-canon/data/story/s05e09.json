@@ -1,0 +1,949 @@
+{
+ "chapter": {
+  "id": "s05e09",
+  "kicker": "S05 · E09",
+  "title": "Lifecycle",
+  "pill": "S05E09 · Lifecycle",
+  "sub": "Thirty-one projector failures, a plan due Friday — and eleven years of knowledge about to walk out the door.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S05E09",
+   "RT-03",
+   "RV-120",
+   "RV-121",
+   "RV-124",
+   "RV-135",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#10B981"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 5 · EPISODE 9 · DRAFT  Owner board · Nadia, Maya and Wes · Level L4 · Intermediate support  Thirty-one projector failures this term, a provost who wants a plan by Friday — and Nadia, who has run AV for eleven years, leaving in June with most of what she knows still in her head.  ⚑ RV-135: figures illustrative. RV-124: burnout shown with care."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Lifecycle",
+   "kind": "OWNER BOARD · PLAN",
+   "level": "L4 · INTERMEDIATE",
+   "party": [
+    "maya",
+    "nadia",
+    "wes"
+   ],
+   "stakes": "The provost wants a plan by Friday. Nadia leaves in June, and eleven years of knowing how things really work are leaving with her unless someone asks — kindly.",
+   "clock": "Friday at five.",
+   "reward": "A plan built on rates and impact. Nadia's knowledge written down. Nadia still Nadia.",
+   "objectives": [
+    {
+     "key": "BR-S05E09-01",
+     "text": "Choose what the plan is built on"
+    },
+    {
+     "key": "twist",
+     "text": "Split the average"
+    },
+    {
+     "key": "core",
+     "text": "Fund the right things"
+    },
+    {
+     "key": "BR-S05E09-02",
+     "text": "Get what Nadia knows — without burning her"
+    },
+    {
+     "key": "BR-S05E09-03",
+     "text": "Present it honestly"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things about Nadia's desk"
+    }
+   ],
+   "rumor": "The spreadsheet has the failures. It doesn't have the reason."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Eleven years”",
+   "sub": "Tuesday · 8:25 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The AV office early morning: Nadia at her desk holding a printed spreadsheet — 140 projectors, 31 failures.",
+   "characters": [
+    {
+     "id": "nadia",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nadia",
+     "kind": "speech",
+     "text": "The provost wants a plan by Friday. And I told HR this morning — June's my last month."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-124"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7356
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "flat",
+   "where": "AV office · Tuesday 8:30",
+   "lines": [
+    {
+     "who": "nadia",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Eleven years. I'm not angry at anyone. I'm just tired, and I'd like to leave before I'm angry."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then let's make June a good month, not a long one."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #50 · AVERY'S LENS  An average can hide the answer  Before you plan from an average, split it by the things that could matter: model, room, age, use.  31 failures across 140 projectors looked like a replacement program. Split by model, it was 40 projectors and a warranty."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S05E09",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Split it”",
+   "sub": "9:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E09-01",
+   "prompt": "9:00. What do you build the replacement plan on?",
+   "happening": "31 failures; plan due Friday.",
+   "clock": "Tuesday 09:00",
+   "known": [
+    "◉ 140 projectors",
+    "◉ 31 failures over 2 years",
+    "◉ $60k next year"
+   ],
+   "unknown": [
+    "Where the failures cluster"
+   ],
+   "risk": "A plan that spends the budget on the wrong projectors.",
+   "timer_s": 25,
+   "timeout": [
+    "The spreadsheet sits sorted by date.",
+    "Friday arrives with no plan."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What does an average hide?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Age: replace the oldest projectors first",
+     "result": "The oldest 30 include only 6 of the ones that actually fail.",
+     "consequence": "Age is a guess about risk.",
+     "chips": [
+      "Guess"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Failure rates by model and building, weighed by how many people each failure delays",
+     "result": "Fleet: 0.11. Then you split it — and one model jumps off the page.",
+     "consequence": "Rates tell you where; impact tells you what it costs.",
+     "chips": [
+      "Rates",
+      "Impact"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask for money to replace all 140",
+     "result": "The provost's office: “Please come back with a plan that fits the budget.”",
+     "consequence": "A wish, not a plan.",
+     "chips": [
+      "Over budget"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "The cheapest model, everywhere",
+     "result": "Cheaper projectors, same failures.",
+     "consequence": "Price isn't reliability.",
+     "chips": [
+      "Guess"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A bar chart of failures per projector per year: one gray bar for all 140 projectors at 0.11.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "λ = 31 ÷ (140 × 2) ≈ 0.11. About 15 failures next year — if the fleet were all the same.",
+   "flags": [
+    "RV-135"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "fleet λ ≈ 0.11"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1640
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S5-09a",
+   "teaser": "Nadia's monitor",
+   "title": "Forty-one sticky notes",
+   "body": "Nadia's monitor frame holds forty-one sticky notes: phone extensions, contract numbers, *X-series — ask R. about boards?*, *don't renew the old signage deal*. Wes photographs every one, with her permission, and types them into the team wiki that afternoon.",
+   "thread": "Knowledge",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The average hid the answer.",
+   "body": "Split by model, 22 of the 31 failures come from the 40 X-series projectors in the old science building: λ ≈ 0.275. The other 100 run at 0.045. It isn't a fleet problem. It's one model — and in the big halls, each failure delays 240 people.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S05E09-1",
+   "label": "Test: what does the split change?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same chart split into three bars: all 140 at 0.11; X-series (40) at 0.275 in red; the other 100 at 0.045 in green.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Same tickets. One model.",
+   "flags": [
+    "RV-135",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "X-series 0.275 · others 0.045"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2415
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S5-09",
+   "who": "nadia",
+   "prompt": "Honestly? I'd rather just write the whole plan myself. It's my last big thing.",
+   "options": [
+    {
+     "label": "“It's ours. You tell us what you know in short sessions; Wes and I do the arithmetic. You go home at five.”",
+     "who": "nadia",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Twenty minutes a day. And I'm holding you to five.",
+     "trust": {
+      "Nadia": 2,
+      "Wes": 1
+     }
+    },
+    {
+     "label": "“If you want to, sure.”",
+     "who": "nadia",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "(She stays until ten that night.)",
+     "trust": {
+      "Nadia": -1
+     }
+    },
+    {
+     "label": "“What's the part only you know?”",
+     "who": "nadia",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Vendors. Contracts. Who to call when the portal says no. None of it's written down.",
+     "trust": {
+      "Nadia": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Nadia and Maya beside a board. Failure rate: failures over units times years. Then expected failures next year is lambda times units. Thirty-one failures, a hundred and forty projectors, two years… about point one one each. Fifteen next year. Fifteen classes that stop. Put a cost on each and the provost will listen.",
+   "characters": [
+    {
+     "id": "nadia",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nadia",
+     "kind": "speech",
+     "text": "Failure rate: failures over units times years. Then expected failures next year is lambda times units."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Thirty-one failures, a hundred and forty projectors, two years… about point one one each. Fifteen next year."
+    },
+    {
+     "side": "L",
+     "who": "Nadia",
+     "kind": "speech",
+     "text": "Fifteen classes that stop. Put a cost on each and the provost will listen."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7544
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Lifecycle plan   Failure rate   End of life   Formula and variables   ƒ FORMULA · Failure rate  λ = failures ÷ (units × years) · expected = λ × units × years   λ  failures per unit per year  units  how many devices  years  how long you watched     ƒ FORMULA · Cost of one incident  cost = t fixer  + people × t delay    t fixer   minutes the fixer spends  people  how many people wait  t delay   minutes each waits"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "M7",
+   "label": "**Learn it now:** failure rates and lifecycle plans.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     The OSI model applied to video and wireless     Point it at people, not at the ceiling"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Twenty minutes a day”",
+   "sub": "Wednesday"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E09-02",
+   "prompt": "Wednesday. Nadia knows the vendors, the contracts and the history. She's tired. How do you get what she knows?",
+   "happening": "Nadia leaving in June.",
+   "clock": "Wednesday",
+   "known": [
+    "◉ Nadia knows vendors and contracts",
+    "◉ She's exhausted"
+   ],
+   "unknown": [
+    "What only she knows"
+   ],
+   "risk": "Losing eleven years in one afternoon in June.",
+   "timer_s": 25,
+   "timeout": [
+    "Nadia starts writing it alone.",
+    "She's still there at nine."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "How do you move knowledge without spending the person?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Let her write the plan herself — it's her last big thing",
+     "result": "She stays until ten three nights running. Thursday she calls in sick.",
+     "consequence": "Her knowledge, extracted by burning her.",
+     "chips": [
+      "Burnout"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Never spend a person to save a spreadsheet.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "June": -1,
+       "Nadia": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Three twenty-minute sessions; Wes takes notes into the team wiki; she leaves at five",
+     "result": "Twenty minutes into session one: “Oh — the X-series warranty. Did I never forward that?”",
+     "consequence": "Knowledge moves; the person is protected.",
+     "chips": [
+      "Knowledge transfer",
+      "Care"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Wes": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask HR to delay her departure",
+     "result": "Nadia hears about it from HR.",
+     "consequence": "Her decision to leave isn't yours to renegotiate.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Export her mailbox after she's gone",
+     "result": "Eleven years of email, no context, and a privacy officer asking why.",
+     "consequence": "Data without the person's meaning — and without her consent.",
+     "chips": [
+      "No consent"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Why things fail when they do",
+   "body": "In 1957 a United States advisory group on the reliability of electronic equipment reported that much military electronics failed early and often — and set out to measure failure rates properly. Reliability engineers came to describe many products with a ‘bathtub curve’: failures high when new, low in mid-life, rising again with wear. A good lifecycle plan asks where on the curve each group of devices sits.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Session one, Wednesday afternoon: Nadia talking with open hands; Wes taking notes on a clipboard; Maya listening.",
+   "characters": [
+    {
+     "id": "nadia",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "wes",
+     "pose": "R",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nadia",
+     "kind": "speech",
+     "text": "The X-series have an extended warranty on the lamp-driver boards. Ends the thirtieth of June. I never forwarded it, did I?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Free boards for all forty? If we claim before June?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-124",
+    "RV-135"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "warranty ends 30 June"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 7084
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "session one · Wednesday 2:00",
+   "lines": [
+    {
+     "who": "wes",
+     "pose": "N",
+     "expr": "surprised",
+     "text": "It's free? The boards are just… free, if we ask before June?"
+    },
+    {
+     "who": "nadia",
+     "pose": "N",
+     "expr": "smile",
+     "text": "If somebody remembers to ask. That was always the whole job."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It was in Nadia's inbox.",
+   "body": "The fix for the cluster — free lamp-driver boards for all 40 X-series, if claimed before 30 June — existed only in one email thread in Nadia's inbox. The biggest single point of failure in the plan wasn't a projector. It was a tired person nobody had asked.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S05E09-2",
+   "label": "Test: what kind of risk is that — and how do you handle it?"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "T-52",
+   "label": "**Triage:** sixty thousand for 140 projectors.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E09-03",
+   "prompt": "Friday, 4 p.m. How do you present next year's failures to the provost?",
+   "happening": "Plan ready.",
+   "clock": "Friday 16:00",
+   "known": [
+    "◉ λ by model",
+    "◉ Warranty claim accepted",
+    "◉ Cost per failure by room"
+   ],
+   "unknown": [
+    "Next year"
+   ],
+   "risk": "A plan the provost trusts once — or every year.",
+   "timer_s": 25,
+   "timeout": [
+    "You send the spreadsheet without a summary.",
+    "The provost reads the total and nothing else."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What does an honest estimate include?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E09).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Zero failures next year.”",
+     "result": "It reads well. It'll be wrong by October — and so will your next plan's credibility.",
+     "consequence": "A promise you can't keep.",
+     "chips": [
+      "Overpromise"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "An estimate is not a promise.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "An estimate with its assumptions: about 5 expected (from 15), mostly in seminar rooms; the warranty claim, the halls, spares and monitoring; what could make it wrong",
+     "result": "Provost: “The first plan I've received that tells me what it doesn't know. Approved.”",
+     "consequence": "Honest numbers build trust you'll need next time.",
+     "chips": [
+      "Honest estimate",
+      "Assumptions"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Just the total cost",
+     "result": "“And what do I get for it?”",
+     "consequence": "Money without outcomes.",
+     "chips": [
+      "No outcome"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Let Nadia present it alone",
+     "result": "Nadia, on her second-to-last Friday, defending a plan she didn't finish.",
+     "consequence": "Her knowledge, your plan — present it together.",
+     "chips": [
+      "Alone"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-509",
+   "label": "**Service Mode:** build Friday's plan yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 4:55 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The one-page plan: X-series boards under warranty, twelve large-hall projectors, a six-projector spares pool, monitoring — expected failures about five instead of fifteen, with assumptions listed.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "$48k of $60k. The rest is held for what the estimate got wrong.",
+   "flags": [
+    "RV-135"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "warranty claim accepted · 40 boards"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1221
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S5-09b",
+   "teaser": "the provost's reply",
+   "title": "Sent 5:41 p.m.",
+   "body": "*Thank you — this is the first plan I've received that tells me what it doesn't know. Approved. Please thank Nadia for eleven years.* Maya forwards it to Nadia at 5:42. Nadia is already home.",
+   "thread": "Leadership",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Five o'clock Friday. Nadia with her coat on by the door; Maya at her desk.",
+   "characters": [
+    {
+     "id": "nadia",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nadia",
+     "kind": "speech",
+     "text": "It's five. I'm going home. That's the most useful thing I've learned in eleven years."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Go. We've got it written down."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-124"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7009
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The empty arena, three weeks before commencement: a stage being built, banners half hung. Nadia and Wes on the floor.",
+   "characters": [
+    {
+     "id": "nadia",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "wes",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s5kit.bg_arena",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nadia",
+     "kind": "speech",
+     "text": "Commencement. Two thousand in here, nine thousand on the stream, captions and a second-language channel. My last event. I'd like you to run the stream, Wes."
+    },
+    {
+     "side": "R",
+     "who": "Wes",
+     "kind": "speech",
+     "text": "Me?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Commencement.*",
+   "flags": [
+    "RV-124"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 877
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  λ = failures ÷ (units × years); expected = λ × units × years. Split the average before you plan, weigh failures by the people they delay, present estimates with their assumptions — and move knowledge out of tired people’s heads without spending the people."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Nadia was the single point of failure nobody saw. Who holds knowledge on your team that isn’t written down — and how could you ask for it kindly?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S05E09",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

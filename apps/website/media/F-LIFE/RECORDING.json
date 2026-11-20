@@ -1,0 +1,177 @@
+{
+  "key": "F-LIFE",
+  "title": "Core Replay: the life of a room",
+  "product": "mission-control",
+  "recordedAt": "2026-11-19T23:39:43.400Z",
+  "duration": 79.24,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "syseng",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T23:05:29.841Z"
+  },
+  "git": "eca7f43",
+  "steps": [
+    {
+      "at": 0,
+      "shown": 0.72,
+      "until": 8.28,
+      "say": "Every room has a story. This one starts as a request.",
+      "proof": ".ops-strip li.on:has-text(\"Request\")",
+      "url": "/#/replay/R-ATL-4-218?at=request"
+    },
+    {
+      "at": 8.28,
+      "shown": 8.32,
+      "until": 19.31,
+      "say": "Nine requirements, six of them must-haves. Everything later is judged against them.",
+      "proof": ".ops-strip li.on:has-text(\"Requirements\")",
+      "url": "/#/replay/R-ATL-4-218?at=requirements"
+    },
+    {
+      "at": 19.31,
+      "shown": 19.36,
+      "until": 23.21,
+      "say": "Designed: every device a numbered position.",
+      "proof": ".ops-strip li.on:has-text(\"Design\")",
+      "url": "/#/replay/R-ATL-4-218?at=design"
+    },
+    {
+      "at": 23.21,
+      "shown": 24.41,
+      "until": 28.35,
+      "say": "The same room in Lite: one record, another view.",
+      "proof": "[data-testid=lite-room-3d]",
+      "url": "/#/lite/room/R-ATL-4-218"
+    },
+    {
+      "at": 28.35,
+      "shown": 29.14,
+      "until": 43.7,
+      "say": "Installed: position PA-0007 holds asset AS-0097.",
+      "proof": ".ops-strip li.on:has-text(\"Build\")",
+      "url": "/#/replay/R-ATL-4-218?at=build"
+    },
+    {
+      "at": 43.7,
+      "shown": 43.81,
+      "until": 49.03,
+      "say": "Each test recorded, then verified by someone else.",
+      "proof": ".ops-strip li.on:has-text(\"Commissioning\")",
+      "url": "/#/replay/R-ATL-4-218?at=commissioning"
+    },
+    {
+      "at": 49.03,
+      "shown": 49.09,
+      "until": 53.52,
+      "say": "Baseline v1: what the room was proven to do.",
+      "proof": ".ops-strip li.on:has-text(\"Baseline v1\")",
+      "url": "/#/replay/R-ATL-4-218?at=baseline1"
+    },
+    {
+      "at": 53.52,
+      "shown": 53.56,
+      "until": 67.96,
+      "say": "AS-0097 out, AS-0112 in. Only the tests that name PA-0007 reopen.",
+      "proof": "[data-testid=reopened]",
+      "url": "/#/replay/R-ATL-4-218?at=change"
+    },
+    {
+      "at": 67.96,
+      "shown": 68.01,
+      "until": 73.32,
+      "say": "Re-accepted: baseline v2 is current, and v1 is kept.",
+      "proof": ".ops-strip li.on:has-text(\"Baseline v2\")",
+      "url": "/#/replay/R-ATL-4-218?at=baseline2"
+    },
+    {
+      "at": 73.32,
+      "shown": 74.55,
+      "until": 79.24,
+      "say": "From here on, Assurance watches the room against that baseline.",
+      "proof": "main h1",
+      "url": "/#/assurance/room/R-ATL-4-218"
+    }
+  ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 7.09,
+        "sha256": "5113b05dfc0bca356fa0b81f9b9c98b9f71499f5b22cf325c2a0089aeef44494"
+      },
+      {
+        "step": 2,
+        "seconds": 10.49,
+        "sha256": "82bc5bcd403f2c103963f43ab92572da463ec0d0178ef841f57098e3e776811e"
+      },
+      {
+        "step": 3,
+        "seconds": 3.39,
+        "sha256": "16d1bab2e26cd2d04746b4ebe5614a7520744a9d7440ea2d4d3d5895ecadd9a8"
+      },
+      {
+        "step": 4,
+        "seconds": 3.49,
+        "sha256": "1c0133b0a7256ff3ab2450c3f87b5d32906681cce191c5cbad5e348a2fb62bac"
+      },
+      {
+        "step": 5,
+        "seconds": 14.09,
+        "sha256": "09a2a4a51d1382325c2c30a8e8692f480cab17dfd78a3af3ce9b9f64e7ed6dd9"
+      },
+      {
+        "step": 6,
+        "seconds": 4.76,
+        "sha256": "02c38601d06c39cea2c9f4da1aa2cff3b447d75dbc9e8c8be398f43c611fb003"
+      },
+      {
+        "step": 7,
+        "seconds": 3.97,
+        "sha256": "01b56f3d577621c43daa477c84aebae6b23ec74900318b5c8f31e3a8df59e1cf"
+      },
+      {
+        "step": 8,
+        "seconds": 13.89,
+        "sha256": "3cc812c9696757c3d5eac4ceffcdea344a5d0a1874659e07d97317bddde0445f"
+      },
+      {
+        "step": 9,
+        "seconds": 4.85,
+        "sha256": "deafd55339e62b8a8514f35487d51ed7d7b99b977aece5d485f66cc19cfa094e"
+      },
+      {
+        "step": 10,
+        "seconds": 4.23,
+        "sha256": "af1172b56068671fb850e2680afcf16db639e5b4f054c9a7322d9031fb94478c"
+      }
+    ]
+  },
+  "files": {
+    "720.mp4": {
+      "bytes": 2539982,
+      "sha256": "974673fc680d4bdb0abba3a05b22d549d0bc5407635f91a3b61769880da2ef08"
+    },
+    "poster.webp": {
+      "bytes": 68242,
+      "sha256": "d9ec57dded2f2afca577e0cdf011941b838e37c2ed142d9cec87c4662562ae89"
+    },
+    "poster.jpg": {
+      "bytes": 128825,
+      "sha256": "3bdb7c54b345b2259c2bc05078acdfcf39118cff5356c25be65161ea2e0d737b"
+    },
+    "captions.vtt": {
+      "bytes": 1272,
+      "sha256": "1fa4768ee1abc82caa52906f83c4880f2d698b4a47ae1ea5c032992c839863f9"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+WEBVTT
+
+NOTE AI-generated voice (synthetic, not a real person). Qwen3-TTS preset voice Ryan, model Qwen3-TTS-12Hz-0.6B-CustomVoice (Apache-2.0), generated on the project's own build machine, one take per line. Not yet chosen by ear. See docs/media/QWEN_TOUR_NARRATION.md. Cue boundaries at the measured pauses (silencedetect -45 dB) nearest each sentence end.
+
+1
+00:00:00.000 --> 00:00:09.888
+ServiceHands shows the job with who reported it, what was already tried in the room, and anyone who saw it again.

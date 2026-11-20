@@ -1,0 +1,1796 @@
+{
+"EVIDENCE_LADDER":[
+[
+"UNKNOWN",
+"Nobody has looked yet",
+0
+],
+[
+"SUSPECTED",
+"A hunch that fits what was said",
+1
+],
+[
+"OBSERVED",
+"A person saw or heard it",
+2
+],
+[
+"INFERRED",
+"Worked out from other records",
+2
+],
+[
+"MEASURED",
+"An instrument or a test put a number on it",
+3
+],
+[
+"VERIFIED",
+"Measured, then checked by a second person or against the baseline",
+4
+],
+[
+"CONTRADICTED",
+"Two records disagree, and both cannot be right",
+0
+],
+[
+"ESCALATED",
+"Handed to the person who owns the decision",
+2
+]
+],
+"SERVICE_VERBS":[
+[
+"inspect",
+"Inspect",
+"Look, without changing anything"
+],
+[
+"ask",
+"Ask",
+"People know things the system does not"
+],
+[
+"measure",
+"Measure",
+"Put a number on it"
+],
+[
+"test",
+"Test",
+"Make it happen on purpose"
+],
+[
+"trace",
+"Trace",
+"Follow the path and find where it stops"
+],
+[
+"classify",
+"Classify",
+"Name the kind of failure"
+],
+[
+"diagnose",
+"Diagnose",
+"Commit to a cause"
+],
+[
+"repair",
+"Repair",
+"Change something"
+],
+[
+"verify",
+"Verify",
+"Prove the room does its job again"
+],
+[
+"escalate",
+"Escalate",
+"Hand it to the person who owns it"
+]
+],
+"VERB_MIN":{
+"inspect":5,
+"ask":4,
+"measure":9,
+"test":7,
+"trace":6,
+"classify":1,
+"diagnose":2,
+"repair":10,
+"verify":7,
+"escalate":4
+},
+"SCORE_DIMS":[
+[
+"competence",
+"Competence",
+"Did you find the cause and choose the right response?",
+0.24
+],
+[
+"evidence",
+"Evidence Discipline",
+"Did the evidence come before the conclusion?",
+0.22
+],
+[
+"trust",
+"Trust",
+"Would the people in the room ask for you again?",
+0.14
+],
+[
+"authority",
+"Safety / Authority",
+"Did you stay inside what is yours to change?",
+0.18
+],
+[
+"debt",
+"Technical Debt",
+"Did you leave the room easier or harder to look after?",
+0.12
+],
+[
+"readiness",
+"Leadership / Readiness",
+"Could this be handed to you alone next time?",
+0.1
+]
+],
+"SCORE_PASS":70,
+"READINESS":[
+[
+0,
+"Shadowing",
+"Works beside someone else"
+],
+[
+30,
+"Assisted",
+"Takes routine calls, with someone on the line"
+],
+[
+80,
+"Independent",
+"Takes a room alone and closes it with proof"
+],
+[
+150,
+"Trusted",
+"Takes mission-critical rooms"
+],
+[
+240,
+"Lead",
+"Teaches the method to others"
+]
+],
+"LEARN_POINTS":{
+"proven":20,
+"partial":9,
+"unproven":3,
+"drill":6,
+"drillTry":1,
+"best":4,
+"fair":2,
+"poor":0
+},
+"FIX_OWNER":{
+"KF-01":"own",
+"KF-02":"own",
+"KF-03":"own",
+"KF-04":"own",
+"KF-05":"network",
+"KF-06":"own",
+"KF-07":"own",
+"KF-08":"own",
+"KF-09":"design",
+"KF-10":"platform",
+"KF-11":"design",
+"KF-12":"own",
+"KF-13":"design",
+"KF-14":"vendor"
+},
+"OWNER_SAYS":{
+"own":[
+"Service Engineer",
+"It is a documented repair with a procedure. It is yours to do."
+],
+"network":[
+"Network owner",
+"The switch belongs to the network team. A port change is theirs to make and to record."
+],
+"design":[
+"Systems Engineer",
+"It changes the design or spends money. It needs engineering approval before anything is built."
+],
+"platform":[
+"Platform owner",
+"The setting lives in a shared platform. Changing it for one room changes it for many."
+],
+"vendor":[
+"Vendor",
+"The part is under warranty. The vendor replaces it, and the claim needs the evidence."
+]
+},
+"DOMAIN_KIT":{
+"Audio":{
+"measure":"Speech intelligibility",
+"check":"micpickup",
+"cover":"mic",
+"hops":[
+[
+"micceil|micwireless|bar",
+"Microphone"
+],
+[
+"dsp|bar",
+"Audio processor"
+],
+[
+"compute|bar",
+"Room compute"
+],
+[
+"net",
+"Network"
+],
+[
+"far",
+"Far end"
+]
+],
+"around":"Raise the microphone gain and ask people to speak up",
+"wrong":"Replace the loudspeakers"
+},
+"Video":{
+"measure":"Seats covered by a camera",
+"check":"camviews",
+"cover":"fov",
+"hops":[
+[
+"camera|bar",
+"Camera"
+],
+[
+"compute|bar",
+"Room compute"
+],
+[
+"net",
+"Network"
+],
+[
+"far",
+"Far end"
+]
+],
+"around":"Ask presenters to stand where the camera now points",
+"wrong":"Replace the camera"
+},
+"Display":{
+"measure":"Display brightness",
+"check":"routes",
+"cover":"sight",
+"hops":[
+[
+"compute|bar",
+"Room compute"
+],
+[
+"switcher",
+"Switcher"
+],
+[
+"display|ledwall",
+"Display"
+]
+],
+"around":"Leave the display on all day so it never has to wake",
+"wrong":"Reload the control program"
+},
+"Network":{
+"measure":"Round trip",
+"check":"network",
+"cover":null,
+"hops":[
+[
+"compute|bar",
+"Room compute"
+],
+[
+"port",
+"Switch port"
+],
+[
+"net",
+"Floor switch"
+],
+[
+"far",
+"Meeting service"
+]
+],
+"around":"Restart the devices every morning",
+"wrong":"Replace the room compute"
+},
+"Compute":{
+"measure":null,
+"check":"start",
+"cover":null,
+"hops":[
+[
+"pdu",
+"Power"
+],
+[
+"compute|bar",
+"Room compute"
+],
+[
+"net",
+"Network"
+],
+[
+"far",
+"Meeting service"
+]
+],
+"around":"Restart the compute before each afternoon session",
+"wrong":"Reinstall the meeting application"
+},
+"Power":{
+"measure":null,
+"check":"powerprot",
+"cover":null,
+"hops":[
+[
+"wall",
+"Building power"
+],
+[
+"pdu",
+"Protected power"
+],
+[
+"rack",
+"Equipment"
+],
+[
+"display|ledwall",
+"Display"
+]
+],
+"around":"Move the equipment to an ordinary wall outlet",
+"wrong":"Replace the display"
+},
+"Scheduling":{
+"measure":null,
+"check":"schedfn",
+"cover":null,
+"hops":[
+[
+"cal",
+"Calendar"
+],
+[
+"net",
+"Network"
+],
+[
+"scheduler",
+"Scheduling panel"
+]
+],
+"around":"Restart the panel each morning",
+"wrong":"Replace the panel"
+},
+"Control":{
+"measure":null,
+"check":"control",
+"cover":null,
+"hops":[
+[
+"touch",
+"Touch controller"
+],
+[
+"control",
+"Control processor"
+],
+[
+"display|ledwall",
+"Display"
+],
+[
+"camera|bar",
+"Camera"
+]
+],
+"around":"Leave the newer firmware in place because it seems to work",
+"wrong":"Replace the touch controller"
+}
+},
+"SERVICE_WINDOW":50,
+"LEARN_NAV":[
+[
+"",
+"Mission Control",
+"Where you are and what to do next"
+],
+[
+"story",
+"Story",
+"A room’s history, with the decisions left to you"
+],
+[
+"library",
+"Learn",
+"The knowledge graph and three books"
+],
+[
+"practice",
+"Practice",
+"Short drills made from Core records"
+],
+[
+"service",
+"Service Mode",
+"A call, a clock and ten things you can do"
+],
+[
+"cases",
+"Case Files",
+"How an incident becomes a lesson"
+],
+[
+"ask",
+"Ask Empathia",
+"Questions answered from Core, with sources"
+]
+],
+"KNOWLEDGE_KINDS":[
+[
+"Guide",
+"A book for one audience"
+],
+[
+"Chapter",
+"One subject inside a guide"
+],
+[
+"SOP",
+"The agreed way to do a job"
+],
+[
+"Troubleshooting Flow",
+"Steps from a symptom to a cause"
+],
+[
+"Standard",
+"What good looks like"
+],
+[
+"Engineering Reference",
+"A method or a worksheet"
+],
+[
+"As-Built Concept",
+"How a room was actually built"
+],
+[
+"Signal Flow",
+"The path a signal takes through a kind of room"
+],
+[
+"Lesson Learned",
+"What one incident taught"
+],
+[
+"Known Fix",
+"A repair that has worked before"
+],
+[
+"Training Case",
+"An incident turned into practice"
+],
+[
+"Video Concept",
+"A short film that has been outlined, not made"
+],
+[
+"Diagram",
+"A drawing that explains one idea"
+]
+],
+"NEW_COMPETENCIES":[
+[
+"CMP-7",
+"Evidence before conclusion",
+"Gathers what was seen and measured before naming a cause."
+],
+[
+"CMP-8",
+"Working within authority",
+"Knows which changes are theirs to make and who owns the rest."
+],
+[
+"CMP-9",
+"Closing the loop with the room owner",
+"Tells the people who use the room what was found and what happens next."
+],
+[
+"CMP-10",
+"Reading a commissioning record",
+"Uses the baseline and its tests to say what changed."
+]
+],
+"SIGNAL_SEASONS":[
+[
+1,
+"The Sanctuary",
+"Beginner",
+"A converted chapel used for community events. Maya’s first job: make sure people can hear.",
+"equipment thinking"
+],
+[
+2,
+"The Load-In",
+"Beginner",
+"A touring show arrives with more gear than the venue can power.",
+"equipment thinking"
+],
+[
+3,
+"The Workplace",
+"Beginner",
+"A headquarters floor of meeting rooms, all slightly different, all urgent.",
+"signal-path thinking"
+],
+[
+4,
+"On Air",
+"Intermediate",
+"A studio where a fault is seen by thousands of people at once.",
+"signal-path thinking"
+],
+[
+5,
+"The Campus",
+"Intermediate",
+"Five buildings, one network, and nobody sure who owns what.",
+"systems thinking"
+],
+[
+6,
+"The Drawing Set",
+"Intermediate",
+"Maya inherits a design she did not draw and has to defend it.",
+"systems thinking"
+],
+[
+7,
+"The Estate",
+"Advanced",
+"Three hundred rooms, a refresh budget and too many opinions.",
+"operational thinking"
+],
+[
+8,
+"Topping Out",
+"Advanced",
+"A new building where the technology is installed before the ceilings are finished.",
+"operational thinking"
+],
+[
+9,
+"Breach",
+"Advanced",
+"A room device becomes a way into the network.",
+"design thinking"
+],
+[
+10,
+"The Take",
+"Mastery",
+"A live production where every decision is one take.",
+"design thinking"
+],
+[
+11,
+"The Mission Room",
+"Mastery",
+"A room that must never go dark, and the people who depend on it.",
+"architecture"
+],
+[
+12,
+"Principal",
+"Mastery",
+"Maya builds a team that succeeds without needing her.",
+"leadership and organizational thinking"
+]
+],
+"SIGNAL_CAST":[
+[
+"Maya",
+"The learner’s character: a new technician who becomes a principal engineer over twelve seasons",
+"If she can see the signal, she can fix it.",
+"Notices small things",
+"Wants to be right more than she wants to be finished",
+"Thinks documentation is somebody else’s job, until season 6",
+"Names her test cables"
+],
+[
+"Ray",
+"A senior engineer who has seen every way a room can fail",
+"Every fault is a story somebody did not write down.",
+"Patience under pressure",
+"Trusts his memory over the records",
+"Assumes the old way is still the right way",
+"Gives Maya the look instead of the answer"
+],
+[
+"Corin Vale",
+"The venue manager in season 1, later a project sponsor",
+"The room is for the people in it, not the people who built it.",
+"Speaks for the audience",
+"Promises dates before asking anyone",
+"Thinks \"it works\" means \"it is finished\"",
+"Files every ticket as \"TV broken\""
+],
+[
+"Nilufar Fenn",
+"A network engineer who joins in season 3",
+"Nothing is plugged in until it is documented.",
+"Precision",
+"Slow to trust people she has not tested",
+"Underestimates what users will put up with",
+"Keeps a list of the worst cable labels she has found"
+],
+[
+"Teo Marsh",
+"A junior technician in the same intake as Maya",
+"Faster is better.",
+"Fearless with new kit",
+"Skips the second check",
+"Confuses confidence with evidence",
+"Has a nickname for every device"
+]
+],
+"SIGNAL_EPISODES":[
+{
+"id":"S1E1",
+"season":1,
+"n":1,
+"title":"Sound check",
+"minutes":9,
+"objective":"Separate what you observe from what you suspect.",
+"env":"The Sanctuary: a stone hall with a balcony, eight ceiling loudspeakers and a small mixing desk.",
+"scenes":[
+{
+"id":"a",
+"beat":"CINEMATIC BEAT",
+"speaker":null,
+"text":"Saturday, 6:40 p.m. The community choir starts at seven. Corin is at the door with the lights already dimmed. The back of the hall says the speeches will be \"muddy again.\""
+},
+{
+"id":"b",
+"beat":"DIALOGUE",
+"speaker":"Corin Vale",
+"text":"\"Last month the people at the back couldn’t hear a word. Fix it before they sit down.\""
+},
+{
+"id":"c",
+"beat":"DISCOVERY",
+"speaker":"Ray",
+"text":"\"Before you touch anything, tell me what you know. Not what you think. What you know.\"",
+"evidence":[
+[
+"The back rows complained last month",
+"OBSERVED"
+],
+[
+"The ceiling speakers are too quiet at the back",
+"SUSPECTED"
+],
+[
+"Two of eight speakers show no signal on the desk meter",
+"MEASURED"
+],
+[
+"The hall is reverberant, so speech blurs at distance",
+"INFERRED"
+]
+]
+},
+{
+"id":"d",
+"beat":"DECISION",
+"speaker":null,
+"text":"Twenty minutes. What do you do first?",
+"choices":[
+[
+"Turn the whole system up",
+"The front rows wince. The back is louder but still blurred: two speakers are still silent, and the hall’s echo now carries more of everything.",
+{
+"evidence":-1,
+"systems":-1
+},
+"turned-up",
+"e"
+],
+[
+"Walk to the back and listen while Ray talks into the microphone",
+"At the back, the rear left corner is nearly silent. You find two loudspeaker zones dead, not quiet.",
+{
+"evidence":2,
+"diagnostic":1
+},
+"walked",
+"e"
+],
+[
+"Ask Corin to start ten minutes late",
+"Corin agrees, unhappily. You have time, but the problem is still unknown.",
+{
+"authority":1
+},
+"asked-delay",
+"e"
+]
+]
+},
+{
+"id":"e",
+"beat":"HANDS-ON ACTION",
+"speaker":"Ray",
+"text":"\"Two zones dead. Amplifier, cable, or the processor output? Pick one and prove it.\"",
+"choices":[
+[
+"Swap the two dead zones to a spare amplifier channel",
+"The zones come alive on the spare channel. The fault is the amplifier channel, not the cable.",
+{
+"diagnostic":2,
+"verification":1
+},
+"proved-amp",
+"f"
+],
+[
+"Re-plug every cable at the desk",
+"Nothing changes, and you lose ten minutes. The meter still shows no signal on two outputs.",
+{
+"diagnostic":-1
+},
+"replugged",
+"f"
+],
+[
+"Say \"I don’t know yet\" and measure each output with the meter",
+"Each processor output carries signal. The silence starts after the amplifier. Slower, but certain.",
+{
+"evidence":2,
+"diagnostic":1,
+"verification":1
+},
+"measured",
+"f"
+]
+]
+},
+{
+"id":"f",
+"beat":"CONSEQUENCE",
+"speaker":null,
+"text":"The choir starts. The speeches carry to the back. Someone in the last row gives Maya a thumbs-up."
+},
+{
+"id":"g",
+"beat":"CHARACTER MOMENT",
+"speaker":"Ray",
+"text":"\"Good. Now write down which amplifier channel. On paper, on the rack, and in the log.\"",
+"choices":[
+[
+"Write it on the rack and in the log",
+"Ray nods. The label goes on channel 3: FAULTY, DO NOT USE.",
+{
+"debt":2,
+"verification":1
+},
+"labeled",
+"h"
+],
+[
+"Tell Ray you will remember",
+"Ray gives you the look. You will remember. Probably.",
+{
+"debt":-2
+},
+"unlabeled",
+"h"
+]
+]
+},
+{
+"id":"h",
+"beat":"CLIFFHANGER",
+"speaker":null,
+"text":"Packing up, Maya notices the spare amplifier is warm. Much warmer than the others.",
+"cliff":true
+}
+]
+},
+{
+"id":"S1E2",
+"season":1,
+"n":2,
+"title":"Warm",
+"minutes":10,
+"objective":"Follow evidence when the obvious theory is comfortable.",
+"env":"The Sanctuary, one week later: a wedding, a string quartet and a borrowed wireless microphone.",
+"scenes":[
+{
+"id":"a",
+"beat":"CINEMATIC BEAT",
+"speaker":null,
+"text":"The wedding is at two. At one-thirty the ceiling speakers on the left side cut out, come back, and cut out again."
+},
+{
+"id":"b",
+"beat":"CALLBACK",
+"speaker":null,
+"text":"Last week you moved two zones to a spare amplifier channel.",
+"callback":{
+"labeled":"The rack label still reads: channel 3 FAULTY, DO NOT USE. The log says the zones moved to channel 7.",
+"unlabeled":"Nothing on the rack says what you changed. The log is empty. Ray looks at you, then at the rack."
+}
+},
+{
+"id":"c",
+"beat":"DISCOVERY",
+"speaker":"Teo Marsh",
+"text":"\"It’s the wireless mic. Borrowed gear is always junk.\"",
+"evidence":[
+[
+"Left zones cut out and return every few minutes",
+"OBSERVED"
+],
+[
+"The borrowed microphone is faulty",
+"SUSPECTED"
+],
+[
+"Amplifier channel 7 is at 71 °C; the others are at 38 °C",
+"MEASURED"
+],
+[
+"The spare channel now carries four zones instead of two",
+"INFERRED"
+]
+]
+},
+{
+"id":"d",
+"beat":"DECISION",
+"speaker":null,
+"text":"The theory everyone likes is the microphone. What do you test?",
+"choices":[
+[
+"Replace the borrowed microphone",
+"The new microphone works. The left speakers cut out again four minutes later.",
+{
+"evidence":-1
+},
+"blamed-mic",
+"e"
+],
+[
+"Check what the amplifier is carrying",
+"Channel 7 carries four zones: the two you moved last week and two it already had. It is overloaded and shutting down to protect itself.",
+{
+"evidence":2,
+"systems":2
+},
+"found-overload",
+"e"
+]
+]
+},
+{
+"id":"e",
+"beat":"CONSEQUENCE",
+"speaker":"Ray",
+"text":"\"Last week’s fix caused this week’s fault. That happens. What matters is whether you can see it.\"",
+"memoryText":{
+"labeled":"Because you wrote it down, it took you two minutes to see the four zones on one channel.",
+"unlabeled":"Without a note, it took twenty minutes to work out which zones had moved."
+}
+},
+{
+"id":"f",
+"beat":"DECISION",
+"speaker":null,
+"text":"Ten minutes to the ceremony. Fix now, or make it safe and fix it properly on Monday?",
+"choices":[
+[
+"Split the load across two spare channels now and record it",
+"The speakers hold. On Monday the faulty channel is repaired and the zones go home.",
+{
+"authority":1,
+"verification":1,
+"debt":1
+},
+"split",
+"g"
+],
+[
+"Turn the left zones down so the channel stays cool",
+"It holds, quietly. Guests on the left strain to hear the vows.",
+{
+"experience":-1
+},
+"turned-down",
+"g"
+],
+[
+"Tell Corin you need to stop the ceremony",
+"Corin says no. You have no authority to stop it, and the fault was manageable.",
+{
+"authority":-1
+},
+"stop",
+"g"
+]
+]
+},
+{
+"id":"g",
+"beat":"REFLECT",
+"speaker":null,
+"text":"Which statements were evidence, and which were theories? You can see your classification against what was measured.",
+"reflect":true
+}
+]
+},
+{
+"id":"S1E6",
+"season":1,
+"n":6,
+"title":"Boss level: The Benefit Concert",
+"minutes":18,
+"boss":true,
+"objective":"Everything in the season, under a clock, with limited authority.",
+"env":"The Sanctuary at capacity: a broadcast for people at home, a choir, a keynote and a power circuit shared with the catering.",
+"scenes":[
+{
+"id":"a",
+"beat":"CINEMATIC BEAT",
+"speaker":null,
+"text":"7:58 p.m. Four hundred seats, a stream to people at home, and the mayor on in two minutes. The stream monitor shows audio. The hall is silent."
+},
+{
+"id":"b",
+"beat":"DISCOVERY",
+"speaker":null,
+"text":"Three symptoms at once.",
+"evidence":[
+[
+"The hall speakers are silent; the stream has audio",
+"MEASURED"
+],
+[
+"The catering urn tripped a breaker five minutes ago",
+"OBSERVED"
+],
+[
+"The amplifier rack is on the catering circuit",
+"INFERRED"
+],
+[
+"The mayor’s microphone is faulty",
+"SUSPECTED"
+]
+]
+},
+{
+"id":"c",
+"beat":"DECISION",
+"speaker":"Corin Vale",
+"text":"\"Can we start? Yes or no.\"",
+"timer":60,
+"choices":[
+[
+"\"Not yet. Two minutes.\" Reset the breaker and move the urn",
+"The amplifiers come back. The mayor starts three minutes late. The stream never dropped.",
+{
+"authority":2,
+"systems":2,
+"verification":1
+},
+"reset-and-move",
+"d"
+],
+[
+"\"Yes.\" Start and fix it while she speaks",
+"The first minute of the speech is heard only at home. The hall hears the rest.",
+{
+"experience":-2,
+"authority":-1
+},
+"started",
+"d"
+],
+[
+"Reset the breaker without moving the urn",
+"The amplifiers come back. Eleven minutes later the urn trips the breaker again, mid-keynote.",
+{
+"debt":-2,
+"systems":-1
+},
+"reset-only",
+"d"
+]
+]
+},
+{
+"id":"d",
+"beat":"CALLBACK",
+"speaker":"Ray",
+"text":"Ray asks what you learned in the first two episodes.",
+"callback":{
+"labeled":"The rack is labeled, so you knew in seconds which amplifiers sat on which circuit.",
+"unlabeled":"Nothing on the rack says which circuit feeds it. You found out by switching breakers."
+}
+},
+{
+"id":"e",
+"beat":"DECISION",
+"speaker":null,
+"text":"Afterwards, what goes in the log?",
+"choices":[
+[
+"The circuit, the urn, what you did and what must change: a dedicated circuit for the rack",
+"A dedicated circuit is booked for next month. Corin signs the change.",
+{
+"verification":2,
+"debt":2,
+"leadership":1
+},
+"logged-change",
+"f"
+],
+[
+"\"Breaker tripped, reset, fine now\"",
+"Two months later it happens again, at a funeral.",
+{
+"debt":-3
+},
+"logged-minimal",
+"f"
+]
+]
+},
+{
+"id":"f",
+"beat":"REFLECT",
+"speaker":null,
+"text":"Season 1 ends here. What you did is carried into season 2.",
+"reflect":true,
+"finale":true
+}
+]
+}
+],
+"DESIGN_LESSONS":[
+{
+"id":"review",
+"chapter":"CH-ENG-11",
+"title":"Reading a design review",
+"rooms":[
+"R-BCN-3-225"
+],
+"sum":"A score says how a room averages; a critical rule says who it fails. Read both, then the evidence behind each.",
+"cards":[
+"<b>Two triggers, read together.</b> Assurance opens a design review when the design score is under {DR} (rule DR-70), or when any one of eight critical-failure rules fails. A room can average 82 and still leave a seat that cannot read the screen. The score never cancels a critical failure.",
+"<b>The score is a weighted mean.</b> Video, pickup, reproduction, sightlines, space, access, infrastructure and support are each weighted for what the room is for: a training room weights sightlines and pickup more than a huddle room does. The review shows every weight and how many points each dimension takes off.",
+"<b>Every critical failure is written the same way:</b> the criterion and its threshold, the value found, how it was worked out and from what, the seats or devices it affects, the corrective action, and the outcome when the model runs again with that action in place.",
+"<b>Three kinds of finding.</b> A <i>simulated design deficiency</i> is read from the drawing and the catalog: it is true wherever the design is built. A <i>predicted performance issue</i> is what the model expects people to experience. A <i>field-verified failure</i> was measured or tested in the room: the measurement governs, and the model explains it. Only the last is a fact about the room as it stands.",
+"<b>Decisions leave a trail.</b> An engineer approves or rejects each corrective action. Rejecting one accepts a critical failure, so it needs a reason code and an explanation of {JMAT} characters or more, with evidence where there is some. Every decision keeps the figures it was based on, the role that made it and when. Reopening a decision adds to the history; it never erases it."
+]
+},
+{
+"id":"absorb",
+"chapter":"CH-ENG-8",
+"title":"Absorption, carpet and the seasons",
+"rooms":[
+"R-MER-2-120",
+"R-MER-2-151",
+"R-ATL-4-128"
+],
+"sum":"What each finish takes out of a voice, why Eyring beats Sabine in a treated room, and why the same room sounds different in January.",
+"cards":[
+"<b>Two formulas for one decay.</b> Sabine, <span class=\"formula\">T = 0.161 V ÷ A</span>, assumes a lively room where sound decays smoothly. Eyring, <span class=\"formula\">T = 0.161 V ÷ (−S·ln(1 − ᾱ) + 4mV)</span>, stays accurate when the average absorption ᾱ is high, as it is in a treated meeting room; there Sabine overstates the decay. Lite uses Eyring in seven octave bands, with the air term 4mV.",
+"<b>Absorption belongs to a material and a frequency.</b> The coefficient α is the share of sound energy a surface absorbs. At 500 Hz: a 50 mm fabric-wrapped panel {a:panel@500}, mineral ceiling tile {a:tile@500}, painted plasterboard {a:wall@500}, glass {a:glass@500}.",
+"<b>Carpet is not acoustic treatment.</b> Carpet tile on concrete absorbs only {a:carpet-tile@500} at 500 Hz, rising to {a:carpet-tile@2000} at 2 kHz: it quietens footfall and the top of speech, not the body of a voice. Heavy carpet on an underlay does far more ({a:carpet-heavy@500} at 500 Hz). Count carpet, but do not let it stand in for panels.",
+"<b>Where absorption sits matters.</b> A statistical model counts square meters; a real room cares where they are. Panels on the side and rear walls at head height stop flutter between parallel walls. Clouds over the table take the first reflection between a talker and a ceiling microphone. Lite draws the reflections each finish weakens, but its decay figure assumes the sound field is diffuse.",
+"<b>The air absorbs too, and it changes with the seasons.</b> Above 2 kHz, air absorption (ISO 9613-1) shortens the decay, and it depends on humidity. Heated winter air, at 21 °C and 25% relative humidity, absorbs more at 4 to 8 kHz than humid summer air, so a room can sound brighter in July than in January with nothing changed but the air. Lite works every acoustic figure out again for the season you choose.",
+"<b>A finish is part of the system.</b> Panels come off walls for whiteboards; glass replaces plasterboard in a refit. Assurance compares the finishes in a room with the ones it was commissioned with, and the decay the model gives moves with them."
+]
+},
+{
+"id":"mics",
+"chapter":"CH-ENG-3",
+"title":"Choosing room microphones",
+"rooms":[
+"R-BCN-3-225",
+"R-ATL-6-136",
+"R-ATL-7-227"
+],
+"sum":"Distance first, then directivity, mounting height and one echo reference. Gain comes last, if at all.",
+"cards":[
+"<b>Distance is the first decision.</b> Inside the critical distance, <span class=\"formula\">D<sub>c</sub> = 0.141 √(Q·R)</span>, a talker's direct sound is louder than the room's reverberation; beyond it, the room wins. R is the room constant, <span class=\"formula\">R = S·ᾱ ÷ (1 − ᾱ)</span>. A directional microphone (higher Q) stretches the distance a little. It does not make a live room dead.",
+"<b>Rated distances are a class figure.</b> Lite takes each microphone's primary and usable pickup distances from its catalog entry and works out a speech transmission index (STI) for every seat through the microphone that serves it. A seat is primary at STI 0.60 or better within the primary distance, and marginal at 0.45 or better within the usable distance. Below 0.45, it fails critical rule CF-01.",
+"<b>Ceiling arrays have a mounting height.</b> Above the maker's recommended height, an array hears more room and less talker. Makers allow more height only where the acoustics are controlled. In a tall room, hang the array on a pendant kit over the seats it serves (critical rule CF-02).",
+"<b>Goosenecks work close.</b> A gooseneck is aimed at one talker, and it works within about 0.3 to 0.6 m of the mouth. Lite measures from the capsule at the end of the stem to a mouth 0.2 m in front of the seat. Beyond that it is a poor room microphone, however good the capsule.",
+"<b>One echo canceller, one reference.</b> When a video bar or a board's array and a room microphone system are both live, each must cancel echo against everything the room plays. Two cancellers on separate references leave the far end hearing itself (CF-06). Switch one system off, or route both through the processor on one shared reference.",
+"<b>Fix the room before the gain.</b> More gain lifts the noise and the reverberation with the voice. Put a microphone within reach of the weak seats first; add absorption second."
+]
+},
+{
+"id":"sight",
+"chapter":"CH-ENG-4",
+"title":"Sizing displays and placing cameras",
+"rooms":[
+"R-ATL-2-118",
+"R-BCN-3-225"
+],
+"sum":"Image height sets the farthest seat, angles set the nearest, and cameras belong where people look.",
+"cards":[
+"<b>Image height sets the farthest seat.</b> A 16:9 image is about 0.49 times its diagonal tall: a 65-inch image is 0.81 m. The rules of thumb are 6 image heights for detailed content and 8 for presentation content. ANSI/AVIXA V202.01 (DISCAS) works the size out from the smallest element on the screen instead, and is the stricter test where content is known.",
+"<b>Angles matter as much as distance.</b> A seat more than 60° off the screen's axis sees a foreshortened image (CF-03 counts it with the seats that are too far). Looking more than 35° up to the top of the image is uncomfortable within minutes; 40° is the most Lite accepts (CF-04). Lower the screen, or move the first row back.",
+"<b>Contrast in the room, not in the brochure.</b> The light falling on a screen lifts its black level. Lite works out the contrast a seat sees from the screen's luminance L, the light on it E and its reflectance ρ: <span class=\"formula\">C = (L + Eρ/π) ÷ (Eρ/π)</span>.",
+"<b>Cameras go where people look.</b> People face the display, so the main camera belongs on the display wall. A camera behind the seats sees the backs of heads, however wide its lens. Lite counts a seat as seen only when it sits inside a preset's view and its occupant faces the camera (CF-05 asks for 85% of seats in a hybrid or training room).",
+"<b>Enough pixels on a face.</b> A face is about 0.16 m wide. A camera with a horizontal view θ and P pixels across puts <span class=\"formula\">px = 0.16·P ÷ (2d·tan(θ/2))</span> pixels on a face d meters away. Lite looks for 40 or more; below 25, the far end cannot read an expression."
+]
+},
+{
+"id":"builder",
+"title":"Teaching Room Builder",
+"rooms":[],
+"sum":"How a designer's edit becomes a rule for the next proposal, and why that is rule adaptation, not training.",
+"cards":[
+"<b>A proposal is a starting point.</b> Room Builder proposes a design from a room's shape and use, with every calculation shown. A designer can move, change, add or remove an object and watch the figures move before recording anything.",
+"<b>Every edit carries its reason.</b> A reason code says what kind of reason it is: a field condition, a code or safety requirement, manufacturer guidance, a correction of the proposal. A minor correction needs a few words ({JMIN} characters or more). A material exception, one that takes on risk the design rules would not, needs a real explanation ({JMAT} characters or more). Evidence can be attached: a measurement, a photograph, a drawing revision. The ledger keeps the original recommendation, the change, the reason and the figures before and after.",
+"<b>Separation of duties.</b> The role that made an edit cannot approve or reject it. An engineer in another role reviews it, and a rejection needs its own written reason.",
+"<b>What learning means here.</b> An approved edit becomes a rule for new proposals for the same kind of room: the same addition, the same model choice. Only reasons that hold for every room of that kind teach it: a correction of the proposal, manufacturer guidance, a code or safety requirement. A field condition, such as a beam in one room, is recorded but not learned. This is rule adaptation in this browser, not a trained model.",
+"<b>Only earlier approvals count.</b> A design learns only from edits approved before it was recorded, so a recorded design never changes under its designer because someone approved something later."
+]
+},
+{
+"id":"lines",
+"chapter":"CH-ENG-3",
+"title":"Loudspeaker lines and coverage",
+"rooms":[
+"R-BCN-3-236",
+"R-MER-1-251",
+"R-MER-1-227",
+"R-ATL-5-228",
+"R-ATL-3-213"
+],
+"sum":"Taps add up on a constant-voltage line; impedances combine on a low-impedance one; a switch powers a networked one. None of that says the seats can hear.",
+"cards":[
+"<b>A constant-voltage line.</b> On a 70 V or 100 V line every loudspeaker has a transformer with taps, and the amplifier channel sees their sum: <span class=\"formula\">P = Σ P<sub>tap</sub></span>. The line's impedance follows from it, <span class=\"formula\">Z = V² ÷ P</span>: eight 15 W taps on a 70.7 V line present 41.65 Ω. A 100 V line carries the same power at twice the impedance, so its cable loses less.",
+"<b>Leave an allowance.</b> Size the channel at the taps plus an allowance for transformer losses, the line and tolerance: <span class=\"formula\">P<sub>amp</sub> ≥ Σ P<sub>tap</sub> × (1 + a)</span>. With a 20% allowance, 120 W of taps needs at least 144 W. Some designers state the margin the other way, loading a channel to at most 80% of its rating (25% on the taps); Empathia shows which margin a result uses. Either way, the maker's own requirements come first.",
+"<b>A tap is a choice.</b> It sets the most a loudspeaker can be given, and the level at a seat follows <span class=\"formula\">L = S + 10·log P − 20·log d</span>. A conferencing pendant at 90 dB (1 W, 1 m) on a 3.75 W tap gives 95.7 dB at 1 m: plenty for speech in a boardroom. A 15 W tap adds 6 dB nobody needs and four times the load. Not every tap exists at every voltage: the smallest tap may be offered at 70 V only.",
+"<b>Sensitivity has a reference.</b> A figure quoted at 2.83 V is at 1 W only into 8 Ω. Into 4 Ω, 2.83 V delivers 2 W, so 93 dB at 2.83 V is 90 dB at 1 W: <span class=\"formula\">S<sub>1 W</sub> = S<sub>2.83 V</sub> − 10·log(8 ÷ Z)</span>.",
+"<b>Low impedance combines differently.</b> Without transformers the loudspeakers' own impedances combine: <span class=\"formula\">Z = Z<sub>loudspeaker</sub> × series ÷ parallel</span>. Six 8 Ω loudspeakers, pairs in series and three pairs in parallel, are 5.3 Ω. Keep it above the amplifier's minimum, share the channel's power at that load between them, and limit it to their rating. The cable costs more here: <span class=\"formula\">loss = 20·log(Z ÷ (Z + R<sub>cable</sub>))</span>, R<sub>cable</sub> = 2Lρ ÷ A.",
+"<b>Networked loudspeakers move the power to the switch.</b> Each has its own amplifier and takes a PoE port, and the switch sets aside its class allowance for each: 30 W for PoE+. The calculation that matters is the switch's budget, and the level each can reach on its class.",
+"<b>Loading is not coverage.</b> A perfectly loaded line can leave seats outside every cone, or 8 dB quieter than their neighbors. Coverage is worked out separately: the circle each cone covers at ear height, <span class=\"formula\">D = 2(h − 1.2)·tan(θ ÷ 2)</span>; spacing no wider than D ÷ √2 so every point is inside one; the level at each seat with room for peaks; and the intelligibility of what the seat hears.",
+"<b>What was installed is what counts.</b> A tap set to 30 W where the drawing says 15 W changes the line's load and the zone's balance. Measuring the line's impedance at commissioning verifies the taps: a reading within 10% of V² ÷ P confirms them; a low reading says more watts are tapped than drawn."
+]
+},
+{
+"id":"divisible",
+"chapter":"CH-ENG-7",
+"title":"Divisible rooms: states, routing and isolation",
+"rooms":[
+"R-BCN-3-236"
+],
+"sum":"A room that splits is designed, commissioned and assured as states, and nothing may be heard across a closed partition.",
+"cards":[
+"<b>States, not rooms.</b> Two partitions make four states: one hall, two different pairs, three rooms. Each state decides the routing, the microphone and echo groups, the room computer on the call, the cameras and their zones, which panel controls what, and what each wall shows.",
+"<b>Each partition is read twice.</b> A contact at the jamb and one at the pocket. A partition is open only when both agree; anything else (both made, both clear, a reading missing) is treated as closed, and raised. Fail-safe means separated: wrongly separated, a room loses program it can get back with one button; wrongly combined, a confidential meeting is heard next door.",
+"<b>Routing follows rules.</b> In each room: every wireless microphone on every line in the room; an audience array reinforced on the room's other lines, never the line over it; program and far end from the lead section, and one echo reference for every array in the room; one room computer on the call; the stream from the room with the main stage. Nothing crosses a closed partition.",
+"<b>A preset must set every crosspoint.</b> If a state's preset sets only some crosspoints, the rest keep whatever the last state left. A block added after commissioning and saved into one preset only survives a split, and the next meeting hears the last one's microphones. Write every preset to set every crosspoint, and have the control system read the matrix back after each change.",
+"<b>Commission every state and every transition.</b> Twelve checks in each of the four states, and all twelve transitions between them, each from the matrix its first state should have. Assurance repeats the isolation check after every partition change, so a change made later is found, not heard."
+]
+},
+{
+"id":"tracking",
+"chapter":"CH-ENG-4",
+"title":"Camera automation: tracking, handoffs and audience framing",
+"rooms":[
+"R-BCN-3-236",
+"R-ATL-5-228"
+],
+"sum":"Zones, hysteresis and dwell decide when the shot moves; the room's state decides which cameras are in it. Simulated here, never claimed as integration.",
+"cards":[
+"<b>A tracking zone is where a camera may follow.</b> The director moves a pan-tilt-zoom camera to keep the presenter framed while the presenter is inside its zone. Outside every zone it holds, then falls back to a wide shot.",
+"<b>Exclusion zones keep the shot off the screens.</b> Where the presenter stands in front of a display, the camera holds its framing instead of zooming into the screen behind.",
+"<b>Hysteresis and dwell stop the ping-pong.</b> Two cameras meet at a boundary. Hand the shot over only when the presenter is some distance past it (0.6 m here) for some time (2 s), or a presenter pacing on the line makes the program cut back and forth.",
+"<b>Audience framing comes from the microphones.</b> The ceiling arrays know where a question comes from; the audience camera frames that part of the room, and the program returns to the presenter after it.",
+"<b>The room's state changes the rig.</b> In a divisible hall, tracking zones reach across an open partition so that two cameras can hand over, and stop at a closed one. The director's zones are one more thing to commission in every state.",
+"<b>Simulated is not integrated.</b> Empathia runs a presenter's walk through the director's rules and shows what the program would do. A real integration would read the director's zones and its live tracking state through its interface. This build has none, and says so."
+]
+}
+],
+"ASK_QUESTIONS":[
+"Why is Atlas 4.218 degraded?",
+"What changed since commissioning?",
+"Why is Beacon 3.101 blocked?",
+"Show rooms with audio problems.",
+"What is the most common root cause?",
+"Which rooms have spatial drift?",
+"Which devices approach support end?",
+"What rooms should be recommissioned?",
+"What should we budget next year?",
+"Where is the Tech Zone?",
+"How do I check in as a visitor?",
+"How do I use this room?",
+"Which guide explains microphone coverage?",
+"Why is Beacon 3.225 under design review?",
+"Which rooms fail a critical design rule?"
+],
+"SH_STAGES":[
+[
+"request",
+"Request",
+"Requester"
+],
+[
+"triage",
+"Triage",
+"Service Manager"
+],
+[
+"scope",
+"Scope",
+"Service Engineer"
+],
+[
+"dependency",
+"Dependency check",
+"Systems Engineer"
+],
+[
+"standard",
+"Standard check",
+"Systems Engineer"
+],
+[
+"device",
+"Device check",
+"Systems Engineer"
+],
+[
+"teams",
+"Required teams",
+"Service Manager"
+],
+[
+"authorize",
+"Authorization",
+"Approver"
+],
+[
+"schedule",
+"Schedule",
+"Service Manager"
+],
+[
+"install",
+"Install / configure",
+"Installation Engineer"
+],
+[
+"minicx",
+"Mini-commission",
+"Commissioning Engineer"
+],
+[
+"evidence",
+"Evidence",
+"Installation Engineer"
+],
+[
+"handoff",
+"Handoff",
+"Service Manager"
+],
+[
+"baseline",
+"Baseline update",
+"Commissioning Engineer"
+],
+[
+"close",
+"Close",
+"Service Manager"
+],
+[
+"learn",
+"Learning candidate",
+"Technical Learning Academy"
+]
+],
+"SH_ROUTES":{
+"quick":[
+"Quick service",
+"An approved standard, a known method, low risk and no change to the room’s architecture."
+],
+"engineered":[
+"Engineered service",
+"A small job that still changes infrastructure, coverage, security, a standard or the commissioned baseline, so an engineer approves it first."
+],
+"project":[
+"Project conversion",
+"Scale, risk, cost or dependencies are beyond small work: it becomes a project with a sponsor, a budget and a plan."
+],
+"scouter":[
+"Scouter first",
+"The device is not on the approved list. Scouter evaluates it before anything is routed."
+]
+},
+"REPLAY_STAGES":[
+[
+"request",
+"Request",
+"Intake",
+"Somebody asks for a room that can do a job."
+],
+[
+"requirements",
+"Requirements",
+"Intake",
+"The need is written as things a test can prove."
+],
+[
+"design",
+"Design",
+"Room Builder",
+"The room is planned: furniture, devices and what each must cover."
+],
+[
+"evaluation",
+"Device evaluation",
+"Scouter",
+"Devices are compared against the requirement, not against each other’s brochures."
+],
+[
+"budget",
+"Budget",
+"Budgeting",
+"The design is costed. An estimate, not a quote."
+],
+[
+"approval",
+"Approval",
+"Budgeting",
+"A person with the authority says yes to the amount."
+],
+[
+"build",
+"Build",
+"Projects",
+"The devices are installed and the room takes its shape."
+],
+[
+"commissioning",
+"Commissioning",
+"Commissioning",
+"Five phases prove the installation and the experience."
+],
+[
+"baseline",
+"Baseline",
+"Commissioning",
+"What was proven is stored. Everything later is compared with it."
+],
+[
+"operations",
+"Operations",
+"Empathia Pro",
+"The room is used, maintained and watched."
+],
+[
+"issue",
+"Issue",
+"Empathia Pro",
+"Something stops working the way the room was meant to."
+],
+[
+"diagnosis",
+"Diagnosis",
+"Assurance",
+"Evidence narrows it to a cause."
+],
+[
+"optimization",
+"Optimization",
+"Empathia Lite",
+"A change is proposed and shown on the model before anything is bought."
+],
+[
+"recommissioning",
+"Recommissioning",
+"Commissioning",
+"The change is built, tested and signed off. A new baseline sits beside the old one."
+],
+[
+"learning",
+"Learning",
+"Empathia Learn",
+"What happened becomes a case other people can practice on."
+],
+[
+"current",
+"Current",
+"Empathia Core",
+"The room as it is today, with its whole history behind it."
+]
+],
+"ROOT_CAUSES":[
+[
+"Firmware regression",
+"A newer firmware version changed behavior that the room depends on."
+],
+[
+"Radio frequency coordination gap",
+"Wireless channels overlap with another system or sit outside the plan."
+],
+[
+"Cable or termination fault",
+"A cable run, patch lead or connector is intermittent."
+],
+[
+"Configuration drift from baseline",
+"Settings no longer match the commissioned configuration."
+],
+[
+"Network port instability",
+"The switch port or its patching drops link."
+],
+[
+"Power event",
+"A power interruption left a device in a bad state."
+],
+[
+"Thermal stress",
+"Heat or dust is shortening component life."
+],
+[
+"Workflow gap",
+"The room works as built, but people are not shown how to use it."
+],
+[
+"Hardware at end of life",
+"The device is past its service life and failing more often."
+],
+[
+"Calendar sync delay",
+"Booking changes are not reaching the room in time."
+],
+[
+"Acoustic design limit",
+"The room finishes or layout limit what the audio system can achieve."
+],
+[
+"Not yet known",
+"Under investigation."
+],
+[
+"Control logic fault",
+"The room control program sends the wrong command for a button or a preset."
+],
+[
+"Component failure",
+"A part inside the device has failed before the end of its service life."
+]
+],
+"KNOWN_FIXES":[
+[
+"Roll back to the validated firmware baseline",
+0,
+[
+"Confirm the installed version",
+"Apply the baseline version",
+"Run the functional check for the device"
+]
+],
+[
+"Re-coordinate wireless frequencies",
+1,
+[
+"Scan the room with the system off",
+"Assign channels from the campus plan with one spare",
+"Walk-test every microphone position"
+]
+],
+[
+"Replace and re-certify the cable run",
+2,
+[
+"Swap the patch lead first",
+"Test the permanent link",
+"Replace the run if the test fails"
+]
+],
+[
+"Reapply the commissioned configuration",
+3,
+[
+"Export the current settings for the record",
+"Load the commissioned settings",
+"Repeat the affected commissioning checks"
+]
+],
+[
+"Move the device to a tested switch port",
+4,
+[
+"Check port error counters",
+"Move the patch to a spare tested port",
+"Update the port record"
+]
+],
+[
+"Power-cycle in the documented order",
+5,
+[
+"Shut down compute first",
+"Restore power to processing, then endpoints",
+"Confirm the room starts a test meeting"
+]
+],
+[
+"Clean, re-seat and improve airflow",
+6,
+[
+"Inspect vents and filters",
+"Clean and re-seat modules",
+"Log temperature for a week"
+]
+],
+[
+"Add a one-page room guide and a short walkthrough",
+7,
+[
+"Capture the steps people get wrong",
+"Place a guide at the table",
+"Offer a five-minute walkthrough to room owners"
+]
+],
+[
+"Replace the device with the current standard model",
+8,
+[
+"Confirm the standard model for the archetype",
+"Schedule the swap outside booked hours",
+"Run the functional and operational checks"
+]
+],
+[
+"Shorten the calendar refresh interval",
+9,
+[
+"Check the last successful sync",
+"Apply the standard refresh setting",
+"Time a booking change"
+]
+],
+[
+"Add absorption or a second microphone zone",
+10,
+[
+"Model the room with the proposed change",
+"Install treatment or the added zone",
+"Measure intelligibility at the weak seats"
+]
+],
+[
+"Replace the backup battery pack",
+5,
+[
+"Check runtime from the unit",
+"Replace the pack",
+"Run a short discharge test"
+]
+],
+[
+"Correct the control logic and re-test every source route",
+12,
+[
+"Reproduce the wrong route from the panel",
+"Correct the program and load it outside booked hours",
+"Walk every button and preset against the control profile"
+]
+],
+[
+"Replace the failed part under warranty",
+13,
+[
+"Confirm the fault follows the part, not the cable or the port",
+"Raise the warranty claim with the maker",
+"Fit the replacement and repeat the functional check"
+]
+]
+],
+"MATERIALS":{
+"carpet-tile":{
+"label":"Carpet tile on concrete",
+"a":[
+0.02,
+0.04,
+0.08,
+0.2,
+0.35,
+0.4,
+0.4
+]
+},
+"carpet-heavy":{
+"label":"Heavy carpet on underlay",
+"a":[
+0.08,
+0.24,
+0.57,
+0.69,
+0.71,
+0.73,
+0.73
+]
+},
+"hard":{
+"label":"Vinyl or polished concrete",
+"a":[
+0.02,
+0.03,
+0.03,
+0.03,
+0.03,
+0.02,
+0.02
+]
+},
+"tile":{
+"label":"Mineral acoustic ceiling tile",
+"a":[
+0.4,
+0.52,
+0.62,
+0.74,
+0.8,
+0.78,
+0.76
+]
+},
+"plaster":{
+"label":"Plastered or gypsum ceiling",
+"a":[
+0.29,
+0.1,
+0.05,
+0.04,
+0.07,
+0.09,
+0.09
+]
+},
+"open":{
+"label":"Exposed concrete deck",
+"a":[
+0.01,
+0.01,
+0.02,
+0.02,
+0.02,
+0.03,
+0.03
+]
+},
+"wall":{
+"label":"Painted gypsum wall",
+"a":[
+0.29,
+0.1,
+0.05,
+0.04,
+0.07,
+0.09,
+0.09
+]
+},
+"glass":{
+"label":"Glazing",
+"a":[
+0.18,
+0.06,
+0.04,
+0.03,
+0.02,
+0.02,
+0.02
+]
+},
+"panel":{
+"label":"50 mm fabric-wrapped absorber on the wall",
+"a":[
+0.25,
+0.75,
+1,
+1,
+1,
+0.95,
+0.9
+]
+},
+"cloud":{
+"label":"50 mm suspended ceiling cloud",
+"a":[
+0.35,
+0.8,
+1,
+1,
+1,
+0.95,
+0.9
+]
+},
+"seat":{
+"label":"Upholstered chair, empty (m² each)",
+"a":[
+0.15,
+0.25,
+0.32,
+0.35,
+0.35,
+0.35,
+0.35
+]
+},
+"person":{
+"label":"Seated person (m² each)",
+"a":[
+0.25,
+0.35,
+0.42,
+0.46,
+0.5,
+0.5,
+0.5
+]
+}
+},
+"BANDS":[
+125,
+250,
+500,
+1000.0,
+2000.0,
+4000.0,
+8000.0
+],
+"PLACEHOLDERS":{
+"DR":"70",
+"JMAT":"60",
+"JMIN":"10"
+},
+"_source":"Empathia Living Campus V2.5.3 offline (read statically by scripts/legacy/extract-learn.py; never executed)"
+}

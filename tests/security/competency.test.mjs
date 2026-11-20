@@ -5,7 +5,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client } from '../integration/harness.mjs';
+import { setup, client, registerRoom } from '../integration/harness.mjs';
 
 let h, c, room, wo; const T = {};
 const who = (mail) => h.asSuper(`SELECT id FROM app.person WHERE email = '${mail}@empathia-demo.empathia.invalid'`);
@@ -23,7 +23,7 @@ before(async () => {
   room = (await c.call('POST', '/v1/rooms', { token: T.designer, body: { name: 'Credential Huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 6 } })).body.code;
   await c.call('POST', `/v1/rooms/${room}/revisions`, { token: T.designer, body: { reason: 'comp' } }); await c.call('POST', `/v1/rooms/${room}/drawings/generate`, { token: T.designer });
   await c.call('POST', `/v1/rooms/${room}/drawings/plan/approve`, { token: T.syseng }); await c.call('POST', `/v1/rooms/${room}/classification/approve`, { token: T.syseng, body: {} });
-  for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: T[t], body: { to } });
+  for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) { if (to === 'COMMISSIONING') await registerRoom(c, room, T.installer); await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: T[t], body: { to } }); }   // the register gates commissioning (14 Nov 2026)
   const row = (await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body.commissioning.rows.find((x) => x.applicable);
   const ev = (await c.call('POST', '/v1/evidence', { token: T.cxeng, raw: Buffer.from('synthetic'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } })).body;
   await c.call('POST', `/v1/rooms/${room}/results`, { token: T.cxeng, body: { testId: row.test_id, state: 'FAIL', evidenceId: ev.id, evidenceKind: row.evidence[0], instrument: 'SYN-METER-01 (synthetic)' } });
@@ -67,7 +67,10 @@ test('COMP-3 recording: only service.assign (403 otherwise, nothing read); dates
   assert.equal(bad.status, 422); assert.match(JSON.stringify(bad.body), /must belong to the person/);
   const ok = await c.call('POST', '/v1/competencies', { token: T.svcmgr, body }); assert.equal(ok.status, 201, JSON.stringify(ok.body)); assert.equal(ok.body.state, 'PENDING_VERIFICATION');
   const s = (await cands()).ineligible.find((x) => x.id === who('service-south'));
-  assert.ok(s.hardFails.some((x) => /Camera and framing: not held/.test(x)), 'a pending credential counts for nothing');
+  // 18 Nov 2026 (ADR-0017): the gate's outcome is the same and its reason is now the precise one. It used to read "not held" for a
+  // credential that is on record and waits for its verifier; it names that, and the pending record, so the verifier can find it.
+  assert.ok(s.hardFails.some((x) => /Camera and framing: recorded, not yet verified by someone other than its recorder and its holder \(it counts for nothing until then\)/.test(x)), 'a pending credential counts for nothing');
+  assert.ok(!s.hardFails.some((x) => /Camera and framing: not held/.test(x)) && s.pending.some((x) => x.id === ok.body.id), 'and the gate names the pending record');
 });
 
 test('COMP-4 verification is independent: the recorder holds no provenance.review (403); nobody verifies their own credential (422); the database refuses a verifier who recorded it; the steward verifies and the gate reads it at once', async () => {

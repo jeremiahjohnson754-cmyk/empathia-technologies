@@ -1,0 +1,7 @@
+WEBVTT
+
+NOTE AI-generated voice (synthetic, not a real person). ElevenLabs premade voice Brian, eleven_v4. Chosen by the founder after listening (18 Nov 2026). See docs/media/BRIAN_NARRATION_SCRIPT_AND_LICENSE.md. Cue boundaries at the measured pauses (silencedetect -45 dB) nearest each sentence end.
+
+1
+00:00:00.000 --> 00:00:07.628
+Assurance holds the accepted state, so any later difference shows as drift against a known baseline, not as a guess.

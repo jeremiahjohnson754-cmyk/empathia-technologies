@@ -1,0 +1,177 @@
+{
+  "key": "P-commissioning",
+  "title": "Commissioning and assurance: from the campus to one check, and back",
+  "product": "commissioning",
+  "recordedAt": "2026-11-19T23:33:26.009Z",
+  "duration": 51.52,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T23:05:29.841Z"
+  },
+  "git": "eca7f43",
+  "steps": [
+    {
+      "at": 0,
+      "shown": 0.01,
+      "until": 4.81,
+      "say": "Commissioning: every room on the campus, and what needs attention.",
+      "proof": "[data-testid=cx-attention]",
+      "url": "/#/commissioning"
+    },
+    {
+      "at": 4.81,
+      "shown": 5.83,
+      "until": 10.41,
+      "say": "Drill down: one room, through its phases.",
+      "proof": "[data-testid=cx-phases]",
+      "url": "/#/commissioning/room/R-ATL-4-218"
+    },
+    {
+      "at": 10.41,
+      "shown": 11.17,
+      "until": 15.55,
+      "say": "Every check, with its evidence and who ran it.",
+      "proof": "[data-testid=cx-checks]",
+      "url": "/#/commissioning/room/R-ATL-4-218"
+    },
+    {
+      "at": 15.55,
+      "shown": 15.92,
+      "until": 22.2,
+      "say": "Traceability: from the requirement to the test that proves it.",
+      "proof": "[data-testid=cx-room]",
+      "url": "/#/commissioning/room/R-ATL-4-218/trace"
+    },
+    {
+      "at": 22.2,
+      "shown": 22.6,
+      "until": 26.26,
+      "say": "The room’s deficiencies, each with an owner.",
+      "proof": "[data-testid=cx-room]",
+      "url": "/#/commissioning/room/R-ATL-4-218/deficiencies"
+    },
+    {
+      "at": 26.26,
+      "shown": 26.96,
+      "until": 30.68,
+      "say": "Assurance: the room in its four states.",
+      "proof": "[data-testid=as-four-states]",
+      "url": "/#/assurance/room/R-ATL-4-218"
+    },
+    {
+      "at": 30.68,
+      "shown": 31.41,
+      "until": 38.01,
+      "say": "Run the checks again, on a simulated system: a simulation never proves commissioning.",
+      "proof": "[data-testid=as-run]",
+      "url": "/#/assurance/room/R-ATL-4-218"
+    },
+    {
+      "at": 38.01,
+      "shown": 38.19,
+      "until": 42.72,
+      "say": "Back up: every open deficiency across the campus,",
+      "proof": "[data-testid=cx-deficiencies]",
+      "url": "/#/commissioning/deficiencies"
+    },
+    {
+      "at": 42.72,
+      "shown": 43.44,
+      "until": 46.66,
+      "say": "grouped by who owns the fix.",
+      "proof": "[data-testid=cx-owners]",
+      "url": "/#/commissioning/deficiencies"
+    },
+    {
+      "at": 46.66,
+      "shown": 46.71,
+      "until": 51.52,
+      "say": "Designed, commissioned, current and proposed, never confused.",
+      "proof": "[data-testid=cx-attention]",
+      "url": "/#/commissioning"
+    }
+  ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 4.34,
+        "sha256": "177002bdbfedaaf49a6f4799fc5ceca92a57027514364f07e42a1932c1b0265e"
+      },
+      {
+        "step": 2,
+        "seconds": 4.13,
+        "sha256": "62aa70ad9a3ff4842ed1035fb20f44428869deb3ec6f86ceab59afded79adf85"
+      },
+      {
+        "step": 3,
+        "seconds": 3.92,
+        "sha256": "d31a182b8d6a4b87729e6d79ed219d479b3d1b60b6efb110fc8fa1e9bdf84a73"
+      },
+      {
+        "step": 4,
+        "seconds": 5.81,
+        "sha256": "5a273bf3299c6d245b6722c2ae99c2678e7762f3cad5e0dbf0a97eb23d051eed"
+      },
+      {
+        "step": 5,
+        "seconds": 3.2,
+        "sha256": "6e21900a0ca36bf853447216dd74f9d4b82af71c14e6d7ff910dc768b201a8b5"
+      },
+      {
+        "step": 6,
+        "seconds": 3.26,
+        "sha256": "19bd6e914c9d7777ea4d0533630e6ed9f2af220470500b26cc578d49a70a6470"
+      },
+      {
+        "step": 7,
+        "seconds": 6.13,
+        "sha256": "61ab9471302b6dc3f1f2964681a35e49e8e73c378ca756455410ad7c06197503"
+      },
+      {
+        "step": 8,
+        "seconds": 4.07,
+        "sha256": "d20f29413dd7949520fd1d8c8193349c9bcd6b1477a198a9b127215786d160d5"
+      },
+      {
+        "step": 9,
+        "seconds": 2.77,
+        "sha256": "071ed1b9bbf8b87058f41bf49a234263f5238736a3d0bb3475b5933c6e3c6e0b"
+      },
+      {
+        "step": 10,
+        "seconds": 4.34,
+        "sha256": "bb8453aba1d6a9ea0df7d7b3882b90c5d7b934e1cba5ecfcf392a2039a33998e"
+      }
+    ]
+  },
+  "files": {
+    "720.mp4": {
+      "bytes": 2594073,
+      "sha256": "4f34a4039525b6b87f58c613a73354bf585df6e9a23ad49fbad5754d64fe2c8f"
+    },
+    "poster.webp": {
+      "bytes": 58486,
+      "sha256": "e4ec5a7e267445496d5f75c64e074156f3daf5d2c7d37976dd3755e85a1038af"
+    },
+    "poster.jpg": {
+      "bytes": 107361,
+      "sha256": "b1b87123df2ae618a06c6a64ae688a27d38af3f1c0291c534a248434bcc89dbc"
+    },
+    "captions.vtt": {
+      "bytes": 1282,
+      "sha256": "fad235afecb9b5d573557d3af012844df56c47362e36ffced978a489c0bef756"
+    }
+  }
+}

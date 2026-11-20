@@ -1,15 +1,16 @@
 /**
  * The seven guided investor scenarios — the canonical V2.5.3 tour (17 steps, `V25_TOUR_STEPS` in the demonstrator's v25-30-investor.js),
  * carried over unchanged in title, narration, persona and evidence label. Each step opens a page of this demonstration: a native page
- * where one exists today (Build a Room, Search Party), otherwise the boundary page that states the area's migration status — a step is
+ * where one exists today (Build a Room, Search Party), otherwise the address map status — a step is
  * never faked. The runner is a persistent panel; the perspective follows the step's persona so that governance is shown, not told.
  * The complete journey (scenario 4 → 5: create → design → approve → tests → commission → verify → accept → baseline → change →
  * recommission → compare) is Build a Room, step by step; "Reset" clears the draft so the demonstration replays identically.
  */
 import { useEffect, useState } from 'react';
 import { Tag, Button } from '@empathia/ui';
-import { NATIVE, areaKey, AREAS } from '../registry.js';
+import { NATIVE, areaKey } from '../registry.js';
 import { saveDraft } from '../build/store.js';
+import { GuidedPanel } from './Guided.js';
 
 export interface Step { n: number; title: string; text: string; href: string; persona: string; evidence: string; native: boolean }
 const S = (n: number, title: string, text: string, href: string, persona: string, evidence: string): Step => ({ n, title, text, href, persona, evidence, native: NATIVE.has(areaKey(href)) });
@@ -38,17 +39,22 @@ const KEY = 'empathia.demo.tour.v1';
 const EVIDENCE_TONE: Record<string, 'ok' | 'warn' | 'info' | 'muted'> = { VERIFIED_DEMO: 'ok', DECLARED: 'muted', MODELED: 'info', SIMULATED: 'warn' };
 
 /** The persistent tour panel. `onPerspective` switches the demonstration's perspective to the step's persona. */
+/** The tour layer the shell mounts once: the investor scenarios and the guided tours A/B/C (whichever is running). */
 export function TourPanel({ hash, onPerspective }: { hash: string; onPerspective: (p: string) => void }) {
-  const [i, setI] = useState<number | null>(() => { try { const v = sessionStorage.getItem(KEY); return v === null ? null : Number(v); } catch { return null; } });
+  return <><InvestorPanel hash={hash} onPerspective={onPerspective} /><GuidedPanel hash={hash} /></>;
+}
+function InvestorPanel({ hash, onPerspective }: { hash: string; onPerspective: (p: string) => void }) {
+  // a stored step that is not a step index (an older build, a damaged or hand-edited value) is ignored: it used to take the whole shell down
+  const [i, setI] = useState<number | null>(() => { try { const v = sessionStorage.getItem(KEY); const n = v === null ? NaN : Number(v); return Number.isInteger(n) && n >= 0 && n < STEPS.length ? n : null; } catch { return null; } });
   // #/tours/investor?scenario=n starts (or restarts) at the first step of a scenario
   useEffect(() => { const m = /^#\/tours\/investor(?:\?scenario=(\d))?/.exec(hash); if (m) { const n = m[1] ? Number(m[1]) : 1; const first = STEPS.findIndex((s) => s.n === n); start(first < 0 ? 0 : first); } }, [hash]);   // eslint-disable-line react-hooks/exhaustive-deps
   const start = (idx: number) => { setI(idx); try { sessionStorage.setItem(KEY, String(idx)); } catch { /* storage unavailable */ } const s = STEPS[idx]!; onPerspective(s.persona); location.hash = s.href; };
   const stop = () => { setI(null); try { sessionStorage.removeItem(KEY); } catch { /* */ } };
   if (i === null) return null;
-  const s = STEPS[i]!; const area = AREAS.find((a) => a.key === areaKey(s.href));
+  const s = STEPS[i]!;
   return (
     <aside className="tour" aria-label="Guided scenario" data-testid="tour">
-      <div className="tour__head"><span className="tour__k">Scenario {s.n} of 7 · step {i + 1} of {STEPS.length}</span><Tag tone={EVIDENCE_TONE[s.evidence] || 'muted'}>{s.evidence}</Tag><span className="tour__persona">as <b>{s.persona}</b></span>{!s.native && <Tag tone="warn">not migrated yet · {area?.status || 'status page'}</Tag>}</div>
+      <div className="tour__head"><span className="tour__k">Scenario {s.n} of 7 · step {i + 1} of {STEPS.length}</span><Tag tone={EVIDENCE_TONE[s.evidence] || 'muted'}>{s.evidence}</Tag><span className="tour__persona">as <b>{s.persona}</b></span>{!s.native && <Tag tone="warn">address map</Tag>}</div>
       <h2 className="tour__title">{s.title}</h2>
       <p className="tour__text">{s.text}</p>
       {!s.native && <p className="ui-meta">This step's page is still the original V2.5.3 demonstration's; this shell shows its migration status instead of pretending. Native today: every step of the seven scenarios.</p>}

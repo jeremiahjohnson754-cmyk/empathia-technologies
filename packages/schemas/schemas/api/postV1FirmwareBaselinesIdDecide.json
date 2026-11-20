@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1FirmwareBaselinesIdDecide/0.1.0.json",
+  "title": "POST /v1/firmware-baselines/{id}/decide request body",
+  "description": "Approve or reject a proposed firmware baseline: a systems engineer, never its proposer, once; an approval supersedes the model’s baseline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    }
+  }
+}

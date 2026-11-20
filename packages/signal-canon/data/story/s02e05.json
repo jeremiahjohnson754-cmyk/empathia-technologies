@@ -1,0 +1,1552 @@
+{
+ "chapter": {
+  "id": "s02e05",
+  "kicker": "S02 · E05",
+  "title": "Mix-Minus",
+  "pill": "S02E05 · Mix-Minus",
+  "sub": "A presenter heard her own voice, late. The records are about to name someone — and it isn't Dante.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S02E05",
+   "RT-03",
+   "RV-46",
+   "RV-47",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--violet)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 5 · DRAFT  Cold case · Dante · Level L3  A presenter walked off a festival stage because she could hear herself, late. The clip is everywhere. The director blames Dante. The records are going to name someone else.  ⚑ RV-46: delays are illustrative. RV-47: this episode depicts public blame and a public admission. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Name on the Call Sheet",
+   "kind": "COLD CASE · THE LOW POINT",
+   "level": "L3 · SYSTEMS TECH",
+   "party": [
+    "maya",
+    "dante",
+    "noor",
+    "leah"
+   ],
+   "stakes": "A clip of Noor pulling out her earpiece has two hundred thousand views. The call sheet says Dante. The agency is deciding who to book next month.",
+   "clock": "Ten minutes before Odette calls the agency.",
+   "reward": "The truth, said out loud in front of everyone. It will cost you something.",
+   "objectives": [
+    {
+     "key": "BR-S02E05-01",
+     "text": "Use Odette's ten minutes"
+    },
+    {
+     "key": "twist",
+     "text": "Find the one change in the logs"
+    },
+    {
+     "key": "core",
+     "text": "Find the first failure point"
+    },
+    {
+     "key": "BR-S02E05-02",
+     "text": "Say whose template it was"
+    },
+    {
+     "key": "BR-S02E05-03",
+     "text": "Build template v2"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things in the truck"
+    }
+   ],
+   "rumor": "The template on the truck is signed “M.” Nobody on this site knows who M. is. Yet."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “I can't hear myself think”",
+   "sub": "Northgate Ideas Festival · talk stage · last night, 8:04 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A phone screen shows a crowd clip: Noor on the talk stage, arms up, earpiece out, captioned “I can't hear myself think.” 212K views in nine hours. Dante watches it, stricken.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "S",
+     "expr": "worried"
+    },
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Nine hours. Two hundred thousand views. One name on the call sheet: Dante's.",
+   "flags": [
+    "VR-03",
+    "RV-47",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1033
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The morning after",
+   "sub": "9:02 a.m. · the festival production-office tent"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the production-office tent, Odette Marsh, the festival director, confronts Dante. A whiteboard behind them reads: talk stage, Saturday, 20:00 Noor, IFB: D. (truck).",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Odette",
+     "kind": "speech",
+     "text": "Your mix. Your name on the call sheet. The agency's asking me who to book next month."
+    },
+    {
+     "side": "R",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "I didn't touch her mix. I swear I didn't touch it."
+    }
+   ],
+   "narration": [],
+   "caption": "The whiteboard says “IFB: D.” That's all anyone needs to read.",
+   "flags": [
+    "RV-47",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1217
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "worried",
+     "text": "I've been doing this twenty years and my name's on a clip with a woman crying."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then the records will say so. Show me all of them."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya arrives at the tent. Dante turns to her.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "L",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Tell me I'm not crazy. No rehearsal, a snapshot on the truck, and I never touched her faders."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then the records will say so. Show me the logs. All of them."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1215
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Odette taps her watch.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Odette",
+     "kind": "speech",
+     "text": "You have ten minutes before I call the agency."
+    }
+   ],
+   "narration": [],
+   "caption": "Ten minutes to turn a clip into a cause.",
+   "flags": [
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1399
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E05-01",
+   "prompt": "Odette gives you ten minutes. What's your first move?",
+   "happening": "The director blames Dante and will call the agency in ten minutes.",
+   "clock": "9:04 a.m. · call at 9:14",
+   "known": [
+    "◉ Crowd clip: “I can't hear myself think”",
+    "◉ Dante: no rehearsal, a snapshot on the truck"
+   ],
+   "unknown": [
+    "What was in Noor's ear"
+   ],
+   "risk": "Dante's next booking, Noor's reputation, and the truth.",
+   "timer_s": 25,
+   "timeout": [
+    "You hesitate. Odette dials. The agency hears: “the engineer.”",
+    "Ten minutes was a gift. Not using it was a choice."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would turn ten minutes into evidence instead of an argument?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E05). ⚑ RV-47.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Apologize for Dante now to calm her down",
+     "result": "Odette nods: “At least someone's honest.” Dante looks at you like you've pushed him off the truck.",
+     "consequence": "You've confirmed a cause nobody has found — about a colleague.",
+     "chips": [
+      "Dante blamed",
+      "Nothing found"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "An apology is a claim about a cause. You don't have one yet, and it isn't yours to give for him.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dante": -1,
+       "Odette": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Take the ten minutes; pull three records: scene log, routing snapshot, phone video",
+     "result": "“Ten minutes. We'll come back with records, not opinions.”",
+     "consequence": "Odette sits down. She didn't expect that.",
+     "chips": [
+      "Evidence first"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Odette": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Say it was the stream's latency",
+     "result": "Odette: “So the stream people did it?” Now there's a third name in the story.",
+     "consequence": "A guess, stated as a fact.",
+     "chips": [
+      "A new scapegoat"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A plausible cause said out loud becomes the story, whether it's true or not.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Odette": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Say nothing and go back to the truck",
+     "result": "Odette picks up her phone.",
+     "consequence": "The agency hears one version: hers.",
+     "chips": [
+      "No account"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Walking away from the only person who can stop the call.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Odette": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Three records”",
+   "sub": "9:05 a.m. · the monitor truck"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The console's scene log: 7:55, IFB 3 for Noor, no changes; 7:58, snapshot recall, TALK STAGE v1; 8:03 and 8:04, no changes.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "No fader moves on her mix. One event: a snapshot recall at 7:58.",
+   "flags": [
+    "RV-46",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "scene log · IFB 3"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2072
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-05a",
+   "teaser": "the truck's snapshot list",
+   "title": "TALK STAGE v1 — based on LANTERN IN-EAR TEMPLATE v1",
+   "body": "Copied at 07:58. The author field was carried over with it. One letter. Maya has seen that letter a thousand times. It's how she signs her labels.",
+   "thread": "Maya's template",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the phone video's audio at 8:03 p.m. Each word Noor says appears as a clean waveform, followed by an identical, quieter copy about 0.3 seconds later. No howl, no build-up.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Every word, twice. The second copy a third of a second late.",
+   "flags": [
+    "RV-46",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Not the fader — and not feedback",
+   "body": "The scene log shows Dante never touched her mix. And the phone audio isn't the howl of feedback: it's a clean copy of every word, arriving about a third of a second late. A cable delivers sound almost instantly. A delay that long means her voice went somewhere that processes and buffers — and came back into her ear.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E05-1",
+   "label": "Test: two suspects gone. What kind of path is left?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Dante and Maya beside a board. Latency is delay a stage adds. Sample rate is how many times a second the desk measures the sound. A mix-minus is everything except your own voice. The desk shows delay in samples. I think in milliseconds. Samples equal time times sample rate. Half a second at forty-eight thousand: twenty-four thousand samples. Work backwards the same way.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Latency is delay a stage adds. Sample rate is how many times a second the desk measures the sound. A mix-minus is everything except your own voice."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The desk shows delay in samples. I think in milliseconds."
+    },
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Samples equal time times sample rate. Half a second at forty-eight thousand: twenty-four thousand samples. Work backwards the same way."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1458
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Mix-minus   A feed that contains everything except the listener's own voice, so they don't hear themselves late.   Sample rate   How many times per second a digital system measures a signal.   Latency   Delay a stage adds to a signal.   Formula, variables and a worked example   ƒ FORMULA · Samples and time  N = t × f s  · t = N ÷ f s    N  number of samples  t  time, s  f s   sample rate, Hz (48 kHz = 48,000)    Worked example.  0.5 s at 48 kHz: N = 0.5 × 48,000 = 24,000 samples."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 16 OF 31 · PP. 49–50, 55, 60  PART 3 AUDIO FOUNDATIONS · PART 4 DIGITAL CONSOLE OPERATION  Page 60. Dante's note, cramped into the corner: “Mix-minus = everything except you. Check it in every city.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB16",
+   "label": "**Fieldbook module 16 — Buses, sends and DCAs.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 16 · tap a plate to open it full size     Live sound signal chain and gain structure     Lesson 1: audio signal flow, gain and buses     Console EQ, gate, dynamics and sends     Buses, DCAs and scene control"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A6",
+   "label": "**Learn it now:** digital audio — samples, buffers and where milliseconds come from.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The truck's routing snapshot, TALK STAGE v1: IFB 3 for Noor equals her own mic plus the stage band plus RTN 1. RTN 1 is the program return from the video truck.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "RTN 1 is the whole program, back from the video truck. Including Noor.",
+   "flags": [
+    "RV-46",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "snapshot · IFB 3 includes RTN 1"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2184
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View, before: Noor's mic goes to the console, into the program mix, to the video truck (frame sync and encoder), then to the stream, in sync for viewers. The program also comes back as RTN 1, 0.32 seconds late, into IFB 3 — her in-ear bus — alongside her own dry mic. She hears herself twice.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Right for viewers. Wrong in her ear.",
+   "flags": [
+    "RV-46",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-12",
+   "label": "**First failure point:** follow Noor's voice to the first place it goes wrong for her.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The return”",
+   "sub": "9:09 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Pax, the video truck engineer, leans into the monitor truck. A chip reads: RTN 1, clap, plus 0.32 seconds.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Pax",
+     "kind": "speech",
+     "text": "Sure, RTN 1's full program back from us. Frame sync and the encoder — about a third of a second."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And it went straight into her ear."
+    }
+   ],
+   "narration": [],
+   "caption": "Dante's clap test: 0.32 seconds from the stage mic to RTN 1 (illustrative).",
+   "flags": [
+    "RV-46"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "clap test · RTN 1 +0.32 s"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1417
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": null,
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "L",
+     "expr": "flat",
+     "text": "A third of a second. Straight into her ear. From a template that said *no delay here.*"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(Here was a theater. This is a tent.)"
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  How late is too late?  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S02E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Dante and Maya look at each other.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "Who puts a program return in a presenter's ear? I didn't build TALK STAGE v1. It was on the truck when I got here."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then let's find out who did."
+    }
+   ],
+   "narration": [],
+   "caption": "The question that turns a cold case personal.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1179
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Back in the tent, Odette holds up three fingers.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Odette",
+     "kind": "speech",
+     "text": "Three minutes."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1399
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Delayed auditory feedback",
+   "body": "In 1950 engineer Bernard Lee found that hearing your own voice delayed by a fraction of a second makes fluent speakers stumble and stutter. Broadcasters built mix-minus feeds for decades before anyone could explain why they mattered so much.",
+   "flag": "RV-27",
+   "when": "1950",
+   "lab": "PHY-S02E05"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Mine”",
+   "sub": "9:12 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The snapshot's file details: name, TALK STAGE v1; based on LANTERN in-ear template v1; author, M.; created in March, during the advance. Maya stares at the screen.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Author: M.",
+   "flags": [
+    "RV-46",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2034
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback to March: Maya's notebook page from the advance — narrators' in-ears equal band plus own mic plus RTN 1; RTN 1 is local video sound; no delay here.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "March. The advance. “No delay here.” Here was a theater.",
+   "flags": [
+    "RV-46",
+    "VR-08"
+   ],
+   "kind": "flashback",
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2075
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It was Maya's template",
+   "body": "In the March advance Maya built the LANTERN in-ear template. In a theater, RTN 1 was local video sound — no delay, and no narrator's voice in it. Someone on the festival truck built TALK STAGE v1 from her template, and at the festival RTN 1 carried the whole program back from the video truck: late, with Noor's own mic inside it. It was never a mix-minus. It only looked like one in the one room where it didn't matter.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E05-2",
+   "label": "Test: reason from the template — what's a mix-minus, and what fixes this one?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya alone in the truck, eyes closed, the file details still on the screen.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "closed"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [
+    "The log doesn't say “Maya”. It says “M.”"
+   ],
+   "caption": "She could let the log speak for itself. Nobody on this site knows who M. is.",
+   "flags": [
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1104
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-05",
+   "who": "leah",
+   "prompt": "(Leah, quietly, before the tent.) Nobody knows who M. is. You could let the log say it for you.",
+   "options": [
+    {
+     "label": "“It's mine. I'm saying it. Out loud, in front of everyone.”",
+     "who": "leah",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…I hoped you'd say that. I'd have hired you again either way. I'm glad it's this way.",
+     "trust": {
+      "Leah": 2,
+      "Dante": 1
+     }
+    },
+    {
+     "label": "“I'll tell Dante privately after.”",
+     "who": "leah",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "After everyone's already heard it was him.",
+     "trust": {
+      "Leah": -1,
+      "Dante": -1
+     }
+    },
+    {
+     "label": "“Let's see if it comes up.”",
+     "who": "leah",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "It won't. That's the problem.",
+     "trust": {
+      "Leah": -2,
+      "Dante": -2
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E05-02",
+   "prompt": "Odette is waiting in the tent. The crew is there. What do you say?",
+   "happening": "The routing came from your template.",
+   "clock": "9:13 a.m. · Odette's call at 9:14",
+   "known": [
+    "▮ No fader moves",
+    "▮ Echo ≈ 0.3 s",
+    "◉ Template v1 · author M. · March"
+   ],
+   "unknown": [
+    "What it will cost you"
+   ],
+   "risk": "Dante's career, your credibility, and the truth on the record.",
+   "timer_s": 20,
+   "timeout": [
+    "You're still in the truck when Odette makes the call. The agency hears “the engineer”.",
+    "Some decisions get harder every second you wait. This was one."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Whose name should be on the cause?"
+    }
+   ],
+   "note": "Draft decision (DR-S02E05). ⚑ RV-47.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“The routing that hurt Noor came from a template I wrote. Dante ran what I built.”",
+     "result": "Silence in the tent. Dante looks at the floor, then at you.",
+     "consequence": "It costs you, in front of everyone. It clears Dante, and it makes the fix believable.",
+     "chips": [
+      "Owned",
+      "Dante cleared",
+      "Costly"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Dante": 1,
+       "Noor": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Hand Odette the log and let it speak for itself",
+     "result": "Odette reads “author: M.” and shrugs. “So — the engineer's team.”",
+     "consequence": "Technically honest. Practically, Dante still carries it.",
+     "chips": [
+      "Records without a person"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Records don't speak. People do. You let the cheapest reading stand.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dante": -1,
+       "Odette": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Say nothing about the template; say “it was a routing issue, fixed now”",
+     "result": "Odette calls the agency: “Routing issue on the engineer's desk. Handled.”",
+     "consequence": "Two weeks later, Dante loses the next festival booking. Nobody tells him why.",
+     "chips": [
+      "Dante loses the booking"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Silence moved your mistake onto someone else's name.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Dante": -1,
+       "Odette": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Blame whoever built TALK STAGE v1 from your template",
+     "result": "True, partly. Also the fastest way to make sure nobody ever uses your templates honestly again.",
+     "consequence": "The assumption was yours: “no delay here”.",
+     "chips": [
+      "Blame passed on"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In the tent, in front of Odette, Dante and the crew, Maya speaks.",
+   "characters": [
+    {
+     "id": "crew",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "worried"
+    },
+    {
+     "id": "worker",
+     "pose": "N",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The routing that hurt Noor came from a template I wrote in March. Dante ran what I built. He did nothing wrong. It's mine."
+    }
+   ],
+   "narration": [],
+   "caption": "The season's lowest moment is also its most important sentence.",
+   "flags": [
+    "RV-47",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1379
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": "the tent",
+   "lines": [
+    {
+     "who": "crew",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Nobody says anything. A generator hums. Somewhere a vendor is selling lemonade, very cheerfully, to nobody.)"
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #16 · AVERY'S LENS  Respect human perception  Some delays and levels break people, not machines: design within human limits.  A 400 ms return in an earpiece breaks fluent speech. The fix is not a better presenter; it's a mix that respects how hearing works."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Odette lowers her phone. Dante looks at Maya.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Odette",
+     "kind": "speech",
+     "text": "That's the first straight answer I've had all morning. I'll call the agency — with that."
+    },
+    {
+     "side": "R",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "You didn't have to say it in front of everyone."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-47"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1219
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View, after: Noor's in-ear bus now carries her own dry mic, the stage band and clip sound taken at its source with no delay. RTN 1 is removed from every presenter bus and labeled 0.32 s, never in an ear.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Everything she needs, minus her own voice, through any path.",
+   "flags": [
+    "RV-46",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Afternoon, on the empty talk stage. Leah wears the in-ear and talks into Noor's mic while the video truck's return is live.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "L",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "Testing, one, two… Just me. Right now. No echo. I could talk all day like this."
+    }
+   ],
+   "narration": [],
+   "caption": "Proof the way it failed: a person talking, the return live.",
+   "flags": [
+    "RV-46"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "live-talker test · no echo"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3100
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E05-03",
+   "prompt": "The festival wants the fixed template for tomorrow. What goes into template v2?",
+   "happening": "The fix works. Now make it travel.",
+   "clock": "Saturday · 3:40 p.m.",
+   "known": [],
+   "unknown": [],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E05). ⚑ RV-46.",
+   "lab": "LAB-SF-04",
+   "lab_label": "rebuild the template's presenter feed as a true mix-minus.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Mix-minus for every presenter, every return labeled with its delay, a live-talker test before doors, and an author, a date and where it's valid",
+     "result": "Two pages. Dante reads it and adds a line: “If you don't know a return's delay, it doesn't go in an ear.”",
+     "consequence": "The next person who copies it copies the assumptions too — written down.",
+     "chips": [
+      "Assumptions written",
+      "Tested every time"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Dante": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Delete all templates; build every show from scratch",
+     "result": "Every show starts from memory at 6 a.m.",
+     "consequence": "Templates weren't the problem. Unwritten assumptions were.",
+     "chips": [
+      "Slower",
+      "More mistakes"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Throwing away the tool instead of fixing what it didn't say.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Keep v1 and tell engineers to “be careful with returns”",
+     "result": "Everyone nods.",
+     "consequence": "Nobody knows which returns are delayed until someone's ear finds out.",
+     "chips": [
+      "Nothing changed"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A warning without a test is a wish.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Lock the template so nobody can edit it",
+     "result": "Nobody can fix it either.",
+     "consequence": "The next venue's return will be different, and the locked file won't know.",
+     "chips": [
+      "Frozen assumption"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Early evening, behind the talk stage. Noor, the presenter, has come to find Maya.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "They told me it was the engineer."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It was my template. I'm sorry. It won't be in anyone's ear again — and we tested it with someone talking."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-47",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2915
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Noor, earpiece in hand, almost smiles.",
+   "characters": [
+    {
+     "id": "noor",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_festival",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Noor",
+     "kind": "speech",
+     "text": "Thank you for saying it was yours. Nobody ever says that. I'll go on tomorrow."
+    }
+   ],
+   "narration": [],
+   "caption": "Noor goes on the next day. Her talk runs eleven minutes over. Nobody minds.",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2843
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-11",
+   "label": "**Class match:** five episodes in — where did each cause really live?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-205",
+   "label": "**Service Mode:** the cold case, with the director's ten minutes on the clock.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Night. Dante and Maya sit on the truck ramp.",
+   "characters": [
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "The agency called. I'm booked for next month. Odette asked for me by name."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Good. Everyone heard the other version first. They needed to hear the true one."
+    }
+   ],
+   "narration": [],
+   "caption": "Dante doesn't say thank you. He hands her a coffee. It's the same thing.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2485
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "dante",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(He hands her a coffee. It's the same thing as thank you. Maybe better.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In-ear template version 2: author M., date, valid for theaters and the festival truck. Presenter IFB is a mix-minus: never their own voice through any return. Every return labeled with its delay; unknown delay means not in an ear. Before doors: live-talker test.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08",
+    "RV-46"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1827
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-05b",
+   "teaser": "Noor's notebook, left on a chair",
+   "title": "The first page",
+   "body": "*Talk stage, day 2. Engineer was kind. A woman said it was her template. First time anyone ever said sorry for a sound.* Maya puts the notebook back exactly where it was.",
+   "thread": "People",
+   "who": [
+    "noor",
+    "N",
+    "smile"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A hotel ballroom with a movable airwall down the middle, labeled Room A and Room B. Leah on the phone, grinning; Maya looks at the airwall.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "H",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_ballroom",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Leah",
+     "kind": "phone",
+     "text": "Next job's tonight. Hotel ballroom. Easy one — two rooms, one airwall."
+    }
+   ],
+   "narration": [],
+   "caption": "Nothing called “easy” ever is. Next: *Ballroom Flip.*",
+   "flags": [
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2484
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Reconstruct from records, not memories: scene logs, routing snapshots, phone video. A clean repeat at a fixed delay is a path, not feedback. A presenter's return must be a mix-minus — everything they need, minus their own voice, through any path — and every return should carry a label with its delay. A template carries its author's assumptions; write them down, and test with a live talker. When the cause is yours, say so, out loud, where the blame landed."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Maya spent a season teaching that the record doesn't take sides. Today the record pointed at her. The hardest part of the method isn't finding the cause — it's saying its name when it's yours.  Boundary: this reflection doesn't prove anything about the routing."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E05",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

@@ -1,0 +1,212 @@
+{
+ "chapter": {
+  "id": "s01e11",
+  "kicker": "S01 · E11 · BOSS LEVEL",
+  "title": "Easter at Dawn",
+  "pill": "S01E11 · Boss",
+  "sub": "Sanctuary service failure — trace the signal under a countdown.",
+  "status": "**DRAFT** · boss level (owner request) · physics challenges are teaching models (CH-01)",
+  "flags": [
+   "DR-S01E11",
+   "CH-01",
+   "BOSS-01"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 1 · EPISODE 11 · BOSS LEVEL · DRAFT  Sanctuary service failure — trace the signal under a countdown · Level 1  5:12 a.m., Easter Sunday. A storm tripped half of CityLight overnight. The sunrise service starts at 6:00 in front of six hundred people and four hundred homes on the stream. Ray is stuck behind a fallen tree; the booth is yours.  ⚑ CH-01 · BOSS-01: five physics challenges, a signal trace and the calls that aren't yours to make — on the clock. Fail anything and the run starts over. The edge of the screen glows yellow under pressure, red when time is short or the run fails, green when you clear it; it pulses no faster than once a second, and holds steady if you prefer reduced motion."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Everything at once”",
+   "sub": "Easter at Dawn"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light at the edge of everything turns yellow. 5:12 a.m., Easter Sunday. A storm tripped half of CityLight overnight. The sunrise service starts at 6:00 in front of si…",
+   "characters": [
+    {
+     "id": "lily",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Lily",
+     "kind": "speech",
+     "text": "Everything, at once. Where do we start?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where the signal starts. Then one thing at a time — and nothing that isn't ours."
+    }
+   ],
+   "narration": [],
+   "caption": "Five modes, one clock, no second chances inside a run.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1103
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light turns red. The storm tripped the stage breaker. Can't you just flip it back on?",
+   "characters": [
+    {
+     "id": "jo",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Pastor Jo",
+     "kind": "speech",
+     "text": "The storm tripped the stage breaker. Can't you just flip it back on?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Not ours. It's Andre's panel. We call him, and nobody touches it."
+    }
+   ],
+   "narration": [],
+   "caption": "Trace · hear · see · reach · build · record. The boss isn't the fault — it's the pressure to cut a corner.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 854
+  },
+  {
+   "origin": "authored",
+   "type": "beat",
+   "mood": "dark",
+   "where": "Easter at Dawn",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "W",
+     "expr": "flat",
+     "text": "One check per stage. If it fails, we start over from the top — and we'll know why."
+    },
+    {
+     "who": "lily",
+     "pose": "N",
+     "expr": "worried",
+     "text": "And if we fail again?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Then we start again. That's the job: until it passes, and we can prove it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The run",
+   "sub": "5 stages · a trace · 2 calls"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "boss",
+   "id": "S01",
+   "label": "**Boss level: Easter at Dawn.** Clear every stage in one run to open the next season. Fail anything and you start again from the top.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Think like a systems engineer     Audio — the beginner series     Point it at people, not at the ceiling"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief — “Until it passes”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light fades to green. 6:00 a.m. The lectern mic is warm, the soloist is lit, the stream is live and nothing clipped. Pastor Jo looks up at the booth and nods once…",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_sanctuary",
+   "bubbles": [],
+   "narration": [
+    "6:00 a.m. The lectern mic is warm, the soloist is lit, the stream is live and nothing clipped. Pastor Jo looks up at the booth and nods once. Ray arrives at 6:20, reads your change log, and doesn't touch a thing."
+   ],
+   "caption": "Cleared. Written down. Handed over.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 786
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Under pressure, the method doesn't change: trace the signal from source to destination, fix one thing at a time and prove it where the people are, and hand every decision that isn't yours to the person who owns it — the electrician, the rigger and structural engineer, the network owner, security, the emergency managers, the clinical and privacy owners, the artist. Then write it down."
+  }
+ ]
+}

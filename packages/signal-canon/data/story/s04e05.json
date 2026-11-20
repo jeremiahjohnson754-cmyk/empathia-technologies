@@ -1,0 +1,1246 @@
+{
+ "chapter": {
+  "id": "s04e05",
+  "kicker": "S04 · E05",
+  "title": "The Mountain",
+  "pill": "S04E05 · The Mountain",
+  "sub": "A storm takes the valley's channel off the air. The only person allowed to touch the transmitter is on the mountain.",
+  "status": "**DRAFT** · scripted from the owner's request to continue the story · IDs provisional",
+  "flags": [
+   "DR-S04E05",
+   "RT-03",
+   "RT-04",
+   "RV-80",
+   "RV-82",
+   "RV-83",
+   "RV-84",
+   "RV-90",
+   "RV-91",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--violet)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 4 · EPISODE 5 · DRAFT  Boundary · Maya and Felix · Level L3 → L4  A storm on the ridge takes the valley’s channel off the air. The only person allowed to touch the transmitter is on the mountain. Nobody is climbing anything.  ⚑ RV-90: link figures simplified. RV-91: tower and transmitter boundaries. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Off the Mountain",
+   "kind": "BOUNDARY QUEST · STORM",
+   "level": "L3 → L4 · BROADCAST",
+   "party": [
+    "maya",
+    "felix",
+    "tess"
+   ],
+   "stakes": "The valley's channel is a slate and silence. The storm is on the ridge. The one man allowed to touch the transmitter is up there — and nobody is climbing anything.",
+   "clock": "Before the midnight brief.",
+   "reward": "The valley back on air by a path that doesn't share the failure. Felix's respect. Warning #7 crossed off.",
+   "objectives": [
+    {
+     "key": "BR-S04E05-01",
+     "text": "Answer the tower crew"
+    },
+    {
+     "key": "twist",
+     "text": "Read Felix's margin log"
+    },
+    {
+     "key": "core",
+     "text": "Find a path that doesn't share the failure"
+    },
+    {
+     "key": "BR-S04E05-02",
+     "text": "Prove it's on air where viewers are"
+    },
+    {
+     "key": "BR-S04E05-03",
+     "text": "Book the real fix"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things about the bridge"
+    }
+   ],
+   "rumor": "Two 'diverse' paths. One bridge. Remember the bridge."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Slate”",
+   "sub": "Thursday · 11:48 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The transmitter site at night in a storm: the lattice tower far off with its red beacon, rain and wind streaks, the transmitter building's lit window. Felix stands in the building's doorway, radio to his ear, far from the tower.",
+   "characters": [
+    {
+     "id": "felix",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mountain",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The mountain. Forty kilometers from the studio. One licensed engineer.",
+   "flags": [
+    "RV-91"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 5970
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "the radio · 11:49 p.m.",
+   "lines": [
+    {
+     "who": "felix",
+     "pose": "H",
+     "expr": "flat",
+     "text": "Wind's seventy. Rain sideways. The beacon's fine. The program isn't."
+    },
+    {
+     "who": "maya",
+     "pose": "H",
+     "expr": "flat",
+     "text": "Are you inside?"
+    },
+    {
+     "who": "felix",
+     "pose": "H",
+     "expr": "smile",
+     "text": "I'm fifty-three. I'm always inside."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Master control. On the off-air receiver: PLEASE STAND BY. On the program monitor beside it, the news looks fine. Tess stares at the difference.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "S",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "Program looks perfect here. The valley's getting a slate."
+    }
+   ],
+   "narration": [],
+   "caption": "The studio shows what it sends. The receiver shows what arrives.",
+   "flags": [
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9052
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S4-05",
+   "who": "worker:Tower crew leader",
+   "prompt": "(on the phone) I've got a man who says he can have a look at the dish. Ten minutes. Your call.",
+   "options": [
+    {
+     "label": "“No. Not in this wind. Not for a look, not for anything.”",
+     "who": "felix",
+     "pose": "H",
+     "expr": "flat",
+     "reply": "(Felix, on the other line) Thank you. That's what I was going to say, louder.",
+     "trust": {
+      "Felix": 2
+     }
+    },
+    {
+     "label": "“If he thinks it's safe…”",
+     "who": "worker:Tower crew leader",
+     "pose": "H",
+     "expr": "flat",
+     "reply": "Then I'll tell him you said it was his call. I'm saying no.",
+     "trust": {
+      "Felix": -2
+     }
+    },
+    {
+     "label": "“What would you do?”",
+     "who": "worker:Tower crew leader",
+     "pose": "H",
+     "expr": "flat",
+     "reply": "Nobody up. I just needed to hear someone at the station say it.",
+     "trust": {
+      "Felix": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A small kitchen-living room up the valley at 11:55 p.m. A night-shift nurse in scrubs, just home, watches the slate: PLEASE STAND BY.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [
+    "She stands by for about forty seconds. Then she changes to a city channel three hundred kilometers away, showing a rerun about antique clocks."
+   ],
+   "caption": "The valley doesn't wait for us. It changes the channel.",
+   "flags": [
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2224
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "physbreak",
+   "cls": "physbreak",
+   "text": "🔭 PHYSICS IN MOTION  Rain, a ridge and a beam  The science under this episode’s problem — live."
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Felix and Maya beside a board. Rain fade: A equals gamma times d. Gamma is the rain's loss per kilometre; d is the path through the rain. And margin is what we had to lose. If A is bigger than the margin, the link goes. Your arithmetic.",
+   "characters": [
+    {
+     "id": "felix",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mountain",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Felix",
+     "kind": "speech",
+     "text": "Rain fade: A equals gamma times d. Gamma is the rain's loss per kilometre; d is the path through the rain."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And margin is what we had to lose."
+    },
+    {
+     "side": "L",
+     "who": "Felix",
+     "kind": "speech",
+     "text": "If A is bigger than the margin, the link goes. Your arithmetic."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3046
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Rain fade   Fade margin   STL   Formula and variables   ƒ FORMULA · Rain fade  A = γ × d   γ  specific attenuation for this rain rate and frequency, dB/km  d  path length through the rain, km  A  extra loss, dB     ƒ FORMULA · Signal margin  M = P rx  − N floor    P rx   received level, dBm  N floor   noise floor, dBm  M  margin, dB"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lab",
+   "id": "PHY-S04E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Nobody climbs”",
+   "sub": "11:52 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E05-01",
+   "prompt": "11:52. The tower crew leader calls: “I've got a man who'll go up and look at the dish. Ten minutes.”",
+   "happening": "TX on loss-of-program slate. STL receiver: no signal.",
+   "clock": "11:52 · midnight brief",
+   "known": [
+    "◉ Wind 70 km/h",
+    "◉ Transmitter healthy",
+    "◉ STL: no signal"
+   ],
+   "unknown": [
+    "Why this link, tonight"
+   ],
+   "risk": "The valley's only local channel — and a crew in the wind.",
+   "timer_s": 20,
+   "timeout": [
+    "The crew leader takes the silence as a yes and sends his man toward the tower. Felix stops him at the fence.",
+    "Silence on a safety question is heard as permission."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Is anything worth a climb in this wind?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Yes — carefully.”",
+     "result": "The crew leader: “Then I'm putting on record that the station asked.” Felix, on the other line, goes silent.",
+     "consequence": "You asked someone to climb in 70 km/h wind to look at a dish.",
+     "chips": [
+      "Boundary"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Nobody climbs in wind. It's not a trade-off with airtime.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Felix": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“No. Nobody goes up tonight. Felix, what do you see from inside?”",
+     "result": "Felix: “Thank you. STL receiver: nothing since 23:46. Transmitter's healthy. It has nothing to send.”",
+     "consequence": "The boundary holds, and the investigation starts from the safe side.",
+     "chips": [
+      "Boundary held",
+      "Felix trusts you"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Felix": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“Ask Felix to raise the transmitter power.”",
+     "result": "Felix: “It's got nothing to transmit. And its power is licensed, not a volume knob.”",
+     "consequence": "Wrong end of the chain.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The transmitter is fine; its input is gone.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Felix": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Wait for the rain to stop.”",
+     "result": "The valley stays on a slate for three hours.",
+     "consequence": "No news at midnight, no alerts if anything happens.",
+     "chips": [
+      "Dark"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Waiting isn't a plan when a path exists.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Inside the transmitter building: the STL receiver's signal history on a screen — falling with the rain from minus 54 at 23:10 to no signal at 23:46. Felix holds his logbook.",
+   "characters": [
+    {
+     "id": "felix",
+     "pose": "R",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_mountain",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Falling with the rain. Out at 23:46.",
+   "flags": [
+    "RV-90"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "STL RX · out at 23:46"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 6953
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-05a",
+   "teaser": "Felix's margin log",
+   "title": "A line every week since March",
+   "body": "*STL margin 9.1 dB. 8.7. 8.9. 8.2. Reported.* Twelve weeks of the same line. Under the last one, smaller: *Nobody's going to fix this until it breaks in a storm.* He was right to the week.",
+   "thread": "Cal's fourteen warnings",
+   "who": [
+    "felix",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "It's been thin since March.",
+   "body": "Felix's logbook: STL margin under 10 dB every week since the March storm nudged the studio dish. He reported it. It's warning #7 on Cal's list. Tonight's rain didn't break a healthy link — it spent the last few decibels of a sick one.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E05-1",
+   "label": "Test: what does this change?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Inside the transmitter building, a kettle screams on a hot plate. Felix, radio to his ear, looks pleased. Over the radio, Tess in master control is alarmed by the noise.",
+   "characters": [
+    {
+     "id": "felix",
+     "pose": "H",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "radio",
+     "text": "Is that an alarm?! Felix, what's alarming?"
+    },
+    {
+     "side": "R",
+     "who": "Felix",
+     "kind": "radio",
+     "text": "It's a kettle. Twenty-two years up here, it's the only thing I'm allowed to boil."
+    }
+   ],
+   "narration": [],
+   "caption": "The storm is historic. The tea is non-negotiable.",
+   "flags": [
+    "RV-91"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 836
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "R1",
+   "label": "**Learn it now:** microwave links, rain fade and margin.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Low voltage and aerospace engineering in audio     Think like a systems engineer     The first step to networking, AV style"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🧰 BUILD IT · CHALLENGE · LEVEL 2  Build a wireless mic frequency plan  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "build-rf"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Diverse”",
+   "sub": "11:58 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Master control. Tess points at the path status: the backup internet path has just dropped too, the same minute as the main.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "P",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "The backup internet just dropped. Four minutes after we moved to it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Main and backup, same minute. What do they have in common?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-90"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8560
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "tess",
+     "pose": "N",
+     "expr": "worried",
+     "text": "…A label that said 'diverse'?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "A label. And probably a hole in the ground somewhere."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "history",
+   "title": "Waves that bend around edges",
+   "body": "Augustin-Jean Fresnel explained in 1818 how light spreads and interferes around obstacles — the zones that carry his name. Seventy years later Heinrich Hertz showed radio waves obey the same optics. A microwave beam across a valley is still Fresnel's light, just longer.",
+   "flag": "RV-27",
+   "when": "1880s · 1818",
+   "lab": "PHY-S04E05"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A utility map: the river, the Old Mill bridge, and two red lines — the main and backup internet — sharing one conduit under the bridge deck. Pencilled nearby: flood zone ’64.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two paths. One pipe. One bridge.",
+   "flags": [
+    "RV-90",
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1014
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-05b",
+   "teaser": "the utility map",
+   "title": "Old Mill bridge · conduit 4",
+   "body": "Two red lines — the main internet and the 'backup' — in one pipe under the bridge deck. Someone at the utility has pencilled beside it: *flood zone '64.* Maya takes a photo. She doesn't know yet why her hands are cold.",
+   "thread": "The river",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "One bridge, two “diverse” paths.",
+   "body": "The main internet and the 'backup' both run through conduit 4 under the Old Mill bridge. Tonight a utility crew cut power there for a fallen line, and both dropped together. The only truly different route to the mountain is the IP link on the other carrier.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E05-2",
+   "label": "Test: which path now?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View after the fix: program leaves the studio over the IP link on the other carrier, on a different route, through a two-second buffer, to the transmitter. The faded microwave STL and the Old Mill conduit paths are unused.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A backup is a different failure, not a different label.",
+   "flags": [
+    "RV-90",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Tess's hand hovers over the router panel, over the button for the IP path on carrier two. Maya stands back, arms open, not touching anything.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "You do it. You've done this before."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Your hands, my voice. Read me the label out loud first."
+    }
+   ],
+   "narration": [],
+   "caption": "Maya becomes Ray one sentence at a time.",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8973
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-10",
+   "label": "**Fix it:** get program to the mountain by a path that doesn't share the failure.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E05-02",
+   "prompt": "12:04. Felix has selected the IP input at the transmitter. How do you know the valley has it?",
+   "happening": "TX input on the IP link.",
+   "clock": "12:04",
+   "known": [
+    "◉ Felix selected IP at the TX",
+    "◉ Program monitor: fine (always was)"
+   ],
+   "unknown": [
+    "What viewers receive"
+   ],
+   "risk": "The valley, thinking the channel is back when it isn't.",
+   "timer_s": 20,
+   "timeout": [
+    "Everyone relaxes on the studio monitor's word.",
+    "The monitor that fooled you once will fool you again."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which screen showed the slate?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "The program monitor in master control looks perfect",
+     "result": "It looked perfect for the last twenty minutes too.",
+     "consequence": "You're watching what you sent.",
+     "chips": [
+      "Wrong monitor"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The studio monitor never showed the slate.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Felix": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The off-air receiver at the studio — and a phone call to a viewer up the valley",
+     "result": "Off-air: Omar's midnight brief, rain audible on his mic. June texts: captions on too.",
+     "consequence": "Proof as the audience gets it.",
+     "chips": [
+      "Off-air",
+      "Viewer confirmed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Omar": 1,
+       "June": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Felix says the transmitter input shows program",
+     "result": "True — and it doesn't prove the output.",
+     "consequence": "Close, but it's still the input.",
+     "chips": [
+      "Input only"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Assume it's fine if nobody calls",
+     "result": "It's midnight. Nobody calls about anything.",
+     "consequence": "Silence isn't proof.",
+     "chips": [
+      "Assumption"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "At midnight, silence is the default.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Felix": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #36 · AVERY'S LENS  Show what's actually on air  The monitor people trust must show the output the audience receives — not a copy from earlier in the chain.  The studio's program monitor looked perfect while the transmitter aired a slate. Only the off-air receiver told the truth."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S04E05",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The off-air receiver in master control now shows Omar's midnight brief. Maya listens.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [],
+   "caption": "12:06. The valley has its channel back — over a path that doesn't cross the bridge.",
+   "flags": [
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "off-air receiver · program"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 8893
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "felix",
+     "pose": "H",
+     "expr": "smile",
+     "text": "Off-air receiver says Omar. You can hear the rain on his mic in the brief. That's real."
+    },
+    {
+     "who": "maya",
+     "pose": "H",
+     "expr": "flat",
+     "text": "That's the valley hearing him."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Two phones: June texts 'captions on. don't celebrate yet.' Dolores texts 'the grey screen frightened me. then Omar. thank you.'",
+   "characters": [],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [],
+   "caption": "12:09. Proof, in the viewers' own words.",
+   "flags": [
+    "RV-81",
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9556
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "mystery",
+   "where": "12:40 a.m.",
+   "lines": [
+    {
+     "who": "lena",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(on the phone, late) The board wants to know why we need a microwave link AND two internet paths AND a mountain."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Because tonight we had one of the four."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E05-03",
+   "prompt": "Friday morning. The storm has passed. What's the real fix?",
+   "happening": "Storm over. STL still misaligned. IP link carrying program.",
+   "clock": "Friday 9:00",
+   "known": [
+    "◉ Margin thin since March",
+    "◉ Both internet paths via Old Mill"
+   ],
+   "unknown": [
+    "When the next storm comes"
+   ],
+   "risk": "The next storm — and the bridge.",
+   "timer_s": 25,
+   "timeout": [
+    "The storm passes and so does the urgency.",
+    "The best time to fix a link is the calm day after it failed."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who realigns a dish, and when?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E05).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Felix and a certified tower crew realign the studio dish on a calm, forecast day; the conduit risk goes to Lena in writing",
+     "result": "Booked for Thursday. Lena gets a one-page note titled THE BRIDGE.",
+     "consequence": "The link gets its margin back, from the right hands, in the right weather.",
+     "chips": [
+      "Right people",
+      "Right weather"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Lena": 2,
+       "Felix": 2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Leave the IP link as the main path forever",
+     "result": "It works — until the other carrier has a bad day.",
+     "consequence": "One path again, just a different one.",
+     "chips": [
+      "Single path"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You'd replace one single point of failure with another.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask Felix to climb up this afternoon while it's dry",
+     "result": "Felix: “I'm a transmitter engineer. I don't climb. The crew climbs.”",
+     "consequence": "Wrong person for the job.",
+     "chips": [
+      "Boundary"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Tower work belongs to a certified crew.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Felix": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ignore the conduit — it held for years",
+     "result": "It held until last night.",
+     "consequence": "The bridge is still one event away from taking both.",
+     "chips": [
+      "Shared risk"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The map told you. Write it down.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "T-51",
+   "label": "**Triage:** the storm hour — what do you do first?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-405",
+   "label": "**Service Mode:** run the storm night yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The transmitter site on a calm, bright morning. Felix and Maya stand in the gravel yard by the building, the tower small in the distance.",
+   "characters": [
+    {
+     "id": "felix",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_mountain",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Felix",
+     "kind": "speech",
+     "text": "Twenty-two years up here. First time the studio said 'nobody climbs' before I did."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "First time I've been up a mountain for work. I'm staying by the building."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-91"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2543
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Cal's warnings on the wall; number seven is crossed out.",
+   "characters": [
+    {
+     "id": "felix",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Warning #7: crossed off after Thursday's realignment. Ten to go.",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3705
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Lena in the newsroom, holding a stadium seating chart.",
+   "characters": [
+    {
+     "id": "lena",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Lena",
+     "kind": "speech",
+     "text": "Saturday. State semifinal, remote from the stadium. We've never done one on cellular only. Cal's doing it."
+    }
+   ],
+   "narration": [],
+   "caption": "Cal's doing it? Next: *Fourth Quarter.*",
+   "flags": [
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7178
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A link with thin margin fails first in the storm you need it for. Nobody climbs in wind. Choose a backup that fails differently — check the map, not the label — and prove you're on air with an off-air receiver, not the monitor that shows what you sent."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Felix wrote \"reported\" every week for twelve weeks. What would have made one of those reports get read?  Boundary: this reflection doesn't realign any dish."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S04E05",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

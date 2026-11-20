@@ -1,0 +1,28 @@
+/* "Follow one device" (/platform#follow, founder 18 Nov 2026 17:25 §6). Without script: the five stages one after another, each a
+   capture beside its text. With script: a stepper of five tabs over one stage; the stage that comes in eases in once (reduced motion:
+   no movement). Text is real HTML at ≥16 px; the capture is a picture of the product, never the only place something is said. */
+.follow__lede { max-width: 72ch; }
+.follow__stages { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 40px; }
+.follow__stage { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); align-items: center; scroll-margin-top: 90px; }
+.follow__stage:focus-visible { outline: 2px solid var(--w-accent); outline-offset: 6px; border-radius: 12px; }
+.follow__shot { margin: 0; }
+.follow__txt { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.follow__txt h3 { margin: 0; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; text-wrap: balance; }
+.follow__txt p { margin: 0; font-size: 17px; line-height: 1.5; }
+.follow__k { display: flex; align-items: center; gap: 10px; color: var(--w-tx2); font-weight: 600; font-size: 15px !important; }
+.follow__n, .follow__tn { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: color-mix(in srgb, var(--w-accent) 16%, transparent); color: var(--w-accent); font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
+.follow__go { margin-top: 6px !important; }
+.follow__as { color: var(--w-tx2); font-size: 15px !important; }
+.follow__nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.follow__nav[hidden] { display: none; }
+.follow__tab { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px 8px 8px; border: 1px solid var(--w-line); border-radius: 999px; background: var(--w-card); color: var(--w-tx); font: inherit; font-size: 16px; cursor: pointer; }
+.follow__tab[aria-selected=true] { border-color: var(--w-accent); box-shadow: inset 0 0 0 1px var(--w-accent); }
+.follow__tab[aria-selected=true] .follow__tn { background: var(--w-accent); color: var(--w-on-accent); }
+.follow--js .follow__stages { margin-top: 20px; }
+@media (prefers-reduced-motion: no-preference) {
+  .follow--js .follow__stage:not([hidden]) .follow__shot { animation: follow-in .45s var(--w-ease, ease) both; }
+  .follow--js .follow__stage:not([hidden]) .follow__txt { animation: follow-txt .45s var(--w-ease, ease) .08s both; }
+}
+@keyframes follow-in { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes follow-txt { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) { .follow__stage { grid-template-columns: 1fr; } }

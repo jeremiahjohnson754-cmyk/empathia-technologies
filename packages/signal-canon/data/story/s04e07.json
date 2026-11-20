@@ -1,0 +1,1161 @@
+{
+ "chapter": {
+  "id": "s04e07",
+  "kicker": "S04 · E07",
+  "title": "Section 5.3",
+  "pill": "S04E07 · Section 5.3",
+  "sub": "Sixty rooms go dark. The cause is a page Maya wrote, copied four hundred times.",
+  "status": "**DRAFT** · scripted from the owner's request to continue the story · IDs provisional · DEBT-003 retired",
+  "flags": [
+   "DR-S04E07",
+   "RT-03",
+   "RT-04",
+   "RV-80",
+   "RV-82",
+   "RV-83",
+   "RV-84",
+   "RV-94",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--cyan)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 4 · EPISODE 7 · DRAFT  The debt comes due · Maya, Priya, Sam and Imani · Level L4  Sixty meeting rooms went dark at Aldermoor this morning. They all follow the standard Maya wrote. Section 5.3 was a workaround from a festival, at one in the morning.  ⚑ RV-94: addressing simplified. RV-68: Priya owns the network. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Page That Worked",
+   "kind": "PERSONAL QUEST · THE DEBT",
+   "level": "L4 · SYSTEMS",
+   "party": [
+    "maya",
+    "priya",
+    "sam",
+    "imani"
+   ],
+   "stakes": "Sixty rooms dark at Aldermoor. The cause is a page Maya wrote, copied four hundred times. Meanwhile Tess is alone with the county's press conference.",
+   "clock": "Two hours to Monday's meetings. Four minutes to the press conference.",
+   "reward": "DEBT-003 retired. Priya's trust. Tess's first solo save.",
+   "objectives": [
+    {
+     "key": "BR-S04E07-01",
+     "text": "Say whose page it was"
+    },
+    {
+     "key": "twist",
+     "text": "Understand how both sides were right"
+    },
+    {
+     "key": "BR-S04E07-02",
+     "text": "Be in two places at once — wisely"
+    },
+    {
+     "key": "core",
+     "text": "Move the room devices out of the automatic range"
+    },
+    {
+     "key": "BR-S04E07-03",
+     "text": "Fix the page, not just the rooms"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things the napkin knew"
+    }
+   ],
+   "rumor": "A napkin in a field once said *(in THEIR pool!!)*. Nobody read it. It's in a landfill. The page it became is in four hundred rooms."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “5.3”",
+   "sub": "Monday · 7:04 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The station parking lot. Maya stopped mid-step, phone to her ear.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_parking",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Priya",
+     "kind": "phone",
+     "text": "Sixty Aldermoor rooms went dark this morning. They all have addresses from your standard. Section 5.3."
+    }
+   ],
+   "narration": [],
+   "caption": "She knows exactly which page it is.",
+   "flags": [
+    "RV-94"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 518
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "the station parking lot · 7:04 a.m.",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Seven minutes past seven. Section 5.3. She knows exactly which page it is. She can see the napkin.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback. A paper napkin on a truck desk, two years ago: ours DHCP off; gear .240 to .249, in THEIR pool, double exclamation marks; fix with site lead at seven.",
+   "characters": [],
+   "location": "scenes.bg_truck",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Three lines, one warning, zero follow-up. The rain took the napkin. The page kept the mistake.",
+   "flags": [
+    "RV-94"
+   ],
+   "kind": "flashback",
+   "tab": "TWO YEARS AGO · 1:07 A.M.",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1726
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #38 · AVERY'S LENS  Make the safe way the default way  If the correct setup takes extra steps, people will copy the shortcut — so build the safe choice into the template.  Section 5.3 was easy to copy because it was easy. Reservations outside the range became the template's default — no extra steps."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S04E07",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "In a corner of master control, Maya on a video bridge call on a large screen: Priya, Sam and Imani in tiles; the call title: Aldermoor rooms, sixty dark.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [],
+   "caption": "7:12. The bridge call.",
+   "flags": [
+    "RV-94"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9529
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S4-07",
+   "who": "priya",
+   "prompt": "(on the bridge) My team widened the range Saturday. Reviewed, logged, by the book. So why are sixty rooms dark, Maya?",
+   "options": [
+    {
+     "label": "“Because section 5.3 is mine. The festival workaround. Fixed addresses inside the range.”",
+     "who": "priya",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Thank you. That took you four minutes. It takes most people four days.",
+     "trust": {
+      "Priya": 2,
+      "Imani": 1
+     }
+    },
+    {
+     "label": "“Because the range got widened.”",
+     "who": "priya",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Into what?",
+     "trust": {
+      "Priya": -2
+     }
+    },
+    {
+     "label": "“I'm looking into it.”",
+     "who": "priya",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "You wrote the standard, Maya.",
+     "trust": {
+      "Priya": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E07-01",
+   "prompt": "7:12. Priya asks the bridge what happened. Sixty rooms, all following the standard. You wrote the standard.",
+   "happening": "60 rooms: address conflicts on .240–.249.",
+   "clock": "7:12 · meetings at 9:00",
+   "known": [
+    "◉ Range widened Sat (reviewed)",
+    "◉ §5.3: fixed at .240–.249"
+   ],
+   "unknown": [
+    "Rooms not on the list"
+   ],
+   "risk": "Four hundred rooms that follow your page — and Priya's trust.",
+   "timer_s": 20,
+   "timeout": [
+    "The bridge spends twenty minutes on Priya's change while you say nothing.",
+    "The owner of a cause who stays silent makes everyone else guess."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "You know which page it is. Who should say it?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Say the weekend range change broke it",
+     "result": "Priya, evenly: “My change was reviewed. What did it collide with?”",
+     "consequence": "True, and it leaves out your half.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The collision was with your page. Saying half of it is a way of hiding the other half.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Priya": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Section 5.3 is mine. It was the festival workaround: fixed addresses inside the automatic range.”",
+     "result": "Silence. Then Imani: “It was mine too.” Priya: “Thank you. Now we can fix it.”",
+     "consequence": "The cause is named in four minutes by its owner. Everyone else can stop defending themselves.",
+     "chips": [
+      "Owned",
+      "Bridge moves"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Imani": 1,
+       "Priya": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Wait until someone asks about the standard",
+     "result": "Nobody asks for forty minutes. Everyone investigates the range change.",
+     "consequence": "Forty minutes of the wrong investigation.",
+     "chips": [
+      "Silent"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You knew. Every minute you didn't say it was a minute spent on the wrong thing.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Priya": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Propose reimaging the sixty rooms tonight",
+     "result": "Sam: “That wipes every room and doesn't change the addresses.”",
+     "consequence": "A big action that avoids the small sentence.",
+     "chips": [
+      "Wrong fix"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Reimaging doesn't fix an addressing rule.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Sam": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Imani's video tile fills the screen. Maya looks up.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Imani",
+     "kind": "phone",
+     "text": "It was mine too. At one in the morning I told you to write it up tomorrow. Tomorrow never came. For either of us."
+    }
+   ],
+   "narration": [],
+   "caption": "DEBT-003 has two owners. It always did.",
+   "flags": [
+    "RV-94"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8712
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The bridge call. Someone's microphone is open: loud barking fills the call. Every face in every tile goes very still.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Priya",
+     "kind": "phone",
+     "text": "Whose dog is that?"
+    },
+    {
+     "side": "C",
+     "who": "Sam",
+     "kind": "phone",
+     "text": "Not mine. I don't have a dog."
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "phone",
+     "text": "…I have a dog. Muting."
+    }
+   ],
+   "narration": [],
+   "caption": "The most honest moment of the call so far.",
+   "flags": [
+    "RV-94"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 9566
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Can I say something? I love a problem record with three owners. It's so much less lonely."
+    },
+    {
+     "who": "priya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Sam."
+    },
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Muting myself."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Both sides were right on their own page.",
+   "body": "Priya's range change was reviewed and logged — by the book. Section 5.3 was in the standard — approved by a committee. Neither review could see the other document. The change that broke sixty rooms was correct; so was the page. Together they were a fuse.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E07-1",
+   "label": "Test: what prevents this class of failure?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of the room network: the automatic range widened from .200 to .250 now covers section 5.3's fixed block .240 to .249, so laptops are offered room controllers' addresses and both collide.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A fixed address inside the range is a fuse with a delay.",
+   "flags": [
+    "RV-94",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-07a",
+   "teaser": "Maya's old festival notebook",
+   "title": "The page after the blank page",
+   "body": "Two years ago she left the page blank. The next page, written a week later in the truck: *reserve the addresses — ask the site lead — DON'T FORGET.* Underlined twice. Then she forgot.",
+   "thread": "The 1 a.m. fix · DEBT-003",
+   "who": [
+    "maya",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The day the network changed at once",
+   "body": "On January 1, 1983, the research network that grew into the internet switched every connected computer to a new set of protocols, TCP/IP, on a single day — a planned “flag day.” Sites that weren't ready were cut off until they were. It worked because the change was announced months ahead and everyone knew what depended on what. Most network changes since have been smaller and quieter — which is exactly why they collide with documents nobody knew to check.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Across master control, Tess alone at the switcher, headset on, a graphics error on the monitor wall; on program, the county emergency manager's podium waits.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "M",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tess",
+     "kind": "radio",
+     "text": "Maya — graphics froze and the county's live in four minutes. The flood-readiness press conference."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-84"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8485
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "the headset · 8:56 a.m.",
+   "lines": [
+    {
+     "who": "tess",
+     "pose": "M",
+     "expr": "worried",
+     "text": "Graphics just froze and the county's live in four. Maya?"
+    },
+    {
+     "who": "maya",
+     "pose": "H",
+     "expr": "flat",
+     "text": "Graphics backup channel. Button on the left. You've got this."
+    },
+    {
+     "who": "tess",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…I've got this."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E07-02",
+   "prompt": "8:56. The bridge needs you. Tess needs you. You have one headset and four minutes.",
+   "happening": "Graphics frozen. Press conference in 4 min. Bridge call ongoing.",
+   "clock": "8:56",
+   "known": [
+    "◉ Tess alone",
+    "◉ Graphics backup channel exists"
+   ],
+   "unknown": [
+    "Whether Tess can do it"
+   ],
+   "risk": "The county's flood-readiness briefing — and sixty rooms.",
+   "timer_s": 20,
+   "timeout": [
+    "You freeze between two screens. Tess figures it out alone with eight seconds of error on air.",
+    "When two things matter, give each the smallest thing it needs from you."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who needs a sentence, and who needs you?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Tell the bridge “two minutes”, give Tess one clear instruction, come back",
+     "result": "Tess: “Graphics backup, left button. Got it.” The press conference starts on time. The bridge barely notices.",
+     "consequence": "Both jobs done by trusting the person in front of the switcher.",
+     "chips": [
+      "Tess trusted",
+      "Bridge held"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Tess": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Leave the bridge and run the switcher yourself",
+     "result": "The press conference is fine. The bridge loses the author of 5.3 for twenty minutes.",
+     "consequence": "You took Tess's job and left yours.",
+     "chips": [
+      "Tess sidelined",
+      "Bridge stalls"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Tess can run it. Only you can explain 5.3.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tess": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Tell Tess to figure it out",
+     "result": "She does — barely — with a live error on screen for eight seconds.",
+     "consequence": "Alone isn't the same as trusted.",
+     "chips": [
+      "Alone"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "One sentence from you was all she needed.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Tess": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Lena to take the switcher",
+     "result": "Lena hasn't run a switcher in six years.",
+     "consequence": "The wrong person at the wrong desk.",
+     "chips": [
+      "Wrong person"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Program monitor at nine o'clock: an empty county podium, the lower third 'County flood readiness, live' on screen exactly on time. Tess's finger is still on the graphics backup button.",
+   "characters": [
+    {
+     "id": "tess",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [],
+   "narration": [
+    "9:00:00. The lower third comes up on the first frame. Nobody watching will ever know it almost didn't."
+   ],
+   "caption": "Tess's first solo save. She doesn't breathe out until 9:00:04.",
+   "flags": [
+    "RV-84",
+    "RV-85"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 10460
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Priya and Maya beside a board. Count equals last minus first, plus one. First and last are the ends of the block, inclusive. So above .250 in a /24… You tell me. That's where the reservations go.",
+   "characters": [
+    {
+     "id": "priya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "Count equals last minus first, plus one. First and last are the ends of the block, inclusive."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "So above .250 in a /24…"
+    },
+    {
+     "side": "L",
+     "who": "Priya",
+     "kind": "speech",
+     "text": "You tell me. That's where the reservations go."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1682
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   DHCP   Reservation   Exclusion   Formula and variables   ƒ FORMULA · Addresses in a range  count = last − first + 1   first, last  the range's first and last numbers"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "N6",
+   "label": "**Learn it now:** addressing plans, reservations and exclusions.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     What the room is telling you     The first step to networking, AV style     One signal, two destinations"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Not on the list”",
+   "sub": "9:20 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At Aldermoor, Sam points at Nora's exception register on a screen: Juniper-B, 30-East and the boardroom annex, all hand-typed, all dark.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "phone",
+     "text": "Three rooms still dark, and they're not on the conflict list. Nora's register has them. Hand-typed addresses. Exceptions."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-94"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1932
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S4-07b",
+   "teaser": "Nora's exception register, row 7",
+   "title": "30-East · owner: Ray (2019)",
+   "body": "Hand-typed address, wrong subnet, *per R. — don't touch.* Ray again. Nora has added a second column since last season: *reason.* Ray's reason, filled in by phone last month: *old projector needed it. Projector's gone.*",
+   "thread": "Ray's notebook · DEBT-002",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Three rooms the list couldn't see.",
+   "body": "Priya's exclusion brought back fifty-seven rooms. Three stayed dark — exception rooms with hand-typed addresses the inventory didn't know. Only Nora's exception register found them, because last season someone finally gave every exception an owner.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S04E07-2",
+   "label": "Test: where did you find them?"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-NET-04",
+   "label": "**Fix it:** move the room devices out of the automatic range.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At Aldermoor, 10:02 a.m., a meeting room comes back to life: the screen lights, the camera tally glows. A manager walks in, sits down and addresses the room without looking up.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Manager",
+     "kind": "speech",
+     "text": "Why is it always something with these rooms?"
+    }
+   ],
+   "narration": [
+    "Sixty rooms, four engineers, one rewritten page and a morning of work. To the people who use them, the rooms were just 'being weird again.'"
+   ],
+   "caption": "Nobody thanks the rooms for working. That's the job.",
+   "flags": [
+    "RV-94"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1212
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S04E07-03",
+   "prompt": "11:00. Every room is back. What do you do about section 5.3?",
+   "happening": "All rooms online.",
+   "clock": "11:00",
+   "known": [
+    "◉ 60 conflict + 3 exception rooms recovered",
+    "◉ §5.3 unchanged"
+   ],
+   "unknown": [
+    "The next change"
+   ],
+   "risk": "Four hundred rooms and the next reviewed change.",
+   "timer_s": 25,
+   "timeout": [
+    "The rooms are back; the page stays the same.",
+    "Fixing the rooms without fixing the page resets the fuse."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What spread the problem — and who'll own it now?"
+    }
+   ],
+   "note": "Draft decision (DR-S04E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Rewrite it: reserved block outside the range; Sam owns the problem record; the change template gains a 'standards touched?' check",
+     "result": "Priya: “Put my team on the template.” Sam opens PRB-0412.",
+     "consequence": "The document, the owner and the process all change.",
+     "chips": [
+      "Standard fixed",
+      "Problem owned"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Priya": 1,
+       "Sam": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Add a footnote: 'check with the network team'",
+     "result": "The footnote is on page 41. Nobody reads page 41.",
+     "consequence": "A warning where nobody looks.",
+     "chips": [
+      "Footnote"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Warnings in footnotes are how 5.3 happened.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Delete section 5.3",
+     "result": "Installers now have no rule and invent their own.",
+     "consequence": "The gap comes back as fifty different shortcuts.",
+     "chips": [
+      "Gap"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Replace the bad rule with a good one.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Say it was the festival's fault",
+     "result": "Imani: “We were the festival.”",
+     "consequence": "There is no one else.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The festival was you.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Imani": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam, on a video call, holds up a problem record printout; Maya at the station nods.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "phone",
+     "text": "PRB-0412. Root cause: a page that worked. Owner: me. First time I've been glad to own something."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It's the most dangerous kind of page."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1157
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-52",
+   "label": "**Sequence:** unwind section 5.3 in the right order.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-407",
+   "label": "**Service Mode:** run the Monday morning yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "6:30 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Standard version 1.1, section 5.3: room devices get reserved addresses outside the automatic range. Why: a fixed address inside the range is a fuse — Riverbend at 1 a.m., Aldermoor on Monday at 7. Owner: Sam, PRB-0412. Signed M.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "DEBT-003, retired. Written down this time — with the why.",
+   "flags": [
+    "RV-94"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1798
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": "a message · 6:40 p.m.",
+   "lines": [
+    {
+     "who": "priya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Next time a page works at one in the morning, send it to me before you send it to four hundred rooms."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Deal. With the why."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "5:40 the next morning. Vera in the newsroom, coat still on, staring at a screen: rundown, account locked, contact security. Every screen in the room says the same.",
+   "characters": [
+    {
+     "id": "vera",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_newsroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Vera",
+     "kind": "speech",
+     "text": "Every account in the newsroom is locked. The morning show is at six-thirty."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Locked Out.*",
+   "flags": [
+    "RV-83"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7813
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A fixed address inside the automatic range is a fuse with a delay. When it burns, say whose page it was first. Let the network owner fix her network, look beyond the conflict list, fix the document that spread it, and give the problem an owner."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Maya's festival page worked, so nobody questioned it for two years. What in your work is trusted mainly because it worked once?  Boundary: this reflection doesn't change any network."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S04E07",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "av-training-sfx",
+  "purpose": "Original AV training sound effects: realistic rooms and faults for the Audio Lab noise beds, SIGNAL scenarios and tour atmosphere. Precise test signals (tones, pink noise, sweeps, echo) stay procedural in the lab, where their levels and frequencies are exact.",
+  "status": "READY",
+  "via": "ElevenLabs connector (creative_generate_in_flow, node sfx)",
+  "model": "eleven_text_to_sound_v2",
+  "voiceId": "n/a",
+  "takes": 2,
+  "creditsPerGeneration": 50,
+  "estimateCheckedAt": "2026-11-01: connector estimate_only = 50 credits per variation (default duration); re-estimate each with its duration before generating",
+  "items": [
+    { "id": "fx01-boardroom-roomtone", "seconds": 10, "loop": true, "text": "Empty corporate boardroom room tone: steady low HVAC airflow, faint ventilation hum, no voices, no music" },
+    { "id": "fx02-meeting-preroll", "seconds": 10, "loop": true, "text": "Meeting room before a call starts: chairs rolling on carpet, papers, soft unintelligible murmur of a few people, no music" },
+    { "id": "fx03-townhall-settling", "seconds": 10, "loop": true, "text": "Large auditorium audience settling before a presentation: many people murmuring indistinctly, seats creaking, reverberant hall, no music" },
+    { "id": "fx04-equipment-fan", "seconds": 6, "loop": true, "text": "Small computer and projector cooling fans running steadily in a quiet room, close microphone, no music" },
+    { "id": "fx05-office-typing", "seconds": 6, "loop": true, "text": "Several people typing on laptop keyboards in an open-plan office, light background, no voices, no music" },
+    { "id": "fx06-feedback-build", "seconds": 3, "loop": false, "text": "Acoustic feedback building in a conference room: a single ringing tone around 2.5 kHz rising from quiet to a sharp squeal over three seconds, then cut abruptly, dry room, no music" },
+    { "id": "fx07-cable-crackle", "seconds": 3, "loop": false, "text": "Intermittent loudspeaker crackle from a loose audio cable: irregular pops and scratchy dropouts, close and dry, no music" },
+    { "id": "fx08-rack-powerup", "seconds": 4, "loop": false, "text": "Equipment rack powering up: relay clicks, a soft thump, cooling fans spinning up to speed, server room, no music" },
+    { "id": "fx09-door-close", "seconds": 1.5, "loop": false, "text": "Heavy meeting room door closing softly with a latch click, carpeted room, no music" },
+    { "id": "fx10-rain-glass", "seconds": 10, "loop": true, "text": "Steady rain against a large glass façade heard from inside a quiet office, no thunder, no music" }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "made": "13 November 2026",
+  "room": "R-ATL-4-218",
+  "status": "DRAFT",
+  "synthetic": true,
+  "sources": [
+    "apps/demo/src/guides/roomGuide.ts",
+    "apps/demo/src/guides/chapters.ts",
+    "apps/demo/src/onboard/program.ts",
+    "apps/demo/src/onboard/profile.ts",
+    "screenshots of the built demonstration (apps/demo/dist)"
+  ],
+  "booklets": [
+    {
+      "file": "end-user-guide-r-atl-4-218.pdf",
+      "title": "End-User Success Guide · Atlas 4.218",
+      "pages": 17,
+      "bytes": 679323,
+      "sha256": "6a58165d3732281fb289a0380c587a970705a28dc9b423a6fa25bb30c003d375",
+      "cover": "end-user-guide-r-atl-4-218-cover.webp"
+    },
+    {
+      "file": "it-onboarding-success-guide.pdf",
+      "title": "IT Onboarding Success Guide",
+      "pages": 18,
+      "bytes": 582844,
+      "sha256": "0b37b5e7d0eaa0e376761e2e3c06d4a0681ded09da3c36e07d8197408ec0c37e",
+      "cover": "it-onboarding-success-guide-cover.webp"
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+ "chapter": {
+  "id": "s02e11",
+  "kicker": "S02 · E11 · BOSS LEVEL",
+  "title": "Last Night of the Tour",
+  "pill": "S02E11 · Boss",
+  "sub": "Live event and load-in — RF, rigging boundaries, signal and crew pressure.",
+  "status": "**DRAFT** · boss level (owner request) · physics challenges are teaching models (CH-01)",
+  "flags": [
+   "DR-S02E11",
+   "CH-01",
+   "BOSS-01"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 11 · BOSS LEVEL · DRAFT  Live event and load-in — RF, rigging boundaries, signal and crew pressure · Level 1  The final show of the Halyard Live tour: an arena, a four-hour turnaround, and a wireless band so crowded the scanner looks like a city skyline. The promoter wants doors early. Ben, the head rigger, is at lunch.  ⚑ CH-01 · BOSS-01: five physics challenges, a signal trace and the calls that aren't yours to make — on the clock. Fail anything and the run starts over. The edge of the screen glows yellow under pressure, red when time is short or the run fails, green when you clear it; it pulses no faster than once a second, and holds steady if you prefer reduced motion."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Everything at once”",
+   "sub": "Last Night of the Tour"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light at the edge of everything turns yellow. The final show of the Halyard Live tour: an arena, a four-hour turnaround, and a wireless band so crowded the scanner lo…",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Everything, at once. Where do we start?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where the signal starts. Then one thing at a time — and nothing that isn't ours."
+    }
+   ],
+   "narration": [],
+   "caption": "Five modes, one clock, no second chances inside a run.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4060
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light turns red. One more fixture on my truss while I'm at lunch? Don't even think about it.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "One more fixture on my truss while I'm at lunch? Don't even think about it."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Wouldn't dream of it. Your truss, your signature."
+    }
+   ],
+   "narration": [],
+   "caption": "Trace · hear · see · reach · build · record. The boss isn't the fault — it's the pressure to cut a corner.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3810
+  },
+  {
+   "origin": "authored",
+   "type": "beat",
+   "mood": "dark",
+   "where": "Last Night of the Tour",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "W",
+     "expr": "flat",
+     "text": "One check per stage. If it fails, we start over from the top — and we'll know why."
+    },
+    {
+     "who": "jordan",
+     "pose": "N",
+     "expr": "worried",
+     "text": "And if we fail again?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Then we start again. That's the job: until it passes, and we can prove it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The run",
+   "sub": "5 stages · a trace · 2 calls"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "boss",
+   "id": "S02",
+   "label": "**Boss level: Last Night of the Tour.** Clear every stage in one run to open the next season. Fail anything and you start again from the top.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Live sound signal chain and gain structure     Sound pressure, room modes and the spectrum     Low-voltage systems and live production"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief — “Until it passes”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light fades to green. Doors on time. The wireless holds for two hours, the rig is exactly what Ben signed, and the final blackout lands on the last hit. Jordan wr…",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [],
+   "narration": [
+    "Doors on time. The wireless holds for two hours, the rig is exactly what Ben signed, and the final blackout lands on the last hit. Jordan writes “Maya ran it” on the tour's last show report."
+   ],
+   "caption": "Cleared. Written down. Handed over.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3741
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Under pressure, the method doesn't change: trace the signal from source to destination, fix one thing at a time and prove it where the people are, and hand every decision that isn't yours to the person who owns it — the electrician, the rigger and structural engineer, the network owner, security, the emergency managers, the clinical and privacy owners, the artist. Then write it down."
+  }
+ ]
+}

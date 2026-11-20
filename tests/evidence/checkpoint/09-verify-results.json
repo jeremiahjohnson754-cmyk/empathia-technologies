@@ -1,0 +1,906 @@
+{
+ "step": 9,
+ "title": "Verify every result independently (never by its recorder)",
+ "room": "R-PLN-0004",
+ "at": "2026-11-14T12:19:10.714Z",
+ "assertions": [
+  {
+   "id": "C-30",
+   "name": "self-verification is refused: the commissioning engineer cannot verify a result they recorded (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-31",
+   "name": "the field technician holds no verification authority (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-32",
+   "name": "every result is PASS_VERIFIED by a different person (cxeng 59, qa_reviewer 16)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-33",
+   "name": "a result is never verified twice (422)",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/design_conformance/verify",
+   "persona": "cxeng",
+   "status": 422,
+   "body": {
+    "type": "https://errors.empathia.invalid/rule_refused",
+    "title": "Refused by a business rule",
+    "status": 422,
+    "detail": "verification must be independent of the person who recorded the result",
+    "code": "rule_refused",
+    "reasons": [
+     "verification must be independent of the person who recorded the result"
+    ],
+    "correlationId": "bfa22478-3f45-45a2-9160-4c7e21bbf5e9"
+   },
+   "correlationId": "bfa22478-3f45-45a2-9160-4c7e21bbf5e9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/access_reach/verify",
+   "persona": "service",
+   "status": 403,
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "service may not Independently verify a recorded PASS (needs tests.verify.all or test.verify or customer.accept)",
+    "code": "forbidden",
+    "correlationId": "1b8c416f-68a4-4bda-9de7-62c00cf45d68"
+   },
+   "correlationId": "1b8c416f-68a4-4bda-9de7-62c00cf45d68"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/compute_display_capability/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "compute_display_capability",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "406b2a84-0914-4b1c-a1ac-973a9e500a8c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/poe_budget/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "poe_budget",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "8d94f4b1-497c-4f31-9da0-9fec89582b12"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/power_budget/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "power_budget",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "9b840c30-1313-411e-b05e-42df4876b0b6"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/power_circuit_load/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "power_circuit_load",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "f1a09a52-26f9-4cf8-a143-b4b12de91ff9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/access_reach/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "access_reach",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "fa0120a9-8f34-4c84-a2b0-4533928dd659"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/audio_dsp_firmware/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "audio_dsp_firmware",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "dad1912b-1094-4979-9770-3ae35824b767"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/compute_patch_baseline/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "compute_patch_baseline",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "7783ff74-d915-4f5a-9ad2-3a0fe58aca71"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_program_version/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "control_program_version",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "21e1f4d4-76ee-4ed1-8680-bb929dcd8503"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_time_sync/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "control_time_sync",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "672e1d6d-6a8d-473e-b3b2-7d73a3b7f2bd"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/cyber_default_credentials/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "cyber_default_credentials",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "706a0b67-1395-4823-a142-206b0390f28e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/cyber_firmware_signed/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "cyber_firmware_signed",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "271adc8b-02b2-4fdb-87a2-ad543dfb802a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/identity_asset/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "identity_asset",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "bb9ab904-6ab1-414a-994b-74194489a2b5"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/infra_labeling/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "infra_labeling",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "ad3d13f1-02cf-4bae-80f0-1d486eb6cbf4"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/infra_rack_match/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "infra_rack_match",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "85a1d2d1-98bb-4f5b-8559-ee7afe6903e7"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_addressing/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_addressing",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "dc2c1a0d-deb1-48d5-b35c-6253a1e9b009"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_firmware_baseline/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_firmware_baseline",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "90b755e9-6f39-4a89-b0e6-b922a8f0974b"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/safety_install/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "safety_install",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "405e70b4-f806-4530-99a6-8806731bc5e3"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/compute_certified_config/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "compute_certified_config",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "34fb733f-3ec4-44a2-8adb-5cf75302a797"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/design_conformance/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "design_conformance",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "ee7780d0-badc-456f-9013-9dad30e1900d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/infra_cable_certification/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "infra_cable_certification",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "ee169cfa-eba4-4635-b22e-cce44f7b5ac3"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/interop_firmware_matrix/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "interop_firmware_matrix",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "f9fa16b4-3804-46d7-8a52-1ef3974a47e9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_port_profile/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_port_profile",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "e8776c28-3523-4f31-ab72-11502ea609e1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/access_captions/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "access_captions",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "88569fb7-8794-44f7-a855-0f304ef45b08"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/access_contrast/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "access_contrast",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "fb53d011-54d5-45f2-a611-89ae64266cd3"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/display_controls/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "display_controls",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "fc95db4a-2759-46b2-b5bb-359e2eacf7fa"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_management_reach/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_management_reach",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "4c1db0f5-fe2b-498d-962e-ee69584283bb"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_reachability/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_reachability",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "2d73a084-1f0d-4daf-8626-17d98426c717"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/uc_peripherals/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "uc_peripherals",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "0378e0ee-9d64-4e31-ba18-4841b3a822e1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/user_function/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "user_function",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "c5f9c10e-d7c3-43e7-8bec-e266ce4df17d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/video_signal/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "video_signal",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "2b5c4449-5358-43c6-8688-da651434333f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/audio_mic_pickup/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "audio_mic_pickup",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "3e1689ac-4bcc-40b8-be31-cfc1ec620646"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/audio_zone_routing/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "audio_zone_routing",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "b94d7005-263f-4691-aef9-e3d4dcbb2da1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/camera_preset/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "camera_preset",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "cc228bdf-8d19-4bed-ae88-3840f1c2e74e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_audio/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "control_audio",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "510e861a-777a-41cd-9c89-7c20f4f64400"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_camera/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "control_camera",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "dbd380f7-50ef-43d0-afe2-ffc5da2aaed6"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_error_states/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "control_error_states",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "33184756-dc7e-4b23-af7b-c2ee9e2d64fd"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_macros/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "control_macros",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "8b0eca4d-016a-481d-9815-758cf6960c2c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_source_switching/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "control_source_switching",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "a4b1d94f-dd52-49b6-aa91-d40bedc905e3"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_third_party/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "control_third_party",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "b75f4dae-6b75-44f9-aaaa-c89ff96f01af"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_ui/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "control_ui",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "796914cb-9822-4f89-93fe-8577ef979111"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_ups/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "control_ups",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "ad5f2297-4b7d-4743-9bc0-b02832d259b9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/cyber_logging/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "cyber_logging",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "371ec60d-790d-40b8-9c59-67fa3609d575"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/cyber_management_isolation/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "cyber_management_isolation",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "28cfc00c-b2a6-49d3-8e83-86b7948233c4"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/cyber_tls/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "cyber_tls",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "f702e808-c6be-4efd-9170-4d4d16fe0555"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/env_lighting_levels/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "env_lighting_levels",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "713ac7ee-26db-4a12-b83e-bc2d4f6b3758"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/integ_bms/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "integ_bms",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "1db75848-6af7-4bd4-a2fd-6d62b08c7ef8"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/interop_mixed_vendor/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "interop_mixed_vendor",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "ec317756-311f-4ea8-92c4-ad7bf82eba88"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_qos/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_qos",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "5a642438-70a7-4b62-b0f0-2fc6ebc491f5"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_vlan/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_vlan",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "7512daed-1601-44aa-a9ec-95b80eefb0da"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/power_ups_runtime/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "power_ups_runtime",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "ef1b7271-9efa-46d2-9e8c-c3c61bebcfb9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/uc_calendar/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "uc_calendar",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "c1c89aca-5c2e-4189-9798-5bbbee3dcc46"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/uc_media/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "uc_media",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "b6c3649c-197f-4f76-a7b1-57095f9cfd64"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/video_camera_exposure/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "video_camera_exposure",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "c41d36f8-1032-413d-9393-28bfec7449ab"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/video_content_share/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "video_content_share",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "07baf7fc-4cbd-482a-bdf9-fa4eaf0876ae"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/video_display_calibration/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "video_display_calibration",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "3791e0d9-71c3-4e73-b04f-1455bc6f7933"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/video_edid_handshake/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "video_edid_handshake",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "d27e3c7e-9047-4afd-aea6-72cba088cd0e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/video_switching/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "video_switching",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "4e7bf173-d3d9-4dce-bbc3-e53ec0acf465"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/audio_aec/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "audio_aec",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "7336462a-b776-4a47-9d6e-b1ea59b25e4c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/audio_gain/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "audio_gain",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "7c1bb806-7be7-4c65-a4aa-d6dadd08d325"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/audio_limiter_levels/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "audio_limiter_levels",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "06b5ee97-cddb-4590-bee0-35eb84b31a9a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/audio_noise_floor/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "audio_noise_floor",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "ae13a42e-fd66-4afe-8ab7-cd9ec3b11da9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/camera_fov/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "camera_fov",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "c61a99e7-c202-4607-87c0-1672d862e7b1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/control_latency/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "control_latency",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "aae2f126-a577-4f49-8f61-ae0dbd2c2b5a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_media_clock/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_media_clock",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "b7dd4419-9731-46dc-8033-daff19e7f761"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/video_av_sync/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "video_av_sync",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "14db27f6-d837-4493-98a3-f2ebf229349c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/video_camera_tracking/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "video_camera_tracking",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "fb5fc1af-959a-473f-b6b8-f8875d1b7c56"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/integ_itsm/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "integ_itsm",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "43b9a2d7-d372-4aea-aefb-e636f217278b"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/integ_monitoring_enrol/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "integ_monitoring_enrol",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "742682e4-1fc7-481f-843f-41c8969cd87e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/network_config_backup/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "network_config_backup",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "e5ecd73b-c989-4356-8cf6-97afc640eeca"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/cyber_accounts/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "cyber_accounts",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "5375ecb2-6a15-4a72-9ca2-1702dcfd186c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/handover_runbook/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "handover_runbook",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "8d0009c7-af80-43d0-b00f-3860b8a8acbe"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/handover_spares/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "handover_spares",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "ff8ffb7f-fc83-49a4-95ac-0fc23f6c94f9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/handover_support_path/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "handover_support_path",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "9b15a583-ebd1-4ebf-b690-301de63a451a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/handover_training/verify",
+   "persona": "qa_reviewer",
+   "status": 200,
+   "body": {
+    "testId": "handover_training",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "b187c5b7-2203-4f10-8756-ee1d7422c3b9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/handover_warranty/verify",
+   "persona": "cxeng",
+   "status": 200,
+   "body": {
+    "testId": "handover_warranty",
+    "resultLabel": "PASS_VERIFIED"
+   },
+   "correlationId": "5c5b883e-319b-4ff6-96d4-01c786dd641d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results/compute_display_capability/verify",
+   "persona": "cxeng",
+   "status": 422,
+   "body": {
+    "type": "https://errors.empathia.invalid/rule_refused",
+    "title": "Refused by a business rule",
+    "status": 422,
+    "detail": "already verified",
+    "code": "rule_refused",
+    "reasons": [
+     "already verified"
+    ],
+    "correlationId": "9a4b09ea-8ecd-43fe-a668-95414a57d87b"
+   },
+   "correlationId": "9a4b09ea-8ecd-43fe-a668-95414a57d87b"
+  }
+ ]
+}

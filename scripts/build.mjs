@@ -46,7 +46,9 @@ const pub = process.argv.includes('--public');
 log(`Empathia build${pub ? ' (public sites only)' : ''} ${new Date().toISOString()} on ${process.platform} ${process.version}`);
 run('link workspace', process.execPath, [path.join(root, 'scripts/bootstrap.mjs')]);
 run('design tokens', process.execPath, [path.join(root, 'packages/design-tokens/build-tokens.mjs')]);
-for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability',
+// v18/pilot: the price list, readiness rules and pilot machines (no dependencies; the API, the website and the demo read it)
+run('tsc -b packages/commercial', process.execPath, [tsc, '-b', path.join(root, 'packages/commercial')]);
+for (const p of ['packages/domain-types', 'packages/commissioning-engine', 'packages/event-contracts', 'packages/relationship-engine', 'packages/search-party', 'packages/project-governance', 'packages/service-engine', 'packages/apex-engine', 'packages/kpi-engine', 'packages/proof-registry', 'packages/field-queue', 'packages/field-intelligence', 'packages/assurance-engine', 'packages/observability',
   'integrations/contracts', 'integrations/mocks', 'services/enterprise-api', 'packages/api-client', 'packages/schemas'].filter((p) => !pub || !['services/enterprise-api', 'packages/api-client', 'packages/schemas', 'integrations/contracts', 'integrations/mocks'].includes(p))) run(`tsc -b ${p}`, process.execPath, [tsc, '-b', path.join(root, p)]);
 // the release stamp: the commit the artifact was built from (RELEASE_SHA, else git), read by the API's config for telemetry release correlation
 {
@@ -79,8 +81,12 @@ run('public website (pre-rendered)', process.execPath, [path.join(root, 'apps/we
 run('investor demo shell', process.execPath, [path.join(root, 'apps/demo/build.mjs')]);
 run('dist hygiene (no source maps, no dev override)', process.execPath, [path.join(root, 'scripts/verify/dist-hygiene.mjs')]);
 if (process.argv.includes('--studio')) {
+  // 17 Nov 2026: the Founder Edition page and the films are private and live in a store outside the repository. Without an explicit
+  // --founder-edition the studio is provisioned from that store (verified against apps/founder-studio/PRIVATE_ASSETS.json); a missing
+  // or altered store fails this step with the reason, instead of building a studio that has no Founder Edition in it.
   const fe = (process.argv.find((a) => a.startsWith('--founder-edition=')) || '').split('=')[1];
-  run('Founder Studio (data + bundle)', process.execPath, [path.join(root, 'apps/founder-studio/build.mjs'), ...(fe ? [`--founder-edition=${fe}`] : [])]);
+  if (fe) run('Founder Studio (data + bundle)', process.execPath, [path.join(root, 'apps/founder-studio/build.mjs'), `--founder-edition=${fe}`]);
+  else run('Founder Studio (private assets verified; data + bundle; films placed)', process.execPath, [path.join(root, 'scripts/private/founder-studio-assets.mjs'), 'provision']);
   run('type-check apps/founder-studio', process.execPath, [tsc, '-p', path.join(root, 'apps/founder-studio/tsconfig.json'), '--noEmit']);
 } else if (studioData) run('type-check apps/founder-studio (existing generated data)', process.execPath, [tsc, '-p', path.join(root, 'apps/founder-studio/tsconfig.json'), '--noEmit']);
 else steps.push({ step: 'Founder Studio', result: 'NOT_RUN', ms: 0, why: 'pass --studio (needs the Founder Edition HTML and the film files to generate its data)' });

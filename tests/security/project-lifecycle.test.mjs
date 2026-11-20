@@ -22,13 +22,14 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client, DEV_PASSWORD } from '../integration/harness.mjs';
+import { setup, client, DEV_PASSWORD, registerRoom, documentRoom } from '../integration/harness.mjs';
 
 let h, c, T = {}, ids = {}, req, prj, room, evidence, failTest, issue, apx, wo, lc;
 const instrument = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';
 const get = (tok = T.opslead) => c.call('GET', `/v1/projects/${prj}`, { token: tok });
 const deliver = (to, tok, extra = {}) => c.call('POST', `/v1/projects/${prj}/delivery`, { token: tok, body: { to, ...extra } });
-const moveRoom = (to, tok) => c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: tok, body: { to } });
+// (changed 18 Nov: acceptance also needs the documentation packet approved and signed (0043); it is completed first)
+const moveRoom = async (to, tok) => { if (to === 'ACCEPTED') await documentRoom(c, room, { submit: T.installer, review: T.qa_reviewer, vendor: T.opslead, internal: T.syseng }); return c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: tok, body: { to } }); };
 const fresh = async (role) => (await c.call('POST', '/v1/auth/token', { body: { email: `${role}@empathia-demo.empathia.invalid`, password: DEV_PASSWORD, tenant: 'empathia-demo', role } })).body.accessToken;
 const audit = async (pred) => (await c.call('GET', '/v1/audit?limit=300', { token: T.secadmin })).body.items.find(pred);
 
@@ -229,6 +230,7 @@ test('EXE-1 — execution: the plan is compiled with the rule pack version pinne
   // the room is installed and commissioned the governed way; every applicable test is recorded by cxeng and verified by QA
   assert.equal((await moveRoom('INSTALLATION_PENDING', T.opslead)).status, 200);
   assert.equal((await moveRoom('INSTALLED_UNVERIFIED', T.installer)).status, 200);
+  await registerRoom(c, room, T.installer);   // the device register gates commissioning (founder, 14 Nov 2026)
   assert.equal((await moveRoom('COMMISSIONING', T.syseng)).status, 200);
   const rows = (await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body.commissioning.rows.filter((x) => x.applicable);
   // VERTICAL SLICE (P3): the display test fails first. The deficiency goes to APEX (diagnosis), APEX's A3 stages the real ServiceHands

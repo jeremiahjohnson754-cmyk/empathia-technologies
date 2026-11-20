@@ -4,7 +4,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { setup, client } from '../integration/harness.mjs';
+import { setup, client, registerRoom } from '../integration/harness.mjs';
 
 let h, c, room, wo; const T = {};
 const mc = async (tok) => { const r = await c.call('GET', '/v1/mission-control', { token: tok }); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 200)); return r.body; };
@@ -18,7 +18,7 @@ before(async () => {
   room = (await c.call('POST', '/v1/rooms', { token: T.designer, body: { name: 'Mission Huddle (synthetic)', template: 'huddle', buildingCode: 'ATL', floor: 10 } })).body.code;
   await c.call('POST', `/v1/rooms/${room}/revisions`, { token: T.designer, body: { reason: 'mc' } }); await c.call('POST', `/v1/rooms/${room}/drawings/generate`, { token: T.designer });
   await c.call('POST', `/v1/rooms/${room}/drawings/plan/approve`, { token: T.syseng }); await c.call('POST', `/v1/rooms/${room}/classification/approve`, { token: T.syseng, body: {} });
-  for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: T[t], body: { to } });
+  for (const [to, t] of [['DESIGN_APPROVED', 'syseng'], ['INSTALLATION_PENDING', 'opslead'], ['INSTALLED_UNVERIFIED', 'installer'], ['COMMISSIONING', 'syseng']]) { if (to === 'COMMISSIONING') await registerRoom(c, room, T.installer); await c.call('POST', `/v1/rooms/${room}/lifecycle`, { token: T[t], body: { to } }); }   // the register gates commissioning (14 Nov 2026)
   const rows = (await c.call('GET', `/v1/rooms/${room}`, { token: T.designer })).body.commissioning.rows.filter((x) => x.applicable && !x.personas.includes('designer'));
   const ev = (await c.call('POST', '/v1/evidence', { token: T.cxeng, raw: Buffer.from('synthetic'), headers: { 'content-type': 'text/plain', 'x-file-name': 'o.txt' } })).body;
   const rec = (r, state) => c.call('POST', `/v1/rooms/${room}/results`, { token: T.cxeng, body: { testId: r.test_id, state, evidenceId: ev.id, evidenceKind: r.evidence[0], instrument: 'SYN-METER-01 (synthetic)' } });

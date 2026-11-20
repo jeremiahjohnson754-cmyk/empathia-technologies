@@ -11,8 +11,9 @@ import type { ApplicabilityRow, RecordedResult } from '@empathia/domain-types';
 import type { Queryable } from '../db/pg.js';
 import type { RequestContext } from '../auth/context.js';
 import type { ObjectStore } from '../storage/objectStore.js';
-import { analyze, findRoom, load, relate } from './rooms.js';
+import { analyze, findRoom, load, relate, reverificationNow } from './rooms.js';
 import { ApiError, invalid, notFound, refused } from '../http/errors.js';
+import { citeMeasurement, QUANTITIES } from './criteria.js';
 
 async function code(q: Queryable, kind: string, prefix: string): Promise<string> { return (await q.query<{ c: string }>('SELECT app.next_code($1, $2) AS c', [kind, prefix])).rows[0]!.c; }
 
@@ -24,7 +25,7 @@ async function currentPlanRow(q: Queryable, roomId: string, testId: string): Pro
 }
 
 // ------------------------------------------------------------------------------------------------ evidence
-const EVIDENCE_TYPES = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv', 'application/json', 'text/plain'];
+const EVIDENCE_TYPES = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv', 'application/json', 'text/plain', 'audio/wav'];   // audio/wav (0040): an impulse response the server reads to work a reverberation value out itself
 export const EVIDENCE_AUTHORITIES = ['work.evidence', 'field.scan', 'test.verify', 'tests.verify.all', 'test.verify.audio', 'test.verify.video', 'test.verify.control'];
 
 /** The declared type must match the bytes (KV-17: content-type sniffing). Binary types by their signature; text types must be valid
@@ -35,6 +36,7 @@ export function contentMismatch(mt: string, data: Buffer): string | null {
   if (mt === 'image/png') return starts([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]) ? null : 'no PNG signature';
   if (mt === 'image/jpeg') return starts([0xff, 0xd8, 0xff]) ? null : 'no JPEG signature';
   if (mt === 'application/pdf') return data.subarray(0, 5).toString('latin1') === '%PDF-' ? null : 'no PDF header';
+  if (mt === 'audio/wav') return data.subarray(0, 4).toString('latin1') === 'RIFF' && data.subarray(8, 12).toString('latin1') === 'WAVE' ? null : 'no RIFF/WAVE header';
   let text: string;
   try { text = new TextDecoder('utf-8', { fatal: true }).decode(data); } catch { return 'not valid UTF-8 text'; }
   if (text.includes('\u0000')) return 'contains NUL bytes (binary content)';
@@ -44,7 +46,7 @@ export function contentMismatch(mt: string, data: Buffer): string | null {
 
 export async function uploadEvidence(ctx: RequestContext, store: ObjectStore, data: Buffer, mediaType: string, fileName: string) {
   await ctx.require(EVIDENCE_AUTHORITIES, 'upload evidence');
-  const mt = mediaType.split(';')[0]!.trim().toLowerCase();
+  let mt = mediaType.split(';')[0]!.trim().toLowerCase(); if (mt === 'audio/x-wav' || mt === 'audio/wave') mt = 'audio/wav';
   if (!EVIDENCE_TYPES.includes(mt)) throw new ApiError('unsupported_media_type', `evidence must be one of ${EVIDENCE_TYPES.join(', ')}`);
   if (!data.length) throw invalid('the evidence file is empty');
   const mismatch = contentMismatch(mt, data);
@@ -75,11 +77,11 @@ export async function evidenceContent(ctx: RequestContext, store: ObjectStore, i
 }
 
 // ------------------------------------------------------------------------------------------------ results
-export async function recordResult(ctx: RequestContext, ref: string, body: { testId: string; state: string; evidenceId: string; evidenceKind: string; instrument?: string }) {
+export async function recordResult(ctx: RequestContext, ref: string, body: { testId: string; state: string; evidenceId: string; evidenceKind: string; instrument?: string; measurementId?: string }) {
   return ctx.tx(async (q) => {
     const room = await findRoom(ctx, q, ref, true);
     const { planId, row } = await currentPlanRow(q, room.id, body.testId);
-    const ev = (await q.query<{ id: string }>('SELECT id FROM app.evidence_object WHERE id = $1', [body.evidenceId])).rows[0];
+    const ev = (await q.query<{ id: string; uploaded_ms: number; uploaded_at: string }>("SELECT id, (extract(epoch FROM uploaded_at) * 1000)::float8 AS uploaded_ms, to_json(uploaded_at) #>> '{}' AS uploaded_at FROM app.evidence_object WHERE id = $1", [body.evidenceId])).rows[0];
     if (!ev) throw notFound(`evidence ${body.evidenceId}`);
     const why = recordBlockers(room.lifecycle, row, ctx.p.role, { state: body.state, evidence: { kind: body.evidenceKind, ref: body.evidenceId, instrument: body.instrument ?? null } });
     if (why.length) {
@@ -87,28 +89,40 @@ export async function recordResult(ctx: RequestContext, ref: string, body: { tes
       await ctx.audit(null, 'commission.result.record', 'DENIED', { type: 'Room', id: room.code }, { testId: body.testId, why });   // own transaction: survives the rollback (RT-01)
       throw isRole ? new ApiError('forbidden', why[0]!) : refused(why);
     }
+    // ADR-0012: a test that a change of unit reopened is re-run on the new unit — with evidence obtained after the change. Evidence
+    // uploaded before it (whatever it was uploaded for) was obtained on the previous unit and never satisfies the re-run.
+    const reopened = (await reverificationNow(q, room, await load(ctx, q, room.id))).reverification.find((t) => t.testId === body.testId);
+    if (reopened && ev.uploaded_ms <= Date.parse(reopened.substitutedAt)) {
+      await ctx.refuse('commission.result.record', { type: 'Room', id: room.code }, [`evidence ${body.evidenceId} was uploaded at ${ev.uploaded_at}, before the change of unit at ${reopened.assets.join(', ')} (${reopened.substitutedAt}): ${body.testId} is re-run on the new unit, with evidence obtained after the change`], { testId: body.testId, evidenceId: body.evidenceId });
+    }
+    // 0037: where the room has a criterion for this test, the result cites a measurement judged against the criterion in force, and
+    // PASS needs it to be within. The table has the same rule as a trigger; this is where the refusal gets its reason.
+    const cited = await citeMeasurement(q, ctx.p.tenantId, room, body.testId, body.state, body.measurementId);
+    if (cited.why.length) await ctx.refuse('commission.result.record', { type: 'Room', id: room.code }, cited.why, { testId: body.testId, measurement: body.measurementId ?? null });
     const prev = (await q.query<{ result_id: string }>('SELECT result_id FROM app.current_result WHERE room_id = $1 AND test_id = $2', [room.id, body.testId])).rows[0];
-    const r = (await q.query<{ id: string }>(`INSERT INTO app.test_result (tenant_id, room_id, test_id, state, evidence_id, evidence_kind, instrument, recorded_by, recorded_role, supersedes) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id`,
-      [ctx.p.tenantId, room.id, body.testId, body.state, body.evidenceId, body.evidenceKind, body.instrument ?? null, ctx.p.personId, ctx.p.role, prev?.result_id ?? null])).rows[0]!;
+    const r = (await q.query<{ id: string }>(`INSERT INTO app.test_result (tenant_id, room_id, test_id, state, evidence_id, evidence_kind, instrument, recorded_by, recorded_role, supersedes, measurement_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING id`,
+      [ctx.p.tenantId, room.id, body.testId, body.state, body.evidenceId, body.evidenceKind, body.instrument ?? null, ctx.p.personId, ctx.p.role, prev?.result_id ?? null, cited.id])).rows[0]!;
     const rr: RecordedResult = { state: body.state as RecordedResult['state'], evidence: { kind: body.evidenceKind, ref: body.evidenceId }, by: ctx.p.personId, verified: null };
     const label = resultLabel(rr);
     await ctx.emit(q, 'commission.test_result_submitted', { type: 'Room', id: room.code, rev: room.rev }, { planId, testId: body.testId, state: body.state, resultLabel: label, evidence: body.evidenceKind, designId: room.code, roomId: room.code });
-    if (body.state === 'FAIL') await openCxDeficiency(ctx, q, room.id, room.code, planId, row!, body.evidenceId);
+    if (body.state === 'FAIL') await openCxDeficiency(ctx, q, room.id, room.code, planId, row!, body.evidenceId, cited.measured);
     await ctx.audit(q, 'commission.result.record', 'ALLOWED', { type: 'Room', id: room.code }, { testId: body.testId, state: body.state, resultLabel: label, resultId: r.id });
     await analyze(ctx, q, room.id, `result ${body.testId}`);
     return { resultId: r.id, testId: body.testId, state: body.state, resultLabel: label };
   });
 }
 
-async function openCxDeficiency(ctx: RequestContext, q: Queryable, roomId: string, roomCode: string, planId: string, row: ApplicabilityRow, evidenceId: string) {
+async function openCxDeficiency(ctx: RequestContext, q: Queryable, roomId: string, roomCode: string, planId: string, row: ApplicabilityRow, evidenceId: string, measured: string | null = null) {
   const key = `test-failed:${row.id}`;
+  // a base test whose label in the library is its identifier (reverberation_rt60) is named by what it measures
+  const name = row.label === row.id ? QUANTITIES[row.id]?.name ?? row.label : row.label;
   const i = (await q.query<{ id: string; code: string; state: string }>('SELECT id, code, state FROM app.room_issue WHERE room_id = $1 AND key = $2', [roomId, key])).rows[0];
   const revNo = (await q.query<{ n: number }>('SELECT coalesce(max(rev_no), 0) AS n FROM app.room_revision WHERE room_id = $1', [roomId])).rows[0]!.n;
   if (!i) {
     const c = await code(q, 'issue', 'RISS-');
     const ins = (await q.query<{ id: string }>(`INSERT INTO app.room_issue (tenant_id, room_id, code, key, category, check_name, severity, title, rationale, assets, first_seen_rev, last_seen_rev) VALUES ($1,$2,$3,$4,'INSTALLATION_COMMISSIONING_DEFICIENCY','commissioning_test_failed',$5,$6,$7,$8,$9,$9) RETURNING id`,
-      [ctx.p.tenantId, roomId, c, key, row.tier === 1 ? 'High' : 'Medium', `${row.label} failed`, `the ${row.label} test failed on the installed room (evidence ${evidenceId})`, row.devices || [], revNo])).rows[0]!;
-    await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, ins.id, 'created', { source: 'commissioning: physical test result', evidenceId }, ctx.p.personId]);
+      [ctx.p.tenantId, roomId, c, key, row.tier === 1 ? 'High' : 'Medium', `${name} failed`, `the ${name} test failed on the installed room (evidence ${evidenceId})${measured ? `. Measured ${measured}` : ''}`, row.devices || [], revNo])).rows[0]!;
+    await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, ins.id, 'created', { source: 'commissioning: physical test result', evidenceId, ...(measured ? { measured } : {}) }, ctx.p.personId]);
     await relate(ctx, q, { type: 'RoomIssue', id: c }, 'AFFECTS', { type: 'Room', id: roomCode }, 'FIELD_OBSERVED');
     await ctx.emit(q, 'commission.test_failed', { type: 'Room', id: roomCode, rev: 1 }, { planId, testId: row.id, roomId: roomCode });
     await ctx.emit(q, 'commission.deficiency_opened', { type: 'RoomIssue', id: c, rev: 1 }, { planId, testId: row.id, issueId: c });
@@ -130,6 +144,9 @@ export async function verifyResult(ctx: RequestContext, ref: string, testId: str
     const rr: RecordedResult | undefined = cur ? { state: cur.state as RecordedResult['state'], evidence: { kind: cur.evidence_kind, ref: cur.evidence_id }, by: cur.recorded_by, verified: cur.verified_by ? { by: cur.verified_by } : null } : undefined;
     const why = verifyBlockers(rr, ctx.p.personId);
     if (why.length) await ctx.refuse('commission.result.verify', { type: 'Room', id: room.code }, why, { testId });
+    // a result recorded on a unit that has since been replaced or substituted no longer counts: it is re-run, never verified (ADR-0012)
+    const stale = (await reverificationNow(q, room, await load(ctx, q, room.id))).reverification.find((t) => t.testId === testId && t.rerun);
+    if (stale) await ctx.refuse('commission.result.verify', { type: 'Room', id: room.code }, [`the current result of ${testId} was recorded on the previous unit (before the change of unit at ${stale.assets.join(', ')}, ${stale.substitutedAt}): it no longer counts and is not verified — re-run the test on the new unit`], { testId });
     await q.query('INSERT INTO app.verification (tenant_id, result_id, recorded_by, verified_by, verified_role) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, cur!.result_id, cur!.recorded_by, ctx.p.personId, ctx.p.role]);
     const label = resultLabel({ ...rr!, verified: { by: ctx.p.personId } });
     await ctx.emit(q, 'room.test_verified', { type: 'Room', id: room.code, rev: room.rev }, { designId: room.code, testId, resultLabel: label, verifiedBy: ctx.p.personId });
@@ -137,6 +154,7 @@ export async function verifyResult(ctx: RequestContext, ref: string, testId: str
     const i = (await q.query<{ id: string; code: string }>(`SELECT id, code FROM app.room_issue WHERE room_id = $1 AND key = $2 AND state = 'OPEN'`, [room.id, `test-failed:${testId}`])).rows[0];
     if (i) {
       const resolution = { at: new Date().toISOString(), by: ctx.p.personId, byRole: ctx.p.role, how: `retest ${testId} PASS by ${cur!.recorded_by}, verified by ${ctx.p.personId}`, evidenceId: cur!.evidence_id };
+      await q.query("SELECT set_config('app.issue_resolution', 'verified_retest', true)");
       await q.query(`UPDATE app.room_issue SET state = 'RESOLVED', resolution = $2 WHERE id = $1`, [i.id, resolution]);
       await q.query('INSERT INTO app.issue_event (tenant_id, issue_id, kind, detail, actor_id) VALUES ($1,$2,$3,$4,$5)', [ctx.p.tenantId, i.id, 'resolved', resolution, ctx.p.personId]);
       const planId = (await q.query<{ id: string }>('SELECT id FROM app.cx_plan WHERE room_id = $1 ORDER BY compiled_at DESC, id DESC LIMIT 1', [room.id])).rows[0]?.id || '';
@@ -172,7 +190,8 @@ export async function createWorkOrder(ctx: RequestContext, issueCode: string, bo
     const i = (await q.query<{ id: string; state: string; category: string; room_id: string }>('SELECT id, state, category, room_id FROM app.room_issue WHERE code = $1 FOR UPDATE', [issueCode])).rows[0];
     if (!i) throw notFound(`issue ${issueCode}`);
     const room = await findRoom(ctx, q, i.room_id);
-    if (i.category !== 'INSTALLATION_COMMISSIONING_DEFICIENCY') throw refused(['a design deficiency on a planned room gets a design change, not a field work order']);
+    // field work is raised on a deficiency of commissioning or on an operational incident (0039); a design deficiency gets a design change
+    if (i.category === 'DESIGN_DEFICIENCY') throw refused(['a design deficiency on a planned room gets a design change, not a field work order']);
     if (i.state !== 'OPEN') throw refused(['the issue is not open']);
     // one active job per issue: a second work order while one is still in progress would split the evidence and the verification
     const active = (await q.query<{ code: string; state: string }>("SELECT code, state FROM app.work_order WHERE issue_id = $1 AND state NOT IN ('CLOSED','CANCELLED') ORDER BY created_at LIMIT 1", [i.id])).rows[0];

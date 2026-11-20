@@ -1,0 +1,212 @@
+{
+ "chapter": {
+  "id": "s03e11",
+  "kicker": "S03 · E11 · BOSS LEVEL",
+  "title": "The Results Call",
+  "pill": "S03E11 · Boss",
+  "sub": "Executive workplace incident — rooms, network, users, escalation.",
+  "status": "**DRAFT** · boss level (owner request) · physics challenges are teaching models (CH-01)",
+  "flags": [
+   "DR-S03E11",
+   "CH-01",
+   "BOSS-01"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 3 · EPISODE 11 · BOSS LEVEL · DRAFT  Executive workplace incident — rooms, network, users, escalation · Level 1  Aldermoor's quarterly results call: the CEO in the boardroom, four hundred staff in rooms across the building and investors dialled in from three time zones. At 8:40 the investors can't hear her.  ⚑ CH-01 · BOSS-01: five physics challenges, a signal trace and the calls that aren't yours to make — on the clock. Fail anything and the run starts over. The edge of the screen glows yellow under pressure, red when time is short or the run fails, green when you clear it; it pulses no faster than once a second, and holds steady if you prefer reduced motion."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Everything at once”",
+   "sub": "The Results Call"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light at the edge of everything turns yellow. Aldermoor's quarterly results call: the CEO in the boardroom, four hundred staff in rooms across the building and invest…",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Everything, at once. Where do we start?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where the signal starts. Then one thing at a time — and nothing that isn't ours."
+    }
+   ],
+   "narration": [],
+   "caption": "Five modes, one clock, no second chances inside a run.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1323
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light turns red. The CEO's assistant wants admin rights on the room PC. Right now.",
+   "characters": [
+    {
+     "id": "imani",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Imani",
+     "kind": "speech",
+     "text": "The CEO's assistant wants admin rights on the room PC. Right now."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "That's security's call. We give her a name and a time."
+    }
+   ],
+   "narration": [],
+   "caption": "Trace · hear · see · reach · build · record. The boss isn't the fault — it's the pressure to cut a corner.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1078
+  },
+  {
+   "origin": "authored",
+   "type": "beat",
+   "mood": "dark",
+   "where": "The Results Call",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "W",
+     "expr": "flat",
+     "text": "One check per stage. If it fails, we start over from the top — and we'll know why."
+    },
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "worried",
+     "text": "And if we fail again?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Then we start again. That's the job: until it passes, and we can prove it."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "The run",
+   "sub": "5 stages · a trace · 2 calls"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "boss",
+   "id": "S03",
+   "label": "**Boss level: The Results Call.** Clear every stage in one run to open the next season. Fail anything and you start again from the top.",
+   "gate": "hard"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     AV networking — the church network     The first step to networking, AV style     The troubleshooting decision tree"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief — “Until it passes”",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The alarm light fades to green. 9:00. The investors hear every word, the slides read on every screen, the overflow rooms are live, and the Q&A is on the record. The inciden…",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_boardroom",
+   "bubbles": [],
+   "narration": [
+    "9:00. The investors hear every word, the slides read on every screen, the overflow rooms are live, and the Q&A is on the record. The incident ticket has a named owner and a cause."
+   ],
+   "caption": "Cleared. Written down. Handed over.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1007
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Under pressure, the method doesn't change: trace the signal from source to destination, fix one thing at a time and prove it where the people are, and hand every decision that isn't yours to the person who owns it — the electrician, the rigger and structural engineer, the network owner, security, the emergency managers, the clinical and privacy owners, the artist. Then write it down."
+  }
+ ]
+}

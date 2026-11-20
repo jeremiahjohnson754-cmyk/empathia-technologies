@@ -4,7 +4,7 @@
   "apiVersion": "0.1.0",
   "counts": {
     "events": 101,
-    "api": 69,
+    "api": 110,
     "entities": 4
   },
   "files": [
@@ -519,6 +519,21 @@
       "sha256": "6197653dee0e11ad8d5bca18a64aed5aecaba540263b9312ad68b44fdf5a07dd"
     },
     {
+      "file": "api/postV1DemoSandboxes.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DemoSandboxes/0.1.0.json",
+      "sha256": "9c2aa9b2ab945c3100bb50894911c17b0122557ef7b35dd9e6f4239b8a9131e9"
+    },
+    {
+      "file": "api/postV1DemoSessions.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DemoSessions/0.1.0.json",
+      "sha256": "b556032d2bca5d40d22abe0530fec034c18de48ab631ab6619dbc8266f0b4043"
+    },
+    {
+      "file": "api/postV1DemoSandboxesReset.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DemoSandboxesReset/0.1.0.json",
+      "sha256": "8fe2b43fa874f814305b4a885406132f2c0382210782897ca50277e283ae52b1"
+    },
+    {
       "file": "api/postV1Projects.json",
       "$id": "https://schemas.empathia.invalid/api/postV1Projects/0.1.0.json",
       "sha256": "e7dcc556e989f6811eed6310c822152fc1836dd0957ee70e2d48247cb66aab39"
@@ -531,7 +546,7 @@
     {
       "file": "api/postV1Rooms.json",
       "$id": "https://schemas.empathia.invalid/api/postV1Rooms/0.1.0.json",
-      "sha256": "501f4f6a3a10d10ac1bf619e77126b103f7497fedd56b9c6c6caefe940c07e20"
+      "sha256": "fbcbc54f2a754c63a46ed5d6e194b413e2fc607f1a96575efe497c74e1172af5"
     },
     {
       "file": "api/patchV1RoomsRoom.json",
@@ -539,14 +554,79 @@
       "sha256": "0cf6360b9c7ad941e0a7e149508e1b0225388d0d06714c590477cb9bd4602f23"
     },
     {
+      "file": "api/postV1RoomsRoomDevicesBatch.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDevicesBatch/0.1.0.json",
+      "sha256": "d8e63be11f2c1250979f28b3a0b31ea4497e3c21027a98bc6b1f75f758f45487"
+    },
+    {
       "file": "api/postV1RoomsRoomDevices.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDevices/0.1.0.json",
-      "sha256": "b388e328e19aa335b3850d91cefb92152767b7687b4f25889f641dcc200b9517"
+      "sha256": "04071b56277959fafacd62052c056ae714c28865999abc31906696beed3fe468"
     },
     {
       "file": "api/patchV1RoomsRoomDevicesAsset.json",
       "$id": "https://schemas.empathia.invalid/api/patchV1RoomsRoomDevicesAsset/0.1.0.json",
-      "sha256": "3b7adc4b83704683bef53a24d5814f0cce350678882e58f4e19d112b4743feee"
+      "sha256": "618b42495a059eed9f5f2b4bd7e7f6bd5fe21c275925f49b28079f8b9749782a"
+    },
+    {
+      "file": "api/postV1RoomsRoomPositionsPositionInstallation.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomPositionsPositionInstallation/0.1.0.json",
+      "sha256": "401567087240d3ac2b77f80052833ee654e209729e6422941b30ab6cc25cdaf2"
+    },
+    {
+      "file": "api/postV1RoomsRoomPositionsPositionReplace.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomPositionsPositionReplace/0.1.0.json",
+      "sha256": "4c09f528457b356ee76eab25d9d09b46c009805ac3b538c052ead3fa84bf139a"
+    },
+    {
+      "file": "api/postV1AssetsAssetIdentity.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AssetsAssetIdentity/0.1.0.json",
+      "sha256": "87a42cc936d4a0245673b98b9cc8e9255c1640d886bf87dd3f6b54ef0342039f"
+    },
+    {
+      "file": "api/postV1AssetsAssetRetire.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AssetsAssetRetire/0.1.0.json",
+      "sha256": "30d1424f2614083fed88df41608e55678f35e6d36d967c1a0fca6ec0c13a208a"
+    },
+    {
+      "file": "api/putV1AssetsAssetRegister.json",
+      "$id": "https://schemas.empathia.invalid/api/putV1AssetsAssetRegister/0.1.0.json",
+      "sha256": "4a5b4c1cadaf764028e50b52bf6bfbb5a1c7a5c6af6208026d3d819467651301"
+    },
+    {
+      "file": "api/putV1RoomsRoomFieldRecordMountingAsset.json",
+      "$id": "https://schemas.empathia.invalid/api/putV1RoomsRoomFieldRecordMountingAsset/0.1.0.json",
+      "sha256": "51cca1ddcb8ac1661e1aacdd6f85f7e94a9b013b5129582a476f66870fcc08e7"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordHookups.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordHookups/0.1.0.json",
+      "sha256": "9754464213718f5b5d373d6547d1790cd0ff68b15dcad62050883a9474c4a61e"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordHookupsHookupRemove.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordHookupsHookupRemove/0.1.0.json",
+      "sha256": "1f2f69ef0859f95bd41d3cf4f1287d8a55e23b9a819a11cdc667a181aa48dc15"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordMoves.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMoves/0.1.0.json",
+      "sha256": "c79e87f3779f8659b0da2c22cb761ccb207326fa6310ac21875b6a25f9ef394a"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordMovesMoveDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMovesMoveDecide/0.1.0.json",
+      "sha256": "c6409e2ce43fc166f9c9262a588d057a9042178f0f0a09b76738edf36be9d689"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordMarkups.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMarkups/0.1.0.json",
+      "sha256": "21d58ce30eeb450106b6bf89869ab6710b52a62ac22a11317612e6dd75453eca"
+    },
+    {
+      "file": "api/postV1RoomsRoomFieldRecordMarkupsMarkupResolve.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordMarkupsMarkupResolve/0.1.0.json",
+      "sha256": "ec093742972768e55f8ecf3839db77ac9617d3049857a677063b1ccc381b92a9"
     },
     {
       "file": "api/postV1RoomsRoomConnections.json",
@@ -571,12 +651,97 @@
     {
       "file": "api/postV1RoomsRoomResults.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomResults/0.1.0.json",
-      "sha256": "adff7c03822cce0185fc5aae8e81cc96cd48c2877180229ca3f6f68cf299cff0"
+      "sha256": "3e8016b8f77520f3d5daeb49a0a90e6327d517c5c1c6a83b394fc1c6342fc3ca"
     },
     {
       "file": "api/postV1IssuesIssueAssign.json",
       "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueAssign/0.1.0.json",
       "sha256": "1439f3404bd2892fb252bfbf77724692b9b0e5b4bbda944a18a1713c96764432"
+    },
+    {
+      "file": "api/postV1IssuesIssueDeficiency.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueDeficiency/0.1.0.json",
+      "sha256": "e9b7cbb35d57d3772145f68e211606572847dd8848fde60212c905ffe5172091"
+    },
+    {
+      "file": "api/postV1IssuesIssueMeasuredException.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueMeasuredException/0.1.0.json",
+      "sha256": "f8820baa5b76c1e1deddc7937fb6d51d7cda7c56eed567eb1ad665a929c8a7af"
+    },
+    {
+      "file": "api/postV1MeasuredExceptionsCodeDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1MeasuredExceptionsCodeDecide/0.1.0.json",
+      "sha256": "6dd22a112c741baf4ab58773bfce7a27e0cb6df9ac897c2a33ddf74944077faa"
+    },
+    {
+      "file": "api/postV1FirmwareBaselines.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FirmwareBaselines/0.1.0.json",
+      "sha256": "8d54c9f340bf533912c3026f51d051638ec2eec7dc17773aa4043637d1b26c39"
+    },
+    {
+      "file": "api/postV1FirmwareBaselinesIdDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1FirmwareBaselinesIdDecide/0.1.0.json",
+      "sha256": "fae41147a0391020d04346be57b9520ece93610ad05a333b6fb571ad760ca243"
+    },
+    {
+      "file": "api/postV1DirectoryOrganizations.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectoryOrganizations/0.1.0.json",
+      "sha256": "4d953605777b265cc3dacca674ee5e08b5e9ce38157777e725cf7357c3c4984e"
+    },
+    {
+      "file": "api/postV1DirectoryContacts.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectoryContacts/0.1.0.json",
+      "sha256": "e60df82b6c536d8d4da90830560a11395a776be370956f0ef592981a87506a10"
+    },
+    {
+      "file": "api/postV1DirectoryContactsCodeRetire.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectoryContactsCodeRetire/0.1.0.json",
+      "sha256": "68a5000407f9a6740ca4dcdd1d52122e8f226ea0cc83bf83e86c0e95b8cedd2e"
+    },
+    {
+      "file": "api/postV1DirectorySupportPaths.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectorySupportPaths/0.1.0.json",
+      "sha256": "abede47b2c8c8ef43147cef50535d0a3bbcab9ba9197f4079d9ac885600ca667"
+    },
+    {
+      "file": "api/postV1DirectorySupportPathsCodeDecide.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1DirectorySupportPathsCodeDecide/0.1.0.json",
+      "sha256": "e9b09d9d9162883cebdca4470d1d451987f114a408a262334172a7bb10a3ef90"
+    },
+    {
+      "file": "api/putV1PlatformsPlatform.json",
+      "$id": "https://schemas.empathia.invalid/api/putV1PlatformsPlatform/0.1.0.json",
+      "sha256": "d07552e9f3278d7a09e2bc62f530085d87296333383651684ae3b1e9d2835670"
+    },
+    {
+      "file": "api/postV1RoomsRefPlatforms.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRefPlatforms/0.1.0.json",
+      "sha256": "bb3e59dd0b07f2fd8463bcc52f375bacf9997fe23032e90358350377f0af9948"
+    },
+    {
+      "file": "api/postV1AssetsRefPlatforms.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AssetsRefPlatforms/0.1.0.json",
+      "sha256": "31cce319688133bd50d2f7693e40a63e0047576c8c6322ab595152f3e21f54b1"
+    },
+    {
+      "file": "api/patchV1SitesSite.json",
+      "$id": "https://schemas.empathia.invalid/api/patchV1SitesSite/0.1.0.json",
+      "sha256": "f5eae4a29bcb1ab7b6d001b82efddadcf746a3eb7161b2ffa980bdff8d539d1c"
+    },
+    {
+      "file": "api/postV1IssuesIssueImpact.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IssuesIssueImpact/0.1.0.json",
+      "sha256": "cc783bebf70b5e8cec0aee3686168814b4601febb6c1631a011e76f7ebf806e5"
+    },
+    {
+      "file": "api/postV1RoomsRoomDocumentationKind.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDocumentationKind/0.1.0.json",
+      "sha256": "7f60b9ac38c0b50f9522ba9fdc8f0ec671424ba50b26287c4659692a8d0bd0a4"
+    },
+    {
+      "file": "api/postV1RoomsRoomDocumentationKindReview.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDocumentationKindReview/0.1.0.json",
+      "sha256": "c127b59a9f3b5f3f62b7f7c9a4fa82366ae50b9d293792b4404bfc446d48775d"
     },
     {
       "file": "api/postV1IssuesIssueWorkOrders.json",
@@ -696,7 +861,17 @@
     {
       "file": "api/postV1PublicLeads.json",
       "$id": "https://schemas.empathia.invalid/api/postV1PublicLeads/0.1.0.json",
-      "sha256": "fcde7f767817f3bf30b35a418a0ea9b899b798945f2d0d7eade8b44c4618f1a0"
+      "sha256": "abffe9cb11f536b9cf771e1f9de7f377aef86a78dccb81ddfc100447a11fba66"
+    },
+    {
+      "file": "api/postV1ProofClaims.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProofClaims/0.1.0.json",
+      "sha256": "80244188c1effa6746b5654f560948d0b535615f9163dce99b886470e0a0880e"
+    },
+    {
+      "file": "api/postV1ProofClaimsClaimTransitions.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1ProofClaimsClaimTransitions/0.1.0.json",
+      "sha256": "47158cd09879fc051b18a8f376dc4757606f4713681f143127fd8569a74d40c2"
     },
     {
       "file": "api/patchV1AdminLeadsId.json",
@@ -724,6 +899,11 @@
       "sha256": "8a555d3bd5f068223aaa48181814974532b13e05a10a503681d3c061668f673b"
     },
     {
+      "file": "api/postV1AdminOutboxEventRetry.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1AdminOutboxEventRetry/0.1.0.json",
+      "sha256": "a317e0696a578089215ac38d0e2a408683504fc277c2f3b5c79470c4524adc05"
+    },
+    {
       "file": "api/postV1RoomsRoomBaselinesExceptions.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomBaselinesExceptions/0.1.0.json",
       "sha256": "cf8e5c8d21ef153ee56149d542caa911e72748ee7da3e719bbea4a414eafdfae"
@@ -734,9 +914,34 @@
       "sha256": "826f8af547f8eb6a4e9eecdfb1a02bfbafc8c41799a374cd532a2d89b773a038"
     },
     {
+      "file": "api/postV1RoomsRoomIncidents.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomIncidents/0.1.0.json",
+      "sha256": "bc00c6aa7abe30920c9d6d232ffc7db823d2eeb6add2dff5b835d53554dbd134"
+    },
+    {
+      "file": "api/postV1IncidentsIncidentSteps.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentSteps/0.1.0.json",
+      "sha256": "1bf32eb57f7cf8634fae85578954aba84a6e413c369d6df5f4717ce71fc0ce74"
+    },
+    {
+      "file": "api/postV1IncidentsIncidentBlock.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentBlock/0.1.0.json",
+      "sha256": "014358d0be3b798cd418b2498341ee46c0ddae859e9052737a94d4cfbe7f19de"
+    },
+    {
+      "file": "api/postV1IncidentsIncidentEscalate.json",
+      "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentEscalate/0.1.0.json",
+      "sha256": "5a5218fa574ec115799820b5b5a00536db01bcfa92d4dbf96ecdb7e41bebed2f"
+    },
+    {
+      "file": "api/putV1RoomsRoomCriteriaTest.json",
+      "$id": "https://schemas.empathia.invalid/api/putV1RoomsRoomCriteriaTest/0.1.0.json",
+      "sha256": "19d8fd39e1602cc93a95cc68b2c0d1ca9fc4dc9335bc9e42db5ba5d671fad95e"
+    },
+    {
       "file": "api/postV1RoomsRoomMeasurements.json",
       "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomMeasurements/0.1.0.json",
-      "sha256": "b9ff305d82e1e5851162ae13d1cce7c268e1bb521c50bb9190409dc9c05c3331"
+      "sha256": "cbbfd12a9bf29c1492152fc77b232829720782853631e915fadd124740ee7c03"
     },
     {
       "file": "api/postV1RoomsRoomMeasurementsImport.json",

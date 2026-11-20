@@ -6,6 +6,6 @@
   "license": "UNLICENSED",
   "description": "Empathia Living Campus investor-safe demonstration: synthetic data only, guided scenarios, the legacy #/ address space migrated area by area (docs/legacy-parity.md). Carries no founder material and no customer data; a role perspective here is never authorization.",
   "scripts": { "build": "node build.mjs", "typecheck": "tsc -p tsconfig.json --noEmit", "start": "node server/serve.mjs" },
-  "dependencies": { "@empathia/design-tokens": "workspace:*", "@empathia/ui": "workspace:*", "react": "19.2.8", "react-dom": "19.2.8" },
+  "dependencies": { "@empathia/design-tokens": "workspace:*", "@empathia/ui": "workspace:*", "react": "19.2.8", "react-dom": "19.2.8", "docx": "9.8.1", "pptxgenjs": "4.0.1", "pdf-lib": "1.17.1", "jszip": "3.10.1" },
   "devDependencies": { "esbuild": "0.28.2", "@types/react": "^19.2.0", "@types/react-dom": "^19.2.0" }
 }

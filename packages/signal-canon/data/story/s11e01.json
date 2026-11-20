@@ -1,0 +1,911 @@
+{
+ "chapter": {
+  "id": "s11e01",
+  "kicker": "S11 · E01",
+  "title": "The Wall Went Dark at Shift Change",
+  "pill": "S11E01 · The Wall Went Dark at Shift Change",
+  "sub": "Every morning at seven, in the middle of handover, the operations wall goes dark. Noon, somewhere.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S11E01",
+   "RV-182",
+   "RV-183",
+   "RV-186",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 11 · EPISODE 1 · DRAFT · CASE-055  The Brennock County Emergency Operations Center · the first crest of the Sable River · Maya (principal engineer on call for the region), Director Oduya, Wendell (county IT) and Quino (dispatch liaison) · Level L6 · Mastery support (reference only — choose the tool and say why)  The call came at dawn. By nightfall Maya is standing in a room she’s never seen, in front of a wall that goes dark every morning at seven — the one moment the room can least afford it.  ⚑ RV-182: the director owns the room; county IT owns the wall controller and the network. RV-183: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Wall Went Dark at Shift Change",
+   "kind": "REGION · OPERATIONS",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "oduya",
+    "wendell"
+   ],
+   "stakes": "The EOC's wall goes dark at seven every morning, in the middle of handover. The river crests tonight.",
+   "clock": "Before tonight's crest.",
+   "reward": "A wall that stays on at shift change — and a handover that doesn't need it.",
+   "objectives": [
+    {
+     "key": "BR-S11E01-01",
+     "text": "Decide what to do at 07:00"
+    },
+    {
+     "key": "twist",
+     "text": "Find whose noon it was"
+    },
+    {
+     "key": "core",
+     "text": "Find the first failure"
+    },
+    {
+     "key": "BR-S11E01-02",
+     "text": "Decide the fix"
+    },
+    {
+     "key": "BR-S11E01-03",
+     "text": "Decide how a handover survives"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Nothing changes in the middle of the work it supports."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Seven o'clock. Watch.”",
+   "sub": "Friday · 6:59 a.m. · the EOC"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Brennock County EOC: a video wall of maps and feeds across the front, two rows of agency desks — FIRE, LAW, EMS, WORKS, UTILITY, COUNTY — and Director Oduya, grey hair in a bun, pointing at the wall; Maya watches the clock.",
+   "characters": [
+    {
+     "id": "oduya",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Director Oduya",
+     "kind": "speech",
+     "text": "Seven o'clock. Watch."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "I'm watching the clock, not the wall."
+    }
+   ],
+   "narration": [],
+   "caption": "The river crests tonight.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6863
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "the EOC · Friday 06:59",
+   "lines": [
+    {
+     "who": "oduya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Seven o'clock. Watch."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I'm watching the clock, not the wall."
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #102 · AVERY'S LENS  Nothing changes in the middle of the work it supports  Updates and changes happen in windows the room's owner approves — and the handover must never depend on one screen staying on.  An update window set in the wrong time zone darkened an emergency operations wall every morning at shift change — and a handover that lived only on the wall lost a sandbag request."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S11E01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Seconds later: every tile on the wall black; Quino, the dispatch liaison with a headset, throws up his hands mid-handover; Maya notes the time.",
+   "characters": [
+    {
+     "id": "quino",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Quino",
+     "kind": "speech",
+     "text": "And there it goes. Mid-sentence."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "07:00 and three seconds."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3556
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Noon, somewhere”",
+   "sub": "Friday · 7:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E01-01",
+   "prompt": "07:00:03. The wall is dark in the middle of handover. What now?",
+   "happening": "Wall dark at handover.",
+   "clock": "Friday 07:00 · crest tonight",
+   "known": [
+    "◉ Dark at 07:00 daily",
+    "◉ Mid-handover"
+   ],
+   "unknown": [
+    "Why seven"
+   ],
+   "risk": "A handover lost again — on crest day.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "The room waits in the dark."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What keeps the handover going without the wall — and whose is the wall?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Power-cycle the wall controller from the rack to bring it back faster",
+     "result": "Wendell, on the phone: “It's mid-update — you'd brick it. It's mine.”",
+     "consequence": "Not yours, and possibly the worst moment to pull power.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "COUNTY IT'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "The wall controller is county IT's; pulling power mid-update isn't yours to do.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Wendell": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Say it out loud: carry on the handover from the paper situation report and the status board; note the exact time; call Wendell",
+     "result": "The shifts carry on from paper. Wendell's on the phone at 07:02. The wall is back at 07:04:13.",
+     "consequence": "Keep the handover going, get the owner, keep the evidence.",
+     "chips": [
+      "Handover",
+      "Owner"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Wendell": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask everyone to wait until the wall comes back",
+     "result": "Four minutes of a room standing still.",
+     "consequence": "Loses the handover for the sake of the screen.",
+     "chips": [
+      "Stalls"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Restart the operations network switch",
+     "result": "Every desk loses its connection too.",
+     "consequence": "The network is county IT's — and it wasn't the network.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NETWORK"
+      }
+     ],
+     "canonical": false,
+     "fail": "The network belongs to its owner.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Noon, somewhere.",
+   "body": "Wendell reads the controller's settings over the phone: ‘Update window: daily, 12:00.’ The integrator had meant noon — a quiet time, he thought. The controller keeps UTC. In summer Brennock County is five hours behind: twelve noon UTC is seven in the morning here. Every day, on the dot, the wall installs updates and restarts, and the room loses 250 seconds at the one moment it needs its picture most.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S11E01-1",
+   "label": "Test: whose noon — and how long each time?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Wendell and Maya beside a board. The controller's update window says twelve o'clock. The integrator swears he meant noon. And the wall goes dark at seven every morning, right as the shifts hand over. We're five hours behind UTC. …So whose noon was it?",
+   "characters": [
+    {
+     "id": "wendell",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "The controller's update window says twelve o'clock. The integrator swears he meant noon."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And the wall goes dark at seven every morning, right as the shifts hand over. We're five hours behind UTC."
+    },
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "…So whose noon was it?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7309
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Change window   Handover brief   Operational period   The situation  A controller's update window reads 12:00 and it restarts at 07:00 local every day; the county is five hours behind UTC in summer. Which relationship explains it — and which one sizes what eight dark mornings cost the handover?   Which relationship do you reach for?  Echo distance (there and back)  Round-trip delay  Local time from UTC     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "U1",
+   "label": "**Learn it now:** operations rooms — change windows and handovers.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     Point it at people, not at the ceiling     Sound that brings people in"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-1101",
+   "label": "**Find it:** where did the morning go wrong?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A timing sheet for eight mornings from 06:45 to 07:15: each day a green bar broken by a black gap from 07:00:03 to 07:04:13, inside an amber band marking the shift handover. Note: the controller's window reads 12:00 in UTC — 07:00 local.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Eight mornings, same four minutes.",
+   "flags": [
+    "RV-183"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "clock and controller log"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5634
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S11-01a",
+   "teaser": "the integrator's commissioning sheet",
+   "title": "‘updates: daily 12:00 (noon, quiet)’",
+   "body": "The integrator's commissioning sheet for the wall: ‘Auto-update: daily 12:00 (noon — quiet time).’ Nobody had asked the director when the room was quiet. It never is.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The dog watches",
+   "body": "Sailing ships divided the day into four-hour watches, with the officer of the watch handing over the deck — and the log — at every change. Between 16:00 and 20:00 the watch was split into two short ‘dog watches’, so the rota shifted each day and nobody stood the same miserable hours forever. The handover was never a glance at the sails. It was the log, read and signed.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The handover lived on the wall”",
+   "sub": "Friday · 9:30 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The handover lived on the wall.",
+   "body": "Quino goes quiet when Maya asks what the dark mornings cost. On Tuesday the night shift had a request from WORKS: sandbags for the Mill Road underpass, due at seven. The request lived on a tile on the wall. The wall went dark at the handover; the day shift never heard it. The underpass flooded by nine; a crew had to turn two cars back. The EOC plan's handover section is one line: ‘at the wall.’",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S11E01-2",
+   "label": "Test: how many handovers ran blind — and whose procedure is it?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E01-02",
+   "prompt": "It's an update window typed in UTC. What's the fix?",
+   "happening": "Cause found.",
+   "clock": "Friday 10:00",
+   "known": [
+    "◉ Window ‘12:00’ UTC",
+    "◉ Handover depends on the wall"
+   ],
+   "unknown": [
+    "When the room is ever quiet"
+   ],
+   "risk": "The wall going dark at the crest's shift change tonight.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "Tomorrow's 07:00 goes dark again — on crest day."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who owns the room's calendar — and who owns the controller?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Turn automatic updates off for good",
+     "result": "No more restarts — and no more security fixes on a system that faces the network.",
+     "consequence": "Trades one risk for a worse one.",
+     "chips": [
+      "Unpatched"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Wendell moves updates into a change window Director Oduya approves — outside activations, tested on the spare controller first — and the wall's key views are mirrored on the status board",
+     "result": "Oduya signs it: Tuesdays at 14:00, never during an activation. Wendell stages the next update on the spare first.",
+     "consequence": "The owner's change, in the room owner's window, tested first.",
+     "chips": [
+      "Owner's window",
+      "Tested"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Oduya": 1,
+       "Wendell": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Move the window to 03:00 local",
+     "result": "03:00 in an activation is as busy as 07:00.",
+     "consequence": "A different time nobody approved.",
+     "chips": [
+      "Unapproved"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the integrator to change it remotely tonight",
+     "result": "A remote change to a live operations wall, outside anyone's change control.",
+     "consequence": "The right setting by the wrong route.",
+     "chips": [
+      "No control"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A handover brief template filled in for operational period 7: situation — the Sable at 17.2 feet and rising, crest expected at 23:00; pending — Mill Road sandbags, requested 05:40, WORKS en route; resources; hazards; who's who; next brief at 19:00, written, read aloud and signed by both leads.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A handover that doesn't need the wall.",
+   "flags": [
+    "RV-183"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "used at 19:00"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3506
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S11-01",
+   "who": "oduya",
+   "prompt": "You've been here twelve hours. Why should I let you rewrite my handover?",
+   "options": [
+    {
+     "label": "“You shouldn't let me. You should write it — I'll draft the template, and you decide what's in it. It's your room.”",
+     "who": "oduya",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Draft it. I'll put my name on what I agree with.",
+     "trust": {
+      "Oduya": 2
+     }
+    },
+    {
+     "label": "“Because it's broken.”",
+     "who": "oduya",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Most things are, at seven in the morning. Try again.",
+     "trust": {
+      "Oduya": 0
+     }
+    },
+    {
+     "label": "“Because I've done this before.”",
+     "who": "oduya",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Not in my room, you haven't.",
+     "trust": {
+      "Oduya": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S11-01b",
+   "teaser": "the EOC plan, section 4",
+   "title": "‘handover: at the wall’",
+   "body": "The county's EOC plan, section 4, in full: ‘Shift handover takes place at the wall.’ One line. No template, no signature, no mention of what happens when the wall is dark.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E01-03",
+   "prompt": "What makes every handover survive a dark wall — or anything else?",
+   "happening": "Window moved.",
+   "clock": "Friday 14:00",
+   "known": [
+    "◉ Update window approved",
+    "◉ Sandbag request lost once"
+   ],
+   "unknown": [
+    "What the next failure will be"
+   ],
+   "risk": "The next handover lost to the next failure.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "The plan still says ‘at the wall’."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would still hand over if every screen in the room went dark?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E01). Option B needs Documentation at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Buy a second wall",
+     "result": "Two walls, same update window, same one-line plan.",
+     "consequence": "More glass; the same fragile handover.",
+     "chips": [
+      "More glass"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "A written handover brief for every operational period — situation, pending actions, resources, hazards, who's who — in the EOC plan, owned by the director, read aloud and signed by both leads",
+     "result": "Oduya rewrites section 4 herself and signs the first brief at 19:00.",
+     "consequence": "Written, read, signed — and the director's.",
+     "chips": [
+      "Brief",
+      "Owned"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "docs": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Oduya": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Remind each shift to talk the handover through properly",
+     "result": "Some do. Tired shifts don't.",
+     "consequence": "The best you can do without a written procedure — and it depends on memory at 7 a.m.",
+     "chips": [
+      "Verbal"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Move shift change to 06:30 so it misses the restart",
+     "result": "It misses this restart.",
+     "consequence": "Works around one fault; fixes nothing.",
+     "chips": [
+      "Workaround"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1101",
+   "label": "**Service Mode:** run the Friday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-055 · SIGNAL original  The Wall Went Dark at Shift Change  Noon, somewhere — and seven o'clock in the one room that couldn't afford it.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-055"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Saturday · 7:02 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The EOC the next morning, the wall on; Director Oduya holds a signed handover brief; Quino, headset on, grins.",
+   "characters": [
+    {
+     "id": "oduya",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "quino",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Director Oduya",
+     "kind": "speech",
+     "text": "Seven o'clock, wall on, brief signed. The crest came and went and nobody lost a sandbag."
+    },
+    {
+     "side": "R",
+     "who": "Quino",
+     "kind": "speech",
+     "text": "First handover in a week I didn't have to shout."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6866
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The EOC at night; half the wall's tiles tinted amber and stuttering; Wendell, county IT, points at the network rack's lights; Maya looks up.",
+   "characters": [
+    {
+     "id": "wendell",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "Carrier A just dropped. And came back. And dropped. The router keeps flipping."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How often?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Failover That Failed Over Too Much.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7549
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A room that never sleeps needs every change in a window its owner approves, outside activations, tested first. When something breaks at the same time every day, find whose clock it keeps (t_local = t_UTC + offset). The handover is the most fragile moment in an operations room: write it down, read it aloud, sign it — so it survives a dark wall."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What in your work only exists on one screen at the moment you hand it over?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S11E01",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

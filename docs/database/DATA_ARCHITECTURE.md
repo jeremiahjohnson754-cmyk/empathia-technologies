@@ -76,6 +76,19 @@ flowchart LR
   for it are appended to `outbox_event` **in the same transaction** — a change and its event commit or roll back together.
 * The read model is rebuilt from the canonical tables, never patched incrementally (`readModelHandler` in
   `services/enterprise-api/src/worker/outbox.ts`), so a lost or repeated event cannot leave it wrong for long.
+* Delivery (migration 0027): an aggregate's events are delivered strictly in `aggregate_seq` order — the order their transactions
+  committed, numbered by the database at COMMIT (a deferred trigger takes the aggregates' `outbox_aggregate_head` rows in one sorted order,
+  so concurrent emitters cannot deadlock on them); the producer's `aggregate_rev` is kept for consumers but never used for ordering, because
+  several producers hard-code it. A later event is held while an
+  earlier one is pending, retrying, leased or dead-lettered (until an audited replay; there is no skip); other aggregates flow in parallel.
+  Each internal handler writes a receipt (`outbox_delivery`) in the same transaction as its effect (exactly once). External sinks
+  (Teams/Outlook/connector events — none is configured in the starter) are called only after that transaction commits, with no
+  transaction open, under a lease and with an idempotency key `outbox:<event id>:<sink>`: at-least-once, deduplicated by the consumer.
+* Before any handler sees an event, the worker checks it against its contract (`@empathia/event-contracts`), its schema version, its
+  tenant and the rooms it concerns; an event that fails is dead-lettered at once (`failure_kind = NON_RETRYABLE`, reason in `last_error`).
+  Other failures are `TRANSIENT` until the 8th attempt, then `PERMANENT`. An event's identity (id, type, aggregate, tenant, payload,
+  correlation id) never changes: the runtime role may update only its delivery-state columns; a replay is counted on the same row
+  (`replay_count`, `last_replay_audit_id` → the `audit_event` of the latest replay, whose aggregate is the event).
 * `room_read_model.live_health` accepts only `NOT_MONITORED` (CHECK constraint): no live-health claim can be stored without a monitoring
   feed, which the starter does not have.
 * Observations from integrations do **not** feed the commissioning or assurance records. A non-VERIFIED source can only store
@@ -117,8 +130,10 @@ Isolation is enforced by the database, not only by the application:
    sign-in must find a person before any tenant is known. The runtime role reads them only through `app.auth_person_by_email`,
    `app.auth_memberships` and `app.auth_person` (SECURITY DEFINER, fixed `search_path`), which return exactly what sign-in and
    per-request principal resolution need. `app.migrations_applied()` gives the health check the migration count the same way.
-5. **The worker policies.** The outbox worker must read events of every tenant. `outbox_event`, `notification` and `room_read_model`
-   carry an extra policy that admits only the database role `empathia_worker` (migration 0008, fixing KV-08; before 0008 the policy keyed on a session setting `app.worker = on` that the runtime role could set).
+5. **The worker policies.** The outbox worker must read events of every tenant. `outbox_event` carries an extra policy that admits only
+   the database role `empathia_worker` (migration 0008, fixing KV-08; before 0008 the policy keyed on a session setting `app.worker = on` that the runtime role could set); the worker can change only its status, attempt and lease columns.
+   Since migration 0027 the worker sets `app.tenant_id` to each event's tenant before its handlers run, and `notification`,
+   `room_read_model` and `outbox_delivery` have only the standard tenant policy, so a handler's writes land in that event's tenant or are refused.
 6. **Site scope on top of tenancy.** A membership may carry `site_scope uuid[]`; the domain modules add a building/site filter to every
    room-scoped query (`findRoom`, `createRoom`, listings, graph visibility, reports). This is application-enforced, not RLS.
 
@@ -179,10 +194,13 @@ stateDiagram-v2
 ```mermaid
 stateDiagram-v2
   [*] --> PENDING: appended in the business transaction
-  PENDING --> DELIVERED: every handler succeeded
-  PENDING --> PENDING: handler failed · attempts+1 · backoff min(2^attempts, 600) s
-  PENDING --> DEAD_LETTER: 8th failed attempt
-  DEAD_LETTER --> PENDING: admin retry (policy.configure)
+  PENDING --> PENDING: held · an earlier event of the same aggregate is not yet delivered (never attempted)
+  PENDING --> PENDING: leased · internal handlers committed, external sinks in flight (no transaction open)
+  PENDING --> DELIVERED: every handler and sink has a receipt
+  PENDING --> PENDING: handler failed · TRANSIENT · attempts+1 · backoff min(2^attempts, 600) s
+  PENDING --> DEAD_LETTER: 8th failed attempt · PERMANENT (later events of the aggregate stay held)
+  PENDING --> DEAD_LETTER: fails its contract · NON_RETRYABLE · first attempt, never handed to a handler (later events stay held)
+  DEAD_LETTER --> PENDING: admin replay with a reason (policy.configure; audited; 409 unless DEAD_LETTER; 422 while it still fails its contract; same row, replay_count+1)
 ```
 
 Other enumerations: drawing_revision `GENERATED | APPROVED | SUPERSEDED` (presented as `REVIEW_REQUIRED` when its input hash no longer

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomFieldRecordHookupsHookupRemove/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/field-record/hookups/{hookup}/remove request body",
+  "description": "Remove a recorded hookup with a reason (the entry is kept)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason"
+  ],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 500
+    }
+  }
+}

@@ -1,0 +1,908 @@
+{
+ "chapter": {
+  "id": "s07e08",
+  "kicker": "S07 · E08",
+  "title": "Three Languages",
+  "pill": "S07E08 · Languages",
+  "sub": "Three languages, one stream, human captions — and at rehearsal, two languages on the English track.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S07E08",
+   "RV-150",
+   "RV-151",
+   "RV-155",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#2DD4BF"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 7 · EPISODE 8 · DRAFT  Leadership summit · Maya, Adaeze, Luis and the interpreters · Level L5 · Advanced support (formulas on request)  Three languages, one stream to forty sites, and human captions. At the rehearsal, the English track has two languages on it — and so does the captioner.  ⚑ RV-155: interpreters’ working conditions are theirs; captions are an access requirement; languages invented. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Three Languages",
+   "kind": "SUMMIT · INTERPRETATION",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "adaeze",
+    "luis"
+   ],
+   "stakes": "Three languages, one stream, human captions — and at the rehearsal, two languages on the English track.",
+   "clock": "Before Thursday's summit opens at 09:00 in Valmera.",
+   "reward": "Every listener, in the room or on the stream, hears one language all day.",
+   "objectives": [
+    {
+     "key": "BR-S07E08-01",
+     "text": "Decide how to find what's mixed"
+    },
+    {
+     "key": "twist",
+     "text": "Find the second voice"
+    },
+    {
+     "key": "core",
+     "text": "One language per track"
+    },
+    {
+     "key": "BR-S07E08-02",
+     "text": "Decide what happens during the Tahvaran speech"
+    },
+    {
+     "key": "BR-S07E08-03",
+     "text": "Decide what the events standard says"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "One channel. One language. Every listener."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Two voices”",
+   "sub": "Tuesday · 3:00 p.m. Valmera · rehearsal"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Valmera auditorium at rehearsal: two lit interpretation booths at the back; Adaeze on the phone to Tahvara; Maya with a hand to her headphones.",
+   "characters": [
+    {
+     "id": "adaeze",
+     "pose": "H",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s7kit.bg_summit",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Adaeze",
+     "kind": "phone",
+     "text": "Tahvara hears Valmeran under the English. And the captioner says her feed has two languages."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then so do her captions."
+    }
+   ],
+   "narration": [],
+   "caption": "Two days to the summit.",
+   "flags": [
+    "RV-155"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1095
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "Valmera auditorium · rehearsal · Tuesday 15:05",
+   "lines": [
+    {
+     "who": "adaeze",
+     "pose": "H",
+     "expr": "worried",
+     "text": "Tahvara says track one is English with Valmeran underneath. And the captioner's quitting in ten minutes if it doesn't stop."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then let's listen to exactly what she's getting."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Two voices on track one”",
+   "sub": "Tuesday · 3:10 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E08-01",
+   "prompt": "15:10. The captioner is about to walk out. What do you do first?",
+   "happening": "Two languages on track 1 and the captioner's feed.",
+   "clock": "Tuesday 15:10 · summit Thursday 09:00",
+   "known": [
+    "◉ Valmeran under English",
+    "◉ Captioner unhappy"
+   ],
+   "unknown": [
+    "Where track 1 comes from"
+   ],
+   "risk": "Forty sites hearing two languages — and captions that help nobody.",
+   "timer_s": 20,
+   "timeout": [
+    "The captioner leaves the rehearsal.",
+    "Wednesday's check finds the same patch."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What exactly is each listener hearing, and where does it come from?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Turn the Valmeran level down on track 1",
+     "result": "Quieter, still there. The captions still stumble.",
+     "consequence": "Less of the wrong thing is still the wrong thing.",
+     "chips": [
+      "Masking"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Put on headphones and listen to each track and the captioner's feed, then trace each back to the bus it comes from",
+     "result": "Track 1 and the captioner both come from the sound engineer's booth-monitor bus.",
+     "consequence": "Hear what each listener hears; find the source.",
+     "chips": [
+      "Evidence",
+      "Trace"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Switch the stream to automatic captions",
+     "result": "The accessibility lead: “Human captions are the policy for this event.”",
+     "consequence": "Replaces an access requirement to hide a patching error.",
+     "chips": [
+      "Access lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Captions are a requirement.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the interpreters to speak more quietly",
+     "result": "The lead interpreter: “We're not the problem. Your patch is.”",
+     "consequence": "Blaming the people doing it right.",
+     "chips": [
+      "Wrong target"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Don't make the interpreters fix the system.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Two voices on track one.",
+   "body": "The sound engineer built a booth-monitor bus — floor plus Valmeran — so he could hear the booth and the floor at once. His patch sheet sends stream track 1 and the captioner's feed from it too. A mix for checking had become a channel for listening.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S07E08-1",
+   "label": "Test: what was on track 1 — and how much of the summit is the Tahvaran speech?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A channel sheet: Track 1 English and the captioner both fed floor plus Valmeran, in red; tracks 2 and 3 correct; below, in red: the Tahvaran speech has no retour and no relay.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A checking mix, sent to listeners.",
+   "flags": [
+    "RV-155"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "patch sheet · MON B"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2021
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Adaeze beside a board. Three languages, three stream tracks. What must each track carry? One language each — the floor on one, each booth on its own. Three at a hundred and twenty-eight kilobits is three hundred and eighty-four. And track one feeds the captions. If track one carries two languages, so do the captions.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "adaeze",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s7kit.bg_summit",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Three languages, three stream tracks. What must each track carry?"
+    },
+    {
+     "side": "R",
+     "who": "Adaeze",
+     "kind": "speech",
+     "text": "One language each — the floor on one, each booth on its own. Three at a hundred and twenty-eight kilobits is three hundred and eighty-four."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And track one feeds the captions. If track one carries two languages, so do the captions."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1548
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Simultaneous interpretation   Relay (interpretation)   Interpretation booth   CART captioning   If you need it   ƒ Ask for the formula · Uncompressed bit rate   ƒ FORMULA · Uncompressed bit rate  R = channels × f s  × b   f s   sample rate, Hz  b  bits per sample  R  bits per second (÷ 1,000,000 for Mbit/s)      ƒ Ask for the formula · Counting combinations   ƒ FORMULA · Counting combinations  total = a × b   a, b  the two things being multiplied (e.g. presets × outputs)"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "E8",
+   "label": "**Learn it now:** interpretation, relay and captions.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     One signal, two destinations     Case study: when an expired license nearly ruined the show     Hear it right — EQ it right (the ear)"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "⏺ RECORD IT · CHALLENGE · LEVEL 3  Record the panel discussion  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "record-panel"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-22",
+   "label": "**Fix it:** one language per track — for the stream and the captioner.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The relay”",
+   "sub": "Wednesday · 10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The relay.",
+   "body": "Item 6 on the running order: the Tahvaran regional director, twenty minutes, in Tahvaran. Booth V works from English, not Tahvaran. The design wired the English channel to the floor — so during her speech the English track and the captions would carry Tahvaran, and the Valmeran channel would go silent. Nobody had planned for booth T to work back into English, or for booth V to take relay from it.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S07E08-2",
+   "label": "Test: what would each channel carry — and whose decision is the plan?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E08-02",
+   "prompt": "Wednesday morning. How is the Tahvaran speech handled?",
+   "happening": "A 20-minute speech in Tahvaran; no retour, no relay.",
+   "clock": "Wednesday 10:00 · summit tomorrow 09:00",
+   "known": [
+    "◉ Booth V doesn't work from Tahvaran",
+    "◉ English channel wired to the floor"
+   ],
+   "unknown": [
+    "What the interpreters prefer"
+   ],
+   "risk": "Twenty minutes of silence on one channel and the wrong language on another.",
+   "timer_s": 25,
+   "timeout": [
+    "The question waits for the morning of the summit.",
+    "The Valmeran channel goes silent at 10:40."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who decides how the booths work — and what paths do they need?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Ask the director to give her speech in English",
+     "result": "Her office: “She speaks for her region in its language. That's the point of the summit.”",
+     "consequence": "Takes a speaker's language to fix a routing gap.",
+     "chips": [
+      "Speaker overruled"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Fix the system, not the speaker.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "With the interpreters and the events team: booth T works into English during her speech (retour) on the English channel; booth V takes relay from it; track 1 and the captions follow the English channel; rehearse the switch with both booths this afternoon",
+     "result": "The lead interpreters agree the plan; the sound engineer adds the relay input; the afternoon rehearsal switches cleanly both ways.",
+     "consequence": "Their craft, the system's paths, rehearsed together.",
+     "chips": [
+      "Interpreters decide",
+      "Rehearsed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Let the Valmeran channel go quiet for twenty minutes",
+     "result": "A third of the room hears nothing while a director speaks.",
+     "consequence": "Leaves listeners out.",
+     "chips": [
+      "Access lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Publish a translated transcript next week",
+     "result": "Useful afterwards — no help in the room.",
+     "consequence": "Late isn't live.",
+     "chips": [
+      "Late"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Four languages at once",
+   "body": "Simultaneous interpretation — interpreters speaking while the speaker speaks, into headphones for listeners who choose a language — was tried in the late 1920s and made its name at the Nuremberg trials of 1945–46, where English, French, Russian and German ran at once through wired headsets. The interpreters worked in shifts, and the system's first rule was that every listener chose one language.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #69 · AVERY'S LENS  One channel, one language  Every listener picks one channel and must hear exactly one language on it — including the captioner, who is a listener too.  Track 1 carried English with Valmeran underneath, and so did the captioner's feed. Remote viewers heard two languages; the captions tried to write both."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S07E08",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Thursday, during the Tahvaran director's speech: the auditorium full, both booths working; Maya at the back with headphones; Luis beside her.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "smile"
+    },
+    {
+     "id": "luis",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s7kit.bg_summit",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Channel one: English, from booth T. Channel two: Valmeran, on relay. Captions still running."
+    },
+    {
+     "side": "R",
+     "who": "Luis",
+     "kind": "speech",
+     "text": "Three languages. And nobody noticed the switch."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-155"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "summit · every channel"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4011
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S7-08",
+   "who": "adaeze",
+   "prompt": "I've never run interpretation. What do I need to know by Thursday?",
+   "options": [
+    {
+     "label": "“That the interpreters decide how they work. We give them a clean floor, their own channel, relay when they need it — and we ask before we change anything.”",
+     "who": "adaeze",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "So I start by asking them. Right.",
+     "trust": {
+      "Adaeze": 2
+     }
+    },
+    {
+     "label": "“It's just three audio channels.”",
+     "who": "adaeze",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Three channels, six interpreters and a captioner who's already angry. ‘Just.’",
+     "trust": {
+      "Adaeze": -1
+     }
+    },
+    {
+     "label": "“Which languages can each booth work from?”",
+     "who": "adaeze",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Good question. I… don't know. I'll ask.",
+     "trust": {
+      "Adaeze": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S7-08a",
+   "teaser": "the patch sheet",
+   "title": "TRK1 ← MON B",
+   "body": "The sound engineer's patch sheet: ‘TRK1 ← MON B · CART ← MON B’. MON B was his booth-check bus — floor plus Valmeran, so he could hear both at once. Nobody meant the stream to hear it.",
+   "thread": "Audio",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The channel sheet after the fix: track 1 English and the captioner from the floor, track 2 booth V, track 3 booth T, all green; during the Tahvaran speech booth T works into English and booth V takes relay.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One channel, one language, all day.",
+   "flags": [
+    "RV-155"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2018
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S7-08b",
+   "teaser": "the running order",
+   "title": "10:40 · in Tahvaran",
+   "body": "The summit's running order, item 6: ‘10:40 — Regional director, Tahvara (in Tahvaran), 20 min.’ The interpretation brief listed English → Valmeran and English → Tahvaran. Nothing the other way.",
+   "thread": "Access",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S07E08-03",
+   "prompt": "After the summit. What goes into the events standard?",
+   "happening": "Summit delivered.",
+   "clock": "Friday 10:00",
+   "known": [
+    "◉ The plan lived in one afternoon's notes"
+   ],
+   "unknown": [
+    "Next year's crew"
+   ],
+   "risk": "The same two voices next year.",
+   "timer_s": 25,
+   "timeout": [
+    "The notes stay on the sound engineer's laptop.",
+    "Next year starts from zero."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would next year's crew need to know on day one?"
+    }
+   ],
+   "note": "Draft decision (DR-S07E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Nothing — it went well",
+     "result": "Next year's summit has a new sound engineer and a new patch.",
+     "consequence": "The lesson leaves with this crew.",
+     "chips": [
+      "Unwritten"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "An interpretation plan for every multilingual event: languages each booth works from and into, relay and retour paths, a clean undelayed floor to the booths, one language per track, the captioner on the English channel, and a check with the interpreters before doors",
+     "result": "The events team adopts it; the interpreters ask for a copy for other clients.",
+     "consequence": "Written with the people who do the work.",
+     "chips": [
+      "Plan",
+      "With the interpreters"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Drop interpretation from future summits",
+     "result": "Two regions stop attending.",
+     "consequence": "Removes the access to remove the risk.",
+     "chips": [
+      "Access lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Access isn't optional.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Let each region stream its own language separately",
+     "result": "Three streams, three budgets, no shared room.",
+     "consequence": "Splits the summit instead of serving it.",
+     "chips": [
+      "Fragmented"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-708",
+   "label": "**Service Mode:** run the rehearsal yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · Valmera"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The empty auditorium after the summit; the booths dark. Adaeze holding a printed thank-you card from the interpreters.",
+   "characters": [
+    {
+     "id": "adaeze",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s7kit.bg_summit",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Adaeze",
+     "kind": "speech",
+     "text": "The captioner sent a thank-you. So did the interpreters. Nobody's ever thanked me for a patch."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You asked them first. That's what they're thanking."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1094
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The executive floor; Henrik holding a thick binder labelled ROOM STANDARD v2 · 140 CLAUSES, with sticky notes from every region.",
+   "characters": [
+    {
+     "id": "henrik",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s7kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Henrik",
+     "kind": "speech",
+     "text": "The board wants Standard v3 by the end of the quarter. Every region has sent me its wish list."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Wishes or requirements?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Standard v3.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1290
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  One channel, one language — for every listener, the captioner included. Feed tracks and captions from clean buses, never from a monitoring mix. Give interpreters a clean, undelayed floor, and plan relay and retour with them for every language on the running order. R = channels × f s  × b. Captions are an access requirement; the policy’s owner decides human or automatic."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Who is listening to something you produce that you’ve never asked about?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S07E08",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

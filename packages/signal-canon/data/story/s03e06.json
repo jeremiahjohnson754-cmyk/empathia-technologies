@@ -1,0 +1,1657 @@
+{
+ "chapter": {
+  "id": "s03e06",
+  "kicker": "S03 · E06",
+  "title": "Macro",
+  "pill": "S03E06 · Macro",
+  "sub": "The panel says the system is off. The meeting says otherwise.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S03E06",
+   "RT-03",
+   "RV-70",
+   "RV-76",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "var(--violet)"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 3 · EPISODE 6 · DRAFT  Teach-back · Maya teaching Sam · Level L3 (Technician)  A touch panel says SYSTEM OFF in the middle of a live job interview. The button everyone trusts will hang up the call. Sam asks how the room thinks — and admits he's thinking of leaving.  ⚑ RV-70 · RV-76 · RV-78: the control platform, timings and ticket counts are invented. Some choices in this episode run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Teach Me How It Thinks",
+   "kind": "TEACH-BACK · MENTOR",
+   "level": "L3 · SYSTEMS ENGINEER",
+   "party": [
+    "maya",
+    "sam"
+   ],
+   "stakes": "A candidate is interviewing for her first job in two years. The panel says System Off. The call is live. The interviewer's finger is over Start.",
+   "clock": "Five seconds. Then a week.",
+   "reward": "A panel that tells the truth. Sam, deciding to stay.",
+   "objectives": [
+    {
+     "key": "BR-S03E06-01",
+     "text": "Stop the finger over Start"
+    },
+    {
+     "key": "BR-S03E06-02",
+     "text": "Find what changed the panel"
+    },
+    {
+     "key": "twist",
+     "text": "Prove nobody pressed End"
+    },
+    {
+     "key": "BR-S03E06-03",
+     "text": "Kill your own fix when the numbers say so"
+    },
+    {
+     "key": "BR-S03E06-04",
+     "text": "Decide how much proof before forty rooms"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things about Sam"
+    }
+   ],
+   "rumor": "Sam has closed five “System Off” tickets this month. All five say “user pressed End.”"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “14:00:02”",
+   "sub": "A Monday · Cedar Room, 14th floor · Aldermoor Group"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Cedar Room. On the wall display, a remote job candidate mid-answer. On the table, the touch panel glows red: SYSTEM OFF, press Start. The interviewer reaches toward it.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "P",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Interviewer",
+     "kind": "phone",
+     "text": "Service desk? The panel says System Off. But she's still on the screen. Should I press Start?"
+    }
+   ],
+   "narration": [],
+   "caption": "On the screen: a candidate interviewing for her first job in two years. On the panel: a lie.",
+   "flags": [
+    "RV-70",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2226
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "worker:The interviewer",
+     "pose": "N",
+     "expr": "worried",
+     "text": "The panel says System Off. But she's still on the screen. Should I press Start?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Somewhere, a candidate who hasn't worked in two years is mid-sentence about why she'd be good at this.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The service desk corner, a wall of status tiles behind. Sam has the phone to his ear and is already nodding. Maya, walking past with a coffee, stops.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "H",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "phone",
+     "text": "Yep, just press Start. It'll resync the—"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Sam. Wait. What does Start actually do?"
+    }
+   ],
+   "narration": [],
+   "caption": "Sam has closed five “System Off” tickets this month. All five say the same thing.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2228
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam's screen: five closed tickets titled System Off, in the Cedar, Birch and Aspen rooms, each closed as “user pressed End”, each with a time stamp.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Every one closed as “user pressed End.” Look at the times.",
+   "flags": [
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "5 tickets · closure notes"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3550
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E06-01",
+   "prompt": "14:00:05. The panel says SYSTEM OFF. The call is live. The interviewer's finger is over Start. What do you tell her?",
+   "happening": "The panel shows SYSTEM OFF while a remote interview is live on the display.",
+   "clock": "14:00:05 · Cedar Room",
+   "known": [
+    "◉ Candidate still on screen",
+    "◉ Panel: SYSTEM OFF, press Start",
+    "◉ Five similar tickets closed as “user pressed End”"
+   ],
+   "unknown": [
+    "What the Start macro does in a call",
+    "Why the panel changed"
+   ],
+   "risk": "A candidate who has waited two years for this interview.",
+   "timer_s": 20,
+   "timeout": [
+    "The interviewer decides for herself and presses Start. The candidate disappears mid-sentence.",
+    "Under pressure, people press the button in front of them. Your one sentence was the whole fix."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "The call is working. What would make it stop working?"
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "Don't act on what a screen says until you know what the button does."
+    }
+   ],
+   "note": "Draft decision (DR-S03E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Press Start — it'll resync.”",
+     "result": "Start runs the WAKE macro. Step one: reset the room — which hangs up any call. The candidate vanishes mid-sentence.",
+     "consequence": "Three minutes to rejoin. The candidate spends the rest of the interview rattled.",
+     "chips": [
+      "Call dropped",
+      "Candidate shaken"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You told someone to press a button without knowing what it does. The panel lied; the button obeyed.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Don't touch the panel. Your call is live. Carry on — we'll fix it from here.”",
+     "result": "She lifts her hand away. The interview continues. The candidate never knows.",
+     "consequence": "The panel still lies, but nobody is acting on the lie.",
+     "chips": [
+      "Contained",
+      "Nothing touched"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Team": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Reboot the room controller remotely",
+     "result": "The controller restarts, runs its startup macro — and boots straight back to SYSTEM OFF. Its event log from 14:00 is gone.",
+     "consequence": "Same lie, less evidence, and the display blinked in front of the candidate.",
+     "chips": [
+      "Log erased"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "MAY ERASE EVIDENCE"
+      }
+     ],
+     "canonical": false,
+     "fail": "You erased the only record of what fired at 14:00.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Hang up and move to the room next door.”",
+     "result": "They apologize to the candidate, hang up, walk, rejoin. Four minutes lost.",
+     "consequence": "It works, eventually. You broke a working call to escape a wrong label.",
+     "chips": [
+      "4 min lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "The call was fine. Only the panel was wrong.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Back in the Cedar Room, the interviewer folds her hands on the table, away from the panel. The candidate is still talking on the screen. The panel still reads SYSTEM OFF.",
+   "characters": [
+    {
+     "id": "worker",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [],
+   "narration": [],
+   "caption": "The call never knew. The panel still says it's off.",
+   "flags": [
+    "RV-70"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1946
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Teach me how this thing thinks”",
+   "sub": "14:20 · the service desk's whiteboard"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "At a whiteboard near the service desk, Maya has started drawing a row of words connected by arrows. Sam, arms open, is half joking.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Friday you said you'd teach me how this thing thinks. So. How does it think?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "In states. It's never just “on.” It's in exactly one state, waiting for an event."
+    }
+   ],
+   "narration": [],
+   "caption": "Sam asked for this last week. Maya said yes before she knew whether she could.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2102
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": null,
+   "lines": [
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "flat",
+     "text": "So. How does it think?"
+    },
+    {
+     "who": "maya",
+     "pose": "W",
+     "expr": "talk",
+     "text": "In states. It's never just “on.” It's in exactly one state, waiting for an event."
+    },
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "grin",
+     "text": "Like me on a Monday."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the Cedar Room drawn as a state machine. OFF, WARMING, READY, IN CALL and COOLING are connected by arrows labeled with events. A red dashed arrow labeled SWEEP runs from IN CALL straight to OFF with no guard. A note says the panel shows the state variable, not the devices.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "States, events, transitions. And one new arrow nobody drew on purpose.",
+   "flags": [
+    "RV-70",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya underlines a line on the whiteboard: the panel shows what the controller believes, not what the room is. Sam's arms go up.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "talk"
+    },
+    {
+     "id": "sam",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The panel doesn't look at the room. It shows a variable. If something sets that variable wrong, the panel lies."
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "So it can say Off while everything's on. And I've been blaming people."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2114
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E06-02",
+   "prompt": "The call is safe. Where do you look first for what changed the panel?",
+   "happening": "The call is contained. The panel still says SYSTEM OFF.",
+   "clock": null,
+   "known": [
+    "◉ No one pressed anything (interviewer)",
+    "◉ Five similar tickets"
+   ],
+   "unknown": [
+    "What set the state to OFF"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S03E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Ask the interviewer exactly what she pressed",
+     "result": "“Nothing! I was taking notes.” Honest, useful — and it can't tell you what did.",
+     "consequence": "A witness rules things out; it doesn't find the cause.",
+     "chips": [
+      "Rules out a press"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Read the controller's event log, read-only",
+     "result": "Every event, every macro step, time-stamped to the millisecond.",
+     "consequence": "The room wrote down what it did. You just have to read it.",
+     "chips": [
+      "Evidence",
+      "Nothing changed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Replace the touch panel",
+     "result": "A new panel arrives Thursday. It says SYSTEM OFF on Thursday too.",
+     "consequence": "The panel was displaying the problem, not causing it.",
+     "chips": [
+      "3 days",
+      "No change"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You swapped the messenger. The message was coming from the controller.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Update the panel's firmware and see",
+     "result": "The panel restarts mid-meeting, then shows… SYSTEM OFF.",
+     "consequence": "A change with no hypothesis, during a live call.",
+     "chips": [
+      "Meeting disrupted"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Changing things to see what happens is how evidence disappears.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Team": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The controller's event log on a monitor. At 14:00:00.18 a booking-start event runs WAKE. At 14:00:00.61 a booking-end sweep runs SHUTDOWN and sets the state to OFF. The display ignores the off command while warming; the codec refuses standby in a call. No button press since 13:58.",
+   "characters": [],
+   "location": "scenes.bg_noc",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two events, 0.43 seconds apart. No one touched anything.",
+   "flags": [
+    "RV-70",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "controller log · 14:00:00.61"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4061
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam stares at the log. Maya, calm, points out the line.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "S",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "No button press. Nobody pressed End. Not today, and—"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Probably not the other five either. The room did it to itself, at fourteen hundred and six-tenths of a second."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2230
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Nobody pressed End",
+   "body": "Sam's five closed tickets all blamed a person. The log shows no press at all — a booking-end sweep fired on the hour, a fraction of a second after the calendar woke the room for the next meeting. Look back at the ticket times: 09:00:01, 14:00:00, 11:00:02, 10:00:01, 15:00:00.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E06-1",
+   "label": "Test: reason from the log. What does it rule out, and where do you look next?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same ticket list, the times now highlighted in amber: every one within three seconds of the hour.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Every one of them. On the hour. After a back-to-back booking. And I wrote “user pressed End” five times."
+    }
+   ],
+   "narration": [],
+   "caption": "The pattern was in the queue all month. It just had the wrong label on it.",
+   "flags": [
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3553
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-06a",
+   "teaser": "Sam's closed tickets",
+   "title": "Five “user pressed End”",
+   "body": "All five on the hour. All five after a back-to-back booking. All five closed by him, under a minute each. His record for closing speed. He stops looking at the record.",
+   "thread": "The Monday Ghost",
+   "who": [
+    "sam",
+    "N",
+    "worried"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "C-41",
+   "label": "**Clue Board:** six tickets, one pattern. Which clues separate the explanations?",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Sam and Maya beside a board. A control system runs the room's devices together — press 'Presentation' and six things happen. How many things do I have to test? Presets times outputs. Six presets, four outputs: twenty-four combinations. That's what 'test everything' means.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "A control system runs the room's devices together — press 'Presentation' and six things happen."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "How many things do I have to test?"
+    },
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Presets times outputs. Six presets, four outputs: twenty-four combinations. That's what 'test everything' means."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1453
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Control system   Software and panels that operate a room's devices together.   Evidence   Something you observed or measured, labelled with how sure you are (observed, measured, verified …), kept before you change anything.   Formula, variables and a worked example   ƒ FORMULA · Counting combinations  total = a × b   a, b  the two things being multiplied (e.g. presets × outputs)    Worked example.  6 presets × 4 outputs = 24 combinations to test."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 27 OF 31 · PP. 37, 139  PART 2 AV NETWORKING & DATA · PART 8 VIDEO ENGINEERING  Page 139:  Macros automate multiple actions.  Maya added: “…including the wrong ones.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB27",
+   "label": "**Fieldbook module 27 — Everything becomes numbers — binary, control and macros.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 27 · tap a plate to open it full size     Binary numbers in AV     Switcher control software basics"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "C3",
+   "label": "**Learn it now:** control systems as state machines — states, events, guards, races and honest panels.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Two clocks”",
+   "sub": "15:10 · same whiteboard"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View timeline of one second at 14:00. The calendar's WAKE fires at plus 0.2 seconds; the sweep's SHUTDOWN at plus 0.6. The state variable goes from ON to OFF. The display stays on, ignoring 'off' while warming; the codec stays in the call, refusing standby. The panel switches to SYSTEM OFF. A note: pressing Start now would run WAKE, whose first step hangs up the call.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The state variable says OFF. Every device says ON. The panel believes the variable.",
+   "flags": [
+    "RV-70",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "A machine made of states",
+   "body": "In 1936, the mathematician Alan Turing described an imaginary machine to settle a question about what can be computed. It reads one symbol at a time from a tape, and what it does next depends only on two things: the symbol it just read and the state it is in. From that tiny rule set he showed such a machine could carry out any calculation that can be written as steps. Every room controller is a humble cousin: a state, an event, a rule for what happens next — and trouble when two events arrive at once.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A change record on a monitor: CR-0588, approved, owner Facilities. It added an end-of-booking sweep that shuts rooms down when a booking ends. Tested in twelve rooms at 22:00, empty. Result: pass.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Approved. Tested. In empty rooms at ten at night — never between two meetings.",
+   "flags": [
+    "RV-70"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "CR-0588 · tested empty"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 2538
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Evening light through the office glass. Sam leans on the window sill, not looking at Maya.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Can I tell you something? I'm thinking about leaving. I close forty tickets a day and I don't know how any of it works."
+    }
+   ],
+   "narration": [],
+   "caption": "Six tickets closed fast. Six times he'd been wrong, and fast about it.",
+   "flags": [
+    "RV-76"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1162
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "worried",
+     "text": "Can I tell you something? I'm thinking about leaving."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…"
+    },
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "flat",
+     "text": "That's the part where you say something."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A memory: the CityLight booth, years ago. Ray, smiling, explains something with open hands; Maya listens. His label maker sits between them.",
+   "characters": [
+    {
+     "id": "ray",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_booth",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Somebody once explained a building to her, one box at a time. He never made her feel slow.",
+   "flags": [],
+   "kind": "flashback",
+   "tab": "CITYLIGHT · YEARS AGO",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1605
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S3-06",
+   "who": "sam",
+   "prompt": "I close forty tickets a day and I don't know how any of it works. Tell me honestly — should I just go?",
+   "options": [
+    {
+     "label": "“Learn how it works first. Starting with this one. Then decide.”",
+     "who": "sam",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Okay. Teach me the race. Before I decide anything.",
+     "trust": {
+      "Sam": 2
+     }
+    },
+    {
+     "label": "“If you're unhappy, go. Life's short.”",
+     "who": "sam",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "Right. Yeah. Thanks.",
+     "trust": {
+      "Sam": -1
+     }
+    },
+    {
+     "label": "“Everyone feels like that.”",
+     "who": "sam",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "That's not the comfort you think it is.",
+     "trust": {
+      "Sam": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #27 · AVERY'S LENS  Never lie about state  A display must match reality, or people will act on the lie.  SYSTEM OFF on a panel during a live call invites someone to press it."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S03E06",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya joins Sam at the window. She doesn't argue him out of anything.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "sam",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then learn how it works. Starting with this one. You found the pattern in your own queue — that's the hard part."
+    },
+    {
+     "side": "R",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "…Okay. Teach me the race. Before I decide anything."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-76"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1231
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The empty Cedar Room at four o'clock. On the whiteboard: FIX? Delay the sweep plus five seconds. Tests: five out of five. Maya points at it, pleased.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Five seconds. Wake always finishes first. Five back-to-back tests, five passes."
+    }
+   ],
+   "narration": [],
+   "caption": "It works. In this room. This afternoon.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1953
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sam's screen: calendar push arrival times after the booking starts — 0.2, 0.4, 1.1, 2.3 seconds, and on Monday at 9:00, 8.7 seconds. Sam points at the Monday line.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "P",
+     "expr": "talk"
+    }
+   ],
+   "location": "scenes.bg_noc",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "Monday at nine, every room in the building syncs at once. The push lands almost nine seconds late. You told me a race is about order, not time."
+    }
+   ],
+   "narration": [],
+   "caption": "The student, reading the teacher's own rule back to her.",
+   "flags": [
+    "RV-70",
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "push arrival · up to 8.7 s"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3602
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": null,
+   "lines": [
+    {
+     "who": "sam",
+     "pose": "N",
+     "expr": "smile",
+     "text": "You told me a race is about order, not time."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "worried",
+     "text": "(Her own rule, read back to her. It's the best and worst feeling in teaching.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "A delay only moves the race",
+   "body": "Maya's five-second delay passed five tests on a quiet afternoon. On Monday at nine, when every room's calendar syncs at once, the wake event arrives up to nine seconds late — and the sweep wins again. The fix that works in the demo is the fix that fails on the Monday Ghost's favorite morning. Sam caught it.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S03E06-2",
+   "label": "Test: reason from the new timing. What happens Monday — and what actually removes the race?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E06-03",
+   "prompt": "Sam's numbers kill the delay. What do you propose to the change board — right now, before Maya's pride gets a vote?",
+   "happening": "The delay fails on Monday's timing. The change board meets at five.",
+   "clock": "16:40 · change board at 17:00",
+   "known": [
+    "▮ Push arrival up to 8.7 s",
+    "◉ Sweep is Facilities' approved change",
+    "▮ Log: no guard on SHUTDOWN"
+   ],
+   "unknown": [
+    "How many rooms use the Cedar template"
+   ],
+   "risk": "Every back-to-back meeting in forty rooms.",
+   "timer_s": 25,
+   "timeout": [
+    "The change board meets without a proposal. The delay goes in by default because it's the only thing written down.",
+    "A fix nobody proposes loses to the one that's already on the page."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Remove the dependency on order."
+    },
+    {
+     "id": "H2",
+     "keep": 0.8,
+     "text": "Whose change is the sweep?"
+    }
+   ],
+   "note": "Draft decision (DR-S03E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "A 30-second delay instead of 5",
+     "result": "It passes Monday. Then the sweep fires thirty seconds into the next meeting in a room with a late push — and the display goes dark mid-sentence.",
+     "consequence": "Bigger delay, same race, new symptom.",
+     "chips": [
+      "Race moved"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A delay is a bet on timing. You just made a bigger bet.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sam": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Guard every transition, handle events one at a time, drive the panel from feedback, make Start safe in a call — change request, tested in Cedar first",
+     "result": "Sam writes the guards on the board. Maya writes the test plan. The change request cites the log, the tickets and the push times.",
+     "consequence": "The order of events stops mattering. The panel stops lying.",
+     "chips": [
+      "Race removed",
+      "Through change control"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Sam": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Delete Facilities' sweep from the room program tonight",
+     "result": "Energy-saving stops in forty rooms. Facilities finds out from a meter reading.",
+     "consequence": "You deleted another team's approved change without asking.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NOT YOURS"
+      }
+     ],
+     "canonical": false,
+     "fail": "It's Facilities' approved change. Change control applies to you too.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sam": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Email everyone: “If the panel says System Off, ignore it”",
+     "result": "People learn to ignore the panel — including the day it's right.",
+     "consequence": "You trained the building to distrust its own controls.",
+     "chips": [
+      "Trust lost"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A workaround that teaches people to ignore the truth.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Sam": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-41",
+   "label": "**Sequence:** fix a race the right way — in order.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-306",
+   "label": "**Service Mode:** it's 14:00:02 again. The finger is over Start. Run it on the clock.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Between two meetings”",
+   "sub": "Wednesday · 12:00 · approved change window, Cedar Room"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of the fixed state machine. The shutdown transition now carries a guard: no call, empty room, no booking soon. Events wait in a queue and are handled one at a time. The panel is driven by device feedback, and Start in a call no longer hangs up.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Same states. Guards on the arrows, one event at a time, a panel that reads the room.",
+   "flags": [
+    "RV-70",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The Cedar Room at 12:30. On the display, Sam as the remote participant, calling from his phone on cellular. The touch panel reads IN CALL at the exact moment one test booking hands over to the next. Maya listens.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_confroom",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Sam",
+     "kind": "phone",
+     "text": "Twelve-thirty. Booking handover. I'm still here. Panel?"
+    }
+   ],
+   "narration": [],
+   "caption": "The test is the thing that failed: a live call across a booking boundary.",
+   "flags": [
+    "RV-70"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2006
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S03E06-04",
+   "prompt": "12:30:04. The first handover passed. How much proof before this goes to forty rooms?",
+   "happening": "One handover passed with a live call.",
+   "clock": "12:30:04 · window closes 13:30",
+   "known": [
+    "◉ Guarded transitions deployed in Cedar",
+    "◉ Sam on cellular, live"
+   ],
+   "unknown": [
+    "Occupied-no-call case",
+    "Late-push case"
+   ],
+   "risk": "",
+   "timer_s": 20,
+   "timeout": [
+    "The window closes at 13:30 with one test done. The change board asks what else you tried.",
+    "Proof has to be planned inside the window you have."
+   ],
+   "hints": [],
+   "note": "Draft decision (DR-S03E06).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "That's the fix — one clean handover",
+     "result": "It passes. Nobody has tried an occupied room with no call, or a late Monday push.",
+     "consequence": "One pass proves one pass.",
+     "chips": [
+      "Thin"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You tested the happy path once. The fault lived in the edges.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Fourteen transitions: live call across the boundary, occupied without a call, empty, and a 9-second late push simulated",
+     "result": "Fourteen handovers in ninety minutes. The panel matches device feedback every time; no call drops.",
+     "consequence": "Evidence you can hand the change board — and Facilities.",
+     "chips": [
+      "14 / 14",
+      "Edges tested"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Team": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "It works — push it to all forty rooms tonight",
+     "result": "Thirty-nine rooms you haven't tested get new code at once.",
+     "consequence": "If you're wrong, you're wrong everywhere on Monday at nine.",
+     "chips": [
+      "Untested fleet"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "CHANGE POLICY"
+      }
+     ],
+     "canonical": false,
+     "fail": "The approved change was for Cedar first. Fleet rollout is a separate, staged step.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask Facilities to sign it off by email",
+     "result": "They sign. They weren't in the room.",
+     "consequence": "A signature without evidence is a guess with a name on it.",
+     "chips": [
+      "Signed, unproven"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Test results for change CR-0614 on a monitor: fourteen transitions, all passing — six with a live call across the boundary, four occupied without a call, two empty, two with a simulated nine-second late push. Panel matched device feedback fourteen of fourteen. No calls dropped.",
+   "characters": [],
+   "location": "scenes.bg_noc",
+   "bubbles": [],
+   "narration": [],
+   "caption": "Fourteen for fourteen, including the Monday morning that hadn't happened yet.",
+   "flags": [
+    "RV-78",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "14 / 14 · Cedar · 12:00–13:30"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3817
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A handwritten problem record, PRB-0212: six System Off tickets, one race. Cause: the sweep and the wake on the hour, no guard. Fix: CR-0614 with guards, a queue and feedback; Start in a call no longer hangs up. Rollout forty rooms, five a night. Owner: Sam. Tickets re-labelled. Facilities agreed and kept its sweep.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Sam re-opened his five tickets and changed “user pressed End” to the truth.",
+   "flags": [
+    "VR-08",
+    "RV-78"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1852
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Late afternoon. Sam, packing up, turns back to Maya.",
+   "characters": [
+    {
+     "id": "sam",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sam",
+     "kind": "speech",
+     "text": "You explained it like somebody once explained it to you."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Somebody did. He gave me a label maker."
+    }
+   ],
+   "narration": [],
+   "caption": "She hadn't noticed she'd become the person who explains the building.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1162
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S3-06b",
+   "teaser": "the drafts folder",
+   "title": "“resignation v3 (kind version)”",
+   "body": "Last edited 11:14 p.m. Tuesday. Not sent. Sam doesn't delete it. Not yet. He does rename it: *resignation v3 (not today).*",
+   "thread": "People",
+   "who": [
+    "sam",
+    "N",
+    "closed"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Avery, from Season 1, stands in the office holding a clipboard, a printed draft titled ROOM STANDARD v0.9 between them. Maya looks up, surprised to see her.",
+   "characters": [
+    {
+     "id": "avery",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "scenes.bg_office",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Avery",
+     "kind": "speech",
+     "text": "Your new room standard. Can I test it with real people before you ship it?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Avery? How did you even—"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *A Standard for Everyone.*",
+   "flags": [
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1727
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A touch panel shows what the controller believes, not what the room is. Before you tell anyone to press a button, know what its macro does. Read the event log before you reboot. A race is about order, not time: a delay moves it; guards on every transition and one-event-at-a-time handling remove it. Drive the panel from device feedback. And test the condition that failed — a live call between two meetings — not an empty room at night."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Sam didn't need a pep talk. He needed one problem he could understand all the way down. Maya found out she could give that — the way someone once gave it to her.  Boundary: this reflection doesn't prove anything about the room."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S03E06",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

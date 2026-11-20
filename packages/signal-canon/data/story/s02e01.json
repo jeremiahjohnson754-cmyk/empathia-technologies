@@ -1,0 +1,1556 @@
+{
+ "chapter": {
+  "id": "s02e01",
+  "kicker": "S02 · E01",
+  "title": "Advance",
+  "pill": "S02E01 · Advance",
+  "sub": "Six cities in three weeks. Build the plan before the truck leaves — and read the top line.",
+  "status": "**DRAFT** · scripted from the season map ahead of its production-bible entry · IDs provisional",
+  "flags": [
+   "DR-S02E01",
+   "RT-03",
+   "RV-40",
+   "RV-41",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#F97316"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 2 · EPISODE 1 · DRAFT · SEASON OPENER  Design studio · Maya and Jordan · Level L2 → L3  Six cities in three weeks. Load-out in seventy-two hours. Six advance packets that disagree with each other — and one venue that can't say what its ceiling will hold.  ⚑ RV-41: overhead work appears only as plans, drawings and conversation. RT-03: every company, venue and city name is invented. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Six Packets That Disagree",
+   "kind": "MAIN QUEST · THE ROAD",
+   "level": "L2 · SYSTEMS TECH",
+   "party": [
+    "maya",
+    "jordan",
+    "ben",
+    "leah"
+   ],
+   "stakes": "Leah's first tour with her own company. If this one goes wrong, there isn't a second.",
+   "clock": "72 hours to load-out.",
+   "reward": "A tour that's boring every night. Ben's respect — which he gives about once a year.",
+   "objectives": [
+    {
+     "key": "BR-S02E01-01",
+     "text": "Answer Jordan about the wireless plan before his call"
+    },
+    {
+     "key": "twist",
+     "text": "Catch what last tour's plan would have done"
+    },
+    {
+     "key": "BR-S02E01-02",
+     "text": "Ask the one question that matters for venue three"
+    },
+    {
+     "key": "core",
+     "text": "Build the touring patch"
+    },
+    {
+     "key": "BR-S02E01-03",
+     "text": "Decide where the RF file lives"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things the warehouse knows"
+    }
+   ],
+   "rumor": "Ben wears a brass tag with a date on it. Nobody on the crew has ever asked. Nobody on the crew is going to."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Seventy-two hours”",
+   "sub": "Halyard Live's warehouse · a Tuesday night in late March · 11:40 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A loading dock at night under sodium lamps. Stacks of black road cases stenciled LANTERN, FOH, MON and RF. Jordan holds a tablet; Maya stands beside him.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Load-out Friday, six a.m. Six cities, three weeks, zero spare days."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And six advance packets that disagree with each other."
+    }
+   ],
+   "narration": [],
+   "caption": "Forty road cases. Seventy-two hours. One truck.",
+   "flags": [
+    "RT-03",
+    "VR-01",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4649
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "the warehouse · 11 p.m.",
+   "lines": [
+    {
+     "who": "jordan",
+     "pose": "R",
+     "expr": "talk",
+     "text": "Six cities. Three weeks. Zero spare days. I've color-coded it."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Every color is red."
+    },
+    {
+     "who": "jordan",
+     "pose": "N",
+     "expr": "smile",
+     "text": "It's a very organized red."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The tour schedule taped to the warehouse wall: six cities, April 2 to April 19 — the Wexley, Orchard Hall, the Carroway, the Meridian, Kestrel Theatre, Garner Opera House.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Eighteen hundred seats a night (illustrative). Leah has put her whole new company on this tour.",
+   "flags": [
+    "RT-03",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3729
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A length of truss lies on the warehouse floor. Ben, in a white hard hat and harness, has just taped a yellow sign above it: NOTHING GOES UP WITHOUT A PLAN. A small brass tag hangs on his chest.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Anything that goes over a head gets a plan, a rating and a signature. Or it stays on the floor."
+    }
+   ],
+   "narration": [],
+   "caption": "Ben wears a small brass tag with a date stamped on it. Nobody asks.",
+   "flags": [
+    "RV-41",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 4504
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-01a",
+   "teaser": "Ben's brass tag",
+   "title": "A date, stamped by hand",
+   "body": "Nine years ago. No words, just the date and a small dent, like it's been gripped hard. When he sees you looking, his thumb covers it. Not rudely. Automatically.",
+   "thread": "The brass tag",
+   "who": [
+    "ben",
+    "N",
+    "flat"
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Leah, headset around her neck, sits on a road case stenciled HALYARD LIVE. Maya faces her.",
+   "characters": [
+    {
+     "id": "leah",
+     "pose": "W",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Leah",
+     "kind": "speech",
+     "text": "First tour of my own company. If this one goes wrong, there isn't a second."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then let's make it boring."
+    }
+   ],
+   "narration": [],
+   "caption": "In touring, boring is the highest compliment there is.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3030
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "awkward",
+   "where": null,
+   "lines": [
+    {
+     "who": "leah",
+     "pose": "N",
+     "expr": "worried",
+     "text": "I remortgaged the house for the trucks."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "…You didn't have to tell me that."
+    },
+    {
+     "who": "leah",
+     "pose": "N",
+     "expr": "smile",
+     "text": "I know. I needed to tell someone who'd make it boring."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Six packets”",
+   "sub": "Wednesday · the design studio above the warehouse"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Three advance packets on a desk. Orchard Hall's power drawing is dated ten years ago. The Carroway's page lists no rigging points; its small header line reads MILLRACE HALL · TECH SPEC. Garner's rigging page is complete and recent.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One drawing is ten years old. One venue lists no rigging points at all.",
+   "flags": [
+    "RV-49",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3057
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya at her laptop, building a sixteen-channel wireless plan across six cities.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The RF file lives in exactly one place: this laptop. (Remember that.)",
+   "flags": [
+    "RV-40",
+    "RV-35"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1787
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Jordan leans over the desk with his tablet; Maya looks up from her laptop.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Just use last tour's plan. It worked for eighteen months. I need an answer before I call the artist's people."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Worked where?"
+    }
+   ],
+   "narration": [],
+   "caption": "Jordan's call with the artist's management is in thirty seconds.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 310
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S2-01",
+   "who": "jordan",
+   "prompt": "Last tour's plan worked for eighteen months. Why are you making this hard?",
+   "options": [
+    {
+     "label": "“Worked where? Show me the cities.”",
+     "who": "jordan",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "…Different cities. Okay. You win this one. I'm writing down that you won it.",
+     "trust": {
+      "Jordan": 1
+     }
+    },
+    {
+     "label": "“Because I'll be the one standing there when it fails.”",
+     "who": "jordan",
+     "pose": "N",
+     "expr": "worried",
+     "reply": "That's… honestly a fair reason. Also slightly dark.",
+     "trust": {
+      "Jordan": 1
+     }
+    },
+    {
+     "label": "“It's not hard. You just don't understand radio.”",
+     "who": "jordan",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Great. Love that. I'll put that in the schedule.",
+     "trust": {
+      "Jordan": -2
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E01-01",
+   "prompt": "Jordan needs an answer on the wireless plan before his call. What do you tell him?",
+   "happening": "Jordan wants to reuse last tour's wireless plan for six new cities.",
+   "clock": "Wed 10:14 a.m. · Jordan's call at 10:15",
+   "known": [
+    "◉ Last tour's plan: 16 channels, 18 months",
+    "◉ Six new cities, six radio environments"
+   ],
+   "unknown": [
+    "Whether any old frequency is used locally in these cities"
+   ],
+   "risk": "Sixteen performers and 1,800 people a night (illustrative).",
+   "timer_s": 30,
+   "timeout": [
+    "Jordan hangs up having promised “same as last tour”. The plan ships unchecked.",
+    "Silence got read as yes. When someone needs an answer on a clock, the method has to fit in one sentence."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What was last tour's plan proven against? Not these cities."
+    }
+   ],
+   "note": "Draft decision (DR-S02E01). ⚑ RV-40.",
+   "lab": "LAB-RF-01",
+   "lab_label": "coordinate city 3 yourself.",
+   "options": [
+    {
+     "letter": "A",
+     "label": "Reuse last tour's plan",
+     "result": "Jordan tells management it's handled. Nobody checks the plan against the six cities.",
+     "consequence": "In two cities, a channel will sit on top of a local service. You'll find out at soundcheck — or at the show.",
+     "chips": [
+      "Fast",
+      "Two cities collide"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A plan proven in other cities is a hypothesis in these. You shipped the hypothesis.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Jordan": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Scan each venue on arrival and coordinate per city",
+     "result": "“Forty minutes of scanning per city, before soundcheck. Four spares per city. I'll check the old plan against local use tonight.”",
+     "consequence": "Jordan groans — and writes forty minutes into six schedules.",
+     "chips": [
+      "40 min per city",
+      "Evidence every night"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Jordan": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Cut wireless to eight channels",
+     "result": "Eight is easy to coordinate. It also means eight performers go back to cables.",
+     "consequence": "The director's staging — actors walking into the house in Act 2 — is gone.",
+     "chips": [
+      "Safe",
+      "The show loses its staging"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ask the artist's management what they want",
+     "result": "Management forwards it to their production manager, who's on holiday until Monday.",
+     "consequence": "Load-out is Friday.",
+     "chips": [
+      "Slow",
+      "Not their decision"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: last tour's sixteen frequencies laid against each city's local-use list. Two channels, 5 and 12, sit inside local-use blocks — one in city 2 and one in city 5.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Two of sixteen. That's all it takes.",
+   "flags": [
+    "RV-40",
+    "RV-35",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Last tour's plan would have collided",
+   "body": "Checked against each city's list of local services, two of last tour's sixteen frequencies are already in use — channel 5 in city 2 and channel 12 in city 5. The plan that “worked for eighteen months” was never tested in these cities. It wasn't wrong. It was somewhere else's answer.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E01-1",
+   "label": "Test: reason from the collision — what does it tell you, and what doesn't it?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Jordan looks at the two red bars on Maya's screen.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "N",
+     "expr": "surprised"
+    },
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Fine. Scan on arrival. How long?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Forty minutes per city, before soundcheck. Every night we'll know instead of hoping."
+    }
+   ],
+   "narration": [],
+   "caption": "Jordan finds forty minutes in six schedules. It costs him a dinner break he'll never mention.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 315
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ray's notebook",
+   "sub": "Beginner · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Kim and Maya beside a board. Intermodulation: two transmitters mix and make new frequencies nobody asked for. Coordination is choosing channels so those land on nothing. Where do they land? Two f-one minus f-two. Transmitters on 600 and 601: two times 600 minus 601 is 599. And the other side, 602. Check every pair.",
+   "characters": [
+    {
+     "id": "kim",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_truck",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kim",
+     "kind": "speech",
+     "text": "Intermodulation: two transmitters mix and make new frequencies nobody asked for. Coordination is choosing channels so those land on nothing."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Where do they land?"
+    },
+    {
+     "side": "L",
+     "who": "Kim",
+     "kind": "speech",
+     "text": "Two f-one minus f-two. Transmitters on 600 and 601: two times 600 minus 601 is 599. And the other side, 602. Check every pair."
+    }
+   ],
+   "narration": [],
+   "caption": "Beginner: the term, what it means, the formula — and one worked example out loud.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1470
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t1",
+   "text": "📘 RAY'S NOTEBOOK · BEGINNER  Terms    Intermodulation   New unwanted frequencies created when several transmitters mix in a receiver or amplifier.   Frequency coordination   Choosing wireless channels so they don't interfere with each other or with intermodulation products.   RF   Radio frequency — wireless signals, from wireless mics to microwave links.   Formula, variables and a worked example   ƒ FORMULA · Third-order intermodulation  f IM3  = 2f 1  − f 2  and 2f 2  − f 1    f 1 , f 2   two transmitter frequencies, MHz    Worked example.  Transmitters on 600 and 601 MHz: 2 × 600 − 601 = 599 MHz and 2 × 601 − 600 = 602 MHz."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "fb-note",
+   "cls": "fb-note",
+   "text": "📒 EMPATHIA LEARN FIELDBOOK · MODULE 12 OF 31 · PP. 107–108, 112–113  PART 7 RF, LOW VOLTAGE & ELECTRICAL  The Fieldbook rode in Maya's backpack, not in the laptop bag. Page 112 carries her first margin note, under Ray's: “Scan every city. The air is rented.”"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "FB12",
+   "label": "**Fieldbook module 12 — How wireless works.** Beginner support: every new word is defined, and every formula comes with its variables and a worked example.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · module 12 · tap a plate to open it full size     Microphone RF in the sanctuary     Wireless RF, phase cancellation and streams     Case study: wireless drop-outs     Wireless microphone drop-outs — the real cause"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "A8",
+   "label": "**Learn it now:** RF basics for touring — margin, local services, coordination as a set.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View: the touring patch for channel 7 — wireless receiver 7 into stage box input 7, into a splitter with three independent outputs: front-of-house console, monitor console, and an isolated broadcast feed.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The tour carries its own path, so channel 7 is the same channel every night.",
+   "flags": [
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": true,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 47
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "R-11",
+   "label": "**Route it:** build channel 7's path through the touring split.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's notebook: LANTERN in-ear template version 1. Narrators' in-ears get the band, their own mic and RTN 1. RTN 1 is local video sound — no delay here. Saved as a template.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "smile"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A template is a decision you make once and reuse without thinking. That's the point. That's also the risk.",
+   "flags": [
+    "RV-46",
+    "VR-08"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2146
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S2-01b",
+   "teaser": "the template folder",
+   "title": "LANTERN IN-EAR TEMPLATE v1",
+   "body": "Author: M. Created in March, in a hurry, between two venue calls. Notes field: *no delay here.* It will be copied onto a truck four weeks from now. Remember the word *here.*",
+   "thread": "Maya's template",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “The venue with no number”",
+   "sub": "Wednesday · 4:30 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Sofia, the touring lighting director, holds up her sketch for Act 2's lantern moment: a halo of light over the downstage edge, from above the lip.",
+   "characters": [
+    {
+     "id": "sofia",
+     "pose": "W",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sofia",
+     "kind": "speech",
+     "text": "Act 2. The lantern moment. Light from right above the lip — like the whole theater's holding its breath."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "It's beautiful. Ben's going to ask what it hangs from."
+    }
+   ],
+   "narration": [],
+   "caption": "Sofia and Maya have been friends since CityLight. That's about to be tested.",
+   "flags": [
+    "RV-41",
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2871
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Why a road case is called an “ATA case”",
+   "body": "Touring crews still call their hard-shell cases “ATA cases”. The name comes from the Air Transport Association of America, the airline trade group that published Specification 300 for packaging goods shipped by air. Spec 300 sorts containers by how many trips they must survive; its toughest category is built for at least a hundred round trips. Road-case builders adopted the standard, and the initials stuck to the boxes. The trade group itself was renamed Airlines for America in 2011.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ben holds the Carroway's tech page. Maya beside him. The page lists no rigging points.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "R",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Venue three. Sofia wants a truss over the downstage edge. They list no points and no beam data."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "They sent a photo of the ceiling."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-41",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1473
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ben on the phone. A screen shows Kim, a structural engineer on another continent, awake at 4:31 a.m. her time.",
+   "characters": [
+    {
+     "id": "kim",
+     "pose": "N",
+     "expr": "flat"
+    },
+    {
+     "id": "ben",
+     "pose": "H",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "phone",
+     "text": "A photo isn't a rating, Kim. Can you tell me anything?"
+    },
+    {
+     "side": "R",
+     "who": "Kim",
+     "kind": "phone",
+     "text": "Without the beam's rating I can't approve anything. Get me drawings — or plan it on the ground."
+    }
+   ],
+   "narration": [],
+   "caption": "Kim never guesses. That's why Ben calls her.",
+   "flags": [
+    "RV-41",
+    "RV-49",
+    "VR-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1100
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "humor",
+   "where": "video call · 3:40 a.m. Kim's time",
+   "lines": [
+    {
+     "who": "kim",
+     "pose": "N",
+     "expr": "flat",
+     "text": "A photo isn't a rating."
+    },
+    {
+     "who": "ben",
+     "pose": "N",
+     "expr": "flat",
+     "text": "That's what I said."
+    },
+    {
+     "who": "kim",
+     "pose": "N",
+     "expr": "smile",
+     "text": "I know. I'm saying it louder, from further away."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E01-02",
+   "prompt": "The Carroway's production manager will answer one email before a fourteen-hour flight. You get one question. Which?",
+   "happening": "One question, one email, one flight.",
+   "clock": "Wed 4:40 p.m. · boarding in minutes",
+   "known": [
+    "◉ No rigging points listed",
+    "◉ A photo of the ceiling",
+    "↑ Kim: no rating, no approval"
+   ],
+   "unknown": [
+    "The beam's rating",
+    "Whether any drawing exists"
+   ],
+   "risk": "Everyone under Sofia's position, every night of city 3.",
+   "timer_s": 25,
+   "timeout": [
+    "The production manager boards. The next reply is in two days — after load-out.",
+    "The window was one email wide. Not choosing is choosing to wait two days."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Ask for the thing Kim said she needs — and who stands behind it."
+    }
+   ],
+   "note": "Draft decision (DR-S02E01). ⚑ RV-41.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "“Can we hang 800 kg from the downstage beam?”",
+     "result": "A reply from the gate: “Should be fine, we've had big shows.”",
+     "consequence": "A yes from someone who can't sign a rating. Ben won't use it, and now the venue thinks it said yes.",
+     "chips": [
+      "A yes that means nothing"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A leading question gets a confident yes, not a number an engineer can stand behind.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Ben": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "“Please send the structural drawing and each point's rating, with who issued it and when.”",
+     "result": "“I'll get facilities to dig it out. Might be after I land.”",
+     "consequence": "Slow — but it's the only answer Kim can use. Ben plans a fallback while you wait.",
+     "chips": [
+      "Right question",
+      "Answer may be late"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Ben": 1,
+       "Kim": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "“How big is your stage?”",
+     "result": "“14 × 10 m, it's in the pack.”",
+     "consequence": "Useful, already known, and it changes nothing overhead.",
+     "chips": [
+      "Wasted question"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "You spent the one question on something that was already in the packet.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Sofia": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "“Who's your crew chief?”",
+     "result": "A name and a number.",
+     "consequence": "He'll be helpful tomorrow. He can't give a rating either.",
+     "chips": [
+      "A contact, not data"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Hank, the power vendor's technician in a hi-vis vest, on the phone beside a generator. Maya listens.",
+   "characters": [
+    {
+     "id": "hank",
+     "pose": "H",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Hank",
+     "kind": "phone",
+     "text": "Don't plan from a ten-year-old drawing. My generator, my distro. Their electrician does the tie-in."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And we plug into what you hand us, with a load list."
+    }
+   ],
+   "narration": [],
+   "caption": "Every step of the power has an owner. None of them is the A1.",
+   "flags": [
+    "RV-43",
+    "RV-26"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3274
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "P2",
+   "label": "**Learn it now:** temporary power — who connects what, and what you bring.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Thursday morning. Jordan holds up a revised rigging page from the Carroway: four downstage points, rated 1,000 kg each, signed, dated two years ago. Its header reads MILLRACE HALL · HALL B.",
+   "characters": [
+    {
+     "id": "jordan",
+     "pose": "S",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "They sent points! A thousand kilos each! Sofia gets her truss!"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Jordan. Read the top line."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-41",
+    "RV-49"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1431
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The rigging page is from another building",
+   "body": "The revised page is headed MILLRACE HALL — the Carroway's sister venue across town. Someone at the venue copied the wrong building's page. The clue was on the first packet too: the Carroway's tech spec carried the same MILLRACE HALL header. Every number on it describes a different ceiling.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S02E01-2",
+   "label": "Test: what does the borrowed page prove — and what do you do next?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Ben reads the header, then looks at Jordan.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "jordan",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": null,
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "Good catch. Now we know less than we thought — which is more than we knew. Ground-supported fallback for city three."
+    },
+    {
+     "side": "R",
+     "who": "Jordan",
+     "kind": "speech",
+     "text": "Sofia's going to hate that."
+    }
+   ],
+   "narration": [],
+   "caption": "Ben sends Kim the contradiction. Kim replies before breakfast, her time: “Towers on the deck. I'll check the plan.”",
+   "flags": [
+    "RV-41"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 510
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-11",
+   "label": "**Sequence:** advance a venue whose packet contradicts itself.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-201",
+   "label": "**Service Mode:** build a safe plan for venue 3 from contradictory documents, on a clock.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act III — “Where does it live?”",
+   "sub": "Thursday · 11:58 p.m. · the studio"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Near midnight. Maya's laptop shows the saved RF file: six cities, sixteen channels, spares — saved to this computer.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "closed"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Six cities of radio in one file, on one machine, in one bag.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1003
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": "the bus · 2 a.m.",
+   "lines": [
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "(Six cities of radio. One file. One laptop. One bag. She knows. She tells herself she'll back it up in city two.)"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S02E01-03",
+   "prompt": "The RF plan is done. Where does the file live?",
+   "happening": "The tour's RF plan exists in one file.",
+   "clock": "Thu 11:58 p.m. · load-out 6:00 a.m.",
+   "known": [
+    "◉ One file, one laptop",
+    "◉ Everyone already says “ask Maya”"
+   ],
+   "unknown": [
+    "What happens to the file if the laptop doesn't"
+   ],
+   "risk": "",
+   "timer_s": 0,
+   "timeout": null,
+   "hints": [],
+   "note": "Draft decision (DR-S02E01). The canonical option is the story's choice, not the best practice: the story follows the debt on purpose.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "On my laptop. I'll sort out backups after the tour.",
+     "result": "It's where she built it, and where she'll need it at every scan. It's fast and it's hers.",
+     "consequence": "It works every night of this tour. It also plants DEBT-004: the tour's radio lives on one machine, in one bag, with one person.",
+     "chips": [
+      "Works now",
+      "DEBT-004 is born"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 2,
+      "sev": 1,
+      "trust": {
+       "Crew": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Shared tour drive, plus a printed copy in the RF case",
+     "result": "Anyone on the crew could find it — Dante at midnight, a replacement tech, next month's tour.",
+     "consequence": "This is the right answer. It's not what Maya does tonight. (The season remembers.)",
+     "chips": [
+      "Findable by anyone",
+      "Survives a lost laptop"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Nowhere — I know these frequencies by heart",
+     "result": "She does, tonight.",
+     "consequence": "In a week she won't, and nobody else ever will.",
+     "chips": [
+      "Only in one head"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Knowledge that lives in one head is Ray's notebook all over again (DEBT-002).",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -2,
+      "sev": 1,
+      "trust": {
+       "Crew": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Email it to myself",
+     "result": "It's in her inbox, under a thousand other attachments.",
+     "consequence": "Technically a backup. Practically, nobody else can find it.",
+     "chips": [
+      "Hidden backup"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 1,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #12 · AVERY'S LENS  Progressive disclosure  Show people the few things they need now; keep the rest a tap away.  Six venues, sixty pages of advance packets. The one-page advance summary with 'open questions' first is a better interface than the whole binder."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S02E01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Friday, 6 a.m. The truck is loaded. Maya slings her laptop bag over her shoulder. Dante, the touring monitor engineer, grins beside her.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "dante",
+     "pose": "N",
+     "expr": "grin"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Everything we need?"
+    },
+    {
+     "side": "R",
+     "who": "Dante",
+     "kind": "speech",
+     "text": "If it's not on the truck, it's in your bag. Same thing, right?"
+    }
+   ],
+   "narration": [],
+   "caption": "Everyone has started saying “ask Maya”.",
+   "flags": [
+    "VR-02"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3566
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya's advance log: old RF plan hits local use in city 2 and city 5, so scan every city. City 3's page came from Millrace Hall; asked for real data; Ben escalated to Kim. Fallback: ground-supported. Power: Hank's distro, venue ties in. RF file: my laptop — backup later.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "VR-08",
+    "RV-40"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1849
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "On the loading dock at dawn, Ben stops beside Maya.",
+   "characters": [
+    {
+     "id": "ben",
+     "pose": "N",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "scenes.bg_dock",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Ben",
+     "kind": "speech",
+     "text": "You read the top line. Most people read the numbers."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The numbers were the part that wanted to be believed."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2681
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "City 1, the Wexley, first soundcheck. Marisol — who sang at CityLight in Season 1 and is now LANTERN's lead voice — sings downstage. Dante, at the monitor desk in the wings, cups his ear.",
+   "characters": [
+    {
+     "id": "marisol",
+     "pose": "M",
+     "expr": "talk"
+    },
+    {
+     "id": "dante",
+     "pose": "L",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_theater",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dante",
+     "kind": "radio",
+     "text": "Maya. Channel 7 just dropped. Again. Same spot in the song."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Drop-Outs.*",
+   "flags": [
+    "RV-40",
+    "RT-03"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3704
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Advance work is evidence work. Read every title block and date before you trust a number. A plan proven in other places is a hypothesis in a new one — scan and coordinate per city. Overhead and power each have owners; ask them specific written questions and plan a fallback that needs no missing data. And a plan that lives in one place isn't a plan the crew has."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Maya spent a season making sure nothing lived only in Ray's notebook. Tonight, at midnight, she saved the tour's radio to one laptop and went to bed. Nobody is immune to the shortcut they can see in other people.  Boundary: this reflection doesn't prove anything about the plan."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S02E01",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

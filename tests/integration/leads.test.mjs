@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 import { setup, client } from './harness.mjs';
 
 let h, c, admin, tech, id;
-const lead = (over = {}) => ({ kind: 'demo', name: 'Synthetic Person', organization: 'Example Org (synthetic)', email: 'person@example.com', audience: 'CIO / CTO / IT leadership', message: 'We would like to see the commissioning scenario.', consent: true, ...over });
+const lead = (over = {}) => ({ kind: 'demo', name: 'Synthetic Person', organization: 'Example Org (synthetic)', email: 'person@example.com', audience: 'CIO / CTO / IT leadership', message: 'We would like to see the commissioning scenario.', elapsedMs: 9000, consent: true, ...over });
 
 before(async () => { h = await setup({ db: 'empathia_test_leads', port: 4198, env: { LEAD_BURST_PER_HOUR: '4' } }); c = client(h.base); admin = await c.login('secadmin'); tech = await c.login('service'); });
 after(async () => { await h?.app.stop(); });
@@ -21,11 +21,14 @@ test('a message from the website is stored and answered with a receipt that stat
   assert.match(r.body.id, /^[0-9a-f-]{36}$/); id = r.body.id;
   assert.match(r.body.notification, /not configured/);
 });
-test('the honeypot, missing consent and a malformed address are refused and nothing is stored', async () => {
+test('the honeypot, missing consent, a malformed address and a too-fast or untimed submission are refused and nothing is stored', async () => {
   assert.equal((await c.call('POST', '/v1/public/leads', { body: lead({ website: 'http://spam.example' }) })).status, 400);
   assert.equal((await c.call('POST', '/v1/public/leads', { body: lead({ consent: false }) })).status, 400);
   assert.equal((await c.call('POST', '/v1/public/leads', { body: lead({ email: 'not-an-address' }) })).status, 400);
   assert.equal((await c.call('POST', '/v1/public/leads', { body: lead({ kind: 'founder' }) })).status, 400);
+  // the minimum fill time: posted faster than a person can type, or without the timing at all, is refused
+  const fast = await c.call('POST', '/v1/public/leads', { body: lead({ elapsedMs: 800 }) }); assert.equal(fast.status, 400); assert.match(JSON.stringify(fast.body), /too quickly/);
+  const { elapsedMs, ...untimed } = lead(); assert.equal((await c.call('POST', '/v1/public/leads', { body: untimed })).status, 400);
   const inbox = await c.call('GET', '/v1/admin/leads', { token: admin });
   assert.equal(inbox.body.items.length, 1);
 });

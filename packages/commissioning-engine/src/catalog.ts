@@ -110,6 +110,8 @@ export interface Catalog {
   rulePack: RulePack;
   domainPersona: Record<string, string>;
   verifierPersonas: Record<string, string[]>;
+  /** Tests whose devices are not their domain's usual family (test id → device family). Absent in the demonstrator's catalogue. */
+  testFamily?: Record<string, string>;
 }
 
 /** The catalogue as shipped in the 2.5.3 rc3 / 2.5.4 demonstrator. */
@@ -128,3 +130,15 @@ export const defaultCatalog: Catalog = {
   domainPersona: V25_DOMAIN_PERSONA as Record<string, string>,
   verifierPersonas: V25_VERIFIER_PERSONAS as Record<string, string[]>,
 };
+
+/**
+ * The catalogue the enterprise server uses: the demonstrator's, with corrections that are the server's own and are listed here so that
+ * the difference from the demonstrator is one object and not scattered conditions. The parity tests run on `defaultCatalog` and pin
+ * the demonstrator's behaviour; this is what the authoritative record is compiled from.
+ *
+ *   testFamily   the catalogue files the two display tests under Video, whose usual family is the camera. In a room with displays
+ *                and cameras "Display picture settings and calibration" named the cameras and left every display with no test
+ *                (found when the lecture theatre got its relay displays, 18 Nov 2026). They name the displays.
+ */
+export const enterpriseCatalog: Catalog = { ...defaultCatalog, testFamily: { video_display_calibration: 'display', video_edid_handshake: 'display' } };
+

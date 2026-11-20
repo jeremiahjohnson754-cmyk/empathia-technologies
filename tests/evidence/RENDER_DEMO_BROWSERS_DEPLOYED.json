@@ -1,0 +1,65 @@
+{
+ "at": "2026-11-17T18:33:07.467Z",
+ "site": "https://empathia-demo-next.onrender.com",
+ "api": "https://empathia-demo-api-l04n.onrender.com",
+ "served": "the deployed site",
+ "browsers": "two Chromium processes, separate empty profiles (desktop 1440×900, phone 390×844)",
+ "passed": 9,
+ "failed": 0,
+ "results": [
+  {
+   "id": "ST-00",
+   "title": "the deployed files: the site’s manifest names the commit asked for, and the page’s policy lets it call exactly one other address, the API",
+   "result": "PASS",
+   "detail": "deployed commit e3c8e9f5abc6 (asked for e3c8e9f) · connect-src 'self' https://empathia-demo-api-l04n.onrender.com"
+  },
+  {
+   "id": "ST-01",
+   "title": "A: the page loads from the site’s address and the hosted API answers; if it took more than five seconds the page said what it was waiting for",
+   "result": "PASS",
+   "detail": "ready true after 5.6 s · said it was waiting: false · state ready"
+  },
+  {
+   "id": "ST-02",
+   "title": "A opens a sandbox and does three steps, each as its own person: a mounting, a field move, its approval by someone else",
+   "result": "PASS",
+   "detail": "sbx-afef7d0b530a4951 · 1 of 5 · PA-0003 Wall bracket, 1.4 m (v1, Installer (synthetic)) · FM-0001 PA-0003 0.5 m, sprinkler head APPROVED by Systems Engineer (synthetic) · 3 steps done"
+  },
+  {
+   "id": "ST-03",
+   "title": "B has nothing stored; a resume code with a wrong key opens nothing",
+   "result": "PASS",
+   "detail": "stored null · That code did not open a sandbox. the sandbox is unknown, closed or expired, or the key is not right"
+  },
+  {
+   "id": "ST-04",
+   "title": "B, from the resume code alone, reads the same organization, the same thread and the same field record as A",
+   "result": "PASS",
+   "detail": "{\"tenant\":true,\"thread\":true,\"mounted\":true,\"moves\":true,\"done\":true}"
+  },
+  {
+   "id": "ST-05",
+   "title": "B does the next step; A, read again, shows it: the records are the server’s, not either browser’s",
+   "result": "PASS",
+   "detail": "B 4 steps · A after reading again 4 · same thread true"
+  },
+  {
+   "id": "ST-06",
+   "title": "B at phone size: nothing scrolls sideways; away to another page and back, the sandbox is still held and the thread is the same",
+   "result": "PASS",
+   "detail": "overflow 0 px · link back 1 · same tenant true"
+  },
+  {
+   "id": "ST-07",
+   "title": "neither browser asked anything but the site and the API; the only console error is the refusal ST-03 asked for",
+   "result": "PASS",
+   "detail": "elsewhere  · errors  · A 0, B 1 · 93 API calls"
+  },
+  {
+   "id": "ST-08",
+   "title": "the API answered the browser’s cross-origin calls naming the site’s origin",
+   "result": "PASS",
+   "detail": "A https://empathia-demo-next.onrender.com · B https://empathia-demo-next.onrender.com"
+  }
+ ]
+}

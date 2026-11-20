@@ -1,0 +1,30 @@
+{
+  "key": "M2",
+  "title": "From business need to room intelligence",
+  "master": "4578aadab522076830c2ed72eccccd0b98f88cd4d0a480beeff8acae670e782e",
+  "source": {
+    "path": "owner upload 2026-11-13 (1000039170.mp4: the master, captions burned in)",
+    "sha256": "4578aadab522076830c2ed72eccccd0b98f88cd4d0a480beeff8acae670e782e"
+  },
+  "settings": "H.264 High CRF 24 maxrate 2200k, 720p, AAC 96k stereo, faststart; posters 1600 px",
+  "files": {
+    "720.mp4": {
+      "bytes": 16157336,
+      "sha256": "e3f2c0b4dd3f7dec0a27b3e9f931c07cec20ada0ee31a8cda7a94748cc17b5aa"
+    },
+    "poster.webp": {
+      "bytes": 62366,
+      "sha256": "c780d44d7e6d0aa5f1776106e26603ba8c53e520023e279a2e3a077913343a07"
+    },
+    "poster.jpg": {
+      "bytes": 123832,
+      "sha256": "0d983531016db5da187f2e17a96f606e786521db2277a5fc238732eee2798007"
+    },
+    "captions.vtt": {
+      "bytes": 2654,
+      "sha256": "28e07bda7b1d0e69ca6454eb4a22608654a1aa6b72316e80b58d1bda324a62ec"
+    }
+  },
+  "at": "2026-11-13T22:44:39.637Z",
+  "rightsWebsite": "VERIFIED"
+}

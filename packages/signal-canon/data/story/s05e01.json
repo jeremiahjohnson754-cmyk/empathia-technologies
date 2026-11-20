@@ -1,0 +1,1216 @@
+{
+ "chapter": {
+  "id": "s05e01",
+  "kicker": "S05 · E01",
+  "title": "Four Hundred Rooms",
+  "pill": "S05E01 · Four Hundred Rooms",
+  "sub": "A new job, four hundred rooms and a wall of green tiles — while twenty-two rooms record silence.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S05E01",
+   "RT-03",
+   "RV-120",
+   "RV-121",
+   "RV-122",
+   "RV-123",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#10B981"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 5 · EPISODE 1 · DRAFT · CASE-025  Countdown · Maya, Nadia and Wes · Level L4 · Intermediate support  A new job, four hundred rooms, and a wall of green tiles. Twenty-two of those rooms have recorded silence for three days — and the dashboard never noticed.  ⚑ RV-121: figures illustrative. RV-122: generic systems. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Four Hundred Rooms",
+   "kind": "COUNTDOWN QUEST · NEW JOB",
+   "level": "L4 · INTERMEDIATE",
+   "party": [
+    "maya",
+    "nadia",
+    "wes"
+   ],
+   "stakes": "Twenty-two rooms have recorded silence for three days, and the wall of green tiles says everything is fine. The students who watch recordings — because of jobs, kids, illness — are the ones it hurts.",
+   "clock": "Before the 11:00 lecture in ENG-214.",
+   "reward": "Every room recording with sound, proven. A dashboard that measures what students get. Nadia's trust in her new engineer.",
+   "objectives": [
+    {
+     "key": "BR-S05E01-01",
+     "text": "Beat the 11:00 lecture"
+    },
+    {
+     "key": "twist",
+     "text": "Find out why the wall stayed green"
+    },
+    {
+     "key": "core",
+     "text": "Give the recording its sound back"
+    },
+    {
+     "key": "BR-S05E01-02",
+     "text": "Prove it in rooms you'll never visit"
+    },
+    {
+     "key": "BR-S05E01-03",
+     "text": "Change what the dashboard watches"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two things about Kai"
+    }
+   ],
+   "rumor": "Four hundred rooms. You'll see forty. The wall shows you the rest — if it's watching the right thing."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Tell them no”",
+   "sub": "Kestrel Valley · the morning after the crest"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Flashback: master control at Kestrel Valley Media, dawn after the flood crest. Maya on the phone; Tess watching her from the desk.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "H",
+     "expr": "flat"
+    },
+    {
+     "id": "tess",
+     "pose": "N",
+     "expr": "worried"
+    }
+   ],
+   "location": "scenes.bg_mcr",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "phone",
+     "text": "Tell them no, Priya. I'm not going to be the one who takes master control out of the valley."
+    },
+    {
+     "side": "R",
+     "who": "Tess",
+     "kind": "speech",
+     "text": "…Then who's going to be here when it goes?"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-124"
+   ],
+   "kind": "flashback",
+   "tab": "KESTREL VALLEY · DAWN",
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 8293
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Spring. The Brackenmoor University quad: two brick buildings, a path, a campus information kiosk. Maya walks in with a new lanyard.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s5kit.bg_quad",
+   "bubbles": [],
+   "narration": [
+    "Brackenmoor University & Teaching Hospital. Four hundred teaching rooms. Sixty clinical rooms. One arena. Day one."
+   ],
+   "caption": "She took a job where the rooms don't know her name yet.",
+   "flags": [
+    "RV-122"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2902
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The AV operations office: a wall of 400 green room tiles. Nadia, the AV operations manager, points at it; Maya takes it in.",
+   "characters": [
+    {
+     "id": "nadia",
+     "pose": "P",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Nadia",
+     "kind": "speech",
+     "text": "That's the campus. Green means fine."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Fine according to what?"
+    }
+   ],
+   "narration": [],
+   "caption": "Remember her question.",
+   "flags": [
+    "RV-122"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7013
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "flat",
+   "where": "AV operations · Monday 8:40",
+   "lines": [
+    {
+     "who": "nadia",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Four hundred teaching rooms. Sixty clinical. One arena. You'll stand in maybe forty this year."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "And the other three hundred and sixty?"
+    },
+    {
+     "who": "nadia",
+     "pose": "P",
+     "expr": "smile",
+     "text": "You'll know them through that wall. Or you won't."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Wes, a student worker in a green hoodie and a crooked headset, arrives with two coffees and hands one to Maya.",
+   "characters": [
+    {
+     "id": "wes",
+     "pose": "N",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wes",
+     "kind": "speech",
+     "text": "I'm Wes. I'm supposed to shadow you. I brought coffee in case you're mean."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "I'm not mean. I ask a lot of questions."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-124"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7006
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S5-01",
+   "who": "wes",
+   "prompt": "(Wes, on his second shift, headset crooked) Do I call you Maya or, like, boss?",
+   "options": [
+    {
+     "label": "“Maya. And you're not shadowing me — you're doing it. I'll ask why.”",
+     "who": "wes",
+     "pose": "N",
+     "expr": "surprised",
+     "reply": "…Okay. That's scarier. Okay.",
+     "trust": {
+      "Wes": 2
+     }
+    },
+    {
+     "label": "“Boss works.”",
+     "who": "wes",
+     "pose": "N",
+     "expr": "grin",
+     "reply": "Cool. Boss. I'll just… watch, then.",
+     "trust": {
+      "Wes": -1
+     }
+    },
+    {
+     "label": "“Ask me that after you've fixed something.”",
+     "who": "wes",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Fair.",
+     "trust": {
+      "Wes": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A ticket on a phone screen, submitted at 2:14 a.m. by a student named Kai: all his Engineering lectures since Saturday have no sound.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Tuesday, 10:48. The first ticket about it. Three days in.",
+   "flags": [
+    "RV-123"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1153
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S5-01a",
+   "teaser": "Kai's ticket",
+   "title": "Submitted 2:14 a.m.",
+   "body": "*All my Engineering lectures since Saturday have no sound. I work nights at the depot and I watch them after. I thought it was my laptop, so I bought headphones. It isn't my laptop.* He bought headphones before he filed a ticket.",
+   "thread": "The students you never see",
+   "who": [
+    "maya",
+    "N",
+    "worried"
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #42 · AVERY'S LENS  Measure the outcome, not the heartbeat  A dashboard should turn red when the user's result fails — not only when a device stops answering.  Twenty-two capture appliances answered every ping for three days while every recording they made was silent."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S05E01",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Green”",
+   "sub": "Tuesday · 10:50 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The dashboard zoomed to the Engineering building: 22 of 22 capture appliances online, ping OK, disk OK. Wes throws his hands up.",
+   "characters": [
+    {
+     "id": "wes",
+     "pose": "S",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "R",
+     "who": "Wes",
+     "kind": "speech",
+     "text": "It says they're all fine!"
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-122"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7400
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E01-01",
+   "prompt": "10:52. ENG-214's next lecture starts at 11:00 and it will record silent too. What do you do in eight minutes?",
+   "happening": "Dashboard green. Kai's ticket open. ENG-214 at 11:00.",
+   "clock": "10:52 · 8 minutes",
+   "known": [
+    "◉ The rooms sound fine",
+    "◉ Recordings silent since Saturday",
+    "◉ Dashboard: 22/22 online"
+   ],
+   "unknown": [
+    "What changed on Saturday"
+   ],
+   "risk": "Another silent lecture — and the evidence of why.",
+   "timer_s": 20,
+   "timeout": [
+    "11:00 arrives. ENG-214 records another silent lecture.",
+    "Eight minutes was enough for one room — if someone had started."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What is the appliance actually listening to?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Reboot all 22 capture appliances remotely",
+     "result": "Eight minutes of reboots. At 11:00 they're still recording silence — and Saturday's status logs are gone.",
+     "consequence": "A reboot doesn't change a setting; it erases the evidence.",
+     "chips": [
+      "Evidence erased"
+     ],
+     "badges": [
+      {
+       "kind": "erase",
+       "text": "LOGS"
+      }
+     ],
+     "canonical": false,
+     "fail": "Reboots don't fix settings.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Team": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Read ENG-214's capture status, fix that one room, and make a test recording before 11:00",
+     "result": "INPUT: USB · level −∞. Switched to LINE. A 30-second test recording: Wes counting to ten.",
+     "consequence": "One reversible change, one room, with proof on the way.",
+     "chips": [
+      "One change",
+      "Evidence kept"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Wes": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask the vendor to roll everything back now",
+     "result": "Their change desk opens at noon. The 11:00 lecture records silent.",
+     "consequence": "Right process, wrong clock.",
+     "chips": [
+      "Too slow for 11:00"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Tell the lecturer to record on her phone",
+     "result": "She does. It sounds like a phone in a pocket.",
+     "consequence": "A workaround for one room, one hour.",
+     "chips": [
+      "Workaround"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The capture appliance's status page: online, disk OK — input USB, level minus infinity, firmware updated Saturday 2 a.m. Maya points at the input line.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "P",
+     "expr": "flat"
+    }
+   ],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Online. Healthy. Listening to nothing.",
+   "flags": [
+    "RV-121"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "input: USB · −∞"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 1452
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Green all along.",
+   "body": "The dashboard never checked sound. Its tiles turn green when an appliance answers the network and its disk has space. Twenty-two appliances answered faithfully for three days while every recording they made was silent. A heartbeat, not an outcome.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S05E01-1",
+   "label": "Test: what does this rule out as proof?"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Maya explains to Wes at the dashboard.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "flat"
+    },
+    {
+     "id": "wes",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "A heartbeat says 'I'm here'. An outcome says 'you got what you came for'. The wall only knows heartbeats."
+    },
+    {
+     "side": "R",
+     "who": "Wes",
+     "kind": "speech",
+     "text": "So we need a tile that turns red when a lecture is silent."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-124"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7010
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "dark",
+   "where": null,
+   "lines": [
+    {
+     "who": "wes",
+     "pose": "N",
+     "expr": "surprised",
+     "text": "It's all green. Every tile. How is it all green?"
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Because it's asking the wrong question. 'Are you there?' Not 'did anyone hear the lecture?'"
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View of ENG-214: mics and DSP fine; loudspeakers fine; the capture appliance listening to its empty USB input; the portal silent. Below: the dashboard's heartbeat says online; the student's outcome is silence.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The room hears everything. The recording hears nothing.",
+   "flags": [
+    "RV-121",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3178
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Field notes",
+   "sub": "Intermediate · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Maya and Wes beside a board. Percent is part over whole, times a hundred. Part: the rooms that failed. Whole: every room we have. Twenty-two over four hundred… five and a half percent. Then the time budget: count times time each. Twenty-two rooms, six minutes to prove each. Say it before you promise it.",
+   "characters": [
+    {
+     "id": "maya",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "wes",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Percent is part over whole, times a hundred. Part: the rooms that failed. Whole: every room we have."
+    },
+    {
+     "side": "R",
+     "who": "Wes",
+     "kind": "speech",
+     "text": "Twenty-two over four hundred… five and a half percent."
+    },
+    {
+     "side": "L",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then the time budget: count times time each. Twenty-two rooms, six minutes to prove each. Say it before you promise it."
+    }
+   ],
+   "narration": [],
+   "caption": "Intermediate: the formula and what every letter means. The arithmetic is yours.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7527
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t2",
+   "text": "📗 FIELD NOTES · INTERMEDIATE  Terms   Outcome check   Heartbeat check   Update ring   Formula and variables   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of     ƒ FORMULA · Time budget  T = Σ (count × time each)   count  how many of each task  time each  minutes or seconds per task — keep units the same"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lab",
+   "id": "LAB-SF-14",
+   "label": "**Fix it:** give the recording its sound back.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “ENG*”",
+   "sub": "11:20 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The vendor's change record: ring 1 was defined as ENG*, intended as four pilot rooms, and it matched 22. The new firmware changed the default input from LINE to USB.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "A pilot of four became a building of twenty-two.",
+   "flags": [
+    "RV-122"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1077
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S5-01b",
+   "teaser": "the room list",
+   "title": "ENG-B12 · basement lab",
+   "body": "The last room the wildcard caught is ENG-B12, the basement lab. Kai's section meets there on Tuesdays. Three lab lectures, silent. Maya writes his name on a sticky note and puts it on her monitor.",
+   "thread": "The students you never see",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "ENG* matched everything — including ENG-B12.",
+   "body": "The wildcard caught every Engineering room, down to ENG-B12 in the basement — the lab room where Kai's section meets on Tuesdays. The student who reported it at 2 a.m. had already missed three lab lectures.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S05E01-2",
+   "label": "Test: who does this change things for?"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "M6",
+   "label": "**Learn it now:** monitoring outcomes at scale.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Sound that brings people in     What the room is telling you     The five fundamentals of sound"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E01-02",
+   "prompt": "ENG-214 is fixed. Twenty-one rooms to go, and you'll never stand in most of them. How do you prove each one?",
+   "happening": "ENG-214 proven. 21 rooms to go.",
+   "clock": "11:25",
+   "known": [
+    "◉ One room proven by test recording",
+    "◉ Profile corrected"
+   ],
+   "unknown": [
+    "Whether each room took the profile"
+   ],
+   "risk": "Declaring 21 rooms fixed on the wall's word.",
+   "timer_s": 25,
+   "timeout": [
+    "Wes pushes the profile and everyone watches the tiles stay green.",
+    "Green told you nothing on Saturday either."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Which path does Kai use to hear a lecture?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "When each tile turns green",
+     "result": "Every tile was green while they recorded silence.",
+     "consequence": "The wall was never measuring this.",
+     "chips": [
+      "Wrong proof"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Green is a heartbeat.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "A 30-second test recording in each room, played back from the student portal",
+     "result": "Twenty-one test recordings. Wes plays each one back on a student account. Every one has sound.",
+     "consequence": "Proof on the path the students use.",
+     "chips": [
+      "Outcome proof",
+      "Scales"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Wes": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Ask lecturers to email if it's still silent",
+     "result": "They don't know it's silent — they never watch their own recordings.",
+     "consequence": "The people who'd notice aren't the ones you asked.",
+     "chips": [
+      "Wrong witnesses"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Lecturers don't watch recordings.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Walk to all 21 rooms",
+     "result": "Six hours. It works, today.",
+     "consequence": "It works for 21. It won't work for 400.",
+     "chips": [
+      "Doesn't scale"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "The first recorded voice to play back",
+   "body": "In December 1877 Thomas Edison recited “Mary had a little lamb” into a machine that cut the sound into tinfoil wrapped around a cylinder — and heard it played back. The phonograph was astonishing because it proved what it had captured by giving it back. Every test recording since has done the same job: don't trust the machine, listen to what it kept.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "Wes on a student account plays back test recordings one after another; each one has his own voice counting to ten. Maya checks them off a list.",
+   "characters": [
+    {
+     "id": "wes",
+     "pose": "N",
+     "expr": "grin"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s5kit.bg_avops",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wes",
+     "kind": "speech",
+     "text": "Twenty-one rooms of me counting to ten. I sound terrible."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "You sound like proof."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-124"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "21 test recordings · sound"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 7542
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S05E01-03",
+   "prompt": "Friday. What changes so the next silence isn't found by a student at 2 a.m.?",
+   "happening": "All 22 rooms proven.",
+   "clock": "Friday",
+   "known": [
+    "◉ Dashboard measured heartbeats",
+    "◉ Ring defined by wildcard"
+   ],
+   "unknown": [
+    "The next update"
+   ],
+   "risk": "The same silence, somewhere else.",
+   "timer_s": 25,
+   "timeout": [
+    "The week ends. Nobody changes the wall.",
+    "Fixing the room without fixing the wall leaves the next room to a student."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would have turned a tile red on Saturday?"
+    }
+   ],
+   "note": "Draft decision (DR-S05E01).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "An audio-level check on every capture appliance, and a change request: rings use explicit room lists",
+     "result": "Silent recordings now turn a tile red in ten minutes. The vendor agrees in writing.",
+     "consequence": "The dashboard measures the outcome; the process can't grow a pilot into a building.",
+     "chips": [
+      "Outcome monitoring",
+      "Process fixed"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Block all vendor updates",
+     "result": "Next month's security fix doesn't install.",
+     "consequence": "Trading one risk for a bigger one.",
+     "chips": [
+      "New risk"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "Updates carry security fixes; control them, don't stop them.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "Team": -1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Email the vendor's CEO",
+     "result": "A satisfying email. Nothing changes on the wall.",
+     "consequence": "Blame isn't a control.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing — it's fixed",
+     "result": "The next silent firmware lands in June.",
+     "consequence": "The same wall, the same blind spot.",
+     "chips": [
+      "Nothing learned"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": "A fix without a lesson repeats.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -3,
+      "sev": 2,
+      "trust": {
+       "June": -1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-71",
+   "label": "**First failure point:** where does the silence begin?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-71",
+   "label": "**Sequence:** prove a fix in rooms you'll never visit.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-501",
+   "label": "**Service Mode:** run Tuesday morning yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-025 · SIGNAL original  Lecture Capture, Silent  Twenty-two rooms. Three days. Every tile green. Every recording silent.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-025"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Friday · 4:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "System View after the fix: the capture appliance takes the DSP's line out; the portal has sound; the dashboard's new audio check is green because the outcome is good.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Now green means the student heard the lecture.",
+   "flags": [
+    "RV-121",
+    "VR-06"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3641
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "warm",
+   "where": "Tuesday · 3:10 p.m.",
+   "lines": [
+    {
+     "who": "nadia",
+     "pose": "N",
+     "expr": "smile",
+     "text": "You didn't reboot anything."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "The logs were the only witness."
+    },
+    {
+     "who": "nadia",
+     "pose": "W",
+     "expr": "smile",
+     "text": "Ray trained you."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "smile",
+     "text": "Ray trained me."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A reply from Kai: the lectures have sound again; someone emailed him the lab notes; he returned the headphones.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Behind every tile, a person you'll never meet.",
+   "flags": [
+    "RV-123"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1465
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A hospital clinic room with a telehealth cart. Dr. Imogen Hale, the clinical simulation and telehealth lead, is on the phone.",
+   "characters": [
+    {
+     "id": "hale",
+     "pose": "H",
+     "expr": "worried"
+    }
+   ],
+   "location": "s5kit.bg_clinic",
+   "bubbles": [
+    {
+     "side": "C",
+     "who": "Dr. Hale",
+     "kind": "phone",
+     "text": "Maya? Imogen Hale, telehealth. Our carts freeze mid-consult. Only three rooms. Only weekday mornings. Patients are starting to hang up on their doctors."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *The Clinical Room.*",
+   "flags": [
+    "RV-120"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1883
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  A dashboard that checks whether devices answer can stay green while users fail. Measure the outcome — a recording with sound, a call that connects — and prove each fix on the path the user takes. Pilots are lists, not wildcards."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Kai bought headphones before he filed a ticket. What in your own systems makes people blame themselves first?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S05E01",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

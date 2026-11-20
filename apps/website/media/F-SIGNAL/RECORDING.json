@@ -1,0 +1,138 @@
+{
+  "key": "F-SIGNAL",
+  "title": "SIGNAL: Ten Seats, played",
+  "product": "learn",
+  "recordedAt": "2026-11-19T23:41:34.716Z",
+  "duration": 45.31,
+  "viewport": "1280x720",
+  "colorScheme": "dark",
+  "data": "synthetic demonstration data",
+  "role": "architect",
+  "demoBuild": {
+    "commit": null,
+    "builtAt": "2026-11-19T23:05:29.841Z"
+  },
+  "git": "eca7f43",
+  "steps": [
+    {
+      "at": 0,
+      "shown": 0.02,
+      "until": 8.87,
+      "say": "SIGNAL, season 1, episode 1: Ten Seats. A mystery, solved with geometry.",
+      "proof": "[data-testid=film-title]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 8.87,
+      "shown": 9.35,
+      "until": 13.55,
+      "say": "The case: ten seats where the sound goes hollow.",
+      "proof": "[data-testid=film][data-kind=quest]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 13.55,
+      "shown": 14.48,
+      "until": 19.8,
+      "say": "Generated footage of a fictional sanctuary, labelled as such in the film.",
+      "proof": "[data-testid=film][data-shot=\"10\"][data-kind=footage]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 19.8,
+      "shown": 20.43,
+      "until": 25.05,
+      "say": "A decision stops the film in the frame: what do you do first?",
+      "proof": "[data-testid=film][data-shot=\"15\"][data-kind=decision]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 25.05,
+      "shown": 26,
+      "until": 31.83,
+      "say": "Measure it yourself: each hollow seat’s notch, from the room’s own geometry.",
+      "proof": "[data-testid=film][data-shot=\"17\"][data-kind=play]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 31.83,
+      "shown": 32.52,
+      "until": 38.76,
+      "say": "Test the fill: turn it down, and the notches get shallower, not gone.",
+      "proof": "[data-testid=film][data-shot=\"41\"][data-kind=play]",
+      "url": "/#/film/s01e01"
+    },
+    {
+      "at": 38.76,
+      "shown": 39.81,
+      "until": 45.31,
+      "say": "Re-aim it, and verify: the ten seats’ deep notches are gone.",
+      "proof": "[data-testid=film][data-shot=\"58\"][data-kind=play]",
+      "url": "/#/film/s01e01"
+    }
+  ],
+  "voice": {
+    "label": "AI-generated voice (synthetic, not a real person): Qwen3-TTS preset voice Ryan",
+    "model": "Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "licence": "Apache-2.0 (the model); the takes are the project's own output",
+    "generated": "on the project's own build machine, one take per line, none chosen by ear yet",
+    "provenance": "docs/media/QWEN_TOUR_NARRATION.md",
+    "mixLufs": -16,
+    "takes": [
+      {
+        "step": 1,
+        "seconds": 8.37,
+        "sha256": "f75339d6df4a66d0a626f7c6fd7d192c2152ae3f9fc4e0e547c489ceb20fdb7f"
+      },
+      {
+        "step": 2,
+        "seconds": 3.32,
+        "sha256": "eb63e70d7db3f4fb6501ba4673b61b63340eec7742c893de28aff9367b1b4abc"
+      },
+      {
+        "step": 3,
+        "seconds": 4.87,
+        "sha256": "99dbf712b207399d7b7f1fcba3fced18a9ca3f8823aad84afb6a2c6a3b32d8f3"
+      },
+      {
+        "step": 4,
+        "seconds": 3.52,
+        "sha256": "171e83abecdd6e6ec23cd9419e3d1b984be017ed404584a8501b9724556d4cad"
+      },
+      {
+        "step": 5,
+        "seconds": 5.38,
+        "sha256": "761e98172f34203a93f2a54c7122683e1744d408acffa1d0ab92c2f82272df1a"
+      },
+      {
+        "step": 6,
+        "seconds": 5.79,
+        "sha256": "a9253f7da2bb374c99a3a787fe8e8633147662d80d7c178d3e6a11dc53ef2642"
+      },
+      {
+        "step": 7,
+        "seconds": 5.05,
+        "sha256": "e4ba0601699258f2d0b8bc7299a9b001dafa1b5680a8ed228c647b4536b4dbf4"
+      }
+    ]
+  },
+  "files": {
+    "720.mp4": {
+      "bytes": 1921894,
+      "sha256": "e4a6d6d95f7fe2260a4076d03b687b61c97db882a22ade4e190444d40adc432d"
+    },
+    "poster.webp": {
+      "bytes": 50344,
+      "sha256": "e7cf3907c67beaac62693d919ee909bf3b4f544a4065fede9446292c1bd867a6"
+    },
+    "poster.jpg": {
+      "bytes": 94544,
+      "sha256": "ce6a97b641f5769e3d14fed2c889ddb24e341d3ad9d4d346e7059879b073af0f"
+    },
+    "captions.vtt": {
+      "bytes": 1079,
+      "sha256": "5aab7f7f90511c9fcfe44a699d40f84bb258c8f22d78d68a5ee66b1ebd5fd9dc"
+    }
+  }
+}

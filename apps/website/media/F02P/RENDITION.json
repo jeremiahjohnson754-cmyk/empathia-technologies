@@ -1,0 +1,30 @@
+{
+  "key": "F02P",
+  "title": "The living system: a divisible hall, designed to proven",
+  "master": "46ee50741ad42d845f72c30bfec3ed2c3ba7122590e45220e9def1787a0e54f1",
+  "source": {
+    "path": "owner upload 2026-11-13 (1000042618.mp4: the master, captions burned in)",
+    "sha256": "46ee50741ad42d845f72c30bfec3ed2c3ba7122590e45220e9def1787a0e54f1"
+  },
+  "settings": "H.264 High CRF 24 maxrate 2200k, 720p, AAC 96k stereo, faststart; posters 1600 px",
+  "files": {
+    "720.mp4": {
+      "bytes": 12629996,
+      "sha256": "c9f73a781d2d585b2659b4dad84e5071708905af27296c3abf259b459188b386"
+    },
+    "poster.webp": {
+      "bytes": 45286,
+      "sha256": "047d6cbb52aa168c8a8f5677268920ec25d9d2230ccc3f572ef1582493e8b10a"
+    },
+    "poster.jpg": {
+      "bytes": 93014,
+      "sha256": "1824b9d9520e7149b3c72b123c4943ba5e99375928df1754a7c6795f2bf40674"
+    },
+    "captions.vtt": {
+      "bytes": 3819,
+      "sha256": "882818b6d4b22a0fa9610db0e8bc988dd805bbd192073ed17e11d1a523c157ba"
+    }
+  },
+  "at": "2026-11-14T00:04:09.417Z",
+  "rightsWebsite": "VERIFIED"
+}

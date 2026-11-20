@@ -1,0 +1,553 @@
+[
+ {
+  "id": "tour-g-09",
+  "stop": "G9",
+  "title": "A failure becomes work",
+  "text": "In use, things fail. When they do, the problem becomes work: a ServiceHands job tied to this room and, where it is known, to the exact device.",
+  "sentences": [
+   "In use, things fail.",
+   "When they do, the problem becomes work: a ServiceHands job tied to this room and, where it is known, to the exact device."
+  ],
+  "say": "In use, things fail. When they do, the problem becomes work: a ServiceHands job tied to this room and, where it is known, to the exact device."
+ },
+ {
+  "id": "tour-g-12",
+  "stop": "G12",
+  "title": "A change reopens exactly what it touches",
+  "text": "When the camera is replaced, the system reopens only the tests that involve that position. The old results stay as history. They never count for the new unit.",
+  "sentences": [
+   "When the camera is replaced, the system reopens only the tests that involve that position.",
+   "The old results stay as history.",
+   "They never count for the new unit."
+  ],
+  "say": "When the camera is replaced, the system reopens only the tests that involve that position. The old results stay as history. They never count for the new unit."
+ },
+ {
+  "id": "tour-g-13",
+  "stop": "G13",
+  "title": "Re-accepted, history kept",
+  "text": "The reopened tests are run again, and verified independently. Baseline two becomes current. Baseline one is kept, so you can always compare.",
+  "sentences": [
+   "The reopened tests are run again, and verified independently.",
+   "Baseline two becomes current.",
+   "Baseline one is kept, so you can always compare."
+  ],
+  "say": "The reopened tests are run again, and verified independently. Baseline two becomes current. Baseline one is kept, so you can always compare."
+ },
+ {
+  "id": "tour-g-15",
+  "stop": "G15",
+  "title": "What leadership sees",
+  "text": "The same records roll up to leadership. Every figure traces back to the rooms and the jobs it came from. None of it is streamed from a real building.",
+  "sentences": [
+   "The same records roll up to leadership.",
+   "Every figure traces back to the rooms and the jobs it came from.",
+   "None of it is streamed from a real building."
+  ],
+  "say": "The same records roll up to leadership. Every figure traces back to the rooms and the jobs it came from. None of it is streamed from a real building."
+ },
+ {
+  "id": "tour-g-16",
+  "stop": "G16",
+  "title": "One room. Now the whole estate.",
+  "text": "The failure map shows every building’s open issues, as counts and per 10 rooms, from the same records. Follow everything that happened to one room, then imagine that across the enterprise. (Turning a resolved fault into a reviewed lesson in Learn is designed, not built yet.)",
+  "sentences": null,
+  "say": "The failure map shows every building’s open issues, as counts and per 10 rooms, from the same records. Follow everything that happened to one room, then imagine that across the enterprise. (Turning a resolved fault into a reviewed lesson in Learn is designed, not built yet.)"
+ },
+ {
+  "id": "tour-a-01",
+  "stop": "A1",
+  "title": "From the company site to the product",
+  "text": "This is the investor demonstration. Everything in it is synthetic and runs in this browser; nothing is connected to a real building.",
+  "sentences": null,
+  "say": "This is the investor demonstration. Everything in it is synthetic and runs in this browser; nothing is connected to a real building."
+ },
+ {
+  "id": "tour-a-02",
+  "stop": "A2",
+  "title": "An explorable campus",
+  "text": "Six buildings on the campus map, and 140 rooms across the estate with its other sites. The glyph on a building counts its open issues, taken from the room records.",
+  "sentences": null,
+  "say": "Six buildings on the campus map, and 140 rooms across the estate with its other sites. The glyph on a building counts its open issues, taken from the room records."
+ },
+ {
+  "id": "tour-a-03",
+  "stop": "A3",
+  "title": "A building",
+  "text": "Atlas HQ, the headquarters. Pick a floor; the floors without a modelled room say so.",
+  "sentences": null,
+  "say": "Atlas HQ, the headquarters. Pick a floor; the floors without a modelled room say so."
+ },
+ {
+  "id": "tour-a-04",
+  "stop": "A4",
+  "title": "A floor",
+  "text": "Floor 4: the room footprints are their modelled dimensions, not a survey.",
+  "sentences": null,
+  "say": "Floor 4: the room footprints are their modelled dimensions, not a survey."
+ },
+ {
+  "id": "tour-a-06",
+  "stop": "A6",
+  "title": "Inspect a device",
+  "text": "The camera position keeps its code while the unit changed: position, asset and identity state are shown together, and the identity stays UNKNOWN because no serial is invented.",
+  "sentences": null,
+  "say": "The camera position keeps its code while the unit changed: position, asset and identity state are shown together, and the identity stays UNKNOWN because no serial is invented."
+ },
+ {
+  "id": "tour-a-07",
+  "stop": "A7",
+  "title": "Who supports this room",
+  "text": "Search Party answers from recorded relationships: support paths, synthetic agreements with fictional organisations, and internal competencies with their verification state.",
+  "sentences": null,
+  "say": "Search Party answers from recorded relationships: support paths, synthetic agreements with fictional organisations, and internal competencies with their verification state."
+ },
+ {
+  "id": "tour-a-08",
+  "stop": "A8",
+  "title": "Core Replay: the camera change",
+  "text": "The replay walks the room’s history. Watching or scrubbing never changes the record.",
+  "sentences": null,
+  "say": "The replay walks the room’s history. Watching or scrubbing never changes the record."
+ },
+ {
+  "id": "tour-a-09",
+  "stop": "A9",
+  "title": "Acceptance held, honestly",
+  "text": "The tests the replacement reopened were re-run and verified by someone else, yet the engine still holds acceptance: an exception is pending approval.",
+  "sentences": null,
+  "say": "The tests the replacement reopened were re-run and verified by someone else, yet the engine still holds acceptance: an exception is pending approval."
+ },
+ {
+  "id": "tour-a-10",
+  "stop": "A10",
+  "title": "The room’s story",
+  "text": "Every event behind the state, with who and when. From here, explore freely.",
+  "sentences": null,
+  "say": "Every event behind the state, with who and when. From here, explore freely."
+ },
+ {
+  "id": "tour-b-01",
+  "stop": "B1",
+  "title": "An existing room",
+  "text": "Start from the reference room’s record: design, installations, baselines and tests in one place.",
+  "sentences": null,
+  "say": "Start from the reference room’s record: design, installations, baselines and tests in one place."
+ },
+ {
+  "id": "tour-b-02",
+  "stop": "B2",
+  "title": "Field Intelligence discovery",
+  "text": "A scan of the room, observe-only first. Every reading is labelled simulated: there is no instrument here.",
+  "sentences": null,
+  "say": "A scan of the room, observe-only first. Every reading is labelled simulated: there is no instrument here."
+ },
+ {
+  "id": "tour-b-03",
+  "stop": "B3",
+  "title": "The scan report",
+  "text": "Findings carry their provenance — simulated, inferred or known — and none is called measured.",
+  "sentences": null,
+  "say": "Findings carry their provenance, simulated, inferred or known, and none is called measured."
+ },
+ {
+  "id": "tour-b-04",
+  "stop": "B4",
+  "title": "Design comparison",
+  "text": "The room against its design: the engine’s design checks re-run on the current revision.",
+  "sentences": null,
+  "say": "The room against its design: the engine’s design checks re-run on the current revision."
+ },
+ {
+  "id": "tour-b-05",
+  "stop": "B5",
+  "title": "Commissioning",
+  "text": "The engine judges which tests apply and why; the ones that do not apply say why not.",
+  "sentences": null,
+  "say": "The engine judges which tests apply and why; the ones that do not apply say why not."
+ },
+ {
+  "id": "tour-b-06",
+  "stop": "B6",
+  "title": "Evidence",
+  "text": "Each result names its evidence and its recorder, and is verified by a different person.",
+  "sentences": null,
+  "say": "Each result names its evidence and its recorder, and is verified by a different person."
+ },
+ {
+  "id": "tour-b-07",
+  "stop": "B7",
+  "title": "An asset change",
+  "text": "The camera unit was replaced at the same position. The old installation closed, the new one opened, and the tests it touches reopened.",
+  "sentences": null,
+  "say": "The camera unit was replaced at the same position. The old installation closed, the new one opened, and the tests it touches reopened."
+ },
+ {
+  "id": "tour-b-08",
+  "stop": "B8",
+  "title": "Assurance",
+  "text": "Baseline v1 stays current; v2 waits for acceptance. Nothing is overwritten.",
+  "sentences": null,
+  "say": "Baseline version one stays current; version two waits for acceptance. Nothing is over-written."
+ },
+ {
+  "id": "tour-b-09",
+  "stop": "B9",
+  "title": "A pattern across the campus",
+  "text": "Search Party groups the open issues of all thirty rooms by system. A cluster is a prompt to look, not a root cause.",
+  "sentences": null,
+  "say": "Search Party groups the open issues of all thirty rooms by system. A cluster is a prompt to look, not a root cause."
+ },
+ {
+  "id": "tour-b-10",
+  "stop": "B10",
+  "title": "The room’s story",
+  "text": "The ledger behind every state. From here, explore freely.",
+  "sentences": null,
+  "say": "The ledger behind every state. From here, explore freely."
+ },
+ {
+  "id": "tour-c-01",
+  "stop": "C1",
+  "title": "A SIGNAL chapter",
+  "text": "Lessons, drills and cases from the SIGNAL library, carried over unchanged.",
+  "sentences": null,
+  "say": "Lessons, drills and cases from the Signal library, carried over unchanged."
+ },
+ {
+  "id": "tour-c-02",
+  "stop": "C2",
+  "title": "Hear it: the audio lab",
+  "text": "Change the processing and hear the room change. The voices are AI-generated and labelled so.",
+  "sentences": null,
+  "say": "Change the processing and hear the room change. The voices are AI-generated and labelled so."
+ },
+ {
+  "id": "tour-c-03",
+  "stop": "C3",
+  "title": "See it: the camera lab",
+  "text": "Framing and coverage as a model of the room, never a measurement.",
+  "sentences": null,
+  "say": "Framing and coverage as a model of the room, never a measurement."
+ },
+ {
+  "id": "tour-c-04",
+  "stop": "C4",
+  "title": "Light it: the lighting lab",
+  "text": "Scenes and their effect on the picture, simulated.",
+  "sentences": null,
+  "say": "Scenes and their effect on the picture, simulated."
+ },
+ {
+  "id": "tour-c-05",
+  "stop": "C5",
+  "title": "Diagnose, repair, verify",
+  "text": "A real storyline of the campus: the camera replaced at Atlas 4.218, the tests it reopened, and the independent verification.",
+  "sentences": null,
+  "say": "A real storyline of the campus: the camera replaced at Atlas four point two one eight, the tests it reopened, and the independent verification."
+ },
+ {
+  "id": "tour-c-06",
+  "stop": "C6",
+  "title": "Competency evidence",
+  "text": "Completing a lab is evidence of competency, shown with its verification state; it never authorises work by itself.",
+  "sentences": null,
+  "say": "Completing a lab is evidence of competency, shown with its verification state; it never authorises work by itself."
+ },
+ {
+  "id": "tour-c-07",
+  "stop": "C7",
+  "title": "Back to the room",
+  "text": "The lesson came from this room. From here, explore freely.",
+  "sentences": null,
+  "say": "The lesson came from this room. From here, explore freely."
+ },
+ {
+  "id": "tour-d-01",
+  "stop": "D1",
+  "title": "Everyone starts where their work is",
+  "text": "This is Mission Control, where the people who run the estate start. Every other role has its own start page: View as shows all fifteen. Press g and a letter to jump.",
+  "sentences": null,
+  "say": "This is Mission Control, where the people who run the estate start. Every other role has its own start page: View as shows all fifteen. Press G and a letter to jump."
+ },
+ {
+  "id": "tour-d-02",
+  "stop": "D2",
+  "title": "140 rooms, one estate",
+  "text": "Six buildings on the map and seven more sites: 140 rooms, each with its devices, tests, baselines and history. Open any building.",
+  "sentences": null,
+  "say": "Six buildings on the map and seven more sites: 140 rooms, each with its devices, tests, baselines and history. Open any building."
+ },
+ {
+  "id": "tour-d-03",
+  "stop": "D3",
+  "title": "A room you can walk around",
+  "text": "A ballroom that divides in four. Turn it, switch the lens from visitor to engineer, and compare what was designed, commissioned, current and proposed.",
+  "sentences": null,
+  "say": "A ballroom that divides in four. Turn it, switch the lens from visitor to engineer, and compare what was designed, commissioned, current and proposed."
+ },
+ {
+  "id": "tour-d-04",
+  "stop": "D4",
+  "title": "Find the way",
+  "text": "Choose where you are going: the route is step by step, with a step-free choice. A site away from the campus says so first.",
+  "sentences": null,
+  "say": "Choose where you are going: the route is step by step, with a step-free choice. A site away from the campus says so first."
+ },
+ {
+  "id": "tour-d-05",
+  "stop": "D5",
+  "title": "Search anything",
+  "text": "One box over rooms, devices, people, issues and pages. Type anything you like, or press one of these.",
+  "sentences": null,
+  "say": "One box over rooms, devices, people, issues and pages. Type anything you like, or press one of these."
+ },
+ {
+  "id": "tour-d-06",
+  "stop": "D6",
+  "title": "If this switch fails, what is affected?",
+  "text": "Search Party starts from one switch and walks to its uplink, the rooms that share it and the power behind it. Each step names its source.",
+  "sentences": null,
+  "say": "Search Party starts from one switch and walks to its uplink, the rooms that share it and the power behind it. Each step names its source."
+ },
+ {
+  "id": "tour-d-07",
+  "stop": "D7",
+  "title": "Four worlds on the same engines",
+  "text": "Enterprise, a stadium, a university and a convention centre: each with its own places, people and journeys, and the same records underneath.",
+  "sentences": null,
+  "say": "Enterprise, a stadium, a university and a convention centre: each with its own places, people and journeys, and the same records underneath."
+ },
+ {
+  "id": "tour-d-08",
+  "stop": "D8",
+  "title": "A stadium on game day",
+  "text": "Move the event from doors to final whistle, put a fault on the ribbon display, and work it: acknowledge, dispatch, fix, and a second person verifies.",
+  "sentences": null,
+  "say": "Move the event from doors to final whistle, put a fault on the ribbon display, and work it: acknowledge, dispatch, fix, and a second person verifies."
+ },
+ {
+  "id": "tour-d-09",
+  "stop": "D9",
+  "title": "Three ways to equip a room",
+  "text": "The Space Optimizer scores options A, B and C on nine dimensions and shows the rule behind every score.",
+  "sentences": null,
+  "say": "The Space Optimizer scores options A, B and C on nine dimensions and shows the rule behind every score."
+ },
+ {
+  "id": "tour-d-10",
+  "stop": "D10",
+  "title": "Proof, not claims",
+  "text": "One room’s commissioning dossier: 27 tests passed, 3 pending, 2 failed. Acceptance is held, and the page says exactly why.",
+  "sentences": null,
+  "say": "One room’s commissioning dossier: 27 tests passed, 3 pending, 2 failed. Acceptance is held, and the page says exactly why."
+ },
+ {
+  "id": "tour-d-11",
+  "stop": "D11",
+  "title": "A problem, followed to closure",
+  "text": "Reported in plain words, triaged, assigned only to people who pass the checks, repaired with evidence, verified by someone else, closed with the requester.",
+  "sentences": null,
+  "say": "Reported in plain words, triaged, assigned only to people who pass the checks, repaired with evidence, verified by someone else, closed with the requester."
+ },
+ {
+  "id": "tour-d-12",
+  "stop": "D12",
+  "title": "No connection, still working",
+  "text": "The app saves itself on the device. With the network cut, Lite, Commissioning, Assurance and ServiceHands still open, and work done offline is kept.",
+  "sentences": null,
+  "say": "The app saves itself on the device. With the network cut, Lite, Commissioning, Assurance and ServiceHands still open, and work done offline is kept."
+ },
+ {
+  "id": "tour-d-13",
+  "stop": "D13",
+  "title": "SIGNAL: learning as a story",
+  "text": "The Prologue and 133 chapters across twelve seasons: read them or play them as scenes, with decisions that can fail and things to find.",
+  "sentences": null,
+  "say": "The Prologue and 133 chapters across twelve seasons: read them or play them as scenes, with decisions that can fail and things to find."
+ },
+ {
+  "id": "tour-d-14",
+  "stop": "D14",
+  "title": "What is real today",
+  "text": "Everything you saw is synthetic and runs in this browser. Nothing is sold from here. From this page, explore freely or send an enquiry.",
+  "sentences": null,
+  "say": "Everything you saw is synthetic and runs in this browser. Nothing is sold from here. From this page, explore freely or send an enquiry."
+ },
+ {
+  "id": "tour-e-01",
+  "stop": "E1",
+  "title": "Someone arrives",
+  "text": "A technician is sent to a room they have never seen. Their start page has “In a room”; every door label opens the same page.",
+  "sentences": null,
+  "say": "A technician is sent to a room they have never seen. Their start page has “In a room”; every door label opens the same page."
+ },
+ {
+  "id": "tour-e-02",
+  "stop": "E2",
+  "title": "Which room?",
+  "text": "A name, a number, or the code on the door. Type “4.218”, or press the reference room.",
+  "sentences": null,
+  "say": "A name, a number, or the code on the door. Type “four point two one eight”, or press the reference room."
+ },
+ {
+  "id": "tour-e-03",
+  "stop": "E3",
+  "title": "What is in the room",
+  "text": "Atlas 4.218 in a sentence, then by kind. Press a kind and it is ringed on the plan; press 3D for the same room in three dimensions.",
+  "sentences": null,
+  "say": "Atlas four point two one eight in a sentence, then by kind. Press a kind and it is ringed on the plan; press three-D for the same room in three dimensions."
+ },
+ {
+  "id": "tour-e-04",
+  "stop": "E4",
+  "title": "The same room in Lite",
+  "text": "Lite draws the same positions, with lenses for a visitor, an employee and an engineer, and the room as designed, commissioned, current and proposed.",
+  "sentences": null,
+  "say": "Lite draws the same positions, with lenses for a visitor, an employee and an engineer, and the room as designed, commissioned, current and proposed."
+ },
+ {
+  "id": "tour-e-05",
+  "stop": "E5",
+  "title": "What has happened here",
+  "text": "An open sound job that came back after an earlier one was closed, a design finding, and a camera that was replaced. Newest and still-open first.",
+  "sentences": null,
+  "say": "An open sound job that came back after an earlier one was closed, a design finding, and a camera that was replaced. Newest and still-open first."
+ },
+ {
+  "id": "tour-e-06",
+  "stop": "E6",
+  "title": "Everything linked to it",
+  "text": "Search Party opens on this room: its devices, its jobs, who supports it and what depends on what, each relationship with its source.",
+  "sentences": null,
+  "say": "Search Party opens on this room: its devices, its jobs, who supports it and what depends on what, each relationship with its source."
+ },
+ {
+  "id": "tour-e-07",
+  "stop": "E7",
+  "title": "What is wrong",
+  "text": "“The room can’t hear the call” becomes this room’s equipment in signal order: room compute, audio processor, loudspeakers, joined as the record connects them. And a job already describes it.",
+  "sentences": null,
+  "say": "“The room can’t hear the call” becomes this room’s equipment in signal order: room compute, audio processor, loudspeakers, joined as the record connects them. And a job already describes it."
+ },
+ {
+  "id": "tour-e-08",
+  "stop": "E8",
+  "title": "Try this",
+  "text": "One step at a time, written for this room’s equipment. Answer each one yourself. Nothing asks anyone to open a cabinet or change a commissioned setting.",
+  "sentences": null,
+  "say": "One step at a time, written for this room’s equipment. Answer each one yourself. Nothing asks anyone to open a cabinet or change a commissioned setting."
+ },
+ {
+  "id": "tour-e-09",
+  "stop": "E9",
+  "title": "Write it down",
+  "text": "Add what you saw to the job that already exists, or send a new one. Press the button: it is really written, in this browser.",
+  "sentences": null,
+  "say": "Add what you saw to the job that already exists, or send a new one. Press the button: it is really written, in this browser."
+ },
+ {
+  "id": "tour-e-10",
+  "stop": "E10",
+  "title": "The technician’s side",
+  "text": "ServiceHands shows the job with who reported it, what was already tried in the room, and anyone who saw it again.",
+  "sentences": null,
+  "say": "ServiceHands shows the job with who reported it, what was already tried in the room, and anyone who saw it again."
+ },
+ {
+  "id": "tour-e-11",
+  "stop": "E11",
+  "title": "The evidence behind the room",
+  "text": "The room’s commissioning dossier: every test with its evidence. Acceptance needs two approvals from two roles and is held while a test is failed or pending.",
+  "sentences": null,
+  "say": "The room’s commissioning dossier: every test with its evidence. Acceptance needs two approvals from two roles and is held while a test is failed or pending."
+ },
+ {
+  "id": "tour-e-12",
+  "stop": "E12",
+  "title": "One room, one record",
+  "text": "The room you walked into, drew in Lite, searched, reported on and inspected was the same record each time. From here, explore freely.",
+  "sentences": null,
+  "say": "The room you walked into, drew in Lite, searched, reported on and inspected was the same record each time. From here, explore freely."
+ },
+ {
+  "id": "tour-f-01",
+  "stop": "F1",
+  "title": "The estate at a glance",
+  "text": "Commissioning across 140 rooms: accepted, accepted with conditions, blocked, in commissioning. Every count is a rule over the room records, written on the page.",
+  "sentences": null,
+  "say": "Commissioning across 140 rooms: accepted, accepted with conditions, blocked, in commissioning. Every count is a rule over the room records, written on the page."
+ },
+ {
+  "id": "tour-f-02",
+  "stop": "F2",
+  "title": "Drill into a building",
+  "text": "Each building with its rooms by state. Open Beacon: its floors, each with its own counts. A count opens just those rooms.",
+  "sentences": null,
+  "say": "Each building with its rooms by state. Open Beacon: its floors, each with its own counts. A count opens just those rooms."
+ },
+ {
+  "id": "tour-f-03",
+  "stop": "F3",
+  "title": "Down to the rooms of a floor",
+  "text": "Beacon, floor 3: every room with its state and why. Beacon 3.225 is blocked.",
+  "sentences": null,
+  "say": "Beacon, floor 3: every room with its state and why. Beacon three point two two five is blocked."
+ },
+ {
+  "id": "tour-f-04",
+  "stop": "F4",
+  "title": "Why acceptance is held",
+  "text": "Five phases of checks. A must-have check failed and a high deficiency is open, so acceptance cannot be given yet. The page says which rule stops it.",
+  "sentences": null,
+  "say": "Five phases of checks. A must-have check failed and a high deficiency is open, so acceptance cannot be given yet. The page says which rule stops it."
+ },
+ {
+  "id": "tour-f-05",
+  "stop": "F5",
+  "title": "From requirement to evidence",
+  "text": "Each requirement, the design positions that meet it, the checks that prove it, their evidence and the result. The audio requirement is where it fails.",
+  "sentences": null,
+  "say": "Each requirement, the design positions that meet it, the checks that prove it, their evidence and the result. The audio requirement is where it fails."
+ },
+ {
+  "id": "tour-f-06",
+  "stop": "F6",
+  "title": "The completion package",
+  "text": "The whole record as files: a PDF report, an editable Word document, an Excel register, a PowerPoint deck, a JSON dossier and a CSV. Each says what it is and who made it.",
+  "sentences": null,
+  "say": "The whole record as files: a PDF report, an editable Word document, an Excel register, a PowerPoint deck, a J-SON doss-ee-ay and a C-S-V. Each says what it is and who made it."
+ },
+ {
+  "id": "tour-f-07",
+  "stop": "F7",
+  "title": "What changed since handover",
+  "text": "Assurance compares the room now with the room as commissioned: seventeen dimensions over seven layers. A replaced camera reopened tests; people reported audio dropping out.",
+  "sentences": null,
+  "say": "Assurance compares the room now with the room as commissioned: seventeen dimensions over seven layers. A replaced camera reopened tests; people reported audio dropping out."
+ },
+ {
+  "id": "tour-f-08",
+  "stop": "F8",
+  "title": "The service request",
+  "text": "The far-end audio job, opened by a person in the room. It came back after an earlier one was closed, so it is marked as a recurrence.",
+  "sentences": null,
+  "say": "The far-end audio job, opened by a person in the room. It came back after an earlier one was closed, so it is marked as a recurrence."
+ },
+ {
+  "id": "tour-f-09",
+  "stop": "F9",
+  "title": "What APEX thinks is wrong",
+  "text": "Seven layers of evidence, hypotheses ranked with why each is not proven, and actions bounded by tier. The bounded action is blocked here because no adapter is configured, and that is logged too.",
+  "sentences": null,
+  "say": "Seven layers of evidence, hypotheses ranked with why each is not proven, and actions bounded by tier. The bounded action is blocked here because no adapter is configured, and that is logged too."
+ },
+ {
+  "id": "tour-f-10",
+  "stop": "F10",
+  "title": "Back up to the board",
+  "text": "The portfolio brief: the estate by building and room type, every room, the rooms to act on first and the trend, as a deck for the board or a workbook to filter.",
+  "sentences": null,
+  "say": "The portfolio brief: the estate by building and room type, every room, the rooms to act on first and the trend, as a deck for the board or a workbook to filter."
+ }
+]

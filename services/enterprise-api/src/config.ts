@@ -11,7 +11,7 @@ export interface Config {
   databaseUrl: string;          // runtime role (empathia_app): RLS applies
   ownerDatabaseUrl: string;     // schema owner: migrations and seed only
   workerDatabaseUrl: string;    // outbox worker role (empathia_worker): the only role the cross-tenant worker policies admit
-  authMode: 'dev' | 'oidc';
+  authMode: 'dev' | 'oidc' | 'demo';
   jwtSecret: Buffer;
   jwtIssuer: string;
   jwtAudience: string;
@@ -22,6 +22,12 @@ export interface Config {
   dbStatementTimeoutMs: number; workerStatementTimeoutMs: number;
   maxBodyBytes: number;
   rateLimitPerMinute: number;
+  /**
+   * Demonstration sessions (ADR-0013). Null unless DEMO_SESSIONS=on or AUTH_MODE=demo. Their tokens are signed with their own secret and
+   * audience and reach sandbox tenants only. AUTH_MODE=demo is the public demonstration deployment: nothing but demonstration sessions
+   * is accepted, and it is the one mode besides OIDC that production admits.
+   */
+  demo: { secret: Buffer; issuer: string; audience: string; ttlSeconds: number; remoteSalt: string; maxBodyBytes: number; maxUploadBytes: number } | null;
   /** OIDC (AUTH_MODE=oidc): the provider's issuer, the audience this API accepts, the JWKS URL, and whether a verified email may bind a first sign-in to an existing person */
   oidc: { issuer: string; audience: string; jwksUrl: string; linkByEmail: boolean } | null;
   /** Telemetry (packages/observability): TELEMETRY=none|file|sentry (sentry is implied by SENTRY_DSN), the DSN, the NDJSON file for TELEMETRY=file, the request sampling rate */
@@ -42,7 +48,10 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
   const env = (e['NODE_ENV'] === 'production' ? 'production' : e['NODE_ENV'] === 'test' ? 'test' : 'development') as Config['env'];
   const authMode = (e['AUTH_MODE'] || 'dev') as Config['authMode'];
   if (env === 'production' && authMode === 'dev') throw new Error('AUTH_MODE=dev is refused in production: configure OIDC');
-  if (authMode !== 'dev' && authMode !== 'oidc') throw new Error(`AUTH_MODE must be dev or oidc (got ${authMode})`);
+  if (authMode !== 'dev' && authMode !== 'oidc' && authMode !== 'demo') throw new Error(`AUTH_MODE must be dev, oidc or demo (got ${authMode})`);
+  const demoOn = authMode === 'demo' || e['DEMO_SESSIONS'] === 'on';
+  // a deployment is the product or the demonstration, never both: real identities and sandbox sessions do not share a process
+  if (demoOn && authMode === 'oidc') throw new Error('DEMO_SESSIONS=on is refused with AUTH_MODE=oidc: run the demonstration as its own deployment (AUTH_MODE=demo)');
   let oidc: Config['oidc'] = null;
   if (authMode === 'oidc') {
     for (const k of ['OIDC_ISSUER', 'OIDC_AUDIENCE', 'OIDC_JWKS_URL']) if (!e[k]) throw new Error(`${k} is required when AUTH_MODE=oidc`);
@@ -50,6 +59,8 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
     oidc = { issuer: e['OIDC_ISSUER']!, audience: e['OIDC_AUDIENCE']!, jwksUrl: e['OIDC_JWKS_URL']!, linkByEmail: e['OIDC_LINK_BY_EMAIL'] === 'on' };
   }
   let secret = e['JWT_SECRET'];
+  // AUTH_MODE=demo never issues or accepts a sign-in token: in production, without JWT_SECRET, it takes one that lives and dies with the process
+  if (!secret && authMode === 'demo' && env === 'production') secret = crypto.randomBytes(48).toString('base64url');
   if (!secret) {
     if (env === 'production') throw new Error('JWT_SECRET is required in production');
     const f = path.join(repo, '.local/jwt-secret');
@@ -57,6 +68,21 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
     secret = fs.readFileSync(f, 'utf8').trim();
   }
   if (Buffer.byteLength(secret) < 32) throw new Error('JWT_SECRET must be at least 32 bytes');
+  let demo: Config['demo'] = null;
+  if (demoOn) {
+    let ds = e['DEMO_SESSION_SECRET'];
+    if (!ds) {
+      if (env === 'production') throw new Error('DEMO_SESSION_SECRET is required in production when demonstration sessions are on');
+      ds = crypto.createHmac('sha256', secret).update('empathia demonstration sessions').digest('base64url');   // development and tests: derived, never the sign-in secret itself
+    }
+    if (Buffer.byteLength(ds) < 32) throw new Error('DEMO_SESSION_SECRET must be at least 32 bytes');
+    if (ds === secret) throw new Error('DEMO_SESSION_SECRET must differ from JWT_SECRET');
+    const ttl = Number(e['DEMO_SESSION_TTL_SECONDS'] || 1800);
+    if (!(ttl >= 60 && ttl <= 86400)) throw new Error('DEMO_SESSION_TTL_SECONDS is between 60 and 86400');
+    demo = { secret: Buffer.from(ds), issuer: 'empathia-demo-sessions', audience: 'empathia-demo-session', ttlSeconds: ttl,
+      remoteSalt: e['DEMO_REMOTE_SALT'] || crypto.createHmac('sha256', ds).update('remote address salt').digest('hex'),
+      maxBodyBytes: Number(e['DEMO_MAX_BODY_BYTES'] || 64 * 1024), maxUploadBytes: Number(e['DEMO_MAX_UPLOAD_BYTES'] || 16 * 1024) };
+  }
   const tmode = (e['TELEMETRY'] || (e['SENTRY_DSN'] ? 'sentry' : 'none')) as Config['telemetry']['mode'];
   if (!['none', 'file', 'sentry'].includes(tmode)) throw new Error(`TELEMETRY must be none, file or sentry (got ${tmode})`);
   if (tmode === 'sentry' && !e['SENTRY_DSN']) throw new Error('TELEMETRY=sentry requires SENTRY_DSN');
@@ -77,7 +103,7 @@ export function loadConfig(repo: string, over: Partial<Record<string, string>> =
     dbStatementTimeoutMs: Number(e['DB_STATEMENT_TIMEOUT_MS'] || 15000), workerStatementTimeoutMs: Number(e['WORKER_STATEMENT_TIMEOUT_MS'] || 60000),
     maxBodyBytes: Number(e['MAX_BODY_BYTES'] || 25 * 1024 * 1024),
     rateLimitPerMinute: Number(e['RATE_LIMIT_PER_MINUTE'] || 600),
-    oidc,
+    oidc, demo,
     telemetry: { mode: tmode, dsn: e['SENTRY_DSN'] || null, file: e['TELEMETRY_FILE'] || null, tracesSampleRate: tRate },
     release: { name: 'empathia-enterprise-api', version: '0.1.0', sha: e['RELEASE_SHA'] || e['RENDER_GIT_COMMIT'] || buildInfo(repo).sha, environment: e['RELEASE_ENVIRONMENT'] || env },
   };

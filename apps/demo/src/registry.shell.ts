@@ -1,0 +1,91 @@
+/**
+ * Pages of the shell slice (owner: rebuild/demo-shell): the investor start, Scouter (inside Lite, D41) and the policy page.
+ * Contract: registry.types.ts and README-routes.md.
+ */
+import type { PageDef } from './registry.types.js';
+import { ROLE_KEYS } from './access/policy.js';
+declare const process: { env: Record<string, string | undefined> };   // replaced at build time (esbuild define)
+import { createElement as h, type ComponentType } from 'react';
+import { adapt } from './registry.adapt.js';
+import type { PageProps } from './registry.types.js';
+
+/** A shell page is its own build entry (apps/demo/build.mjs SHELL_PAGES), versioned by the build id; a retry adds &retry=n, a fresh fetch. */
+const entry = (name: string) => (attempt = 0): Promise<{ default: ComponentType<PageProps> }> =>
+  import(/* computed: a retry must not reuse the failed fetch */ new URL(`shell/${name}.js?v=${process.env.DEMO_BUILD_ID || 'dev'}${attempt ? `&retry=${attempt}` : ''}`, document.baseURI).href);
+
+export const SHELL_PAGES: readonly PageDef[] = [
+  {
+    // the V2.5 Policy page as the demonstrator had it: what each native page checks and the role × area matrix, verbatim
+    id: 'policy', title: 'Policy', purpose: 'Role access, licences, adapters — the demonstrator’s role × area matrix', product: 'shell',
+    path: '/v25/policy', authority: { roles: ROLE_KEYS, why: 'the V2.5 Policy page: a demonstration of authorization, shown to every role' },
+    load: adapt(() => import('./pages/Control.js'), (m, p) => h(m.LedgerPage, { perspective: p.role, policy: true })),
+    search: { keywords: 'policy role area matrix licences adapters', aliases: ['role matrix'] },
+  },
+  {
+    id: 'investor', title: 'Investor start', purpose: 'Three ways in: Build a Room, guided scenarios, the problems each workflow solves', product: 'shell',
+    path: '/investor', alias: ['/tours/investor'], authority: { area: 'investor' },
+    load: entry('landing'),
+    search: { keywords: 'start investor scenarios tour guided', aliases: ['start', 'tour', 'guided scenarios'] },
+  },
+  {
+    id: 'scouter', title: 'Scouter', purpose: 'Does this device suit this room? Each device class checked against the room’s own requirement, with the source of every figure', product: 'lite',
+    // D41: Scouter is part of Lite and stays highly discoverable there; the V2.5.3 and V2.5 addresses open the same page
+    path: '/campus/scouter', alias: ['/campus/scouter/:candidate', '/scouter', '/scouter/:candidate', '/v25/scouter', '/suite/scouter', '/lite/scouter'],
+    authority: { area: 'scouter' },
+    actions: [{ id: 'scout.pick', label: 'Propose for the design', authority: { action: 'scout.pick' } }],
+    load: entry('scouter'),
+    search: { keywords: 'scouter device evaluation compare candidates market watch standard profile shortlist', aliases: ['scouter', 'scout', 'evaluate a device', 'does this device suit', 'device evaluation', 'which camera', 'which display', 'which microphone'] },
+  },
+  {
+    // V2.5.3's Scouter anatomy, restored 12 Nov 2026: a device class opened into its blocks (an educational functional model)
+    id: 'scouter.anatomy', title: 'Scouter anatomy', purpose: 'A device class opened into its blocks: what each does, how it fails, the test that tells; break one to see where the symptom travels', product: 'lite',
+    path: '/scouter/anatomy', alias: ['/scouter/anatomy/:cls', '/lite/scouter/anatomy', '/lite/scouter/anatomy/:cls'], authority: { area: 'scouter' },
+    load: () => import('./campus/AnatomyPage.js'),
+    search: { keywords: 'anatomy device blocks layers signal power network control firmware mounting fault isolate', aliases: ['anatomy', 'device anatomy', 'inside a camera'] },
+  },
+  {
+    // Founder, 18 Nov 2026: the CTS practice exam and learning space, the Pre CTS-D and CTS-I spaces, and how the three differ
+    id: 'learn.certs', title: 'Certifications: CTS, CTS-D, CTS-I', purpose: 'The three AVIXA certifications side by side: who each is for, how the exams compare, where to study each', product: 'learn',
+    path: '/learn/certifications', alias: ['/certifications', '/learn/certs'], authority: { roles: ROLE_KEYS, why: 'study material with no record in it (founder, 18 Nov 2026): every role may study, and a practice score grants nothing' },
+    load: adapt(() => import('./certs/CertPage.js'), (m) => h(m.CertPage, { cert: 'all' })),
+    search: { keywords: 'certification certifications cts cts-d cts-i avixa exam compare difference study', aliases: ['certifications', 'cts vs cts-d', 'which certification'] },
+  },
+  {
+    id: 'learn.cts', title: 'CTS study space', purpose: 'The CTS exam: facts and weights as AVIXA publishes them, a study guide per duty, the math and physics, original practice exams and drills, exam-day strategy', product: 'learn',
+    path: '/learn/cts', alias: ['/learn/cts/:tab', '/cts', '/cts/:tab'], authority: { roles: ROLE_KEYS, why: 'study material with no record in it (founder, 18 Nov 2026): every role may study, and a practice score grants nothing' },
+    load: adapt(() => import('./certs/CertPage.js'), (m, p) => h(m.CertPage, { cert: 'CTS', tab: p.params['tab'] })),
+    search: { keywords: 'cts certified technology specialist practice exam test questions quiz study guide formulas avixa', aliases: ['cts', 'cts practice exam', 'cts exam', 'cts practice test'] },
+  },
+  {
+    id: 'learn.ctsd', title: 'CTS-D study space', purpose: 'The CTS-D design exam: facts, duties and weights, a study guide, coordination and documentation, practice, strategy', product: 'learn',
+    path: '/learn/cts-d', alias: ['/learn/cts-d/:tab', '/cts-d', '/cts-d/:tab'], authority: { roles: ROLE_KEYS, why: 'study material with no record in it (founder, 18 Nov 2026): every role may study, and a practice score grants nothing' },
+    load: adapt(() => import('./certs/CertPage.js'), (m, p) => h(m.CertPage, { cert: 'CTS-D', tab: p.params['tab'] })),
+    search: { keywords: 'cts-d ctsd design certification exam practice study guide avixa', aliases: ['cts-d', 'ctsd', 'cts design'] },
+  },
+  {
+    id: 'learn.ctsi', title: 'CTS-I study space', purpose: 'The CTS-I installation exam: facts, duties and weights, a study guide, installation practice, strategy', product: 'learn',
+    path: '/learn/cts-i', alias: ['/learn/cts-i/:tab', '/cts-i', '/cts-i/:tab'], authority: { roles: ROLE_KEYS, why: 'study material with no record in it (founder, 18 Nov 2026): every role may study, and a practice score grants nothing' },
+    load: adapt(() => import('./certs/CertPage.js'), (m, p) => h(m.CertPage, { cert: 'CTS-I', tab: p.params['tab'] })),
+    search: { keywords: 'cts-i ctsi installation certification exam practice study guide avixa', aliases: ['cts-i', 'ctsi', 'cts installation'] },
+  },
+  {
+    // A5 (12 Nov 2026): the first equipment lesson of the Equipment Experience Engine: applicability, sources, film, practice
+    id: 'learn.lesson', title: 'Equipment lesson', purpose: 'How to use the equipment in front of you: what the lesson applies to, its sources and state, the film with captions, and one practice decision', product: 'learn',
+    path: '/learn/lesson', alias: ['/learn/lesson/:id'], authority: { roles: ROLE_KEYS, why: 'training content about a room type, with no record in it: every role may learn from it, and learning grants nothing' },
+    load: () => import('./training/LessonPage.js'),
+    search: { keywords: 'lesson training teams rooms console join meeting share leave tutorial film how to use', aliases: ['lesson', 'how to join a meeting', 'teams rooms'] },
+  },
+  {
+    // 60/10 P1 (12 Nov 2026): the five axes of the Experience Language, each shown in every value, both themes, at any width
+    id: 'design.axes', title: 'Five axes', purpose: 'Condition, provenance, confidence, workflow and maturity: five separate things a screen can say about a value, never one colour', product: 'shell',
+    path: '/design/axes', authority: { roles: ROLE_KEYS, why: 'a reference page of the design language: it shows no record, so every role may read it' },
+    load: () => import('./pages/AxesPage.js'),
+    search: { keywords: 'design language axes condition provenance confidence workflow maturity measured modeled simulated assumed', aliases: ['axes', 'design language'] },
+  },
+  {
+    id: 'access', title: 'Access policy', purpose: 'Who may open, see and do what: the demonstration’s access policy, from V2.5.3', product: 'shell',
+    path: '/access', authority: { roles: ROLE_KEYS, why: 'the V2.5 Policy page: a demonstration of authorization, shown to every role' },
+    load: entry('policy'),
+    search: { keywords: 'access roles permissions who can', aliases: ['access policy', 'permissions', 'roles'] },
+  },
+];

@@ -1,0 +1,878 @@
+{
+ "chapter": {
+  "id": "s09e02",
+  "kicker": "S09 · E02",
+  "title": "Signage Says Evacuate",
+  "pill": "S09E02 · Signage Says Evacuate",
+  "sub": "Forty seconds of “EVACUATE” on every lobby screen. No fire. Why could a screen say that at all?",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S09E02",
+   "RV-170",
+   "RV-172",
+   "RV-173",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#F472B6"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 9 · EPISODE 2 · DRAFT · CASE-046  The lobby · Maya, Tamsin (the duty manager), Solveig and Marshal Lindqvist · Level L5 · Advanced support (formulas on request)  Forty seconds of “EVACUATE” on every lobby screen, in a full interval, with no fire. The duty manager held the stairs. Now: why could a screen say that at all?  ⚑ RV-173: a false evacuation message is a hazard; the incident commander decides whether people move or stay. RV-172: figures illustrative. Some choices run on a clock."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "Signage Says Evacuate",
+   "kind": "LIVE VENUE · LIFE SAFETY",
+   "level": "L5 · ADVANCED",
+   "party": [
+    "maya",
+    "tamsin",
+    "solveig"
+   ],
+   "stakes": "Forty seconds of ‘EVACUATE’ on every lobby screen in a full interval. No fire. The evening show is at half past seven.",
+   "clock": "Before the evening show.",
+   "reward": "A building where a screen can repeat a safety message but never start one.",
+   "objectives": [
+    {
+     "key": "BR-S09E02-01",
+     "text": "Decide what you do at 15:12"
+    },
+    {
+     "key": "twist",
+     "text": "Find where it came from"
+    },
+    {
+     "key": "core",
+     "text": "Find the first wrong step"
+    },
+    {
+     "key": "BR-S09E02-02",
+     "text": "Decide what signage may do in an emergency"
+    },
+    {
+     "key": "BR-S09E02-03",
+     "text": "Decide about the person who pressed publish"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "A false alarm is a hazard of its own."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Forty seconds”",
+   "sub": "Saturday · 3:10 p.m. · lobby"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The lobby in the matinee interval: every screen on the wall reads EVACUATE in red; the fire alarm panel beside it reads NORMAL; Tamsin, the duty manager, points her radio at the ushers.",
+   "characters": [
+    {
+     "id": "tamsin",
+     "pose": "P",
+     "expr": "worried"
+    }
+   ],
+   "location": "s8kit.bg_foyer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "radio",
+     "text": "Ushers — hold the stairs. Nobody runs."
+    }
+   ],
+   "narration": [],
+   "caption": "15:10:05. The panel says normal.",
+   "flags": [
+    "RV-173"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3955
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "lobby · Saturday 15:12",
+   "lines": [
+    {
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I held the stairs. I paged them. It's my call and I made it. Now tell me what the screens were doing."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "I'll tell you what they can and can't do right now — then we find out why."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “A drill slide went live”",
+   "sub": "Saturday · 3:12 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E02-01",
+   "prompt": "15:12. The screens are back to adverts. The evening show is at 19:30. What do you do?",
+   "happening": "False EVACUATE for 40 s.",
+   "clock": "Saturday 15:12 · evening show 19:30",
+   "known": [
+    "◉ No alarm",
+    "◉ 40 s on the lobby wall"
+   ],
+   "unknown": [
+    "Who published it"
+   ],
+   "risk": "A second false message at the evening show — or lost evidence.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody pauses publishing.",
+    "The same template sits one click away at 19:30."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who owns the channel, the audience and the evidence?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Put ‘IGNORE THE SCREENS — NO FIRE’ on the lobby wall",
+     "result": "Tamsin: “Not on the thing that just lied to them.”",
+     "consequence": "Counter-messages on a channel nobody can trust right now.",
+     "chips": [
+      "Counter-message"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "INCIDENT COMMANDER'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Never counter-message on the compromised channel.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Tamsin": -2
+      }
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask marketing to pause all publishing; tell Tamsin what the screens can and can't do right now; ask Solveig to preserve the CMS logs. Delete nothing",
+     "result": "Publishing paused by its owner; logs exported read-only; Tamsin decides the evening runs with no signage messages.",
+     "consequence": "Stop the channel through its owner, give the incident commander facts, keep the evidence.",
+     "chips": [
+      "Owner",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Solveig": 2,
+       "Tamsin": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Pull the power on every screen",
+     "result": "Solveig: “I need them as they are.” The exit screens go dark too.",
+     "consequence": "Loses evidence and a tool the duty manager might need.",
+     "chips": [
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Page the house: ‘That was a mistake, sorry’",
+     "result": "Tamsin: “Paging is mine. I've already done it — in words that don't make people guess.”",
+     "consequence": "Not your announcement.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "INCIDENT COMMANDER'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Paging in an incident is the incident commander's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Tamsin": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "A drill slide went live.",
+   "body": "The CMS log is plain: at 15:10:05 a new marketing assistant published ‘EVACUATE — DRILL’, a template made for next Thursday's staff fire drill. The date defaulted to today. The ‘DRILL’ banner was a separate layer placed for a 16:9 screen — on the lobby wall's 32:9 canvas it fell off the edge. There was no approval step. Not an attack. Worse, in a way: an ordinary mistake with nothing to catch it.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E02-1",
+   "label": "Test: how long — and was it an attack?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Ask for it",
+   "sub": "Advanced · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Tamsin and Maya beside a board. Fifteen-ten and five seconds to fifteen-ten and forty-five. Forty seconds of EVACUATE on the lobby wall. And about ninety of the six hundred and twenty people in the lobby started moving. Fourteen and a half percent. My ushers held them. Next time the screen won't say it at all.",
+   "characters": [
+    {
+     "id": "tamsin",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s8kit.bg_foyer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "Fifteen-ten and five seconds to fifteen-ten and forty-five. Forty seconds of EVACUATE on the lobby wall."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And about ninety of the six hundred and twenty people in the lobby started moving. Fourteen and a half percent."
+    },
+    {
+     "side": "L",
+     "who": "Tamsin",
+     "kind": "speech",
+     "text": "My ushers held them. Next time the screen won't say it at all."
+    }
+   ],
+   "narration": [],
+   "caption": "Advanced: the formula is there if you ask. Try without it first.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 1810
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t3",
+   "text": "📙 ON REQUEST · ADVANCED  Terms   Emergency template   Approval workflow   Content management system   If you need it   ƒ Ask for the formula · Difference   ƒ FORMULA · Difference  Δ = A − B   A  the larger value  B  the smaller value      ƒ Ask for the formula · Percentage   ƒ FORMULA · Percentage  % = part ÷ whole × 100   part  the piece you are measuring  whole  everything it is part of"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "G2",
+   "label": "**Learn it now:** emergency messages — who starts them, who repeats them.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Point it at people, not at the ceiling     The OSI model applied to the whole system     What the room is telling you"
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "chal-note",
+   "cls": "chal-note",
+   "text": "🎥 SEE IT · CHALLENGE · LEVEL 3  Colour the promo so it reads  A physics simulation of this episode's problem. Change real settings, check your work, and see exactly why it passes or fails. Wrong gear fails on the spot.  Take the challenge ▸",
+   "opens": {
+    "kind": "chal",
+    "id": "see-promo"
+   }
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A timeline sheet, local time: 15:09:58 fire panel normal; 15:10:05 the CMS publishes ‘EVACUATE — DRILL’ from a marketing account, highlighted; 15:10:05 the lobby wall shows EVACUATE THE BUILDING with the banner off-canvas, highlighted; 15:10:20 the duty manager pages ‘stay where you are’; 15:10:45 withdrawn; 15:11:00 stairs held, nobody hurt. Footer: 40 s, no alarm, 90 of 620 moving, 14.5%.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Forty seconds, one click, no approver.",
+   "flags": [
+    "RV-172"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "CMS log + panel log"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 4148
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "F-902",
+   "label": "**Find it:** where did ‘EVACUATE’ come from?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “A second emergency path nobody accepted”",
+   "sub": "Monday · 10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "A second emergency path nobody accepted.",
+   "body": "The integrator's commissioning notes, page 12: ‘CMS configured as alternate emergency channel — six emergency templates in the shared library — per GM request.’ The old general manager wanted ‘a backup way to tell people’. It never appeared in the fire alarm designer's sequence, and Marshal Lindqvist never saw it. Her verdict takes one sentence: “Signage may repeat what the fire system and your staff say. It may not start it.”",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S09E02-2",
+   "label": "Test: how many templates — and who accepts life-safety messaging?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E02-02",
+   "prompt": "Monday. What may signage do in an emergency from now on?",
+   "happening": "The alternate channel found.",
+   "clock": "Monday 10:30",
+   "known": [
+    "◉ Six emergency templates",
+    "◉ Never in the sequence"
+   ],
+   "unknown": [
+    "What the relay needs"
+   ],
+   "risk": "An unaccepted emergency channel, one click from the next false alarm.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes before Thursday's drill.",
+    "The drill template is still in the library."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Who accepted how this building tells people to leave?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Keep the templates; add an ‘are you sure?’ pop-up",
+     "result": "The next hurried click says yes.",
+     "consequence": "A pop-up isn't a design.",
+     "chips": [
+      "Still originates"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Emergency templates out of the library; a read-only relay from the fire panel puts one fixed ‘follow staff instructions’ slide on the exit screens — reviewed by the marshal before it's live",
+     "result": "The fire alarm contractor fits the relay; the marshal watches it work; the library holds nothing that can start an evacuation.",
+     "consequence": "Repeat the accepted system; never originate.",
+     "chips": [
+      "Relay",
+      "Marshal"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Team": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Keep signage as an emergency channel, but only security may publish",
+     "result": "Marshal Lindqvist: “Then it's an emergency channel I never accepted.”",
+     "consequence": "Still an unaccepted origin.",
+     "chips": [
+      "Not accepted"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "MARSHAL'S"
+      }
+     ],
+     "canonical": false,
+     "fail": "Life-safety messaging is the marshal's to accept.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Lindqvist": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Turn signage off for good",
+     "result": "The exit screens can't even say ‘follow staff instructions’.",
+     "consequence": "Throws away the useful repeat.",
+     "chips": [
+      "Overcorrection"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "A drama that sounded like news",
+   "body": "On the evening of 30 October 1938 an American radio drama told a Martian invasion of New Jersey as a series of news bulletins. Some listeners who tuned in late believed it. Newspapers the next day reported a nationwide panic; historians now think the panic was far smaller than the headlines. Broadcasters took the lesson anyway: fiction that sounds like an emergency message needs care — and so do real ones.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #83 · AVERY'S LENS  A screen may repeat a safety message — never start one  Life-safety messages come from the system and the people built and accepted for them. Everything else may only repeat them.  The signage system had quietly become a second, unaccepted emergency channel — and anyone in marketing could press its button."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S09E02",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The emergency-path sheet after the fix: the fire panel alarm drives a relay and a fixed slide on the exit screens; no emergency templates in the library; every publish needs two named approvals; the scheduler's date is empty until chosen; tested — the slide appears in 1.2 s, accepted by the marshal. Footer: signage repeats, it never originates.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "One origin. Everything else repeats.",
+   "flags": [
+    "RV-173"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "marshal watched the relay"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 3570
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S9-02",
+   "who": "tamsin",
+   "prompt": "Marketing wants to know if the assistant is going to be fired.",
+   "options": [
+    {
+     "label": "“Not if I have any say. She did what the system let her do. The system let anyone publish an evacuation. That's what we fix.”",
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "Good. I'll tell her. She's been crying in the office since three.",
+     "trust": {
+      "Tamsin": 2
+     }
+    },
+    {
+     "label": "“That's HR's decision.”",
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "It is. I was asking what you think.",
+     "trust": {
+      "Tamsin": 0
+     }
+    },
+    {
+     "label": "“Someone has to be responsible.”",
+     "who": "tamsin",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Someone is. It's whoever let that button exist.",
+     "trust": {
+      "Tamsin": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-02a",
+   "teaser": "the CMS log",
+   "title": "15:10:05 · publish · EVACUATE — DRILL",
+   "body": "The CMS log, exported by security: ‘15:10:05 publish EVACUATE — DRILL → lobby wall, exit screens 1–2 · scheduled for: (today)’. The account is a new marketing assistant's named login. No approver field exists.",
+   "thread": "Safety",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S09E02-03",
+   "prompt": "Tuesday. Marketing asks what happens to the assistant who pressed publish.",
+   "happening": "Emergency path fixed.",
+   "clock": "Tuesday 09:00",
+   "known": [
+    "◉ No approval step anywhere"
+   ],
+   "unknown": [
+    "What else a default can publish"
+   ],
+   "risk": "A culture where the next mistake is hidden.",
+   "timer_s": 25,
+   "timeout": [
+    "Marketing decides alone.",
+    "The assistant is moved off signage."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "Would anyone have caught it — and would anyone report the next one?"
+    }
+   ],
+   "note": "Draft decision (DR-S09E02).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "She's taken off signage",
+     "result": "The next new starter hits the same default date.",
+     "consequence": "Removes a person, keeps the gap.",
+     "chips": [
+      "Blame"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "No blame: the system let anyone publish an evacuation. Two-person approval on every publish, scheduler dates empty by default, templates previewed on each screen's real canvas — and she helps write the training",
+     "result": "She writes the one-page guide herself. It's the best one the venue has.",
+     "consequence": "Fix what allowed it; keep the person who found it.",
+     "chips": [
+      "Blameless",
+      "Approval"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "A written warning",
+     "result": "Everyone learns to hide mistakes.",
+     "consequence": "Teaches silence.",
+     "chips": [
+      "Silence"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Nothing — it's fixed",
+     "result": "Approval is still off for everything else.",
+     "consequence": "Half a fix.",
+     "chips": [
+      "Partial"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-902",
+   "label": "**Service Mode:** run Saturday afternoon to Tuesday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "casefile-note",
+   "cls": "casefile-note",
+   "text": "📁 CASE FILE · CASE-046 · SIGNAL original  Signage Says Evacuate  It was a drill slide, a default date and a banner that fell off the screen. The real fault was that the screen could say it at all.   Open the case file ▸   Learn · Service · Engineer — it doesn't change your story progress.",
+   "case": "CASE-046"
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Thursday · the staff fire drill"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The lobby during Thursday's staff fire drill: the fire panel in ALARM; one wall of screens shows a single green slide, FOLLOW STAFF INSTRUCTIONS; Marshal Lindqvist nods; Maya beside her.",
+   "characters": [
+    {
+     "id": "lindqvist",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s8kit.bg_foyer",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Marshal Lindqvist",
+     "kind": "speech",
+     "text": "The fire system starts it. The screens repeat it. That's the order."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "And nothing in the library can say anything else."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [
+    "RV-173"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2343
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S9-02b",
+   "teaser": "the commissioning notes",
+   "title": "‘alternate emergency channel’",
+   "body": "The integrator's commissioning notes, page 12: ‘CMS configured as alternate emergency channel — six emergency templates in the shared library — per GM request.’ No reference to the fire alarm sequence. No acceptance.",
+   "thread": "Safety",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The security office; Kit points at a printed DSP log; Maya reads it.",
+   "characters": [
+    {
+     "id": "kit",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s9kit.bg_soc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Kit",
+     "kind": "speech",
+     "text": "The hearing loop was off all Friday night. The DSP log says ‘admin’ did it at 19:42."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Which admin?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Shared Admin.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 2112
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Evacuation messages start in one accepted place — the fire alarm system and the incident commander’s staff — and everything else may only repeat them. A false alarm is a hazard (% = part ÷ whole × 100 of the people who moved). Don’t counter-message on a channel that just lied; the incident commander’s words go on paging. Remove emergency templates from any library, drive one fixed slide read-only from the fire panel, and have the marshal accept it. Fix the system, not the person."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · What in your building can tell people to leave — and who accepted that it could?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S09E02",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

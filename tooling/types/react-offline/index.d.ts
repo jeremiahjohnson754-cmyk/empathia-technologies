@@ -12,6 +12,8 @@ declare module 'react' {
   export type SetStateAction<S> = S | ((prev: S) => S);
   export function useState<S>(initial: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
   export function useEffect(effect: () => void | (() => void), deps?: readonly unknown[]): void;
+  /** React 19's own useLayoutEffect (runs after the DOM is updated, before paint): used where a view measures what it drew. */
+  export function useLayoutEffect(effect: () => void | (() => void), deps?: readonly unknown[]): void;
   export function useMemo<T>(factory: () => T, deps: readonly unknown[]): T;
   export function useRef<T>(initial: T): RefObject<T>;
   export function useRef<T>(initial: T | null): RefObject<T | null>;
@@ -23,7 +25,15 @@ declare module 'react' {
   export function useContext<T>(c: Context<T>): T;
   export const Fragment: (props: { children?: ReactNode }) => ReactElement;
   export const StrictMode: (props: { children?: ReactNode }) => ReactElement;
+  /** keyboard events of packages/ui's kit (the shim's JSX handlers receive JSX.ShimEvent, which this matches) */
+  export interface KeyboardEvent<T = Element> { key: string; target: any; currentTarget: T; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; altKey: boolean; preventDefault(): void; stopPropagation(): void }
+  /** pointer events (the mix lab's knobs, faders and graphs, 12 Nov 2026) */
+  export interface PointerEvent<T = Element> { pointerId: number; clientX: number; clientY: number; shiftKey: boolean; target: any; currentTarget: T; preventDefault(): void; stopPropagation(): void }
   export type FC<P = {}> = (props: P) => ReactElement | null;
+  /** the demo's page registry (apps/demo/src/registry.types.ts) and its adapters */
+  export type ComponentType<P = {}> = ((props: P) => ReactElement | null) | (new (props: P) => Component<P, unknown>);
+  export function createElement<P>(type: ComponentType<P> | string, props?: P | null, ...children: ReactNode[]): ReactElement;
+  export function memo<T>(c: T): T;
   /** Class components exist only for error boundaries (apps/enterprise-web/src/components/ErrorBoundary.tsx); hooks cannot catch render errors. */
   export class Component<P = {}, S = {}> {
     constructor(props: P);
@@ -43,8 +53,10 @@ declare module '*.css';
 declare namespace JSX {
   type Element = import('react').ReactElement;
   /** Event handlers get a contextual type so callbacks are checked; other props are open in the shim. */
-  interface ShimEvent { target: any; currentTarget: any; key: string; clientX: number; clientY: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; preventDefault(): void; stopPropagation(): void }
-  interface ShimProps { onChange?: (e: ShimEvent) => void; onClick?: (e: ShimEvent) => void; onKeyDown?: (e: ShimEvent) => void; onMouseDown?: (e: ShimEvent) => void; onMouseEnter?: (e: ShimEvent) => void; onError?: (e: ShimEvent) => void; onSubmit?: (e: ShimEvent) => void; [prop: string]: any }
+  interface ShimEvent { target: any; currentTarget: any; key: string; altKey: boolean; clientX: number; clientY: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; preventDefault(): void; stopPropagation(): void }
+  interface ShimPointer extends ShimEvent { pointerId: number }
+  interface ShimWheel extends ShimEvent { deltaY: number }
+  interface ShimProps { onPointerDown?: (e: ShimPointer) => void; onPointerDownCapture?: (e: ShimPointer) => void; onPointerMove?: (e: ShimPointer) => void; onPointerUp?: (e: ShimPointer) => void; onPointerLeave?: (e: ShimPointer) => void; onPointerCancel?: (e: ShimPointer) => void; onWheel?: (e: ShimWheel) => void; onChange?: (e: ShimEvent) => void; onClick?: (e: ShimEvent) => void; onKeyDown?: (e: ShimEvent) => void; onMouseDown?: (e: ShimEvent) => void; onMouseEnter?: (e: ShimEvent) => void; onError?: (e: ShimEvent) => void; onSubmit?: (e: ShimEvent) => void; [prop: string]: any }
   interface IntrinsicElements { [tag: string]: ShimProps }
   interface IntrinsicAttributes { key?: string | number | null }
   interface ElementChildrenAttribute { children: {} }

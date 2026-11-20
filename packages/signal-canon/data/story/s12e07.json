@@ -1,0 +1,849 @@
+{
+ "chapter": {
+  "id": "s12e07",
+  "kicker": "S12 · E07",
+  "title": "The Loudest Region",
+  "pill": "S12E07 · The Loudest Region",
+  "sub": "Three regions, ten rooms, and one regional head who has been in the CIO's office twice this week.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S12E07",
+   "RV-187",
+   "RV-188",
+   "RV-191",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#E5E7EB"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 12 · EPISODE 7 · DRAFT  Fenwright Group · month eight · Maya, Teodor (head of EMEA), Rashida (CIO) and the heads of AMERICAS and APAC by video · Level L6 · Mastery support (reference only — choose the tool and say why)  Next year's refresh batch is ten rooms. Three regions want them. One regional head has been in the CIO's office twice this week; another hasn't asked at all.  ⚑ RV-187: the money and the decision are the CIO's; each head argues for their region. RV-188: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Loudest Region",
+   "kind": "ESTATE · MONEY",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "teodor",
+    "rashida"
+   ],
+   "stakes": "Three regions, ten rooms, one very loud regional head.",
+   "clock": "The CIO decides on Thursday.",
+   "reward": "A decision the CIO can defend to all three — made on weights agreed before anyone scored.",
+   "objectives": [
+    {
+     "key": "BR-S12E07-01",
+     "text": "Decide how to start"
+    },
+    {
+     "key": "twist",
+     "text": "Score the regions"
+    },
+    {
+     "key": "core",
+     "text": "Order a fair decision"
+    },
+    {
+     "key": "BR-S12E07-02",
+     "text": "Decide what to do with Teodor's weights"
+    },
+    {
+     "key": "BR-S12E07-03",
+     "text": "Decide what Rashida sees"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Weights first."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “We go first”",
+   "sub": "Month eight · Tuesday · 10:00 a.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The architecture office; Teodor, head of EMEA, points firmly at the EMEA column on the estate board; Maya holds a single signed page.",
+   "characters": [
+    {
+     "id": "teodor",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "R",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Teodor",
+     "kind": "speech",
+     "text": "EMEA has the most rooms and the most senior people. Our refresh goes first."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The CIO agreed the criteria on Monday — before anyone scored."
+    }
+   ],
+   "narration": [],
+   "caption": "Ten rooms, three regions.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3268
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "Fenwright HQ · month eight, Tuesday",
+   "lines": [
+    {
+     "who": "teodor",
+     "pose": "N",
+     "expr": "flat",
+     "text": "EMEA has the most rooms and the most senior people. We go first."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then the evidence will say so. The CIO agreed the criteria on Monday."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “The loudest isn't the riskiest”",
+   "sub": "Month eight · Tuesday"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E07-01",
+   "prompt": "Three regions want the ten rooms. How do you start?",
+   "happening": "Three claims, one batch.",
+   "clock": "Month eight · Tuesday · decision Thursday",
+   "known": [
+    "◉ Ten rooms, ~$420k",
+    "◉ Criteria signed Monday"
+   ],
+   "unknown": [
+    "Which rooms need it most"
+   ],
+   "risk": "The loudest voice choosing — or the architect choosing for the owner.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "Teodor's third visit to the CIO settles it."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What has to be agreed before anyone sees a score?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Give EMEA the batch — it's the biggest region and Teodor won't let it go",
+     "result": "AMERICAS and APAC find out in the board minutes.",
+     "consequence": "Volume decides.",
+     "chips": [
+      "Loudest"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Agree the question, the criteria and the weights with Rashida before looking at any region — then collect evidence for every candidate room and rate it",
+     "result": "Rashida signed the criteria on Monday: risk 0.4, user impact 0.3, age 0.2, cost-efficiency 0.1. By Wednesday every candidate room has a fault log, an age and a headcount.",
+     "consequence": "Weights first, evidence next.",
+     "chips": [
+      "Weights first",
+      "Evidence"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Rashida": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Split the ten rooms three, three and four",
+     "result": "Each region gets a few rooms — not the ones failing most.",
+     "consequence": "Fair to regions, not to risk.",
+     "chips": [
+      "Even"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Rank the regions yourself and send the list round",
+     "result": "Rashida: “It's my decision.”",
+     "consequence": "The architect deciding the owner's question.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "The loudest isn't the riskiest.",
+   "body": "Rated from the evidence and weighted as agreed, S = Σ (w × r): APAC 4.2, AMERICAS 3.5, EMEA 3.3. APAC's candidate rooms are the oldest in the estate and fail most — Manila 2 had fourteen faults this year — and APAC's head hadn't asked for anything. EMEA scores lowest on risk for a good reason: its rooms are younger and run the template from month one, the one that draws a third of the complaints. Last, this year, because EMEA did it right.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E07-1",
+   "label": "Test: score AMERICAS — and why EMEA rated low on risk."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A weighted scoring table: weights risk 0.4, user impact 0.3, age 0.2, cost-efficiency 0.1; APAC rated 5, 3, 5, 3 → 4.2 (highlighted); AMERICAS 3, 4, 4, 3 → 3.5; EMEA 2, 5, 3, 4 → 3.3. Agreed Monday, before scoring.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "APAC, then AMERICAS, then EMEA.",
+   "flags": [
+    "RV-188"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "scored Wednesday"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5549
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-07a",
+   "teaser": "Monday's signed criteria",
+   "title": "‘risk 0.4 · impact 0.3 · age 0.2 · cost 0.1 — R.’",
+   "body": "A single page, signed by Rashida on Monday morning before any region's rooms were named: four criteria, four weights, one signature. Teodor saw it for the first time on Wednesday.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Teodor and Maya beside a board. EMEA has the most rooms and the most senior people. We go first. The CIO agreed four criteria and their weights on Monday — before anyone scored. And if I don't like the weights?",
+   "characters": [
+    {
+     "id": "teodor",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Teodor",
+     "kind": "speech",
+     "text": "EMEA has the most rooms and the most senior people. We go first."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The CIO agreed four criteria and their weights on Monday — before anyone scored."
+    },
+    {
+     "side": "L",
+     "who": "Teodor",
+     "kind": "speech",
+     "text": "And if I don't like the weights?"
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3712
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Weighted scoring   Refresh cliff   The situation  Three regions want the same refresh money. The CIO fixed four criteria and weights in advance. Which relationship ranks the regions — and why must the weights come first?   Which relationship do you reach for?  Weighted score  Time budget  Counting combinations     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "W7",
+   "label": "**Learn it now:** weighted decisions and the loudest voice.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     Sound that brings people in     Point it at people, not at the ceiling     The first step to networking, AV style"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "O-1207",
+   "label": "**Order it:** a fair decision, in order.",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "Moral algebra",
+   "body": "In 1772 Benjamin Franklin wrote to his friend Joseph Priestley, who couldn't make up his mind, describing what he called ‘moral or prudential algebra’: write the reasons for and against in two columns over several days, give each a weight, and strike out reasons of equal weight on opposite sides until the balance shows. Franklin's point wasn't the arithmetic. It was deciding what mattered before the mood of the moment decided for you.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Re-weight”",
+   "sub": "Month eight · Wednesday afternoon"
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Re-weight.",
+   "body": "Teodor reads the table and has a proposal: user impact matters more than anything — make it 0.5, and drop risk to 0.2. Maya works it through, because it deserves an honest answer: with his weights, EMEA scores 3.9, APAC 3.8, AMERICAS 3.7. The order flips. Nothing about the rooms changed — only the weights, after everyone could see which way they tipped.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S12E07-2",
+   "label": "Test: the re-weighted score — and where the proposal goes."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #118 · AVERY'S LENS  Agree the weights before anyone scores  When several people want the same money, the fair answer comes from criteria and weights the owner agrees in advance — and evidence rated against them. Changing the weights after the scores is choosing the answer first.  The loudest region wanted to go first. The evidence said it should go last — and then someone tried to change the weights."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S12E07",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The same table re-weighted after scoring — risk 0.2 and user impact 0.5 marked in red: EMEA 3.9, APAC 3.8, AMERICAS 3.7; the order flips. Choosing the answer, then building the reasons — Teodor's weights go to next year's round.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "The rooms didn't change.",
+   "flags": [
+    "RV-188"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "OBSERVED",
+     "label": "Teodor's proposal"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5584
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E07-02",
+   "prompt": "Teodor wants his weights used now. What do you do with them?",
+   "happening": "Teodor proposes new weights.",
+   "clock": "Month eight · Wednesday",
+   "known": [
+    "◉ APAC 4.2 · AMERICAS 3.5 · EMEA 3.3",
+    "◉ Re-weighted: EMEA 3.9"
+   ],
+   "unknown": [
+    "What Rashida will say"
+   ],
+   "risk": "A process everyone learns can be bent.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The weights change quietly by Friday."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "When would it be fair to change the weights?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E07).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Use them — he knows his region",
+     "result": "APAC's fourteen-fault room waits another year. APAC's head learns how decisions are really made.",
+     "consequence": "Re-weighting after scoring chooses the answer.",
+     "chips": [
+      "Re-weighted"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Hear his case in full; record his weights as a proposal for next year's round, to be agreed by Rashida before scoring; this round stays on Monday's weights — and show Rashida how close the scores are",
+     "result": "Teodor: “Next year, first thing.” Rashida puts it on January's agenda.",
+     "consequence": "Heard, recorded, sequenced — not retrofitted.",
+     "chips": [
+      "Fair",
+      "Recorded"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Rashida": 1,
+       "Teodor": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Refuse to discuss it",
+     "result": "Teodor goes to Rashida a fourth time, angrier.",
+     "consequence": "Right outcome, wrong way.",
+     "chips": [
+      "Dismissive"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Average his weights with Monday's",
+     "result": "A third set of weights nobody agreed.",
+     "consequence": "Splitting the difference is still re-weighting.",
+     "chips": [
+      "Muddle"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S12E07-03",
+   "prompt": "What does Rashida see on Thursday?",
+   "happening": "Scores final.",
+   "clock": "Month eight · Thursday",
+   "known": [
+    "◉ Weights agreed Monday",
+    "◉ Teodor's proposal recorded"
+   ],
+   "unknown": [
+    "Rashida's decision"
+   ],
+   "risk": "A decision nobody can defend to the region that waits.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing is decided.",
+    "The batch slips a quarter."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would let Rashida tell each head when their turn comes?"
+    }
+   ],
+   "note": "Draft decision (DR-S12E07). Option B needs Budget at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Just the winner",
+     "result": "Rashida asks how close it was. Nobody knows.",
+     "consequence": "Hides the judgement she has to make.",
+     "chips": [
+      "Opaque"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The ranked scores, how close AMERICAS and EMEA are, what the $420k buys — APAC's six rooms and four in AMERICAS now, EMEA first next year on the reserve's schedule — and Teodor's proposal for next year's weights",
+     "result": "Rashida decides in ten minutes and writes down why. Teodor gets a date instead of a no.",
+     "consequence": "The owner decides with the whole picture, and a date for everyone.",
+     "chips": [
+      "Scheduled",
+      "Recorded"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "budget": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Rashida": 1,
+       "Teodor": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "The ranked list — and ask her to find more money so everyone gets something",
+     "result": "No money appears. The decision waits a quarter.",
+     "consequence": "The best you can do without a funded schedule — a ranking, but no sequence.",
+     "chips": [
+      "Unfunded"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Three separate reports, one per region",
+     "result": "Three stories; no comparison.",
+     "consequence": "The CIO can't compare what she can't see together.",
+     "chips": [
+      "Fragmented"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1207",
+   "label": "**Service Mode:** run the week yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Month eight · Thursday · 3:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The architecture office; Rashida holds the signed decision; Teodor, gesturing, not quite smiling but close.",
+   "characters": [
+    {
+     "id": "rashida",
+     "pose": "R",
+     "expr": "smile"
+    },
+    {
+     "id": "teodor",
+     "pose": "W",
+     "expr": "smile"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Rashida",
+     "kind": "speech",
+     "text": "APAC and AMERICAS now. EMEA first next year, in writing. And your weights go on January's agenda."
+    },
+    {
+     "side": "R",
+     "who": "Teodor",
+     "kind": "speech",
+     "text": "Last this year because we did it right. I'll tell them that."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3273
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S12-07",
+   "who": "teodor",
+   "prompt": "You know my people will blame me if EMEA goes last.",
+   "options": [
+    {
+     "label": "“Then take them the page: EMEA's rooms scored lowest on risk because you fixed them first. Last this year means you did it right.”",
+     "who": "teodor",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "…Because we did it right. I can sell that.",
+     "trust": {
+      "Teodor": 2
+     }
+    },
+    {
+     "label": "“The numbers are the numbers.”",
+     "who": "teodor",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Numbers don't sit in my regional meeting.",
+     "trust": {
+      "Teodor": 0
+     }
+    },
+    {
+     "label": "“You should have argued better.”",
+     "who": "teodor",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I argued loudest. Apparently that's the problem.",
+     "trust": {
+      "Teodor": -1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The office at night; Sabine, the security lead, points at a list on the board; Maya looks up from her desk.",
+   "characters": [
+    {
+     "id": "sabine",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "surprised"
+    }
+   ],
+   "location": "s12kit.bg_hq",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Sabine",
+     "kind": "speech",
+     "text": "Four break-glass accounts. Their passwords are in an envelope, in a safe, in an office that closed last year."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Which office?"
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *Break Glass.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 3268
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S12-07b",
+   "teaser": "APAC's fault log",
+   "title": "‘Manila 2: 14 faults this year’",
+   "body": "APAC's fault log for the candidate rooms: Manila 2, fourteen faults this year; Perth 1, eleven. The APAC head hadn't asked for anything. She hadn't known she could.",
+   "thread": "Method",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  When several people want the same money, the owner agrees the criteria and weights before anyone sees a score. Rate every option from evidence, work out S = Σ (w × r), and show the owner how close the scores are and what would change them. Hear the loudest voice in full — and send any new weights to the next round, agreed first. The architect ranks; the owner decides and records why."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Who in your organisation gets resources by asking loudest — and who never asks?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S12E07",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1IncidentsIncidentEscalate/0.1.0.json",
+  "title": "POST /v1/incidents/{incident}/escalate request body",
+  "description": "Record that an incident was escalated, once, with the reason",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reason"
+  ],
+  "properties": {
+    "reason": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 500
+    }
+  }
+}

@@ -1,0 +1,863 @@
+{
+ "chapter": {
+  "id": "s11e08",
+  "kicker": "S11 · E08",
+  "title": "The Unknown Laptop",
+  "pill": "S11E08 · The Unknown Laptop",
+  "sub": "A contractor plugs into the operations network to save eight minutes.",
+  "status": "**DRAFT** · scripted from the series plan · IDs provisional",
+  "flags": [
+   "DR-S11E08",
+   "RV-182",
+   "RV-183",
+   "RV-186",
+   "VR-01",
+   "VR-02"
+  ],
+  "accent": "#EF4444"
+ },
+ "items": [
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "ep-intro",
+   "cls": "ep-intro",
+   "text": "SEASON 11 · EPISODE 8 · DRAFT  The Brennock County EOC · between storms · Maya, Wendell (county IT), the state’s flood-model contractor and Director Oduya · Level L6 · Mastery support (reference only — choose the tool and say why)  The room needs partners — the state, the utility, contractors with better models than the county can afford. One of them just plugged into the operations network to save eight minutes.  ⚑ RV-182: the network is Wendell’s; access and review are county IT security’s; a partner’s laptop is his own. Governance only. RV-183: figures illustrative. Some choices run on a clock — and some depend on your loadout."
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo",
+   "cls": "echo",
+   "text": ""
+  },
+  {
+   "origin": "injected",
+   "type": "quest",
+   "title": "The Unknown Laptop",
+   "kind": "REGION · NETWORK",
+   "level": "L6 · MASTERY",
+   "party": [
+    "maya",
+    "wendell",
+    "oduya"
+   ],
+   "stakes": "A contractor's laptop is on the operations network, because the right way to share a file was eight minutes slower.",
+   "clock": "Before the 17:00 briefing.",
+   "reward": "Partners with a network of their own — and an operations network that lets nothing unknown in.",
+   "objectives": [
+    {
+     "key": "BR-S11E08-01",
+     "text": "Decide the first move"
+    },
+    {
+     "key": "twist",
+     "text": "Count the open doors"
+    },
+    {
+     "key": "core",
+     "text": "Sort which network"
+    },
+    {
+     "key": "BR-S11E08-02",
+     "text": "Decide how the file gets there"
+    },
+    {
+     "key": "BR-S11E08-03",
+     "text": "Decide what stops the next cable"
+    },
+    {
+     "key": "disc:2",
+     "text": "Look closer: two documents"
+    }
+   ],
+   "rumor": "Make the right path the easy one."
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Cold open — “Just sharing a file”",
+   "sub": "Monday · 2:10 p.m. · the EOC"
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The EOC; an unfamiliar laptop on the UTILITY desk, plugged into a desk cable; Wendell points at it from across the room; Maya looks.",
+   "characters": [
+    {
+     "id": "wendell",
+     "pose": "P",
+     "expr": "worried"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "That laptop isn't ours, and it's on my operations network."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Then let's ask him to unplug it — nicely — and you'll know exactly where it was."
+    }
+   ],
+   "narration": [],
+   "caption": "Four minutes on the wrong network.",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7122
+  },
+  {
+   "origin": "injected",
+   "type": "beat",
+   "mood": "tension",
+   "where": "the EOC · Monday 14:10",
+   "lines": [
+    {
+     "who": "wendell",
+     "pose": "N",
+     "expr": "worried",
+     "text": "That laptop isn't ours, and it's on my operations network."
+    },
+    {
+     "who": "maya",
+     "pose": "N",
+     "expr": "flat",
+     "text": "Then let's ask him to unplug it — nicely — and you'll know exactly where it was."
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act I — “Thirty-eight of sixty-four”",
+   "sub": "Monday · 2:10 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E08-01",
+   "prompt": "14:10. A state contractor's laptop is on the operations network at the UTILITY desk. What do you do?",
+   "happening": "Unknown laptop on the ops network.",
+   "clock": "Monday 14:10 · briefing 17:00",
+   "known": [
+    "◉ Contractor's laptop",
+    "◉ UTILITY desk cable"
+   ],
+   "unknown": [
+    "What it touched",
+    "How many ports are live"
+   ],
+   "risk": "An unknown device on the network every agency depends on.",
+   "timer_s": 20,
+   "timeout": [
+    "Nobody decides.",
+    "The laptop stays on the operations network."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What's the fastest move that's yours — and who owns the rest?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Leave it — he's from the state",
+     "result": "It stays connected all afternoon, trying the GIS server's shares.",
+     "consequence": "A badge isn't a network policy.",
+     "chips": [
+      "Open door"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 3,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Ask him, politely, to unplug now; note the desk, the port and the time; call Wendell",
+     "result": "He unplugs, embarrassed: “I just needed to share a file.” Port 3B-17, 14:06–14:10. Wendell's on it.",
+     "consequence": "Fast, polite, recorded — and the owner told.",
+     "chips": [
+      "Asked",
+      "Recorded"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 4,
+      "sev": 3,
+      "trust": {
+       "Wendell": 2
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Pull the uplink for that whole row of desks",
+     "result": "Wendell: “My switch — and you'd take four agencies off with him.”",
+     "consequence": "Not yours, and a sledgehammer.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "NETWORK"
+      }
+     ],
+     "canonical": false,
+     "fail": "The switch is the network owner's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Wendell": -2
+      }
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Take the laptop off the desk",
+     "result": "Wendell: “It's his. Security decides anything more.”",
+     "consequence": "Seizing someone else's device isn't yours.",
+     "chips": [
+      "Not yours"
+     ],
+     "badges": [
+      {
+       "kind": "lock",
+       "text": "SECURITY"
+      }
+     ],
+     "canonical": false,
+     "fail": "A partner's device is his; any review is security's.",
+     "requires_loadout": null,
+     "weight": {
+      "merit": -4,
+      "sev": 3,
+      "trust": {
+       "Wendell": -2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Thirty-eight of sixty-four.",
+   "body": "Wendell walks the desks with Maya and his port list. Thirty-eight of the room's sixty-four desk ports are live on the operations network, and nothing checks what's plugged into them. ‘Spare (live)’, the list says, twenty-four times. The contractor didn't break in. He found an open door that had been open for years.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S11E08-1",
+   "label": "Test: how many doors — and who reviews what came through?"
+  },
+  {
+   "origin": "injected",
+   "type": "heading",
+   "text": "Which one — and why?",
+   "sub": "Mastery · the skill behind this chapter"
+  },
+  {
+   "origin": "injected",
+   "type": "panel",
+   "alt": "A teaching moment: Wendell and Maya beside a board. A contractor plugged a laptop into the utility desk to share a flood model. Three gigabytes. Thirty-eight of the room's sixty-four desk ports are live on the ops network. Nobody's ever turned the spares off. And the partner link is fifty megabits.",
+   "characters": [
+    {
+     "id": "wendell",
+     "pose": "W",
+     "expr": "talk"
+    },
+    {
+     "id": "maya",
+     "pose": "L",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "A contractor plugged a laptop into the utility desk to share a flood model. Three gigabytes."
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "Thirty-eight of the room's sixty-four desk ports are live on the ops network. Nobody's ever turned the spares off."
+    },
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "And the partner link is fifty megabits."
+    }
+   ],
+   "narration": [],
+   "caption": "Mastery: nobody hands you the tool. Pick it, and say why.",
+   "flags": [
+    "TL-01"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 7309
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "notebook",
+   "cls": "notebook nb-t4",
+   "text": "📕 WHEN & WHY · MASTERY  Terms   Partner network   Segmentation   Least privilege   The situation  A 3 GB flood model needs to reach the room over a 50 Mb/s partner link; 38 of 64 desk ports are live on the operations network. Which relationships size the transfer — and the exposure?   Which relationship do you reach for?  Link utilization  Percentage  Transfer time     Reference: the 📖 Glossary has every formula. At mastery, knowing  which  and  why  is the skill."
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "lesson",
+   "id": "U8",
+   "label": "**Learn it now:** partners, visitors and the operations network.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "plate-note",
+   "cls": "plate-note",
+   "text": "📖 From the Fieldbook · tap a plate to open it full size     The first step to networking, AV style     What the room is telling you     The OSI model applied to video and wireless"
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "drill",
+   "id": "M-1108",
+   "label": "**Sort it:** which network?",
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "A port map of the room's 64 desk positions: 38 red squares scattered across the room — live on the operations network, unchecked — and 26 grey. Below: 38 of 64 ports, 59%; and the right path for the model: 3 GB at 50 Mb/s in 480 seconds.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Thirty-eight open doors.",
+   "flags": [
+    "RV-183"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "MEASURED",
+     "label": "port walk"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5718
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S11-08a",
+   "teaser": "the switch's port list",
+   "title": "3B-17 · ‘spare (live)’",
+   "body": "Wendell's switch port list: ‘3B-17 — spare (live).’ Twenty-four ports carry the same note. Nobody had ever needed to switch a spare off — until one was used.",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "history",
+   "title": "One program, six thousand machines",
+   "body": "In November 1988 a self-copying program released onto the early internet spread from computer to computer in hours, slowing or stopping thousands of university and government machines. Nobody had imagined that a network of trusted colleagues needed doors that closed. Within weeks the first computer emergency response team was set up — to coordinate the answer the next time.",
+   "flag": "RV-27",
+   "when": null,
+   "lab": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Act II — “Eight minutes”",
+   "sub": "Monday · 2:20 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "twist",
+   "title": "Eight minutes.",
+   "body": "Why plug in? The contractor is honest: the partner Wi-Fi is slow, and the GIS desk needed the model before the briefing. Maya works it out with him. Three gigabytes over the 50 Mb/s partner link, through the county's scanned transfer service: 480 seconds. Eight minutes. He'd saved about seven and a half — and put an unknown laptop on the network every agency depends on. The switch log shows it tried the GIS server's shares while it was there; the security officer takes it from there.",
+   "test_kind": "quiz",
+   "test_id": "Q-TW-S11E08-2",
+   "label": "Test: what did he actually save?"
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E08-02",
+   "prompt": "He still needs the 3 GB model on the GIS desk before 17:00. How?",
+   "happening": "Laptop unplugged.",
+   "clock": "Monday 14:15",
+   "known": [
+    "◉ 3 GB model",
+    "◉ 50 Mb/s partner link"
+   ],
+   "unknown": [
+    "Whether he knows the transfer service exists"
+   ],
+   "risk": "The GIS desk without the model — or the door reopened.",
+   "timer_s": 25,
+   "timeout": [
+    "Nobody decides.",
+    "The contractor plugs back in ‘just for a minute’."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What's the right path — and how long does it really take?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E08).",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "A USB stick to the GIS desk",
+     "result": "Unknown media, straight into a county machine.",
+     "consequence": "The same door, in a smaller box.",
+     "chips": [
+      "Unknown media"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "The partner network and the county's scanned file-transfer service — he uploads, GIS pulls it",
+     "result": "Eight minutes. GIS has it by 14:25; the contractor asks for the link to use next time.",
+     "consequence": "The right path, shown to be easy.",
+     "chips": [
+      "Partner path",
+      "Scanned"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Team": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Plug back in, just for two minutes",
+     "result": "Two minutes of the same problem.",
+     "consequence": "Short doesn't mean safe.",
+     "chips": [
+      "Same door"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Email it",
+     "result": "Three gigabytes bounce.",
+     "consequence": "Wrong tool.",
+     "chips": [
+      "Too big"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "decision",
+   "id": "BR-S11E08-03",
+   "prompt": "What stops the next cable?",
+   "happening": "Model shared.",
+   "clock": "Monday 16:00",
+   "known": [
+    "◉ 38 live ports",
+    "◉ The partner path works"
+   ],
+   "unknown": [
+    "Who else has plugged in before"
+   ],
+   "risk": "The next unknown device, on a busier day.",
+   "timer_s": 25,
+   "timeout": [
+    "Nothing changes.",
+    "Thirty-eight ports stay live."
+   ],
+   "hints": [
+    {
+     "id": "H1",
+     "keep": 0.95,
+     "text": "What would make the right path easy and the wrong one impossible — and noticed?"
+    }
+   ],
+   "note": "Draft decision (DR-S11E08). Option B needs Monitoring & tools at LIMITED or better.",
+   "lab": null,
+   "lab_label": null,
+   "options": [
+    {
+     "letter": "A",
+     "label": "Glue the spare ports shut",
+     "result": "The next agency that needs a port gets a screwdriver.",
+     "consequence": "A physical hack instead of a design.",
+     "chips": [
+      "Hack"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "B",
+     "label": "Wendell switches off unused ports and turns on port security; marked PARTNER jacks at every desk on an internet-only network; a network card at visitor check-in; an alert on any new device on the operations network",
+     "result": "Done by Thursday. A test laptop on a desk port goes nowhere, and Wendell's phone buzzes in four seconds.",
+     "consequence": "Doors closed by their owner, an easy right path, and an alarm on the rest.",
+     "chips": [
+      "Ports off",
+      "Partner jacks",
+      "Alerts"
+     ],
+     "badges": [],
+     "canonical": true,
+     "fail": null,
+     "requires_loadout": {
+      "monitoring": 1
+     },
+     "weight": {
+      "merit": 3,
+      "sev": 2,
+      "trust": {
+       "Wendell": 1
+      }
+     }
+    },
+    {
+     "letter": "C",
+     "label": "Switch off the unused ports and put a sign at every desk",
+     "result": "Most doors closed. Nobody knows when someone tries one.",
+     "consequence": "The best you can do without monitoring — closed, but unwatched.",
+     "chips": [
+      "Unwatched"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    },
+    {
+     "letter": "D",
+     "label": "Ban partner laptops from the room",
+     "result": "The state's modeller works from the car park. The model arrives late.",
+     "consequence": "Keeps out the people the room needs.",
+     "chips": [
+      "Excludes partners"
+     ],
+     "badges": [],
+     "canonical": false,
+     "fail": null,
+     "requires_loadout": null,
+     "weight": {
+      "merit": 0,
+      "sev": 2,
+      "trust": {}
+     }
+    }
+   ]
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "uxrule",
+   "cls": "uxrule",
+   "text": "✦ UX RULE #109 · AVERY'S LENS  Partners get a network — just not the operations one  Visitors and partner agencies need to work in the room. Give them their own network and a scanned way to share files, so nobody plugs into the operations network to save eight minutes.  A contractor plugged into a spare cable to share a flood model, because the right way was eight minutes slower — and 38 of 64 desk ports would have let anyone do the same."
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-UX-S11E08",
+   "label": null,
+   "gate": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The port map after Thursday: 14 green squares for county equipment, 12 blue PARTNER jacks on an internet-only network, and the rest grey, switched off; a new device on any port gets no network and raises an alert.",
+   "characters": [],
+   "location": null,
+   "bubbles": [],
+   "narration": [],
+   "caption": "Doors that close.",
+   "flags": [
+    "RV-183"
+   ],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [
+    {
+     "state": "VERIFIED",
+     "label": "test laptop"
+    }
+   ],
+   "confidence": null,
+   "art_bytes": 5723
+  },
+  {
+   "origin": "injected",
+   "type": "talk",
+   "id": "T-S11-08",
+   "who": "wendell",
+   "prompt": "I should have switched those ports off years ago.",
+   "options": [
+    {
+     "label": "“You've been running a whole county's network with a team of two. Now you've got the evidence to ask for the time.”",
+     "who": "wendell",
+     "pose": "N",
+     "expr": "smile",
+     "reply": "And the director signs the visitor card. I like that.",
+     "trust": {
+      "Wendell": 2
+     }
+    },
+    {
+     "label": "“Yes, you should.”",
+     "who": "wendell",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "Thanks.",
+     "trust": {
+      "Wendell": -1
+     }
+    },
+    {
+     "label": "“Nobody thinks about ports.”",
+     "who": "wendell",
+     "pose": "N",
+     "expr": "flat",
+     "reply": "I do. I just never had the afternoon.",
+     "trust": {
+      "Wendell": 1
+     }
+    }
+   ]
+  },
+  {
+   "origin": "authored",
+   "type": "mount",
+   "kind": "incident",
+   "id": "SM-1108",
+   "label": "**Service Mode:** run the Monday yourself.",
+   "gate": null
+  },
+  {
+   "origin": "injected",
+   "type": "note",
+   "role": "echo-end",
+   "cls": "echo echo-end",
+   "text": ""
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Debrief",
+   "sub": "Thursday · 4:00 p.m."
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The EOC; Wendell holds a new port map; Director Oduya holds a visitor card with a network section.",
+   "characters": [
+    {
+     "id": "wendell",
+     "pose": "W",
+     "expr": "smile"
+    },
+    {
+     "id": "oduya",
+     "pose": "N",
+     "expr": "smile"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Wendell",
+     "kind": "speech",
+     "text": "Test laptop on a desk port: nothing. My phone buzzed in four seconds."
+    },
+    {
+     "side": "R",
+     "who": "Director Oduya",
+     "kind": "speech",
+     "text": "And every visitor gets this card at the door. Partner jacks are blue."
+    }
+   ],
+   "narration": [],
+   "caption": null,
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6868
+  },
+  {
+   "origin": "injected",
+   "type": "discovery",
+   "id": "D-S11-08b",
+   "teaser": "the visitor check-in sheet",
+   "title": "name · agency · time",
+   "body": "The EOC's visitor sheet: name, agency, time in, time out. Nothing about devices, networks or where to plug in. The contractor had signed it at 13:58.",
+   "thread": "Network",
+   "who": null
+  },
+  {
+   "origin": "authored",
+   "type": "heading",
+   "text": "Tag",
+   "sub": null
+  },
+  {
+   "origin": "authored",
+   "type": "panel",
+   "alt": "The EOC in a quiet afternoon; Director Oduya points at a long list of findings pinned beside the wall; Maya reads it.",
+   "characters": [
+    {
+     "id": "oduya",
+     "pose": "P",
+     "expr": "flat"
+    },
+    {
+     "id": "maya",
+     "pose": "N",
+     "expr": "flat"
+    }
+   ],
+   "location": "s11kit.bg_eoc",
+   "bubbles": [
+    {
+     "side": "L",
+     "who": "Director Oduya",
+     "kind": "speech",
+     "text": "Eleven findings from two storms. A state grant that covers maybe half. Which half?"
+    },
+    {
+     "side": "R",
+     "who": "Maya",
+     "kind": "speech",
+     "text": "The half that fails worst. And we write down the rest."
+    }
+   ],
+   "narration": [],
+   "caption": "Next: *After Action.*",
+   "flags": [],
+   "kind": null,
+   "tab": null,
+   "system_view": false,
+   "evidence": [],
+   "confidence": null,
+   "art_bytes": 6863
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "field-note",
+   "cls": "field-note",
+   "text": "FIELD NOTE —  Every live port is a door onto the operations network. Switch off the unused ones, check the used ones, alert on anything new — through the network’s owner. Give partners an easier right path: marked partner jacks, an internet-only network and a scanned file-transfer service (t = S ÷ r shows what shortcuts really save). Ask, record and call the owner; never seize someone else’s device."
+  },
+  {
+   "origin": "authored",
+   "type": "note",
+   "role": "reflection",
+   "cls": "reflection",
+   "text": "REFLECTION (optional)  · Where is the wrong way in your work easier than the right one?"
+  },
+  {
+   "origin": "injected",
+   "type": "mount",
+   "kind": "quiz",
+   "id": "Q-S11E08",
+   "label": null,
+   "gate": null
+  }
+ ]
+}

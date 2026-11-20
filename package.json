@@ -36,6 +36,10 @@
     "react-dom": "19.2.8",
     "marked": "18.0.10",
     "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0"
+    "@types/react-dom": "^19.2.0",
+    "docx": "9.8.1",
+    "pptxgenjs": "4.0.1",
+    "pdf-lib": "1.17.1",
+    "jszip": "3.10.1"
   }
 }

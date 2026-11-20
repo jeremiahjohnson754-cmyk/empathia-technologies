@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-Validate both Render Blueprints against the repository before anything is applied (no network; reads files only).
+Validate the Render Blueprints against the repository before anything is applied (no network; reads files only).
   python3 -I scripts/staging/validate-blueprints.py [--out=tests/evidence/BLUEPRINT_VALIDATION.json]
 Phase 1 (render.yaml): only free static sites, no database, no secrets, publish paths produced by `build.mjs --public`, security headers.
 Phase 2 (deploy/render/enterprise.render.yaml): plan values and regions from the Blueprint spec, private-only database, the Dockerfile,
 start and pre-deploy commands map to real entry points, health paths are served, the disk is the image's evidence directory, every
 environment variable is one the code reads, every variable production requires is present, and no secret has a literal value.
+Demonstration staging (deploy/render/demo.render.yaml): exactly the two plans the founder approved on 17 Nov 2026 and a 1 GB disk, demonstration mode only, private database, generated secrets,
+a start command that is the whole preparation in order, one allowed browser origin.
 Exit 1 on any FAIL. Requires PyYAML (reported NOT_RUN by the test runner if it is missing).
 """
 import json, os, re, sys, datetime
@@ -44,8 +46,9 @@ build = rd('scripts/build.mjs')
 outs = {'apps/website/dist': 'apps/website/build.mjs', 'apps/demo/dist': 'apps/demo'}
 rec('P1-2', 'each static site publishes a directory the public build produces', all(s.get('staticPublishPath') in outs and '--public' in s.get('buildCommand', '') for s in s1) and "includes('--public')" in build, ', '.join(f"{s['name']}→{s.get('staticPublishPath')}" for s in s1))
 rec('P1-3', 'no secret or dashboard-entered variable in Phase 1', all(not e.get('sync') is False and 'generateValue' not in e and 'fromDatabase' not in e for s in s1 for e in s.get('envVars', [])))
-need_h = {'Content-Security-Policy', 'X-Content-Type-Options', 'X-Frame-Options', 'Strict-Transport-Security', 'Referrer-Policy'}
-rec('P1-4', 'every static site sends CSP, nosniff, frame denial, HSTS, no-referrer on /*', all(need_h <= {h['name'] for h in s.get('headers', []) if h.get('path') == '/*'} for s in s1))
+# strengthened by the security assessment (2026-11-04, SA-02): Permissions-Policy and cross-origin isolation headers are required too
+need_h = {'Content-Security-Policy', 'X-Content-Type-Options', 'X-Frame-Options', 'Strict-Transport-Security', 'Referrer-Policy', 'Permissions-Policy', 'Cross-Origin-Opener-Policy', 'Cross-Origin-Resource-Policy'}
+rec('P1-4', 'every static site sends CSP, nosniff, frame denial, HSTS, no-referrer, Permissions-Policy, COOP, CORP on /*', all(need_h <= {h['name'] for h in s.get('headers', []) if h.get('path') == '/*'} for s in s1))
 demo = next((s for s in s1 if s['name'] == 'empathia-demo'), None)
 rec('P1-5', 'the investor demo is not indexed (X-Robots-Tag noindex)', bool(demo) and any(h['name'] == 'X-Robots-Tag' and 'noindex' in h['value'] for h in demo.get('headers', [])))
 nv = {e.get('value') for s in s1 for e in s.get('envVars', []) if e.get('key') == 'NODE_VERSION'}
@@ -97,6 +100,36 @@ rec('P2-15', 'DATABASE_URL comes from the declared database\'s connection string
 rec('P2-16', 'no development switch: AUTH_MODE is not dev and the web app is in production mode', env.get('AUTH_MODE', {}).get('value') != 'dev' and {e['key']: e.get('value') for e in web.get('envVars', [])}.get('NODE_ENV') == 'production')
 names = [s['name'] for s in s1 + s2] + [d['name'] for d in dbs]
 rec('P2-17', 'resource names are unique across both Blueprints', len(names) == len(set(names)), ', '.join(names))
+
+# ------------------------------------------------------------------------------------------------ the demonstration staging (ADR-0013)
+# deploy/render/demo.render.yaml: one database and one Docker web service in demonstration mode, on the smallest paid plans (approved 17 Nov 2026). The same checks as Phase 2
+# where they apply, and the ones that are this Blueprint's own: no charge, demonstration mode only, and a start command that is the
+# whole preparation.
+p3 = yaml.safe_load(rd('deploy/render/demo.render.yaml')); d3s = p3.get('databases', []); s3 = p3.get('services', [])
+d3 = d3s[0] if d3s else {}; a3 = s3[0] if s3 else {}; e3 = {e['key']: e for e in a3.get('envVars', [])}
+rec('P3-1', 'exactly one database and one web service, on the plans the founder approved on 17 Nov 2026 and nothing larger: web 0.5c-512mb ($7), database 0.1c-256mb ($6) with a 1 GB disk stated in the file', len(d3s) == 1 and len(s3) == 1 and d3.get('plan') == '0.1c-256mb' and d3.get('diskSizeGB') == 1 and a3.get('plan') == '0.5c-512mb' and a3.get('type') == 'web' and a3.get('runtime') == 'docker', f"db {d3.get('plan')} {d3.get('diskSizeGB')} GB · web {a3.get('plan')}")
+rec('P3-2', 'the database is private, PostgreSQL ' + TESTED_PG + ', in the service\'s region', d3.get('ipAllowList') == [] and str(d3.get('postgresMajorVersion')) == TESTED_PG and d3.get('region') == a3.get('region') and d3.get('region') in REGIONS, f"{d3.get('region')} / {a3.get('region')}")
+rec('P3-3', 'the image is the staging Dockerfile and the service has no disk and no pre-deploy command (the start command is the whole preparation)', ex(a3.get('dockerfilePath', '').lstrip('./')) and a3.get('dockerfilePath') == './deploy/render/Dockerfile' and a3.get('dockerContext') == '.' and 'disk' not in a3 and 'preDeployCommand' not in a3)
+cmd3 = a3.get('dockerCommand', '')
+start3 = rd('deploy/render/demo-start.sh') if ex('deploy/render/demo-start.sh') else ''
+steps3 = [l.split('#')[0].strip() for l in start3.splitlines() if l.strip() and not l.strip().startswith('#')]
+order3 = re.findall(r'(bootstrap\.js --roles|migrate\.js|demo\.js enable|main\.js)', '\n'.join(steps3))
+rec('P3-4', 'the start command is the whole preparation in order — roles (V-1 gate), migrations, sandboxes enabled, the API — every entry point real, each step gating the next', cmd3 == 'sh deploy/render/demo-start.sh' and steps3[:1] == ['set -e'] and entry_ok('\n'.join(l for l in steps3 if 'demo-self-check' not in l))[0] and order3 == ['bootstrap.js --roles', 'migrate.js', 'demo.js enable', 'main.js'] and steps3[-1].startswith('exec node ') and 'COPY --from=build /src/deploy/render/demo-start.sh /app/deploy/render/demo-start.sh' in rd('deploy/render/Dockerfile'), f"{cmd3} · {len(steps3)} lines, set -e first, exec last, copied into the image")
+rec('P3-5', 'demonstration mode in production: AUTH_MODE=demo, NODE_ENV=production, TLS to the database, proxy-aware addresses', e3.get('AUTH_MODE', {}).get('value') == 'demo' and e3.get('NODE_ENV', {}).get('value') == 'production' and e3.get('PGSSLMODE', {}).get('value') == 'require' and e3.get('TRUSTED_PROXY', {}).get('value') == 'on')
+rec('P3-6', 'no sign-in configuration of any other kind: no OIDC, no JWT_SECRET, no development switch', not ({'OIDC_ISSUER', 'OIDC_AUDIENCE', 'OIDC_JWKS_URL', 'JWT_SECRET', 'DEMO_SESSIONS'} & set(e3)))
+rec('P3-7', 'the three secrets are generated by the platform and the owner URL comes from the declared database', all(e3.get(k, {}).get('generateValue') is True and 'value' not in e3.get(k, {}) for k in ('DEMO_SESSION_SECRET', 'EMPATHIA_APP_PASSWORD', 'EMPATHIA_WORKER_PASSWORD')) and e3.get('DATABASE_URL', {}).get('fromDatabase', {}) == {'name': d3.get('name'), 'property': 'connectionString'} and d3.get('user') == 'empathia_owner')
+leaks3 = [e['key'] for e in a3.get('envVars', []) if secretish.search(e['key']) and 'value' in e]
+rec('P3-8', 'no secret has a literal value', not leaks3, ', '.join(leaks3))
+unread3 = [k for k in e3 if not read_by_code(k) and not (k == 'DEMO_SELF_CHECK' and '${DEMO_SELF_CHECK:-off}' in start3)]   # read by the start script, not by the API
+rec('P3-9', 'every environment variable is one the code reads', not unread3, ', '.join(unread3))
+cors3 = e3.get('CORS_ORIGINS', {}).get('value', '')
+rec('P3-10', 'one browser origin may call it: the staging demo site, over https', cors3 == 'https://empathia-demo-next.onrender.com', cors3)
+rec('P3-11', 'the service follows its own staging branch (never main) and is health-checked at /health', a3.get('branch') == 'staging/demo-api' and a3.get('healthCheckPath') == '/health')
+rec('P3-13', 'the image can be built from its context: the website\'s film renditions are not ignored (the build pre-renders them)', '!apps/website/media/**/*.mp4' in rd('.dockerignore'))
+df3 = rd('deploy/render/Dockerfile')
+rec('P3-14', 'the self-check is off as declared, runs only when the variable is exactly "on", after the preparation and beside the API, and its two files are in the image', e3.get('DEMO_SELF_CHECK', {}).get('value') == 'off' and 'if [ "${DEMO_SELF_CHECK:-off}" = "on" ]; then node deploy/render/demo-self-check.mjs & fi' in steps3 and steps3.index('if [ "${DEMO_SELF_CHECK:-off}" = "on" ]; then node deploy/render/demo-self-check.mjs & fi') == len(steps3) - 2 and all(f'COPY --from=build /src/{f} /app/{f}' in df3 and ex(f) for f in ('deploy/render/demo-self-check.mjs', 'scripts/staging/demo-smoke.mjs')), 'DEMO_SELF_CHECK=' + str(e3.get('DEMO_SELF_CHECK', {}).get('value')))
+names3 = names + [a3.get('name'), d3.get('name')]
+rec('P3-12', 'resource names are unique across the three Blueprints', len(names3) == len(set(names3)), ', '.join(n for n in names3 if n))
 
 out = arg('out')
 rep = {'at': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'), 'spec': 'https://render.com/docs/blueprint-spec (2026-10-31)', 'results': results,

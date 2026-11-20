@@ -1,0 +1,81 @@
+{
+ "base": "https://empathia-demo-api-l04n.onrender.com",
+ "origin": "https://empathia-demo-next.onrender.com",
+ "at": "2026-11-17T18:32:24.191Z",
+ "passed": 12,
+ "failed": 0,
+ "results": [
+  {
+   "id": "SM-01",
+   "title": "the service is up in demonstration mode, on a named release, with its database reachable",
+   "result": "PASS",
+   "detail": "status ok · authMode demo · release 1a7ccb0fa760 (staging) · migrations 35"
+  },
+  {
+   "id": "SM-02",
+   "title": "sandboxes are on offer",
+   "result": "PASS",
+   "detail": "10 of 200 live · 72 h"
+  },
+  {
+   "id": "SM-03",
+   "title": "nothing but the demonstration is served; no token and a made-up token get 401",
+   "result": "PASS",
+   "detail": "sign-in 404 · public form 404 · no token 401 · made-up token 401 bad token signature"
+  },
+  {
+   "id": "SM-04",
+   "title": "a sandbox opens with a key, fifteen synthetic people and one installed room; its first session is the installer’s",
+   "result": "PASS",
+   "detail": "sbx-6bfac78c6fcf42ae · 15 people · R-PLN-0001 INSTALLED_UNVERIFIED"
+  },
+  {
+   "id": "SM-05",
+   "title": "correct permissions: the installer records a mounting and a field move; the systems engineer approves the move",
+   "result": "PASS",
+   "detail": "mounting 200 · move 201 FM-0001 · approval 200 "
+  },
+  {
+   "id": "SM-06",
+   "title": "attempted unauthorized access by role is refused with a reason: the designer, the installer on their own move and on commissioning, the requestor, the commissioning engineer on people; and the register gate holds for the systems engineer",
+   "result": "PASS",
+   "detail": "403 designer may not record how a device is mounted (needs work.evidence or field.scan) | own move 403 | 403 installer may not move a room to COMMISSIONING (needs plan.compile) | 403 | 403 | gate 422"
+  },
+  {
+   "id": "SM-07",
+   "title": "a wrong key, an unknown sandbox, another sandbox’s key and a privileged role get no session",
+   "result": "PASS",
+   "detail": "wrong key 401 · unknown 401 · B’s key 401 · architect/founder/secadmin 400/400/400"
+  },
+  {
+   "id": "SM-08",
+   "title": "one sandbox’s session cannot read or write the other’s room",
+   "result": "PASS",
+   "detail": "same code, two rooms: true · B sees its own (mounted 0) · B→A read 404 · A→B read 404 · B→A write 404"
+  },
+  {
+   "id": "SM-09",
+   "title": "a new session made from the key alone, as a different person, reads the same field record and thread",
+   "result": "PASS",
+   "detail": "mounted 1 · approved moves 1 · as built FM-0001 · refusals on the record 4"
+  },
+  {
+   "id": "SM-10",
+   "title": "a binary upload and an oversized note are refused; a short text note is kept",
+   "result": "PASS",
+   "detail": "binary 415 · 20 KiB 413 · note 201"
+  },
+  {
+   "id": "SM-11",
+   "title": "the demo site’s origin is allowed, with PUT; any other origin is not",
+   "result": "PASS",
+   "detail": "https://empathia-demo-next.onrender.com: https://empathia-demo-next.onrender.com [GET, POST, PUT, PATCH, DELETE] · other origin: not allowed"
+  },
+  {
+   "id": "SM-12",
+   "title": "reset: the old session and the old key stop at once; the new sandbox has nothing recorded",
+   "result": "PASS",
+   "detail": "reset 201 · old session 401 · old key 401 · new sandbox mounted 0"
+  }
+ ]
+}

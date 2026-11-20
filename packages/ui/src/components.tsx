@@ -52,19 +52,25 @@ export function Stat({ label, value, unit, definition, tone }: { label: string; 
     </div>
   );
 }
-/** A horizontal bar showing parts of a whole, with a text legend (the bar alone never carries the numbers). */
+/** A horizontal bar showing parts of a whole, with a text legend (the bar alone never carries the numbers). CSP-safe: SVG geometry. */
 export function Composition({ parts, total, label }: { parts: Array<{ key: string; label: string; value: number; tone: Tone }>; total: number; label: string }) {
+  const shown = parts.filter((p) => p.value > 0); const sum = shown.reduce((a, p) => a + p.value, 0) || 1; let at = 0;
   return (
     <figure className="ui-comp" aria-label={label}>
-      <div className="ui-comp__bar" aria-hidden="true">{parts.filter((p) => p.value > 0).map((p) => <span key={p.key} className={cx('ui-comp__seg', `ui-fill--${p.tone}`)} style={{ flexGrow: p.value }} title={`${p.label}: ${p.value}`} />)}</div>
+      <svg className="ui-comp__bar" width="100%" height="10" preserveAspectRatio="none" aria-hidden="true" focusable="false">{shown.map((p) => { const x = at; at += (p.value / sum) * 100; return <rect key={p.key} className={`ui-comp__seg ui-tone--${p.tone}`} x={`${x.toFixed(2)}%`} y="0" height="10" width={`${((p.value / sum) * 100).toFixed(2)}%`}><title>{`${p.label}: ${p.value}`}</title></rect>; })}</svg>
       <figcaption className="ui-comp__legend">{parts.map((p) => <span key={p.key}><i className={cx('ui-dot', `ui-fill--${p.tone}`)} aria-hidden="true" />{p.label} <b>{p.value}</b></span>)}<span className="ui-muted">of {total}</span></figcaption>
     </figure>
   );
 }
 
 // ------------------------------------------------------------------------------------------------ table
-export interface Column<T> { key: string; header: string; render: (row: T) => ReactNode; sort?: (row: T) => string | number; align?: 'left' | 'right'; width?: string }
-export function DataTable<T>({ rows, columns, rowKey, empty, caption, onRowClick, dense }: { rows: T[]; columns: Column<T>[]; rowKey: (r: T) => string; empty?: ReactNode; caption?: string; onRowClick?: (r: T) => void; dense?: boolean }) {
+export interface Column<T> { key: string; header: string; render: (row: T) => ReactNode; sort?: (row: T) => string | number; align?: 'left' | 'right'; width?: string; /** hide on phones in the stacked layout (a secondary column) */ minor?: boolean }
+/**
+ * A sortable table. CSP-safe (no style attribute: widths go on <col width>, alignment on classes). `responsive` stacks each row into a
+ * labelled card below 640 px (each cell carries its header as data-label), so nothing wraps one character per line. A clickable row is
+ * keyboard operable (Enter/Space) and announced as a button-like row only when onRowClick is given.
+ */
+export function DataTable<T>({ rows, columns, rowKey, empty, caption, onRowClick, dense, responsive }: { rows: T[]; columns: Column<T>[]; rowKey: (r: T) => string; empty?: ReactNode; caption?: string; onRowClick?: (r: T) => void; dense?: boolean; responsive?: boolean }) {
   const [sort, setSort] = useState<{ key: string; dir: 1 | -1 } | null>(null);
   const sorted = useMemo(() => {
     if (!sort) return rows;
@@ -73,17 +79,20 @@ export function DataTable<T>({ rows, columns, rowKey, empty, caption, onRowClick
     return [...rows].sort((a, b) => { const x = c.sort!(a); const y = c.sort!(b); return (x < y ? -1 : x > y ? 1 : 0) * sort.dir; });
   }, [rows, columns, sort]);
   if (!rows.length) return <>{empty ?? <Empty title="Nothing here yet" />}</>;
+  const al = (c: Column<T>) => (c.align === 'right' ? 'ui-al-r' : undefined);
   return (
-    <div className="ui-table-wrap">
-      <table className={cx('ui-table', dense && 'ui-table--dense')}>
+    <div className={cx('ui-table-wrap', responsive && 'ui-table-wrap--stack')}>
+      <table className={cx('ui-table', dense && 'ui-table--dense', responsive && 'ui-table--stack')}>
         {caption ? <caption className="ui-sr">{caption}</caption> : null}
+        {columns.some((c) => c.width) ? <colgroup>{columns.map((c) => <col key={c.key} width={c.width} />)}</colgroup> : null}
         <thead><tr>{columns.map((c) => (
-          <th key={c.key} scope="col" style={{ width: c.width, textAlign: c.align || 'left' }} aria-sort={sort?.key === c.key ? (sort.dir === 1 ? 'ascending' : 'descending') : undefined}>
+          <th key={c.key} scope="col" className={al(c)} aria-sort={sort?.key === c.key ? (sort.dir === 1 ? 'ascending' : 'descending') : undefined}>
             {c.sort ? <button type="button" className="ui-th-sort" onClick={() => setSort((s) => ({ key: c.key, dir: s?.key === c.key && s.dir === 1 ? -1 : 1 }))}>{c.header}<span aria-hidden="true">{sort?.key === c.key ? (sort.dir === 1 ? ' ↑' : ' ↓') : ''}</span></button> : c.header}
           </th>))}</tr></thead>
         <tbody>{sorted.map((r) => (
-          <tr key={rowKey(r)} className={onRowClick ? 'ui-row--link' : undefined} onClick={onRowClick ? () => onRowClick(r) : undefined}>
-            {columns.map((c) => <td key={c.key} style={{ textAlign: c.align || 'left' }}>{c.render(r)}</td>)}
+          <tr key={rowKey(r)} className={onRowClick ? 'ui-row--link' : undefined} onClick={onRowClick ? () => onRowClick(r) : undefined}
+            tabIndex={onRowClick ? 0 : undefined} onKeyDown={onRowClick ? (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) { e.preventDefault(); onRowClick(r); } } : undefined}>
+            {columns.map((c) => <td key={c.key} className={cx(al(c), c.minor && 'ui-td--minor')} data-label={c.header}>{c.render(r)}</td>)}
           </tr>))}</tbody>
       </table>
     </div>

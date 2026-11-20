@@ -1,0 +1,30 @@
+{
+  "key": "IE",
+  "title": "Field Intelligence: a technician's day",
+  "master": "6ee94d40ce8615f8584091cceb74adfab39f1a3faab925255b4e011dbff5fd55",
+  "source": {
+    "path": "owner upload 2026-11-13 (1000042624.mp4: the master, captions burned in)",
+    "sha256": "6ee94d40ce8615f8584091cceb74adfab39f1a3faab925255b4e011dbff5fd55"
+  },
+  "settings": "H.264 High CRF 24 maxrate 2200k, 720p, AAC 96k stereo, faststart; posters 1600 px",
+  "files": {
+    "720.mp4": {
+      "bytes": 14048574,
+      "sha256": "6c6cee0be85b118b5aee16d8fdcbe9105a079bb839ab06af54cf357a9aca8efd"
+    },
+    "poster.webp": {
+      "bytes": 20196,
+      "sha256": "59705d25e9ad78eab36ca00d102c76079b55fff1aeb42bbadc512012b0f4698f"
+    },
+    "poster.jpg": {
+      "bytes": 44099,
+      "sha256": "0f6cc43b038a88c2f43614418014d28749d5b5300e5093a9aa7f57fdaa64f6aa"
+    },
+    "captions.vtt": {
+      "bytes": 6762,
+      "sha256": "da0936b4c5a80f42df491e3ee2c2386694c183067df100a386558a42635ce336"
+    }
+  },
+  "at": "2026-11-14T00:23:35.591Z",
+  "rightsWebsite": "VERIFIED"
+}

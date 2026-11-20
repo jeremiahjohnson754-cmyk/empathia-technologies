@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomIncidents/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/incidents request body",
+  "description": "Report an operational incident (or an engineering observation) on a room in service: what is wrong, how it was found, who it affects. Anyone who can see the room may. The database works out whether it repeats an earlier incident of the same kind in the room",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "issueType",
+    "domain",
+    "severity",
+    "title",
+    "description",
+    "detectedDuring",
+    "userImpact"
+  ],
+  "properties": {
+    "entryType": {
+      "type": "string",
+      "enum": [
+        "OPERATIONAL_INCIDENT",
+        "ENGINEERING_OBSERVATION"
+      ]
+    },
+    "issueType": {
+      "type": "string",
+      "enum": [
+        "no_audio",
+        "low_audio",
+        "echo_aec_failure",
+        "video_no_signal",
+        "camera_tracking_failure",
+        "control_system_failure",
+        "network_connectivity",
+        "device_offline",
+        "firmware_issue",
+        "ui_ux_issue",
+        "documentation_missing",
+        "installation_defect",
+        "design_gap",
+        "vendor_performance",
+        "standards_violation",
+        "improvement_opportunity",
+        "user_error",
+        "other"
+      ]
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "audio",
+        "video",
+        "network",
+        "control",
+        "av_infrastructure",
+        "power_ups",
+        "lighting",
+        "signage",
+        "conferencing",
+        "design",
+        "vendor",
+        "integration"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "Critical",
+        "High",
+        "Medium",
+        "Low"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 160
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 4000
+    },
+    "detectedDuring": {
+      "type": "string",
+      "enum": [
+        "user_report",
+        "support_round",
+        "scheduled_maintenance",
+        "production",
+        "monitoring"
+      ]
+    },
+    "userImpact": {
+      "type": "string",
+      "enum": [
+        "none",
+        "minor_annoyance",
+        "moderate_disruption",
+        "major_disruption",
+        "executive_impact"
+      ]
+    },
+    "device": {
+      "type": "string",
+      "pattern": "^PA-[0-9]{4,10}$"
+    }
+  }
+}

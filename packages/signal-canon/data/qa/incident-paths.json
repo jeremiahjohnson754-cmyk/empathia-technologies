@@ -1,0 +1,2157 @@
+{
+ "SM-01": {
+  "path": [
+   "walk",
+   "rx",
+   "photo",
+   "ask",
+   "priya",
+   "unplug",
+   "lobby",
+   "proof"
+  ],
+  "seconds": 165,
+  "clock": 245,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "office"
+  ]
+ },
+ "SM-02": {
+  "path": [
+   "mute",
+   "trace",
+   "battery",
+   "iso",
+   "check"
+  ],
+  "seconds": 100,
+  "clock": 200,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "lift"
+  ],
+  "refusals": [
+   "outlet"
+  ]
+ },
+ "SM-03": {
+  "path": [
+   "safe",
+   "paths",
+   "table",
+   "call",
+   "fix",
+   "test"
+  ],
+  "seconds": 155,
+  "clock": 245,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "force"
+  ],
+  "refusals": []
+ },
+ "SM-04": {
+  "path": [
+   "walk",
+   "trace",
+   "aux6",
+   "users"
+  ],
+  "seconds": 130,
+  "clock": 245,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "sign"
+  ]
+ },
+ "SM-05": {
+  "path": [
+   "frame",
+   "status",
+   "text",
+   "shutter",
+   "zoom",
+   "sheet",
+   "focus",
+   "phone"
+  ],
+  "seconds": 125,
+  "clock": 200,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-11": {
+  "path": [
+   "register",
+   "log",
+   "score",
+   "honest",
+   "card",
+   "recommend",
+   "dates"
+  ],
+  "seconds": 95,
+  "clock": 200,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-08": {
+  "path": [
+   "tester",
+   "walk",
+   "wiggle",
+   "inspect",
+   "fix",
+   "rerun",
+   "record"
+  ],
+  "seconds": 165,
+  "clock": 245,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-06": {
+  "path": [
+   "tell",
+   "read",
+   "card",
+   "ray",
+   "recall",
+   "up",
+   "verify"
+  ],
+  "seconds": 130,
+  "clock": 245,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "panel",
+   "emerg"
+  ],
+  "refusals": []
+ },
+ "SM-07": {
+  "path": [
+   "base",
+   "trim",
+   "after"
+  ],
+  "seconds": 50,
+  "clock": 160,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "ladder"
+  ],
+  "refusals": []
+ },
+ "SM-09": {
+  "path": [
+   "solo",
+   "meter",
+   "gain",
+   "ab"
+  ],
+  "seconds": 70,
+  "clock": 160,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-10": {
+  "path": [
+   "meters",
+   "log",
+   "photo",
+   "byphoto",
+   "all"
+  ],
+  "seconds": 75,
+  "clock": 200,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-201": {
+  "path": [
+   "check",
+   "rfplan",
+   "header",
+   "ask",
+   "ben",
+   "fallback",
+   "power",
+   "readback"
+  ],
+  "seconds": 130,
+  "clock": 190,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "approve",
+   "tiein"
+  ],
+  "refusals": []
+ },
+ "SM-202": {
+  "path": [
+   "log",
+   "scan",
+   "video",
+   "photo",
+   "walk",
+   "ben",
+   "walk2"
+  ],
+  "seconds": 145,
+  "clock": 225,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "climb"
+  ],
+  "refusals": [
+   "phones"
+  ]
+ },
+ "SM-203": {
+  "path": [
+   "ask",
+   "reno",
+   "kim",
+   "gst",
+   "pipe4",
+   "budget",
+   "sofia",
+   "report"
+  ],
+  "seconds": 145,
+  "clock": 210,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "accept",
+   "half"
+  ],
+  "refusals": [
+   "photo"
+  ]
+ },
+ "SM-204": {
+  "path": [
+   "pattern",
+   "log",
+   "rosa",
+   "hand",
+   "laptop",
+   "compare",
+   "interval",
+   "book"
+  ],
+  "seconds": 120,
+  "clock": 225,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "fly"
+  ],
+  "refusals": [
+   "rollback",
+   "stop"
+  ]
+ },
+ "SM-205": {
+  "path": [
+   "video",
+   "log",
+   "snap",
+   "clap",
+   "author",
+   "tell",
+   "fix",
+   "test"
+  ],
+  "seconds": 150,
+  "clock": 190,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "hide"
+  ],
+  "refusals": []
+ },
+ "SM-206": {
+  "path": [
+   "read",
+   "meters",
+   "find",
+   "call",
+   "bridge",
+   "reconnect",
+   "walk"
+  ],
+  "seconds": 135,
+  "clock": 225,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "force"
+  ],
+  "refusals": [
+   "plug"
+  ]
+ },
+ "SM-207": {
+  "path": [
+   "mutew",
+   "dante",
+   "ride",
+   "sheet",
+   "fix",
+   "clap",
+   "leah"
+  ],
+  "seconds": 105,
+  "clock": 190,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-208": {
+  "path": [
+   "vf",
+   "router",
+   "walk",
+   "inspect",
+   "spare",
+   "recheck"
+  ],
+  "seconds": 120,
+  "clock": 225,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "power",
+   "aisle"
+  ]
+ },
+ "SM-209": {
+  "path": [
+   "read",
+   "unplug",
+   "dup",
+   "sitecall",
+   "priya",
+   "dhcpoff",
+   "top",
+   "rejoin",
+   "prove"
+  ],
+  "seconds": 150,
+  "clock": 225,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "reboot",
+   "sitepw"
+  ]
+ },
+ "SM-210": {
+  "path": [
+   "wired",
+   "scan",
+   "corr",
+   "fallback",
+   "hank",
+   "ben",
+   "junction",
+   "antenna",
+   "restart"
+  ],
+  "seconds": 165,
+  "clock": 260,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "resetgen",
+   "onemore",
+   "wetfix"
+  ],
+  "refusals": []
+ },
+ "SM-301": {
+  "path": [
+   "laptop",
+   "info",
+   "personal",
+   "change",
+   "mei",
+   "fix",
+   "pilot",
+   "call"
+  ],
+  "seconds": 160,
+  "clock": 205,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "reset"
+  ],
+  "refusals": [
+   "rollback"
+  ]
+ },
+ "SM-302": {
+  "path": [
+   "repro",
+   "dsp",
+   "sw",
+   "upd",
+   "profile",
+   "farend",
+   "brief"
+  ],
+  "seconds": 125,
+  "clock": 205,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-303": {
+  "path": [
+   "log",
+   "cal",
+   "port",
+   "ps",
+   "repro",
+   "profile",
+   "test",
+   "tell"
+  ],
+  "seconds": 160,
+  "clock": 205,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-304": {
+  "path": [
+   "log",
+   "listen",
+   "ask",
+   "ticket",
+   "priya",
+   "analog",
+   "fixport",
+   "all4",
+   "phone2"
+  ],
+  "seconds": 155,
+  "clock": 220,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "closet"
+  ],
+  "refusals": [
+   "wifi"
+  ]
+ },
+ "SM-305": {
+  "path": [
+   "snap",
+   "tix",
+   "join",
+   "age",
+   "healthy",
+   "inventory",
+   "outcome",
+   "compute",
+   "register",
+   "verify"
+  ],
+  "seconds": 180,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "reimage"
+  ]
+ },
+ "SM-306": {
+  "path": [
+   "tell",
+   "readlog",
+   "feedback",
+   "calendar",
+   "tickets",
+   "sync",
+   "pause",
+   "record",
+   "prove"
+  ],
+  "seconds": 150,
+  "clock": 205,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "edit"
+  ],
+  "refusals": [
+   "delay"
+  ]
+ },
+ "SM-307": {
+  "path": [
+   "watch",
+   "fbpage",
+   "table",
+   "trace",
+   "loopmix",
+   "record",
+   "verify"
+  ],
+  "seconds": 165,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "ship"
+  ],
+  "refusals": [
+   "ask",
+   "drill"
+  ]
+ },
+ "SM-308": {
+  "path": [
+   "dlog",
+   "nine",
+   "priya",
+   "wait",
+   "lookup",
+   "restore",
+   "record",
+   "known",
+   "check"
+  ],
+  "seconds": 155,
+  "clock": 205,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "kill"
+  ],
+  "refusals": [
+   "mylaptop"
+  ]
+ },
+ "SM-309": {
+  "path": [
+   "mei",
+   "scope",
+   "inspect",
+   "report",
+   "session",
+   "watch",
+   "verify",
+   "expire"
+  ],
+  "seconds": 160,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "install",
+   "pw"
+  ],
+  "refusals": [
+   "test"
+  ]
+ },
+ "SM-310": {
+  "path": [
+   "read",
+   "torch",
+   "list",
+   "cubby",
+   "laptop",
+   "confirm"
+  ],
+  "seconds": 29,
+  "clock": 70,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "rollback"
+  ],
+  "refusals": []
+ },
+ "SM-401": {
+  "path": [
+   "read",
+   "meters",
+   "fac",
+   "mail",
+   "card",
+   "switch",
+   "watch"
+  ],
+  "seconds": 120,
+  "clock": 265,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "roof"
+  ]
+ },
+ "SM-402": {
+  "path": [
+   "clip",
+   "bc",
+   "log",
+   "talk",
+   "why",
+   "set",
+   "proof",
+   "label"
+  ],
+  "seconds": 135,
+  "clock": 220,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "phones"
+  ]
+ },
+ "SM-403": {
+  "path": [
+   "lufs",
+   "path",
+   "wall",
+   "route",
+   "gain",
+   "ivo",
+   "proof"
+  ],
+  "seconds": 120,
+  "clock": 220,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-404": {
+  "path": [
+   "log",
+   "bc",
+   "phone",
+   "prof",
+   "rec",
+   "roll",
+   "verify",
+   "mon"
+  ],
+  "seconds": 115,
+  "clock": 220,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "retype"
+  ]
+ },
+ "SM-405": {
+  "path": [
+   "rx",
+   "log",
+   "map",
+   "ip",
+   "offair"
+  ],
+  "seconds": 80,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "climb"
+  ],
+  "refusals": [
+   "power"
+  ]
+ },
+ "SM-406": {
+  "path": [
+   "bars",
+   "preset",
+   "adapt",
+   "ifbread",
+   "mm",
+   "test"
+  ],
+  "seconds": 95,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "wifi"
+  ]
+ },
+ "SM-407": {
+  "path": [
+   "mine",
+   "conf",
+   "chg",
+   "exclude",
+   "exc",
+   "fixexc",
+   "std",
+   "proof"
+  ],
+  "seconds": 115,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "reimage"
+  ],
+  "refusals": []
+ },
+ "SM-408": {
+  "path": [
+   "seg",
+   "paper",
+   "pmt",
+   "air",
+   "shared",
+   "fwd",
+   "rb"
+  ],
+  "seconds": 100,
+  "clock": 220,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "admin"
+  ],
+  "refusals": [
+   "unlock"
+  ]
+ },
+ "SM-409": {
+  "path": [
+   "tell",
+   "tc",
+   "go",
+   "verify",
+   "back",
+   "fix",
+   "retry",
+   "type"
+  ],
+  "seconds": 155,
+  "clock": 265,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "skip"
+  ],
+  "refusals": []
+ },
+ "SM-410": {
+  "path": [
+   "fc",
+   "plan",
+   "route",
+   "gen",
+   "move",
+   "lang",
+   "fixlang",
+   "proof"
+  ],
+  "seconds": 120,
+  "clock": 285,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "own",
+   "bridge",
+   "stay"
+  ],
+  "refusals": [
+   "panel"
+  ]
+ },
+ "SM-501": {
+  "path": [
+   "cap",
+   "play",
+   "chg",
+   "fix1",
+   "test",
+   "roll",
+   "mon",
+   "tell"
+  ],
+  "seconds": 155,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "vendor"
+  ]
+ },
+ "SM-502": {
+  "path": [
+   "fallback",
+   "page",
+   "graph",
+   "sim",
+   "tomas",
+   "proof",
+   "labels"
+  ],
+  "seconds": 95,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "walkin"
+  ],
+  "refusals": [
+   "admin",
+   "cap"
+  ]
+ },
+ "SM-503": {
+  "path": [
+   "rx",
+   "acc",
+   "map",
+   "plat",
+   "install",
+   "level",
+   "listen",
+   "sign"
+  ],
+  "seconds": 110,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "floor"
+  ]
+ },
+ "SM-504": {
+  "path": [
+   "hand",
+   "log",
+   "sched",
+   "day",
+   "rec",
+   "plan",
+   "proof"
+  ],
+  "seconds": 90,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "unplug",
+   "prio"
+  ]
+ },
+ "SM-505": {
+  "path": [
+   "own",
+   "map",
+   "diff",
+   "farah",
+   "pilot",
+   "batch",
+   "review"
+  ],
+  "seconds": 80,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "vendor"
+  ]
+ },
+ "SM-506": {
+  "path": [
+   "walk",
+   "dash",
+   "comm",
+   "hvac",
+   "lobe",
+   "proof",
+   "check"
+  ],
+  "seconds": 100,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-507": {
+  "path": [
+   "stages",
+   "vlan",
+   "move",
+   "hold",
+   "proof"
+  ],
+  "seconds": 70,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "own"
+  ],
+  "refusals": [
+   "fw",
+   "login"
+  ]
+ },
+ "SM-508": {
+  "path": [
+   "offset",
+   "wake",
+   "arena",
+   "vote",
+   "realign",
+   "proof"
+  ],
+  "seconds": 75,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "manual"
+  ]
+ },
+ "SM-509": {
+  "path": [
+   "rate",
+   "cost",
+   "sessions",
+   "claim",
+   "plan"
+  ],
+  "seconds": 80,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "all"
+  ]
+ },
+ "SM-510": {
+  "path": [
+   "viewer",
+   "time",
+   "ask",
+   "direct",
+   "proof"
+  ],
+  "seconds": 45,
+  "clock": 250,
+  "declare_at_start": "fail",
+  "boundary_ends": [
+   "restart"
+  ],
+  "refusals": []
+ },
+ "SM-601": {
+  "path": [
+   "overlay",
+   "bg",
+   "fill",
+   "odile",
+   "varga",
+   "move",
+   "check"
+  ],
+  "seconds": 90,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "edit"
+  ]
+ },
+ "SM-602": {
+  "path": [
+   "spec",
+   "sect",
+   "calc",
+   "rail",
+   "odile",
+   "sched"
+  ],
+  "seconds": 70,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "hole",
+   "mount"
+  ]
+ },
+ "SM-603": {
+  "path": [
+   "std",
+   "ups",
+   "num",
+   "court",
+   "owner",
+   "split"
+  ],
+  "seconds": 80,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "hide"
+  ]
+ },
+ "SM-604": {
+  "path": [
+   "pos",
+   "reach",
+   "interp",
+   "fix",
+   "odile",
+   "test"
+  ],
+  "seconds": 85,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "stool"
+  ]
+ },
+ "SM-605": {
+  "path": [
+   "taps",
+   "cap",
+   "spec",
+   "rr",
+   "add",
+   "check"
+  ],
+  "seconds": 80,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "buy"
+  ]
+ },
+ "SM-606": {
+  "path": [
+   "meas",
+   "target",
+   "calc",
+   "where",
+   "decor",
+   "respec",
+   "prove"
+  ],
+  "seconds": 90,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "foam"
+  ]
+ },
+ "SM-607": {
+  "path": [
+   "survey",
+   "rcp",
+   "calc",
+   "grid",
+   "coord",
+   "prove"
+  ],
+  "seconds": 90,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "cut"
+  ]
+ },
+ "SM-608": {
+  "path": [
+   "scan",
+   "hits",
+   "recalc",
+   "coord",
+   "answer"
+  ],
+  "seconds": 70,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-609": {
+  "path": [
+   "walk",
+   "src",
+   "mine",
+   "own",
+   "survey"
+  ],
+  "seconds": 75,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "patch"
+  ]
+ },
+ "SM-610": {
+  "path": [
+   "corr",
+   "port",
+   "vlan",
+   "spec",
+   "change",
+   "prove"
+  ],
+  "seconds": 80,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "config"
+  ]
+ },
+ "SM-701": {
+  "path": [
+   "call",
+   "file",
+   "ref",
+   "change",
+   "prove",
+   "sort"
+  ],
+  "seconds": 80,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "self"
+  ]
+ },
+ "SM-702": {
+  "path": [
+   "ring",
+   "inv",
+   "ver",
+   "sam",
+   "mara",
+   "pilot",
+   "dash"
+  ],
+  "seconds": 95,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-703": {
+  "path": [
+   "po",
+   "recon",
+   "agm",
+   "cfo",
+   "ext",
+   "test",
+   "owner"
+  ],
+  "seconds": 100,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "vendor"
+  ]
+ },
+ "SM-704": {
+  "path": [
+   "read",
+   "conv",
+   "sla",
+   "own",
+   "diag",
+   "fix",
+   "call"
+  ],
+  "seconds": 85,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "remote"
+  ]
+ },
+ "SM-705": {
+  "path": [
+   "times",
+   "logs",
+   "polls",
+   "cron",
+   "fix",
+   "mon",
+   "prove"
+  ],
+  "seconds": 90,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "self"
+  ]
+ },
+ "SM-706": {
+  "path": [
+   "aud",
+   "who",
+   "reach",
+   "deps",
+   "net",
+   "svc",
+   "rot"
+  ],
+  "seconds": 105,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "vpn"
+  ]
+ },
+ "SM-707": {
+  "path": [
+   "clear",
+   "report",
+   "math",
+   "parts",
+   "bands",
+   "profile",
+   "var",
+   "prove"
+  ],
+  "seconds": 100,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "unplug",
+   "bigger"
+  ]
+ },
+ "SM-708": {
+  "path": [
+   "listen",
+   "patch",
+   "repatch",
+   "prog",
+   "path",
+   "interp",
+   "prove"
+  ],
+  "seconds": 90,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "auto"
+  ]
+ },
+ "SM-709": {
+  "path": [
+   "sort",
+   "gaps",
+   "tests",
+   "reg",
+   "owners",
+   "board",
+   "pilot"
+  ],
+  "seconds": 115,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-710": {
+  "path": [
+   "five",
+   "hb",
+   "unmute",
+   "rt",
+   "call",
+   "thr",
+   "parallel"
+  ],
+  "seconds": 80,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "ups"
+  ]
+ },
+ "SM-801": {
+  "path": [
+   "walk",
+   "b14",
+   "rfi",
+   "calc",
+   "south",
+   "prove",
+   "matrix"
+  ],
+  "seconds": 95,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "tell"
+  ]
+ },
+ "SM-802": {
+  "path": [
+   "ask",
+   "sched",
+   "amps",
+   "clock",
+   "t5",
+   "prove",
+   "rule"
+  ],
+  "seconds": 95,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "reset",
+   "cord"
+  ]
+ },
+ "SM-803": {
+  "path": [
+   "stop",
+   "mark",
+   "cov",
+   "restore",
+   "seq",
+   "prove"
+  ],
+  "seconds": 95,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "cut"
+  ]
+ },
+ "SM-804": {
+  "path": [
+   "raw",
+   "sample",
+   "log",
+   "replace"
+  ],
+  "seconds": 60,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "self"
+  ]
+ },
+ "SM-805": {
+  "path": [
+   "log",
+   "limit",
+   "bod",
+   "gap",
+   "sched",
+   "n1",
+   "prove"
+  ],
+  "seconds": 95,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "door"
+  ]
+ },
+ "SM-806": {
+  "path": [
+   "inv",
+   "spec",
+   "map",
+   "stage",
+   "pilot",
+   "hops",
+   "prove"
+  ],
+  "seconds": 110,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "push"
+  ]
+ },
+ "SM-807": {
+  "path": [
+   "reg",
+   "se",
+   "rig",
+   "stack",
+   "calc",
+   "label",
+   "prove"
+  ],
+  "seconds": 85,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "look",
+   "hoist"
+  ]
+ },
+ "SM-808": {
+  "path": [
+   "fa",
+   "trace",
+   "punch",
+   "reland",
+   "test",
+   "label",
+   "marshal"
+  ],
+  "seconds": 85,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "paper",
+   "bypass"
+  ]
+ },
+ "SM-809": {
+  "path": [
+   "rate",
+   "sort",
+   "owner",
+   "sample",
+   "recheck",
+   "asb",
+   "prove"
+  ],
+  "seconds": 95,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "promise"
+  ]
+ },
+ "SM-810": {
+  "path": [
+   "list",
+   "cond",
+   "tp2",
+   "foyer",
+   "brief",
+   "prove"
+  ],
+  "seconds": 100,
+  "clock": 240,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "hide"
+  ]
+ },
+ "SM-901": {
+  "path": [
+   "report",
+   "dario",
+   "check",
+   "named",
+   "disable",
+   "prove"
+  ],
+  "seconds": 75,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "delete",
+   "peek"
+  ]
+ },
+ "SM-902": {
+  "path": [
+   "pause",
+   "preserve",
+   "layer",
+   "path",
+   "marshal",
+   "fix",
+   "prove"
+  ],
+  "seconds": 85,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "counter",
+   "unplug"
+  ]
+ },
+ "SM-903": {
+  "path": [
+   "loop",
+   "level",
+   "sec",
+   "ask",
+   "roles",
+   "prove"
+  ],
+  "seconds": 75,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "hunt",
+   "mine"
+  ]
+ },
+ "SM-904": {
+  "path": [
+   "fa",
+   "map",
+   "prio",
+   "plan",
+   "tell",
+   "prove"
+  ],
+  "seconds": 75,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "myself"
+  ]
+ },
+ "SM-905": {
+  "path": [
+   "zone",
+   "files",
+   "tester",
+   "own",
+   "retest",
+   "prove"
+  ],
+  "seconds": 85,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "hide",
+   "page"
+  ]
+ },
+ "SM-906": {
+  "path": [
+   "sec",
+   "clocks",
+   "tl",
+   "sess",
+   "ntp",
+   "prove"
+  ],
+  "seconds": 80,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "reboot",
+   "restore"
+  ]
+ },
+ "SM-907": {
+  "path": [
+   "count",
+   "needs",
+   "design",
+   "window",
+   "rule",
+   "prove"
+  ],
+  "seconds": 100,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "myself"
+  ]
+ },
+ "SM-908": {
+  "path": [
+   "facts",
+   "off",
+   "step4",
+   "rewrite",
+   "record",
+   "prove"
+  ],
+  "seconds": 85,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "plugs",
+   "counter"
+  ]
+ },
+ "SM-909": {
+  "path": [
+   "list",
+   "owners",
+   "raci",
+   "score",
+   "stand",
+   "prove"
+  ],
+  "seconds": 95,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "blame",
+   "kit"
+  ]
+ },
+ "SM-910": {
+  "path": [
+   "tl",
+   "acct",
+   "inv",
+   "worked",
+   "board"
+  ],
+  "seconds": 80,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "blame"
+  ]
+ },
+ "SM-1001": {
+  "path": [
+   "tone",
+   "src",
+   "ask",
+   "follow",
+   "prove"
+  ],
+  "seconds": 65,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "short"
+  ]
+ },
+ "SM-1002": {
+  "path": [
+   "meas",
+   "old",
+   "pim",
+   "move",
+   "acou",
+   "prove"
+  ],
+  "seconds": 95,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "wall"
+  ]
+ },
+ "SM-1003": {
+  "path": [
+   "solo",
+   "pol",
+   "tape",
+   "align",
+   "prove"
+  ],
+  "seconds": 55,
+  "clock": 210,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "move"
+  ]
+ },
+ "SM-1004": {
+  "path": [
+   "loop",
+   "read",
+   "ask",
+   "direct",
+   "prove"
+  ],
+  "seconds": 60,
+  "clock": 210,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "singer"
+  ]
+ },
+ "SM-1005": {
+  "path": [
+   "img",
+   "list",
+   "dvd",
+   "sheet",
+   "export",
+   "prove"
+  ],
+  "seconds": 130,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "send"
+  ]
+ },
+ "SM-1006": {
+  "path": [
+   "meas",
+   "match",
+   "clip",
+   "choose",
+   "retake",
+   "prove"
+  ],
+  "seconds": 80,
+  "clock": 210,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "remaster"
+  ]
+ },
+ "SM-1007": {
+  "path": [
+   "conn",
+   "spec",
+   "bea",
+   "test",
+   "tag",
+   "t2"
+  ],
+  "seconds": 70,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "plug"
+  ]
+ },
+ "SM-1008": {
+  "path": [
+   "kill",
+   "folder",
+   "tell",
+   "rider",
+   "policy",
+   "prove"
+  ],
+  "seconds": 65,
+  "clock": 210,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "post",
+   "hunt"
+  ]
+ },
+ "SM-1009": {
+  "path": [
+   "gap",
+   "rate",
+   "tonight",
+   "mirror",
+   "design",
+   "prove"
+  ],
+  "seconds": 95,
+  "clock": 230,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-1010": {
+  "path": [
+   "stop",
+   "fresh",
+   "comp",
+   "log",
+   "deliver"
+  ],
+  "seconds": 45,
+  "clock": 245,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "send"
+  ]
+ },
+ "SM-1101": {
+  "path": [
+   "paper",
+   "log",
+   "lost",
+   "window",
+   "brief",
+   "prove"
+  ],
+  "seconds": 75,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "cycle"
+  ]
+ },
+ "SM-1102": {
+  "path": [
+   "log",
+   "calc",
+   "pin",
+   "hold",
+   "route",
+   "fund",
+   "prove"
+  ],
+  "seconds": 90,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "unplug",
+   "climb"
+  ]
+ },
+ "SM-1103": {
+  "path": [
+   "listen",
+   "calc",
+   "move",
+   "tg",
+   "plan",
+   "write",
+   "prove"
+  ],
+  "seconds": 85,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "climb",
+   "tgchange"
+  ]
+ },
+ "SM-1104": {
+  "path": [
+   "tell",
+   "chain",
+   "es",
+   "relay",
+   "tmpl",
+   "prove"
+  ],
+  "seconds": 80,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "edit",
+   "evac"
+  ]
+ },
+ "SM-1105": {
+  "path": [
+   "ups",
+   "shed",
+   "go",
+   "test",
+   "fix",
+   "prove"
+  ],
+  "seconds": 85,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "press"
+  ]
+ },
+ "SM-1106": {
+  "path": [
+   "route",
+   "frame",
+   "post",
+   "meas",
+   "fix",
+   "prove"
+  ],
+  "seconds": 65,
+  "clock": 200,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "sign"
+  ]
+ },
+ "SM-1107": {
+  "path": [
+   "fix",
+   "tell",
+   "brief",
+   "read",
+   "home",
+   "prove"
+  ],
+  "seconds": 60,
+  "clock": 180,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "stay"
+  ]
+ },
+ "SM-1108": {
+  "path": [
+   "ask",
+   "logs",
+   "count",
+   "share",
+   "ports",
+   "prove"
+  ],
+  "seconds": 65,
+  "clock": 180,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "grab",
+   "uplink"
+  ]
+ },
+ "SM-1109": {
+  "path": [
+   "line",
+   "own",
+   "score",
+   "spend",
+   "accept",
+   "big",
+   "prove"
+  ],
+  "seconds": 100,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-1110": {
+  "path": [
+   "read",
+   "line",
+   "held",
+   "near",
+   "pack"
+  ],
+  "seconds": 85,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "grab"
+  ]
+ },
+ "SM-1201": {
+  "path": [
+   "scan",
+   "fa",
+   "exp",
+   "emea",
+   "reg",
+   "board"
+  ],
+  "seconds": 90,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "force"
+  ]
+ },
+ "SM-1202": {
+  "path": [
+   "inv",
+   "eos",
+   "res",
+   "stag",
+   "page",
+   "board"
+  ],
+  "seconds": 90,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "guess"
+  ]
+ },
+ "SM-1203": {
+  "path": [
+   "facts",
+   "back",
+   "galen",
+   "tool",
+   "stop",
+   "stage"
+  ],
+  "seconds": 85,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "blame"
+  ]
+ },
+ "SM-1204": {
+  "path": [
+   "log",
+   "thank",
+   "drill",
+   "names",
+   "roles",
+   "next"
+  ],
+  "seconds": 70,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "why"
+  ]
+ },
+ "SM-1205": {
+  "path": [
+   "list",
+   "galen",
+   "pairs",
+   "gate",
+   "adr",
+   "week"
+  ],
+  "seconds": 90,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "promise"
+  ]
+ },
+ "SM-1206": {
+  "path": [
+   "cause",
+   "share",
+   "synth",
+   "roles",
+   "preset",
+   "prove"
+  ],
+  "seconds": 85,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": []
+ },
+ "SM-1207": {
+  "path": [
+   "w",
+   "ev",
+   "sc",
+   "teo",
+   "pres",
+   "dec"
+  ],
+  "seconds": 85,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "rank"
+  ]
+ },
+ "SM-1208": {
+  "path": [
+   "map",
+   "env",
+   "bg",
+   "plan",
+   "run",
+   "retire"
+  ],
+  "seconds": 90,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "tonight"
+  ]
+ },
+ "SM-1209": {
+  "path": [
+   "aud",
+   "sup",
+   "def",
+   "fund",
+   "aksel",
+   "check"
+  ],
+  "seconds": 70,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "wait"
+  ]
+ },
+ "SM-1210": {
+  "path": [
+   "log",
+   "left",
+   "pair",
+   "vendor",
+   "acc",
+   "done"
+  ],
+  "seconds": 75,
+  "clock": 215,
+  "declare_at_start": "fail",
+  "boundary_ends": [],
+  "refusals": [
+   "keep"
+  ]
+ }
+}

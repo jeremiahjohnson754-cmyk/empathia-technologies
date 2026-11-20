@@ -2,7 +2,7 @@
  * Public leads: the website's forms (demonstration request, pilot partnership, contact) persisted for a person to answer.
  *
  * Inbound is unauthenticated, so the controls are: schema validation (route), a honeypot field that must be absent, consent that must be
- * true, a stricter per-address budget than the API's general one (LEAD_BURST per hour per source address), a size cap, and a row-level
+ * true, a minimum fill time (MIN_FILL_MS), a stricter per-address budget than the API's general one (LEAD_BURST per hour per source address), a size cap, and a row-level
  * policy that lets the runtime role insert only inside a transaction flagged as public inbound. Reading and handling a lead requires
  * policy.configure (security administrator) and is audited. Notification: an email adapter is not configured in this build — the lead
  * records `notified = false` with the reason, and the admin inbox shows it; nothing pretends a message went out.
@@ -14,15 +14,18 @@ import { ApiError, invalid, notFound } from '../http/errors.js';
 
 export const CONSENT_TEXT = 'I agree that Empathia stores this message to answer it (see the privacy notice).';
 const LEAD_BURST = Number(process.env.LEAD_BURST_PER_HOUR || 5);
+/** Minimum time between the form being shown and sent: a form posted faster than a person can type is refused as automated. */
+export const MIN_FILL_MS = Number(process.env.LEAD_MIN_FILL_MS || 3000);
 const recent = new Map<string, number[]>();   // source address hash → submission times within the last hour (process-local)
 export const emailAdapter = { configured: false, reason: 'email adapter not configured (set SMTP_URL and LEAD_NOTIFY_TO, then the adapter sends a copy of each lead to that address)' };
 
-export interface LeadInput { kind: 'demo' | 'pilot' | 'contact'; name: string; organization: string; email: string; audience?: string; scope?: string; message: string; consent: boolean; website?: string; }
+export interface LeadInput { kind: 'demo' | 'pilot' | 'contact'; name: string; organization: string; email: string; audience?: string; scope?: string; message: string; consent: boolean; website?: string; elapsedMs: number; }
 
 function ipHash(ip: string): string { return crypto.createHmac('sha256', process.env.LEAD_IP_PEPPER || 'development-pepper').update(ip).digest('hex').slice(0, 32); }
 
 export async function createLead(pool: PgPool, input: LeadInput, meta: { ip: string; userAgent: string; correlationId: string }) {
   if (input.website) throw new ApiError('validation', 'the form was not accepted');   // honeypot: a hidden field only a bot fills
+  if (!(input.elapsedMs >= MIN_FILL_MS)) throw new ApiError('validation', 'the form was sent too quickly to be a person; please wait a moment and send it again');
   if (input.consent !== true) throw invalid('consent is required to store the message');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) throw invalid('email must be an address');
   const h = ipHash(meta.ip); const now = Date.now(); const times = (recent.get(h) || []).filter((t) => now - t < 3600000);

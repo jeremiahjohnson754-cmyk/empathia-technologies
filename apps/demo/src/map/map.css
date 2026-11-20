@@ -1,0 +1,132 @@
+/* Empathia Map (#234): the canvas fills the stage; the controls float on dark glass with the teal interaction accent. Familiar map
+   conventions (search top-left, layers top-right, zoom and compass bottom-right, a place card) in Empathia's own visual language. */
+.emap { --em-glass: rgba(14, 20, 30, 0.82); --em-line: rgba(214, 228, 255, 0.16); --em-tx: #eef3fb; --em-tx2: #b6c2d6; --em-acc: #2fb3a3;
+  position: relative; width: 100%; border-radius: inherit; color: var(--em-tx); font-size: 13.5px; isolation: isolate; }
+.emap__view { position: relative; width: 100%; aspect-ratio: 16 / 10; min-height: 340px; max-height: 78vh; overflow: hidden; border-radius: inherit; background: #b7c6cf; }
+.lnd__art .emap__view { aspect-ratio: 4 / 3; min-height: 300px; }
+.emap--err { display: grid; place-items: center; padding: 24px; text-align: center; background: #101823; }
+.emap__cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-x pan-y; cursor: grab; outline: none; }
+/* on the page a finger scrolls the page and two move the map (gestures.ts); full screen gives the map every gesture */
+.emap.is-full { position: fixed; inset: 0; z-index: 2000; margin: 0; border-radius: 0; background: #0b1016; display: flex; flex-direction: column; gap: 8px;
+  padding: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(8px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+.emap.is-full .emap__view { flex: 1 1 auto; aspect-ratio: auto; min-height: 0; max-height: none; border-radius: 12px; }
+.emap.is-full .emap__cv { touch-action: none; }
+/* on a phone the building card and the lenses sit below the picture; in full screen the picture keeps at least half the window: the
+   card scrolls inside a bottom part of its own and the lenses scroll sideways in one row (20 Nov 2026: the card had squeezed it to 132 px) */
+@media (max-width: 640px) {
+  .emap.is-full .emap__view { min-height: min(52vh, 520px); }
+  .emap.is-full .emap__card { flex: 0 1 auto; min-height: 0; max-height: 34vh; margin: 0; overflow: auto; }
+  .emap.is-full .emap__lens { flex-wrap: nowrap; overflow-x: auto; margin: 0; flex: none; }
+  .emap.is-full .emap__credit { flex: none; }
+}
+html.has-full, html.has-full body { overflow: hidden; }
+.emap__hint { position: absolute; z-index: 4; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; max-width: min(80%, 340px); padding: 10px 14px; border-radius: 12px; background: rgba(10, 14, 20, 0.88); color: #eef3fb; font-size: 14px; line-height: 1.35; text-align: center; pointer-events: none; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
+.emap__cv:active { cursor: grabbing; }
+.emap__cv:focus-visible { box-shadow: inset 0 0 0 3px var(--em-acc); }
+.emap__pins { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.emap__pin, .emap__rpin { position: absolute; left: 0; top: 0; pointer-events: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 3px 10px 3px 8px; border-radius: 999px;
+  border: 1px solid var(--em-line); background: var(--em-glass); color: var(--em-tx); font: 600 12.5px/1 var(--font-sans, system-ui); white-space: nowrap; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); transition: background .15s ease, border-color .15s ease; will-change: transform; }
+.emap__pin::after { content: ""; opacity: var(--pv, 1); position: absolute; left: calc(50% + var(--tip, 0px)); bottom: -6px; width: 10px; height: 10px; transform: translateX(-50%) rotate(45deg); background: inherit; border-right: 1px solid var(--em-line); border-bottom: 1px solid var(--em-line); }
+/* a pin moved clear of another (EmpathiaMap place()): its pointer stays over its building and a leader runs down to it */
+.emap__pin::before { content: ""; position: absolute; left: calc(50% + var(--tip, 0px)); top: var(--lt, 100%); width: 2px; height: var(--lh, 0px); transform: translateX(-50%); background: rgba(238, 243, 251, 0.9); box-shadow: 0 0 0 1px rgba(10, 14, 20, 0.8); pointer-events: none; }
+.emap__pin:hover, .emap__pin.on, .emap__rpin:hover, .emap__rpin.on { border-color: var(--em-acc); background: rgba(10, 60, 56, 0.92); }
+.emap__pin:focus-visible, .emap__rpin:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.emap__glyph { font-size: 11px; } .emap__pin--healthy .emap__glyph { color: #5fd49b; } .emap__pin--monitor .emap__glyph { color: #f2c14e; } .emap__pin--action .emap__glyph { color: #ff7a6b; } .emap__pin--none .emap__glyph { color: #aab4c4; }
+.emap__score { color: var(--em-tx2); font-variant-numeric: tabular-nums; }
+.emap__iss { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #d64545; color: #fff; font-size: 11px; }
+.emap__rpin { min-height: 28px; padding: 2px 9px; font-size: 12px; }
+.emap__rpin i { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+.emap__bar { display: contents; }   /* the search, the levels and the layers: over a wide map; a toolbar above it on a phone */
+.emap__top { position: absolute; z-index: 3; left: 12px; top: 12px; right: 196px; display: grid; gap: 8px; justify-items: start; pointer-events: none; }
+.emap__top > * { pointer-events: auto; }
+.emap__search { position: relative; width: min(360px, 100%); }
+.emap__search input { width: 100%; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid var(--em-line); background: var(--em-glass); color: var(--em-tx); font: inherit; font-size: 14.5px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+.emap__search input::placeholder { color: var(--em-tx2); }
+.emap__search input:focus-visible { outline: 2px solid var(--em-acc); outline-offset: 1px; }
+.emap__hits { position: absolute; left: 0; right: 0; top: calc(100% + 6px); margin: 0; padding: 6px; list-style: none; border-radius: 16px; background: var(--em-glass); border: 1px solid var(--em-line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 3; max-height: 280px; overflow: auto; }
+.emap__hits button { display: grid; gap: 2px; width: 100%; min-height: 44px; padding: 6px 10px; border: 0; border-radius: 10px; background: transparent; color: var(--em-tx); text-align: left; font: inherit; cursor: pointer; }
+.emap__hits button:hover, .emap__hits button:focus-visible { background: rgba(47, 179, 163, 0.18); outline: none; }
+.emap__hits span { color: var(--em-tx2); font-size: 12px; }
+.emap__crumbs { display: inline-flex; align-items: center; gap: 4px; padding: 3px 6px; border-radius: 999px; background: var(--em-glass); border: 1px solid var(--em-line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.emap__crumbs button { min-height: 40px; padding: 0 10px; border: 0; border-radius: 999px; background: transparent; color: var(--em-tx); font: inherit; font-weight: 600; cursor: pointer; }
+.emap__crumbs button:hover { background: rgba(255, 255, 255, 0.08); } .emap__crumbs [aria-current] { color: var(--em-acc); }
+.emap__crumbs > span { color: var(--em-tx2); padding: 0 4px; }
+.emap__layers { position: absolute; z-index: 3; right: 12px; top: 12px; display: inline-flex; padding: 3px; gap: 2px; border-radius: 14px; background: var(--em-glass); border: 1px solid var(--em-line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.emap__layers button { min-height: 38px; min-width: 44px; padding: 0 12px; border: 0; border-radius: 11px; background: transparent; color: var(--em-tx2); font: inherit; font-weight: 600; cursor: pointer; }
+.emap__layers button[aria-pressed=true] { background: var(--em-acc); color: #04201d; }
+.emap__ctrl { position: absolute; right: 12px; bottom: 34px; display: grid; gap: 6px; }
+.emap__ctrl button { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--em-line); background: var(--em-glass); color: var(--em-tx); font-size: 20px; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); }
+.emap__ctrl button:hover { border-color: var(--em-acc); } .emap__ctrl button:focus-visible, .emap__layers button:focus-visible, .emap__crumbs button:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.emap__needle { display: inline-grid; place-items: center; transition: none; }
+.emap__card { position: absolute; left: 12px; bottom: 34px; width: min(360px, calc(100% - 84px)); max-height: calc(100% - 156px);   /* clear of the search and level rows above it (19 Nov: the card grew a row of jumps) */ overflow: auto; padding: 14px 16px; border-radius: 18px; background: var(--em-glass); border: 1px solid var(--em-line); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4); display: grid; gap: 8px; }
+.emap__card h3 { margin: 0; font-size: 17px; letter-spacing: -.01em; color: var(--em-tx); padding-right: 28px; }
+.emap__meta { margin: 0; color: var(--em-tx2); font-size: 12.5px; line-height: 1.45; }
+.emap__band--healthy { color: #5fd49b; } .emap__band--monitor { color: #f2c14e; } .emap__band--action { color: #ff7a6b; }
+.emap__dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; vertical-align: 0; }
+.emap__id { font-family: var(--font-mono, monospace); font-size: 11.5px; }
+.emap__note { margin: 0; font-size: 12px; color: var(--em-tx2); }
+.emap__floors { display: flex; flex-wrap: wrap; gap: 6px; }
+.emap__floors button { display: inline-grid; place-items: center; min-width: 44px; min-height: 44px; padding: 2px 6px; border-radius: 10px; border: 1px solid var(--em-line); background: rgba(255, 255, 255, 0.04); color: var(--em-tx); font: inherit; font-weight: 700; cursor: pointer; line-height: 1.1; }
+.emap__floors small { font-size: 10px; font-weight: 500; color: var(--em-tx2); }
+.emap__floors button[aria-pressed=true] { border-color: var(--em-acc); background: rgba(47, 179, 163, 0.22); }
+.emap__floors button:disabled { opacity: .35; cursor: default; }
+.emap__acts, .emap__jumps { display: flex; flex-wrap: wrap; gap: 6px; }
+.emap__go { min-height: 40px; padding: 0 16px; border: 0; border-radius: 20px; background: var(--em-acc); color: #04201d; font: inherit; font-weight: 700; cursor: pointer; }
+.emap__jump { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 20px; border: 1px solid var(--em-line); color: var(--em-tx); text-decoration: none; font-weight: 600; background: rgba(255, 255, 255, 0.05); }
+.emap__jump:hover, .emap__jump:focus-visible { border-color: var(--em-acc); outline: none; }
+.emap__x { position: absolute; right: 8px; top: 8px; width: 36px; height: 36px; border: 0; border-radius: 18px; background: transparent; color: var(--em-tx2); font-size: 22px; cursor: pointer; }
+.emap__credit { position: absolute; z-index: 2; left: 50%; bottom: 6px; transform: translateX(-50%); margin: 0; padding: 2px 10px; border-radius: 999px; background: rgba(10, 14, 20, 0.6); color: #d6dfec; font-size: 10.5px; white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+@media (max-width: 640px) {
+  /* a phone: the map keeps the whole frame and the place card sits under it (a sheet), so nothing covers the map or its controls */
+  .emap__view { aspect-ratio: 4 / 5; max-height: 70vh; }
+  /* founder, 19 Nov 2026 20:16 ("readable on a real mobile viewport"): on a phone the search and the level sit above the map and the line
+     saying what the map is sits under it, in full, so neither covers a pin or cuts the word "synthetic" short: the search, the level and
+     the layers share a row where they fit and wrap where they do not; the zoom stays at the bottom right of the map; every control 44 px */
+  .emap__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; }
+  .emap__top { display: contents; }
+  .emap__search { flex: 1 1 120px; min-width: 120px; width: auto; }   /* one row with the level and the layers where they fit (412 px), two on the smallest phones */
+  .emap__layers { position: static; }
+  .emap__layers button { min-width: 44px; min-height: 44px; padding: 0 8px; }
+  .lnd__art .emap__view { aspect-ratio: 4 / 5; }
+  .emap__ctrl { right: 10px; bottom: 10px; grid-auto-flow: column; }   /* a row on a phone, so it covers less of the map's height */
+  .emap__credit { position: static; transform: none; display: block; max-width: none; margin: 8px 0 0; padding: 7px 12px; border-radius: 12px; background: #121a26; color: #d6dfec; font-size: 12px; line-height: 1.4; white-space: normal; overflow: visible; text-overflow: clip; }
+  .emap__crumbs button { min-height: 44px; }
+  .emap__card { position: static; width: auto; max-height: none; margin: 10px 0 0; background: #121a26; }
+  .emap__crumbs button { padding: 0 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .emap__pin, .emap__rpin { transition: none; } }
+.emap__view--loading { display: grid; place-items: center; background: linear-gradient(135deg, #2c3b2a, #43573a 45%, #3a4c35); color: #dfe8f3; font-size: 13px; }
+/* lenses (#234): the lens switch under the layers, a legend that says what the colour means, the numbers behind it and where they come from */
+.emap__lens { position: absolute; right: 12px; top: 62px; display: inline-flex; padding: 3px; gap: 2px; border-radius: 14px; background: var(--em-glass); border: 1px solid var(--em-line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.emap__lens button, .emap__seg button { min-height: 38px; min-width: 44px; padding: 0 11px; border: 0; border-radius: 11px; background: transparent; color: var(--em-tx2); font: inherit; font-weight: 600; cursor: pointer; }
+.emap__lens button[aria-pressed=true], .emap__seg button[aria-pressed=true] { background: #f2c14e; color: #2a1d02; }
+.emap__lens button:focus-visible, .emap__seg button:focus-visible, .emap__inline:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.emap__legend { position: absolute; right: 12px; top: 112px; width: min(290px, calc(100% - 84px)); padding: 12px 14px; border-radius: 16px; background: var(--em-glass); border: 1px solid var(--em-line); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: grid; gap: 8px; box-shadow: 0 10px 28px rgba(0,0,0,.35); }
+.emap__legend h3 { margin: 0; font-size: 14px; } .emap__legend p { margin: 0; font-size: 12px; line-height: 1.45; color: var(--em-tx2); } .emap__legend b { color: var(--em-tx); }
+.emap__seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 14px; background: rgba(255,255,255,.05); border: 1px solid var(--em-line); justify-self: start; }
+.emap__scale { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; font-size: 11.5px; color: var(--em-tx2); font-variant-numeric: tabular-nums; }
+.emap__scale i { grid-column: 1 / -1; height: 8px; border-radius: 4px; } .emap__scale span:last-child { grid-column: 3; }
+.emap__src { font-size: 11px !important; }
+.emap__legend .emap__jump { justify-self: start; }
+.emap__lv { color: #ffd98a; font-variant-numeric: tabular-nums; }
+.emap__inline { color: #7fe0d3; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 640px) {
+  .emap__lens { position: static; margin: 10px 0 0; display: flex; flex-wrap: wrap; width: fit-content; max-width: 100%; background: #121a26; }
+  .emap__lens button { min-height: 44px; white-space: nowrap; }
+  .emap__legend { position: static; width: auto; margin: 8px 0 0; background: #121a26; }
+}
+/* six measures of the Issues lens (founder 18 Nov 15:38): they wrap into rows inside the legend */
+.emap__seg--wrap { display: flex; flex-wrap: wrap; justify-self: stretch; }
+.emap__seg--wrap button { flex: 1 1 auto; min-height: 44px; }
+/* Lite's campus on the map (19 Nov 2026): a pin's few added words, and a lens's lines and labels over the map */
+.emap__sub { color: #9ff0e4; font-weight: 500; }
+.emap__ov { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+/* each line is a bright stroke on a dark casing (founder, 19 Nov 2026 20:16: route contrast): teal alone measured 1.0–2.2 : 1 against the
+   grass and paving beside it on a phone; the casing gives the line an edge that stands out from any ground */
+.emap__ovc { fill: none; stroke: rgba(4, 22, 24, 0.9); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.emap__ovc--dash { stroke-dasharray: 8 6; stroke-width: 6; } .emap__ovc--route { stroke-width: 9; }
+.emap__ovl { fill: none; stroke: #7cf0e2; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.emap__ovl--dash { stroke-dasharray: 8 6; stroke-width: 2.6; } .emap__ovl--route { stroke: #5ff2df; stroke-width: 4.5; }
+.emap__ovt { position: absolute; left: 0; top: 0; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--em-line); background: var(--em-glass); color: #9ff0e4; font: 600 11.5px/1.2 var(--font-sans, system-ui);
+  white-space: nowrap; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 6px 18px rgba(0, 0, 0, .35); pointer-events: none; }

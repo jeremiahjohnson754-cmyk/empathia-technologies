@@ -1,0 +1,42 @@
+{
+ "about": "The private files the Founder Studio is built and tested with. Names, sizes and SHA-256 only: none of the content is in this repository. See scripts/private/founder-studio-assets.mjs and docs/operations/PRIVATE_ASSETS.md.",
+ "store": "EMPATHIA_PRIVATE_STORE (default ~/.empathia-private), subdirectory founder-studio",
+ "files": [
+  {
+   "path": "founder-edition/Empathia-Founder-Edition.html",
+   "bytes": 8371566,
+   "sha256": "ecdf64be4de7cda5096c8dd7902814e26a7b1fe5d693799f9d489fbbddcbe1ee",
+   "role": "the Founder Edition page the studio embeds: the Living Campus 2.5.4 development build the 26 Oct studio (f51229b) shipped, supplied by the founder on 18 Nov; not the newer November no-media build, which is still unavailable (DEFECT_REGISTER D18-24)"
+  },
+  {
+   "path": "films/Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p.mp4",
+   "bytes": 14151649,
+   "sha256": "853f3436b21a500c8cb41f82b44d91d5c6a88b6dc99f1df2ace7533e094f15ff",
+   "role": "a film the studio plays"
+  },
+  {
+   "path": "films/Empathia_F02_The-Living-System_3m00_1080p_captioned.mp4",
+   "bytes": 56881305,
+   "sha256": "46ee50741ad42d845f72c30bfec3ed2c3ba7122590e45220e9def1787a0e54f1",
+   "role": "a film the studio plays"
+  },
+  {
+   "path": "films/Empathia_V141_F01_16x9_1920x1080_captioned.mp4",
+   "bytes": 142553055,
+   "sha256": "4d31db34fb218bed53c22b9991c253f6dfd0072efdd2bdeb81553905c8adcfc2",
+   "role": "a film the studio plays"
+  },
+  {
+   "path": "films/Empathia_V25_FA_16x9_1920x1080_captioned.mp4",
+   "bytes": 63766825,
+   "sha256": "a136a65cb919dcf1ecf6a01674ede82a8f06715e6462c9ceb9c5c73e89c53393",
+   "role": "a film the studio plays"
+  },
+  {
+   "path": "films/IE-film-4k-captioned.mp4",
+   "bytes": 238546689,
+   "sha256": "6ee94d40ce8615f8584091cceb74adfab39f1a3faab925255b4e011dbff5fd55",
+   "role": "a film the studio plays"
+  }
+ ]
+}

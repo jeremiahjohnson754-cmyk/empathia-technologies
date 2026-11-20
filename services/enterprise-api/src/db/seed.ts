@@ -7,6 +7,8 @@
  * (AUTH_MODE=dev). They are documented, synthetic and refused in production (config.ts).
  *   node dist/src/db/seed.js [--reset]
  */
+import { SEED_CLAIMS } from '@empathia/proof-registry';
+import { seedClaims } from '../domain/proof.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -78,6 +80,8 @@ export async function seed(opts: { reset?: boolean } = {}) {
     await member('empathia-founder', 'founder', 'founder');
     await member('empathia-demo', 'service-south', 'service', [siteIds['empathia-demo/SITE-SOUTH']!]);
     for (const role of ['designer', 'syseng', 'secadmin']) await member('second-tenant', role, role);
+    // v1.8 Proof Registry: the synthetic public claims the two public sites show, governed by the founder organization
+    await ownerPool.tx({ tenantId: tenantIds['empathia-founder']! }, (q) => seedClaims(q, tenantIds['empathia-founder']!, people['empathia-founder/founder']!, SEED_CLAIMS));
 
     // staff profiles (synthetic): the facts the ServiceHands hard gates read — certifications with expiry, skills, sites, capacity
     const profile = async (tenant: string, key: string, p: { internal?: boolean; orgName?: string | null; buildingKey?: string | null; sites: string[]; skills: Record<string, { level: string; n?: number }>; certs: Record<string, { expires: string }>; leave?: [string, string] | null; capacity: number; agreement?: unknown }) => {

@@ -23,8 +23,9 @@ try {
   await page.fill('input[name=name]', 'Synthetic Visitor'); await page.fill('input[name=organization]', 'Example Org (synthetic)'); await page.fill('input[name=email]', 'visitor@example.com'); await page.selectOption('select[name=audience]', 'Systems integrator'); await page.fill('textarea[name=message]', 'Please show the commissioning scenario.');
   await page.click('form[data-lead] button[type=submit]'); await page.waitForTimeout(400);
   ok('L-02', 'without consent the browser refuses to submit (required checkbox)', !/Received/.test(await page.locator('[data-status]').textContent()) && await page.evaluate(() => !document.querySelector('form[data-lead]').checkValidity()));
+  await page.waitForTimeout(3200);   // a person takes longer than the minimum fill time (MIN_FILL_MS, 3 s) to complete the form
   await page.check('input[name=consent]'); await page.click('form[data-lead] button[type=submit]'); await page.waitForSelector('[data-status].ok', { timeout: 8000 });
-  ok('L-03', 'with consent the message is sent and the page confirms receipt', /Received/.test(await page.locator('[data-status]').textContent()));
+  ok('L-03', 'with consent the message is sent and the page confirms receipt with a reference', /Received/.test(await page.locator('[data-status]').textContent()) && /reference [0-9a-f]{8}/i.test(await page.locator('[data-status]').textContent()));
   await page.screenshot({ path: path.join(out, 'sent.png') });
   const c = client(h.base); const admin = await c.login('secadmin'); const inbox = await c.call('GET', '/v1/admin/leads', { token: admin });
   const l = inbox.body.items.find((x) => x.email === 'visitor@example.com');

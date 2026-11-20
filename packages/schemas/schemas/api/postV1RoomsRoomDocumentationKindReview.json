@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.empathia.invalid/api/postV1RoomsRoomDocumentationKindReview/0.1.0.json",
+  "title": "POST /v1/rooms/{room}/documentation/{kind}/review request body",
+  "description": "Approve or reject the latest version of one document, once, never by its submitter; a rejection says what to correct",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

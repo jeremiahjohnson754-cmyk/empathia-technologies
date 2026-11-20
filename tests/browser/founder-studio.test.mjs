@@ -17,13 +17,25 @@ const { chromium } = await import(path.join(repo, 'node_modules/playwright/index
 const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/founder-studio/dist'));
 const out = path.resolve(process.argv[3] || path.join(repo, 'tests/evidence/founder-studio'));
 fs.mkdirSync(out, { recursive: true });
+// 17 Nov 2026 (founder: "Resolve Founder Studio's private-asset testing issue. Remove that recurring regression exception
+// permanently."). The studio embeds a page and plays films that are private and not in the repository. In a checkout without them
+// this suite used to fail at its first product page with an error that named no cause, and was then rerun by hand elsewhere. It now
+// asks first: a studio without its private files is NOT RUN (exit 3, never 0), with the command that provisions it. No check below
+// is changed, and a NOT RUN is counted by every runner as not passed.
+const { provisioned, HOW } = await import(path.join(repo, 'scripts/private/founder-studio-assets.mjs'));
+const ready = provisioned(dist);
+if (!ready.ok) {
+  fs.writeFileSync(path.join(out, 'results.json'), JSON.stringify({ suite: 'founder-studio', dist, at: new Date().toISOString(), passed: 0, failed: 0, notRun: 'all', why: ready.why, results: [] }, null, 1));
+  console.log(`NOT RUN founder-studio — ${ready.why}. Provision this checkout first: ${HOW}`);
+  process.exit(3);
+}
 const PORT = 4391; const KEY = 'browser-test-key';
 const results = []; let failed = 0;
 const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 500) }); if (!cond) failed += 1; console.log(`${cond ? 'ok  ' : 'FAIL'} ${id} ${name}${cond ? '' : ` — ${detail}`}`); };
 
 const fixtures = path.join(out, 'fixtures'); fs.mkdirSync(fixtures, { recursive: true });
 const fixture = path.join(fixtures, 'fixture-FA-excerpt.webm');
-if (!fs.existsSync(fixture)) { const { execFileSync } = await import('node:child_process'); const films = JSON.parse(fs.readFileSync(path.join(dist, 'studio/films.json'), 'utf8')); const fa = films.find((f) => f.key === 'FA'); execFileSync('ffmpeg', ['-v', 'error', '-y', '-t', '6', '-i', path.join('/home/claude', fa.path), '-vf', 'scale=640:-2', '-c:v', 'libvpx-vp9', '-b:v', '600k', '-an', fixture]); }
+if (!fs.existsSync(fixture)) { const { execFileSync } = await import('node:child_process'); const films = JSON.parse(fs.readFileSync(path.join(dist, 'studio/films.json'), 'utf8')); const fa = films.find((f) => f.key === 'FA'); execFileSync('ffmpeg', ['-v', 'error', '-y', '-t', '6', '-i', [path.join(dist, 'media/films', fa.file), path.join('/home/claude', fa.path)].find((x) => fs.existsSync(x)) /* 12 Nov 2026: the film placed in the studio first, then the original working copy */, '-vf', 'scale=640:-2', '-c:v', 'libvpx-vp9', '-b:v', '600k', '-an', fixture]); }
 for (const f of fs.readdirSync(path.join(dist, 'media/films'))) if (f.endsWith('.mp4') && !fs.existsSync(path.join(fixtures, f))) fs.symlinkSync(path.join(dist, 'media/films', f), path.join(fixtures, f));
 const srv = spawn(process.execPath, [path.join(dist, 'server/serve.mjs'), '--no-open', `--port=${PORT}`, `--films=${fixtures}`], { env: { ...process.env, STUDIO_KEY: KEY }, stdio: ['ignore', 'pipe', 'pipe'] });
 await new Promise((r) => { srv.stdout.on('data', (d) => { if (/running/.test(String(d))) r(); }); setTimeout(r, 4000); });
@@ -31,8 +43,13 @@ const base = `http://127.0.0.1:${PORT}`;
 const b = await chromium.launch();
 try {
   const ctx = await b.newContext({ viewport: { width: 1440, height: 950 } });
+  // 12 Nov 2026: the studio embeds the legacy Founder Edition HTML, so every request that is not to this machine is refused, not only
+  // recorded (standing rule: legacy HTML runs only with outside requests blocked); the 'external' list below still records any attempt.
+  const offline = (x) => x.route((u) => !/^http:\/\/(127\.0\.0\.1|localhost)[:/]/.test(u.href) && !/^(data|blob|about|file):/.test(u.href), (r) => r.abort());
+  await offline(ctx);
   const page = await ctx.newPage();
   const errors = []; page.on('pageerror', (e) => errors.push(e.message)); page.on('console', (m) => { if (m.type() === 'error' && !/favicon/.test(m.text()) && !(/ERR_CONNECTION_REFUSED/.test(m.text()) && /4100/.test(m.location().url || ''))) errors.push(`console: ${m.text()}`); });   // the Enterprise Platform page probes the local API on :4100; refused = not running
+  const notFound = []; page.on('response', (r) => { if (r.status() >= 400) notFound.push(`${r.status()} ${r.url().replace(/[?&]k=[^&]*/, '')}`); }); // 12 Nov 2026: names what a console 404 was
   const external = []; page.on('request', (r) => { if (!/^http:\/\/(127\.0\.0\.1|localhost)[:/]/.test(r.url()) && !/^(data|blob|about):/.test(r.url())) external.push(r.url()); });
   await page.goto(`${base}/?k=${KEY}`); await page.waitForSelector('.rail');
   ok('S-01', 'the launcher serves the studio after the access key; the rail lists 28 destinations', (await page.locator('.rail a').count()) === 28, await page.locator('.rail a').count());
@@ -122,10 +139,10 @@ try {
   await page.evaluate(() => { location.hash = '#/settings'; }); await page.waitForTimeout(200); await page.click('label:has-text("dark") input');
   ok('S-15', 'appearance: the light theme applies (data-theme="light", pale ground)', t[0] === 'light' && /rgb\(2[0-9]{2}/.test(t[1]), t.join(' '));
 
-  ok('S-16', 'no page errors and no request leaves this computer', errors.length === 0 && external.length === 0, [...errors, ...external].slice(0, 5).join(' | '));
+  ok('S-16', 'no page errors and no request leaves this computer', errors.length === 0 && external.length === 0, [...errors, ...external, ...notFound].slice(0, 8).join(' | '));
 
   // tablet width
-  const tab = await b.newPage({ viewport: { width: 820, height: 1100 } });
+  const tab = await b.newPage({ viewport: { width: 820, height: 1100 } }); await offline(tab);
   await tab.context().addCookies([{ name: 'studio_key', value: KEY, url: base }]);
   await tab.goto(`${base}/index.html#/mission-control`); await tab.waitForSelector('.topbar');
   const overflow = await tab.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -141,7 +158,7 @@ try {
   ok('S-18', 'keyboard: the first Tab reaches “Skip to content”', /Skip to content/.test(focused || ''), focused);
 
   // opened from disk
-  const disk = await b.newPage();
+  const disk = await b.newPage(); await offline(disk);
   const derr = []; disk.on('pageerror', (e) => derr.push(e.message));
   await disk.goto(`file://${path.join(dist, 'index.html')}#/mission-control`); await disk.waitForSelector('.rail', { timeout: 15000 }).catch(() => {});
   const chip = await disk.locator('.mode-chip').textContent().catch(() => '');

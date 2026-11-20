@@ -4,16 +4,16 @@
  */
 export type ErrorCode =
   | 'unauthenticated' | 'forbidden' | 'not_found' | 'validation' | 'conflict' | 'rule_refused' | 'idempotency_mismatch'
-  | 'payload_too_large' | 'unsupported_media_type' | 'rate_limited' | 'not_configured' | 'internal';
+  | 'payload_too_large' | 'unsupported_media_type' | 'rate_limited' | 'not_configured' | 'unavailable' | 'internal';
 
 const STATUS: Record<ErrorCode, number> = {
   unauthenticated: 401, forbidden: 403, not_found: 404, validation: 400, conflict: 409, rule_refused: 422, idempotency_mismatch: 422,
-  payload_too_large: 413, unsupported_media_type: 415, rate_limited: 429, not_configured: 501, internal: 500,
+  payload_too_large: 413, unsupported_media_type: 415, rate_limited: 429, not_configured: 501, unavailable: 503, internal: 500,
 };
 const TITLE: Record<ErrorCode, string> = {
   unauthenticated: 'Sign-in required', forbidden: 'Not allowed for your role', not_found: 'Not found', validation: 'The request is not valid',
   conflict: 'The record changed or already exists', rule_refused: 'Refused by a business rule', idempotency_mismatch: 'Idempotency key reused with a different request',
-  payload_too_large: 'Request too large', unsupported_media_type: 'Unsupported media type', rate_limited: 'Too many requests', not_configured: 'Not configured', internal: 'Internal error',
+  payload_too_large: 'Request too large', unsupported_media_type: 'Unsupported media type', rate_limited: 'Too many requests', not_configured: 'Not configured', unavailable: 'The service is not accepting requests', internal: 'Internal error',
 };
 
 export class ApiError extends Error {
