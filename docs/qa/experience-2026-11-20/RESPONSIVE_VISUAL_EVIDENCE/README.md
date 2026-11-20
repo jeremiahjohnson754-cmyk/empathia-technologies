@@ -19,3 +19,11 @@ the live staging site, for the pages whose look changed).
 
 Widths: 320, 360, 390, 430, 768, 1024, 1440, 1920 (the directive's eight). The behaviour behind the pictures (scrolling, gestures, full
 screen, search state) is checked by the browser suites, not by these pictures: a clean screenshot does not prove working software.
+
+## Before and after (390 and 1440 px, the demonstration's six pages)
+
+`before` is the live staging build (ab22bb5), photographed through the same script with `--demo-url`; `after` is this build.
+- `demo-expo-live-390-before/after`: the four move buttons on the hall (turn left, turn right, nearer, farther) are new.
+- `demo-search-party-390-before/after`: the same address `?q=4.218&type=Room&focus=…`; before, the type in the address was ignored
+  ("Every type"), after, the search comes back with its Rooms filter and the clear control in the field.
+- `demo-campus-map-*`: the Full screen button is now the first of the map's controls.
