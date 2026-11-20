@@ -149,14 +149,14 @@ export function BuildingStage({ bKey, onNav }: { bKey: string; onNav: (to: strin
   const c = useCam({ yaw: -34, pitch: 20, zoom: 1 }); const B = buildingByKey(bKey)!; const href = useAerial(onCampus(bKey) ? bKey : undefined, 8);
   const sc = useMemo(() => buildingScene(c.cam, bKey), [c.cam, bKey]);
   const ground = useMemo(() => { if (!onCampus(bKey)) return undefined; if (!href) return null; const plans = Array.from({ length: B.floors }, (_, i) => floorPlan(bKey, i + 1)); return { href, ...groundUnder(bKey, Math.max(...plans.map((p) => p.W)), Math.max(...plans.map((p) => p.D)), 8) }; }, [href, bKey, B.floors]);
-  return <L3View sc={sc} c={c} label={`The floors of ${B.name}, drawn apart. Each floor is a button.`} onNav={onNav} testId="lite-building-3d" tall S={14} look="estate" ground={ground} credit={`Empathia Lite · ${B.name}, its floors drawn apart · synthetic · floor layouts modeled`} />;
+  return <L3View sc={sc} c={c} label={`The floors of ${B.name}, drawn apart. Each floor is a button.`} onNav={onNav} testId="lite-building-3d" tall S={14} look="estate" tidy ground={ground} credit={`Empathia Lite · ${B.name}, its floors drawn apart · synthetic · floor layouts modeled`} />;
 }
 /** One floor in 3D, with the camera and controls. */
 export function FloorStage({ bKey, fN, onNav, mark }: { bKey: string; fN: number; onNav: (to: string) => void; mark?: string | null }) {
   const c = useCam({ yaw: -30, pitch: 50, zoom: 1 }); const B = buildingByKey(bKey)!; const href = useAerial(onCampus(bKey) ? bKey : undefined);
   const sc = useMemo(() => floorScene(c.cam, bKey, fN, mark), [c.cam, bKey, fN, mark]);
   const ground = useMemo(() => { if (!onCampus(bKey)) return undefined; if (!href) return null; const P = floorPlan(bKey, fN); return { href, ...groundUnder(bKey, P.W, P.D) }; }, [href, bKey, fN]);
-  return <L3View sc={sc} c={c} label={`Floor ${fN} of ${B.name} in 3D. Each room is a button.`} onNav={onNav} testId="lite-floor-3d" tall S={22} look="estate" ground={ground} credit={`Empathia Lite · ${B.name} floor ${fN} · synthetic · the layout is modeled from each room’s size, not surveyed`} />;
+  return <L3View sc={sc} c={c} label={`Floor ${fN} of ${B.name} in 3D. Each room is a button.`} onNav={onNav} testId="lite-floor-3d" tall S={22} look="estate" tidy ground={ground} credit={`Empathia Lite · ${B.name} floor ${fN} · synthetic · the layout is modeled from each room’s size, not surveyed`} />;
 }
 
 // ------------------------------------------------------------------------------------------------ the campus (V2.5.3 liteCampusScene)
@@ -225,5 +225,5 @@ function CampusScene({ buildings, onNav, lens, tone, plaza, visitorPath }: Param
   const c = useCam({ yaw: -37, pitch: 42, zoom: 1 }); const href = useAerial();
   const sc = useMemo(() => campusScene(c.cam, buildings, { lens, tone, plaza, visitorPath }), [c.cam, buildings, lens, tone, plaza, visitorPath]);
   const ground = useMemo(() => (href ? { href, x: GROUND.x0, y: GROUND.z0, w: GROUND.size, d: GROUND.size, wood: true } : null), [href]);
-  return <L3View sc={sc} c={c} label={`The campus in 3D: ${buildings.length} buildings. Each building is a button.`} onNav={onNav} testId="lite-campus-3d" S={1.1} look="estate" ground={ground} credit="Empathia Lite · synthetic aerial imagery of a fictional campus · heights and floor layouts modeled" />;
+  return <L3View sc={sc} c={c} label={`The campus in 3D: ${buildings.length} buildings. Each building is a button.`} onNav={onNav} testId="lite-campus-3d" S={1.1} look="estate" tidy ground={ground} credit="Empathia Lite · synthetic aerial imagery of a fictional campus · heights and floor layouts modeled" />;
 }

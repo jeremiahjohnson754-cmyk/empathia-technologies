@@ -12,6 +12,8 @@ declare module 'react' {
   export type SetStateAction<S> = S | ((prev: S) => S);
   export function useState<S>(initial: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
   export function useEffect(effect: () => void | (() => void), deps?: readonly unknown[]): void;
+  /** React 19's own useLayoutEffect (runs after the DOM is updated, before paint): used where a view measures what it drew. */
+  export function useLayoutEffect(effect: () => void | (() => void), deps?: readonly unknown[]): void;
   export function useMemo<T>(factory: () => T, deps: readonly unknown[]): T;
   export function useRef<T>(initial: T): RefObject<T>;
   export function useRef<T>(initial: T | null): RefObject<T | null>;

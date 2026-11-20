@@ -6,7 +6,7 @@
  * it, as V2.5.3's l3Box did; labels sit on top; every place you can go is a keyboard-reachable button with an accessible name.
  * Geometry here is illustrative (modelled from room sizes in the record), never surveyed.
  */
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 export type P3 = [number, number, number];
 export type RGB = [number, number, number];
@@ -230,19 +230,38 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
   useEffect(() => { if (!v253 && !tidy) return; const el = stage.current; if (!el) return; const up = () => setPx(el.clientWidth); up(); const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(up) : null; ro?.observe(el); return () => ro?.disconnect(); }, [v253]);
   useEffect(() => { const el = stage.current; if (!el) return; const w = (e: WheelEvent) => c.wheel(e); el.addEventListener('wheel', w, { passive: false }); return () => el.removeEventListener('wheel', w); }, [c.wheel]);   // eslint-disable-line
   const labels = sc.items.filter((i): i is L3Label => i.t === 'x' && (!ex || ex.front(i.at)));
+  // each tag's drawn size, measured once it is on the page, so labels are kept apart by their real boxes (the first pass estimates them)
+  const sizes = useRef(new Map<string, [number, number]>()); const [sizeVer, setSizeVer] = useState(0);
+  const tagKey = (it: L3Label) => `${it.text}|${it.sub || ''}|${it.big ? 1 : 0}|${it.cls || ''}|${it.on ? 1 : 0}`;
+  useLayoutEffect(() => { if ((!v253 && !tidy) || !stage.current) return; let moved = false;
+    stage.current.querySelectorAll<HTMLElement>('.l3-marks .l3-tag[data-lk]').forEach((e) => { const k = e.dataset.lk!; const w = e.offsetWidth, h = e.offsetHeight; const o = sizes.current.get(k); if (w && h && (!o || Math.abs(o[0] - w) > 1 || Math.abs(o[1] - h) > 1)) { sizes.current.set(k, [w, h]); moved = true; } });
+    if (moved) setSizeVer((n) => n + 1); });
   const placed = useMemo(() => {
-    const out = new Map<L3Label, { lift: number; skip: boolean }>(); if ((!v253 && !tidy) || !px) return out;
+    const out = new Map<L3Label, { lift: number; skip: boolean; dx: number }>(); if ((!v253 && !tidy) || !px) return out;
     const k = px / (x1 - x0); const boxes: number[][] = [];
-    const meas = labels.map((it) => { const [x, y] = P(it.at); return { it, sx: (x - x0) * k, sy: (y - y0) * k, k: depth(it.at), w: Math.max(18, it.text.length * (it.big ? 6.1 : 5.4) + (it.tone ? 22 : 12) + (it.sub ? it.sub.length * 4.6 + 6 : 0)), hh: it.big ? 19 : 16, rank: it.on ? 0 : it.keep ? 1 : it.cls === 'soft' ? 2 : 1 }; });
-    for (const m of meas.slice().sort((a, b) => a.rank - b.rank || b.k - a.k)) {
-      let lift = m.it.lift || 0, tries = 0; const box = () => { const x = m.sx - (m.it.anchor === 'start' ? 0 : m.w / 2), y = m.sy - lift - 8; return [x, y, x + m.w, y + m.hh]; };
+    // each tag's size as lite.css draws it: on a phone (≤ 560 px) the type is smaller and a small tag drops its second words unless it is
+    // the one marked (founder, 19 Nov 2026 20:16: labels readable on a real phone, not in a scaled screenshot)
+    const small = typeof matchMedia === 'function' && matchMedia('(max-width: 560px)').matches;
+    const meas = labels.map((it) => { const [x, y] = P(it.at); const soft = it.cls === 'soft'; const f = it.big ? (small ? 13 : 15) : soft ? 11 : small ? 11 : 12; const sub = it.sub && (it.big || it.on || !small) ? it.sub : '';
+      const real = sizes.current.get(tagKey(it));
+      return { it, sx: (x - x0) * k, sy: (y - y0) * k, k: depth(it.at), w: real ? real[0] : Math.max(18, it.text.length * f * 0.62 + (it.big ? (small ? 22 : 28) : soft ? 18 : small ? 18 : 22) + (it.tone ? 14 : 0) + (sub ? sub.length * f * 0.52 + 6 : 0)), hh: real ? real[1] : f * 1.2 + (it.big ? (small ? 12 : 14) : soft ? 6 : small ? 8 : 10), rank: it.on ? 0 : it.keep ? 1 : soft ? 2 : 1 }; });
+    // V2.5.3's scenes keep its order (nearest first, a whole row up); Empathia's own scenes (tidy) place from the bottom of the picture up
+    // and move a tag only as far as it must, so a stack of floor labels keeps its order (founder, 19 Nov 2026 20:16)
+    const own = tidy && !v253;
+    for (const m of meas.slice().sort((a, b) => a.rank - b.rank || (own ? b.sy - a.sy : b.k - a.k))) {
+      // kept inside the stage: a tag that would run past an edge is moved along until it fits (it still stands over its place)
+      const left = m.sx - (m.it.anchor === 'start' ? 0 : m.w / 2); const dx = left < 4 ? 4 - left : left + m.w > px - 4 ? Math.max(4 - left, px - 4 - (left + m.w)) : 0;
+      let lift = m.it.lift || 0, tries = 0; const box = () => { const x = left + dx, y = m.sy - lift - m.hh; return [x, y, x + m.w, y + m.hh]; };
       let bx = box(); const hits = () => boxes.some((p) => bx[0]! < p[2]! + 2 && p[0]! < bx[2]! + 2 && bx[1]! < p[3]! + 2 && p[1]! < bx[3]! + 2);
-      while (hits() && tries < (m.rank === 2 ? 0 : 3)) { lift += m.hh + 3; bx = box(); tries++; }
-      if (hits() && m.rank > 0) { out.set(m.it, { lift, skip: true }); continue; }
-      boxes.push(bx); out.set(m.it, { lift, skip: false });
+      if (own) { const over = () => boxes.find((p) => bx[0]! < p[2]! + 2 && p[0]! < bx[2]! + 2 && bx[1]! < p[3]! + 2 && p[1]! < bx[3]! + 2);
+        for (let p = over(); p && tries < (m.rank === 2 ? 0 : 6); p = over()) { lift += bx[3]! - (p[1]! - 3); bx = box(); tries++; }
+        if ((hits() || bx[1]! < 2) && m.rank > 0) { out.set(m.it, { lift, skip: true, dx }); continue; } }
+      else { while (hits() && tries < (m.rank === 2 ? 0 : 3)) { lift += m.hh + 3; bx = box(); tries++; }
+        if (hits() && m.rank > 0) { out.set(m.it, { lift, skip: true, dx }); continue; } }
+      boxes.push(bx); out.set(m.it, { lift, skip: false, dx });
     }
     return out;
-  }, [sc, c.cam, px, v253, tidy]);   // eslint-disable-line
+  }, [sc, c.cam, px, v253, tidy, sizeVer]);   // eslint-disable-line
   return <div className={`l3-stage${tall ? ' l3-stage--tall' : ''}${v253 ? ' l3-stage--v253' : ''}${look ? ` l3-stage--${look}` : ''}`} data-stage="" data-look={look} data-ground={ground === undefined ? undefined : ground ? 'ready' : 'painting'} data-testid={testId} ref={stage} {...pointer} {...objDrag}>
     <div className="l3-frame">
     <svg className="l3-svg" style={{ aspectRatio: `${(x1 - x0).toFixed(0)} / ${(y1 - y0).toFixed(0)}` }} viewBox={`${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1 - x0).toFixed(0)} ${(y1 - y0).toFixed(0)}`} role="group" aria-label={aria} tabIndex={0} onKeyDown={onKeyDown} data-yaw={Math.round(c.goal.yaw)} data-pitch={Math.round(c.goal.pitch)} data-zoom={c.goal.zoom} data-pan={`${c.goal.px || 0},${c.goal.py || 0}`} data-moving={c.goal === c.cam ? undefined : ''}>
@@ -274,9 +293,9 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
       {labels.map((i, k) => { const pl = placed.get(i); if (pl?.skip) return null; const [x, y] = P(i.at); const left = ((x - x0) / (x1 - x0)) * 100, top = ((y - y0) / (y1 - y0)) * 100; const lift = pl ? pl.lift : i.lift;
         const cls = `l3-tag${i.big ? ' l3-tag--big' : ''}${i.on ? ' on' : ''}${i.cls ? ` ${i.cls}` : ''}${i.anchor === 'start' ? ' l3-tag--start' : ''}${i.o && i.o === sel ? ' on' : ''}`;
         const body = <>{i.tone && <i className={`l3-dot l3-dot--${i.tone}`} aria-hidden="true" />}<b>{i.text}</b>{i.sub && <span>{i.sub}</span>}</>;
-        const style = { left: `${left.toFixed(2)}%`, top: `${top.toFixed(2)}%`, marginTop: lift ? -lift : undefined, opacity: i.a };
-        return i.nav ? <a key={`x${k}`} className={cls} style={style} href={i.nav} onClick={(e) => { e.preventDefault(); go(i.nav); }} data-testid={i.testId} tabIndex={-1} aria-hidden="true">{body}</a>
-          : <span key={`x${k}`} className={`${cls}${i.o && onObj ? ' l3-tag--obj' : ''}`} style={style} data-testid={i.testId} aria-hidden="true" onClick={i.o && onObj ? () => pick(i.o) : undefined}>{body}</span>; })}
+        const style = { left: `${left.toFixed(2)}%`, top: `${top.toFixed(2)}%`, marginTop: lift ? -lift : undefined, marginLeft: pl?.dx ? pl.dx : undefined, opacity: i.a };
+        return i.nav ? <a key={`x${k}`} className={cls} style={style} data-lk={tagKey(i)} href={i.nav} onClick={(e) => { e.preventDefault(); go(i.nav); }} data-testid={i.testId} tabIndex={-1} aria-hidden="true">{body}</a>
+          : <span key={`x${k}`} className={`${cls}${i.o && onObj ? ' l3-tag--obj' : ''}`} style={style} data-lk={tagKey(i)} data-testid={i.testId} aria-hidden="true" onClick={i.o && onObj ? () => pick(i.o) : undefined}>{body}</span>; })}
       {hits.map((i, k) => { const [x, y] = P(i.at); return <button key={`h${k}`} type="button" className={`l3-hitbtn${i.o && i.o === sel ? ' on' : ''}`} style={{ left: `${(((x - x0) / (x1 - x0)) * 100).toFixed(2)}%`, top: `${(((y - (i.lift || 0) - y0) / (y1 - y0)) * 100).toFixed(2)}%` }} aria-label={i.label} aria-pressed={i.o ? i.o === sel : undefined} data-testid={i.testId} data-o={i.o} data-k={k} onClick={(e) => { const it = nearest(e) || i; if (it.o) pick(it.o); else go(it.nav); }} />; })}
     </div>
     </div>

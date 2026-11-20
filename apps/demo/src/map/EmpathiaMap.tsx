@@ -171,7 +171,7 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
   const S = useRef({ cam: { tx: 0, tz: 0, dist: 520, yaw: -0.65, pitch: 0.86 } as Cam, from: null as Cam | null, to: null as Cam | null, t0: 0, dur: 1, dirty: true, raf: 0, kick: () => {}, mode, tilt, level, rooms, sel: sel?.key || null, hover: null as string | null, vp: null as M4 | null, soft: false, heat: null as { key: string; c: HTMLCanvasElement } | null });
   S.current.mode = mode; S.current.tilt = tilt; S.current.level = level; S.current.rooms = rooms; S.current.sel = sel?.key || null;
   const opt = useRef({ direct, onOpen, onRoom, overlay }); opt.current = { direct, onOpen, onRoom, overlay };
-  const ovLines = useRef<Array<SVGPolylineElement | null>>([]); const ovLabels = useRef<Array<HTMLSpanElement | null>>([]);
+  const ovLines = useRef<Array<SVGPolylineElement | null>>([]); const ovCase = useRef<Array<SVGPolylineElement | null>>([]); const ovLabels = useRef<Array<HTMLSpanElement | null>>([]);
   const heat = useMemo(() => (metric ? { key: `${lens}:${m}:${metric.rows.map((r) => r.v ?? '-').join(',')}`, c: heatCanvas(metric, lens) } : null), [metric, lens, m]);
   S.current.heat = heat;
 
@@ -270,13 +270,38 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
       host.current?.setAttribute('data-dist', c.dist.toFixed(0)); host.current?.setAttribute('data-yaw', c.yaw.toFixed(2)); host.current?.setAttribute('data-pitch', c.pitch.toFixed(2));
       if (st.to) st.raf = requestAnimationFrame(draw);
     };
-    // pins follow the buildings and rooms on screen
+    // pins follow the buildings and rooms on screen. A pin or a lens label is kept inside the view and clear of the map's own controls and
+    // of the labels already placed (founder, 19 Nov 2026 20:16: "the building labels, route contrast, and controls need to remain readable
+    // on a real mobile viewport"): it moves up, and a thin leader runs from it to its building; its pointer stays over the building.
     const place = (vp: M4, cv2: HTMLCanvasElement) => { const w = cv2.clientWidth, h = cv2.clientHeight; const proj = (x: number, y: number, z: number) => { const p = xf(vp, [x, y, z, 1]); if (p[3] <= 0) return null; return [(p[0] / p[3] * 0.5 + 0.5) * w, (1 - (p[1] / p[3] * 0.5 + 0.5)) * h] as const; };
+      const cr = cv2.getBoundingClientRect(); const boxes: number[][] = [];
+      // the map's own controls where they lie over it (the search, levels and layers over a wide map; the zoom on every map)
+      host.current?.querySelectorAll<HTMLElement>('.emap__ctrl, .emap__layers, .emap__search, .emap__crumbs').forEach((e) => { const r = e.getBoundingClientRect(); if (r.width && r.height && r.top < cr.bottom && r.bottom > cr.top && r.left < cr.right && r.right > cr.left) boxes.push([r.left - cr.left - 4, r.top - cr.top - 4, r.right - cr.left + 4, r.bottom - cr.top + 4]); });
+      type Tag = { el: HTMLElement; s: readonly [number, number]; first: boolean; pin: boolean; bw: number; bh: number };
+      const tags: Tag[] = [];
       for (const b of BUILDINGS) { const el = pins.current[b.key]; if (!el) continue; const F = L.foot[b.key]!; const s = proj(F.x + F.w / 2, b.floors * STOREY + 4, F.z + F.d / 2); const show = !!s && s[0] > -40 && s[0] < w + 40 && s[1] > -20 && s[1] < h + 40 && !(st.level.k === 'floor');
-        el.style.transform = s ? `translate(${s[0].toFixed(1)}px, ${s[1].toFixed(1)}px) translate(-50%, -100%)` : ''; el.style.visibility = show ? 'visible' : 'hidden'; }
+        el.style.visibility = show ? 'visible' : 'hidden'; if (!show || !s) { el.style.transform = ''; continue; } tags.push({ el, s, first: b.key === current || b.key === st.sel, pin: true, bw: 0, bh: 0 }); }
+      const ov = opt.current.overlay;
+      if (ov) ov.labels.forEach((lb, i) => { const el = ovLabels.current[i]; if (!el) return; const s = proj(lb.at[0], lb.at[1], lb.at[2]); el.style.visibility = s ? 'visible' : 'hidden'; if (!s) { el.style.transform = ''; return; } tags.push({ el, s, first: false, pin: false, bw: 0, bh: 0 }); });
+      for (const g of tags) { g.bw = g.el.offsetWidth; g.bh = g.el.offsetHeight; }   // read every size first, then write
+      tags.sort((a, b) => Number(b.first) - Number(a.first) || Number(b.pin) - Number(a.pin) || b.s[1] - a.s[1]);
+      const hit = (q: number[]) => boxes.some((o) => q[0]! < o[2]! + 2 && o[0]! < q[2]! + 2 && q[1]! < o[3]! + 2 && o[1]! < q[3]! + 2);
+      for (const g of tags) { const tip = g.pin ? 7 : 0;   // a pin's bottom sits on its building (its pointer reaches below it)
+        const x0 = Math.max(4, Math.min(w - g.bw - 4, g.s[0] - g.bw / 2)), y0 = g.s[1] - g.bh; const sx = Math.max(0, g.bw / 2 - 16);
+        // the nearest free place: up first, then down, then a little to either side; if none is free it stays where it belongs
+        let best: [number, number] = [x0, y0], cost = Infinity;
+        for (let k = 0; k <= 14 && cost > 0; k++) for (const dy of k ? [-k * 9, k * 9] : [0]) for (const dx of [0, -sx / 2, sx / 2, -sx, sx]) {
+          const x = Math.max(4, Math.min(w - g.bw - 4, x0 + dx)), y = y0 + dy, q = [x, y, x + g.bw, y + g.bh + tip];
+          if ((dy !== 0 || dx !== 0) && (y < 2 || q[3]! > h - 2)) continue; if (hit(q)) continue;
+          const c = Math.abs(dy) + Math.abs(dx) * 1.5 + (dy > 0 ? 6 : 0); if (c < cost) { cost = c; best = [x, y]; } }
+        const [x, y] = best; boxes.push([x, y, x + g.bw, y + g.bh + tip]); g.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+        if (g.pin) { const dy = y - y0, t = Math.max(-(g.bw / 2 - 12), Math.min(g.bw / 2 - 12, g.s[0] - (x + g.bw / 2)));
+          g.el.style.setProperty('--tip', `${t.toFixed(1)}px`);
+          // the leader: from the pin's foot down to its building when it moved up, from its top up to the building when it moved below it
+          g.el.style.setProperty('--lt', dy > g.bh ? `${(-(dy - g.bh)).toFixed(1)}px` : '100%'); g.el.style.setProperty('--lh', `${(dy < 0 ? -dy : dy > g.bh ? dy - g.bh : 0).toFixed(1)}px`); g.el.style.setProperty('--pv', dy > 0 ? '0' : '1'); } }
       const lv = st.level; for (const rb of st.rooms) { const el = rpins.current[rb.o.id]; if (!el || lv.k !== 'floor') continue; const s = proj(rb.x + rb.w / 2, (lv.f - 1) * STOREY + 2.6, rb.z + rb.d / 2); el.style.transform = s ? `translate(${s[0].toFixed(1)}px, ${s[1].toFixed(1)}px) translate(-50%, -50%)` : ''; el.style.visibility = s ? 'visible' : 'hidden'; }
-      const ov = opt.current.overlay; if (ov) { ov.lines.forEach((ln, i) => { const el = ovLines.current[i]; if (!el) return; const ps = ln.pts.map((q) => proj(q[0], q[1], q[2])); el.setAttribute('points', ps.every(Boolean) ? ps.map((q) => `${q![0].toFixed(1)},${q![1].toFixed(1)}`).join(' ') : ''); });
-        ov.labels.forEach((lb, i) => { const el = ovLabels.current[i]; if (!el) return; const s = proj(lb.at[0], lb.at[1], lb.at[2]); el.style.transform = s ? `translate(${s[0].toFixed(1)}px, ${s[1].toFixed(1)}px) translate(-50%, -100%)` : ''; el.style.visibility = s ? 'visible' : 'hidden'; }); } };
+      // a lens's lines, each drawn twice: a dark casing under a bright line, so it reads on grass, paving and roofs alike
+      if (ov) ov.lines.forEach((ln, i) => { const ps = ln.pts.map((q) => proj(q[0], q[1], q[2])); const pts = ps.every(Boolean) ? ps.map((q) => `${q![0].toFixed(1)},${q![1].toFixed(1)}`).join(' ') : ''; ovLines.current[i]?.setAttribute('points', pts); ovCase.current[i]?.setAttribute('points', pts); }); };
     st.kick = () => { if (!st.raf) st.raf = requestAnimationFrame(draw); };
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => st.kick()) : null; ro?.observe(cv);
     const lost = (e: Event) => { e.preventDefault(); setErr('The map’s graphics were interrupted. Reload the page to restore them.'); }; cv.addEventListener('webglcontextlost', lost);
@@ -324,17 +349,8 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
   if (err) return <div className="emap emap--err" role="alert" data-testid="emap-err"><p>{err}</p></div>;
   return (
     <div className="emap" ref={host} data-testid="emap" data-lens={lens} data-rate={rate} data-measure={lens === 'issues' ? m : ''} data-ready={ready} data-level={level.k} data-sel={sel?.key || ''} data-floor={level.k === 'floor' ? level.f : ''} data-room={room || ''} data-mode={mode} data-tilt={tilt}>
-      <div className="emap__view">
-      <canvas ref={canvas} className="emap__cv" tabIndex={0} role="img" aria-label="Empathia Map of the Northstar campus: drag to move, Ctrl or right-drag to turn, scroll or pinch to zoom, arrow keys to move, plus and minus to zoom, Q and E to turn. Every building and room is also a button below." data-testid="emap-canvas" />
-      <div className="emap__pins" role="group" aria-label={`Campus map: ${BUILDINGS.length} buildings. Each opens its place card.`} data-testid={testId}>
-        {overlay && <svg className="emap__ov" aria-hidden="true">{overlay.lines.map((ln, i) => <polyline key={i} ref={(e: SVGPolylineElement | null) => { ovLines.current[i] = e; }} className={`emap__ovl${ln.dash ? ' emap__ovl--dash' : ''}${ln.route ? ' emap__ovl--route' : ''}`} />)}</svg>}
-        {BUILDINGS.map((b) => { const x = t(b); return <button key={b.key} type="button" ref={(e: HTMLButtonElement | null) => { pins.current[b.key] = e; }} className={`emap__pin emap__pin--${x.band}${sel?.key === b.key ? ' on' : ''}`} aria-label={label(b)} aria-current={current === b.key ? 'true' : undefined} aria-pressed={sel?.key === b.key} data-testid={pinTest ? pinTest(b.key) : `campus-b-${b.key}`}
-          onClick={() => { if (direct || (sel?.key === b.key && level.k === 'building')) onOpen(b); else goLevel({ k: 'building', b: b.key }); }} onMouseEnter={() => { S.current.hover = b.key; S.current.kick(); onPreview?.(b); }} onMouseLeave={() => { S.current.hover = null; S.current.kick(); }} onFocus={() => onPreview?.(b)}>
-          <span className="emap__glyph" aria-hidden="true">{BAND_GLYPH[x.band]}</span><b>{b.short}</b>{metric ? <span className="emap__lv" data-testid={`emap-lv-${b.key}`}>{fmt(lens, m, metric.rows.find((r) => r.b.key === b.key)?.v ?? null)}</span> : <><span className="emap__score">{x.score ?? '—'}</span>{x.issues > 0 && <span className="emap__iss" aria-hidden="true">{x.issues}</span>}</>}{pinSub?.(b.key) && <span className="emap__sub">{pinSub(b.key)}</span>}</button>; })}
-        {overlay?.labels.map((lb, i) => <span key={i} ref={(e: HTMLSpanElement | null) => { ovLabels.current[i] = e; }} className="emap__ovt" data-testid={lb.testId} aria-hidden="true">{lb.text}</span>)}
-        {level.k === 'floor' && rooms.map((rb) => <button key={rb.o.id} type="button" ref={(e: HTMLButtonElement | null) => { rpins.current[rb.o.id] = e; }} className={`emap__rpin${room === rb.o.id ? ' on' : ''}`} data-testid={`map-room-${rb.o.id}`} aria-label={`${shortName(rb.o)} ${rb.o.name}: ${STATE_WORD[rb.state] || rb.state}${rb.issues ? `, ${rb.issues} open issue${rb.issues === 1 ? '' : 's'}` : ''}`} aria-pressed={room === rb.o.id} onClick={() => setRoom(rb.o.id)}>
-          <i style={{ background: STATE_COL[rb.state] }} aria-hidden="true" />{rb.o.number}{rb.issues > 0 && <span className="emap__iss" aria-hidden="true">{rb.issues}</span>}</button>)}
-      </div>
+      {/* the search and the level sit over the map on a wide screen and above it on a phone (map.css), so on a phone they cover no pin */}
+      <div className="emap__bar">
       <div className="emap__top">
         <div className="emap__search"><input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search the campus: a building, a room, 4.218…" aria-label="Search the campus map" data-testid="emap-q" maxLength={60} />
           {hits.length > 0 && <ul className="emap__hits" role="listbox" aria-label="Places">{hits.map((h) => <li key={h.k + h.id} role="option" aria-selected="false"><button type="button" onClick={() => choose(h)} data-testid={`emap-hit-${h.id}`}><b>{h.label}</b><span>{h.sub}</span></button></li>)}</ul>}</div>
@@ -349,13 +365,26 @@ export function EmpathiaMap({ tiles, onOpen, onPreview, current, floor, testId =
         <button type="button" aria-pressed={mode === 'map'} onClick={() => setMode('map')} data-testid="emap-map">Map</button>
         <button type="button" aria-pressed={tilt} onClick={() => { const n = !tilt; setTilt(n); S.current.tilt = n; fly({ ...S.current.cam, pitch: n ? 0.86 : 1.54 }, 0.7); }} data-testid="emap-tilt">3D</button>
       </div>
+      </div>
+      <div className="emap__view">
+      <canvas ref={canvas} className="emap__cv" tabIndex={0} role="img" aria-label="Empathia Map of the Northstar campus: drag to move, Ctrl or right-drag to turn, scroll or pinch to zoom, arrow keys to move, plus and minus to zoom, Q and E to turn. Every building and room is also a button below." data-testid="emap-canvas" />
+      <div className="emap__pins" role="group" aria-label={`Campus map: ${BUILDINGS.length} buildings. Each opens its place card.`} data-testid={testId}>
+        {overlay && <svg className="emap__ov" aria-hidden="true">{overlay.lines.map((ln, i) => <polyline key={`c${i}`} ref={(e: SVGPolylineElement | null) => { ovCase.current[i] = e; }} className={`emap__ovc${ln.dash ? ' emap__ovc--dash' : ''}${ln.route ? ' emap__ovc--route' : ''}`} />)}{overlay.lines.map((ln, i) => <polyline key={i} ref={(e: SVGPolylineElement | null) => { ovLines.current[i] = e; }} className={`emap__ovl${ln.dash ? ' emap__ovl--dash' : ''}${ln.route ? ' emap__ovl--route' : ''}`} />)}</svg>}
+        {BUILDINGS.map((b) => { const x = t(b); return <button key={b.key} type="button" ref={(e: HTMLButtonElement | null) => { pins.current[b.key] = e; }} className={`emap__pin emap__pin--${x.band}${sel?.key === b.key ? ' on' : ''}`} aria-label={label(b)} aria-current={current === b.key ? 'true' : undefined} aria-pressed={sel?.key === b.key} data-testid={pinTest ? pinTest(b.key) : `campus-b-${b.key}`}
+          onClick={() => { if (direct || (sel?.key === b.key && level.k === 'building')) onOpen(b); else goLevel({ k: 'building', b: b.key }); }} onMouseEnter={() => { S.current.hover = b.key; S.current.kick(); onPreview?.(b); }} onMouseLeave={() => { S.current.hover = null; S.current.kick(); }} onFocus={() => onPreview?.(b)}>
+          <span className="emap__glyph" aria-hidden="true">{BAND_GLYPH[x.band]}</span><b>{b.short}</b>{metric ? <span className="emap__lv" data-testid={`emap-lv-${b.key}`}>{fmt(lens, m, metric.rows.find((r) => r.b.key === b.key)?.v ?? null)}</span> : <><span className="emap__score">{x.score ?? '—'}</span>{x.issues > 0 && <span className="emap__iss" aria-hidden="true">{x.issues}</span>}</>}{pinSub?.(b.key) && <span className="emap__sub">{pinSub(b.key)}</span>}</button>; })}
+        {overlay?.labels.map((lb, i) => <span key={i} ref={(e: HTMLSpanElement | null) => { ovLabels.current[i] = e; }} className="emap__ovt" data-testid={lb.testId} aria-hidden="true">{lb.text}</span>)}
+        {level.k === 'floor' && rooms.map((rb) => <button key={rb.o.id} type="button" ref={(e: HTMLButtonElement | null) => { rpins.current[rb.o.id] = e; }} className={`emap__rpin${room === rb.o.id ? ' on' : ''}`} data-testid={`map-room-${rb.o.id}`} aria-label={`${shortName(rb.o)} ${rb.o.name}: ${STATE_WORD[rb.state] || rb.state}${rb.issues ? `, ${rb.issues} open issue${rb.issues === 1 ? '' : 's'}` : ''}`} aria-pressed={room === rb.o.id} onClick={() => setRoom(rb.o.id)}>
+          <i style={{ background: STATE_COL[rb.state] }} aria-hidden="true" />{rb.o.number}{rb.issues > 0 && <span className="emap__iss" aria-hidden="true">{rb.issues}</span>}</button>)}
+      </div>
       <div className="emap__ctrl">
         <button type="button" aria-label="North up" title="North up" onClick={() => fly({ ...S.current.cam, yaw: 0 }, 0.6)} data-testid="emap-north"><span ref={needle} className="emap__needle" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 2.5 15.5 12h-7z" fill="#ff6b5b" /><path d="M12 21.5 8.5 12h7z" fill="#cfd8e6" /><text x="12" y="9.6" textAnchor="middle" fontSize="5.5" fontWeight="700" fill="#2a0e0b">N</text></svg></span></button>
         <button type="button" aria-label="Zoom in" onClick={() => fly({ ...S.current.cam, dist: Math.max(18, S.current.cam.dist * 0.6) }, 0.45)} data-testid="emap-in">+</button>
         <button type="button" aria-label="Zoom out" onClick={() => fly({ ...S.current.cam, dist: Math.min(1500, S.current.cam.dist * 1.6) }, 0.45)} data-testid="emap-out">−</button>
       </div>
-      <p className="emap__credit">Empathia Map · synthetic {mode === 'imagery' ? 'aerial imagery' : 'map'} of a fictional campus · heights and floor layouts modeled</p>
       </div>
+      {/* what the map is, in full: on the map's foot on a wide screen, under it on a phone, never cut short */}
+      <p className="emap__credit" data-testid="emap-credit">Empathia Map · synthetic {mode === 'imagery' ? 'aerial imagery' : 'map'} of a fictional campus · heights and floor layouts modeled</p>
       {!bare && <div className="emap__lens" role="group" aria-label="Map lens">
         {LENSES.map((k) => <button key={k} type="button" aria-pressed={lens === k} onClick={() => setLens(k)} data-testid={`emap-lens-${k}`}>{LENS_NAME[k]}</button>)}
       </div>}
