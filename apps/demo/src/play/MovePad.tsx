@@ -3,6 +3,7 @@
  * Movements: what a drag does can also be done with a single pointer and no drag). Four buttons on the picture — turn left, turn right,
  * nearer, farther — and the same moves from the keyboard once the picture has focus: the arrow keys turn and tilt, + and − come nearer and
  * go farther, Shift with the arrows moves along (where the picture can move along). Each press is one step; nothing animates on its own.
+ * Test ids: <prefix>-turn-left, -turn-right, -nearer, -farther (Expo LIVE already has an xpo-left: the details left at a booth).
  */
 import { useEffect, type RefObject } from 'react';
 
@@ -11,10 +12,10 @@ export interface Moves { turn(da: number): void; tilt?(dp: number): void; zoom(f
 export function MovePad({ moves, what, prefix }: { moves: Moves; what: string; prefix: string }) {
   return (
     <div className="mvpad" role="group" aria-label={`Move the view of the ${what}`} data-testid={`${prefix}-pad`}>
-      <button type="button" aria-label="Turn left" title="Turn left" onClick={() => moves.turn(0.35)} data-testid={`${prefix}-left`}><span aria-hidden="true">⟲</span></button>
-      <button type="button" aria-label="Turn right" title="Turn right" onClick={() => moves.turn(-0.35)} data-testid={`${prefix}-right`}><span aria-hidden="true">⟳</span></button>
-      <button type="button" aria-label="Come nearer" title="Nearer" onClick={() => moves.zoom(0.75)} data-testid={`${prefix}-in`}><span aria-hidden="true">+</span></button>
-      <button type="button" aria-label="Go farther" title="Farther" onClick={() => moves.zoom(1 / 0.75)} data-testid={`${prefix}-out`}><span aria-hidden="true">−</span></button>
+      <button type="button" aria-label="Turn left" title="Turn left" onClick={() => moves.turn(0.35)} data-testid={`${prefix}-turn-left`}><span aria-hidden="true">⟲</span></button>
+      <button type="button" aria-label="Turn right" title="Turn right" onClick={() => moves.turn(-0.35)} data-testid={`${prefix}-turn-right`}><span aria-hidden="true">⟳</span></button>
+      <button type="button" aria-label="Come nearer" title="Nearer" onClick={() => moves.zoom(0.75)} data-testid={`${prefix}-nearer`}><span aria-hidden="true">+</span></button>
+      <button type="button" aria-label="Go farther" title="Farther" onClick={() => moves.zoom(1 / 0.75)} data-testid={`${prefix}-farther`}><span aria-hidden="true">−</span></button>
     </div>
   );
 }
