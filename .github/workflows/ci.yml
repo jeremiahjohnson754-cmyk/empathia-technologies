@@ -13,7 +13,7 @@ on:
         description: 'Release profile: platform (no media release; the full film decode may be skipped) or media (nothing may be skipped)'
         required: false
         default: platform
-concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }
+concurrency: { group: "ci-${{ github.ref }}", cancel-in-progress: true }   # quoted: the founder's 31 Oct fix on main (fa4c5fd), kept
 permissions: { contents: read }
 jobs:
   build-and-test:
