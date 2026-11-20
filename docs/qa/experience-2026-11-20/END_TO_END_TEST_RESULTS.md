@@ -43,6 +43,14 @@ website 269/269, website-fold 37/37, website-follow 19/19, website-opening 19/19
 first run stopped after part 1 (demo-campus-life CL-05..07, a timing flake: D-19); rerun **PASS 287 · FAIL 0 · NOT_RUN 2** (evidence
 c051462). Live after staging: pages 25/25 (new LV-25), smoke 12/12, edge 6 + 1 not run, two browsers 9/9, exposure 9/0.
 
+## Live checks on production after the release of 27c7469 (fe30ba9)
+
+On the founder's approval (20 Nov, 15:31), both production static sites deployed 27c7469, live at 21:35 UTC. Against
+https://empathia-website.onrender.com and https://empathia-demo.onrender.com: live pages LV-01..25 **25/25**; SIGNAL's library and four
+of its chapters (S01E00, S01E01, S02E01, S02E11) open with their titles and no console error; public exposure **9/0**; the security headers are served. Not applicable:
+demo-smoke, demo-edge and connected-browsers, which test the staging API (production has none). Recorded in
+`docs/releases/PRODUCTION_2026-11-20.md`.
+
 ## Not run
 
 - Real devices (an iPhone with Safari, an Android phone): not available here. Touch was driven through Chromium's own touch input.

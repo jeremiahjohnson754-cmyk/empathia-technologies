@@ -1,14 +1,16 @@
 # Release readiness (deliverable I)
 
-As of 20 Nov 2026, for the staging build **fe30ba9** (13fd15f's experience work and the website's four-perspective pass; both static sites live on staging; production unchanged on the 31 Oct build, by
-the founder's choice of 19 Nov: staging only).
+As of 20 Nov 2026, for the build **fe30ba9** (13fd15f's experience work and the website's four-perspective pass). It is live on staging,
+and since 20 Nov 21:35 UTC on production too: on the founder's approval of 15:31 ("Yes I approve let's push to live") it was merged into
+`main` as 27c7469 and both production static sites deployed it (record: `docs/releases/PRODUCTION_2026-11-20.md`).
 
 ## Summary
 
 The demonstration and the corporate website are in a good state **for a guided investor demonstration on synthetic data**. Everything
 the founder singled out on 20 Nov is fixed and checked: the maps and 3D worlds no longer take the page's scrolling on a phone, a booth
 in Expo LIVE takes you to it, the stadium and the expo can be moved without dragging, and Search Party keeps its place across products.
-The exact-commit regression passed (287 suites, 0 failures, 2 not run as always) and all live checks on staging pass.
+The exact-commit regression passed (287 suites, 0 failures, 2 not run as always), all live checks on staging pass, and on production
+the live pages pass 25/25, SIGNAL opens, and public exposure is 9/0.
 
 This is **not** a recommendation to call anything production-ready: the product is an investor demonstration, and the items below
 stand.
@@ -26,7 +28,7 @@ Register: UX_UI_DEFECT_REGISTER.md. The eight-width audit of both sites (464 pag
 
 ## Blockers
 
-None for staging. For production: the founder's word (release control); nothing in this work changes that.
+None. Production needed the founder's word (release control); it was given on 20 Nov at 15:31 and the release is done.
 
 ## Maturity, stated as the sites state it
 
@@ -46,5 +48,6 @@ None for staging. For production: the founder's word (release control); nothing 
 
 ## Recommendation
 
-Keep fe30ba9 on staging for the founder's review (regression 287/0/2; live checks 25/25). Production stays on the 31 Oct build until the
-founder decides otherwise.
+fe30ba9 is on staging and, as 27c7469, on production (regression 287/0/2; live checks 25/25 on both). The production demonstration has
+no API, so its connected journey says it is not connected; the connected checks (smoke, edge, two browsers) apply to staging only. If
+production misbehaves, roll each site back in Render to the 31 Oct deploy (ROLLBACK_AND_DEPLOYMENT_PLAN.md).
