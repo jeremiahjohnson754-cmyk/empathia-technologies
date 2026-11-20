@@ -101,6 +101,7 @@ export const TAKES_S02: Record<string, Take[]> = {
     {"who": "ben", "text": "Rated for everything on it. Including what's already there.", "src": "media/signal/s02/s02e03-ben-10.mp3"},
     {"who": "jordan", "text": "So “free” was… the part I read.", "src": "media/signal/s02/s02e03-jordan-02.mp3"},
     {"who": "sofia", "text": "Not tonight, Maya.", "src": "media/signal/s02/s02e03-sofia-07.mp3"},
+    {"who": "ben", "text": "You didn't have to back me in front of her.", "src": "media/signal/s02/s02e03-ben-11.mp3"},
     {"who": "maya", "text": "I didn't back you. I backed the number we didn't have.", "src": "media/signal/s02/s02e03-maya-04.mp3"},
     {"who": "ben", "text": "You didn't have to back me.", "src": "media/signal/s02/s02e03-ben-12.mp3"},
     {"who": "maya", "text": "I backed the number we didn't have.", "src": "media/signal/s02/s02e03-maya-05.mp3"},
@@ -128,6 +129,7 @@ export const TAKES_S02: Record<string, Take[]> = {
     {"who": "sofia", "text": "I clicked it. It kept asking. I was typing notes.", "src": "media/signal/s02/s02e04-sofia-05.mp3"},
     {"who": "maya", "text": "It asked at two o'clock on press night. That's not a Sofia problem.", "src": "media/signal/s02/s02e04-maya-09.mp3"},
     {"who": "maya", "text": "It asked you at two o'clock on press night. That's not a Sofia problem. That's a no-freeze problem.", "src": "media/signal/s02/s02e04-maya-10.mp3"},
+    {"who": "sofia", "text": "You backed Ben.", "src": "media/signal/s02/s02e04-sofia-06.mp3"},
     {"who": "maya", "text": "I did. I backed the number. Tonight I'm backing you. Same reason: you were right about what you knew.", "src": "media/signal/s02/s02e04-maya-11.mp3"},
     {"who": "sofia", "text": "You brought me the video. You didn't touch my desk.", "src": "media/signal/s02/s02e04-sofia-07.mp3"},
     {"who": "rosa", "text": "The critic wrote “luminous.” About the part we lit by hand from a phone video.", "src": "media/signal/s02/s02e04-rosa-08.mp3"},
@@ -171,6 +173,7 @@ export const TAKES_S02: Record<string, Take[]> = {
     {"who": "banquet captain", "text": "My team set four hundred chairs. Nobody touched your wires.", "src": "media/signal/s02/s02e06-banquet-captain-01.mp3"},
     {"who": "jordan", "text": "I was at catering. I touched a sandwich.", "src": "media/signal/s02/s02e06-jordan-01.mp3"},
     {"who": "jordan", "text": "I was at catering. I touched a sandwich. The sandwich can vouch for me.", "src": "media/signal/s02/s02e06-jordan-02.mp3"},
+    {"who": "leah", "text": "Jordan.", "src": "media/signal/s02/s02e06-leah-02.mp3"},
     {"who": "jordan", "text": "It was a very good sandwich.", "src": "media/signal/s02/s02e06-jordan-03.mp3"},
     {"who": "maya", "text": "Found the label.", "src": "media/signal/s02/s02e06-maya-02.mp3"},
     {"who": "lunch emcee, through room a's ceiling", "text": "…and a big thank-you to our dessert sponsors…", "src": "media/signal/s02/s02e06-lunch-emcee-through-room-01.mp3"},
@@ -200,6 +203,7 @@ export const TAKES_S02: Record<string, Take[]> = {
     {"who": "crew", "text": "(The house tech counts. Nobody breathes. It's the least dramatic thing that's ever felt this dramatic.)", "src": "media/signal/s02/s02e06-crew-01.mp3"},
     {"who": "maya", "text": "Room B: only Room B. Room A: only the keynote.", "src": "media/signal/s02/s02e06-maya-14.mp3"},
     {"who": "leah", "text": "Awards at 2:15 are the captain's again. He says thank you. Loudly.", "src": "media/signal/s02/s02e06-leah-07.mp3"},
+    {"who": "houseperson", "text": "Your label. Next time write what you actually want.", "src": "media/signal/s02/s02e06-houseperson-01.mp3"},
     {"who": "maya", "text": "“Unplug me, then call Maya.” Printing it now.", "src": "media/signal/s02/s02e06-maya-15.mp3"},
     {"who": "graham", "text": "Next week. Hybrid product launch. Four thousand people online. Nobody in the room is allowed to notice.", "src": "media/signal/s02/s02e06-graham-01.mp3"},
     {"who": "leah", "text": "Online's the easy part.", "src": "media/signal/s02/s02e06-leah-08.mp3"},
@@ -220,4 +224,4 @@ export const TAKES_S02: Record<string, Take[]> = {
   ]
 };
 /** The AI voice heard for each Season 2 speaker (a Qwen3-TTS preset; not a person, not a clone). */
-export const VOICES_S02: Record<string, string> = { "association president": "Qwen3-TTS Serena, AI voice", "banquet captain": "Qwen3-TTS Ono Anna, AI voice", "ben": "Qwen3-TTS Aiden, AI voice", "crew": "Qwen3-TTS Uncle Fu, AI voice", "dante": "Qwen3-TTS Ryan, AI voice", "gil": "Qwen3-TTS Eric, AI voice", "graham": "Qwen3-TTS Eric, AI voice", "hank": "Qwen3-TTS Uncle Fu, AI voice", "house tech": "Qwen3-TTS Ryan, AI voice", "jordan": "Qwen3-TTS Dylan, AI voice", "kim": "Qwen3-TTS Sohee, AI voice", "leah": "Qwen3-TTS Serena, AI voice", "lunch emcee, through room a's ceiling": "Qwen3-TTS Sohee, AI voice", "manager": "Qwen3-TTS Uncle Fu, AI voice", "marisol": "Qwen3-TTS Sohee, AI voice", "maya": "Qwen3-TTS Vivian, AI voice", "noor": "Qwen3-TTS Sohee, AI voice", "odette": "Qwen3-TTS Ono Anna, AI voice", "pax": "Qwen3-TTS Dylan, AI voice", "rosa": "Qwen3-TTS Sohee, AI voice", "sofia": "Qwen3-TTS Ono Anna, AI voice", "stream vendor, 1:20 p.m.": "Qwen3-TTS Dylan, AI voice" };
+export const VOICES_S02: Record<string, string> = { "association president": "Qwen3-TTS Serena, AI voice", "banquet captain": "Qwen3-TTS Ono Anna, AI voice", "ben": "Qwen3-TTS Aiden, AI voice", "crew": "Qwen3-TTS Uncle Fu, AI voice", "dante": "Qwen3-TTS Ryan, AI voice", "gil": "Qwen3-TTS Eric, AI voice", "graham": "Qwen3-TTS Eric, AI voice", "hank": "Qwen3-TTS Uncle Fu, AI voice", "house tech": "Qwen3-TTS Ryan, AI voice", "houseperson": "Qwen3-TTS Ryan, AI voice", "jordan": "Qwen3-TTS Dylan, AI voice", "kim": "Qwen3-TTS Sohee, AI voice", "leah": "Qwen3-TTS Serena, AI voice", "lunch emcee, through room a's ceiling": "Qwen3-TTS Sohee, AI voice", "manager": "Qwen3-TTS Uncle Fu, AI voice", "marisol": "Qwen3-TTS Sohee, AI voice", "maya": "Qwen3-TTS Vivian, AI voice", "noor": "Qwen3-TTS Sohee, AI voice", "odette": "Qwen3-TTS Ono Anna, AI voice", "pax": "Qwen3-TTS Dylan, AI voice", "rosa": "Qwen3-TTS Sohee, AI voice", "sofia": "Qwen3-TTS Ono Anna, AI voice", "stream vendor, 1:20 p.m.": "Qwen3-TTS Dylan, AI voice" };

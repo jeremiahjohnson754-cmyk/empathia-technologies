@@ -76,7 +76,12 @@ In Season 2 they sound different. The player names the voice of each season.
 
 - 210 of the 339 lines were generated before the run stopped at its two-hour limit (20 Nov 03:13). These are episodes 1 to 6 and 12
   of the 34 lines of episode 7.
-- Of those 210 takes, 202 passed the check the first time. The other eight are generated once more, as step 3 says.
+- Of those 210 takes, 202 pass the check. That includes three the check flagged that I read as false alarms: a sound-alike ("wear" for
+  "where"), a digit ("7" for "seven's"), and a take where every word was heard but the score was thrown by "job's" and spelled numbers.
+- The other eight were generated once more. Four second takes pass and are used: Ben "You didn't have to back me in front of her.",
+  Sofia "You backed Ben.", Leah "Jordan." and the houseperson's line. Four lines failed both takes and are captions: Kim "A photo isn't a
+  rating.", Marisol "It dies when I turn?", Sofia "That's cowardice in a hard hat." and Sofia "Eight counts. Okay. Eight counts."
+- 206 takes are heard in the demonstration.
 - The rest of episode 7, and episodes 8 to 11 (129 lines), are captions until they are voiced.
 
 Files: `media/signal/s02/lines.json` (each line, its spoken form and its preset), `media/signal/s02/build-takes.py`,
