@@ -20,12 +20,27 @@ unless it says "live". NOT RUN is never counted as PASS.
 
 ## Full regression on the exact commit
 
-Recorded below once it finishes: `node scripts/build.mjs`, then `node scripts/test.mjs --browser --studio --part=n/5` for n = 1..5,
-then `--merge=5`, with nothing else running. Evidence: `tests/evidence/TEST_RESULTS.json` / `.md` and the per-suite files.
+`node scripts/build.mjs`, then `node scripts/test.mjs --browser --studio --part=n/5` for n = 1..5, then `--merge=5`, with nothing else
+running, on **13fd15f**: **PASS 287 · FAIL 0 · NOT_RUN 2** (parts 57/0/1, 58/0/0, 57/0/1, 58/0/0, 57/0/0). Not run, as in every
+regression: the Python ML prototype (its dataset is not generated here) and the full decode of every curated film (`--films`).
+Evidence: `tests/evidence/TEST_RESULTS.json` / `.md` (commit e34a01d); logs `.local/logs/regress-13fd15f-*`.
 
-## Live checks after staging
+## Live checks after staging 13fd15f
 
-Recorded in `docs/releases/STAGING_2026-11-19.md` once the staged build is live.
+| Check | Result |
+|---|---|
+| live pages in a browser, LV-01..24 (new: LV-21 the map on a phone with touch, LV-22 an Expo booth from the hall, LV-23 Search Party's search kept across Back, LV-24 Season 2's second run served) | 24/24 |
+| `scripts/staging/demo-smoke.mjs` | 12/12 |
+| `scripts/staging/demo-edge.mjs` | 6 passed, 1 not run (EG-02, as before) |
+| `scripts/staging/connected-browsers.mjs` | 9/9 |
+| `scripts/audit/public-exposure.mjs`, built and live | PASS 9 · FAIL 0 |
+
+Recorded in `docs/releases/STAGING_2026-11-19.md`.
+
+## After staging: the website's four-perspective pass (63421e0)
+
+website 269/269, website-fold 37/37, website-follow 19/19, website-opening 19/19 on its build; its own full regression and staging
+follow (CORPORATE_WEBSITE_REVIEW.md).
 
 ## Not run
 

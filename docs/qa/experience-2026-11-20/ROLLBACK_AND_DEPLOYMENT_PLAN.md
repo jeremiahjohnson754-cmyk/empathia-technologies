@@ -15,6 +15,13 @@ the 31 Oct build. This plan covers staging, which is what the standing instructi
 
 No paid resource is created, no plan changed, no environment variable edited by this work.
 
+## Where it stands (20 Nov 2026)
+
+- Branch: `v18/continuation`. Tested and staged commit: **13fd15f** (exact-commit regression PASS 287 · FAIL 0 · NOT_RUN 2; live checks
+  24/24, smoke 12/12, edge 6 + 1 not run, two browsers 9/9, exposure 9/0). `phase3/legendary-experience` = 13fd15f.
+- Previous staged commit, the rollback target: **ab22bb5**. `staging/demo-api` unchanged at a19216e.
+- Next: the website's four-perspective pass (63421e0) after its own exact-commit regression.
+
 ## Deployment, in order
 
 1. Work is committed and pushed on `v18/continuation`.
