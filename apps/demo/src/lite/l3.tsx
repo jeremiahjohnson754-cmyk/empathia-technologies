@@ -254,7 +254,7 @@ export function L3View({ sc, c, label: aria, onNav, testId, tall, over, S = 30, 
       let lift = m.it.lift || 0, tries = 0; const box = () => { const x = left + dx, y = m.sy - lift - m.hh; return [x, y, x + m.w, y + m.hh]; };
       let bx = box(); const hits = () => boxes.some((p) => bx[0]! < p[2]! + 2 && p[0]! < bx[2]! + 2 && bx[1]! < p[3]! + 2 && p[1]! < bx[3]! + 2);
       if (own) { const over = () => boxes.find((p) => bx[0]! < p[2]! + 2 && p[0]! < bx[2]! + 2 && bx[1]! < p[3]! + 2 && p[1]! < bx[3]! + 2);
-        for (let p = over(); p && tries < (m.rank === 2 ? 0 : 6); p = over()) { lift += bx[3]! - (p[1]! - 3); bx = box(); tries++; }
+        for (let p = over(); p && tries < 6; p = over()) { lift += bx[3]! - (p[1]! - 3); bx = box(); tries++; }
         if ((hits() || bx[1]! < 2) && m.rank > 0) { out.set(m.it, { lift, skip: true, dx }); continue; } }
       else { while (hits() && tries < (m.rank === 2 ? 0 : 3)) { lift += m.hh + 3; bx = box(); tries++; }
         if (hits() && m.rank > 0) { out.set(m.it, { lift, skip: true, dx }); continue; } }

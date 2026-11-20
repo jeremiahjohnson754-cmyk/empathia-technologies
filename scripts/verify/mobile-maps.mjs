@@ -8,7 +8,7 @@
 import fs from 'node:fs'; import path from 'node:path'; import http from 'node:http'; import { spawnSync } from 'node:child_process'; import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 const here = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const repo = process.argv[2] || here; const out = process.argv[3] || path.join(repo, '.local/mobile-maps'); fs.mkdirSync(out, { recursive: true });
+const repo = path.resolve(process.argv[2] || here); const out = process.argv[3] || path.join(repo, '.local/mobile-maps'); fs.mkdirSync(out, { recursive: true });
 const require = createRequire(import.meta.url); const { chromium, devices } = require(path.join(repo, 'node_modules/playwright'));
 const demo = path.join(repo, 'apps/demo/dist');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.vtt': 'text/vtt', '.webmanifest': 'application/manifest+json' };

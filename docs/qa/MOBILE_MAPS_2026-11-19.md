@@ -74,6 +74,20 @@ Now:
 - **The film and the website's still captures are unchanged.** They are pictures taken at desktop size. The website shows them as
   pictures of the product, labelled so, not as the map itself.
 
+## Found by the full regression on 99cfa62, fixed in the next commit
+
+demo-lite-spatial failed two checks at 412 px:
+
+- **LS-phone-01: Lite's campus started at 463 px on a 915 px screen.** The test wants the scene in the top half, as the page's hero. The
+  toolbar above the map had taken two rows. The search, the level and the layers now share one row where they fit (412 px, and the
+  iPhone 13), so the campus starts at 176–236 px. On the smallest phones the toolbar still wraps to two rows.
+- **LS-phone-04: on floor 4 the Lifts and Stairs tags were dropped instead of moved.** Lite's placement gave way-finding tags no moves
+  at all. They now move like a room's tag. On the 320 px iPhone SE, Lifts and 4.128 still touch at a corner by a few pixels: both read,
+  and that width is below the three the test checks.
+
+After the fix, demo-lite-spatial is 74/74 and demo-map 35/35. The phone check above is clean on all seven views and three phones, apart
+from that corner on the iPhone SE.
+
 ## The tests that keep it
 
 - `tests/browser/demo-map.test.mjs` MAP-read-360, MAP-read-390 and MAP-read-412 check, at 360, 390 and 412 px, on Lite's campus with

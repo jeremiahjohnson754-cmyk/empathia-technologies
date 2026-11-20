@@ -66,13 +66,13 @@
   /* a phone: the map keeps the whole frame and the place card sits under it (a sheet), so nothing covers the map or its controls */
   .emap__view { aspect-ratio: 4 / 5; max-height: 70vh; }
   /* founder, 19 Nov 2026 20:16 ("readable on a real mobile viewport"): on a phone the search and the level sit above the map and the line
-     saying what the map is sits under it, in full, so neither covers a pin or cuts the word "synthetic" short: the search on one row, the
-     levels and the layers on the next, the zoom at the bottom right of the map, every control 44 px */
+     saying what the map is sits under it, in full, so neither covers a pin or cuts the word "synthetic" short: the search, the level and
+     the layers share a row where they fit and wrap where they do not; the zoom stays at the bottom right of the map; every control 44 px */
   .emap__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; }
   .emap__top { display: contents; }
-  .emap__search { flex: 1 1 100%; width: auto; }
+  .emap__search { flex: 1 1 120px; min-width: 120px; width: auto; }   /* one row with the level and the layers where they fit (412 px), two on the smallest phones */
   .emap__layers { position: static; }
-  .emap__layers button { min-width: 44px; min-height: 44px; padding: 0 10px; }
+  .emap__layers button { min-width: 44px; min-height: 44px; padding: 0 8px; }
   .lnd__art .emap__view { aspect-ratio: 4 / 5; }
   .emap__ctrl { right: 10px; bottom: 10px; }
   .emap__credit { position: static; transform: none; display: block; max-width: none; margin: 8px 0 0; padding: 7px 12px; border-radius: 12px; background: #121a26; color: #d6dfec; font-size: 12px; line-height: 1.4; white-space: normal; overflow: visible; text-overflow: clip; }
