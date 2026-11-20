@@ -647,6 +647,13 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   ok('W-tilefit', 'every product name fits inside its tile on every page at 320–768 px', !spill.length, spill.slice(0, 8).join(' | '));
 }
 
+// The hidden attribute hides (founder 19 Nov 2026 20:19, phone screenshots of the "Follow one device" tabs not switching): a class that
+// set display beat the browser's own [hidden] rule, so all five stages stayed drawn while the tabs marked one. Added; nothing relaxed.
+{ const drawn = []; const c = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }); const p = await c.newPage();
+  for (const pg of pages) { await p.goto(`${base}${pg}`); await p.waitForTimeout(80);
+    (await p.evaluate(() => [...document.querySelectorAll('[hidden]')].filter((e) => e.getClientRects().length > 0).map((e) => `${e.tagName.toLowerCase()}.${String(e.className || '').split(' ')[0]}`))).forEach((x) => drawn.push(`${pg} ${x}`)); }
+  ok('W-hidden', 'on every page at phone width, nothing marked hidden is drawn (the attribute wins over any class that sets display)', !drawn.length, drawn.slice(0, 8).join(' | ')); await c.close(); }
+
 await browser.close(); srv.kill();
 // CHANGED 2026-11-10: a check can now be NOT_RUN (the film's playback, in a browser without an H.264 decoder). It is counted apart and
 // printed apart, never as a pass: before, `pass` was every result that had not failed.

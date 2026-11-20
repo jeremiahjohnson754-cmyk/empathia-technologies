@@ -68,6 +68,10 @@
 [data-p="apex"] { --pc: var(--w-p-apex); } [data-p="field"] { --pc: var(--w-p-field); } [data-p="learn"] { --pc: var(--w-p-learn); } [data-p="intake"] { --pc: var(--w-accent); }
 
 *, *::before, *::after { box-sizing: border-box; }
+/* The hidden attribute always hides (founder 19 Nov 2026 20:19: the "Follow one device" tabs did not switch on a phone). The browser's own
+   [hidden] rule loses to any class that sets display, so .follow__stage { display: grid } kept all five stages on the page while the tabs
+   marked one; the scripts here hide and show by this attribute, so it must win everywhere. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 88px; }
 body { margin: 0; background: var(--w-bg); color: var(--w-tx); font: 400 17px/1.65 var(--w-sans); text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-feature-settings: "cv11", "ss01", "tnum"; }   /* DIRECTION.md §2: single-storey a, open digits, tabular numbers */
 img, video { max-width: 100%; display: block; }
