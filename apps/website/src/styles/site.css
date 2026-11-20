@@ -412,7 +412,7 @@ p { text-wrap: pretty; }
 /* footer with the flagship lockup */
 .foot { position: relative; padding: 72px 0 80px; color: var(--w-tx2); font-size: 15px; background: linear-gradient(180deg, var(--w-bg), var(--w-bg2)); }
 .foot::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 1px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--w-accent) 50%, transparent), transparent); }
-.foot__grid { display: grid; grid-template-columns: minmax(0, 1.4fr) 1fr 1fr 1fr; gap: 32px; }
+.foot__grid { display: grid; grid-template-columns: minmax(0, 1.4fr) 1fr 1fr 1fr 1fr; gap: 32px; }   /* lockup, products, explore, company, policies (20 Nov 2026) */
 .lockup { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; color: var(--w-tx); text-decoration: none; }
 .lockup img { width: 72px; height: 72px; }
 .lockup b { display: block; font: 800 24px/1 var(--w-display); letter-spacing: .02em; }
@@ -564,7 +564,7 @@ p { text-wrap: pretty; }
   .founder { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
   .scouter, .facts { grid-template-columns: 1fr; }
   .campus { grid-template-columns: 1fr; }
-  .foot__grid { grid-template-columns: 1fr 1fr 1fr; } .foot__grid > div:first-child { grid-column: 1 / -1; }
+  .foot__grid { grid-template-columns: 1fr 1fr 1fr 1fr; } .foot__grid > div:first-child { grid-column: 1 / -1; }
 }
 @media (max-width: 720px) {
   body { font-size: 16px; }

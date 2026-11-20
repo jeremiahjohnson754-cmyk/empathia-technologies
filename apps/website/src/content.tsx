@@ -125,6 +125,8 @@ export function buildPages(ctx: SiteContext): Page[] {
       <Section eyebrow="The products" title="Nine products. One record." lead="Each product is a stage of the same governed lifecycle and shares one identity for every room, device, person and project. Each says how much of it you can see in the public demonstration today." tone="deep">
         <ProductTiles captures={ctx.captures} />
       </Section>
+      {/* a buyer meets who it is for third, not tenth (20 Nov 2026, the four-perspective pass) */}
+      <Section eyebrow="Who it is for" title="Read by every team that touches a room"><Cards cols={4} items={AUDIENCES} /></Section>
       <Section id="worlds" eyebrow="Three more worlds" title="The same Core, in venues you can walk" lead="In 3D, in the browser. Fictional venues, synthetic data, first versions.">
         <p className="rail-hint" aria-hidden="true">Swipe through the three worlds →</p>
         <ul className="worlds3">{WORLDS3.map((w) => { const cap = ctx.captures[w.file]; return (
@@ -137,7 +139,6 @@ export function buildPages(ctx: SiteContext): Page[] {
       <Section eyebrow="Evidence" title="Six words the product will not blur" lead="Every value on every screen carries one of these labels. Most tools collapse them; Empathia keeps them apart so a decision can be traced to what was actually known." tone="deep">
         <dl className="states">{(Object.keys(EVIDENCE) as Evidence[]).map((s) => <div key={s} data-s={s}><dt><Tag s={s} /></dt><dd>{EVIDENCE[s].meaning}</dd></div>)}</dl>
       </Section>
-      <Section eyebrow="Who it is for" title="Read by every team that touches a room"><Cards cols={4} items={AUDIENCES} /></Section>
       <Strip id="architecture" eyebrow="The architecture" title="Built to be checked" items={ARCH} foot={archFoot} />
       <Section eyebrow="Proof" title="One claim, the same on both sites" lead="Each thing we say about the product is a record with a state. This one is read from the same registry the demonstration reads."><LeadClaim asOf={ctx.asOf || new Date().toISOString()} demoUrl={ctx.demoUrl} /></Section>
       <section className="section section--deep"><div className="wrap"><FounderBlock page="home" /></div></section>
@@ -297,7 +298,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Section id="fieldlink" title="FieldLink: optional hardware, a concept" lead="Nano, Edge and Pulse: three proposed devices that would let Empathia observe and verify more of a room locally. Empathia does not need them. No unit has been built."><Actions><a className="btn" href="/fieldlink">FieldLink</a></Actions></Section>
         <Section id="in-development" title="In Development: Collabora-SING" lead="Collabora-SING is a product in development. Its page sets out a research plan; the pilot has not been run yet."><Actions><a className="btn" href="/collabora-sing">Collabora-SING</a></Actions></Section>
         <Section title="Principles" tone="deep"><Cards cols={3} items={PRINCIPLES} /></Section>
-        <Section id="investors" title="Investor conversations" lead="The company, the platform and the demonstration, with the evidence behind each claim."><EnquiryCard source="website-investor" primary /></Section>
+        <Section id="investors" title="Investor conversations" lead="The company, the platform and the demonstration, with the evidence behind each claim."><div className="enquire"><EnquiryLink source="website-investor" primary /></div></Section>
       </>
     ) },
     // Collabora-SING (founder, 2026-11-10): a product in development, with its own section of the corporate site, labelled "In Development". Its film plays here

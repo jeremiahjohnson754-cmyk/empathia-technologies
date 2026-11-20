@@ -1,0 +1,1851 @@
+{
+ "at": "2026-11-20T16:08:21.640Z",
+ "routes": [
+  {
+   "id": "site",
+   "hash": "#/site",
+   "phone": {
+    "h1": "My site is not open to the Product Architect",
+    "access": true
+   },
+   "desk": {
+    "h1": "My site is not open to the Product Architect",
+    "access": true
+   },
+   "notes": []
+  },
+  {
+   "id": "site.start",
+   "hash": "#/site/start",
+   "phone": {
+    "h1": "Getting started is not open to the Product Archite",
+    "access": true
+   },
+   "desk": {
+    "h1": "Getting started is not open to the Product Archite",
+    "access": true
+   },
+   "notes": []
+  },
+  {
+   "id": "people",
+   "hash": "#/people",
+   "phone": {
+    "h1": "People",
+    "access": false
+   },
+   "desk": {
+    "h1": "People",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "meet",
+   "hash": "#/meet",
+   "phone": {
+    "h1": "Schedule a meeting",
+    "access": false
+   },
+   "desk": {
+    "h1": "Schedule a meeting",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "docs",
+   "hash": "#/docs",
+   "phone": {
+    "h1": "Documentation · Atlas 4.218 Boardroom",
+    "access": false
+   },
+   "desk": {
+    "h1": "Documentation · Atlas 4.218 Boardroom",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "drawings",
+   "hash": "#/drawings",
+   "phone": {
+    "h1": "Review a drawing package",
+    "access": false
+   },
+   "desk": {
+    "h1": "Review a drawing package",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "guide",
+   "hash": "#/guide",
+   "phone": {
+    "h1": "How do I use this room?",
+    "access": false
+   },
+   "desk": {
+    "h1": "How do I use this room?",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "harmony",
+   "hash": "#/harmony",
+   "phone": {
+    "h1": "Ask across the products",
+    "access": false
+   },
+   "desk": {
+    "h1": "Ask across the products",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "instant",
+   "hash": "#/instant",
+   "phone": {
+    "h1": "Capture a space",
+    "access": false
+   },
+   "desk": {
+    "h1": "Capture a space",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "knowledge",
+   "hash": "#/knowledge",
+   "phone": {
+    "h1": "What is known, and who may read it",
+    "access": false
+   },
+   "desk": {
+    "h1": "What is known, and who may read it",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "knowledge.sources",
+   "hash": "#/knowledge/sources",
+   "phone": {
+    "h1": "Document sources",
+    "access": false
+   },
+   "desk": {
+    "h1": "Document sources",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "manual",
+   "hash": "#/manual",
+   "phone": {
+    "h1": "AV Engineering Standards & Design Manual",
+    "access": false
+   },
+   "desk": {
+    "h1": "AV Engineering Standards & Design Manual",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "onboard",
+   "hash": "#/onboard",
+   "phone": {
+    "h1": "IT Onboarding Success Guide",
+    "access": false
+   },
+   "desk": {
+    "h1": "IT Onboarding Success Guide",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "thread.server",
+   "hash": "#/connected",
+   "phone": {
+    "h1": "This address is not part of the Living Campus",
+    "access": false
+   },
+   "desk": {
+    "h1": "This address is not part of the Living Campus",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "flagship.room",
+   "hash": "#/flagship",
+   "phone": {
+    "h1": "This address is not part of the Living Campus",
+    "access": false
+   },
+   "desk": {
+    "h1": "This address is not part of the Living Campus",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "servicehands.queue",
+   "hash": "#/servicehands/queue",
+   "phone": {
+    "h1": "ServiceHands",
+    "access": false
+   },
+   "desk": {
+    "h1": "ServiceHands",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "platforms",
+   "hash": "#/platforms",
+   "phone": {
+    "h1": "This address is not part of the Living Campus",
+    "access": false
+   },
+   "desk": {
+    "h1": "This address is not part of the Living Campus",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "reports.server",
+   "hash": "#/reports/server",
+   "phone": {
+    "h1": "This address is not part of the Living Campus",
+    "access": false
+   },
+   "desk": {
+    "h1": "This address is not part of the Living Campus",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "control",
+   "hash": "#/v25",
+   "phone": {
+    "h1": "What changed, what matters, what needs action",
+    "access": false
+   },
+   "desk": {
+    "h1": "What changed, what matters, what needs action",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "control.exec",
+   "hash": "#/v25/exec",
+   "phone": {
+    "h1": "Twenty-seven KPI passports",
+    "access": false
+   },
+   "desk": {
+    "h1": "Twenty-seven KPI passports",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "ledger",
+   "hash": "#/v25/ledger",
+   "phone": {
+    "h1": "The ledger behind every state",
+    "access": false
+   },
+   "desk": {
+    "h1": "The ledger behind every state",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "servicehands",
+   "hash": "#/v25/service",
+   "phone": {
+    "h1": "Service queue",
+    "access": false
+   },
+   "desk": {
+    "h1": "Service queue",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "apex",
+   "hash": "#/v25/apex",
+   "phone": {
+    "h1": "Cited hypotheses, bounded actions, blocked outcome",
+    "access": false
+   },
+   "desk": {
+    "h1": "Cited hypotheses, bounded actions, blocked outcome",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "learn",
+   "hash": "#/v25/learn",
+   "phone": {
+    "h1": "Reviewed cases from what actually happened",
+    "access": false
+   },
+   "desk": {
+    "h1": "Reviewed cases from what actually happened",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "pro.command",
+   "hash": "#/pro",
+   "phone": {
+    "h1": "Command center",
+    "access": false
+   },
+   "desk": {
+    "h1": "Command center",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "pro.assets",
+   "hash": "#/pro/assets",
+   "phone": {
+    "h1": "Asset Intelligence",
+    "access": false
+   },
+   "desk": {
+    "h1": "Asset Intelligence",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "pro.issues",
+   "hash": "#/pro/issues",
+   "phone": {
+    "h1": "Issue Intelligence",
+    "access": false
+   },
+   "desk": {
+    "h1": "Issue Intelligence",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "pro.ops",
+   "hash": "#/pro/ops",
+   "phone": {
+    "h1": "Operations Hub",
+    "access": false
+   },
+   "desk": {
+    "h1": "Operations Hub",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "pro.eng",
+   "hash": "#/pro/eng",
+   "phone": {
+    "h1": "The standards every room is built to",
+    "access": false
+   },
+   "desk": {
+    "h1": "The standards every room is built to",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "commissioning",
+   "hash": "#/commissioning",
+   "phone": {
+    "h1": "Commissioning",
+    "access": false
+   },
+   "desk": {
+    "h1": "Commissioning",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "assurance",
+   "hash": "#/assurance",
+   "phone": {
+    "h1": "Assurance",
+    "access": false
+   },
+   "desk": {
+    "h1": "Assurance",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "assurance.ready",
+   "hash": "#/assurance/ready",
+   "phone": {
+    "h1": "Room ready check",
+    "access": false
+   },
+   "desk": {
+    "h1": "Room ready check",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "assurance.change",
+   "hash": "#/assurance/change",
+   "phone": {
+    "h1": "What a change reopens",
+    "access": false
+   },
+   "desk": {
+    "h1": "What a change reopens",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "assurance.signals",
+   "hash": "#/assurance/signals",
+   "phone": {
+    "h1": "Early signals",
+    "access": false
+   },
+   "desk": {
+    "h1": "Early signals",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "commissioning.deficiencies",
+   "hash": "#/commissioning/deficiencies",
+   "phone": {
+    "h1": "Open deficiencies",
+    "access": false
+   },
+   "desk": {
+    "h1": "Open deficiencies",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "commissioning.reverb",
+   "hash": "#/commissioning/instruments/reverb",
+   "phone": {
+    "h1": "Reverberation from impulse responses",
+    "access": false
+   },
+   "desk": {
+    "h1": "Reverberation from impulse responses",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "assets.life",
+   "hash": "#/v25/asset",
+   "phone": {
+    "h1": "Find an asset by its ID",
+    "access": false
+   },
+   "desk": {
+    "h1": "Find an asset by its ID",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "people.experience",
+   "hash": "#/v25/people",
+   "phone": {
+    "h1": "Who has done the work",
+    "access": false
+   },
+   "desk": {
+    "h1": "Who has done the work",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "commissioning.sti",
+   "hash": "#/commissioning/instruments/sti",
+   "phone": {
+    "h1": "Speech intelligibility (STI)",
+    "access": false
+   },
+   "desk": {
+    "h1": "Speech intelligibility (STI)",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "commissioning.scenarios",
+   "hash": "#/commissioning/scenarios",
+   "phone": {
+    "h1": "Five commissioning journeys, end to end",
+    "access": false
+   },
+   "desk": {
+    "h1": "Five commissioning journeys, end to end",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "engineer.start",
+   "hash": "#/engineer",
+   "phone": {
+    "h1": "Engineer start",
+    "access": false
+   },
+   "desk": {
+    "h1": "Engineer start",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "thread.room",
+   "hash": "#/thread",
+   "phone": {
+    "h1": "Strategy Room · R-ATL-7-112",
+    "access": false
+   },
+   "desk": {
+    "h1": "Strategy Room · R-ATL-7-112",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "install.redline",
+   "hash": "#/install/redline",
+   "phone": {
+    "h1": "Field record · Executive Boardroom",
+    "access": false
+   },
+   "desk": {
+    "h1": "Field record · Executive Boardroom",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "pro.refresh",
+   "hash": "#/pro/refresh",
+   "phone": {
+    "h1": "Refresh planning",
+    "access": false
+   },
+   "desk": {
+    "h1": "Refresh planning",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "commissioning.analytics",
+   "hash": "#/commissioning/analytics",
+   "phone": {
+    "h1": "Commissioning, measured",
+    "access": false
+   },
+   "desk": {
+    "h1": "Commissioning, measured",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "servicehands.analytics",
+   "hash": "#/v25/service/analytics",
+   "phone": {
+    "h1": "Service, measured",
+    "access": false
+   },
+   "desk": {
+    "h1": "Service, measured",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "servicehands.dispatch",
+   "hash": "#/service",
+   "phone": {
+    "h1": "Dispatch board",
+    "access": false
+   },
+   "desk": {
+    "h1": "Dispatch board",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "servicehands.workspace",
+   "hash": "#/servicehands",
+   "phone": {
+    "h1": "ServiceHands",
+    "access": false
+   },
+   "desk": {
+    "h1": "ServiceHands",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "servicehands.request",
+   "hash": "#/servicehands/new",
+   "phone": {
+    "h1": "Report a problem",
+    "access": false
+   },
+   "desk": {
+    "h1": "Report a problem",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "replay",
+   "hash": "#/replay",
+   "phone": {
+    "h1": "Core Replay",
+    "access": false
+   },
+   "desk": {
+    "h1": "Core Replay",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "fi.scan",
+   "hash": "#/v25/fi/scan",
+   "phone": {
+    "h1": "Field Intelligence scan",
+    "access": false
+   },
+   "desk": {
+    "h1": "Field Intelligence scan",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "fieldtools",
+   "hash": "#/field-tools",
+   "phone": {
+    "h1": "The arithmetic of the site walk",
+    "access": false
+   },
+   "desk": {
+    "h1": "The arithmetic of the site walk",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "decisions.desk",
+   "hash": "#/v25/decisions",
+   "phone": {
+    "h1": "Decisions",
+    "access": false
+   },
+   "desk": {
+    "h1": "Decisions",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "decisions.memory",
+   "hash": "#/decisions",
+   "phone": {
+    "h1": "Decision Memory",
+    "access": false
+   },
+   "desk": {
+    "h1": "Decision Memory",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "learn.labs",
+   "hash": "#/learn/labs",
+   "phone": {
+    "h1": "Learn labs",
+    "access": false
+   },
+   "desk": {
+    "h1": "Learn labs",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "hardening",
+   "hash": "#/hardening",
+   "phone": {
+    "h1": "Resilience",
+    "access": false
+   },
+   "desk": {
+    "h1": "Resilience",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "agent",
+   "hash": "#/agent",
+   "phone": {
+    "h1": "Room Health Check",
+    "access": false
+   },
+   "desk": {
+    "h1": "Room Health Check",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "agent.arch",
+   "hash": "#/agent/architecture",
+   "phone": {
+    "h1": "From a health check to a discovery agent",
+    "access": false
+   },
+   "desk": {
+    "h1": "From a health check to a discovery agent",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "v14",
+   "hash": "#/v14",
+   "phone": {
+    "h1": "V1.4 foundation",
+    "access": false
+   },
+   "desk": {
+    "h1": "V1.4 foundation",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "ask",
+   "hash": "#/ask",
+   "phone": {
+    "h1": "Ask Empathia",
+    "access": false
+   },
+   "desk": {
+    "h1": "Ask Empathia",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "compare",
+   "hash": "#/compare",
+   "phone": {
+    "h1": "Core Compare",
+    "access": false
+   },
+   "desk": {
+    "h1": "Core Compare",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "control.tower",
+   "hash": "#/control/tower",
+   "phone": {
+    "h1": "Operations Control Tower",
+    "access": false
+   },
+   "desk": {
+    "h1": "Operations Control Tower",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "control.rooms",
+   "hash": "#/control",
+   "phone": {
+    "h1": "Empathia Control",
+    "access": false
+   },
+   "desk": {
+    "h1": "Empathia Control",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "scheduler",
+   "hash": "#/scheduler",
+   "phone": {
+    "h1": "Room scheduler",
+    "access": false
+   },
+   "desk": {
+    "h1": "Room scheduler",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "exports",
+   "hash": "#/exports",
+   "phone": {
+    "h1": "What the numbers are made of, as files",
+    "access": false
+   },
+   "desk": {
+    "h1": "What the numbers are made of, as files",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "fabric",
+   "hash": "#/fabric",
+   "phone": {
+    "h1": "Integration Fabric",
+    "access": false
+   },
+   "desk": {
+    "h1": "Integration Fabric",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "gate",
+   "hash": "#/gate",
+   "phone": {
+    "h1": "Welcome to the Northstar campus",
+    "access": false
+   },
+   "desk": {
+    "h1": "Welcome to the Northstar campus",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "investigate",
+   "hash": "#/investigate",
+   "phone": {
+    "h1": "One case at a time.",
+    "access": false
+   },
+   "desk": {
+    "h1": "One case at a time.",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "ledger.evidence",
+   "hash": "#/ledger",
+   "phone": {
+    "h1": "Evidence ledger",
+    "access": false
+   },
+   "desk": {
+    "h1": "Evidence ledger",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "list",
+   "hash": "#/list",
+   "phone": {
+    "h1": "Every record, by type",
+    "access": false
+   },
+   "desk": {
+    "h1": "Every record, by type",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "set",
+   "hash": "#/set",
+   "phone": {
+    "h1": "Every number opens its records",
+    "access": false
+   },
+   "desk": {
+    "h1": "Every number opens its records",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "studio",
+   "hash": "#/studio",
+   "phone": {
+    "h1": "Design a Space",
+    "access": false
+   },
+   "desk": {
+    "h1": "Design a Space",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity",
+   "hash": "#/parity",
+   "phone": {
+    "h1": "Every V2.5.3 address",
+    "access": false
+   },
+   "desk": {
+    "h1": "Every V2.5.3 address",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.lite",
+   "hash": "#/v25/lite",
+   "phone": {
+    "h1": "Lite studio",
+    "access": false
+   },
+   "desk": {
+    "h1": "Lite studio",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.qr",
+   "hash": "#/qr",
+   "phone": {
+    "h1": "QR codes on campus",
+    "access": false
+   },
+   "desk": {
+    "h1": "QR codes on campus",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.intake",
+   "hash": "#/intake",
+   "phone": {
+    "h1": "Decision desk",
+    "access": false
+   },
+   "desk": {
+    "h1": "Decision desk",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.intake.new",
+   "hash": "#/intake/new",
+   "phone": {
+    "h1": "What can we help you with?",
+    "access": false
+   },
+   "desk": {
+    "h1": "What can we help you with?",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.builder",
+   "hash": "#/builder",
+   "phone": {
+    "h1": "Design a room and watch it reach drawings, commiss",
+    "access": false
+   },
+   "desk": {
+    "h1": "Design a room and watch it reach drawings, commiss",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.budget",
+   "hash": "#/budget",
+   "phone": {
+    "h1": "Core Compare",
+    "access": false
+   },
+   "desk": {
+    "h1": "Core Compare",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.assurance.room",
+   "hash": "#/assurance/room/R-ATL-4-218",
+   "phone": {
+    "h1": "Assurance: Atlas 4.218 — Executive Boardroom",
+    "access": false
+   },
+   "desk": {
+    "h1": "Assurance: Atlas 4.218 — Executive Boardroom",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.commissioning.room",
+   "hash": "#/commissioning/room/R-ATL-4-218",
+   "phone": {
+    "h1": "Commissioning: Atlas 4.218 — Executive Boardroom",
+    "access": false
+   },
+   "desk": {
+    "h1": "Commissioning: Atlas 4.218 — Executive Boardroom",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.service.fixes",
+   "hash": "#/service/fixes",
+   "phone": {
+    "h1": "Dispatch board",
+    "access": false
+   },
+   "desk": {
+    "h1": "Dispatch board",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.projects",
+   "hash": "#/projects",
+   "phone": {
+    "h1": "Decision desk",
+    "access": false
+   },
+   "desk": {
+    "h1": "Decision desk",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.install",
+   "hash": "#/install",
+   "phone": {
+    "h1": "ServiceHands",
+    "access": false
+   },
+   "desk": {
+    "h1": "ServiceHands",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.handoff",
+   "hash": "#/handoff",
+   "phone": {
+    "h1": "ServiceHands",
+    "access": false
+   },
+   "desk": {
+    "h1": "ServiceHands",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.lessons",
+   "hash": "#/lessons",
+   "phone": {
+    "h1": "Reviewed cases from what actually happened",
+    "access": false
+   },
+   "desk": {
+    "h1": "Reviewed cases from what actually happened",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.registry",
+   "hash": "#/pro/registry",
+   "phone": {
+    "h1": "Devices",
+    "access": false
+   },
+   "desk": {
+    "h1": "Devices",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.walkthrough",
+   "hash": "#/v25/walkthrough",
+   "phone": {
+    "h1": "7 guided tours, or explore on your own",
+    "access": false
+   },
+   "desk": {
+    "h1": "7 guided tours, or explore on your own",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "parity.assurance.analysis",
+   "hash": "#/assurance/analysis",
+   "phone": {
+    "h1": "Drift, test by test",
+    "access": false
+   },
+   "desk": {
+    "h1": "Drift, test by test",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "proof",
+   "hash": "#/proof",
+   "phone": {
+    "h1": "What is real, what is synthetic, and what is only ",
+    "access": false
+   },
+   "desk": {
+    "h1": "What is real, what is synthetic, and what is only ",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "scan",
+   "hash": "#/scan",
+   "phone": {
+    "h1": "Scan to understand",
+    "access": false
+   },
+   "desk": {
+    "h1": "Scan to understand",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "dossier",
+   "hash": "#/dossier",
+   "phone": {
+    "h1": "Acceptance held pending corrective action",
+    "access": false
+   },
+   "desk": {
+    "h1": "Acceptance held pending corrective action",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "policy",
+   "hash": "#/v25/policy",
+   "phone": {
+    "h1": "The role × area matrix the dispatcher uses",
+    "access": false
+   },
+   "desk": {
+    "h1": "The role × area matrix the dispatcher uses",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "investor",
+   "hash": "#/investor",
+   "phone": {
+    "h1": "Welcome to Empathia. What would you like to see fi",
+    "access": false
+   },
+   "desk": {
+    "h1": "Welcome to Empathia. What would you like to see fi",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "scouter",
+   "hash": "#/campus/scouter",
+   "phone": {
+    "h1": "Does this device suit this room?",
+    "access": false
+   },
+   "desk": {
+    "h1": "Does this device suit this room?",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "scouter.anatomy",
+   "hash": "#/scouter/anatomy",
+   "phone": {
+    "h1": "Open a device class into its blocks",
+    "access": false
+   },
+   "desk": {
+    "h1": "Open a device class into its blocks",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "learn.certs",
+   "hash": "#/learn/certifications",
+   "phone": {
+    "h1": "CTS, CTS-D and CTS-I, side by side",
+    "access": false
+   },
+   "desk": {
+    "h1": "CTS, CTS-D and CTS-I, side by side",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "learn.cts",
+   "hash": "#/learn/cts",
+   "phone": {
+    "h1": "CTS Certified Technology Specialist",
+    "access": false
+   },
+   "desk": {
+    "h1": "CTS Certified Technology Specialist",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "learn.ctsd",
+   "hash": "#/learn/cts-d",
+   "phone": {
+    "h1": "CTS-D Certified Technology Specialist — Design",
+    "access": false
+   },
+   "desk": {
+    "h1": "CTS-D Certified Technology Specialist — Design",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "learn.ctsi",
+   "hash": "#/learn/cts-i",
+   "phone": {
+    "h1": "CTS-I Certified Technology Specialist — Installati",
+    "access": false
+   },
+   "desk": {
+    "h1": "CTS-I Certified Technology Specialist — Installati",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "learn.lesson",
+   "hash": "#/learn/lesson",
+   "phone": {
+    "h1": "Run a meeting from the room console",
+    "access": false
+   },
+   "desk": {
+    "h1": "Run a meeting from the room console",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "design.axes",
+   "hash": "#/design/axes",
+   "phone": {
+    "h1": "Five axes, never one colour",
+    "access": false
+   },
+   "desk": {
+    "h1": "Five axes, never one colour",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "access",
+   "hash": "#/access",
+   "phone": {
+    "h1": "Who may open, see and do what",
+    "access": false
+   },
+   "desk": {
+    "h1": "Who may open, see and do what",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "home",
+   "hash": "#/home",
+   "phone": {
+    "h1": "Good morning — 2 jobs need you today",
+    "access": false
+   },
+   "desk": {
+    "h1": "Good morning — 2 jobs need you today",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "campus",
+   "hash": "#/campus",
+   "phone": {
+    "h1": "Northstar Innovation Campus",
+    "access": false
+   },
+   "desk": {
+    "h1": "Northstar Innovation Campus",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "campus.building",
+   "hash": "#/campus/ATL",
+   "phone": {
+    "h1": "Atlas HQ",
+    "access": false
+   },
+   "desk": {
+    "h1": "Atlas HQ",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "campus.room",
+   "hash": "#/campus/ATL/4/R-ATL-4-218",
+   "phone": {
+    "h1": "Atlas 4.218 — Executive Boardroom",
+    "access": false
+   },
+   "desk": {
+    "h1": "Atlas 4.218 — Executive Boardroom",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "lite",
+   "hash": "#/lite",
+   "phone": {
+    "h1": "Northstar Innovation Campus",
+    "access": false
+   },
+   "desk": {
+    "h1": "Northstar Innovation Campus",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "room",
+   "hash": "#/room",
+   "phone": {
+    "h1": "Atlas 4.218 — Executive Boardroom",
+    "access": false
+   },
+   "desk": {
+    "h1": "Atlas 4.218 — Executive Boardroom",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "rooms",
+   "hash": "#/rooms",
+   "phone": {
+    "h1": "140 rooms",
+    "access": false
+   },
+   "desk": {
+    "h1": "140 rooms",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "find",
+   "hash": "#/find",
+   "phone": {
+    "h1": "Search the demonstration",
+    "access": false
+   },
+   "desk": {
+    "h1": "Search the demonstration",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "search.scenarios",
+   "hash": "#/search/scenarios",
+   "phone": {
+    "h1": "Five questions, answered from recorded relationshi",
+    "access": false
+   },
+   "desk": {
+    "h1": "Five questions, answered from recorded relationshi",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "tours",
+   "hash": "#/tours",
+   "phone": {
+    "h1": "7 guided tours, or explore on your own",
+    "access": false
+   },
+   "desk": {
+    "h1": "7 guided tours, or explore on your own",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "build",
+   "hash": "#/v25/build",
+   "phone": {
+    "h1": "Design a room and watch it reach drawings, commiss",
+    "access": false
+   },
+   "desk": {
+    "h1": "Design a room and watch it reach drawings, commiss",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "search",
+   "hash": "#/search",
+   "phone": {
+    "h1": "Search Party",
+    "access": false
+   },
+   "desk": {
+    "h1": "Search Party",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "fi",
+   "hash": "#/v25/fi",
+   "phone": {
+    "h1": "What the collector declares",
+    "access": false
+   },
+   "desk": {
+    "h1": "What the collector declares",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "fi.pv",
+   "hash": "#/v25/fipv",
+   "phone": {
+    "h1": "Licensed, gated, simulated here",
+    "access": false
+   },
+   "desk": {
+    "h1": "Licensed, gated, simulated here",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "play.expo",
+   "hash": "#/play/expo",
+   "phone": {
+    "h1": "Expo LIVE",
+    "access": false
+   },
+   "desk": {
+    "h1": "Expo LIVE",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "play.stadium",
+   "hash": "#/play/stadium",
+   "phone": {
+    "h1": "Stadium LIVE",
+    "access": false
+   },
+   "desk": {
+    "h1": "Stadium LIVE",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "play.campus",
+   "hash": "#/play/campus",
+   "phone": {
+    "h1": "Campus Life",
+    "access": false
+   },
+   "desk": {
+    "h1": "Campus Life",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "worlds",
+   "hash": "#/worlds",
+   "phone": {
+    "h1": "Choose a world",
+    "access": false
+   },
+   "desk": {
+    "h1": "Choose a world",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "world",
+   "hash": "#/world/stadium",
+   "phone": {
+    "h1": "Stadium",
+    "access": false
+   },
+   "desk": {
+    "h1": "Stadium",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "world.journey",
+   "hash": "#/world/stadium/attend-game",
+   "phone": {
+    "h1": "Attend Game",
+    "access": false
+   },
+   "desk": {
+    "h1": "Attend Game",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "estate",
+   "hash": "#/estate/stadium",
+   "phone": {
+    "h1": "Harborlight Stadium: the estate",
+    "access": false
+   },
+   "desk": {
+    "h1": "Harborlight Stadium: the estate",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "story",
+   "hash": "#/story",
+   "phone": {
+    "h1": "SIGNAL",
+    "access": false
+   },
+   "desk": {
+    "h1": "SIGNAL",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "labs.mix",
+   "hash": "#/labs/mix",
+   "phone": {
+    "h1": "Mix the Stream",
+    "access": false
+   },
+   "desk": {
+    "h1": "Mix the Stream",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "labs.light",
+   "hash": "#/labs/light",
+   "phone": {
+    "h1": "Light the Stage",
+    "access": false
+   },
+   "desk": {
+    "h1": "Light the Stage",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "labs.video",
+   "hash": "#/labs/video",
+   "phone": {
+    "h1": "Shoot the Service",
+    "access": false
+   },
+   "desk": {
+    "h1": "Shoot the Service",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "film",
+   "hash": "#/film/s01e01",
+   "phone": {
+    "h1": "Ten Seats",
+    "access": false
+   },
+   "desk": {
+    "h1": "Ten Seats",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "play",
+   "hash": "#/play/s01e01",
+   "phone": {
+    "h1": "Ten Seats",
+    "access": false
+   },
+   "desk": {
+    "h1": "Ten Seats",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "gameday",
+   "hash": "#/gameday",
+   "phone": {
+    "h1": "Game day: before doors",
+    "access": false
+   },
+   "desk": {
+    "h1": "Game day: before doors",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "gameday.signal",
+   "hash": "#/gameday/incident/camera-feed",
+   "phone": {
+    "h1": "Game-day incident is not open to the Product Archi",
+    "access": true
+   },
+   "desk": {
+    "h1": "Game-day incident is not open to the Product Archi",
+    "access": true
+   },
+   "notes": []
+  },
+  {
+   "id": "offline",
+   "hash": "#/offline",
+   "phone": {
+    "h1": "Offline and this device",
+    "access": false
+   },
+   "desk": {
+    "h1": "Offline and this device",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "intake.request",
+   "hash": "#/request",
+   "phone": {
+    "h1": "What can we help you create, improve, or fix?",
+    "access": false
+   },
+   "desk": {
+    "h1": "What can we help you create, improve, or fix?",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "intake.new",
+   "hash": "#/request/new",
+   "phone": {
+    "h1": "What can we help you with?",
+    "access": false
+   },
+   "desk": {
+    "h1": "What can we help you with?",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "intake.mine",
+   "hash": "#/requests",
+   "phone": {
+    "h1": "My requests",
+    "access": false
+   },
+   "desk": {
+    "h1": "My requests",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "intake.track",
+   "hash": "#/requests/REQ-0001",
+   "phone": {
+    "h1": "Request REQ-0001",
+    "access": false
+   },
+   "desk": {
+    "h1": "Request REQ-0001",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "intake.queue",
+   "hash": "#/request/queue",
+   "phone": {
+    "h1": "Requests to triage",
+    "access": false
+   },
+   "desk": {
+    "h1": "Requests to triage",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "intake.spaces",
+   "hash": "#/request/spaces",
+   "phone": {
+    "h1": "My spaces",
+    "access": false
+   },
+   "desk": {
+    "h1": "My spaces",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "intake.help",
+   "hash": "#/request/help",
+   "phone": {
+    "h1": "How requests work",
+    "access": false
+   },
+   "desk": {
+    "h1": "How requests work",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "here",
+   "hash": "#/here",
+   "phone": {
+    "h1": "Which room are you in?",
+    "access": false
+   },
+   "desk": {
+    "h1": "Which room are you in?",
+    "access": false
+   },
+   "notes": []
+  },
+  {
+   "id": "optimizer",
+   "hash": "#/optimizer/stadium",
+   "phone": {
+    "h1": "The Space Optimizer is not shown to the Visitor",
+    "access": false
+   },
+   "desk": {
+    "h1": "The Space Optimizer is not shown to the Visitor",
+    "access": false
+   },
+   "notes": []
+  }
+ ]
+}
