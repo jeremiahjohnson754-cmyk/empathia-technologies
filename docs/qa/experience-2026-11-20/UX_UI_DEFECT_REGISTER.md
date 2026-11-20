@@ -19,6 +19,9 @@ Earlier registers: `docs/qa/DEFECT_REGISTER_2026-11-18.md`, `docs/qa/MOBILE_MAPS
 | D-10 | P3 | Search, case 12 | Searching a vendor's name finds nothing | vendors are not in the search index (service jobs carry them) | — | OPEN | NAVIGATION_AND_SEARCH_VALIDATION.md |
 | D-11 | P3 | Search, case 10 | Searching a manufacturer or model finds nothing | the synthetic catalogue names no makers (no real brands, by rule) | Search by category, position or asset ID; the results never invent a make, model or serial (S-03) | BY DESIGN | S-03 |
 | D-12 | P2 | Campus map | No full-screen mode (directive §4 lists full-screen actions) | not built | A Full screen button first among the map's controls; Done/Escape leaves | FIXED | GS-map-05…07, GS-map-13 |
+| D-13 | P2 | The header's Search Party bar | Type “Atlas”: rooms in Atlas are offered, Atlas HQ itself is not | rooms outranked their building (both labels begin “Atlas”) and, with 43 rooms in Atlas, the building fell below the first forty results | A building named outright leads its rooms, in the ranking (`find.ts`) and in the bar's grouping | FIXED | SC-09 (found by the new check) |
+| D-14 | P2 | The header's Search Party bar | Type “WO-0088”: nothing, though the group is called “Incidents & work orders” | ServiceHands' work orders were not in the bar's records | The service workspace's work orders are matched by number, title, incident and room, under the same policy | FIXED | SC-11 (found by the new check) |
+| D-15 | P2 | Campus map, full screen on a phone, a building chosen | The building's card took most of the window and left the map 132 px tall | the card and the lenses sat below the picture in full screen too | In full screen on a phone the picture keeps at least half the window; the card scrolls in its own part; the lenses scroll sideways in one row | FIXED | GS-map-06 (found by the new check) |
 
 ## Not confirmed on real devices
 

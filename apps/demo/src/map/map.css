@@ -11,6 +11,14 @@
   padding: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(8px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
 .emap.is-full .emap__view { flex: 1 1 auto; aspect-ratio: auto; min-height: 0; max-height: none; border-radius: 12px; }
 .emap.is-full .emap__cv { touch-action: none; }
+/* on a phone the building card and the lenses sit below the picture; in full screen the picture keeps at least half the window: the
+   card scrolls inside a bottom part of its own and the lenses scroll sideways in one row (20 Nov 2026: the card had squeezed it to 132 px) */
+@media (max-width: 640px) {
+  .emap.is-full .emap__view { min-height: min(52vh, 520px); }
+  .emap.is-full .emap__card { flex: 0 1 auto; min-height: 0; max-height: 34vh; margin: 0; overflow: auto; }
+  .emap.is-full .emap__lens { flex-wrap: nowrap; overflow-x: auto; margin: 0; flex: none; }
+  .emap.is-full .emap__credit { flex: none; }
+}
 html.has-full, html.has-full body { overflow: hidden; }
 .emap__hint { position: absolute; z-index: 4; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; max-width: min(80%, 340px); padding: 10px 14px; border-radius: 12px; background: rgba(10, 14, 20, 0.88); color: #eef3fb; font-size: 14px; line-height: 1.35; text-align: center; pointer-events: none; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
 .emap__cv:active { cursor: grabbing; }

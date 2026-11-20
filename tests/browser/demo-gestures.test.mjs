@@ -22,36 +22,43 @@ const fingers = (cdp) => {
     async tap(p, x, y) { await send('touchStart', [[x, y]]); await p.waitForTimeout(40); await send('touchEnd', []); await p.waitForTimeout(350); },
   };
 };
+// a control is brought to the middle of the window before a finger presses it: on a phone the bottom tab bar covers the window's last 60 px
+const mid = async (p, id) => { await p.evaluate((x) => document.querySelector(`[data-testid="${x}"]`)?.scrollIntoView({ block: 'center' }), id); await p.waitForTimeout(200); };
 const top = async (p, id) => (await p.getByTestId(id).boundingBox()).y;
 const centre = async (p, id) => { const b = await p.getByTestId(id).boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2, b]; };
 const attr = (p, id, k) => p.getByTestId(id).getAttribute(`data-${k}`);
-const hint = async (p, id) => (await p.getByTestId(id).innerText().catch(() => '')).trim();
+// the hint shows for 1.6 s; the 3D worlds draw every frame in software here, so a swipe can outlast it: a watcher keeps the last hint shown
+const watchHints = (p) => p.evaluate(() => { window.__hint = ''; new MutationObserver(() => { const e = document.querySelector('[data-testid$="-hint"]'); if (e && e.textContent) window.__hint = e.textContent; }).observe(document.body, { childList: true, subtree: true, characterData: true }); });
+const hint = async (p, id) => { const now = (await p.getByTestId(id).innerText().catch(() => '')).trim(); return now || (await p.evaluate(() => window.__hint || '').catch(() => '')); };
 const vw = (p) => p.evaluate(() => [innerWidth, innerHeight]);
 
 // ---- the campus map on a phone --------------------------------------------------------------------------------------------------------
 { const t = await open('#/campus', { role: 'architect', sw: false, w: 390, h: 844, reduced: true, touch: true }); const p = t.page; p.setDefaultTimeout(20000);
-  await p.waitForSelector('[data-testid=emap][data-ready=true]'); await p.waitForTimeout(1200); const f = fingers(await t.ctx.newCDPSession(p));
+  await p.waitForSelector('[data-testid=emap][data-ready=true]'); await p.waitForTimeout(1200); await watchHints(p); const f = fingers(await t.ctx.newCDPSession(p));
   const cam = async () => [await attr(p, 'emap', 'dist'), await attr(p, 'emap', 'yaw'), await attr(p, 'emap', 'at'), await attr(p, 'emap', 'level')].join('|');
   let [x, y] = await centre(p, 'emap-canvas'); const c0 = await cam(), t0 = await top(p, 'emap');
   await f.swipe(p, x, y, 0, -220); const t1 = await top(p, 'emap'), c1 = await cam(), h1 = await hint(p, 'emap-hint');
   ok('GS-map-01', 'phone: one finger swiped up over the map scrolls the page; the map stays where it was and says how to move it (two fingers, or full screen)', t1 < t0 - 60 && c1 === c0 && /two fingers/i.test(h1), `top ${t0.toFixed(0)} → ${t1.toFixed(0)}; camera ${c0} → ${c1}; hint "${h1}"`);
 
   await p.evaluate(() => { document.scrollingElement.scrollTop = 0; document.querySelector('main')?.scrollTo?.(0, 0); }); await p.getByTestId('emap-canvas').scrollIntoViewIfNeeded(); await p.waitForTimeout(300);
+  { // a tap on a building's pin opens it (the view is as it loaded: the swipe above left the camera where it was)
+    await mid(p, 'campus-b-ATL'); const [px, py] = await centre(p, 'campus-b-ATL'); const hit = await p.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('[data-testid]')?.getAttribute('data-testid'), [px, py]);
+    await f.tap(p, px, py);
+    ok('GS-map-04', 'phone: a tap on a building opens it', hit === 'campus-b-ATL' && (await attr(p, 'emap', 'level')) === 'building' && (await attr(p, 'emap', 'sel')) === 'ATL', `hit ${hit}; ${await attr(p, 'emap', 'level')} ${await attr(p, 'emap', 'sel')}`);
+    await p.getByTestId('emap-canvas').scrollIntoViewIfNeeded(); await p.waitForTimeout(300); }
   [x, y] = await centre(p, 'emap-canvas'); const d0 = Number(await attr(p, 'emap', 'dist')), tp0 = await top(p, 'emap');
   await f.two(p, [x - 30, y], [x + 30, y], [-60, 0], [60, 0]); const d1 = Number(await attr(p, 'emap', 'dist')), tp1 = await top(p, 'emap');
   ok('GS-map-02', 'phone: two fingers pinched apart zoom the map in; the page does not move', d1 < d0 * 0.8 && Math.abs(tp1 - tp0) < 2, `distance ${d0} → ${d1}; top ${tp0.toFixed(0)} → ${tp1.toFixed(0)}`);
   const a0 = await attr(p, 'emap', 'at'); await f.two(p, [x - 40, y], [x + 40, y], [0, 70], [0, 70]); const a1 = await attr(p, 'emap', 'at'), tp2 = await top(p, 'emap');
   ok('GS-map-03', 'phone: two fingers moved together pan the map; the page does not move', a1 !== a0 && Math.abs(tp2 - tp1) < 2, `centre ${a0} → ${a1}`);
 
-  const [px, py] = await centre(p, 'campus-b-ATL'); await f.tap(p, px, py);
-  ok('GS-map-04', 'phone: a tap on a building opens it', (await attr(p, 'emap', 'level')) === 'building' && (await attr(p, 'emap', 'sel')) === 'ATL', `${await attr(p, 'emap', 'level')} ${await attr(p, 'emap', 'sel')}`);
 
-  await p.getByTestId('emap-full').scrollIntoViewIfNeeded(); const [fx, fy] = await centre(p, 'emap-full'); await f.tap(p, fx, fy); await p.waitForTimeout(400);
+  await mid(p, 'emap-full'); const [fx, fy] = await centre(p, 'emap-full'); await f.tap(p, fx, fy); await p.waitForTimeout(400);
   const [W, H] = await vw(p); const fb = await p.getByTestId('emap').boundingBox(); const isFull = await p.evaluate(() => document.querySelector('[data-testid=emap]').classList.contains('is-full') && document.documentElement.classList.contains('has-full'));
   [x, y] = await centre(p, 'emap-canvas'); const g0 = await cam(), ft0 = await top(p, 'emap'); await f.swipe(p, x, y, 90, 60); const g1 = await cam(), ft1 = await top(p, 'emap');
   ok('GS-map-05', 'phone: Full screen fills the window, and there one finger moves the map instead of the page', isFull && Math.abs(fb.x) < 1 && Math.abs(fb.y) < 1 && Math.abs(fb.width - W) < 2 && Math.abs(fb.height - H) < 2 && g1 !== g0 && Math.abs(ft1 - ft0) < 1,
     `full ${isFull} box ${fb.x.toFixed(0)},${fb.y.toFixed(0)} ${fb.width.toFixed(0)}×${fb.height.toFixed(0)} of ${W}×${H}; camera ${g0} → ${g1}`);
-  const ctl = await p.evaluate(() => { const v = document.querySelector('.emap__view').getBoundingClientRect(); return [...document.querySelectorAll('.emap .emap__ctrl button, .emap .emap__layers button')].filter((b) => b.offsetParent).map((b) => b.getBoundingClientRect()).filter((r) => r.bottom > innerHeight + 1 || r.right > innerWidth + 1 || r.top < -1).length + (v.height < 300 ? 100 : 0); });
+  const ctl = await p.evaluate(() => { const v = document.querySelector('.emap.is-full .emap__view')?.getBoundingClientRect() || { height: 0 }; return [...document.querySelectorAll('.emap.is-full .emap__ctrl button, .emap.is-full .emap__layers button')].filter((b) => b.offsetParent).map((b) => b.getBoundingClientRect()).filter((r) => r.bottom > innerHeight + 1 || r.right > innerWidth + 1 || r.top < -1).length + (v.height < 300 ? 100 : 0); });
   ok('GS-map-06', 'phone: in full screen every control is inside the window and the picture takes the room left', ctl === 0, `${ctl} off-screen`);
   [x, y] = await centre(p, 'emap-full'); await f.tap(p, x, y); await p.waitForTimeout(300);
   const left = await p.evaluate(() => !document.querySelector('[data-testid=emap]').classList.contains('is-full') && !document.documentElement.classList.contains('has-full'));
@@ -60,7 +67,7 @@ const vw = (p) => p.evaluate(() => [innerWidth, innerHeight]);
 
 // ---- the campus map with a mouse ------------------------------------------------------------------------------------------------------
 { const t = await open('#/campus', { role: 'architect', sw: false, w: 1280, h: 760, reduced: true }); const p = t.page; p.setDefaultTimeout(20000);
-  await p.waitForSelector('[data-testid=emap][data-ready=true]'); await p.waitForTimeout(1200);
+  await p.waitForSelector('[data-testid=emap][data-ready=true]'); await p.waitForTimeout(1200); await watchHints(p);
   let [x, y] = await centre(p, 'emap-canvas'); const d0 = await attr(p, 'emap', 'dist'), t0 = await top(p, 'emap');
   await p.mouse.move(x, y); await p.mouse.wheel(0, 300); await p.waitForTimeout(350); const d1 = await attr(p, 'emap', 'dist'), t1 = await top(p, 'emap'), h1 = await hint(p, 'emap-hint');
   ok('GS-map-09', 'mouse: the plain wheel over the map scrolls the page, not the map, and the map says Ctrl and the wheel zooms', d1 === d0 && t1 < t0 - 40 && /Ctrl/.test(h1), `distance ${d0} → ${d1}; top ${t0.toFixed(0)} → ${t1.toFixed(0)}; hint "${h1}"`);
@@ -84,7 +91,7 @@ const probe = async (p, hit) => { const b = await p.getByTestId('xpo-canvas').bo
   for (const fy of [0.55, 0.45, 0.65, 0.35, 0.75]) for (const fx of [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8]) { await hit(b.x + b.width * fx, b.y + b.height * fy); const s = await attr(p, 'expo-live', 'sel'); if (s) return { s, at: [fx, fy] }; }
   return { s: '', at: null }; };
 { const t = await open('#/play/expo', { role: 'architect', sw: false, w: 1440, h: 900, reduced: true, init: xinit }); const p = t.page; p.setDefaultTimeout(20000);
-  await p.waitForSelector('[data-testid=expo-live][data-ready=true]'); await p.waitForTimeout(2000);
+  await p.waitForSelector('[data-testid=expo-live][data-ready=true]'); await p.waitForTimeout(2000); await watchHints(p);
   const c0 = await attr(p, 'xpo-canvas', 'cam'); let [x, y] = await centre(p, 'xpo-canvas'); await p.mouse.move(x, y); await p.mouse.down(); await p.mouse.move(x + 150, y + 30, { steps: 8 }); await p.mouse.up(); await p.waitForTimeout(300);
   const c1 = await attr(p, 'xpo-canvas', 'cam');
   ok('GS-xpo-01', 'mouse: a drag across the hall looks around it and chooses no booth', c1 !== c0 && !(await attr(p, 'expo-live', 'sel')), `${c0} → ${c1}`);
@@ -101,7 +108,7 @@ const probe = async (p, hit) => { const b = await p.getByTestId('xpo-canvas').bo
   ok('GS-xpo-04', 'mouse: no console error', !t.errs.length, t.errs.slice(0, 2).join(' | ')); await t.close(); }
 
 { const t = await open('#/play/expo', { role: 'architect', sw: false, w: 390, h: 844, reduced: true, init: xinit, touch: true }); const p = t.page; p.setDefaultTimeout(20000);
-  await p.waitForSelector('[data-testid=expo-live][data-ready=true]'); await p.waitForTimeout(2000); const f = fingers(await t.ctx.newCDPSession(p));
+  await p.waitForSelector('[data-testid=expo-live][data-ready=true]'); await p.waitForTimeout(2000); await watchHints(p); const f = fingers(await t.ctx.newCDPSession(p));
   await p.getByTestId('xpo-canvas').scrollIntoViewIfNeeded(); await p.waitForTimeout(200);
   let [x, y] = await centre(p, 'xpo-canvas'); const c0 = await attr(p, 'xpo-canvas', 'cam'), t0 = await top(p, 'xpo-canvas');
   await f.swipe(p, x, y, 0, -200); const c1 = await attr(p, 'xpo-canvas', 'cam'), t1 = await top(p, 'xpo-canvas'), h1 = await hint(p, 'xpo-hint');
@@ -112,7 +119,7 @@ const probe = async (p, hit) => { const b = await p.getByTestId('xpo-canvas').bo
   ok('GS-xpo-06', 'phone: two fingers pinch to come nearer, and moved together walk the camera along the hall', Number(k1[2]) < Number(k0[2]) && (k2[0] !== k1[0] || k2[1] !== k1[1]), `${k0.join(' ')} → ${k1.join(' ')} → ${k2.join(' ')}`);
   const r = await probe(p, async (px, py) => { await f.tap(p, px, py); });
   ok('GS-xpo-07', 'phone: a tap on a booth in the hall chooses it and takes the camera there', !!r.s && Number((await attr(p, 'xpo-canvas', 'cam')).split(' ')[2]) === 34, `${r.s} at ${JSON.stringify(r.at)}`);
-  const [fx, fy] = await centre(p, 'xpo-full'); await f.tap(p, fx, fy); await p.waitForTimeout(400); const [W, H] = await vw(p); const sb = await p.locator('.xpo-stage').boundingBox();
+  await mid(p, 'xpo-full'); const [fx, fy] = await centre(p, 'xpo-full'); await f.tap(p, fx, fy); await p.waitForTimeout(400); const [W, H] = await vw(p); const sb = await p.locator('.xpo-stage').boundingBox();
   const mini = await p.getByTestId('xpo-mini').isVisible().catch(() => false); [x, y] = await centre(p, 'xpo-canvas'); const m0 = await attr(p, 'xpo-canvas', 'cam'); await f.swipe(p, x, y, 100, 0); const m1 = await attr(p, 'xpo-canvas', 'cam');
   ok('GS-xpo-08', 'phone: Full screen fills the window with the hall, keeps the chosen booth in a small card, and one finger looks around', Math.abs(sb.width - W) < 2 && Math.abs(sb.height - H) < 2 && mini && m1 !== m0, `${sb.width.toFixed(0)}×${sb.height.toFixed(0)} of ${W}×${H}; card ${mini}; ${m0} → ${m1}`);
   const [dx2, dy2] = await centre(p, 'xpo-full'); await f.tap(p, dx2, dy2); await p.waitForTimeout(300);
@@ -122,7 +129,7 @@ const probe = async (p, hit) => { const b = await p.getByTestId('xpo-canvas').bo
 // ---- the stadium and Campus Life on a phone -------------------------------------------------------------------------------------------
 for (const [hash, sec, cv, full, hid, key] of [['#/play/stadium', 'stadium-live', 'slv-canvas', 'slv-full', 'slv-hint', 'slv'], ['#/play/campus', 'campus-life', 'cl-canvas', 'cl-full', 'cl-hint', 'cl']]) {
   const t = await open(hash, { role: 'architect', sw: false, w: 390, h: 844, reduced: true, touch: true }); const p = t.page; p.setDefaultTimeout(20000);
-  await p.waitForSelector(`[data-testid=${sec}][data-ready=true]`); await p.waitForTimeout(1500); const f = fingers(await t.ctx.newCDPSession(p));
+  await p.waitForSelector(`[data-testid=${sec}][data-ready=true]`); await p.waitForTimeout(1500); await watchHints(p); const f = fingers(await t.ctx.newCDPSession(p));
   const view = key === 'slv' ? async () => attr(p, cv, 'cam') : async () => `${await attr(p, sec, 'yaw')}`;
   await p.getByTestId(cv).scrollIntoViewIfNeeded(); await p.waitForTimeout(200);
   let [x, y] = await centre(p, cv); const v0 = await view(), t0 = await top(p, cv); await f.swipe(p, x, y, 0, -200); const v1 = await view(), t1 = await top(p, cv), h1 = await hint(p, hid);
@@ -130,7 +137,7 @@ for (const [hash, sec, cv, full, hid, key] of [['#/play/stadium', 'stadium-live'
   await p.getByTestId(cv).scrollIntoViewIfNeeded(); await p.waitForTimeout(250); [x, y] = await centre(p, cv); const w0 = await view();
   await f.two(p, [x - 40, y], [x + 40, y], [70, 0], [70, 0]); const w1 = await view();
   ok(`GS-${key}-02`, `phone, ${sec}: two fingers moved together turn the view`, w1 !== w0, `${w0} → ${w1}`);
-  const [fx, fy] = await centre(p, full); await f.tap(p, fx, fy); await p.waitForTimeout(400); const [W, H] = await vw(p);
+  await mid(p, full); const [fx, fy] = await centre(p, full); await f.tap(p, fx, fy); await p.waitForTimeout(400); const [W, H] = await vw(p);
   const sb = await p.evaluate(() => { const e = document.querySelector('.is-full'); if (!e) return null; const r = e.getBoundingClientRect(); return [r.x, r.y, r.width, r.height]; });
   [x, y] = await centre(p, cv); const g0 = await view(); await f.swipe(p, x, y, 110, 0); const g1 = await view();
   ok(`GS-${key}-03`, `phone, ${sec}: Full screen fills the window and one finger turns the view`, !!sb && Math.abs(sb[2] - W) < 2 && Math.abs(sb[3] - H) < 2 && g1 !== g0, `${sb ? sb.map((n) => n.toFixed(0)).join(',') : 'none'} of ${W}×${H}; ${g0} → ${g1}`);
@@ -144,9 +151,9 @@ for (const [hash, sec, cv, full, hid, key] of [['#/play/stadium', 'stadium-live'
   const c1 = await attr(p, 'slv-canvas', 'cam'); const t0 = await top(p, 'slv-canvas'); [x, y] = await centre(p, 'slv-canvas'); await p.mouse.move(x, y); await p.mouse.wheel(0, 250); await p.waitForTimeout(300); const t1 = await top(p, 'slv-canvas'), c2 = await attr(p, 'slv-canvas', 'cam');
   await p.getByTestId('slv-canvas').scrollIntoViewIfNeeded(); [x, y] = await centre(p, 'slv-canvas'); await p.mouse.move(x, y); await p.keyboard.down('Control'); await p.mouse.wheel(0, -300); await p.keyboard.up('Control'); await p.waitForTimeout(300); const c3 = await attr(p, 'slv-canvas', 'cam');
   ok('GS-slv-05', 'mouse, stadium: a drag orbits the stadium; the plain wheel scrolls the page; Ctrl and the wheel come nearer', c1 !== c0 && c2 === c1 && t1 < t0 - 30 && Number(c3.split(' ')[0]) < Number(c2.split(' ')[0]), `${c0} → ${c1} → ${c2} → ${c3}; top ${t0.toFixed(0)} → ${t1.toFixed(0)}`);
-  { const cam = async () => (await attr(p, 'slv-canvas', 'cam')).split(' ').map(Number); const k0 = await cam(); await p.getByTestId('slv-right').click(); await p.waitForTimeout(150); const k1 = await cam(); await p.getByTestId('slv-in').click(); await p.waitForTimeout(150); const k2 = await cam();
-    await p.getByTestId('slv-canvas').focus(); await p.keyboard.press('ArrowLeft'); await p.keyboard.press('-'); await p.keyboard.press('ArrowUp'); await p.waitForTimeout(150); const k3 = await cam();
-    ok('GS-slv-07', 'mouse, stadium: without dragging, the buttons turn and come nearer; the keyboard turns, tilts and goes farther', k1[1] !== k0[1] && k2[0] < k1[0] && k3[1] !== k2[1] && k3[0] > k2[0] && k3[2] !== k2[2], `${k0.join(' ')} → ${k1.join(' ')} → ${k2.join(' ')} → ${k3.join(' ')}`); }
+  { const cam = async () => (await attr(p, 'slv-canvas', 'cam')).split(' ').map(Number); const k0 = await cam(); await p.getByTestId('slv-right').click(); await p.waitForTimeout(150); const k1 = await cam(); await p.getByTestId('slv-out').click(); await p.waitForTimeout(150); const k2 = await cam();
+    await p.getByTestId('slv-canvas').focus(); await p.keyboard.press('ArrowLeft'); await p.keyboard.press('+'); await p.keyboard.press('ArrowUp'); await p.waitForTimeout(150); const k3 = await cam();
+    ok('GS-slv-07', 'mouse, stadium: without dragging, the buttons turn and go farther; the keyboard turns, tilts and comes nearer', k1[1] !== k0[1] && k2[0] > k1[0] && k3[1] !== k2[1] && k3[0] < k2[0] && k3[2] !== k2[2], `${k0.join(' ')} → ${k1.join(' ')} → ${k2.join(' ')} → ${k3.join(' ')}`); }
   ok('GS-slv-06', 'mouse, stadium: no console error', !t.errs.length, t.errs.slice(0, 2).join(' | ')); await t.close(); }
 
 // ---- Lite's room scene on a phone (the technical view): a vertical swipe scrolls the page, a sideways one turns the room -------------

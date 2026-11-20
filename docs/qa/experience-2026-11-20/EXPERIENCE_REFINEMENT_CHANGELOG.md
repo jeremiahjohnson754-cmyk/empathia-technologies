@@ -29,6 +29,12 @@ test that checks it. Earlier work of this round: 19 Nov, the maps readable on a 
   Lite → Commissioning the search is one press away.
 - The results page keeps the facet you chose when you come back to it.
 - Every search field has a visible clear control; focus stays in the field.
+- Typing a building's name in the header bar now offers the building first, before its rooms (D-13); work orders are found by their
+  number there, as the bar's "Incidents & work orders" group promised (D-14).
+
+### The map in full screen on a phone keeps half the window (D-15)
+- With a building chosen, its card used to fill the window below a strip of map; the card now scrolls in its own part and the lens
+  buttons sit in one sideways-scrolling row.
 
 ### Verification added
 - `tests/browser/demo-gestures.test.mjs`: real touch (DevTools touch input in a phone context) and mouse input on the map, the three

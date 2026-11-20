@@ -10,6 +10,7 @@ import { allRecords } from '../campus/design.js';
 import { BUILDINGS, ROOMS, roomHref, shortName, fullName } from '../campus/canon.js';
 import { allows } from '../access/policy.js';
 import type { RoleKey } from '../registry.types.js';
+import { load as workspace } from '../workspace/store.js';
 
 export type Group = 'unit' | 'position' | 'issue';
 export interface Entry { id: string; group: Group; entity: string; title: string; sub: string; href: string; cat?: string; chip: string; hay: string }
@@ -34,12 +35,20 @@ export function entries(): Entry[] {
   built = out; return out;
 }
 
+/** ServiceHands' work orders, under "Incidents & work orders" (20 Nov 2026: the group named them but held none, so "WO-0088" found
+ *  nothing). Read from this browser's service workspace each time, so an order raised here is found too; the policy still decides who sees one. */
+function workOrders(): Entry[] {
+  let w: ReturnType<typeof workspace>; try { w = workspace(); } catch { return []; }
+  return w.workOrders.map((o) => { const r = ROOMS.find((x) => x.id === o.roomId); const room = r ? shortName(r) : o.roomId;
+    return { id: `wo:${o.id}`, group: 'issue' as const, entity: 'WorkOrder', title: `${o.id} · ${o.title}`, sub: `${o.state.replace(/_/g, ' ').toLowerCase()} · ${room}${o.incidentId ? ` · for ${o.incidentId}` : ''}`, href: `#/servicehands/wo/${o.id}`, chip: 'Work order', hay: `${o.id} ${o.title} ${o.incidentId || ''} ${room} work order`.toLowerCase() }; });
+}
+
 /** Every token must appear; a title hit outranks a description hit; physical units first, as the reference shows them. */
 export function match(q: string, may: (e: Entry) => boolean): Record<Group, { hits: Entry[]; total: number }> {
   const words = q.toLowerCase().normalize('NFKD').replace(/[^a-z0-9.\- ]+/g, ' ').split(/\s+/).filter(Boolean).slice(0, 6);
   const res: Record<Group, { hits: Entry[]; total: number }> = { unit: { hits: [], total: 0 }, position: { hits: [], total: 0 }, issue: { hits: [], total: 0 } };
   if (!words.length) return res;
-  const scored = entries().filter((e) => words.every((w) => e.hay.includes(w)) && may(e))
+  const scored = [...entries(), ...workOrders()].filter((e) => words.every((w) => e.hay.includes(w)) && may(e))
     .map((e) => ({ e, s: words.reduce((n, w) => n + (e.title.toLowerCase().includes(w) ? 2 : 1), 0) }))
     .sort((a, b) => b.s - a.s || a.e.title.localeCompare(b.e.title));
   for (const { e } of scored) { res[e.group].total += 1; res[e.group].hits.push(e); }

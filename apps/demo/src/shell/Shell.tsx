@@ -219,7 +219,10 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
     const named = hits.some((h) => { const ws = h.label.toLowerCase().split(/[^a-z0-9.\-]+/).filter(Boolean); return words.every((w) => ws.some((x) => x.startsWith(w))); });
     const at = named ? 0 : groups.length;
     const places: Grp[] = [];
-    for (const [k, label, icon, chip] of [['room', 'Rooms', 'room', 'Room'], ['building', 'Buildings', 'building', 'Building']] as const) { const xs = hits.filter((h) => h.kind === k); if (xs.length) places.push({ key: k, label, opts: xs.slice(0, 3).map((h) => ({ key: `${k}-${h.id}`, href: h.href, title: h.label, sub: h.description, icon, chip })), more: Math.max(0, xs.length - 3) }); }
+    // a building named outright comes before the rooms inside it
+    const bNamed = hits.some((h) => h.kind === 'building' && words.every((w) => h.label.toLowerCase().split(/[^a-z0-9.\-]+/).some((x) => x.startsWith(w))));
+    const KINDS = [['room', 'Rooms', 'room', 'Room'], ['building', 'Buildings', 'building', 'Building']] as const;
+    for (const [k, label, icon, chip] of (bNamed ? [KINDS[1], KINDS[0]] : KINDS)) { const xs = hits.filter((h) => h.kind === k); if (xs.length) places.push({ key: k, label, opts: xs.slice(0, 3).map((h) => ({ key: `${k}-${h.id}`, href: h.href, title: h.label, sub: h.description, icon, chip })), more: Math.max(0, xs.length - 3) }); }
     groups.splice(at, 0, ...places);
   }
   if (pagesGroup && !pageHits[0]!.alias) groups.push(pagesGroup);
