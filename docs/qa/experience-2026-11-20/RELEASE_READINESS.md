@@ -43,6 +43,9 @@ None. Production needed the founder's word (release control); it was given on 20
 - Touch was driven through Chromium's own touch input; no physical iPhone or Android phone and no Safari were available.
 - WebGL is drawn in software in the test browser: no frame-rate claim is made.
 - The accessibility audit is in-house (rules A1–A10), not axe-core.
+- GitHub CI on `main` fails for 27c7469 at the Founder Studio build step: the merged workflow asks for the private studio store, which
+  is never on a GitHub runner. The sites are unaffected (Render does not wait for CI); the fix is a workflow change on `main`, which
+  needs the founder's word because any push to `main` redeploys production (PRODUCTION_2026-11-20.md).
 - Journeys A–H of the directive are covered where the product implements them (see END_TO_END_TEST_RESULTS.md and the suites named
   in NAVIGATION_AND_SEARCH_VALIDATION.md and SPATIAL_MAP_QA.md); parts that are simulated in the demonstration say so on screen.
 

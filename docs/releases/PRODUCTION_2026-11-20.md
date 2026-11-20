@@ -45,6 +45,7 @@ API is not used by production).
 | public exposure, built and live (both production sites) | PASS 9 · FAIL 0 |
 | response headers on both production sites (`curl -I`) | the Blueprint's CSP (with object-src 'none'), Permissions-Policy, Cross-Origin-Opener-Policy and Cross-Origin-Resource-Policy are served; Strict-Transport-Security is served as Render's own `max-age=315360000; includeSubdomains; preload`; the demonstration also sends `X-Robots-Tag: noindex, nofollow` |
 | demo-smoke, demo-edge, connected-browsers | not applicable: they test the staging API, which production does not use |
+| GitHub CI on `main` for 27c7469 (run 44821379278) | **FAIL** at its build step, "Founder Studio (private assets verified …)": `NOT PROVISIONED: the private store is not on this machine`. Every earlier step of the build passed (all type-checks, the website, the demonstration, dist hygiene); nothing after it ran on GitHub. Cause: the merged workflow builds with `--studio`, which since 17 Nov (1cba676) requires the private Founder Studio store, and that store is never on a GitHub runner (it is private and the repository is public). Main's previous workflow (219d75f) built without `--studio` and passed. Render does not wait for CI, so the sites are unaffected; the Founder Studio is built and tested in the local exact-commit regression (287/0/2). Fixing CI means a workflow change on `main`, which redeploys production, so it waits for the founder's word |
 
 ## Rollback
 
