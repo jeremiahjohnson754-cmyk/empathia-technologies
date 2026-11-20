@@ -25,6 +25,7 @@ Earlier registers: `docs/qa/DEFECT_REGISTER_2026-11-18.md`, `docs/qa/MOBILE_MAPS
 | D-16 | P1 | Lite studio `#/v25/lite` at 390 px | Open the studio on a phone: the page scrolls 114 px sideways | the "New model" form's select took the width of its longest room name (504 px) | The form's column and fields shrink to the card; selects fill it | FIXED | RS-parity.lite (route sweep) |
 | D-17 | P2 | The three SIGNAL labs on their own pages (`#/labs/mix`, `/light`, `/video`) | The page has no h1 (the lab's title is an h2) | the title is an h2 so it sits under a story chapter's h1 when embedded; on its own page nothing was above it | On its own page the title is the h1; embedded it stays an h2 | FIXED | RS-labs.* (route sweep), demo-mixlab, learn-labs |
 | D-18 | P3 | `#/requests/<id>` for a request not in this browser | The page has no heading | the empty state's title is a paragraph | A heading for the page (read by screen readers and used for route focus) | FIXED | RS-intake.track (route sweep) |
+| D-19 | P3 (test) | demo-campus-life, in the full regression | Once in three regressions today the student stopped moving after the professor's conversation (CL-05..07) and the suite took 514 s instead of ~200 s | not found; the same code passed alone (20/20) and in the regressions before and after it (20/20, 197 s). Read as the software-rendered test browser slowing: the world caps a frame's step, so a slow frame moves the student less | — | OPEN (watch) | .local/logs/regress-fe30ba9-run1-part1.log |
 
 ## Not confirmed on real devices
 
