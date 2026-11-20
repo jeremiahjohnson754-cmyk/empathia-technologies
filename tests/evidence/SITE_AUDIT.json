@@ -1,6 +1,6 @@
 {
   "label": "audit",
-  "at": "2026-11-20T02:30:50.518Z",
+  "at": "2026-11-20T06:37:28.486Z",
   "widths": [
     320,
     390,
@@ -13,7 +13,7 @@
     "P0": 0,
     "P1": 0,
     "P2": 155,
-    "P3": 150
+    "P3": 140
   },
   "defects": [
     {
@@ -2340,7 +2340,7 @@
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"●Atlas995\" 113×32",
+      "detail": "below the 44 px project target on phones: button \"●Atlas995\" 114×32",
       "component": "controls",
       "widths": [
         320,
@@ -2411,11 +2411,11 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
+      "page": "/#/v25/build",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"●Northstar100\" 125×32",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
         320,
@@ -2426,11 +2426,11 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
+      "page": "/#/v25/build",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Campus\" 70×40",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
         320,
@@ -2441,74 +2441,69 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
+      "page": "/#/v25/build",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Aerial\" 56×38",
+      "detail": "below the 44 px project target on phones: input \"\" 288×36",
       "component": "controls",
       "widths": [
-        320,
-        390
+        320
       ],
       "id": "AUD-171",
       "reproducible": "yes (deterministic, local build)"
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
+      "page": "/#/v25/build",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Map\" 47×38",
+      "detail": "below the 44 px project target on phones: select \"Huddle RoomSmall Conference Ro\" 288×36",
       "component": "controls",
       "widths": [
-        320,
-        390
+        320
       ],
       "id": "AUD-172",
       "reproducible": "yes (deterministic, local build)"
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
+      "page": "/#/v25/build",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"3D\" 44×38",
+      "detail": "below the 44 px project target on phones: select \"metresfeet (24' 6\" accepted)\" 288×36",
       "component": "controls",
       "widths": [
-        320,
-        390
+        320
       ],
       "id": "AUD-173",
       "reproducible": "yes (deterministic, local build)"
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
+      "page": "/#/v25/build",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"No lens\" 62×42",
+      "detail": "below the 44 px project target on phones: select \"rectangleL-shape\" 288×36",
       "component": "controls",
       "widths": [
-        320,
-        390
+        320
       ],
       "id": "AUD-174",
       "reproducible": "yes (deterministic, local build)"
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
-      "width": 320,
+      "page": "/#/v25/build",
+      "width": 390,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Health risk\" 79×42",
+      "detail": "below the 44 px project target on phones: input \"\" 358×36",
       "component": "controls",
       "widths": [
-        320,
         390
       ],
       "id": "AUD-175",
@@ -2516,14 +2511,13 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
-      "width": 320,
+      "page": "/#/v25/build",
+      "width": 390,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Issues\" 56×42",
+      "detail": "below the 44 px project target on phones: select \"Huddle RoomSmall Conference Ro\" 358×36",
       "component": "controls",
       "widths": [
-        320,
         390
       ],
       "id": "AUD-176",
@@ -2531,14 +2525,13 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
-      "width": 320,
+      "page": "/#/v25/build",
+      "width": 390,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Assets\" 58×42",
+      "detail": "below the 44 px project target on phones: select \"metresfeet (24' 6\" accepted)\" 358×36",
       "component": "controls",
       "widths": [
-        320,
         390
       ],
       "id": "AUD-177",
@@ -2546,14 +2539,13 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/investor",
-      "width": 320,
+      "page": "/#/v25/build",
+      "width": 390,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: button \"Coverage\" 73×42",
+      "detail": "below the 44 px project target on phones: select \"rectangleL-shape\" 358×36",
       "component": "controls",
       "widths": [
-        320,
         390
       ],
       "id": "AUD-178",
@@ -2561,7 +2553,7 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/v25/build",
+      "page": "/#/search",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
@@ -2576,7 +2568,7 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/v25/build",
+      "page": "/#/search",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
@@ -2591,174 +2583,32 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/v25/build",
+      "page": "/#/v25/service",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: input \"\" 288×36",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
       "component": "controls",
       "widths": [
-        320
+        320,
+        390
       ],
       "id": "AUD-181",
       "reproducible": "yes (deterministic, local build)"
     },
     {
       "site": "empathia-demo",
-      "page": "/#/v25/build",
+      "page": "/#/v25/service",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"Huddle RoomSmall Conference Ro\" 288×36",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
       "component": "controls",
       "widths": [
-        320
+        320,
+        390
       ],
       "id": "AUD-182",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/build",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"metresfeet (24' 6\" accepted)\" 288×36",
-      "component": "controls",
-      "widths": [
-        320
-      ],
-      "id": "AUD-183",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/build",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"rectangleL-shape\" 288×36",
-      "component": "controls",
-      "widths": [
-        320
-      ],
-      "id": "AUD-184",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/build",
-      "width": 390,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: input \"\" 358×36",
-      "component": "controls",
-      "widths": [
-        390
-      ],
-      "id": "AUD-185",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/build",
-      "width": 390,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"Huddle RoomSmall Conference Ro\" 358×36",
-      "component": "controls",
-      "widths": [
-        390
-      ],
-      "id": "AUD-186",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/build",
-      "width": 390,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"metresfeet (24' 6\" accepted)\" 358×36",
-      "component": "controls",
-      "widths": [
-        390
-      ],
-      "id": "AUD-187",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/build",
-      "width": 390,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"rectangleL-shape\" 358×36",
-      "component": "controls",
-      "widths": [
-        390
-      ],
-      "id": "AUD-188",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/search",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-189",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/search",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-190",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/service",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-191",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/service",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-192",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2772,7 +2622,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-193",
+      "id": "AUD-183",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2787,7 +2637,7 @@
         320,
         390
       ],
-      "id": "AUD-194",
+      "id": "AUD-184",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2802,7 +2652,7 @@
         320,
         390
       ],
-      "id": "AUD-195",
+      "id": "AUD-185",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2816,7 +2666,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-196",
+      "id": "AUD-186",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2830,7 +2680,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-197",
+      "id": "AUD-187",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2844,7 +2694,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-198",
+      "id": "AUD-188",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2858,7 +2708,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-199",
+      "id": "AUD-189",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2872,7 +2722,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-200",
+      "id": "AUD-190",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2886,7 +2736,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-201",
+      "id": "AUD-191",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2900,7 +2750,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-202",
+      "id": "AUD-192",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2914,7 +2764,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-203",
+      "id": "AUD-193",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2928,7 +2778,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-204",
+      "id": "AUD-194",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2942,7 +2792,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-205",
+      "id": "AUD-195",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2956,7 +2806,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-206",
+      "id": "AUD-196",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2971,7 +2821,7 @@
         320,
         390
       ],
-      "id": "AUD-207",
+      "id": "AUD-197",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -2986,7 +2836,7 @@
         320,
         390
       ],
-      "id": "AUD-208",
+      "id": "AUD-198",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3000,7 +2850,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-209",
+      "id": "AUD-199",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3014,7 +2864,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-210",
+      "id": "AUD-200",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3029,7 +2879,7 @@
         320,
         390
       ],
-      "id": "AUD-211",
+      "id": "AUD-201",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3044,7 +2894,7 @@
         320,
         390
       ],
-      "id": "AUD-212",
+      "id": "AUD-202",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3058,7 +2908,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-213",
+      "id": "AUD-203",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3072,7 +2922,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-214",
+      "id": "AUD-204",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3086,7 +2936,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-215",
+      "id": "AUD-205",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3101,7 +2951,7 @@
         320,
         390
       ],
-      "id": "AUD-216",
+      "id": "AUD-206",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3116,7 +2966,7 @@
         320,
         390
       ],
-      "id": "AUD-217",
+      "id": "AUD-207",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3130,7 +2980,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-218",
+      "id": "AUD-208",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3145,7 +2995,7 @@
         320,
         390
       ],
-      "id": "AUD-219",
+      "id": "AUD-209",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3160,7 +3010,7 @@
         320,
         390
       ],
-      "id": "AUD-220",
+      "id": "AUD-210",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3175,7 +3025,7 @@
         320,
         390
       ],
-      "id": "AUD-221",
+      "id": "AUD-211",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3190,7 +3040,7 @@
         320,
         390
       ],
-      "id": "AUD-222",
+      "id": "AUD-212",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3205,7 +3055,7 @@
         320,
         390
       ],
-      "id": "AUD-223",
+      "id": "AUD-213",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3220,7 +3070,7 @@
         320,
         390
       ],
-      "id": "AUD-224",
+      "id": "AUD-214",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3235,7 +3085,7 @@
         320,
         390
       ],
-      "id": "AUD-225",
+      "id": "AUD-215",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3250,7 +3100,7 @@
         320,
         390
       ],
-      "id": "AUD-226",
+      "id": "AUD-216",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3265,7 +3115,7 @@
         320,
         390
       ],
-      "id": "AUD-227",
+      "id": "AUD-217",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3280,7 +3130,7 @@
         320,
         390
       ],
-      "id": "AUD-228",
+      "id": "AUD-218",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3295,7 +3145,7 @@
         320,
         390
       ],
-      "id": "AUD-229",
+      "id": "AUD-219",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3310,7 +3160,7 @@
         320,
         390
       ],
-      "id": "AUD-230",
+      "id": "AUD-220",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3325,7 +3175,7 @@
         320,
         390
       ],
-      "id": "AUD-231",
+      "id": "AUD-221",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3340,7 +3190,7 @@
         320,
         390
       ],
-      "id": "AUD-232",
+      "id": "AUD-222",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3355,7 +3205,7 @@
         320,
         390
       ],
-      "id": "AUD-233",
+      "id": "AUD-223",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3370,7 +3220,7 @@
         320,
         390
       ],
-      "id": "AUD-234",
+      "id": "AUD-224",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3385,7 +3235,7 @@
         320,
         390
       ],
-      "id": "AUD-235",
+      "id": "AUD-225",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3399,7 +3249,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-236",
+      "id": "AUD-226",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3413,7 +3263,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-237",
+      "id": "AUD-227",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3427,7 +3277,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-238",
+      "id": "AUD-228",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3441,7 +3291,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-239",
+      "id": "AUD-229",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3456,7 +3306,7 @@
         320,
         390
       ],
-      "id": "AUD-240",
+      "id": "AUD-230",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3471,7 +3321,7 @@
         320,
         390
       ],
-      "id": "AUD-241",
+      "id": "AUD-231",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3486,7 +3336,7 @@
         320,
         390
       ],
-      "id": "AUD-242",
+      "id": "AUD-232",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3500,7 +3350,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-243",
+      "id": "AUD-233",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3514,7 +3364,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-244",
+      "id": "AUD-234",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3528,7 +3378,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-245",
+      "id": "AUD-235",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3542,7 +3392,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-246",
+      "id": "AUD-236",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3557,7 +3407,7 @@
         320,
         390
       ],
-      "id": "AUD-247",
+      "id": "AUD-237",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3572,7 +3422,7 @@
         320,
         390
       ],
-      "id": "AUD-248",
+      "id": "AUD-238",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3586,7 +3436,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-249",
+      "id": "AUD-239",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3601,7 +3451,7 @@
         320,
         390
       ],
-      "id": "AUD-250",
+      "id": "AUD-240",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3616,7 +3466,7 @@
         320,
         390
       ],
-      "id": "AUD-251",
+      "id": "AUD-241",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3631,7 +3481,7 @@
         320,
         390
       ],
-      "id": "AUD-252",
+      "id": "AUD-242",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3645,7 +3495,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-253",
+      "id": "AUD-243",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3660,7 +3510,7 @@
         320,
         390
       ],
-      "id": "AUD-254",
+      "id": "AUD-244",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3675,12 +3525,158 @@
         320,
         390
       ],
-      "id": "AUD-255",
+      "id": "AUD-245",
       "reproducible": "yes (deterministic, local build)"
     },
     {
       "site": "empathia-demo",
       "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-246",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-247",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-248",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: summary \"The numbers\" 262×24",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-249",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fi",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: summary \"The numbers\" 332×24",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-250",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-251",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-252",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
+      "component": "controls",
+      "widths": [
+        320,
+        390
+      ],
+      "id": "AUD-253",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 320,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: summary \"The numbers\" 262×24",
+      "component": "controls",
+      "widths": [
+        320
+      ],
+      "id": "AUD-254",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/v25/fipv",
+      "width": 390,
+      "rule": "A6 target size",
+      "severity": "P3",
+      "detail": "below the 44 px project target on phones: summary \"The numbers\" 332×24",
+      "component": "controls",
+      "widths": [
+        390
+      ],
+      "id": "AUD-255",
+      "reproducible": "yes (deterministic, local build)"
+    },
+    {
+      "site": "empathia-demo",
+      "page": "/#/suite/commission",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
@@ -3695,7 +3691,7 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/v25/fi",
+      "page": "/#/suite/commission",
       "width": 320,
       "rule": "A6 target size",
       "severity": "P3",
@@ -3710,152 +3706,6 @@
     },
     {
       "site": "empathia-demo",
-      "page": "/#/v25/fi",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-258",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fi",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: summary \"The numbers\" 262×24",
-      "component": "controls",
-      "widths": [
-        320
-      ],
-      "id": "AUD-259",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fi",
-      "width": 390,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: summary \"The numbers\" 332×24",
-      "component": "controls",
-      "widths": [
-        390
-      ],
-      "id": "AUD-260",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fipv",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-261",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fipv",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-262",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fipv",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"Atlas 4.218 BoardroomAtlas 4.2\" 204×36",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-263",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fipv",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: summary \"The numbers\" 262×24",
-      "component": "controls",
-      "widths": [
-        320
-      ],
-      "id": "AUD-264",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/v25/fipv",
-      "width": 390,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: summary \"The numbers\" 332×24",
-      "component": "controls",
-      "widths": [
-        390
-      ],
-      "id": "AUD-265",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/suite/commission",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: a \"Skip to content\" 131×39",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-266",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
-      "page": "/#/suite/commission",
-      "width": 320,
-      "rule": "A6 target size",
-      "severity": "P3",
-      "detail": "below the 44 px project target on phones: select \"opssvcmgrservicesysengdesigner\" 84×40",
-      "component": "controls",
-      "widths": [
-        320,
-        390
-      ],
-      "id": "AUD-267",
-      "reproducible": "yes (deterministic, local build)"
-    },
-    {
-      "site": "empathia-demo",
       "page": "/#/suite/commission",
       "width": 320,
       "rule": "A6 target size",
@@ -3866,7 +3716,7 @@
         320,
         390
       ],
-      "id": "AUD-268",
+      "id": "AUD-258",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3881,7 +3731,7 @@
         320,
         390
       ],
-      "id": "AUD-269",
+      "id": "AUD-259",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3896,7 +3746,7 @@
         320,
         390
       ],
-      "id": "AUD-270",
+      "id": "AUD-260",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3911,7 +3761,7 @@
         320,
         390
       ],
-      "id": "AUD-271",
+      "id": "AUD-261",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3926,7 +3776,7 @@
         320,
         390
       ],
-      "id": "AUD-272",
+      "id": "AUD-262",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3941,7 +3791,7 @@
         320,
         390
       ],
-      "id": "AUD-273",
+      "id": "AUD-263",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3955,7 +3805,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-274",
+      "id": "AUD-264",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3969,7 +3819,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-275",
+      "id": "AUD-265",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3984,7 +3834,7 @@
         320,
         390
       ],
-      "id": "AUD-276",
+      "id": "AUD-266",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -3999,7 +3849,7 @@
         320,
         390
       ],
-      "id": "AUD-277",
+      "id": "AUD-267",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4014,7 +3864,7 @@
         320,
         390
       ],
-      "id": "AUD-278",
+      "id": "AUD-268",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4029,7 +3879,7 @@
         320,
         390
       ],
-      "id": "AUD-279",
+      "id": "AUD-269",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4044,7 +3894,7 @@
         320,
         390
       ],
-      "id": "AUD-280",
+      "id": "AUD-270",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4059,7 +3909,7 @@
         320,
         390
       ],
-      "id": "AUD-281",
+      "id": "AUD-271",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4074,7 +3924,7 @@
         320,
         390
       ],
-      "id": "AUD-282",
+      "id": "AUD-272",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4089,7 +3939,7 @@
         320,
         390
       ],
-      "id": "AUD-283",
+      "id": "AUD-273",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4104,7 +3954,7 @@
         320,
         390
       ],
-      "id": "AUD-284",
+      "id": "AUD-274",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4119,7 +3969,7 @@
         320,
         390
       ],
-      "id": "AUD-285",
+      "id": "AUD-275",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4134,7 +3984,7 @@
         320,
         390
       ],
-      "id": "AUD-286",
+      "id": "AUD-276",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4149,7 +3999,7 @@
         320,
         390
       ],
-      "id": "AUD-287",
+      "id": "AUD-277",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4164,7 +4014,7 @@
         320,
         390
       ],
-      "id": "AUD-288",
+      "id": "AUD-278",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4179,7 +4029,7 @@
         320,
         390
       ],
-      "id": "AUD-289",
+      "id": "AUD-279",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4194,7 +4044,7 @@
         320,
         390
       ],
-      "id": "AUD-290",
+      "id": "AUD-280",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4209,7 +4059,7 @@
         320,
         390
       ],
-      "id": "AUD-291",
+      "id": "AUD-281",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4224,7 +4074,7 @@
         320,
         390
       ],
-      "id": "AUD-292",
+      "id": "AUD-282",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4238,7 +4088,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-293",
+      "id": "AUD-283",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4252,7 +4102,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-294",
+      "id": "AUD-284",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4267,7 +4117,7 @@
         320,
         390
       ],
-      "id": "AUD-295",
+      "id": "AUD-285",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4282,7 +4132,7 @@
         320,
         390
       ],
-      "id": "AUD-296",
+      "id": "AUD-286",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4297,7 +4147,7 @@
         320,
         390
       ],
-      "id": "AUD-297",
+      "id": "AUD-287",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4312,7 +4162,7 @@
         320,
         390
       ],
-      "id": "AUD-298",
+      "id": "AUD-288",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4327,7 +4177,7 @@
         320,
         390
       ],
-      "id": "AUD-299",
+      "id": "AUD-289",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4342,7 +4192,7 @@
         320,
         390
       ],
-      "id": "AUD-300",
+      "id": "AUD-290",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4357,7 +4207,7 @@
         320,
         390
       ],
-      "id": "AUD-301",
+      "id": "AUD-291",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4371,7 +4221,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-302",
+      "id": "AUD-292",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4385,7 +4235,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-303",
+      "id": "AUD-293",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4399,7 +4249,7 @@
       "widths": [
         320
       ],
-      "id": "AUD-304",
+      "id": "AUD-294",
       "reproducible": "yes (deterministic, local build)"
     },
     {
@@ -4413,7 +4263,7 @@
       "widths": [
         390
       ],
-      "id": "AUD-305",
+      "id": "AUD-295",
       "reproducible": "yes (deterministic, local build)"
     }
   ]

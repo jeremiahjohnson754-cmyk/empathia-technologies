@@ -1,10 +1,10 @@
 {
- "at": "2026-11-20T02:54:31.500Z",
+ "at": "2026-11-20T07:01:31.975Z",
  "scheme": "light",
- "pass": 268,
+ "pass": 269,
  "fail": 0,
  "notRun": 0,
- "tests": 268,
+ "tests": 269,
  "results": [
   {
    "id": "W-00",
@@ -904,7 +904,7 @@
    "id": "W-founder-1440",
    "name": "founder section at 1440: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:38691/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:39665/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-click",
@@ -922,13 +922,13 @@
    "id": "W-founder-768",
    "name": "founder section at 768: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:38691/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:39665/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-390",
    "name": "founder section at 390: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point, stacked",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:38691/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:39665/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-rooms-/",
@@ -1300,7 +1300,7 @@
    "id": "WC-play",
    "name": "pressing play plays the 1280 × 776, 35-second film from this site, with no sound decoded, and it can be sought to its last scene",
    "result": "PASS",
-   "detail": "{\"can\":true,\"t\":1.810974,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.219749}"
+   "detail": "{\"can\":true,\"t\":1.801107,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.192679}"
   },
   {
    "id": "WC-label",
@@ -1522,7 +1522,7 @@
    "id": "WR-ten-seconds",
    "name": "the sequence lasts ten seconds (9.6 to 10.6 s measured) and then settles to the resting composition by itself: no attribute, no animation left, only Replay offered",
    "result": "PASS",
-   "detail": "{\"ms\":10055,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
+   "detail": "{\"ms\":10025,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
   },
   {
    "id": "WR-no-shift",
@@ -1540,13 +1540,13 @@
    "id": "WR-replay",
    "name": "Replay starts the sequence again from its beginning",
    "result": "PASS",
-   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1450.0169999999405}"
+   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1433.3680000016375}"
   },
   {
    "id": "WR-pause",
    "name": "Pause freezes it (the clock stands still and two screenshots half a second apart are identical) and the button becomes Play; Play, from the keyboard, carries on from the same moment",
    "result": "PASS",
-   "detail": "{\"pa\":\"paused\",\"t1\":1499.98299999994,\"t2\":1499.98299999994,\"t3\":1766.7040000005568,\"same\":true}"
+   "detail": "{\"pa\":\"paused\",\"t1\":1483.270000001637,\"t2\":1483.270000001637,\"t3\":1783.3460000044195,\"same\":true}"
   },
   {
    "id": "WR-once",
@@ -1611,6 +1611,12 @@
   {
    "id": "W-tilefit",
    "name": "every product name fits inside its tile on every page at 320–768 px",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "W-hidden",
+   "name": "on every page at phone width, nothing marked hidden is drawn (the attribute wins over any class that sets display)",
    "result": "PASS",
    "detail": ""
   }
