@@ -1,6 +1,6 @@
 # Release readiness (deliverable I)
 
-As of 20 Nov 2026, for the staging build **13fd15f** (both static sites live on staging; production unchanged on the 31 Oct build, by
+As of 20 Nov 2026, for the staging build **fe30ba9** (13fd15f's experience work and the website's four-perspective pass; both static sites live on staging; production unchanged on the 31 Oct build, by
 the founder's choice of 19 Nov: staging only).
 
 ## Summary
@@ -46,5 +46,5 @@ None for staging. For production: the founder's word (release control); nothing 
 
 ## Recommendation
 
-Keep 13fd15f on staging for the founder's review; stage the website's four-perspective pass (63421e0) after its own exact-commit
-regression. Production stays on the 31 Oct build until the founder decides otherwise.
+Keep fe30ba9 on staging for the founder's review (regression 287/0/2; live checks 25/25). Production stays on the 31 Oct build until the
+founder decides otherwise.

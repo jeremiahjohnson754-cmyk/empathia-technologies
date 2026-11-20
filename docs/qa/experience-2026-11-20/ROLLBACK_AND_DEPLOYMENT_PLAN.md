@@ -17,10 +17,9 @@ No paid resource is created, no plan changed, no environment variable edited by 
 
 ## Where it stands (20 Nov 2026)
 
-- Branch: `v18/continuation`. Tested and staged commit: **13fd15f** (exact-commit regression PASS 287 · FAIL 0 · NOT_RUN 2; live checks
-  24/24, smoke 12/12, edge 6 + 1 not run, two browsers 9/9, exposure 9/0). `phase3/legendary-experience` = 13fd15f.
-- Previous staged commit, the rollback target: **ab22bb5**. `staging/demo-api` unchanged at a19216e.
-- Next: the website's four-perspective pass (63421e0) after its own exact-commit regression.
+- Branch: `v18/continuation`. Tested and staged commit: **fe30ba9** (exact-commit regression PASS 287 · FAIL 0 · NOT_RUN 2; live checks
+  25/25, smoke 12/12, edge 6 + 1 not run, two browsers 9/9, exposure 9/0). `phase3/legendary-experience` = fe30ba9.
+- Rollback targets, newest first: **13fd15f** (the experience work without the website pass), **ab22bb5**. `staging/demo-api` unchanged at a19216e.
 
 ## Deployment, in order
 

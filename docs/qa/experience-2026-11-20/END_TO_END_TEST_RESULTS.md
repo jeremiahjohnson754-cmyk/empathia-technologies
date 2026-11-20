@@ -37,10 +37,11 @@ Evidence: `tests/evidence/TEST_RESULTS.json` / `.md` (commit e34a01d); logs `.lo
 
 Recorded in `docs/releases/STAGING_2026-11-19.md`.
 
-## After staging: the website's four-perspective pass (63421e0)
+## The website's four-perspective pass, staged as fe30ba9
 
-website 269/269, website-fold 37/37, website-follow 19/19, website-opening 19/19 on its build; its own full regression and staging
-follow (CORPORATE_WEBSITE_REVIEW.md).
+website 269/269, website-fold 37/37, website-follow 19/19, website-opening 19/19 on its build. Exact-commit regression of fe30ba9:
+first run stopped after part 1 (demo-campus-life CL-05..07, a timing flake: D-19); rerun **PASS 287 · FAIL 0 · NOT_RUN 2** (evidence
+c051462). Live after staging: pages 25/25 (new LV-25), smoke 12/12, edge 6 + 1 not run, two browsers 9/9, exposure 9/0.
 
 ## Not run
 
