@@ -53,3 +53,24 @@ test('Season 1 footage: every clip exists, is labelled as generated, and opens o
       assert.ok(scn.acts.some((a) => a.shots.some((s) => s.kind === 'footage' && s.src === f.src)), `${id} ${f.src} not placed`); }
   }
 });
+// Season 2 (founder, 19 Nov 2026 17:54: "Vivian and ben is good I pick those voices"): every take is its chapter's canon line in the
+// canon speaker, its file exists, and every voice heard is a Qwen3-TTS preset named as an AI voice — Maya Vivian, Ben Aiden as chosen;
+// no voice is a clone (the CustomVoice presets only).
+test('Season 2: every take is its chapter\'s canon line, in the canon speaker, with its file, in a named preset AI voice', () => {
+  const PRESETS = ['Vivian', 'Serena', 'Uncle Fu', 'Dylan', 'Eric', 'Ryan', 'Aiden', 'Ono Anna', 'Sohee'];
+  // voiced so far: episodes 1–6 whole and part of 7 (generation stopped at its time limit, 20 Nov 03:13; the rest are captions until voiced)
+  const chapters = Object.keys(C.TAKES).filter((k) => /^s02e/.test(k)); assert.ok(chapters.length >= 7, chapters.join());
+  const V = C.voicesFor('s02e01'); assert.match(V.maya, /^Qwen3-TTS Vivian, AI voice$/); assert.match(V.ben, /^Qwen3-TTS Aiden, AI voice$/);
+  assert.equal(C.voicesFor('s01e01'), C.VOICES, 'Season 1 keeps its own cast');
+  let n = 0;
+  for (const id of chapters) {
+    const it = JSON.parse(fs.readFileSync(path.join(repo, `packages/signal-canon/data/story/${id}.json`), 'utf8')).items;
+    const lines = it.flatMap((i) => [...(i.bubbles || []).map((b) => [b.who.toLowerCase(), b.text]), ...(i.type === 'beat' ? i.lines.map((l) => [l.who.toLowerCase(), l.text]) : []), ...(i.type === 'decision' ? i.options.flatMap((o) => { const q = C.quoted(o.result); return q ? [[q.who, q.text]] : []; }) : [])]);
+    const sc2 = C.sceneOf(id, it); assert.equal(sc2.voices, V);
+    for (const t of C.TAKES[id]) { n++;
+      assert.ok(lines.some(([w, x]) => w === t.who && C.norm(x) === C.norm(t.text)), `${id} ${t.who}: ${t.text}`);
+      assert.ok(fs.existsSync(path.join(repo, 'apps/demo/public', t.src)), t.src);
+      assert.ok(V[t.who] && PRESETS.some((p) => V[t.who] === `Qwen3-TTS ${p}, AI voice`), `${t.who}: ${V[t.who]}`); }
+  }
+  assert.ok(n >= 200, `${n} takes`);
+});

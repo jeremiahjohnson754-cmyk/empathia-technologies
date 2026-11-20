@@ -37,3 +37,47 @@ voices ("Colleague", "Crew") are cast per scene rather than as one person.
 2. Each take transcribed back and compared with the script word for word (the workspace cannot play audio, so this is the check it can run).
 3. The founder listens and chooses. The choice, the voice identifier and the date are written here.
 4. Technical terms get a pronunciation line where a voice gets them wrong.
+
+## Season 2: cast and voiced (Qwen3-TTS presets, 19–20 Nov 2026)
+
+Season 2 is voiced on this machine with Qwen3-TTS (CustomVoice 0.6B) and its nine built-in preset voices, not with ElevenLabs, whose
+credits are spent. No voice is cloned from a person and none was directed to imitate one: the Base (clone) models are not used. In the
+demonstration, every Season 2 speaker is named with their voice ("Qwen3-TTS Vivian, AI voice").
+
+**Founder's choice, 19 Nov 2026 17:54:** "Vivian and ben is good I pick those voices". Maya is **Vivian** and Ben is **Aiden**, chosen
+after listening to casting samples. Every other speaker is my casting from the same presets, for contrast between people who speak in
+the same scene. The founder has not auditioned those.
+
+| Preset | Speakers |
+|---|---|
+| Vivian | Maya |
+| Aiden | Ben |
+| Ryan | Dante, house tech, video operator, houseperson |
+| Serena | Leah, Priya, association president |
+| Dylan | Jordan, ticketing lead, Pax, stream vendor |
+| Ono Anna | Sofia, Imani, Odette, banquet captain |
+| Sohee | Rosa, Kim, Marisol, Noor, lunch emcee |
+| Eric | Graham, Gil, site tech, headliner's manager |
+| Uncle Fu | Hank, crew, manager, Reid, camera 2 operator |
+
+**Heard differently from Season 1:** Maya, Imani and Priya had ElevenLabs voices in Season 1 (Sarah, Courtney and Vicki M Rodriguez).
+In Season 2 they sound different. The player names the voice of each season.
+
+**How each take is checked:**
+
+1. The line is spoken from its canon text. Numbers, times and acronyms are written out the way they are said.
+2. Whisper (base.en) transcribes the take back. It is judged against the line with numbers set aside, because Whisper writes digits where
+   the line spells them, and on its speaking rate: a take fails above 0.35 word error rate, below 3.5 characters a second or above 20.
+3. A take that fails is generated once more. A line whose second take also fails is left as a caption.
+4. The silence at both ends is trimmed. Each take is brought to −18 LUFS and encoded as 96 kbps mono MP3 at 44.1 kHz. Season 1 measures
+   −17.5 LUFS.
+
+**Where it stands:**
+
+- 210 of the 339 lines were generated before the run stopped at its two-hour limit (20 Nov 03:13). These are episodes 1 to 6 and 12
+  of the 34 lines of episode 7.
+- Of those 210 takes, 202 passed the check the first time. The other eight are generated once more, as step 3 says.
+- The rest of episode 7, and episodes 8 to 11 (129 lines), are captions until they are voiced.
+
+Files: `media/signal/s02/lines.json` (each line, its spoken form and its preset), `media/signal/s02/build-takes.py`,
+`media/signal/s02/CHECKS.json` (each take's check), the takes in `apps/demo/public/media/signal/s02/`.
