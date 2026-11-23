@@ -15,6 +15,7 @@ import { intakePage } from './intake.js';
 import { Follow } from './follow.js';
 import { Opening, type HeroFrame } from './opening.js';
 import { PRODUCT_LAUNCHES, START_LAUNCH, launchHref } from '../../../packages/ui/src/launches.ts';
+import { FAMILIES } from '../../../packages/ui/src/families.ts';
 import { DEFAULT_STATE, stateHash, type AddonSku } from './build-view.js';
 /** each product page's way into Build Your Empathia (founder 19:39: lead generation off the interactive sales part), its own line ticked */
 const PRICE_ADD: Record<string, AddonSku[]> = { commissioning: ['COMMISSION', 'ASSURANCE'], servicehands: ['SERVICE'], field: ['FIELD-CORE'], apex: ['APEX'] };
@@ -123,7 +124,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       <Section eyebrow="The lifecycle, in the product" title="From an empty room to an accepted baseline" lead="Four moments of one record, each shown on the product’s own screen in the public demonstration. Every screen runs on synthetic data.">
         <Chapters items={STORY} captures={ctx.captures} />
       </Section>
-      <Section eyebrow="The products" title="Nine products. One record." lead="Each product is a stage of the same governed lifecycle and shares one identity for every room, device, person and project. Each says how much of it you can see in the public demonstration today." tone="deep">
+      <Section eyebrow="The products" title="Nine core products. One record." lead="Each product is a stage of the same governed lifecycle and shares one identity for every room, device, person and project. Each says how much of it you can see in the public demonstration today." tone="deep">
         <ProductTiles captures={ctx.captures} />
       </Section>
       {/* a buyer meets who it is for third, not tenth (20 Nov 2026, the four-perspective pass) */}
@@ -193,10 +194,14 @@ export function buildPages(ctx: SiteContext): Page[] {
         <CtaBand title="Walk the record with us." body="A guided demonstration on synthetic data, with your questions."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href={demo()}>Explore the live demo</a></Actions></CtaBand>
       </>
     ) },
-    { path: '/products', title: 'Products — Empathia Technologies', description: `The nine Empathia products: ${PRODUCTS.map((p) => p.name).join(', ')}.`, body: (
+    { path: '/products', title: 'Products — Empathia Technologies', description: `Empathia’s nine core products (${PRODUCTS.map((p) => p.name).join(', ')}) and eight further capabilities, in six families on one record.`, body: (
       <>
-        <section className="hero"><div className="wrap"><Spectrum /><p className="label">Products</p><h1>Nine products, one record</h1><p className="lede">Each product is a stage of the same lifecycle. Each page states what the public demonstration shows today, and what it does not. Scouter is part of Lite.</p><div className="actions hero__action"><a className="btn btn--primary btn--lg" href={demo()} data-hero-action>Explore the live demo</a></div></div></section>
-        <Section title="All nine, in lifecycle order"><ProductTiles captures={ctx.captures} /></Section>
+        <section className="hero"><div className="wrap"><Spectrum /><p className="label">Products</p><h1>Nine core products, one record</h1><p className="lede">Each product is a stage of the same lifecycle. Each page states what the public demonstration shows today, and what it does not. Scouter is part of Lite. Eight further capabilities build on the same record; the families below place all seventeen.</p><div className="actions hero__action"><a className="btn btn--primary btn--lg" href={demo()} data-hero-action>Explore the live demo</a></div></div></section>
+        <Section title="The nine core products, in lifecycle order"><ProductTiles captures={ctx.captures} /></Section>
+        <Section id="families" eyebrow="The platform" title="Six families, seventeen capabilities" lead="The nine products are the core. Eight further capabilities are accepted into the platform; each is marked with what exists today. “Specified” means written down and not built.">
+          <div className="cards cards--3" data-families={FAMILIES.length}>{FAMILIES.map((f) => (<article key={f.id} className="card" data-family={f.id}><h3>{f.name}</h3><p>{f.says}</p>
+            <ul className="ticks">{f.members.map((m) => (<li key={m.id} data-cap={m.id} data-built={m.built ? '1' : '0'}>{m.site ? <a href={m.site}>{m.name}</a> : m.name}{m.kind === 'capability' ? <span className="note"> {m.built ? '· in the demonstration, simulated' : '· specified, not built'}</span> : null}</li>))}</ul></article>))}</div>
+        </Section>
         <Section id="voice" eyebrow="Infrastructure and communications · simulation" title="VOICE: calling you can explain" lead="Telephony and unified-communications intelligence on the same record. The CallPath Digital Twin keeps what is configured apart from what was observed and what is not known. In the demonstration as a simulation; no calling platform is connected."><Actions><a className="btn btn--primary" href="/voice">Discover VOICE</a></Actions></Section>
         <Section id="fieldlink" eyebrow="Optional hardware · concept" title="FieldLink extends what Empathia can observe" lead="Three proposed devices — Nano, Edge and Pulse — for sites that want local, hardware-attributed evidence. None of the nine products needs them; no unit has been built yet."><Actions><a className="btn btn--primary" href="/fieldlink">Discover FieldLink</a><a className="btn" href="/fieldlink#optional">Do I need FieldLink? No.</a></Actions></Section>
         {ctx.booklets?.length ? <Section id="guides" title="Guides for the people who use the rooms" lead="The End-User Success Guide and the IT Onboarding Success Guide as printed booklets, set from the demonstration’s own content and screenshots. Both are drafts on synthetic data, not yet reviewed by a practising specialist.">
@@ -442,7 +447,7 @@ export function notFoundPage(): Page {
         <h1>This address isn’t part of the site.</h1>
         <p className="lede">You asked for <code data-asked>this address</code>. It may be mistyped, or the page may have moved.</p>
         <p className="lost__moved" data-moved hidden />
-        <Actions><a className="btn btn--primary btn--lg" href="/">Back to the home page</a><a className="btn btn--lg" href="/products">All nine products</a></Actions>
+        <Actions><a className="btn btn--primary btn--lg" href="/">Back to the home page</a><a className="btn btn--lg" href="/products">All products</a></Actions>
         <ul className="lost__dest" aria-label="Main destinations">{[['/', 'Home', 'Every room, every device, every decision, with its evidence.'], ['/platform', 'Platform', 'One record and one governed lifecycle, read by every product.'], ['/products', 'Products', 'The nine products, in lifecycle order.'], ['/how-it-works', 'How it works', 'From request to accepted baseline.'], ['/founder', 'Founder', 'The person and the thinking behind the company.'], ['/request-demo', 'Request a demonstration', 'A guided walk through the scenarios on synthetic data.']].map(([h, t, d]) => <li key={h}><a href={h}><b>{t}</b><span>{d}</span><i aria-hidden="true">→</i></a></li>)}</ul>
       </div>
       <img className="lost__owl" src="/brand/owl.svg" width={300} height={300} alt="" data-owl />

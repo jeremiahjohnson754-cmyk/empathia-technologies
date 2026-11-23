@@ -87,7 +87,7 @@ test('CH-06 the role matrix: each of the four champion actions is refused to eve
     for (const [name, f] of [['access', () => C.confirmAccess(w, k, wo.id)], ['verify', () => C.verifyRoom(w, k, inRoom, '')], ['occupancy', () => C.confirmOccupancy(w, k, inRoom, 'free')], ['note', () => C.contribute(w, k, inRoom, 'The door sticks; lift the handle.')]]) {
       const x = f(); assert.ok('why' in x, `${k} ${name}`); assert.equal(w.events[0].outcome, 'DENIED', `${k} ${name}`); }
     assert.equal(wo.access, null, k); assert.equal(JSON.stringify({ ...strip(w), ch: C.championView(w) }), before, `${k}: a refused role changed something`); }
-  assert.equal(others.length, 15);
+  assert.equal(others.length, 16);   // sixteen other roles: seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026)
 });
 test('CH-07 a room checked on site, what was seen at the door, and a note: each is recorded as what it is — a person’s check, an observation, a candidate', () => {
   const w = fresh(); const before = strip(w);

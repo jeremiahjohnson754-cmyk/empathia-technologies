@@ -24,7 +24,7 @@ const fresh = () => { mem.clear(); return W.seed(); };
 const KEY = 'empathia.demo.knowledge.v1';
 
 test('KL-01 the seed: sixteen roles, well-formed objects in the right zones, and every object is readable by someone', () => {
-  assert.equal(ROLES.length, 16); assert.ok(ROLES.includes('sitechamp'));
+  assert.equal(ROLES.length, 17); assert.ok(ROLES.includes('sitechamp'));   // seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026)
   const ids = new Set(); for (const o of SEED) { assert.ok(!ids.has(o.id), `duplicate id ${o.id}`); ids.add(o.id); }
   for (const o of SEED) {
     for (const f of ['id', 'title', 'topic', 'domain', 'contentType', 'difficulty', 'audience']) assert.ok(typeof o[f] === 'string' && o[f].trim().length > 1, `${o.id}.${f}`);
@@ -163,7 +163,7 @@ test('KL-05 isolation over every object, both customers, a guest and all sixteen
     // the same question: every readable source, strongest first, and only readable ones
     for (const o of v.list) { const g = v.sameQuestion(o); assert.deepEqual(g.map((x) => x.object.id).sort(), v.list.filter((x) => x.topic === o.topic).map((x) => x.id).sort()); assert.ok(g.some((x) => x.object.id === o.id)); }
   }
-  assert.equal(readers, 32); assert.ok(checks > 300, `${checks} hidden objects checked`);
+  assert.equal(readers, 34);   // two customers × seventeen roles: seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026) assert.ok(checks > 300, `${checks} hidden objects checked`);
   // the two customers read different answers to the same question, and neither sees the other's
   const q = 'How large should the main display be?'; const a = L.answerFor(all, L.readerFor('employee', HOME), q); const b = L.answerFor(all, L.readerFor('employee', OTHER), q);
   assert.equal(a.kind, 'answer'); assert.equal(a.hit.id, 'cd.std.display.v2'); assert.match(a.lead, /six times/); assert.equal(b.kind, 'answer'); assert.equal(b.hit.id, 'bw.std.display'); assert.match(b.lead, /five times/);

@@ -50,7 +50,7 @@ test('D5-02 the tracked room is the dossier’s room; its seeded history obeys t
 });
 
 test('D5-03 sixteen roles: who reads, assigns, submits, reviews, acknowledges, records a vendor’s submission and captures', () => {
-  assert.equal(P.ROLE_KEYS.length, 16);
+  assert.equal(P.ROLE_KEYS.length, 17);   // seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026); it has no documentation authority
   const who = (id) => P.ROLE_KEYS.filter((r) => can(r)(id)).sort();
   assert.deepEqual(P.ROLE_KEYS.filter((r) => P.allows(page.authority, r)).sort(), ['architect', 'cxeng', 'designer', 'exec', 'installer', 'ipm', 'ops', 'qa', 'service', 'sitechamp', 'svcmgr', 'syseng']);
   for (const r of ['visitor', 'employee', 'bpm', 'steward']) assert.equal(P.allows(page.authority, r), false, `${r} does not open the documentation`);

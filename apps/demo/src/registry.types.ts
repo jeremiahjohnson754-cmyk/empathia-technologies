@@ -8,9 +8,9 @@
  */
 import type { ComponentType } from 'react';
 
-/** The sixteen demonstration roles: the fourteen of V2.5.3 (AZ_KEYS); `qa`, the Document Reviewer of ADR-0005; and `sitechamp`, the
+/** The seventeen demonstration roles (the UC / Voice Administrator, `ucadmin`, is the seventeenth: founder decision E3-D2, 23 Nov 2026): the fourteen of V2.5.3 (AZ_KEYS); `qa`, the Document Reviewer of ADR-0005; and `sitechamp`, the
  *  Site Champion, a dedicated governed role by the founder's decision of 11 Nov 2026 (the platform's persona of the same key). */
-export type RoleKey = 'visitor' | 'employee' | 'exec' | 'service' | 'svcmgr' | 'syseng' | 'designer' | 'installer' | 'cxeng' | 'ipm' | 'bpm' | 'ops' | 'steward' | 'architect' | 'qa' | 'sitechamp';
+export type RoleKey = 'visitor' | 'employee' | 'exec' | 'service' | 'svcmgr' | 'syseng' | 'designer' | 'installer' | 'cxeng' | 'ipm' | 'bpm' | 'ops' | 'steward' | 'architect' | 'qa' | 'sitechamp' | 'ucadmin';
 
 /** The nine products in the canonical order (D37/D40) — the ids of packages/design-tokens (--p-<id>) and packages/ui products — plus `shell` for the investor start and other platform pages. */
 export type ProductKey = import('@empathia/ui').ProductId | 'shell';

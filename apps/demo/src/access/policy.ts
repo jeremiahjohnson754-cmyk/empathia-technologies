@@ -16,7 +16,7 @@ import * as V from './v253.js';
 // ------------------------------------------------------------------ roles
 /** V2.5.3's fourteen roles in its own role-list order (ROLE_KEYS), with the Site Champion beside the Employee it is based on, then the
  *  Document Reviewer the Phase 2 demonstration added. */
-export const ROLE_KEYS: readonly RoleKey[] = ['ops', 'svcmgr', 'service', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'steward', 'exec', 'employee', 'sitechamp', 'visitor', 'architect', 'qa'];
+export const ROLE_KEYS: readonly RoleKey[] = ['ops', 'svcmgr', 'service', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'steward', 'exec', 'employee', 'sitechamp', 'visitor', 'architect', 'qa', 'ucadmin'];
 export const isRole = (r: unknown): r is RoleKey => typeof r === 'string' && (ROLE_KEYS as readonly string[]).includes(r);
 /** The role the demonstration opens as: V2.5.3's Product Architect, who sees the complete platform and can View as every role. */
 export const DEFAULT_ROLE: RoleKey = 'architect';
@@ -54,11 +54,24 @@ const CHAMP_FIELDS = new Set(['history', 'person.contact', 'support.chain']);
 const CHAMP_ENTITIES = new Set(['Issue', 'PersonRole', 'Contact', 'WorkOrder', 'KnowledgeAsset', 'Team', 'Site']);
 /** The sites a champion is the champion of. In the demonstration: one person, one building. Champion-only actions are refused outside it. */
 export const CHAMPION_SITES: readonly string[] = ['ATL'];
+/**
+ * The UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026): "a distinct UC/Voice Administrator permission profile with
+ * least-privilege access. Do not grant all telephony-sensitive capabilities to general AV or Systems Engineer roles." V2.5.3 has no
+ * such role, so its grants are listed here, explicitly and narrowly: its home, Search Party and its graph, the campus and a room's
+ * page with its technical section (the calling endpoint is a device of the room), and the records calling stands on. Everything of
+ * VOICE names the role itself (registry.voice.ts). It has no design, commissioning, budget, service-dispatch or control authority.
+ */
+const UC: RoleInfo = { key: 'ucadmin', label: 'UC / Voice Administrator', initials: 'UC', home: 'Calling', domain: 'Unified communications', blurb: 'Looks after calling for the sites in their scope: call flows, trunks, session border controllers and call quality', work: 'call flows, telephony endpoints, trunks, session border controllers, provider connections and call-quality records, for the sites in their scope; not room design, commissioning sign-off, budgets, dispatch or device control' };
+const UC_AREAS = new Set(['home', 'investor', 'search', 'search.graph', 'campus', 'room']);
+const UC_FIELDS = new Set(['technical']);
+const UC_ENTITIES = new Set(['Campus', 'Building', 'Floor', 'Room', 'Site', 'Device', 'Asset', 'NetworkNode', 'Issue', 'WorkOrder']);
+/** The sites the UC / Voice Administrator and the service team are scoped to in the demonstration: the north campus's two buildings. Calling records of any other site are refused to them (voice/model.ts). */
+export const VOICE_SITE_SCOPE: readonly string[] = ['ATL', 'NST'];
 /** Founder, 10 Nov 2026: the Systems Engineer is an internal role, and is shown as one. */
 export const INTERNAL_ROLES: readonly RoleKey[] = ['syseng'];
 export const ROLES: Readonly<Record<RoleKey, RoleInfo>> = Object.fromEntries([
   ...V.AZ_KEYS.map((k) => [k, { key: k, label: V.ROLE[k].label, initials: V.ROLE[k].ava, home: V.ROLE[k].home, domain: V.ROLE_UI[k].sub, blurb: V.ROLE[k].blurb, work: V.AZ_ROLE[k] } satisfies RoleInfo]),
-  ['qa', QA], ['sitechamp', CHAMP],
+  ['qa', QA], ['sitechamp', CHAMP], ['ucadmin', UC],
 ].map(([k, r]) => [k, INTERNAL_ROLES.includes(k as RoleKey) ? { ...(r as RoleInfo), internal: true } : r])) as Record<RoleKey, RoleInfo>;
 /** The role's name where it matters that it is internal: "Systems Engineer (internal role)". */
 export const roleTitle = (k: RoleKey): string => `${ROLES[k].label}${ROLES[k].internal ? ' (internal role)' : ''}`;
@@ -74,19 +87,19 @@ type Table = Readonly<Record<string, readonly string[]>>;
 const areaRoles = (k: string): readonly string[] | undefined => (V.AZ_AREA as Record<string, readonly [readonly string[], string]>)[k]?.[0] ?? (V.AZ_AREA_V25 as Record<string, readonly [readonly string[], string]>)[k]?.[0];
 const from = (t: unknown, k: string) => (t as Table)[k];
 /** The table's roles, plus the Document Reviewer where ADR-0005 names it, plus the Site Champion wherever the Employee is admitted (its base) or the champion's own short list names it. */
-const withQa = (roles: readonly string[] | undefined, qa: boolean, champ = false): RoleKey[] | undefined => roles && [...roles, ...(qa ? ['qa'] : []), ...((champ || roles.includes('employee')) && !roles.includes('sitechamp') ? ['sitechamp'] : [])].filter(isRole);
+const withQa = (roles: readonly string[] | undefined, qa: boolean, champ = false, uc = false): RoleKey[] | undefined => roles && [...roles, ...(qa ? ['qa'] : []), ...((champ || roles.includes('employee')) && !roles.includes('sitechamp') ? ['sitechamp'] : []), ...(uc && !roles.includes('ucadmin') ? ['ucadmin'] : [])].filter(isRole);
 
 /** The roles an authority admits. Anything unresolvable admits nobody. */
 export function rolesFor(a: Authority): RoleKey[] {
   if ('all' in a) return a.all.length ? a.all.map(rolesFor).reduce((x, y) => x.filter((r) => y.includes(r))) : [];
   if ('roles' in a) return withQa(a.roles, false) ?? [];   // an explicit list that admits the Employee admits the champion; a champion-only action names it
-  if ('area' in a) return withQa(areaRoles(a.area), QA_AREAS.has(a.area), CHAMP_AREAS.has(a.area)) ?? [];
+  if ('area' in a) return withQa(areaRoles(a.area), QA_AREAS.has(a.area), CHAMP_AREAS.has(a.area), UC_AREAS.has(a.area)) ?? [];
   if ('action' in a) return withQa(from(V.AZ_ACTION, a.action), QA_ACTIONS.has(a.action), CHAMP_ACTIONS.has(a.action)) ?? [];
-  if ('field' in a) return withQa(from(V.AZ_FIELD, a.field), QA_FIELDS.has(a.field), CHAMP_FIELDS.has(a.field)) ?? [];
+  if ('field' in a) return withQa(from(V.AZ_FIELD, a.field), QA_FIELDS.has(a.field), CHAMP_FIELDS.has(a.field), UC_FIELDS.has(a.field)) ?? [];
   if ('compare' in a) return withQa(from(V.AZ_COMPARE, a.compare), false) ?? [];
   if ('lens' in a) return withQa(from(V.AZ_LENS, a.lens), false) ?? [];
   if ('layer' in a) return withQa(from(V.AZ_LAYER, a.layer), false) ?? [];
-  if ('entity' in a) return withQa(from(V.AZ_ENTITY, a.entity), false, CHAMP_ENTITIES.has(a.entity)) ?? [];
+  if ('entity' in a) return withQa(from(V.AZ_ENTITY, a.entity), false, CHAMP_ENTITIES.has(a.entity), UC_ENTITIES.has(a.entity)) ?? [];
   return [];
 }
 /** Does the authority name something the tables know? (A registered surface whose authority is unknown is a defect: tests fail on it.) */
@@ -154,6 +167,7 @@ export interface HomeTab { key: string; label: string; icon: string; href: strin
  */
 export function tabsFor(role: RoleKey, open: (href: string) => boolean, translate: (legacyHref: string) => string = (h) => h): HomeTab[] {
   const base = role === 'qa' ? [['home', 'Review', 'home', '#/home'], ['commissioning', 'Records', 'check', '#/commissioning'], ['search', 'Search', 'search', '#/search']]
+    : role === 'ucadmin' ? [['home', 'Calling', 'home', '#/home'], ['voice', 'VOICE', 'network', '#/voice'], ['campus', 'Campus', 'building', '#/campus'], ['search', 'Search', 'search', '#/search']]
     : role === 'sitechamp' ? [['home', 'My day', 'home', '#/home'], ['site', 'My site', 'building', '#/site'], ['here', 'In a room', 'place', '#/here'], ['lite', 'Rooms', 'room', '#/lite'], ['search', 'Search', 'search', '#/search']]
     : (V.TABS as Record<string, readonly (readonly string[])[]>)[role] ?? [['home', 'Home', 'home', '#/home']];
   const out: HomeTab[] = [];

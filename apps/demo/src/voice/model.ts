@@ -16,6 +16,7 @@
  * No React and no browser API in this file: the unit suite runs it under Node.
  */
 import type { RoleKey } from '../registry.types.js';
+import { VOICE_SITE_SCOPE } from '../access/policy.js';
 
 export type EvidenceState = 'DECLARED' | 'MODELED' | 'SIMULATED' | 'OBSERVED' | 'MEASURED' | 'VERIFIED' | 'UNKNOWN' | 'NOT_CONFIGURED' | 'STALE';
 /** Directive 3: one reference shape for deep links and events. The demonstration has one synthetic tenant. */
@@ -46,7 +47,7 @@ export const FLOW = {
   id: 'CFR-ATL-4-218-r3', revision: 3, room: ref('Room', VOICE_ROOM), state: 'DECLARED' as EvidenceState,
   source: 'Declared call-flow record (synthetic), revision 3. A configured route is not an observed call path.',
   hops: [
-    { id: 'hop-endpoint', layer: 'endpoint', label: 'UC room compute (4.218)', ref: ref('TelephonyEndpoint', 'TEP-A-0102'), estate: { type: 'PlannedAsset', id: 'A-0102' },
+    { id: 'hop-endpoint', layer: 'endpoint', label: 'UC room compute (4.218) · position A-0102, asset AS-0108', ref: ref('TelephonyEndpoint', 'TEP-A-0102'), estate: { type: 'PlannedAsset', id: 'A-0102' },
       configured: { state: 'DECLARED', source: 'Room design: position A-0102 is the room’s calling endpoint' },
       observed: { state: 'SIMULATED', source: 'Simulated endpoint registration (fixture VQ-FX-01)', at: '2026-11-23T15:02:10Z' }, admin: 'Directory number assignment DNA-0218 · extension ••42 (redacted)' },
     { id: 'hop-access', layer: 'access', label: 'Access switch ATL-4A', ref: ref('NetworkNode', 'SW-ATL-4A'), estate: { type: 'NetworkNode', id: 'SW-ATL-4A' },
@@ -67,6 +68,32 @@ export const FLOW = {
   ] as Hop[],
 };
 
+/**
+ * A room on another site (Meridian R&D), outside the scope of the demonstration's UC / Voice Administrator and service team. Its call
+ * flow is a declared record only: no session has been observed, and the estate holds no network record for that building, so those
+ * hops say UNKNOWN. It exists to show two things: a configured-only path, and a refusal by site scope.
+ */
+export const OTHER_SITE_ROOM = 'R-MER-1-140';
+export const FLOW_MER = {
+  id: 'CFR-MER-1-140-r1', revision: 1, room: ref('Room', OTHER_SITE_ROOM), state: 'DECLARED' as EvidenceState,
+  source: 'Declared call-flow record (synthetic), revision 1. No session has been observed for this room.',
+  hops: [
+    { id: 'hop-endpoint', layer: 'endpoint', label: 'UC room compute (Meridian 1.140) · position PA-0012, asset AS-1608', ref: ref('TelephonyEndpoint', 'TEP-MER-PA-0012'),
+      configured: { state: 'DECLARED', source: 'Room design: position PA-0012 is the room’s calling endpoint' }, observed: { state: 'UNKNOWN', source: 'No session observed.' } },
+    { id: 'hop-access', layer: 'access', label: 'Access switch (not recorded)', ref: ref('NetworkNode', 'UNRECORDED-MER-ACCESS'),
+      configured: { state: 'UNKNOWN', source: 'The estate holds no network record for Meridian R&D. VOICE does not guess one.' }, observed: { state: 'UNKNOWN', source: 'No observation.' } },
+    { id: 'hop-wan', layer: 'wan', label: 'QoS policy and WAN edge', ref: ref('NetworkNode', 'WAN-NORTH-1'),
+      configured: { state: 'DECLARED', source: 'Calling policy CP-NORTH-VOICE: voice class marked and prioritised at the edge' }, observed: { state: 'UNKNOWN', source: 'No collector is configured at the WAN edge.' } },
+    { id: 'hop-sbc', layer: 'sbc', label: 'Session border controller NORTH-1', ref: ref('SBC', 'SBC-NORTH-1'),
+      configured: { state: 'DECLARED', source: 'The site’s trunk record terminates on this controller' }, observed: { state: 'UNKNOWN', source: 'No session observed.' }, admin: 'Trunk TRK-NORTH-A' },
+    { id: 'hop-provider', layer: 'provider', label: 'UC provider connection A (fictional)', ref: ref('UCProviderConnection', 'UCP-A'),
+      configured: { state: 'DECLARED', source: 'Provider connection record UCP-A (a fictional provider)' }, observed: { state: 'UNKNOWN', source: 'No session observed.' }, admin: 'Connector: MOCK (no real provider API is called)' },
+  ] as Hop[],
+};
+export type Flow = typeof FLOW;
+export const FLOWS: Readonly<Record<string, Flow>> = { [VOICE_ROOM]: FLOW, [OTHER_SITE_ROOM]: FLOW_MER as Flow };
+export const flowFor = (roomId: string): Flow | null => FLOWS[roomId] || null;
+
 /** The tenant's own declared targets for a voice call (synthetic calling policy). The page compares samples with these; it sets none. */
 export const POLICY = { id: 'CP-NORTH-VOICE', lossPct: 1, jitterMs: 30, oneWayDelayMs: 150, source: 'Calling policy CP-NORTH-VOICE (declared by the tenant; synthetic). Targets are the tenant’s, not a standard Empathia asserts.' };
 
@@ -78,6 +105,9 @@ export const SESSION = {
   privacy: 'Session identity is a pseudonymous token. The demonstration holds no caller name, number, audio or transcript.',
   samples: [S('2026-11-23T15:04:00Z', 0.2, 6, 48), S('2026-11-23T15:04:10Z', 0.4, 9, 49), S('2026-11-23T15:04:20Z', 3.8, 34, 61), S('2026-11-23T15:04:30Z', 5.1, 41, 66), S('2026-11-23T15:04:40Z', 4.4, 38, 64), S('2026-11-23T15:04:50Z', 0.6, 11, 50)],
 };
+
+/** A later simulated session on the same path (fixture VQ-FX-02), used by the "after the repair" case. */
+export const RETEST_SAMPLES: Sample[] = [['2026-11-23T15:17:30Z', 0.1, 5, 47], ['2026-11-23T15:17:40Z', 0.2, 6, 48], ['2026-11-23T15:17:50Z', 0.1, 5, 47]].map(([at, l, j, d]) => ({ ...S(at as string, l as number, j as number, d as number), source: 'Simulated receiver report (fixture VQ-FX-02), after the repair. Not a packet capture, not provider data.' }));
 
 // ---------------------------------------------------------------------------------------------------------------- quality method
 /**
@@ -93,7 +123,7 @@ export const SESSION = {
  * estimate, never a measurement. This is not a proprietary Empathia score.
  */
 export const METHOD = {
-  id: 'QM-G107-S1', name: 'E-model, reduced form (ITU-T G.107), loss and delay only', status: 'SPECIFIED: for engineering review',
+  id: 'QM-G107-S1', name: 'E-model, reduced form (ITU-T G.107), loss and delay only', status: 'EXPERIMENTAL: an engineering-review implementation, not independently validated (founder decision E3-D3, 23 Nov 2026)',
   inputs: ['packet loss, percent, over the sample window', 'one-way network delay, ms', 'codec and its (Ie, Bpl) constants', 'jitter buffer and packetisation delay, ms (assumed)'],
   assumptions: { jitterBufferMs: 40, packetisationMs: 20, burstR: 1 },
   notCounted: ['echo', 'noise', 'loudness', 'bursty loss', 'transcoding', 'anything on a hop with no observation'],
@@ -124,33 +154,41 @@ export function outsidePolicy(s: Sample): string[] {
 }
 
 // ---------------------------------------------------------------------------------------------------------------- the three cases
-export type CaseId = 'degraded' | 'missing' | 'stale';
+export type CaseId = 'degraded' | 'missing' | 'stale' | 'retest';
 export const CASES: Array<{ id: CaseId; label: string; says: string }> = [
   { id: 'degraded', label: 'Degraded call', says: 'Simulated loss and jitter for forty seconds of the town hall call.' },
   { id: 'missing', label: 'Provider telemetry missing', says: 'The provider connector is not configured: there is no call-quality record at all.' },
   { id: 'stale', label: 'Stale samples', says: 'The last samples are older than the freshness window.' },
+  { id: 'retest', label: 'After the repair', says: 'A later simulated session on the same path. It shows the call within the declared targets; it is still a simulation.' },
 ];
 export const caseOf = (v: string | null): CaseId => (CASES.some((c) => c.id === v) ? (v as CaseId) : 'degraded');
 export type Verdict = 'OUTSIDE_POLICY' | 'WITHIN_POLICY' | 'UNKNOWN';
-export interface CaseView { id: CaseId; hops: Hop[]; samples: Sample[]; verdict: Verdict; verdictWhy: string; hypothesis: Hypothesis | null; downstream: string }
+export interface CaseView { id: CaseId; flow: Flow; /** false: the room has a declared flow and no observed session, so there are no cases to switch between */ observed: boolean; hops: Hop[]; samples: Sample[]; verdict: Verdict; verdictWhy: string; hypothesis: Hypothesis | null; downstream: string }
 export interface Hypothesis { id: string; statement: string; kind: 'HYPOTHESIS'; cites: string[]; unknowns: string[]; wouldChange: string }
 /** The rooms whose networked devices the access switch feeds (the estate's FEEDS and PLANS_DEVICE edges; the unit suite recomputes it). */
 export const SHARED_LINK = { from: 'SW-ATL-CORE', to: 'SW-ATL-4A', rooms: ['R-ATL-4-218', 'R-ATL-4-220', 'R-ATL-4-231'], source: 'Estate edges: SW-ATL-CORE FEEDS SW-ATL-4A (DECLARED, network design); SW-ATL-4A FEEDS the networked devices of three rooms (OBSERVED, synthetic collector export 2026-10-28)' };
 
-export function caseView(id: CaseId): CaseView {
+export function caseView(id: CaseId, roomId: string = VOICE_ROOM): CaseView {
+  if (roomId !== VOICE_ROOM) { const f = flowFor(roomId) || FLOW; return { id: 'degraded', flow: f, observed: false, hops: f.hops, samples: [], verdict: 'UNKNOWN', verdictWhy: 'No session has been observed for this room. Its call quality is UNKNOWN; a declared route says nothing about how calls sound.', hypothesis: null,
+    downstream: 'Nothing is sent to Pro, APEX, Assurance or MissionProof from a declared route alone.' }; }
   if (id === 'missing') {
     const hops = FLOW.hops.map((h) => (h.layer === 'provider' ? { ...h, observed: { state: 'NOT_CONFIGURED' as EvidenceState, source: 'No licensed provider connector is configured for this tenant. There is no call-quality record.' }, admin: 'Connector: NOT CONFIGURED' } : h.layer === 'core' || h.layer === 'sbc' ? { ...h, observed: { state: 'UNKNOWN' as EvidenceState, source: 'No observation for this session.' } } : h));
-    return { id, hops, samples: [], verdict: 'UNKNOWN', verdictWhy: 'There is no call-quality record for this session, so its quality is UNKNOWN. That is not a healthy result: nothing was observed.', hypothesis: null,
+    return { id, flow: FLOW, observed: true, hops, samples: [], verdict: 'UNKNOWN', verdictWhy: 'There is no call-quality record for this session, so its quality is UNKNOWN. That is not a healthy result: nothing was observed.', hypothesis: null,
       downstream: 'Pro and APEX receive “no evidence” and make no hypothesis; Assurance and MissionProof keep the room’s calling readiness at UNKNOWN until a source is connected.' };
   }
   if (id === 'stale') {
     const samples = SESSION.samples.map((s) => ({ ...s, at: s.at.replace('T15:', 'T13:'), state: 'STALE' as EvidenceState, source: `${s.source} Older than the ${FRESHNESS_WINDOW_S / 60}-minute freshness window.` }));
-    return { id, hops: FLOW.hops.map((h) => (h.observed.state === 'SIMULATED' ? { ...h, observed: { ...h.observed, state: 'STALE' as EvidenceState, at: h.observed.at?.replace('T15:', 'T13:') } } : h)), samples, verdict: 'UNKNOWN',
+    return { id, flow: FLOW, observed: true, hops: FLOW.hops.map((h) => (h.observed.state === 'SIMULATED' ? { ...h, observed: { ...h.observed, state: 'STALE' as EvidenceState, at: h.observed.at?.replace('T15:', 'T13:') } } : h)), samples, verdict: 'UNKNOWN',
       verdictWhy: 'The last samples are about two hours old. They are shown for the record and say nothing about the call now.', hypothesis: null,
       downstream: 'Pro and APEX mark the evidence stale and make no new hypothesis; Assurance and MissionProof show calling readiness as UNKNOWN (stale), not as passing.' };
   }
+  if (id === 'retest') {
+    const samples = RETEST_SAMPLES; const hops = FLOW.hops.map((h) => (h.layer === 'core' ? { ...h, observed: { state: 'SIMULATED' as EvidenceState, source: 'Simulated uplink interface counters (fixture VQ-FX-02): no discards in the window', at: '2026-11-23T15:18:00Z' } } : h));
+    return { id, flow: FLOW, observed: true, hops, samples, verdict: 'WITHIN_POLICY', verdictWhy: `${samples.length} of ${samples.length} simulated windows of the later session meet the tenant’s declared targets (${POLICY.id}).`, hypothesis: null,
+      downstream: 'A simulated session within targets is evidence for a reviewer to weigh. It does not pass an acceptance test, and Assurance does not change on it.' };
+  }
   const bad = SESSION.samples.filter((s) => outsidePolicy(s).length);
-  return { id, hops: FLOW.hops, samples: SESSION.samples, verdict: bad.length ? 'OUTSIDE_POLICY' : 'WITHIN_POLICY',
+  return { id, flow: FLOW, observed: true, hops: FLOW.hops, samples: SESSION.samples, verdict: bad.length ? 'OUTSIDE_POLICY' : 'WITHIN_POLICY',
     verdictWhy: `${bad.length} of ${SESSION.samples.length} simulated windows miss the tenant’s declared targets (${POLICY.id}).`,
     hypothesis: { id: 'VH-0001', kind: 'HYPOTHESIS', statement: 'The loss on this call may come from the uplink between the core switch and access switch ATL-4A, which the three rooms on that switch share.',
       cites: ['Simulated receiver report, windows 15:04:20 to 15:04:40 (loss and jitter above the declared targets)', 'Simulated uplink interface counters on ATL-CORE (discards rising in the same minute)', SHARED_LINK.source],
@@ -161,21 +199,29 @@ export function caseView(id: CaseId): CaseView {
 
 // ---------------------------------------------------------------------------------------------------------------- who sees what
 /**
- * The demonstration's perspectives for VOICE (a surface V2.5.3 never had, so the rule is written here and named in the registry):
- *   administration  the AV Operations Lead and the Systems Engineer stand in for the voice administrator and the IT/UC manager;
- *                   the Product Architect sees every surface. They read routing and quality, with signalling-side detail.
- *   technician      the Service Technician and the Service Manager read the path and the samples for their site's rooms, without
- *                   signalling-side detail, session tokens or directory assignments.
+ * The demonstration's perspectives for VOICE (a surface V2.5.3 never had, so the rule is written here and named in the registry).
+ * Founder decision E3-D2 (23 Nov 2026): a distinct UC / Voice Administrator with least privilege; telephony-sensitive detail is not
+ * given to general AV or Systems Engineer roles.
+ *   administration  the UC / Voice Administrator, for the sites in their scope: routing, quality, the session token and
+ *                   signalling-side detail. The Product Architect sees every surface of the demonstration.
+ *   operations      the AV Operations Lead and the Systems Engineer (every site) and the Service Technician and Service Manager
+ *                   (their sites): the path and the samples, WITHOUT session tokens, directory assignments or trunk detail.
  *   summary         the Executive reads a non-identifying summary: no session, no endpoint detail.
  *   none            everyone else (a caller, a visitor) may report a problem and follow their own report; the CallPath is not theirs.
+ * Site scope: the UC / Voice Administrator and the service team are scoped to the north campus's buildings (policy.ts ›
+ * VOICE_SITE_SCOPE). A CallPath of a room on any other site is refused to them: the access page, and the screen is not loaded.
  * Switching perspective changes what the page shows. It grants nothing on any real system.
  */
-export type VoiceView = 'administration' | 'technician' | 'summary' | 'none';
-export const VOICE_ADMIN: readonly RoleKey[] = ['architect', 'ops', 'syseng'];
-export const VOICE_TECH: readonly RoleKey[] = ['service', 'svcmgr'];
+export type VoiceView = 'administration' | 'operations' | 'summary' | 'none';
+export const VOICE_ADMIN: readonly RoleKey[] = ['architect', 'ucadmin'];
+export const VOICE_OPS: readonly RoleKey[] = ['ops', 'syseng', 'service', 'svcmgr'];
 export const VOICE_SUMMARY: readonly RoleKey[] = ['exec'];
-export const viewOf = (role: RoleKey): VoiceView => (VOICE_ADMIN.includes(role) ? 'administration' : VOICE_TECH.includes(role) ? 'technician' : VOICE_SUMMARY.includes(role) ? 'summary' : 'none');
-export const WHY = 'Enterprise 3.0 directive 1A (founder, 23 Nov 2026), VOICE permissions: voice administration reads routing and quality; a site technician reads its rooms without signalling detail; an executive reads aggregates; a caller reports and follows only their own issue';
+/** Roles whose VOICE access stops at their sites; the others above read every site of the tenant. */
+export const SITE_SCOPED: readonly RoleKey[] = ['ucadmin', 'service', 'svcmgr'];
+export const inScope = (role: RoleKey, building: string): boolean => !SITE_SCOPED.includes(role) || VOICE_SITE_SCOPE.includes(building);
+export const viewOf = (role: RoleKey): VoiceView => (VOICE_ADMIN.includes(role) ? 'administration' : VOICE_OPS.includes(role) ? 'operations' : VOICE_SUMMARY.includes(role) ? 'summary' : 'none');
+export const WHY = 'Enterprise 3.0 directive 1A and founder decision E3-D2 (23 Nov 2026): the UC / Voice Administrator reads routing, quality and signalling for the sites in their scope; operations and service roles read the path without signalling detail; an executive reads aggregates; a caller reports and follows only their own issue';
+export const WHY_SCOPE = `${WHY}. This room is on a site outside the scope of the UC / Voice Administrator and the service team`;
 
 /** Adapter contracts and where each stands. Nothing here is connected: CONTRACT_ONLY means a specification exists and no code calls the vendor. */
 export const ADAPTERS: Array<{ id: string; target: string; status: 'CONTRACT_ONLY' | 'MOCK'; note: string }> = [

@@ -437,7 +437,7 @@ test('CX-19 the role matrix, over every role the policy has: who is told who to 
   assert.ok(X.mayKnowWho('employee') && X.maySeeDetails('employee', champ) && !X.maySeeDetails('employee', tech) && X.maySchedule('employee'));
   // CN-09: scheduling is V2.5.3's comms.compose (everyone but the Visitor and the Document Reviewer); neither of those sees any contact detail
   assert.ok(ROLES.includes('sitechamp') && ROLES.length >= 16, 'the policy has the Site Champion'); for (const k of ROLES) assert.equal(X.maySchedule(k), P.allows({ action: 'comms.compose' }, k), `${k}: schedules exactly when it may compose`);
-  assert.deepEqual(ROLES.filter((k) => !X.maySchedule(k)).sort(), ['qa', 'visitor']); for (const k of ['visitor', 'qa']) assert.ok(people.every((p) => !X.maySeeDetails(k, p)) && !X.mayKnowWho(k), `${k} sees nobody`);
+  /* the UC / Voice Administrator has no scheduling or contact authority (least privilege, founder decision E3-D2, 23 Nov 2026) */ assert.deepEqual(ROLES.filter((k) => !X.maySchedule(k)).sort(), ['qa', 'ucadmin', 'visitor']); for (const k of ['visitor', 'qa']) assert.ok(people.every((p) => !X.maySeeDetails(k, p)) && !X.mayKnowWho(k), `${k} sees nobody`);
   // the Site Champion: told who to contact, reaches and schedules like the Employee it is based on, and sees the people of ITS OWN SITE only.
   // The policy grants a champion the field person.contact for every person; Connect narrows it to the champion's site (founder, 11 Nov:
   // "scoped access"), which is stricter than the integrator's maySeeContact was.

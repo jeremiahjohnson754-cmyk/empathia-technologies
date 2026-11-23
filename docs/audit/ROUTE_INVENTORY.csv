@@ -1,0 +1,69 @@
+site,route,deployed_status_390,deployed_status_1440,h1,deployed_note,in_repository_today
+demo,#/,200,200,Welcome to Empathia. What would you like to see first?,,page
+demo,#/accord,200,200,This address is not part of the Living Campus,NO PAGE (boundary: not part of the Living Campus),no page
+demo,#/assurance/room/R-ATL-4-218,200,200,Assurance: Atlas 4.218 — Executive Boardroom,,page
+demo,#/assurance/room/R-ATL-4-218/recommission,200,200,Assurance: Atlas 4.218 — Executive Boardroom,,page
+demo,#/campus,200,200,Northstar Innovation Campus,,page
+demo,#/campus/ATL/4/R-ATL-4-218,200,200,Atlas 4.218 — Executive Boardroom,,page
+demo,#/commissioning/room/R-ATL-4-218,200,200,Commissioning: Atlas 4.218 — Executive Boardroom,,page
+demo,#/flow,200,200,This address is not part of the Living Campus,NO PAGE (boundary: not part of the Living Campus),page (FLOW)
+demo,#/forge,200,200,This address is not part of the Living Campus,NO PAGE (boundary: not part of the Living Campus),no page
+demo,#/learn,200,200,Empathia Learn,,page
+demo,#/lite/qr,200,200,QR codes on campus,,page
+demo,#/missionproof,200,200,This address is not part of the Living Campus,NO PAGE (boundary: not part of the Living Campus),page (MissionProof)
+demo,#/parity,200,200,Every V2.5.3 address,,page
+demo,#/people,200,200,People,,page
+demo,#/play/expo,200,200,Expo LIVE,,page
+demo,#/play/stadium,200,200,Stadium LIVE,,page
+demo,#/prism,200,200,This address is not part of the Living Campus,NO PAGE (boundary: not part of the Living Campus),no page
+demo,#/pro/exec,200,200,Twenty-seven KPI passports,,page
+demo,#/pro/ops,200,200,Operations Hub,,page
+demo,#/request,200,200,"What can we help you create, improve, or fix?",,page
+demo,#/scouter,200,200,Does this device suit this room?,,page
+demo,#/search?q=camera%20in%20town%20halls,200,200,Search Party,,page
+demo,#/sentinel,200,200,This address is not part of the Living Campus,NO PAGE (boundary: not part of the Living Campus),no page
+demo,#/servicehands,200,200,ServiceHands,,page
+demo,#/story,200,200,SIGNAL,,page
+demo,#/tour,200,200,This address is not part of the Living Campus,NO PAGE (boundary: not part of the Living Campus),no page
+demo,#/v25,200,200,"What changed, what matters, what needs action",,page
+demo,#/v25/fi,200,200,What the collector declares,,page
+demo,#/v25/lite,200,200,Lite studio,,page
+demo,#/voice,200,200,This address is not part of the Living Campus,NO PAGE (boundary: not part of the Living Campus),page (VOICE overview)
+website,/,200,200,Technology. Space. Intelligence. Experience. Connected.,,page
+website,/about,200,200,About Empathia,,page
+website,/collabora-sing,200,200,Collabora-SING,,page
+website,/contact,200,200,Write to us,,page
+website,/experiences,200,200,Walk into the rooms the platform runs,,page
+website,/fieldlink,200,200,FieldLink,,page
+website,/films,200,200,Watch the record being made,,page
+website,/founder,200,200,Jeremiah Johnson,,page
+website,/how-it-works,200,200,From request to accepted baseline,,page
+website,/intake,200,200,How work starts,,page
+website,/legal,200,200,Legal,,page
+website,/pilot-partners,200,200,"A bounded pilot, with a factual report",,page
+website,/pilots,200,200,"A bounded pilot, checked before you buy",,page
+website,/platform,200,200,One record. One governed lifecycle.,,page
+website,/pricing,200,200,See what Empathia costs before you talk to anyone,,page
+website,/pricing/catalogue,200,200,"The full price list, line by line",,page
+website,/privacy,200,200,Privacy notice,,page
+website,/products,200,200,"Nine products, one record",,page
+website,/products/apex,200,200,APEX,,page
+website,/products/commissioning,200,200,Commissioning & Assurance,,page
+website,/products/field-intelligence,200,200,Field Intelligence,,page
+website,/products/learn,200,200,Learn,,page
+website,/products/lite,200,200,Lite,,page
+website,/products/mission-control,200,200,Mission Control,,page
+website,/products/pro,200,200,Pro,,page
+website,/products/search-party,200,200,Search Party,,page
+website,/products/servicehands,200,200,ServiceHands,,page
+website,/proof,200,200,"What is real, what is synthetic, and what is only specified",,page
+website,/request-demo,200,200,See it with your questions,,page
+website,/solutions,200,200,"The same record, read by each team",,page
+website,/technology,200,200,Built for correctness first,,page
+website,/trust,200,200,Security and trust,,page
+demo,#/voice/callpath/R-ATL-4-218,not deployed,not deployed,,,"page (new, Enterprise 3.0)"
+demo,#/voice/callpath/R-MER-1-140,not deployed,not deployed,,,"page (new, Enterprise 3.0)"
+demo,#/voice/report/R-ATL-4-218,not deployed,not deployed,,,"page (new, Enterprise 3.0)"
+demo,#/flow/link/SW-ATL-4A,not deployed,not deployed,,,"page (new, Enterprise 3.0)"
+demo,#/families,not deployed,not deployed,,,"page (new, Enterprise 3.0)"
+website,/voice,not deployed,not deployed,,,"page (new, Enterprise 3.0)"

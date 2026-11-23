@@ -28,6 +28,7 @@ import { INSTANT_PAGES } from './registry.instant.js';
 import { DRAWING_PAGES } from './registry.drawing.js';
 import { MANUAL_PAGES } from './registry.manual.js';
 import { VOICE_PAGES } from './registry.voice.js';
+import { MODULE_PAGES } from './registry.modules.js';
 
 export const PAGES: readonly PageDef[] = [
   ...SHELL_PAGES, ...SPACES_PAGES, ...OPS_PAGES, ...PARITY_PAGES, ...PROOF_PAGES, ...WORLD_PAGES, ...CHAMPION_PAGES,
@@ -41,6 +42,7 @@ export const PAGES: readonly PageDef[] = [
   ...DRAWING_PAGES,
   ...MANUAL_PAGES,
   ...VOICE_PAGES,
+  ...MODULE_PAGES,
 ];
 
 interface Compiled { page: PageDef; segs: string[]; rest: boolean; score: number }

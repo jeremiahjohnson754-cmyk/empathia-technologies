@@ -34,7 +34,7 @@ export function Shell({ page, pages, demoUrl, preview }: { page: Page; pages: Pa
           <ul className="nav__links">
             <li><details className="pmenu" data-here={inProducts ? '' : undefined}><summary>Products</summary>
               <div className="pmenu__panel"><ul>{PRODUCTS.map((p) => <li key={p.id}><a href={`/products/${p.slug}`} data-p={p.id} aria-current={page.path === `/products/${p.slug}` ? 'page' : undefined}><span className="dot" aria-hidden="true" /><b>{p.name}</b><small>{p.purpose}{p.apps.length ? `. Includes ${p.apps.join(' and ')}.` : ''}</small></a></li>)}</ul>
-              <a className="pmenu__all" href="/products" aria-current={page.path === '/products' ? 'page' : undefined}>All nine products</a></div></details></li>
+              <a className="pmenu__all" href="/products" aria-current={page.path === '/products' ? 'page' : undefined}>All products and families</a></div></details></li>
             {nav.map((n) => <li key={n.path}><a href={n.path} aria-current={here(n.path) ? 'page' : undefined}>{n.nav}</a></li>)}
           </ul>
           <ThemeSwitch />

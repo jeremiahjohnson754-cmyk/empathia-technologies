@@ -143,7 +143,7 @@ test('CS-13 the address is refused before the page is loaded: as a fan (or with 
   // Changed 11 Nov 2026: was a literal 15. The integrator added a sixteenth View-as role (`sitechamp`, the Site Champion), so the count
   // is read from the policy itself instead of typed. What a Site Champion gets in the stadium is asserted by CS-13b below.
   for (const as of A.SIGNAL_OPEN) assert.deepEqual(who(`#/gameday/incident/camera-feed?as=${as}&step=verify`), [...P.ROLE_KEYS], as);
-  assert.equal(P.ROLE_KEYS.length, 16);
+  assert.equal(P.ROLE_KEYS.length, 17);   // seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026)
   assert.equal(R.resolve('#/gameday').page.id, 'gameday', 'the game-day page keeps its address');
   assert.equal(A.signalHref('stadium.broadcast_engineer'), '#/gameday/incident/camera-feed?as=stadium.broadcast_engineer'); assert.equal(A.signalHref('stadium.event_producer', 'verify'), '#/gameday/incident/camera-feed?as=stadium.event_producer&step=verify');
   assert.equal(A.SIGNAL_STEPS.length, 10); assert.ok(A.isSignalStep('observe') && !A.isSignalStep('nope') && !A.isSignalStep(null));

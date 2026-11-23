@@ -16,14 +16,14 @@ const PATH = [
   { title: 'UC provider connection', body: 'A provider’s call-quality record, when a licensed connector exists. Without one: not configured.' },
 ];
 const ROLES = [
-  { title: 'Voice administrator', body: 'Reads the configured route beside what was observed for a session, hop by hop, with sources and ages. Signalling-side detail stays with this role.', icon: 'plug' },
-  { title: 'IT and UC manager', body: 'Sees which rooms share an uplink before deciding where to look, and what is simply not known.', icon: 'scope' },
+  { title: 'UC / Voice administrator', body: 'Reads the configured route beside what was observed for a session, hop by hop, for the sites in their scope. Session tokens and signalling-side detail stay with this role alone.', icon: 'plug' },
+  { title: 'AV operations and engineering', body: 'See the path and which rooms share an uplink before deciding where to look. They do not read signalling-side detail.', icon: 'scope' },
   { title: 'Support technician', body: 'Opens the room from the job, reads the path and the samples for their site, and never sees session tokens or directory numbers.', icon: 'service' },
   { title: 'Executive', body: 'Reads non-identifying summaries: whether calling met the organisation’s own targets, and where evidence is missing.', icon: 'exec' },
 ];
 const STATUS: { title: string; body: string; meta: React.ReactNode }[] = [
-  { title: 'In the demonstration today', body: 'One room’s CallPath on synthetic data: six hops, one simulated session, quality samples with their method, a shared-uplink view, a missing-telemetry case, a stale-data case, a report from the room that becomes a job, and an access refusal for a caller.', meta: <Tag s="simulated">Available in the demonstration · simulated</Tag> },
-  { title: 'Specified, not built', body: 'The technician’s evidence step, the independent review, readiness for a scheduled event, scoped evidence for a partner, and the data model and API contracts for an engineering team.', meta: <Tag s="declared">Engineering specification</Tag> },
+  { title: 'In the demonstration today', body: 'One room’s CallPath on synthetic data: six hops, one simulated session, quality samples with their method, a shared-uplink view, a missing-telemetry case, a stale-data case, a report from the room that becomes a job followed through to independent verification, the network view in FLOW, readiness in MissionProof, and refusals by role and by site.', meta: <Tag s="simulated">Available in the demonstration · simulated</Tag> },
+  { title: 'Specified, not built', body: 'Scoped evidence for a partner, redacted search and exports, and the data model and API contracts for an engineering team.', meta: <Tag s="declared">Engineering specification</Tag> },
   { title: 'Roadmap, depends on others', body: 'Connectors to calling platforms and session border controllers. Each depends on that product’s API, licensing and the customer’s consent. None is connected, and no partnership is claimed.', meta: <Tag s="unknown">Roadmap · nothing connected</Tag> },
 ];
 
@@ -43,7 +43,7 @@ export const voicePage = (demoUrl: string) => {
         </Section>
         <Section id="quality" tone="warm" title="A quality figure comes with its method, or it is not shown" lead="Loss, jitter and delay are shown with their window, unit and source. An estimated listening score appears only when its inputs and a documented method support it; a missing input, an unsupported codec or a stale sample gets no estimate.">
           <Cards cols={3} items={[
-            { title: 'No invented score', body: 'The demonstration’s estimate follows the published ITU-T G.107 E-model in a reduced form, stated on the page with its assumptions and what it leaves out. It is marked for engineering review.' },
+            { title: 'Measurements first', body: 'Loss, jitter and delay lead. The demonstration also shows an experimental estimate from the published ITU-T G.107 E-model in a reduced form; it is an engineering-review implementation, not independently validated, and it decides nothing.' },
             { title: 'Your targets, not ours', body: 'Samples are compared with the calling targets your organisation declares. VOICE sets none of its own.' },
             { title: 'Missing is not healthy', body: 'A provider that sends nothing, a timeout or an old sample reads as unknown, and stays unknown everywhere downstream.' },
           ]} />
@@ -55,7 +55,7 @@ export const voicePage = (demoUrl: string) => {
             { title: 'To a hypothesis', body: 'What the evidence suggests is recorded as a hypothesis with its citations and its unknowns, never as a root cause.' },
             { title: 'To a job', body: 'The report is a ServiceHands job with the room attached, assigned to someone authorised for that site.' },
             { title: 'To proof', body: 'Closing a job does not pass an acceptance test. Only reviewed evidence changes what Assurance says about the room.' },
-            { title: 'To the event', body: 'Readiness for a town hall should move when its calling path does. That link is specified, not built.' },
+            { title: 'To the event', body: 'Readiness for a town hall moves when its calling path does, and only on verified repair plus later evidence. In the demonstration this is simulated.' },
           ]} />
         </Section>
         <Section id="roles" tone="warm" title="Who reads what" lead="The same record, read differently by each role. A role that should not see something is not shown it.">

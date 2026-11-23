@@ -119,10 +119,11 @@ test('RC-07 operating a room: V2.5.3 decides who; every operation and every refu
 test('RC-08 the role matrix, all fifteen roles: who opens a panel, who operates it, who gets Engineer mode — each from V2.5.3’s tables, and the store agrees with the page', () => {
   const page = R.resolve(`#/control/${REF}`); const eng = R.resolve(`#/control/${REF}?mode=engineer`); assert.ok(page && eng);
   const rows = P.ROLE_KEYS.map((k) => ({ k, open: P.canOpen(k, page), operate: P.canDo ? P.canDo(k, page, 'control.use') : P.allows({ action: 'control.use' }, k), engineer: P.canOpen(k, eng) }));
-  assert.equal(rows.length, 16);   // sixteen since the Site Champion became a dedicated role (founder, 11 Nov 2026)
+  assert.equal(rows.length, 17);   // seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026); it opens no panel and operates nothing
   assert.deepEqual(rows.filter((r) => r.open).map((r) => r.k), P.ROLE_KEYS.filter((k) => P.allows({ area: 'control' }, k)));
   assert.deepEqual(rows.filter((r) => r.engineer).map((r) => r.k), P.ROLE_KEYS.filter((k) => P.allows({ area: 'control' }, k) && P.allows({ field: 'control.engineer' }, k)));
-  assert.deepEqual(rows.filter((r) => !r.open).map((r) => r.k).sort(), ['qa', 'visitor'], 'the two roles with no control area never reach a panel');
+  // the UC / Voice Administrator has no device-control authority (least privilege, founder decision E3-D2, 23 Nov 2026)
+  assert.deepEqual(rows.filter((r) => !r.open).map((r) => r.k).sort(), ['qa', 'ucadmin', 'visitor'], 'the three roles with no control area never reach a panel');
   for (const r of rows) { assert.ok(!r.engineer || r.open, `${r.k}: Engineer mode without the panel`); assert.ok(!r.operate || r.open, `${r.k}: operates a panel it cannot open`); }
   assert.ok(rows.find((r) => r.k === 'employee').open && !rows.find((r) => r.k === 'employee').engineer && !rows.find((r) => r.k === 'exec').engineer && rows.find((r) => r.k === 'service').engineer);
   // the store is asked directly, as a page that had been tampered with would: it gives the same answer as the policy, and writes the refusal down

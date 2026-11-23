@@ -16,8 +16,9 @@ const ROLES = P.ROLE_KEYS; const V14 = V.AZ_KEYS;
 const surfaces = R.PAGES.flatMap((p) => [{ kind: 'page', p, a: p.authority }, ...(p.sections || []).map((s) => ({ kind: 'section', p, s, a: s.authority })), ...(p.actions || []).map((s) => ({ kind: 'action', p, s, a: s.authority }))]);
 
 // Changed 11 Nov 2026 (founder's decision): the Site Champion is a sixteenth, dedicated role (`sitechamp`). The fifteen earlier roles are unchanged.
-test('sixteen roles: the fourteen of V2.5.3, the Document Reviewer and the Site Champion', () => {
-  assert.equal(ROLES.length, 16); for (const k of V14) assert.ok(ROLES.includes(k), k); assert.ok(ROLES.includes('qa')); assert.ok(ROLES.includes('sitechamp'));
+// Changed 23 Nov 2026 (founder decision E3-D2): the UC / Voice Administrator is a seventeenth, dedicated role (`ucadmin`). The sixteen earlier roles are unchanged.
+test('seventeen roles: the fourteen of V2.5.3, the Document Reviewer, the Site Champion and the UC / Voice Administrator', () => {
+  assert.equal(ROLES.length, 17); assert.ok(ROLES.includes('ucadmin')); for (const k of V14) assert.ok(ROLES.includes(k), k); assert.ok(ROLES.includes('qa')); assert.ok(ROLES.includes('sitechamp'));
   for (const k of ROLES) { const r = P.ROLES[k]; assert.match(r.initials, /^[A-Z]{2}$/, k); assert.ok(r.label && r.home && r.domain && r.work, k); }
   assert.equal(P.DEFAULT_ROLE, 'architect');
 });
@@ -64,10 +65,10 @@ test('V2.5.3 areas, spot-checked against 12-authz.js', () => {
   assert.deepEqual(who('#/campus/scouter'), ['architect', 'designer', 'ops', 'syseng']);
   assert.deepEqual(who('#/scouter'), who('#/campus/scouter'), 'the V2.5.3 address opens the same page with the same policy');
   assert.deepEqual(who('#/v25/exec'), ['architect', 'exec', 'ops']);
-  assert.ok(who('#/search').length === 16, 'Search Party is everyone’s');   // sixteen since the Site Champion (11 Nov 2026)
+  assert.ok(who('#/search').length === 17, 'Search Party is everyone’s');   // seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026)
   assert.deepEqual(who('#/search/quality'), ['architect', 'steward'], 'the exact address (sub-view) narrows who may open it');
   assert.ok(!who('#/v25/service').includes('visitor') && !who('#/v25/service').includes('exec'));
-  assert.ok(who('#/investor').length === 16 && who('#/v25/policy').length === 16 && who('#/access').length === 16);
+  assert.ok(who('#/investor').length === 17 && who('#/v25/policy').length === 17 && who('#/access').length === 17);   // seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026)
 });
 test('home tabs follow V2.5.3 tabsFor and never lead to a refusal', () => {
   for (const k of ROLES) {
@@ -114,7 +115,7 @@ test('Scouter: nothing invented — no price, brand or model in any output; the 
 });
 
 // ------------------------------------------------------------------ role colours against the Graphite (dark) and Paper (light) tokens
-test('role colours: sixteen distinct hues, ≥ 4.5:1 on every ground in both themes, never the teal accent (D8)', () => {
+test('role colours: seventeen distinct hues, ≥ 4.5:1 on every ground in both themes, never the teal accent (D8)', () => {
   const css = fs.readFileSync(path.join(repo, 'apps/demo/src/styles/shell.css'), 'utf8');
   const block = (sel) => Object.fromEntries([...css.slice(css.indexOf(sel)).split('}')[0].matchAll(/--role-(\w+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2].toLowerCase()]));
   const dark = block(':root {\n  --role-'); const light = block(':root[data-theme="light"] {'); const darkAgain = block(':root[data-theme="dark"] {');
@@ -123,7 +124,7 @@ test('role colours: sixteen distinct hues, ≥ 4.5:1 on every ground in both the
   const cr = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
   assert.deepEqual(Object.keys(dark).sort(), [...ROLES].sort()); assert.deepEqual(Object.keys(light).sort(), [...ROLES].sort()); assert.deepEqual(darkAgain, dark, 'the explicit Dark block repeats the default');
   for (const [mode, set] of [['dark', dark], ['light', light]]) {
-    assert.equal(new Set(Object.values(set)).size, 16, `${mode}: distinct`);
+    assert.equal(new Set(Object.values(set)).size, 17, `${mode}: distinct`);   // seventeen since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026)
     for (const [k, c] of Object.entries(set)) {
       assert.notEqual(c, tok.accent[mode].toLowerCase(), `${k} is not the accent`);
       for (const g of ['bg', 'bg2', 'panel', 'panel2']) assert.ok(cr(c, tok[g][mode]) >= 4.5, `${mode} ${k} ${c} on ${g} ${tok[g][mode]}: ${cr(c, tok[g][mode]).toFixed(2)}`);

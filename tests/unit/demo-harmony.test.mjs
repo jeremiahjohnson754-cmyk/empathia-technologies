@@ -64,7 +64,7 @@ test('HM-05 over every role and every sentence: nothing changes, a refusal carri
     for (const x of r.next) assert.ok(opens(role, x.href), `${role}: ${q}: “${x.label}” leads to ${x.href}, which this role cannot open`);
     for (const f of r.facts) { assert.ok(f.source.length > 5); if (f.href) assert.ok(opens(role, f.href), `${role}: ${q}: a fact links to ${f.href}`); }
     assert.ok(!/certified|guarantee/i.test(r.said), 'Harmony claims no certification'); }
-  assert.equal(n, 16 * sentences.length); assert.equal(JSON.stringify([...mem]), before);
+  assert.equal(n, 17 * sentences.length);   // seventeen roles since the UC / Voice Administrator (founder decision E3-D2, 23 Nov 2026) assert.equal(JSON.stringify([...mem]), before);
 });
 
 test('HM-06 what has no tool is answered from an approved, cited source or not at all', () => {

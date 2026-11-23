@@ -6,9 +6,9 @@ import { PageHero, Notice, Tag, Card } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
-import { ADAPTERS, CASES, FLOW, NEVER, SESSION, SHARED_LINK, caseView, viewOf } from './model.js';
+import { ADAPTERS, CASES, FLOW, NEVER, OTHER_SITE_ROOM, SESSION, SHARED_LINK, caseView, viewOf } from './model.js';
 
-const VIEW_SAYS = { administration: 'You are reading as voice administration: routing, quality and signalling-side detail for this tenant’s sites.', technician: 'You are reading as a site technician: the path and the samples for your site’s rooms, without signalling-side detail.', summary: 'You are reading the summary: no session, endpoint or signalling detail.', none: '' } as const;
+const VIEW_SAYS = { administration: 'You are reading as voice administration: routing, quality and signalling-side detail, for the sites in your scope.', operations: 'You are reading as operations or service: the path and the samples, without session tokens or signalling-side detail.', summary: 'You are reading the summary: no session, endpoint or signalling detail.', none: '' } as const;
 
 export default function VoicePage({ role }: PageProps) {
   const view = viewOf(role); const opens = (h: string) => { const r = resolve(h); return !!r && canOpen(role, r); };
@@ -32,6 +32,7 @@ export default function VoicePage({ role }: PageProps) {
       </Card>
       <Card title="Three cases, one room" sub="Each is an address you can share" icon="layers">
         <ul className="vc-next">{CASES.map((c) => <li key={c.id}>{opens(`#/voice/callpath/${room}`) ? <a href={`#/voice/callpath/${room}${c.id === 'degraded' ? '' : `?case=${c.id}`}`}>{c.label}</a> : <b>{c.label}</b>} <span className="ui-muted">{c.says}</span></li>)}</ul>
+        {opens(`#/voice/callpath/${OTHER_SITE_ROOM}`) ? <p><a href={`#/voice/callpath/${OTHER_SITE_ROOM}`} data-testid="voice-other-site">A room on another site: configured only, nothing observed</a></p> : view === 'summary' ? null : <p className="ui-muted" data-testid="voice-scope">Rooms on other sites are outside your scope and are not listed here.</p>}
         {view === 'summary' ? <p data-testid="voice-summary">Summary for the room’s last simulated session: {d.verdict === 'OUTSIDE_POLICY' ? 'outside the declared targets for part of the call' : 'within the declared targets'}. Session detail is not part of this perspective.</p> : <p className="ui-muted">{SESSION.privacy}</p>}
       </Card>
     </section>

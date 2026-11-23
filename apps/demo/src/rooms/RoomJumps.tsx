@@ -10,8 +10,9 @@ import type { RoleKey } from '../registry.types.js';
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
 import { roomById, shortName } from '../campus/canon.js';
+import { flowFor } from '../voice/model.js';
 
-export type RoomPlace = 'lite' | 'assurance' | 'commissioning' | 'control' | 'replay' | 'compare' | 'campus';
+export type RoomPlace = 'lite' | 'assurance' | 'commissioning' | 'control' | 'replay' | 'compare' | 'campus' | 'voice';
 
 export function roomPlaces(roomId: string, may: (href: string) => boolean, device?: string | null): Array<{ key: RoomPlace; label: string; href: string; icon: IconName }> {
   const o = roomById(roomId); if (!o) return [];
@@ -26,6 +27,9 @@ export function roomPlaces(roomId: string, may: (href: string) => boolean, devic
     { key: 'replay', label: 'Replay', href: `#/replay/${roomId}`, icon: 'clock' },
     { key: 'compare', label: 'Compare', href: `#/compare/commissioned?a=${roomId}`, icon: 'layers' },
     { key: 'campus', label: 'On campus', href: `#/campus/${o.building}/${o.floor}/${roomId}${dev ? `?${dev}` : ''}`, icon: 'map' },
+    // Enterprise 3.0 (23 Nov 2026): the room's calling, in VOICE. Listed only for a room with a call-flow record, and only for a role
+    // that may open that room's CallPath (site scope included), like every other place in this row.
+    ...(flowFor(roomId) ? [{ key: 'voice' as RoomPlace, label: 'Calling', href: `#/voice/callpath/${roomId}`, icon: 'network' as IconName }] : []),
   ];
   return all.filter((p) => may(p.href));
 }
