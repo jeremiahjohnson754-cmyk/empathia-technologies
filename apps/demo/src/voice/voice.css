@@ -1,0 +1,33 @@
+/* Empathia VOICE (Enterprise 3.0, 23 Nov 2026): the CallPath pages. Tokens only; one column on a phone. */
+.vc { display: grid; gap: var(--sp-4); min-width: 0; }
+.vc-crumb { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: var(--fs-sm); color: var(--tx2); }
+.vc-crumb a { min-height: var(--target-min); display: inline-flex; align-items: center; }
+.vc-cases { display: grid; gap: var(--sp-2); }
+.vc-sec { display: grid; gap: var(--sp-3); min-width: 0; }
+.vc-two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: start; }
+.vc-path { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.vc-hop { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: var(--sp-3); padding: var(--sp-3); border: 1px solid var(--line); border-left-width: 4px; border-radius: var(--r-md); background: var(--panel); position: relative; }
+.vc-hop--unknown, .vc-hop--stale { border-left-color: var(--warn); }
+.vc-hop--not_configured { border-left-color: var(--bad); }
+.vc-hop--observed { border-left-color: var(--ok); }
+.vc-hop--simulated { border-left-color: var(--accent); }
+.vc-hop__n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--bg2); color: var(--tx2); font-weight: 700; font-size: var(--fs-sm); }
+.vc-hop__layer { margin: 0; font-size: var(--fs-sm); color: var(--tx2); }
+.vc-hop h3 { margin: 2px 0 var(--sp-2); font-size: var(--fs-md); }
+.vc-hop dl { margin: 0; display: grid; gap: 6px; font-size: var(--fs-sm); }
+.vc-hop dl > div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: var(--sp-2); }
+.vc-hop dt { color: var(--tx2); }
+.vc-hop dd { margin: 0; overflow-wrap: anywhere; }
+.vc-verdict { margin: 0; padding: var(--sp-3); border-radius: var(--r-md); border: 1px solid var(--line); background: var(--panel); }
+.vc-verdict--outside_policy { border-color: var(--bad); }
+.vc-verdict--unknown { border-color: var(--warn); }
+.vc-out { color: var(--bad); font-weight: 600; }
+.vc-method { border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--sp-2) var(--sp-3); font-size: var(--fs-sm); }
+.vc-method summary { min-height: var(--target-min); display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.vc-rooms, .vc-next, .vc-steps { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.vc-next a, .vc-rooms a, .vc-steps a { display: inline-block; padding: 4px 0; }
+.vc-form { display: grid; gap: var(--sp-3); max-width: 560px; }
+.vc-symptoms { border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--sp-3); display: grid; gap: 4px; }
+.vc-choice { display: flex; align-items: center; gap: var(--sp-2); min-height: var(--target-min); }
+.vc-form textarea { width: 100%; font: inherit; padding: var(--sp-2); border: 1px solid var(--line2); border-radius: var(--r-sm); background: var(--panel); color: var(--tx); }
+@media (max-width: 640px) { .vc-hop { grid-template-columns: minmax(0, 1fr); } .vc-hop__n { display: none; } .vc-hop dl > div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }

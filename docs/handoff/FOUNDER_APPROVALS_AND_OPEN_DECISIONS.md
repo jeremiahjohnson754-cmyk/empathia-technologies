@@ -1,0 +1,11 @@
+# Founder approvals and open decisions — Enterprise 3.0 sprint
+
+Only decisions the existing evidence cannot settle. Until each is answered the sprint works on the stated default.
+
+| Id | Decision | Why it is yours | Default the sprint uses | Status |
+|---|---|---|---|---|
+| E3-D1 | **Product taxonomy.** Both sites and the shared packages name "nine products" (your decisions D37/D40). Enterprise 3.0 names VOICE a first-class product and accepts FLOW, PRISM, SENTINEL, ACCORD, MissionProof, FORGE and OMNIPRESENCE. Do they become product keys beside the nine (menus, colours, the "nine products" copy and the tests that assert nine all change), or modules grouped under clusters such as "Infrastructure and Communications" with the nine unchanged? | It reverses or extends D37/D40 | VOICE pages sit in Pro's menu in the demonstrator and under "Infrastructure and communications" on the website; the "nine products" wording is untouched | OPEN |
+| E3-D2 | **Voice administrator persona.** The demonstrator has sixteen roles and none is a voice administrator or IT/UC manager. Add one (a seventeenth role), or keep the AV Operations Lead and Systems Engineer standing in? | A new role changes the policy tables taken from V2.5.3 | Stand-in roles, said on the page | OPEN |
+| E3-D3 | **Quality method QM-G107-S1.** The demonstration estimates a listening score with the published ITU-T G.107 E-model in a reduced form, marked "specified, for engineering review". Accept it as the first method in the register, or show loss, jitter and delay only until an engineer has checked it against the ITU texts? | Directive 1A forbids an invented score; this one is a published method but has not been independently checked | Shown, labelled simulated and under review | OPEN |
+| E3-D4 | **Staging.** The directive says not to deploy without your approval. May each day's tested commit go to the two Next sites (staging) after its exact-commit regression, as before, or do you want to approve each staging? | Release control | Nothing is deployed; work is pushed to `v18/continuation` only | OPEN |
+| E3-D5 | **GitHub CI on `main`** fails at the private Founder Studio build step. The fix is a workflow change on `main`, which redeploys production | Any push to `main` redeploys production | Not touched | OPEN since 20 Nov |

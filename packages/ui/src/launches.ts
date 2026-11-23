@@ -61,7 +61,16 @@ export const PRODUCT_LAUNCHES: Readonly<Record<string, Launch>> = {
  */
 export const START_LAUNCH: Launch = { id: 'start', title: 'Welcome to Empathia', shows: 'The campus, Search Party and every product, one choice away.', route: '/investor', perspective: 'architect', perspectiveLabel: 'Product Architect' };
 
-export const LAUNCHES: readonly Launch[] = [START_LAUNCH, ...FOLLOW, ...Object.values(PRODUCT_LAUNCHES)];
+/**
+ * Modules beyond the nine products (Enterprise 3.0 directive, 23 Nov 2026): the demonstration each module's website page opens.
+ * VOICE opens the CallPath of the followed room as the AV Operations Lead, who stands in for voice administration in the
+ * demonstration (apps/demo/src/voice/model.ts). The same rules apply: the route is registered and the perspective may open it.
+ */
+export const MODULE_LAUNCHES: Readonly<Record<string, Launch>> = {
+  voice: { id: 'module-voice', title: 'VOICE, the CallPath of Atlas 4.218', shows: 'One room’s call path hop by hop: what is configured, what was observed in a simulated session, and what is not known.', route: `/voice/callpath/${FOLLOW_ROOM}`, perspective: 'ops', perspectiveLabel: 'AV Operations Lead' },
+};
+
+export const LAUNCHES: readonly Launch[] = [START_LAUNCH, ...FOLLOW, ...Object.values(PRODUCT_LAUNCHES), ...Object.values(MODULE_LAUNCHES)];
 export const launchById = (id: string | null | undefined): Launch | null => LAUNCHES.find((l) => l.id === id) || null;
 
 /** A website path the demonstration may send the visitor back to: absolute path, optional #anchor, nothing that leaves the site. */
