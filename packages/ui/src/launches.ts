@@ -67,6 +67,13 @@ export const START_LAUNCH: Launch = { id: 'start', title: 'Welcome to Empathia',
  */
 export const MODULE_LAUNCHES: Readonly<Record<string, Launch>> = {
   voice: { id: 'module-voice', title: 'VOICE, the CallPath of Atlas 4.218', shows: 'One room’s call path hop by hop: what is configured, what was observed in a simulated session, and what is not known.', route: `/voice/callpath/${FOLLOW_ROOM}`, perspective: 'ucadmin', perspectiveLabel: 'UC / Voice Administrator' },
+  flow: { id: 'module-flow', title: 'FLOW, the uplink of access switch ATL-4A', shows: 'What is declared, observed and unknown about one switch, layer by layer, and the rooms that depend on it.', route: '/flow/link/SW-ATL-4A', perspective: 'ops', perspectiveLabel: 'AV Operations Lead' },
+  missionproof: { id: 'module-missionproof', title: 'MissionProof, the company town hall', shows: 'Readiness of one event, read from the records it depends on.', route: '/missionproof', perspective: 'ops', perspectiveLabel: 'AV Operations Lead' },
+  prism: { id: 'module-prism', title: 'PRISM, the estate’s screens', shows: 'What each screen should show, what its player reports, and where there is proof of play.', route: '/prism', perspective: 'ops', perspectiveLabel: 'AV Operations Lead' },
+  sentinel: { id: 'module-sentinel', title: 'SENTINEL, one simulated drill', shows: 'Whether an approved secondary notice was requested, acknowledged, proven shown or failed on each route. A simulation, not a life-safety system.', route: '/sentinel', perspective: 'ops', perspectiveLabel: 'AV Operations Lead' },
+  accord: { id: 'module-accord', title: 'ACCORD, one evidence capsule', shows: 'Scoped evidence shared with a service provider until a date, with what is withheld.', route: '/accord', perspective: 'steward', perspectiveLabel: 'Data Steward' },
+  forge: { id: 'module-forge', title: 'FORGE, the package of Atlas 4.218', shows: 'A room’s design record compiled into reviewable artefacts, and the configuration FORGE refuses to generate.', route: `/forge/room/${FOLLOW_ROOM}`, perspective: 'cxeng', perspectiveLabel: 'Commissioning Engineer' },
+  omnipresence: { id: 'module-omnipresence', title: 'OMNIPRESENCE, the tag of the Atlas building', shows: 'What a building’s tag opens on a phone, and what it does not prove.', route: '/omnipresence/b/ATL', perspective: 'ops', perspectiveLabel: 'AV Operations Lead' },
 };
 
 export const LAUNCHES: readonly Launch[] = [START_LAUNCH, ...FOLLOW, ...Object.values(PRODUCT_LAUNCHES), ...Object.values(MODULE_LAUNCHES)];

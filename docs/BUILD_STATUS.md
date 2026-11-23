@@ -5,7 +5,16 @@ Program: `legacy/mandate/MASTER_PROMPT.md` (phases P0–P9), executed in this mo
 Labels: **DONE** (built and a named test passes here) · **PARTIAL** · **NOT_STARTED** · **NOT_RUN** (test not executed) · **BLOCKED** (needs
 something this environment does not have). Nothing here is production-ready, certified or independently audited; nothing is deployed.
 
-## Latest: restoration release candidate (2026-10-31, frozen)
+## Latest: Enterprise 3.0 sprint (23–29 Nov 2026), in progress
+
+Branch `v18/continuation` (draft pull request 2). Production and the two Next sites are unchanged at the 20 Nov build (fe30ba9d);
+nothing from this sprint is deployed. Day by day, with evidence: `docs/operations/CLAUDE_FABLE_7_DAY_EXECUTION_BOARD.md`.
+State of every module and journey: `docs/audit/PARITY_LEDGER.csv`. Decisions: `docs/handoff/FOUNDER_APPROVALS_AND_OPEN_DECISIONS.md`.
+Built so far, all SIMULATED on synthetic data: VOICE (with the corporate page), FLOW, MissionProof, PRISM, SENTINEL, ACCORD, FORGE,
+OMNIPRESENCE, the UC / Voice Administrator role and the six product families. Full regression result for the latest commit:
+`tests/evidence/TEST_RESULTS.md` (NOT RUN until that file names the commit). GitHub CI repair: prepared on its own branch, not merged.
+
+## Earlier: restoration release candidate (2026-10-31, frozen)
 
 `restoration/sprint-0-1`, matrix on `b5d152f`: 57 suites PASS, 0 FAIL, 1 NOT_RUN (film decode); RELEASABLE (platform); the clean-copy
 CI rehearsal PASS on `9fa4a55`. Report: `docs/releases/RELEASE_CANDIDATE_2026-10-31.md`. Defects: `docs/qa/DEFECT_REGISTER.md`

@@ -14,7 +14,7 @@ import { voicePage } from './voice.js';
 import { intakePage } from './intake.js';
 import { Follow } from './follow.js';
 import { Opening, type HeroFrame } from './opening.js';
-import { PRODUCT_LAUNCHES, START_LAUNCH, launchHref } from '../../../packages/ui/src/launches.ts';
+import { MODULE_LAUNCHES, PRODUCT_LAUNCHES, START_LAUNCH, launchHref } from '../../../packages/ui/src/launches.ts';
 import { FAMILIES } from '../../../packages/ui/src/families.ts';
 import { DEFAULT_STATE, stateHash, type AddonSku } from './build-view.js';
 /** each product page's way into Build Your Empathia (founder 19:39: lead generation off the interactive sales part), its own line ticked */
@@ -198,9 +198,9 @@ export function buildPages(ctx: SiteContext): Page[] {
       <>
         <section className="hero"><div className="wrap"><Spectrum /><p className="label">Products</p><h1>Nine core products, one record</h1><p className="lede">Each product is a stage of the same lifecycle. Each page states what the public demonstration shows today, and what it does not. Scouter is part of Lite. Eight further capabilities build on the same record; the families below place all seventeen.</p><div className="actions hero__action"><a className="btn btn--primary btn--lg" href={demo()} data-hero-action>Explore the live demo</a></div></div></section>
         <Section title="The nine core products, in lifecycle order"><ProductTiles captures={ctx.captures} /></Section>
-        <Section id="families" eyebrow="The platform" title="Six families, seventeen capabilities" lead="The nine products are the core. Eight further capabilities are accepted into the platform; each is marked with what exists today. “Specified” means written down and not built.">
+        <Section id="families" eyebrow="The platform" title="Six families, seventeen capabilities" lead="The nine products are the core. Eight further capabilities build on the same record. Each can be opened in the demonstration as a simulation on synthetic data; none is connected to a live system.">
           <div className="cards cards--3" data-families={FAMILIES.length}>{FAMILIES.map((f) => (<article key={f.id} className="card" data-family={f.id}><h3>{f.name}</h3><p>{f.says}</p>
-            <ul className="ticks">{f.members.map((m) => (<li key={m.id} data-cap={m.id} data-built={m.built ? '1' : '0'}>{m.site ? <a href={m.site}>{m.name}</a> : m.name}{m.kind === 'capability' ? <span className="note"> {m.built ? '· in the demonstration, simulated' : '· specified, not built'}</span> : null}</li>))}</ul></article>))}</div>
+            <ul className="ticks">{f.members.map((m) => (<li key={m.id} data-cap={m.id} data-built={m.built ? '1' : '0'}>{m.site ? <a href={m.site}>{m.name}</a> : m.built && MODULE_LAUNCHES[m.id] ? <a href={launchHref(ctx.demoUrl, MODULE_LAUNCHES[m.id]!, '/products#families')} data-launch={m.id}>{m.name}</a> : m.name}{m.kind === 'capability' ? <span className="note"> {m.built ? '· in the demonstration, simulated' : '· specified, not built'}</span> : null}</li>))}</ul></article>))}</div>
         </Section>
         <Section id="voice" eyebrow="Infrastructure and communications · simulation" title="VOICE: calling you can explain" lead="Telephony and unified-communications intelligence on the same record. The CallPath Digital Twin keeps what is configured apart from what was observed and what is not known. In the demonstration as a simulation; no calling platform is connected."><Actions><a className="btn btn--primary" href="/voice">Discover VOICE</a></Actions></Section>
         <Section id="fieldlink" eyebrow="Optional hardware · concept" title="FieldLink extends what Empathia can observe" lead="Three proposed devices — Nano, Edge and Pulse — for sites that want local, hardware-attributed evidence. None of the nine products needs them; no unit has been built yet."><Actions><a className="btn btn--primary" href="/fieldlink">Discover FieldLink</a><a className="btn" href="/fieldlink#optional">Do I need FieldLink? No.</a></Actions></Section>

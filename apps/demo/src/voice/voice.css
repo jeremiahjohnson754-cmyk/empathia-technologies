@@ -57,3 +57,24 @@
 .vc-job { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .vc-job li { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); gap: var(--sp-2); }
 .vc-job li[data-done="1"]::before { content: '✓'; color: var(--ok); font-weight: 700; } .vc-job li[data-done="0"]::before { content: '○'; color: var(--tx3); }
+
+/* PRISM, SENTINEL, ACCORD, FORGE, OMNIPRESENCE (24 Nov 2026): the few shapes the shared module styles above did not have */
+.md-kv { margin: 0; display: grid; gap: 4px; }
+.md-kv > div { display: grid; grid-template-columns: minmax(7em, 9em) minmax(0, 1fr); gap: var(--sp-2); }
+.md-kv dt { color: var(--tx2); font-size: var(--fs-sm); } .md-kv dd { margin: 0; min-width: 0; }
+.md-hash { font-size: var(--fs-sm); overflow-wrap: anywhere; word-break: break-all; }
+.sn-banner { margin: 0; padding: var(--sp-3); border: 2px solid var(--bad); border-radius: var(--r-md); background: var(--panel); }
+.sn-banner b { display: block; letter-spacing: .02em; }
+.om-tags { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+.om-tags > li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--sp-3); align-items: start; }
+.om-tags a, .om-rooms a { min-height: var(--target-min); display: inline-flex; align-items: center; }
+.om-qr { border-radius: 6px; max-width: 100%; height: auto; }
+.om-claims { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.om-find { display: grid; gap: 4px; max-width: 28rem; }
+.om-find input { min-height: var(--target-min); padding: 0 var(--sp-2); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: inherit; font: inherit; }
+.om-rooms { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); max-height: 26rem; overflow-y: auto; }
+.om-rooms li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--sp-3); padding: 2px var(--sp-3); border-top: 1px solid var(--line); }
+.om-rooms li:first-child { border-top: 0; } .om-rooms li[data-selected="1"] { box-shadow: inset 4px 0 0 var(--ok); }
+.om-receipt { margin: 0; padding-left: 1.4em; display: grid; gap: 6px; }
+.vc-job li[data-done="x"]::before { content: '✕'; color: var(--bad); font-weight: 700; }
+@media (max-width: 480px) { .md-kv > div { grid-template-columns: 1fr; gap: 0; } .om-tags > li { grid-template-columns: 1fr; } }

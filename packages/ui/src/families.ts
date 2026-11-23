@@ -24,7 +24,7 @@ export const FAMILIES: readonly Family[] = [
   ] },
   { id: 'design', name: 'Design and engineering', says: 'From an idea for a room to an approved, buildable design', members: [
     P('lite', 'Lite', 'Spatial room design on the real engine; Scouter proposes equipment from comparable rooms', '/lite'),
-    C('forge', 'FORGE', 'Room-as-Code: approved design intent as versioned, reviewable engineering artefacts'),
+    C('forge', 'FORGE', 'Room-as-Code: approved design intent as versioned, reviewable engineering artefacts', '/forge'),
   ] },
   { id: 'field', name: 'Field and assurance', says: 'Proof that a room does what it was approved to do, and keeps doing it', members: [
     P('commissioning', 'Commissioning & Assurance', 'Adaptive tests, evidence, independent verification, accepted baselines and drift', '/commissioning'),
@@ -35,13 +35,13 @@ export const FAMILIES: readonly Family[] = [
     C('voice', 'VOICE', 'Telephony and UC intelligence: the CallPath Digital Twin', '/voice', '/voice'),
   ] },
   { id: 'experience', name: 'Experience and safety', says: 'What people in the building see, and how they are reached', members: [
-    C('prism', 'PRISM', 'Signage and experience assurance: intended content against what a screen actually shows'),
-    C('sentinel', 'SENTINEL', 'Emergency communications assurance for approved secondary channels; never a life-safety system'),
-    C('omnipresence', 'OMNIPRESENCE', 'A building QR or tag opens the room’s context on a phone; presence and control need separate proof'),
+    C('prism', 'PRISM', 'Signage and experience assurance: intended content against what a screen actually shows', '/prism'),
+    C('sentinel', 'SENTINEL', 'Emergency communications assurance for approved secondary channels; never a life-safety system', '/sentinel'),
+    C('omnipresence', 'OMNIPRESENCE', 'A building’s tag opens the building on a phone; presence and control need separate proof', '/omnipresence'),
   ] },
   { id: 'collaboration', name: 'Collaboration and knowledge', says: 'Finding things, sharing proof across organisations, and learning from it', members: [
     P('search-party', 'Search Party', 'Universal search and the relationships between rooms, devices, people and projects', '/search'),
-    C('accord', 'ACCORD', 'Scoped, expiring evidence shared between a customer, an integrator and a service provider'),
+    C('accord', 'ACCORD', 'Scoped, expiring evidence shared between a customer, an integrator and a service provider', '/accord'),
     P('learn', 'Learn', 'SIGNAL and the lessons that come out of real jobs', '/learn'),
   ] },
 ];

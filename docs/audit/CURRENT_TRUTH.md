@@ -41,24 +41,32 @@ Not done in this audit: 360/430/768/1024/1920 px on the live sites (the eight-wi
 | Full exact-commit regression (`--browser --studio`, five parts) | **NOT RUN today.** Last run: fe30ba9d, PASS 287 · FAIL 0 · NOT_RUN 2 (20 Nov, evidence c051462) |
 | GitHub CI on `main` | FAILS at the Founder Studio build step (private store not on a runner); recorded in PRODUCTION_2026-11-20.md; fix needs the founder's word |
 
-## What exists against the Enterprise 3.0 scope
+## What exists against the Enterprise 3.0 scope (updated after Day 2)
 
-| Module | In the demonstrator at fe30ba9d | Status |
+| Module | In the repository (`v18/continuation`) | On the two Next sites (fe30ba9d) |
 |---|---|---|
-| Core, Mission Control, Search Party, Intake, Pro, Lite, Scouter, Commissioning, Assurance, Field Intelligence, ServiceHands, APEX, Learn/SIGNAL | Working pages on synthetic data, role-aware, 287-suite regression | IMPLEMENTED, TESTED, SIMULATED |
-| VOICE | Nothing before today. Today: see below | IMPLEMENTED (steps 1–4 of J6B), SIMULATED |
-| FLOW, PRISM, SENTINEL, ACCORD, MissionProof, OMNIPRESENCE | No page, no fixture | NOT BUILT |
-| FORGE | The word appears in SIGNAL content and docs; no workspace | NOT BUILT |
+| Core, Mission Control, Search Party, Intake, Pro, Lite, Scouter, Commissioning, Assurance, Field Intelligence, ServiceHands, APEX, Learn/SIGNAL | Working pages on synthetic data, role-aware | The same |
+| VOICE | IMPLEMENTED, TESTED, SIMULATED: overview, CallPath, report, J6B steps 1–6, website `/voice` | Not deployed |
+| FLOW, MissionProof, PRISM, SENTINEL, ACCORD, FORGE, OMNIPRESENCE | IMPLEMENTED, TESTED, SIMULATED: one page and one model each, connected through the shared record (`docs/product/MODULES_BLUEPRINT.md`) | Not deployed |
+| UC / Voice Administrator (seventeenth role) | IMPLEMENTED, TESTED | Not deployed |
+| OEM embedded experience | NOT BUILT; no document | — |
+| Guided all-module tour (`#/tour`) | NOT BUILT (`#/families` is the map of all seventeen) | — |
 
-## P0 list
+Row by row, with evidence and what is missing: `docs/audit/PARITY_LEDGER.csv`. Routes: `docs/audit/ROUTE_INVENTORY.csv`.
+Deployed against repository against historical: `docs/audit/DEPLOYED_VS_REPO_VS_HISTORICAL.md`. Media: `docs/audit/MEDIA_AND_RIGHTS.md`.
+Screens captured on a desktop and a phone: `docs/audit/e3-day2/`.
 
-1. Seven accepted modules have no page on either site (FLOW, PRISM, SENTINEL, ACCORD, MissionProof, FORGE, OMNIPRESENCE). VOICE had none until today.
-2. J6B-VOICE steps 5 and 6 (technician evidence, independent review, Assurance and MissionProof change) are not built.
-3. Both sites say "nine products": the product taxonomy needs the founder's decision E3-D1 before the menus change.
-4. No guided all-module tour address (`#/tour` has no page; the investor start and the scenario tours exist under other addresses).
-5. The CallPath's sample table scrolls sideways inside its own frame on a phone; the judgement and estimate columns start off-screen.
-6. GitHub CI on `main` is red (not caused by this sprint).
+## P0 list (after Day 2)
 
-## Done today (Day 1)
+1. The Next sites still show the 20 Nov build. Staging previews of the new work wait for a passing exact-commit regression (E3-D4).
+2. Six journeys (J1, J2, J4, J5, J10, J12) run on existing screens but have not been walked step by step against the Enterprise 3.0 text.
+3. No `/v1/...` API path, event or SDK contract exists for the eight capabilities; every one of them is a browser-side simulation.
+4. No guided all-module tour address.
+5. GitHub CI on `main` is red until the repair (draft pull request 3) is approved and merged.
+6. The repository is public (open decision E3-D6; private report).
+
+Closed since Day 1: the seven modules without a page; J6B steps 5 and 6; the "nine products" wording (E3-D1); the CallPath table on a phone.
+
+## Done
 
 See `docs/operations/CLAUDE_FABLE_7_DAY_EXECUTION_BOARD.md`.

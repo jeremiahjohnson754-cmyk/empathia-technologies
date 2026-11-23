@@ -171,7 +171,8 @@ test('product families (founder decision E3-D1): the nine products keep their id
   const caps = CAPABILITIES.filter((c) => c.kind === 'capability').map((c) => c.id).sort(); assert.deepEqual(caps, ['accord', 'flow', 'forge', 'missionproof', 'omnipresence', 'prism', 'sentinel', 'voice']);
   assert.equal(new Set(CAPABILITIES.map((c) => c.id)).size, 17); assert.equal(FAMILIES.length, 6);
   for (const c of CAPABILITIES) { if (c.built) assert.ok(resolve(`#${c.demo}`), `${c.name}: ${c.demo} is a registered address`); else assert.equal(c.demo, undefined, `${c.name} is not built and has no address`); }
-  assert.deepEqual(CAPABILITIES.filter((c) => !c.built).map((c) => c.id).sort(), ['accord', 'forge', 'omnipresence', 'prism', 'sentinel'], 'not built yet, and listed as such');
+  // changed 24 Nov 2026: PRISM, SENTINEL, ACCORD, FORGE and OMNIPRESENCE are built (tests/unit/modules.test.mjs), so nothing is listed as not built
+  assert.deepEqual(CAPABILITIES.filter((c) => !c.built).map((c) => c.id), [], 'every capability is built');
 });
 
 test('adapters: one mock, every vendor row CONTRACT_ONLY', () => {
