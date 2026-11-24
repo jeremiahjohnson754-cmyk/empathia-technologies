@@ -1,16 +1,16 @@
 {
- "at": "2026-11-24T01:46:48.534Z",
+ "at": "2026-11-24T07:30:24.920Z",
  "scheme": "light",
- "pass": 272,
+ "pass": 298,
  "fail": 0,
  "notRun": 0,
- "tests": 272,
+ "tests": 298,
  "results": [
   {
    "id": "W-00",
    "name": "the sitemap lists the pages",
    "result": "PASS",
-   "detail": "/ /platform /products /products/mission-control /products/lite /products/pro /products/search-party /products/servicehands /products/commissioning /products/apex /products/field-intelligence /products/learn /solutions /experiences /how-it-works /films /technology /proof /trust /founder /about /collabora-sing /voice /fieldlink /intake /pricing /pricing/catalogue /pilots /request-demo /pilot-partner"
+   "detail": "/ /platform /platform/operations /platform/design /platform/field /platform/infrastructure /platform/experience /platform/collaboration /products /products/mission-control /products/lite /products/pro /products/search-party /products/servicehands /products/commissioning /products/apex /products/field-intelligence /products/learn /solutions /experiences /how-it-works /films /technology /proof /trus"
   },
   {
    "id": "W-desktop-/",
@@ -22,7 +22,43 @@
    "id": "W-desktop-/platform",
    "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One platform. Six product families. Shared engineering intelligence.\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/platform/operations",
+   "name": "/platform/operations answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Operations\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/platform/design",
+   "name": "/platform/design answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Design and engineering\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/platform/field",
+   "name": "/platform/field answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field and assurance\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/platform/infrastructure",
+   "name": "/platform/infrastructure answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Infrastructure and communications\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/platform/experience",
+   "name": "/platform/experience answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Experience and safety\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-desktop-/platform/collaboration",
+   "name": "/platform/collaboration answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collaboration and knowledge\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/products",
@@ -238,7 +274,43 @@
    "id": "W-tablet-/platform",
    "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One platform. Six product families. Shared engineering intelligence.\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/platform/operations",
+   "name": "/platform/operations answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Operations\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/platform/design",
+   "name": "/platform/design answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Design and engineering\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/platform/field",
+   "name": "/platform/field answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field and assurance\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/platform/infrastructure",
+   "name": "/platform/infrastructure answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Infrastructure and communications\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/platform/experience",
+   "name": "/platform/experience answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Experience and safety\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-tablet-/platform/collaboration",
+   "name": "/platform/collaboration answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collaboration and knowledge\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-tablet-/products",
@@ -454,7 +526,43 @@
    "id": "W-phone-/platform",
    "name": "/platform answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One record. One governed lifecycle.\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"One platform. Six product families. Shared engineering intelligence.\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/platform/operations",
+   "name": "/platform/operations answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Operations\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/platform/design",
+   "name": "/platform/design answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Design and engineering\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/platform/field",
+   "name": "/platform/field answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Field and assurance\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/platform/infrastructure",
+   "name": "/platform/infrastructure answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Infrastructure and communications\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/platform/experience",
+   "name": "/platform/experience answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Experience and safety\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/platform/collaboration",
+   "name": "/platform/collaboration answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collaboration and knowledge\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/products",
@@ -766,7 +874,7 @@
    "id": "W-scouter",
    "name": "Scouter is discoverable inside Lite: its own section (#scouter) on the Lite page, a jump link, and named in the menu and on the home tile",
    "result": "PASS",
-   "detail": "{\"sc\":{\"sec\":true,\"h2\":\"Scouter\",\"jump\":true},\"disc\":{\"menu\":\"LiteSpatial room design on the real engine, with equipment proposals from comparable rooms. Includes Build a Room and Scouter.\",\"tile\":\"02LiteSpatial room design on the real engine, with equipment proposals from comparable roomsIncludes Build a Room and ScouterIn the public demonstration\"}}"
+   "detail": "{\"sc\":{\"sec\":true,\"h2\":\"Scouter\",\"jump\":true},\"disc\":{\"menu\":\"LiteSpatial room design on the real engine, with equipment proposals from comparable rooms. Includes Build a Room and Scouter.\",\"tile\":\"LiteSpatial room design on the real engine, with equipment proposals from comparable roomsIncludes Build a Room and ScouterIn the public demonstration\"}}"
   },
   {
    "id": "W-colours",
@@ -922,7 +1030,7 @@
    "id": "W-founder-1440",
    "name": "founder section at 1440: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41039/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:43105/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-click",
@@ -940,13 +1048,13 @@
    "id": "W-founder-768",
    "name": "founder section at 768: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41039/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:43105/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-390",
    "name": "founder section at 390: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point, stacked",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41039/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:43105/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-rooms-/",
@@ -1318,7 +1426,7 @@
    "id": "WC-play",
    "name": "pressing play plays the 1280 × 776, 35-second film from this site, with no sound decoded, and it can be sought to its last scene",
    "result": "PASS",
-   "detail": "{\"can\":true,\"t\":1.813581,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.163339}"
+   "detail": "{\"can\":true,\"t\":1.811057,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.244366}"
   },
   {
    "id": "WC-label",
@@ -1328,7 +1436,7 @@
   },
   {
    "id": "WC-only-here",
-   "name": "no page other than /collabora-sing (32 pages and the not-found page checked), and no script or stylesheet, references the film's key or files; films.json keeps it exclusive to this section",
+   "name": "no page other than /collabora-sing (38 pages and the not-found page checked), and no script or stylesheet, references the film's key or files; films.json keeps it exclusive to this section",
    "result": "PASS",
    "detail": ""
   },
@@ -1540,7 +1648,7 @@
    "id": "WR-ten-seconds",
    "name": "the sequence lasts ten seconds (9.6 to 10.6 s measured) and then settles to the resting composition by itself: no attribute, no animation left, only Replay offered",
    "result": "PASS",
-   "detail": "{\"ms\":10122,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
+   "detail": "{\"ms\":10087,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
   },
   {
    "id": "WR-no-shift",
@@ -1558,13 +1666,13 @@
    "id": "WR-replay",
    "name": "Replay starts the sequence again from its beginning",
    "result": "PASS",
-   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1433.361999999935}"
+   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1416.6839999990373}"
   },
   {
    "id": "WR-pause",
    "name": "Pause freezes it (the clock stands still and two screenshots half a second apart are identical) and the button becomes Play; Play, from the keyboard, carries on from the same moment",
    "result": "PASS",
-   "detail": "{\"pa\":\"paused\",\"t1\":1483.2619999999358,\"t2\":1483.2619999999358,\"t3\":1749.9699999996653,\"same\":true}"
+   "detail": "{\"pa\":\"paused\",\"t1\":1466.6319999990378,\"t2\":1466.6319999990378,\"t3\":1733.37199999958,\"same\":true}"
   },
   {
    "id": "WR-once",
@@ -1594,13 +1702,13 @@
    "id": "W-budgets",
    "name": "home ≤ 50 KB, site.js ≤ 8 KB, theme-init.js ≤ 512 B, three preloaded Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB, Intake’s screenshots ≤ 640 KB",
    "result": "PASS",
-   "detail": "{\"home\":50532,\"js\":6213,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":1322364,\"maxCapture\":70974,\"intake\":513438}"
+   "detail": "{\"home\":50179,\"js\":6213,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":1322364,\"maxCapture\":70974,\"intake\":513438}"
   },
   {
    "id": "W-rails-390",
    "name": "at 390 px the product tiles, chapters and evidence words are sideways rails with every card in them, the last tile scrolls into view on focus, the page never scrolls sideways and the home page is under twenty screens",
    "result": "PASS",
-   "detail": "{\"tiles\":{\"scroll\":\"auto\",\"kids\":9,\"wider\":true},\"chapters\":{\"scroll\":\"auto\",\"kids\":4,\"wider\":true},\"states\":{\"scroll\":\"auto\",\"kids\":6,\"wider\":true},\"screens\":17.9,\"over\":0,\"hint\":true,\"seen\":true}"
+   "detail": "{\"tiles\":{\"scroll\":\"auto\",\"kids\":9,\"wider\":true},\"chapters\":{\"scroll\":\"auto\",\"kids\":4,\"wider\":true},\"states\":{\"scroll\":\"auto\",\"kids\":6,\"wider\":true},\"screens\":18.7,\"over\":0,\"hint\":true,\"seen\":true}"
   },
   {
    "id": "W-rails-desk",
@@ -1637,6 +1745,54 @@
    "name": "on every page at phone width, nothing marked hidden is drawn (the attribute wins over any class that sets display)",
    "result": "PASS",
    "detail": ""
+  },
+  {
+   "id": "WP-home",
+   "name": "the home page states the positioning and shows it: six family columns naming all seventeen capabilities, standing on “Shared engineering intelligence” and “One record”, above the nine core products",
+   "result": "PASS",
+   "detail": "{\"h2\":\"One platform. Six product families. Shared engineering intelligence.\",\"fams\":[\"/platform/operations\",\"/platform/design\",\"/platform/field\",\"/platform/infrastructure\",\"/platform/experience\",\"/platform/collaboration\"],\"names\":320,\"base\":\"Shared engineering intelligenceOne record\",\"bottoms\":[5800,5800,5800,5800,5800,5800],\"baseTop\":5800,\"tiles\":9}"
+  },
+  {
+   "id": "WP-plate",
+   "name": "/platform draws the platform as one figure: 17 blocks in 6 columns (5, 2, 2, 2, 3, 3), 9 core products and 8 further capabilities told apart and counted in the legend, the columns standing level on the six things they share and on one record",
+   "result": "PASS",
+   "detail": "{\"heights\":[5,2,2,2,3,3],\"bottoms\":[1036,1036,1036,1036,1036,1036],\"n\":17}"
+  },
+  {
+   "id": "WP-plate-links",
+   "name": "every block of the figure leads somewhere: a page of this site, or a catalogued launch into the demonstration that names the way back",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "WP-questions",
+   "name": "the six families are six questions, each naming its family page and where that family’s records go",
+   "result": "PASS",
+   "detail": "[\"/platform/operations\",\"/platform/design\",\"/platform/field\",\"/platform/infrastructure\",\"/platform/experience\",\"/platform/collaboration\"]"
+  },
+  {
+   "id": "WP-thread",
+   "name": "one issue is followed through all six families in ten numbered stops, each a catalogued launch into the demonstration with the way back to this section",
+   "result": "PASS",
+   "detail": "[{\"fam\":\"collaboration\",\"href\":\"https://empathia-demo.onrender.com/#/search?focus=Room:R-ATL-4-218&from=site&li=follow-support&back=%2Fplatform%23thread\",\"n\":\"1\"},{\"fam\":\"infrastructure\",\"href\":\"https://empathia-demo.onrender.com/#/voice/callpath/R-ATL-4-218?from=site&li=module-voice&back=%2Fplatform%23thread\",\"n\":\"2\"}]"
+  },
+  {
+   "id": "WP-families",
+   "name": "each of the six families has its own page: its name, its members, its own column marked in the platform figure with the other five beside it, the way up to the platform, and one action that opens a member in the demonstration",
+   "result": "PASS",
+   "detail": "[]"
+  },
+  {
+   "id": "WP-390",
+   "name": "at 390 px the figure is two columns, the questions and the path are one column, no page scrolls sideways, and every link in them is at least 24 px tall",
+   "result": "PASS",
+   "detail": "[{\"pg\":\"/\",\"over\":0,\"cols\":2,\"small\":0},{\"pg\":\"/platform\",\"over\":0,\"cols\":2,\"small\":0},{\"pg\":\"/platform/operations\",\"over\":0,\"cols\":2,\"small\":0},{\"pg\":\"/platform/infrastructure\",\"over\":0,\"cols\":2,\"small\":0}]"
+  },
+  {
+   "id": "WP-390-thread",
+   "name": "at 390 px each stop of the path has its number on the line at the left and its family above its title",
+   "result": "PASS",
+   "detail": "{\"numberLeftOfText\":true,\"familyAboveTitle\":true}"
   }
  ]
 }

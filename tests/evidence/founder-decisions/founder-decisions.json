@@ -1,5 +1,5 @@
 {
- "at": "2026-11-24T00:53:33.609Z",
+ "at": "2026-11-24T07:13:12.470Z",
  "pass": 9,
  "fail": 0,
  "results": [
@@ -37,13 +37,13 @@
    "id": "FD-06",
    "name": "the history shows both revisions, oldest first",
    "result": "PASS",
-   "detail": "1 · DRAFT 2026-11-24 00:53\nA bounded scope keeps the readiness report honest. | 2 · DECIDED 2026-11-24 00:53\nDecided after the pilot-scope review (synthetic)."
+   "detail": "1 · DRAFT 2026-11-24 07:13\nA bounded scope keeps the readiness report honest. | 2 · DECIDED 2026-11-24 07:13\nDecided after the pilot-scope review (synthetic)."
   },
   {
    "id": "FD-07",
    "name": "the decision is persisted on the platform (read back through the API with the same session)",
    "result": "PASS",
-   "detail": "{\"items\":[{\"id\":\"18c519c9-d756-4ca2-a343-60d064cf5495\",\"code\":\"FD-0001\",\"title\":\"Pilot scope: one building first (synthetic)\",\"area\":\"commercial\",\"status\":\"DECIDED\",\"revision\":2,\"created_at\":\"2026-11-"
+   "detail": "{\"items\":[{\"id\":\"7e5863ee-14d4-4ff5-a056-4f77b319f82e\",\"code\":\"FD-0001\",\"title\":\"Pilot scope: one building first (synthetic)\",\"area\":\"commercial\",\"status\":\"DECIDED\",\"revision\":2,\"created_at\":\"2026-11-"
   },
   {
    "id": "FD-08",
