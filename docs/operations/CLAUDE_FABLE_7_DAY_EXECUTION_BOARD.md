@@ -38,7 +38,7 @@ demo-launch 13/13; demo-searchbar 120/120.
 | — | E3-D3 experimental estimate | DONE | Measurements lead; the estimate is marked experimental on the page, the website and in the test |
 | — | E3-D1 families | DONE | Six families, seventeen capabilities, all built; `#/families`; website `/products#families` with catalogued launches |
 | — | E3-D5 GitHub CI repair | PREPARED, NOT MERGED | Branch `ci/e3-d5-founder-studio-private-store`, draft pull request 3; the repaired workflow passed the build step on GitHub for the first time since 17 Nov; result of its test run is recorded on the pull request |
-| — | E3-D4 isolated staging previews | TO DO after a passing exact-commit regression | No preview has been created; the canonical Next sites are unchanged at fe30ba9d |
+| — | E3-D4 isolated staging previews | See `docs/releases/STAGING_PREVIEW_E3.md` | Created only from a commit whose exact-commit regression passed; the canonical Next sites are unchanged at fe30ba9d |
 | — | Repository visibility audit | DONE, reported privately | Not committed (it would be a public index of sensitive material). Nothing was changed. Open decision E3-D6 |
 
 ### Regression on the day's work
@@ -48,7 +48,7 @@ demo-launch 13/13; demo-searchbar 120/120.
 | All non-browser suites after the UC / Voice Administrator change (3cea0f52) | PASS 155 · FAIL 0 |
 | Exact-commit regression started on 3cea0f52 | **STOPPED after part 1 of 5, not a result.** Part 1: PASS 57 · FAIL 1 · NOT_RUN 1. The failure was `demo-worlds` W-27, which still counted sixteen View-as roles; corrected in the next commit with the reason. The run was stopped so that one full regression runs on the commit that also holds the five modules |
 | Exact-commit regression started on 24da3050 (the five modules) | **STOPPED in part 1 of 5, not a result.** 47 of 48 suites run had passed; `demo-room-jumps` failed: the room row now lists Calling, and the CallPath did not carry the row back. Both were real: the page now carries the row, and the suite's list of places names VOICE, with the reason |
-| Exact-commit regression on the commit that follows | See `tests/evidence/TEST_RESULTS.md` at the evidence commit. Until that file names this commit, the full regression is NOT RUN |
+| **Exact-commit regression on 8597d2ea** (build, five parts with the browser and Founder Studio suites, merge; run alone) | **PASS 291 · FAIL 0 · NOT_RUN 2.** The two not run are named with their reasons: the ML research prototype (its dataset is not generated in this workspace) and the full decode of every film (run with `--films` before a media release). Evidence: `tests/evidence/TEST_RESULTS.md` and `.json`, which name the commit |
 
 ## Days 3–7
 

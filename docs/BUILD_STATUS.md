@@ -11,8 +11,8 @@ Branch `v18/continuation` (draft pull request 2). Production and the two Next si
 nothing from this sprint is deployed. Day by day, with evidence: `docs/operations/CLAUDE_FABLE_7_DAY_EXECUTION_BOARD.md`.
 State of every module and journey: `docs/audit/PARITY_LEDGER.csv`. Decisions: `docs/handoff/FOUNDER_APPROVALS_AND_OPEN_DECISIONS.md`.
 Built so far, all SIMULATED on synthetic data: VOICE (with the corporate page), FLOW, MissionProof, PRISM, SENTINEL, ACCORD, FORGE,
-OMNIPRESENCE, the UC / Voice Administrator role and the six product families. Full regression result for the latest commit:
-`tests/evidence/TEST_RESULTS.md` (NOT RUN until that file names the commit). GitHub CI repair: prepared on its own branch, not merged.
+OMNIPRESENCE, the UC / Voice Administrator role and the six product families. Last exact-commit regression: 8597d2ea, PASS 291 · FAIL 0 · NOT_RUN 2 (24 Nov 2026; `tests/evidence/TEST_RESULTS.md`). Commits after it are NOT RUN
+until that file names them. GitHub CI repair: prepared on its own branch, not merged.
 
 ## Earlier: restoration release candidate (2026-10-31, frozen)
 

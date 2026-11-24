@@ -1,13 +1,13 @@
 {
   "label": "audit",
-  "at": "2026-11-20T18:24:47.182Z",
+  "at": "2026-11-24T02:07:24.462Z",
   "widths": [
     320,
     390,
     768,
     1440
   ],
-  "pagesChecked": 232,
+  "pagesChecked": 236,
   "method": "in-house Playwright rules A1–A10 (not axe-core)",
   "totals": {
     "P0": 0,

@@ -1,16 +1,16 @@
 {
- "at": "2026-11-20T19:21:22.025Z",
+ "at": "2026-11-24T01:46:48.534Z",
  "scheme": "light",
- "pass": 269,
+ "pass": 272,
  "fail": 0,
  "notRun": 0,
- "tests": 269,
+ "tests": 272,
  "results": [
   {
    "id": "W-00",
    "name": "the sitemap lists the pages",
    "result": "PASS",
-   "detail": "/ /platform /products /products/mission-control /products/lite /products/pro /products/search-party /products/servicehands /products/commissioning /products/apex /products/field-intelligence /products/learn /solutions /experiences /how-it-works /films /technology /proof /trust /founder /about /collabora-sing /fieldlink /intake /pricing /pricing/catalogue /pilots /request-demo /pilot-partners /cont"
+   "detail": "/ /platform /products /products/mission-control /products/lite /products/pro /products/search-party /products/servicehands /products/commissioning /products/apex /products/field-intelligence /products/learn /solutions /experiences /how-it-works /films /technology /proof /trust /founder /about /collabora-sing /voice /fieldlink /intake /pricing /pricing/catalogue /pilots /request-demo /pilot-partner"
   },
   {
    "id": "W-desktop-/",
@@ -28,7 +28,7 @@
    "id": "W-desktop-/products",
    "name": "/products answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine core products, one record\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-desktop-/products/mission-control",
@@ -145,6 +145,12 @@
    "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collabora-SING\",\"h1n\":1,\"broken\":[]}"
   },
   {
+   "id": "W-desktop-/voice",
+   "name": "/voice answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Calling you can explain\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
    "id": "W-desktop-/fieldlink",
    "name": "/fieldlink answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
@@ -238,7 +244,7 @@
    "id": "W-tablet-/products",
    "name": "/products answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine core products, one record\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-tablet-/products/mission-control",
@@ -355,6 +361,12 @@
    "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collabora-SING\",\"h1n\":1,\"broken\":[]}"
   },
   {
+   "id": "W-tablet-/voice",
+   "name": "/voice answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Calling you can explain\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
    "id": "W-tablet-/fieldlink",
    "name": "/fieldlink answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
@@ -448,7 +460,7 @@
    "id": "W-phone-/products",
    "name": "/products answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
-   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine products, one record\",\"h1n\":1,\"broken\":[]}"
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Nine core products, one record\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/products/mission-control",
@@ -563,6 +575,12 @@
    "name": "/collabora-sing answers with a title, a description, one h1 and no sideways scroll",
    "result": "PASS",
    "detail": "{\"status\":200,\"over\":0,\"h1\":\"Collabora-SING\",\"h1n\":1,\"broken\":[]}"
+  },
+  {
+   "id": "W-phone-/voice",
+   "name": "/voice answers with a title, a description, one h1 and no sideways scroll",
+   "result": "PASS",
+   "detail": "{\"status\":200,\"over\":0,\"h1\":\"Calling you can explain\",\"h1n\":1,\"broken\":[]}"
   },
   {
    "id": "W-phone-/fieldlink",
@@ -904,7 +922,7 @@
    "id": "W-founder-1440",
    "name": "founder section at 1440: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:35177/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41039/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-click",
@@ -922,13 +940,13 @@
    "id": "W-founder-768",
    "name": "founder section at 768: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:35177/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41039/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-390",
    "name": "founder section at 390: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point, stacked",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:35177/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41039/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-rooms-/",
@@ -1300,7 +1318,7 @@
    "id": "WC-play",
    "name": "pressing play plays the 1280 × 776, 35-second film from this site, with no sound decoded, and it can be sought to its last scene",
    "result": "PASS",
-   "detail": "{\"can\":true,\"t\":1.806953,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.263259}"
+   "detail": "{\"can\":true,\"t\":1.813581,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.163339}"
   },
   {
    "id": "WC-label",
@@ -1310,7 +1328,7 @@
   },
   {
    "id": "WC-only-here",
-   "name": "no page other than /collabora-sing (31 pages and the not-found page checked), and no script or stylesheet, references the film's key or files; films.json keeps it exclusive to this section",
+   "name": "no page other than /collabora-sing (32 pages and the not-found page checked), and no script or stylesheet, references the film's key or files; films.json keeps it exclusive to this section",
    "result": "PASS",
    "detail": ""
   },
@@ -1522,7 +1540,7 @@
    "id": "WR-ten-seconds",
    "name": "the sequence lasts ten seconds (9.6 to 10.6 s measured) and then settles to the resting composition by itself: no attribute, no animation left, only Replay offered",
    "result": "PASS",
-   "detail": "{\"ms\":10035,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
+   "detail": "{\"ms\":10122,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
   },
   {
    "id": "WR-no-shift",
@@ -1540,13 +1558,13 @@
    "id": "WR-replay",
    "name": "Replay starts the sequence again from its beginning",
    "result": "PASS",
-   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1400.0300000004559}"
+   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1433.361999999935}"
   },
   {
    "id": "WR-pause",
    "name": "Pause freezes it (the clock stands still and two screenshots half a second apart are identical) and the button becomes Play; Play, from the keyboard, carries on from the same moment",
    "result": "PASS",
-   "detail": "{\"pa\":\"paused\",\"t1\":1450.014000000456,\"t2\":1450.014000000456,\"t3\":1683.405999999824,\"same\":true}"
+   "detail": "{\"pa\":\"paused\",\"t1\":1483.2619999999358,\"t2\":1483.2619999999358,\"t3\":1749.9699999996653,\"same\":true}"
   },
   {
    "id": "WR-once",
@@ -1576,7 +1594,7 @@
    "id": "W-budgets",
    "name": "home ≤ 50 KB, site.js ≤ 8 KB, theme-init.js ≤ 512 B, three preloaded Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB, Intake’s screenshots ≤ 640 KB",
    "result": "PASS",
-   "detail": "{\"home\":50519,\"js\":6213,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":1322364,\"maxCapture\":70974,\"intake\":513438}"
+   "detail": "{\"home\":50532,\"js\":6213,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":1322364,\"maxCapture\":70974,\"intake\":513438}"
   },
   {
    "id": "W-rails-390",
