@@ -18,7 +18,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
+import { stallsBetween as stallsIn, rerunAfterStall } from './dev/stalls.mjs';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -46,6 +47,12 @@ const RUN_TMP = mergeArg ? null : fs.mkdtempSync(path.join(os.tmpdir(), 'empathi
 // It has the temp directory's own permissions (anyone may create, only the owner may remove): the deployment rehearsal starts a database
 // as another user, which puts its socket there.
 if (RUN_TMP) { fs.chmodSync(RUN_TMP, 0o1777); process.env.TMPDIR = RUN_TMP; process.on('exit', () => { if (!has('--keep-tmp')) fs.rmSync(RUN_TMP, { recursive: true, force: true }); }); for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => process.exit(130)); }
+// ---- stalls: a small program beside the run notes every time the machine stops running programs for two seconds or more
+// (scripts/dev/stall-watch.mjs). A suite that fails while the machine stalled is run once more, and both results are recorded; a suite
+// that fails on a machine that kept running is a failure and is not run again.
+const STALL_FILE = RUN_TMP ? path.join(RUN_TMP, 'stalls.jsonl') : null;
+if (STALL_FILE) { const w = spawn(process.execPath, [path.join(root, 'scripts/dev/stall-watch.mjs'), STALL_FILE], { stdio: ['pipe', 'ignore', 'ignore'] }); w.unref(); process.on('exit', () => { try { w.stdin.end(); w.kill(); } catch { /* already gone */ } }); }
+const stallsBetween = (t0, t1) => stallsIn(STALL_FILE, t0, t1);
 let seq = 0;
 const suites = [];
 const tap = (out) => ({ tests: Number(/^# tests (\d+)/m.exec(out)?.[1] ?? NaN), pass: Number(/^# pass (\d+)/m.exec(out)?.[1] ?? NaN), fail: Number(/^# fail (\d+)/m.exec(out)?.[1] ?? NaN) });
@@ -63,16 +70,20 @@ function suite(name, kind, cmd, args, parse, opts = {}) {
   seq += 1; if (mergeArg || (PART && (seq - PART.n) % PART.of !== 0)) return;
   if (ONLY && !name.includes(ONLY)) return;
   if (opts.skip) { suites.push({ suite: name, kind, result: 'NOT_RUN', why: opts.skip }); console.log(`NOT_RUN  ${name} — ${opts.skip}`); return; }
-  const t0 = Date.now();
-  const r = spawnSync(cmd, args, { cwd: opts.cwd || root, encoding: 'utf8', maxBuffer: 256 << 20, timeout: opts.timeout || 600000, env: { ...process.env, LOG_LEVEL: 'error' } });
-  const out = `${r.stdout}\n${r.stderr}`;
-  const c = parse(out);
+  let t0 = Date.now();
+  const once = () => spawnSync(cmd, args, { cwd: opts.cwd || root, encoding: 'utf8', maxBuffer: 256 << 20, timeout: opts.timeout || 600000, env: { ...process.env, LOG_LEVEL: 'error' } });
+  let r = once(); let out = `${r.stdout}\n${r.stderr}`; let c = parse(out); let stalled = stallsBetween(t0, Date.now()); let first = null;
+  // one more run, only for a failure during which the machine itself stalled; the first attempt stays in the record
+  if (rerunAfterStall(r.status !== 3 && !(r.status === 0 && c.fail === 0 && c.tests > 0), stalled)) {
+    first = { result: 'FAIL', ...c, seconds: Math.round((Date.now() - t0) / 100) / 10, machineStalled: stalled, failed: out.split('\n').filter((l) => /not ok|FAIL|Error|assert/i.test(l)).slice(0, 6) };
+    console.log(`FAIL     ${name}  ${c.pass}/${c.tests}  while the machine stalled ${stalled.count} time(s), longest ${(stalled.longestMs / 1000).toFixed(1)} s: run once more`);
+    t0 = Date.now(); r = once(); out = `${r.stdout}\n${r.stderr}`; c = parse(out); stalled = stallsBetween(t0, Date.now()); }
   // a suite that says it could not run (exit 3 and a line starting NOT RUN) is NOT_RUN with its own reason: never PASS, and not a FAIL that hides why
   const nr = r.status === 3 ? /^NOT RUN [^\n]*?— ([^\n]+)/m.exec(out) : null;
   if (nr) { suites.push({ suite: name, kind, result: 'NOT_RUN', why: nr[1] }); console.log(`NOT_RUN  ${name} — ${nr[1]}`); return; }
   const result = r.status === 0 && c.fail === 0 && c.tests > 0 ? 'PASS' : 'FAIL';
-  suites.push({ suite: name, kind, result, ...c, seconds: Math.round((Date.now() - t0) / 100) / 10, command: [path.relative(root, cmd) || cmd, ...args.map((a) => a.replace(root + '/', ''))].join(' ') });
-  console.log(`${result.padEnd(7)}  ${name}  ${c.pass}/${c.tests}  (${((Date.now() - t0) / 1000).toFixed(1)} s)`);
+  suites.push({ suite: name, kind, result, ...c, seconds: Math.round((Date.now() - t0) / 100) / 10, command: [path.relative(root, cmd) || cmd, ...args.map((a) => a.replace(root + '/', ''))].join(' '), ...(stalled ? { machineStalled: stalled } : {}), ...(first ? { firstAttempt: first } : {}) });
+  console.log(`${result.padEnd(7)}  ${name}  ${c.pass}/${c.tests}  (${((Date.now() - t0) / 1000).toFixed(1)} s)${first ? '  [second run; the first failed while the machine stalled]' : stalled ? `  [machine stalled ${stalled.count}×, longest ${(stalled.longestMs / 1000).toFixed(1)} s]` : ''}`);
   if (result === 'FAIL') console.log(out.split('\n').filter((l) => /not ok|FAIL|Error|assert/i.test(l)).slice(0, 12).join('\n'));
 }
 
@@ -204,7 +215,7 @@ suite('deploy: public static sites under the declared headers', 'deploy', node, 
 suite('security: public sites (headers, build chain, servers, dist)', 'security', node, ['--test', 'tests/security/public-sites.test.mjs'], tap);
 suite('browser: public sites security (CSP in the page, no request leaves, injection, tampering, View-as)', 'browser', node, ['tests/browser/public-security.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) && fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'public sites not built (node scripts/build.mjs --public)' }) : { skip: 'pass --browser' });
 // founder 24 Nov 05:32: a working run cannot change the evidence of record; failed runs are kept; the temp directory is cleaned
-suite('unit: evidence of record (a working run or a suite run by hand leaves tests/evidence and the ledger untouched; a run of record cannot be narrowed; temp cleanup removes only test directories)', 'unit', node, ['--test', 'tests/unit/evidence-isolation.test.mjs'], tap);
+suite('unit: evidence of record (a working run or a suite run by hand leaves tests/evidence and the ledger untouched; a run of record cannot be narrowed; temp cleanup removes only test directories; machine stalls are measured and only a failure during one is run a second time)', 'unit', node, ['--test', 'tests/unit/evidence-isolation.test.mjs'], tap);
 suite('unit: the public exposure audit catches each planted finding (secrets, maps, contact data, machine paths, embedded data, private markers)', 'unit', node, ['--test', 'tests/unit/public-exposure.test.mjs'], tap);
 suite('unit: link previews: both share cards are 1200 × 630, and the tags name the image only with a public address', 'unit', node, ['--test', 'tests/unit/share-meta.test.mjs'], tap);
 // founder 19 Nov 06:08: the public builds checked for secrets, source maps, embedded data and anything that is not a public file
@@ -228,13 +239,13 @@ if (mergeArg) { const M = Number(mergeArg[1]); const parts = Array.from({ length
   suites.push(...parts.flatMap((x) => x.suites)); }
 const sum = { at: new Date().toISOString(), node: process.version, commit: head, pass: suites.filter((s) => s.result === 'PASS').length, fail: suites.filter((s) => s.result === 'FAIL').length, notRun: suites.filter((s) => s.result === 'NOT_RUN').length, suites };
 fs.writeFileSync(path.join(out, 'TEST_RESULTS.json'), JSON.stringify(sum, null, 2));
-fs.writeFileSync(path.join(out, 'TEST_RESULTS.md'), ['# Test results', '', `Run ${sum.at} on Node ${sum.node}. PASS ${sum.pass} · FAIL ${sum.fail} · NOT_RUN ${sum.notRun} suites.`, '', '| Suite | Kind | Result | Passed / tests | Seconds | Why not run |', '|---|---|---|---|---|---|',
-  ...suites.map((s) => `| ${s.suite} | ${s.kind} | ${s.result} | ${s.result === 'NOT_RUN' ? '—' : `${s.pass}/${s.tests}`} | ${s.seconds ?? '—'} | ${s.why ?? ''} |`)].join('\n') + '\n');
+fs.writeFileSync(path.join(out, 'TEST_RESULTS.md'), ['# Test results', '', `Run ${sum.at} on Node ${sum.node}. PASS ${sum.pass} · FAIL ${sum.fail} · NOT_RUN ${sum.notRun} suites.${suites.some((s) => s.firstAttempt) ? ` ${suites.filter((s) => s.firstAttempt).length} suite(s) were run a second time because the machine stalled during a failed first attempt; both attempts are in the notes.` : ''}`, '', '| Suite | Kind | Result | Passed / tests | Seconds | Notes (why not run; machine stalls; a second run) |', '|---|---|---|---|---|---|',
+  ...suites.map((s) => `| ${s.suite} | ${s.kind} | ${s.result} | ${s.result === 'NOT_RUN' ? '—' : `${s.pass}/${s.tests}`} | ${s.seconds ?? '—'} | ${[s.why, s.firstAttempt ? `SECOND RUN. The first attempt FAILED ${s.firstAttempt.pass}/${s.firstAttempt.tests} while the machine stalled ${s.firstAttempt.machineStalled.count} time(s), longest ${(s.firstAttempt.machineStalled.longestMs / 1000).toFixed(1)} s` : '', s.machineStalled ? `machine stalled ${s.machineStalled.count} time(s) during this run, longest ${(s.machineStalled.longestMs / 1000).toFixed(1)} s` : ''].filter(Boolean).join('; ')} |`)].join('\n') + '\n');
 // ---- the ledger: one line for every finished run of record, pass or fail, so a later pass does not erase an earlier failure; and a
 // failed run's results kept under its commit (tests/evidence itself is overwritten by the next run)
 if (RECORD && !PART) {
   const failed = suites.filter((s) => s.result === 'FAIL').map((s) => s.suite); const notRun = suites.filter((s) => s.result === 'NOT_RUN').map((s) => ({ suite: s.suite, why: s.why || '' }));
-  fs.appendFileSync(path.join(root, 'tests/REGRESSION_LEDGER.jsonl'), JSON.stringify({ at: sum.at, commit: head, ci: process.env.CI === 'true', pass: sum.pass, fail: sum.fail, notRun: sum.notRun, failed, notRunSuites: notRun }) + '\n');
+  fs.appendFileSync(path.join(root, 'tests/REGRESSION_LEDGER.jsonl'), JSON.stringify({ at: sum.at, commit: head, ci: process.env.CI === 'true', pass: sum.pass, fail: sum.fail, notRun: sum.notRun, failed, notRunSuites: notRun, secondRunAfterStall: suites.filter((s) => s.firstAttempt).map((s) => ({ suite: s.suite, firstAttempt: `${s.firstAttempt.pass}/${s.firstAttempt.tests}`, longestStallMs: s.firstAttempt.machineStalled.longestMs, second: s.result })), stalledSuites: suites.filter((s) => s.machineStalled).length }) + '\n');
   if (sum.fail) { const keep = path.join(root, 'tests/evidence-failed', `${head.slice(0, 8)}-${sum.at.replace(/[:.]/g, '-')}`); fs.mkdirSync(keep, { recursive: true }); for (const f of ['TEST_RESULTS.json', 'TEST_RESULTS.md']) fs.copyFileSync(path.join(out, f), path.join(keep, f)); console.log(`failed run kept in ${path.relative(root, keep)}`); }
 }
 console.log(`\nPASS ${sum.pass} · FAIL ${sum.fail} · NOT_RUN ${sum.notRun} — ${path.relative(root, path.join(out, 'TEST_RESULTS.md'))}${RECORD ? '' : '  (a working run: tests/evidence is unchanged; pass --record for a run of record)'}`);

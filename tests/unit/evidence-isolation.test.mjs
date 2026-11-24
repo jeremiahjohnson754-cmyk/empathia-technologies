@@ -9,6 +9,8 @@
 //          and removes its temp directory
 //   EV-04  a run of record cannot be narrowed with --only
 //   EV-05  the cleanup script knows the temp prefixes the tests use and removes nothing else
+//   EV-06  the stall watcher writes a line when its process is held for longer than its limit, and none otherwise
+//   EV-07  a failed suite is run a second time only when the machine stalled three seconds or more while it ran
 //   node --test tests/unit/evidence-isolation.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -20,6 +22,8 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { evidenceRoot, ofRecord } from '../lib/evidence.mjs';
 import { prefixes } from '../../scripts/dev/clean-test-temp.mjs';
+import { stallsBetween, rerunAfterStall, RERUN_AFTER_STALL_MS } from '../../scripts/dev/stalls.mjs';
+import { spawn } from 'node:child_process';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const sha = (f) => (fs.existsSync(f) ? crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex') : 'absent');
@@ -85,4 +89,30 @@ test('EV-05 the cleanup removes only directories the tests make', () => {
   assert.ok(fs.existsSync(fresh), 'one modified recently is left: a run may be using it');
   assert.ok(fs.existsSync(other) && fs.existsSync(near) && fs.existsSync(file), 'anything else is left');
   fs.rmSync(box, { recursive: true, force: true });
+});
+
+// 24 Nov 2026: three checks that measure time failed across two regressions (a focus read 400 ms after a key press, a frame rate one
+// below its floor, a browser timeout) and passed when run again on the same commit; the session had been paused in that hour, and
+// GitHub's run of the same commit passed. Nothing recorded whether the machine had stalled. Now something does.
+test('EV-06 the stall watcher notes when its process is held, and only then', async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ev06-')); const file = path.join(dir, 'stalls.jsonl');
+  const w = spawn(process.execPath, [path.join(repo, 'scripts/dev/stall-watch.mjs'), file, '1000'], { stdio: ['pipe', 'ignore', 'ignore'] });
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  await wait(1500); assert.equal(fs.existsSync(file), false, 'a machine that keeps running writes nothing');
+  const t0 = Date.now(); process.kill(w.pid, 'SIGSTOP'); await wait(2200); process.kill(w.pid, 'SIGCONT'); await wait(900); const t1 = Date.now();
+  const got = stallsBetween(file, t0, t1); assert.ok(got, 'holding the process for 2.2 s is written down'); assert.equal(got.count, 1); assert.ok(got.longestMs >= 1000 && got.longestMs < 4000, `the gap is measured: ${got.longestMs} ms`);
+  assert.equal(stallsBetween(file, t1 + 60000, t1 + 120000), null, 'a stall is not attributed to a suite that ran at another time');
+  w.stdin.end(); await wait(300); assert.notEqual(w.exitCode, null, 'the watcher ends when the program that started it closes its input'); fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test('EV-07 a second run is only for a failure during a stall of three seconds or more', () => {
+  assert.equal(RERUN_AFTER_STALL_MS, 3000);
+  assert.equal(rerunAfterStall(true, { count: 1, longestMs: 3000 }), true, 'failed, and the machine stalled 3 s');
+  assert.equal(rerunAfterStall(true, { count: 4, longestMs: 2999 }), false, 'shorter stalls do not excuse a failure');
+  assert.equal(rerunAfterStall(true, null), false, 'a failure on a machine that kept running is a failure');
+  assert.equal(rerunAfterStall(false, { count: 1, longestMs: 60000 }), false, 'a pass is never run again');
+  assert.equal(stallsBetween(path.join(repo, 'no-such-file.jsonl'), 0, Date.now()), null);
+  const src = fs.readFileSync(path.join(repo, 'scripts/test.mjs'), 'utf8');
+  assert.match(src, /if \(rerunAfterStall\(/, 'the runner asks this rule'); assert.equal((src.match(/once\(\)/g) || []).length, 2, 'the runner starts a suite in two places only: the first attempt and the one second run');
+  assert.match(src, /firstAttempt/, 'and keeps the first attempt in the record');
 });

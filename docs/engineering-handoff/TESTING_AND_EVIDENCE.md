@@ -45,6 +45,23 @@ a result: the cause is fixed with its reason, committed, and the regression is r
 - `node scripts/dev/clean-test-temp.mjs` lists, and with `--apply` removes, directories left by suites run by hand. It removes only
   names made of a prefix the repository's own tests give `mkdtemp` plus six characters, not modified for two hours.
 
+## When the machine stalls
+
+Checks that measure time (a frame rate, a focus that must arrive, a page that must load within a limit) fail when the machine itself
+stops running programs for a moment: a paused or starved virtual machine. On 24 Nov 2026 three such checks failed across two
+regressions and passed when run again on the same commit, and GitHub's run of the same commit passed; nothing had recorded whether
+the machine stalled.
+
+- `scripts/dev/stall-watch.mjs` runs beside every run started by `scripts/test.mjs` and writes a line whenever its half-second
+  timer fires two seconds or more late.
+- After each suite the runner reads which stalls overlapped it and records them with the suite (`machineStalled`).
+- A suite that **fails** while the machine stalled for **three seconds or more** is run **once** more. The first attempt stays in
+  the record (`firstAttempt`), the results table says "SECOND RUN", and the ledger lists it (`secondRunAfterStall`).
+- A suite that fails on a machine that kept running is a failure. It is not run again. No threshold was changed.
+
+This measures the machine; it does not prove why a check failed. A second run that passes says the first failure coincided with a
+stall, not that the product cannot fail that way.
+
 ## Suites not run, and why
 
 | Suite | Where it does not run | Reason | What covers the risk |
