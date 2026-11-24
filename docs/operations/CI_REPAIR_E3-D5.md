@@ -1,6 +1,6 @@
 # GitHub CI repair (founder decision E3-D5, 23 Nov 2026)
 
-**Status: PREPARED on the branch `ci/e3-d5-founder-studio-private-store`. NOT MERGED. Merging to `main` redeploys production and waits for the founder's separate approval.**
+**Status: PREPARED on the branch `ci/e3-d5-founder-studio-private-store`, and its fifth GitHub run is green (PASS 286 · FAIL 0 · NOT_RUN 4, the Founder Studio not covered). NOT MERGED. Merging to `main` redeploys production and waits for the founder's separate approval.**
 
 ## What was wrong
 
@@ -89,8 +89,34 @@ changed. `sharp` repaired the missing shield: the export suite went from 864 of 
 
 The gate step has still never run on GitHub, because it runs only after a matrix with no failure.
 
-**CI is still not green.** After the fifth commit the expected state is no failing suite and four NOT RUN (the three Founder Studio
-suites, named, and the film decode), and then the gate decides. This document will say what the fifth run did once it has finished.
+**CI was still not green after the fourth run.** After the fifth commit the expected state was no failing suite and four NOT RUN (the
+three Founder Studio suites, named, and the film decode), and then the gate decides.
+
+### The fifth run (run 45346565949, commit c34cbbed): PASS 286 · FAIL 0 · NOT_RUN 4, in 86 minutes. The run succeeded
+
+This is the first GitHub CI run to finish without a failure since 17 Nov 2026.
+
+| What | Result on the runner |
+|---|---|
+| LibreOffice 24.2.7.2 installed by the new step | `unit: export formats` 915 of 915 (it was 912 of 913; the conversions to PDF now run and are counted) |
+| The whole matrix | PASS 286 · FAIL 0 · NOT_RUN 4 |
+| The four NOT RUN, each named with its reason | browser: Founder Studio; e2e: founder town hall (Founder Edition); e2e: founder decisions (hosted studio over the API); media: full decode of every curated film |
+| The gate, run on GitHub for the first time, with `--private-store=absent` | `releasable: 286 PASS, 0 FAIL, 4 NOT_RUN (all allowed)`, followed by its own line: "this result does not cover the Founder Studio: 3 of its suites were NOT RUN here (no private store on this runner)" |
+| Evidence artifact uploaded by the run | `test-evidence-…`, 41 MB. It holds the public test evidence only; no step reads a secret or the private store |
+| Learn labs `LL-11` | Passed (29 of 29). It has failed once in five runs and stays read as intermittent; nothing was loosened |
+
+What this run does and does not say:
+
+- It says the public sites and packages pass on a clean GitHub runner at this branch's commit, with no test changed to get there. The
+  five commits changed the workflow, the runner's packages, the Python requirements and the pinned browser version.
+- It does **not** cover the Founder Studio. Those three suites are NOT RUN on GitHub by design and are run by the local exact-commit
+  regression, where the private store is.
+- It is a run of this branch, which is based on `main`. It is not a run of `v18/continuation`, and it is not a production check.
+- The run printed one warning that is not a failure: GitHub is retiring Node.js 20 for the `checkout`, `setup-node`, `setup-python` and
+  `upload-artifact` actions at the versions the workflow names. They ran. Moving them to newer versions is a later change, not made here.
+
+**State: the repair is complete on the branch and its CI run is green. It is NOT MERGED.** The commit that adds this section changes
+this document only; its own run appears on the pull request's checks.
 
 ## What merging does
 
