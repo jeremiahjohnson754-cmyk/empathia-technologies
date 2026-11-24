@@ -5,6 +5,7 @@
  * Opened from a CallPath (?from=voice&room=…&case=…) it offers the way back with the case kept.
  */
 import { PageHero, Notice, Tag, Card } from '@empathia/ui';
+import { Connected } from '../mission/Connected.js';
 import type { PageProps } from '../registry.types.js';
 import { canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
@@ -22,6 +23,7 @@ export default function FlowPage({ role, params, query }: PageProps) {
       <PageHero eyebrow="Empathia FLOW · read-only" title="The network your rooms depend on" product="pro" icon="network"
         lede="FLOW reads the same network records as the rest of Empathia and sorts what is known by layer: power and cabling, switching, uplinks, and the streams on top. Each claim says whether it was declared, modelled or observed, and what nobody has recorded."
         meta={[<Tag key="s" tone="info">Estate records</Tag>, <span key="n">{nodes.length} network nodes</span>]} />
+    <Connected id="flow" role={role} />
       <Notice tone="info"><b>Read-only.</b> FLOW changes no configuration and reads no live network. Timing, multicast and the WAN are not recorded in this estate, and say so.</Notice>
       <section className="vc-sec vc-two" aria-label="Network nodes">{nodes.map(({ n, v }) => (
         <Card key={n.id} title={n.label} sub={n.subtitle} icon="network" testId={`flow-node-${n.id}`}>
@@ -33,13 +35,15 @@ export default function FlowPage({ role, params, query }: PageProps) {
     </div>);
   }
   const v = linkView(nodeId, vcase);
-  if (!v) return (<><PageHero eyebrow="FLOW" title="This network node is not in the estate" lede="The address names a node the demonstration does not hold." product="pro" icon="network" /><Notice tone="warn"><a href="#/flow" data-testid="flow-unknown">Open the nodes the estate does hold</a></Notice></>);
+  if (!v) return (<><PageHero eyebrow="FLOW" title="This network node is not in the estate" lede="The address names a node the demonstration does not hold." product="pro" icon="network" />
+    <Connected id="flow" role={role} /><Notice tone="warn"><a href="#/flow" data-testid="flow-unknown">Open the nodes the estate does hold</a></Notice></>);
   const layers = (['L1', 'L2', 'L3', 'APP'] as NetLayer[]).map((l) => ({ l, claims: v.claims.filter((c) => c.layer === l) }));
   const back = fromVoice && opens(`#/voice/callpath/${fromVoice.id}`) ? `#/voice/callpath/${fromVoice.id}${vcase === 'degraded' ? '' : `?case=${vcase}`}` : null;
   return (<div className="vc" data-testid="flow-link" data-node={v.node.id}>
     <nav className="vc-crumb" aria-label="Where this is"><a href="#/flow">FLOW</a><span aria-hidden="true">›</span><span>{v.node.label}</span>{back ? <><span aria-hidden="true">·</span><a href={back} data-testid="flow-back-voice">Back to the CallPath of {fullName(fromVoice!)}</a></> : null}</nav>
     <PageHero eyebrow="FLOW · network dependencies · read-only" title={v.node.label} product="pro" icon="network" lede={`${v.node.subtitle}. What is recorded about this node, layer by layer, and what depends on it.`}
       meta={[<span key="r">{v.rooms.length} rooms</span>, <span key="d">{v.dependents} dependent records</span>]} />
+    <Connected id="flow" role={role} />
     <section className="vc-sec" aria-labelledby="fl-l-h"><h2 id="fl-l-h">By layer</h2>
       {layers.map(({ l, claims }) => (<div key={l} className="fl-layer" data-layer={l}><h3>{NET_LAYER[l]}</h3>
         <ul className="fl-claims">{claims.map((c) => (<li key={c.label} data-state={c.state}><p><State s={c.state} /> <b>{c.label}</b></p><p className="ui-muted">{c.source}</p>

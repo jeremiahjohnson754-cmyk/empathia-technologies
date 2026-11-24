@@ -56,10 +56,12 @@ Row by row, with evidence and what is missing: `docs/audit/PARITY_LEDGER.csv`. R
 Deployed against repository against historical: `docs/audit/DEPLOYED_VS_REPO_VS_HISTORICAL.md`. Media: `docs/audit/MEDIA_AND_RIGHTS.md`.
 Screens captured on a desktop and a phone: `docs/audit/e3-day2/`.
 
-## P0 list (after Day 2)
+## P0 list (after Day 2; items 1 and 2 updated 24 Nov)
 
-1. The Next sites still show the 20 Nov build. Staging previews of the new work wait for a passing exact-commit regression (E3-D4).
-2. Six journeys (J1, J2, J4, J5, J10, J12) run on existing screens but have not been walked step by step against the Enterprise 3.0 text.
+1. The Next sites still show the 20 Nov build. Two isolated staging previews show 8597d2ea (`docs/releases/STAGING_PREVIEW_E3.md`);
+   work after that reaches them only after its own exact-commit regression.
+2. CLOSED 24 Nov: all twelve journeys are walked hop by hop on real links (`docs/audit/JOURNEY_WALKS.md`). What a walk does not press
+   (a product's own state changes) is named per journey in `PARITY_LEDGER.csv`.
 3. No `/v1/...` API path, event or SDK contract exists for the eight capabilities; every one of them is a browser-side simulation.
 4. No guided all-module tour address.
 5. GitHub CI on `main` is red until the repair (draft pull request 3) is approved and merged.

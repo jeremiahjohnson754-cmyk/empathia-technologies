@@ -6,6 +6,7 @@
  * What a perspective sees is decided by the registry (voice.signalling): a technician reads the path without signalling-side detail.
  */
 import { PageHero, Notice, Tag, Segmented, Card } from '@empathia/ui';
+import { Connected } from '../mission/Connected.js';
 import type { PageProps } from '../registry.types.js';
 import { canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
@@ -28,6 +29,7 @@ export default function CallPathPage({ role, params, query, sees }: PageProps) {
   if (!room || !flow) {
     return (<>
       <PageHero eyebrow="VOICE · CallPath Digital Twin" title={room ? `No call flow is recorded for ${fullName(room)}` : 'This room is not in the estate'} lede="The demonstration holds call-flow records for two rooms. A room without a record is not shown as healthy: there is simply nothing to read." product="pro" icon="network" />
+    <Connected id="voice" role={role} />
       <Notice tone="warn"><span data-testid="voice-noflow">Call flow: <b>Not configured</b> for this room.</span> <a href={`#/voice/callpath/${VOICE_ROOM}`}>Open the CallPath of Atlas 4.218</a></Notice>
     </>);
   }
@@ -39,6 +41,7 @@ export default function CallPathPage({ role, params, query, sees }: PageProps) {
     <PageHero eyebrow="VOICE · CallPath Digital Twin · simulation" title={`CallPath: ${fullName(room)}`} product="pro" icon="network"
       lede="How a call from this room is meant to travel, what was observed on each hop of one session, and what is not known. Every value is synthetic."
       meta={[<span key="f">Call flow <b>{FLOW.id}</b></span>, <span key="c">Fixture clock <b>{FIXTURE_NOW.slice(0, 16).replace('T', ' ')} UTC</b></span>, <State key="s" s="SIMULATED" />]} />
+    <Connected id="voice" role={role} />
     {/* the room's places in the other products, the same row every room page carries (rooms/RoomJumps.tsx): the CallPath is one of them */}
     <RoomJumps roomId={room.id} here="voice" opens={opensFor(role)} />
     <Notice tone="info"><b>Simulation.</b> No real call, network, carrier or provider is read. {admin ? SESSION.privacy : 'Session and signalling detail are not shown in this perspective.'}</Notice>

@@ -11,6 +11,7 @@ import { OpsHead, param, personaOf } from '../hardening/kit.js';
 import { opsPath } from '../hardening/path.js';
 import * as S from '../workspace/store.js';
 import { ROOMS, roomOf, findingsOf, PROVENANCE_TEXT, SWAP, type RoomRec } from './rooms.js';
+import { JobJumps } from '../rooms/JobJumps.js';
 
 export const POLICY = { pan: [-30, 30], tilt: [-20, 10], levelDbfs: -30, windowMin: 20, maxActions: 4 } as const;
 export const MAX_STEP = 60;
@@ -70,7 +71,7 @@ export default function FiScan({ perspective, hash }: WorkspaceProps) {
             <ul className="ops-list" data-testid="fs-actions">{actions.map((a) => <li key={`${a.step}${a.what}${a.value}`} className={a.step > step ? 'ops-meta' : a.ok ? 'ops-ok' : 'ops-fail'}><b>{a.what} {a.value}</b> <span className="ops-meta">step {a.step} · {a.step > step ? 'not yet' : a.why}</span></li>)}</ul></section>
           <section className="ops-card" aria-labelledby="fs-e-h"><h2 id="fs-e-h">Use a finding as evidence</h2>
             <p className="ops-note">Findings become evidence from a work order, by the assigned technician, with their provenance. {open.length ? 'Open work in this room:' : 'There is no open work order in this room.'}</p>
-            {open.length ? <ul className="ops-list">{open.map((i) => <li key={i.id}><a href={`#/servicehands/wo/${i.workOrderId}`}>{i.workOrderId} · {i.title}</a> <Tag tone="info">{i.state}</Tag></li>)}</ul> : null}</section>
+            {open.length ? <ul className="ops-list">{open.map((i) => <li key={i.id}><a href={`#/servicehands/wo/${i.workOrderId}`}>{i.workOrderId} · {i.title}</a> <Tag tone="info">{i.state}</Tag><JobJumps inc={i} here="scan" perspective={perspective} /></li>)}</ul> : null}</section>
         </div>
       </div>
     </section>

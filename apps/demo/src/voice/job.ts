@@ -5,6 +5,7 @@
  * record and says what it does and does not prove. No React: the unit suite runs the whole journey on the engine through it.
  */
 import type { Workspace, Incident, WorkOrder } from '../workspace/store.js';
+import { SHARED_LINK, caseView, flowFor, outsidePolicy, type CaseId, type EvidenceState } from './model.js';
 
 export const VOICE_TITLE = 'Calling problem';
 export interface JobStep { key: 'reported' | 'assigned' | 'evidence' | 'verified'; label: string; done: boolean; detail: string }
@@ -25,4 +26,23 @@ export function jobView(w: Workspace, roomId: string): JobView | null {
   const says = verified ? 'The repair is verified by an independent reviewer. That closes the job; it does not pass an acceptance test, and Assurance is unchanged by it.'
     : 'The job is open. Nothing about the room’s calling is proved yet.';
   return { incident, workOrder, steps, verified, closedWithoutVerification, says };
+}
+
+/**
+ * What the room's calling evidence says now, for the products that read it beside their own records: Assurance (evidence beside the
+ * accepted baseline) and APEX (evidence beside its seven layers). One rule decides which session is the newest: the later simulated
+ * session exists only once the repair has been verified by a second person; until then the degraded session is the newest on record.
+ * Nothing here changes a baseline, a test result or a hypothesis: it is a reading, with its state and the way to the CallPath.
+ */
+export type CallingState = 'OUTSIDE' | 'WITHIN' | 'UNKNOWN';
+export const CALLING_WORD: Record<CallingState, string> = { OUTSIDE: 'Outside the declared targets', WITHIN: 'Within the declared targets', UNKNOWN: 'Unknown' };
+export interface CallingReading { state: CallingState; vcase: CaseId; basis: EvidenceState; says: string; job: JobView | null; href: string; uplink: string | null }
+export function callingReading(w: Workspace, roomId: string): CallingReading | null {
+  if (!flowFor(roomId)) return null;
+  const job = jobView(w, roomId); const vcase: CaseId = job?.verified ? 'retest' : 'degraded'; const v = caseView(vcase, roomId);
+  const href = `#/voice/callpath/${roomId}${vcase === 'degraded' ? '' : `?case=${vcase}`}`; const uplink = SHARED_LINK.rooms.includes(roomId) ? `#/flow/link/${SHARED_LINK.to}?from=voice&room=${roomId}${vcase === 'degraded' ? '' : `&case=${vcase}`}` : null;
+  if (!v.observed || v.verdict === 'UNKNOWN') return { state: 'UNKNOWN', vcase, basis: 'UNKNOWN', job, href, uplink, says: 'A call flow is declared for this room and no session has been observed. Nothing is known about its calling.' };
+  if (v.verdict === 'WITHIN_POLICY') return { state: 'WITHIN', vcase, basis: 'SIMULATED', job, href, uplink, says: `After the repair verified by ${job!.incident.verifiedBy} (${job!.incident.id}), a later simulated session is within the declared calling targets in every window.` };
+  const out = v.samples.filter((x) => outsidePolicy(x).length).length;
+  return { state: 'OUTSIDE', vcase, basis: 'SIMULATED', job, href, uplink, says: `The newest simulated session is outside the declared calling targets in ${out} of ${v.samples.length} windows. ${job ? `Job ${job.incident.id} is ${job.incident.state.toLowerCase().replace(/_/g, ' ')}${job.verified ? ' and verified' : ''}.` : 'No job has been raised for it.'}` };
 }

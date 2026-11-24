@@ -130,6 +130,9 @@ test('J6B steps 5 and 6 on the real service engine: assigned, evidence, an indep
   const ok = (x, l) => assert.equal(x, null, `${l}: ${x && x.why.join('; ')}`);
   const w = S.seed(); const reh = [];
   assert.equal(J.jobView(w, V.VOICE_ROOM), null, 'no report, no job');
+  // what Assurance and APEX read back (24 Nov 2026): outside the targets with no job; unknown where nothing was observed; nothing for a room with no call flow
+  { const r0 = J.callingReading(w, V.VOICE_ROOM); assert.equal(r0.state, 'OUTSIDE'); assert.equal(r0.vcase, 'degraded'); assert.equal(r0.basis, 'SIMULATED'); assert.match(r0.says, /3 of 6 windows.*No job has been raised/); assert.equal(r0.href, `#/voice/callpath/${V.VOICE_ROOM}`); assert.ok(resolve(r0.uplink));
+    assert.equal(J.callingReading(w, V.OTHER_SITE_ROOM).state, 'UNKNOWN'); assert.equal(J.callingReading(w, V.OTHER_SITE_ROOM).uplink, null); assert.equal(J.callingReading(w, 'R-ATL-4-220'), null); }
   const before = MP.readiness(w, 'degraded', reh); assert.equal(before.deps.find((d) => d.id === 'calling').ready, 'AT_RISK'); assert.match(before.deps.find((d) => d.id === 'calling').why, /No job has been raised/);
   const made = S.raiseIncident(w, 'requestor', { roomId: V.VOICE_ROOM, roomName: 'Atlas 4.218 — Executive Boardroom', buildingKey: 'ATL', title: `${J.VOICE_TITLE}: audio breaking up`, summary: 'Reported from the room’s calling page.' });
   assert.ok(made.id, JSON.stringify(made)); let j = J.jobView(w, V.VOICE_ROOM); assert.equal(j.incident.id, made.id); assert.deepEqual(j.steps.map((s) => s.done), [true, false, false, false]);
@@ -142,6 +145,7 @@ test('J6B steps 5 and 6 on the real service engine: assigned, evidence, an indep
   ok(S.submitForVerification(w, 'service', made.id), 'submit');
   assert.ok(S.verify(w, 'service', made.id), 'the technician does not verify their own work');
   j = J.jobView(w, V.VOICE_ROOM); assert.equal(j.verified, false); assert.deepEqual(j.steps.map((s) => s.done), [true, true, true, false]);
+  assert.equal(J.callingReading(w, V.VOICE_ROOM).state, 'OUTSIDE', 'evidence handed over but not verified: Assurance and APEX still read the degraded session');
   // a job that is not verified leaves the mission where it was, whatever a later session shows
   assert.equal(MP.readiness(w, 'retest', reh).deps.find((d) => d.id === 'calling').ready, 'UNKNOWN');
   ok(S.verify(w, 'cxeng', made.id), 'verify'); j = J.jobView(w, V.VOICE_ROOM); assert.equal(j.verified, true); assert.equal(j.incident.verifiedBy !== 'service', true); assert.match(j.says, /does not pass an acceptance test/);
@@ -149,6 +153,8 @@ test('J6B steps 5 and 6 on the real service engine: assigned, evidence, an indep
   assert.equal(MP.readiness(w, 'degraded', reh).deps.find((d) => d.id === 'calling').ready, 'AT_RISK');
   const after = MP.readiness(w, 'retest', reh); const c = after.deps.find((d) => d.id === 'calling'); assert.equal(c.ready, 'READY'); assert.equal(c.basis, 'SIMULATED'); assert.match(c.why, /simulated evidence only/);
   assert.equal(after.deps.find((d) => d.id === 'uplink').ready, 'READY');
+  // Assurance and APEX now read the later session, because the repair is verified by a second person: within the targets, still simulated
+  { const r1 = J.callingReading(w, V.VOICE_ROOM); assert.equal(r1.state, 'WITHIN'); assert.equal(r1.vcase, 'retest'); assert.equal(r1.basis, 'SIMULATED'); assert.match(r1.says, /verified by cxeng/); assert.match(r1.href, /\?case=retest$/); }
   // the mission is still not ready: the host room has no accepted baseline and no rehearsal is recorded. Unknown and missing never count as ready.
   assert.equal(after.overall, 'NOT_READY'); assert.equal(after.deps.find((d) => d.id === 'host').ready, 'NOT_READY'); assert.equal(after.deps.find((d) => d.id === 'rehearsal').ready, 'NOT_READY');
   const withReh = MP.readiness(w, 'retest', [{ at: '2026-11-24T10:00:00Z', by: 'ops', note: 'full run' }]); assert.equal(withReh.deps.find((d) => d.id === 'rehearsal').ready, 'READY'); assert.equal(withReh.overall, 'NOT_READY', 'a rehearsal does not accept the host room');

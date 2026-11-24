@@ -7,12 +7,14 @@ something this environment does not have). Nothing here is production-ready, cer
 
 ## Latest: Enterprise 3.0 sprint (23–29 Nov 2026), in progress
 
-Branch `v18/continuation` (draft pull request 2). Production and the two Next sites are unchanged at the 20 Nov build (fe30ba9d);
-nothing from this sprint is deployed. Day by day, with evidence: `docs/operations/CLAUDE_FABLE_7_DAY_EXECUTION_BOARD.md`.
+Branch `v18/continuation` (draft pull request 2). Production and the two Next sites are unchanged at the 20 Nov build (fe30ba9d).
+Two isolated staging previews show 8597d2ea (`docs/releases/STAGING_PREVIEW_E3.md`); nothing else from this sprint is deployed. Day by day, with evidence: `docs/operations/CLAUDE_FABLE_7_DAY_EXECUTION_BOARD.md`.
 State of every module and journey: `docs/audit/PARITY_LEDGER.csv`. Decisions: `docs/handoff/FOUNDER_APPROVALS_AND_OPEN_DECISIONS.md`.
 Built so far, all SIMULATED on synthetic data: VOICE (with the corporate page), FLOW, MissionProof, PRISM, SENTINEL, ACCORD, FORGE,
 OMNIPRESENCE, the UC / Voice Administrator role and the six product families. Last exact-commit regression: 8597d2ea, PASS 291 · FAIL 0 · NOT_RUN 2 (24 Nov 2026; `tests/evidence/TEST_RESULTS.md`). Commits after it are NOT RUN
-until that file names them. GitHub CI repair: prepared on its own branch, not merged.
+until that file names them. GitHub CI repair: prepared on its own branch, not merged, not yet green.
+Since that regression (24 Nov): the twelve journeys walked on real links and what they found repaired (`docs/audit/JOURNEY_WALKS.md`);
+no page offers a role a link it may not open; the website states one platform, six families, shared engineering intelligence.
 
 ## Earlier: restoration release candidate (2026-10-31, frozen)
 

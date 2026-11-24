@@ -78,7 +78,7 @@ export function BuildYour({ demoUrl }: { demoUrl: string }) {
               <a className="btn" href={launchHref(demoUrl, pro, '/pricing#build')} data-launch={pro.id}>See it in the demonstration</a>
             </div>
             <p className="by__hint" data-by-hint hidden>Copied estimates paste straight into the form’s message, with a link back to these numbers.</p>
-            <p className="by__label"><span className="tag tag--declared"><i aria-hidden="true" />Price book 3</span> {PRICE_BOOK.label}</p>
+            <p className="by__label"><span className="tag tag--declared">Price book 3</span> {PRICE_BOOK.label}</p>
           </div>
         </div>
       </div>

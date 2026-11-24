@@ -13,7 +13,7 @@ export const EVIDENCE: Record<Evidence, { label: string; meaning: string }> = {
   simulated: { label: 'Simulated', meaning: 'Produced by a simulator or a fixture for demonstration; not a real system.' },
   unknown: { label: 'Unknown', meaning: 'Not known. Shown as unknown, never filled in.' },
 };
-export const Tag = ({ s, children }: { s: Evidence; children?: React.ReactNode }) => <span className={`tag tag--${s}`}><i aria-hidden="true" />{children || EVIDENCE[s].label}</span>;
+export const Tag = ({ s, children }: { s: Evidence; children?: React.ReactNode }) => <span className={`tag tag--${s}`}>{children || EVIDENCE[s].label}</span>;
 
 /** A page's first screen (90-1): one promise (the title), one sentence of lead, and, on a page that tells the story, one action. */
 export const Hero = ({ label, title, lead, children, aside, action }: { label?: string; title: string; lead: string; children?: React.ReactNode; aside?: React.ReactNode; action?: { href: string; label: string } }) => (
@@ -126,7 +126,7 @@ export const FilmPending = ({ film, n }: { film: Pick<Film, 'key' | 'title' | 'r
  *  says what kind of evidence a value WILL be: it never says that the value exists. Drawn dashed for that reason (site.css, .plan). */
 export type PlanLabel = 'measured' | 'estimated' | 'observed' | 'subjective' | 'not-yet';
 const PLAN_LABEL: Record<PlanLabel, string> = { measured: 'Measured', estimated: 'Estimated', observed: 'Observed', subjective: 'Subjective', 'not-yet': 'Not yet measured' };
-export const PlanTag = ({ l }: { l: PlanLabel }) => <span className={`tag tag--${l}`}><i aria-hidden="true" />{PLAN_LABEL[l]}</span>;
+export const PlanTag = ({ l }: { l: PlanLabel }) => <span className={`tag tag--${l}`}>{PLAN_LABEL[l]}</span>;
 /** A table of a plan: what it will look at, and the label each will carry. `state` says, in the header, that nothing has a value yet. */
 export const PlanRecord = ({ id, title, state, cols, rows, foot }: { id: string; title: string; state: string; cols: [string, string]; rows: { name: string; labels: PlanLabel[] }[]; foot?: string }) => (
   <figure className="record plan" data-plan={id}>
@@ -187,9 +187,8 @@ export const ProductTiles = ({ captures, exclude, compact }: { captures: Record<
   <><p className="rail-hint" aria-hidden="true">Swipe for each product →</p><ul className="tiles" aria-label="The nine products">{PRODUCTS.filter((p) => p.id !== exclude).map((p) => {
     const n = CANON.findIndex((c) => c.id === p.id) + 1; const cap = captures[p.id];
     return (
-      <li key={p.id} className="tile" data-p={p.id} data-product={p.id}>
-        <div className={`tile__art${cap ? '' : ' tile__art--empty'}`}>
-          <span className="tile__n" aria-hidden="true">{String(n).padStart(2, '0')}</span>
+      <li key={p.id} className="tile" data-p={p.id}>
+        <div className={`tile__art${cap ? '' : ' tile__art--empty'}`} data-n={String(n).padStart(2, '0')}>
           {cap ? <img src={`/media/product/${p.id}-640.webp`} width={640} height={Math.round(640 * cap.h / cap.w)} loading="lazy" decoding="async" alt="" /> : <b aria-hidden="true">{p.name}</b>}
         </div>
         <div className="tile__body"><h3><a href={`/products/${p.slug}`}>{p.name}</a></h3><p>{p.purpose}</p>{p.apps.length ? <p className="tile__apps">Includes {p.apps.join(' and ')}</p> : null}{compact ? null : <Tag s={DEMO_STATE[p.demoState].s}>{DEMO_STATE[p.demoState].text}</Tag>}</div>

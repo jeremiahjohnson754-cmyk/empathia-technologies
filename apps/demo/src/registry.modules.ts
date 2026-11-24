@@ -13,9 +13,11 @@ import * as M from './module-roles.js';
 export const MODULE_PAGES: readonly PageDef[] = [
   {
     id: 'families', title: 'Platform families', purpose: 'The six families: the nine products and the eight further capabilities, with what can be opened here and what is not built yet', product: 'shell',
-    path: '/families', authority: { roles: ROLE_KEYS, why: 'the platform map names what exists and what does not; it is shown to every role, and each link is checked against that role' },
+    // '/tour' is the address Enterprise 3.0 names for the all-module tour: the map's first section follows one issue through all six families.
+    // A narrated tour (drafted as Tour H) is not added: every tour stop must have a recorded take, and no voice generation is approved for it.
+    path: '/families', alias: ['/tour'], authority: { roles: ROLE_KEYS, why: 'the platform map names what exists and what does not; it is shown to every role, and each link is checked against that role' },
     load: () => import('./mission/FamiliesPage.js'),
-    search: { keywords: 'families platform map products capabilities voice flow forge prism sentinel accord missionproof omnipresence', aliases: ['platform families', 'all capabilities', 'platform map'] },
+    search: { keywords: 'families platform map products capabilities voice flow forge prism sentinel accord missionproof omnipresence', aliases: ['platform families', 'all capabilities', 'platform map', 'platform tour'] },
   },
   {
     id: 'flow', title: 'FLOW', purpose: 'The network a room’s streams and calls depend on, layer by layer, with what is declared, modelled, observed and unknown (read-only)', product: 'pro',

@@ -19,10 +19,10 @@ fs.writeFileSync(entry, [
   `export { resolve } from ${at('apps/demo/src/registry.pages.ts')};`, `export { canOpen, allows, ROLE_KEYS } from ${at('apps/demo/src/access/policy.ts')};`,
   `export { buildEstate } from ${at('apps/demo/src/search/estate.ts')};`, `export * as S from ${at('apps/demo/src/workspace/store.ts')};`, `export * as C from ${at('apps/demo/src/control/store.ts')};`,
   `export { BUILDINGS } from ${at('apps/demo/src/campus/canon.ts')};`, `export { roomRecord } from ${at('apps/demo/src/campus/design.ts')};`, `export { qrMatrix } from ${at('apps/demo/src/lite/qr.ts')};`,
-  `export { FAMILIES, CAPABILITIES } from ${at('packages/ui/src/families.ts')};`, `export { SESSION } from ${at('apps/demo/src/voice/model.ts')};`,
+  `export { FAMILIES, CAPABILITIES, CONNECTIONS, connectionsOf, SHARED, THREAD, POSITIONING } from ${at('packages/ui/src/families.ts')};`, `export { jobPlaces } from ${at('apps/demo/src/rooms/JobJumps.tsx')};`, `export { recordHrefs } from ${at('apps/demo/src/pages/Control.tsx')};`, `export { firstOpen } from ${at('apps/demo/src/pages/V25Nav.tsx')};`, `export { launchById } from ${at('packages/ui/src/launches.ts')};`, `export { SESSION } from ${at('apps/demo/src/voice/model.ts')};`,
 ].join('\n'));
 await esbuild.build({ entryPoints: [entry], bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error', jsx: 'automatic', nodePaths: [path.join(repo, 'node_modules')], loader: { '.css': 'empty', '.svg': 'text', '.png': 'empty', '.webp': 'empty', '.jpg': 'empty' } });
-const { P, SN, A, F, O, R, resolve, canOpen, allows, ROLE_KEYS, buildEstate, S, C, BUILDINGS, roomRecord, qrMatrix, FAMILIES, CAPABILITIES, SESSION } = await import(pathToFileURL(out).href);
+const { P, SN, A, F, O, R, resolve, canOpen, allows, ROLE_KEYS, buildEstate, S, C, BUILDINGS, roomRecord, qrMatrix, FAMILIES, CAPABILITIES, CONNECTIONS, connectionsOf, SHARED, THREAD, POSITIONING, launchById, SESSION, jobPlaces, recordHrefs, firstOpen } = await import(pathToFileURL(out).href);
 const est = buildEstate(); const has = (type, id) => est.nodes.some((n) => n.type === type && n.id === id);
 const opens = (role, addr) => { const r = resolve(addr); return !!r && canOpen(role, r); };
 const who = (addr) => ROLE_KEYS.filter((r) => opens(r, addr)).sort();
@@ -180,4 +180,41 @@ test('all seventeen capabilities are built and each address resolves to a page; 
   for (const f of ['prism', 'sentinel', 'accord', 'forge', 'omni']) { const src = fs.readFileSync(path.join(repo, `apps/demo/src/${f}/model.ts`), 'utf8'); assert.ok(!/from 'react'/.test(src), `${f}/model.ts runs without React`); }
   assert.match(fs.readFileSync(path.join(repo, 'apps/demo/src/sentinel/model.ts'), 'utf8'), /from '\.\.\/prism\/model\.js'/, 'SENTINEL’s screens are PRISM’s');
   assert.match(fs.readFileSync(path.join(repo, 'apps/demo/src/omni/model.ts'), 'utf8'), /from '\.\.\/control\/model\.js'/, 'OMNIPRESENCE’s control is the room panel’s');
+});
+
+// ------------------------------------------------------------------------------------------------ one platform (founder, 23 Nov 2026, 19:22)
+test('one platform: no capability is disconnected; every connection names two real capabilities; each family says what it answers and where its records go', () => {
+  const ids = new Set(CAPABILITIES.map((c) => c.id));
+  for (const c of CONNECTIONS) { assert.ok(ids.has(c.from) && ids.has(c.to), `${c.from} → ${c.to}`); assert.notEqual(c.from, c.to); assert.ok(c.says.length > 10); }
+  for (const c of CAPABILITIES.filter((x) => x.kind === 'capability')) assert.ok(connectionsOf(c.id).length >= 2, `${c.name} is connected to at least two others`);
+  assert.equal(new Set(CONNECTIONS.map((c) => `${c.from}>${c.to}`)).size, CONNECTIONS.length, 'no pair twice');
+  assert.deepEqual(connectionsOf('voice').map((c) => c.other), ['flow', 'servicehands', 'apex', 'commissioning', 'missionproof', 'accord']);
+  for (const f of FAMILIES) { assert.match(f.asks, /\?$/, f.id); assert.ok(f.hands.length > 30, f.id); }
+  assert.equal(POSITIONING.line, 'One platform. Six product families. Shared engineering intelligence.'); assert.equal(SHARED.length, 6);
+});
+test('one issue through the families: every stop is a catalogued launch at a registered address its role may open, and all six families are visited', () => {
+  assert.deepEqual([...new Set(THREAD.map((t) => t.family))].sort(), FAMILIES.map((f) => f.id).sort());
+  for (const t of THREAD) { const l = launchById(t.launch); assert.ok(l, t.launch); assert.ok(opens(l.perspective, `#${l.route}`), `${t.launch}: ${l.perspective} opens ${l.route}`); }
+  assert.equal(new Set(THREAD.map((t) => t.launch)).size, THREAD.length);
+});
+
+// ------------------------------------------------------------------------------------------------ one job, one figure, across the products (24 Nov 2026)
+test('the job row: one job’s places in the other products are registered addresses, and a role is shown only the ones it may open', () => {
+  const w = S.seed(); const inc = w.incidents.find((i) => i.id === 'ISS-0417'); const all = jobPlaces(inc, () => true);
+  assert.deepEqual(all.map((p) => p.key), ['service', 'apex', 'scan', 'voice', 'commissioning', 'assurance', 'learn', 'room']);
+  for (const p of all) assert.ok(resolve(p.href.split('?')[0]), `${p.key}: ${p.href} is a page`);
+  assert.equal(all.find((p) => p.key === 'service').href, '#/servicehands/wo/WO-0088'); assert.equal(all.find((p) => p.key === 'apex').href, '#/v25/apex?case=APX-001');
+  for (const role of ROLE_KEYS) { const mine = jobPlaces(inc, (h) => opens(role, h.split('?')[0])); for (const p of mine) assert.ok(opens(role, p.href.split('?')[0]), `${role} is offered ${p.href}`); }
+  assert.deepEqual(jobPlaces(inc, (h) => opens('employee', h.split('?')[0])).map((p) => p.key).filter((k) => ['service', 'apex', 'scan', 'voice', 'commissioning'].includes(k)), [], 'an employee is offered none of the working pages');
+  const plain = jobPlaces({ id: 'ISS-9999', roomId: 'R-ATL-7-112', workOrderId: null, apexId: null }, () => true);
+  assert.equal(plain.find((p) => p.key === 'apex').href, '#/v25/apex?incident=ISS-9999', 'a job with no case opens one from the job'); assert.ok(!plain.some((p) => p.key === 'voice'), 'a room with no calling path is offered none');
+});
+test('a KPI’s records: each identifier leads to the first place it is kept that the reader may open, and stays text where there is none', () => {
+  const w = S.seed(); const at = (role, id) => firstOpen(role, recordHrefs(id, w).map((x) => x.href));
+  assert.equal(at('svcmgr', 'ISS-0417'), '#/v25/service?id=ISS-0417'); assert.equal(at('service', 'WO-0088'), '#/servicehands/wo/WO-0088');
+  assert.equal(at('exec', 'ISS-0417'), '#/list/Room/R-ATL-4-218', 'the policy keeps an executive out of service records: the job leads to the room it was in');
+  assert.equal(recordHrefs('ISS-0417', w).find((x) => x.href === '#/list/Room/R-ATL-4-218').note, 'the room it was in', 'and the link says so');
+  assert.equal(at('exec', 'R-ATL-4-218'), '#/list/Room/R-ATL-4-218'); assert.equal(at('ops', 'R-ATL-4-218'), '#/room/R-ATL-4-218');
+  assert.equal(at('exec', 'SOP-0001'), null, 'an identifier with no page stays text'); assert.equal(at('visitor', 'ISS-0417'), null, 'a visitor is offered no record');
+  for (const role of ROLE_KEYS) for (const id of ['ISS-0417', 'WO-0088', 'R-ATL-4-218', 'AS-0112', 'PRJ-ATLAS-AV']) { const h = at(role, id); assert.ok(h === null || opens(role, h.split('?')[0]), `${role} ${id} → ${h}`); }
 });

@@ -3,6 +3,7 @@
  * may read, the adapter register (every vendor row CONTRACT_ONLY: nothing is connected) and what VOICE never does.
  */
 import { PageHero, Notice, Tag, Card } from '@empathia/ui';
+import { Connected } from '../mission/Connected.js';
 import type { PageProps } from '../registry.types.js';
 import { canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
@@ -18,6 +19,7 @@ export default function VoicePage({ role }: PageProps) {
       lede="VOICE is telephony and unified-communications intelligence: the CallPath Digital Twin of a room’s calling, from the endpoint to the provider, with what is configured kept apart from what was observed. It is not narration, a voice assistant or call recording."
       actions={opens(`#/voice/callpath/${room}`) ? <a className="ui-btn ui-btn--primary" href={`#/voice/callpath/${room}`} data-testid="voice-open-callpath">Open the CallPath of Atlas 4.218</a> : undefined}
       meta={[<Tag key="s" tone="accent">Simulated</Tag>, <span key="f">One call flow, one session, {FLOW.hops.length} hops</span>]} />
+    <Connected id="voice" role={role} />
     <Notice tone="info">{VIEW_SAYS[view]} Changing perspective changes what this page shows. It grants nothing on a real system.</Notice>
 
     <section className="vc-sec vc-two" aria-label="The scenario">

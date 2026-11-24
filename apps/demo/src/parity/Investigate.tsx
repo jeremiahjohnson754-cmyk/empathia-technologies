@@ -9,6 +9,7 @@ import type { PageProps } from '../registry.types.js';
 import { shortName, fullName, roomById, roomHref } from '../campus/canon.js';
 import { type Layer } from '../campus/design.js';
 import { load as loadWorkspace } from '../workspace/store.js';
+import { JobJumps } from '../rooms/JobJumps.js';
 import { plural } from './core.js';
 import { useCore, honest, Crumbs, Zone, FactsTable } from './ui.js';
 
@@ -32,9 +33,9 @@ function cases(core: ReturnType<typeof useCore>): Case[] {
 }
 const done = (s: string) => s === 'RESOLVED' || s === 'CLOSED';
 
-export default function InvestigatePage({ params }: PageProps) {
+export default function InvestigatePage({ params, role }: PageProps) {
   const core = useCore(); const all = cases(core); const id = params['issue'];
-  return <div className="pa" data-native="" data-testid="parity-investigate">{id ? <OneCase c={all.find((x) => x.id === id)} id={id} /> : <Index all={all} />}</div>;
+  return <div className="pa" data-native="" data-testid="parity-investigate">{id ? <OneCase c={all.find((x) => x.id === id)} id={id} role={role} /> : <Index all={all} />}</div>;
 }
 
 function Index({ all }: { all: Case[] }) {
@@ -54,7 +55,7 @@ function Index({ all }: { all: Case[] }) {
   );
 }
 
-function OneCase({ c, id }: { c?: Case; id: string }) {
+function OneCase({ c, id, role }: { c?: Case; id: string; role: string }) {
   if (!c) return <EmptyState title={`No issue is called “${id}”`} icon="search" action={<a className="ui-btn" href="#/investigate">Every open issue</a>} />;
   const o = roomById(c.roomId); const fin = done(c.state); const why = c.layers.flatMap((l) => WHY[l] || []);
   const steps: Array<[string, string, 'done' | 'now' | undefined]> = [
@@ -72,6 +73,8 @@ function OneCase({ c, id }: { c?: Case; id: string }) {
       <PageHero compact eyebrow={`Investigate · ${o ? fullName(o) : c.roomId}`} title={c.title} product="search-party" icon="search" lede={`${c.sev} · ${c.state.toLowerCase().replace(/_/g, ' ')} · ${c.source}`}
         meta={honest([fin ? 'Resolved' : 'Open case', fin ? 'ok' : 'warn'], ['Suggestions stay suggestions', 'muted'])}
         actions={<>{o ? <a className="ui-btn" href={roomHref(o)}>Open the room</a> : null}{c.workspace ? <a className="ui-btn ui-btn--quiet" href="#/servicehands">In ServiceHands</a> : null}</>} />
+      {/* 24 Nov 2026: a case that is a live job leads to its diagnosis, its scan and its proof (rooms/JobJumps.tsx) */}
+      {(() => { const src = loadWorkspace().incidents.find((i) => i.id === c.id); return src ? <JobJumps inc={src} here="room" perspective={role} /> : null; })()}
       <div className="pa-split">
         <Card title="The case" icon="route" sub={fin ? 'Closed with its proof' : 'Where the case stands'}><ol className="pa-steps">{steps.map(([t, s, st]) => <li key={t} data-state={st}><div><div className="pa-steps__t">{t}</div><p className="pa-steps__s">{s}</p></div></li>)}</ol></Card>
         <Card title="What could explain it" icon="spark" sub="Hypotheses by layer: none is the cause until a test says so">

@@ -7,6 +7,7 @@
  */
 import { useState } from 'react';
 import { PageHero, Notice, Tag, Segmented, Button } from '@empathia/ui';
+import { Connected } from '../mission/Connected.js';
 import type { PageProps } from '../registry.types.js';
 import { ROLES, canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
@@ -33,6 +34,7 @@ export default function AccordPage({ role, query, can }: PageProps) {
     <PageHero eyebrow="Empathia ACCORD · simulation" title="Scoped evidence, shared for one purpose" product="search-party" icon="link"
       lede="A capsule gives another organisation the evidence it needs for one issue, and nothing else, until a date. It copies nothing: each item is read from the record that owns it, and what is withheld is said."
       meta={[<Tag key="s" tone={TONE[v.status]}>{STATUS_WORD[v.status]}</Tag>, <span key="c">{CAPSULE.id}</span>]} />
+    <Connected id="accord" role={role} />
     <div className="vc-cases">
       <Segmented label="Read the capsule as" value={party} onChange={(p) => go(p, clock)} options={[{ value: 'customer', label: 'The customer' }, { value: 'provider', label: 'The service provider' }]} />
       <Segmented label="Read it at" value={clock} onChange={(c) => go(party, c)} options={[{ value: 'now', label: `Today (${CLOCKS.now.slice(0, 10)})` }, { value: 'expired', label: `After it ends (${CLOCKS.expired.slice(0, 10)})` }]} />

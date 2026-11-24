@@ -26,6 +26,7 @@ import { OfflineStrip } from './offline/Strip.js';
 import { LaunchStrip } from './shell/LaunchStrip.js';
 import { Shortcuts } from './start/ShortcutSheet.js';
 import { installScrollMemory, settleScroll, notePage, ReturnChip } from './shell/trail.js';
+import { useLinkGuard } from './shell/linkGuard.js';
 
 installScrollMemory();   // #223: per-entry scroll memory, installed before the router listens
 
@@ -103,6 +104,9 @@ export function App() {
     }, 60);
     return () => { clearTimeout(t); if (stop) clearTimeout(stop); obs?.disconnect(); };
   }, [page, role]);   // eslint-disable-line react-hooks/exhaustive-deps
+
+  // no page offers this role a link it may not open (shell/linkGuard.ts); an unknown address is not a refusal and is left to the 404 page
+  useLinkGuard(role, (h) => { const x = decide(role, routeOf(h)); return x.kind === 'missing' || x.allowed; });
 
   const home = homeOf(role);
   let body: ReactNode;

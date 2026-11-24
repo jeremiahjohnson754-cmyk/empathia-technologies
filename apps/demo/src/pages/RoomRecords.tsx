@@ -28,6 +28,8 @@ import { plural, pct, weekCounts, Foot } from './viz.js';
 import { rowsOf, PHASES, RES, res, ymd, phaseStats, blockers } from '../campus/cxRecord.js';
 import { ExportMenu } from '../export/ExportMenu.js';
 import { Registers } from '../campus/RegisterCard.js';
+import { callingReading, CALLING_WORD } from '../voice/job.js';
+import { TRACKED_ROOM, TRACKED_REPORT } from '../docs5/model.js';
 import { WhoTouched } from '../people/WhoTouched.js';
 import { LAYERS, assuranceDims, changeCards } from '../campus/asRecord.js';
 import { cxPackage } from '../export/cx.js';
@@ -113,7 +115,7 @@ export function CxRoomPage({ perspective, params, hash }: { perspective: string;
         {r.issues.length ? <List label="Deficiencies">{r.issues.map((i) => <ListRow key={i.id} title={i.title} sub={`${i.id} · ${i.source} · ${i.positions.join(', ') || 'the room'}`} trailing={<Tag tone={i.state === 'RESOLVED' ? 'ok' : i.severity === 'High' ? 'bad' : 'warn'}>{i.state === 'RESOLVED' ? 'Closed' : `${i.severity} · open`}</Tag>} />)}</List> : <EmptyState title="No deficiency on record" icon="check" />}
         {r.exception ? <Notice tone="warn"><b>{r.exception.id}</b> · exception requested ({r.exception.waivability}) for {r.exception.requirement}: {r.exception.rationale} Pending approval by an independent reviewer; expires {ymd(r.exception.expiry)}.</Notice> : null}
       </Card> : null}
-      {view === 'signoff' ? <Signoff r={r} bl={bl} /> : null}
+      {view === 'signoff' ? <Signoff r={r} bl={bl} perspective={perspective} /> : null}
       <ExportMenu testId="cx-export" pictures={[{ name: `${r.outline.id}-plan`, label: 'Plan', aggregate: r.outline.id, ...planSvg(r) }]} title="Completion package" sub={`The whole record of ${shortName(r.outline)} as six files: the report, the register, the deck and the dossier`} by={persona}
         make={async () => cxPackage(r, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, await (await import('../export/cxExtras.js')).cxExtras(r.outline.id, w))} />
       <Foot>Synthetic records: a simulated test reads the room as Core holds it; nothing is measured and no device is contacted.</Foot>
@@ -137,7 +139,7 @@ function Trace({ r }: { r: RoomRecord }) {
       </div>; })}
   </Card>;
 }
-function Signoff({ r, bl }: { r: RoomRecord; bl: ReturnType<typeof blockers> }) {
+function Signoff({ r, bl, perspective }: { r: RoomRecord; bl: ReturnType<typeof blockers>; perspective: string }) {
   const cur = r.baselines.find((b) => b.state === 'CURRENT'); const acc = r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL';
   const accEv = r.events.find((e) => /→ ACCEPTED/.test(e.detail) && e.outcome !== 'DENIED'); const refused = r.events.find((e) => /→ ACCEPTED/.test(e.detail) && e.outcome === 'DENIED');
   const fw = r.positions.filter((p) => !p.furniture); const cats = new Set(fw.map((p) => p.cat));
@@ -151,6 +153,10 @@ function Signoff({ r, bl }: { r: RoomRecord; bl: ReturnType<typeof blockers> }) 
       {refused && !acc ? <Notice tone="info">The engine’s own refusal ({ymd(refused.at)}, {refused.by.replace(/_/g, ' ')}): {refused.detail}</Notice> : null}
       <h3 className="ln-h3">Controlled sign-off</h3>
       <List label="Sign-off steps"><ListRow title="1 · Technical sign-off" sub={acc ? `Recorded ${ymd(accEv?.at)}` : 'Not yet. Two roles may sign: a commissioning engineer or a systems engineer who did not run the checks.'} trailing={<Tag tone={acc ? 'ok' : 'muted'}>{acc ? 'Signed' : 'Not signed'}</Tag>} /><ListRow title="2 · Owner’s acceptance" sub={acc ? 'After the technical sign-off; baseline published' : 'After the technical sign-off.'} trailing={<Tag tone={acc ? 'ok' : 'muted'}>{acc ? 'Accepted' : 'Waiting'}</Tag>} /></List>
+      {/* 24 Nov 2026 (journey J4, the documentation gate): the room whose deliverables are tracked leads to them from its sign-off */}
+      {r.outline.id === TRACKED_ROOM && (openable(perspective, '#/docs') || openable(perspective, '#/dossier')) ? <p className="ops-row" data-testid="cx-docs-gate">
+        {openable(perspective, '#/docs') ? <a className="ui-btn ui-btn--quiet" href={`#/docs/${TRACKED_REPORT}`} data-testid="cx-to-docs">The documentation this room owes</a> : null}
+        {openable(perspective, '#/dossier') ? <a className="ui-btn ui-btn--quiet" href={`#/dossier/${TRACKED_REPORT}`} data-testid="cx-to-dossier">Its acceptance dossier</a> : null}</p> : null}
       <p className="wk-note">Acceptance is blocked by a critical deficiency, by required evidence that is missing, or by a must-have requirement that is not met. Anything else that is open makes it an acceptance with exceptions. The person who recorded a check never verifies it.</p>
     </Card>
     <Card icon="book" title="What the baseline holds" sub={cur ? `Baseline v${cur.version} · ${cur.note}` : 'No baseline: never accepted'} testId="cx-baseline">
@@ -178,6 +184,7 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
   const dims = assuranceDims(r, inc);
   const n = { match: dims.filter((d) => d.state === 'match').length, drift: dims.filter((d) => d.state === 'drift').length, failed: dims.filter((d) => d.state === 'failed').length, reported: dims.filter((d) => d.state === 'reported').length };
   const cur = r.baselines.find((b) => b.state === 'CURRENT');
+  const calling = callingReading(w, r.outline.id);   // 24 Nov 2026: the room's calling evidence, read from VOICE, beside the baseline
   const runIt = () => { setRan(true); apply((x) => { x.events.unshift({ at: new Date().toISOString(), by: persona, type: 'assurance.run', aggregate: r.outline.id, detail: `simulated discovery over 17 dimensions from the records: ${n.match} match, ${n.drift} drift, ${n.failed} failed, ${n.reported} reported — nothing measured, no device contacted`, outcome: 'ALLOWED' }); return null; }); };
   return (
     <section className="wk cx" data-native="workspace" data-testid="as-room" data-room={r.outline.id}>
@@ -201,6 +208,11 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
           </Card>
         </div>
         <ChangeCards r={r} perspective={perspective} />
+        {calling ? <Card icon="network" title="Calling, read from VOICE" sub="Evidence beside the accepted baseline · simulated" testId="as-calling">
+          <p className="ln-p" data-testid="as-calling-says" data-state={calling.state}><Tag tone={calling.state === 'WITHIN' ? 'ok' : calling.state === 'OUTSIDE' ? 'warn' : 'muted'}>{CALLING_WORD[calling.state]}</Tag> {calling.says}</p>
+          <p className="wk-note">Calling quality is not one of this room’s commissioning tests, so this reading changes neither the accepted baseline nor the seventeen dimensions. It is shown so that a clean baseline does not hide a room that cannot hold a call. A closed job does not change it; a verified repair and a later session do.</p>
+          {openable(perspective, calling.href.split('?')[0]!) ? <p><a href={calling.href} data-testid="as-calling-open">Open the room’s CallPath</a></p> : null}
+        </Card> : null}
         <Card icon="chart" title="Seventeen dimensions, seven layers" sub={n.drift + n.failed ? `${n.match} match · ${n.drift} drift · ${n.failed} failed · ${n.reported} reported: ${plural(n.drift + n.failed, 'dimension')} differ from the commissioned state` : 'Nothing changed: the current state reads the same as the commissioned one in every value Assurance compares.'} testId="as-dims">
           <div className="cx-dims">{LAYERS.map((L) => { const ds = dims.filter((d) => d.layer === L); const off = ds.filter((d) => d.state !== 'match'); return <Card key={L} level={3} title={L} sub={ds[0]?.what && L !== 'Functional' ? ds[0].what : `${ds.length} dimensions`}>
             {off.length ? <List label={`${L} dimensions`}>{off.map((d) => <ListRow key={d.name} title={d.name} sub={d.note} trailing={<Tag tone={DIM_TONE[d.state]}>{d.state === 'match' ? 'Matches baseline' : d.state === 'drift' ? 'Drift' : d.state === 'failed' ? 'Offline or failed' : 'Reported by people'}</Tag>} />)}</List> : <p className="ui-meta">All match their baseline: {ds.map((d) => d.name).join(', ')}</p>}

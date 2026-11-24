@@ -12,7 +12,7 @@ const ORDER: VerificationState[] = ['RELEASED_VERIFIED', 'LAB_VERIFIED', 'IMPLEM
 const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 export const publicClaims = (asOf: string): PublicClaim[] => SEED_CLAIMS.map((c) => publicProjection(c, asOf)).filter((c): c is PublicClaim => !!c);
-export const StateTag = ({ s }: { s: VerificationState }) => <span className={`tag tag--${TONE[s]}`} data-state={s}><i aria-hidden="true" />{STATE_LABEL[s]}</span>;
+export const StateTag = ({ s }: { s: VerificationState }) => <span className={`tag tag--${TONE[s]}`} data-state={s}>{STATE_LABEL[s]}</span>;
 
 export const ProofCard = ({ c, demoUrl, compact }: { c: PublicClaim; demoUrl: string; compact?: boolean }) => (
   <article className="proof" data-claim={c.claim_id} data-state={c.verification_state} data-revision={c.implementation_revision}>

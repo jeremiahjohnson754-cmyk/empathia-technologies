@@ -16,6 +16,7 @@ import { useOps } from '../hardening/useOps.js';
 import { opsPath } from '../hardening/path.js';
 import { useConfirm, useUndo } from '../safeguards/Safeguards.js';
 import { WhoForJob } from '../connect/ContactBar.js';
+import { JobJumps } from '../rooms/JobJumps.js';
 import { ROOMS, roomOf, findingsOf, PROVENANCE_TEXT } from '../fi/rooms.js';
 import { CATEGORIES, ENTRY_POINTS, RESOLUTION_CODES, BAND_OF, ATTACH_PLACEHOLDERS, STAGES, stageOf, ROUTES, LANES, routeOf, type RouteKey, intakeErrors, submitRequest, addNote, clearBlocker, attachFinding, recordResolution, closeIncident, cancelWorkOrder, type IntakeInput } from './actions.js';
 /** a build that names a server has the server's queue (pages/ServiceQueue.tsx); this page then says where it is */
@@ -29,8 +30,8 @@ export default function ServiceHands({ perspective, hash }: WorkspaceProps) {
   const confirm = useConfirm(); const undo = useUndo();
   let body;
   if (p[1] === 'new') body = <Intake ops={ops} hash={hash} />;
-  else if (p[1] === 'wo' && p[2]) { const wo = S.workOrderOf(ops.w, p[2]); const inc = wo ? S.incidentOf(ops.w, wo.incidentId) : undefined; body = inc ? <Job ops={ops} inc={inc} confirm={confirm.ask} offerUndo={undo.offer} /> : <Missing what={`work order ${p[2]}`} />; }
-  else if (param(hash, 'id')) { const inc = S.incidentOf(ops.w, param(hash, 'id')!); body = inc ? <Job ops={ops} inc={inc} confirm={confirm.ask} offerUndo={undo.offer} /> : <Missing what={`incident ${param(hash, 'id')}`} />; }
+  else if (p[1] === 'wo' && p[2]) { const wo = S.workOrderOf(ops.w, p[2]); const inc = wo ? S.incidentOf(ops.w, wo.incidentId) : undefined; body = inc ? <Job ops={ops} inc={inc} confirm={confirm.ask} offerUndo={undo.offer} perspective={perspective} /> : <Missing what={`work order ${p[2]}`} />; }
+  else if (param(hash, 'id')) { const inc = S.incidentOf(ops.w, param(hash, 'id')!); body = inc ? <Job ops={ops} inc={inc} confirm={confirm.ask} offerUndo={undo.offer} perspective={perspective} /> : <Missing what={`incident ${param(hash, 'id')}`} />; }
   else body = <Home ops={ops} />;
   return <section className="ops" data-testid="servicehands">{SERVER_QUEUE ? <p className="ops-note" data-testid="sh-server-note">These jobs are the demonstration’s, kept in this browser. The server’s work orders and incidents for your sandbox are worked at <a href="#/servicehands/queue">ServiceHands on the server</a>.</p> : null}{body}<WhoForJob hash={hash} role={perspective} />{undo.bar}{confirm.dialog}</section>;
 }
@@ -139,7 +140,7 @@ function Intake({ ops, hash }: { ops: Ops; hash: string }) {
   </>);
 }
 
-function Job({ ops, inc, confirm, offerUndo }: { ops: Ops; inc: S.Incident; confirm: ReturnType<typeof useConfirm>['ask']; offerUndo: ReturnType<typeof useUndo>['offer'] }) {
+function Job({ ops, inc, confirm, offerUndo, perspective }: { ops: Ops; inc: S.Incident; confirm: ReturnType<typeof useConfirm>['ask']; offerUndo: ReturnType<typeof useUndo>['offer']; perspective: string }) {
   const { w, persona } = ops; const wo = inc.workOrderId ? S.workOrderOf(w, inc.workOrderId) : undefined;
   const me = S.techForPersona(persona); const mine = !!wo && !!me && wo.techId === me; const tech = S.techOf(w, wo?.techId || null);
   const st = stageOf(w, inc); const X = shView(w); const intake = X.intake[inc.id]; const res = X.resolution[inc.id]; const seen = hrView(w).seen[inc.id] || [];
@@ -231,7 +232,10 @@ function Job({ ops, inc, confirm, offerUndo }: { ops: Ops; inc: S.Incident; conf
           {n.kind === 'blocker' && !n.cleared && (mine || holds(persona, 'service.assign')) && <button type="button" className="ui-btn ui-btn--sm" onClick={() => ops.apply((x) => clearBlocker(x, persona, wo!.id, i, 'cleared on site'))}>Mark cleared</button>}</li>)}</ul></section>}
         {wo && wo.evidence.length > 0 && <section className="ops-card" aria-labelledby="evd-h"><h2 id="evd-h">Evidence ({wo.evidence.length})</h2><ul className="ops-list" data-testid="evidence">{wo.evidence.map((e, i) => <li key={i} className="ops-note"><Tag tone="muted">{e.kind}</Tag> {e.note} <span className="ops-meta">{when(e.at)}</span></li>)}</ul></section>}
         <section className="ops-card" aria-labelledby="rp-h"><h2 id="rp-h">This room before</h2>{prior.length ? <ul className="ops-list">{prior.map((i) => <li key={i.id} className="ops-note">{i.id} · {i.title} <Tag tone={TONE[i.state]}>{i.state}</Tag>{inc.recurrenceOf === i.id ? <b> · this job is its recurrence</b> : ''}</li>)}</ul> : <p className="ops-note">No other service job in this room.</p>}
-          <p className="ops-row"><a href={`#/replay/${inc.roomId}`}>Replay the room's history</a><a href={`#/search?focus=Room:${inc.roomId}`}>Search Party</a></p></section>
+          <p className="ops-row"><a href={`#/replay/${inc.roomId}`}>Replay the room's history</a><a href={`#/search?focus=Room:${inc.roomId}`}>Search Party</a></p>
+          {/* 24 Nov 2026: the same job in the other products (rooms/JobJumps.tsx) */}
+          <JobJumps inc={inc} here="service" perspective={perspective} />
+          <p className="ops-note">Closing this job does not pass a commissioning test and does not change the room’s accepted baseline.</p></section>
         <details className="ops-card"><summary>History ({inc.history.length})</summary><ul className="ops-list">{inc.history.map((h, i) => <li key={i} className="ops-note"><Tag tone={TONE[h.to]}>{h.to}</Tag> {when(h.at)} · {w.staff.find((s) => s.id === h.by)?.name || personaLabel(h.by)}</li>)}</ul></details>
       </div>
     </div>

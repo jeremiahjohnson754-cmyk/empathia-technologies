@@ -21,6 +21,7 @@ import { locate, recentRooms, roomsOf, type Place } from './locate.js';
 import { IntakeNav, Preview, ProposedRoom, Summary, RequestItem, KIND_ICON, plural } from './parts.js';
 import { load as loadDesk } from '../decisions/store.js';
 import { parseHash } from '../registry.pages.js';
+import { openable } from '../pages/V25Nav.js';
 
 type StepId = 'what' | 'where' | 'needs' | 'photos' | 'review';
 const STEP_LABEL: Record<StepId, string> = { what: 'What you need', where: 'Where', needs: 'What it should do', photos: 'Show us the space', review: 'Review and send' };
@@ -29,6 +30,17 @@ export const stepsOf = (k: KindId): StepId[] => k === 'evaluate-device' ? ['what
 /** Which answers each step asks for, so a step is checked only for its own answers. */
 const FIELDS: Record<StepId, string[]> = { what: ['need', 'goals'], where: ['building', 'floor', 'place', 'roomId'], needs: ['use', 'people', 'position', 'adds', 'date', 'category'], photos: ['dims'], review: [] };
 const isTool = (k: KindId) => ['scouter', 'optimizer', 'report'].includes(kindOf(k).goes);
+/**
+ * Where a tool kind hands the person on: Scouter, the Space Optimizer or the problem report. 24 Nov 2026: an executive who chose
+ * "check a device" was offered Scouter, which is not open to executives, and so reached the access page (found when the link guard
+ * closed the link and tests/browser/demo-request RQ-19 noticed). A role the tool is not open to is told so, and offered the
+ * ordinary request instead, with the room kept.
+ */
+function Handoff({ role, d, href }: { role: RoleKey; d: Draft; href: string }) {
+  const tool = d.kind === 'evaluate-device' ? 'Scouter' : d.kind === 'problem' ? 'The problem report' : 'Space Optimizer';
+  if (openable(role, href)) return <a className="ui-btn ui-btn--primary" href={href} data-testid="rq-handoff">{d.kind === 'evaluate-device' ? `Open Scouter for ${catName(d.category).toLowerCase()}s` : d.kind === 'problem' ? 'Report the problem' : 'Open Space Optimizer for this room'}</a>;
+  return <p className="ui-muted" data-testid="rq-handoff-closed">{tool} is not open to the {ROLES[role].label}. <a href={`#/request/general${d.roomId ? `?room=${encodeURIComponent(d.roomId)}` : ''}`} data-testid="rq-handoff-ask">Ask the AV operations team for it instead</a>.</p>;
+}
 const QUICK_KINDS: KindId[] = ['add-devices', 'replace-device', 'change-room', 'event', 'problem', 'improve-room', 'evaluate-device'];
 const LEGACY_KEY = 'empathia.demo.request.draft.v1';
 const replaceHash = (h: string) => { try { history.replaceState(null, '', h); } catch { /* the address stays as it was */ } };
@@ -258,7 +270,7 @@ export default function Wizard({ role, query, params }: PageProps) {
           {needsStep}
         </div>
         <div className="rq-form rq-b">
-          {isTool(d.kind) ? <div className="rq-send"><p className="rq-then"><Icon name="arrow-right" size={16} /> <span>{k.then}</span></p>{go2 ? <a className="ui-btn ui-btn--primary" href={go2} data-testid="rq-handoff">{d.kind === 'evaluate-device' ? `Open Scouter for ${catName(d.category).toLowerCase()}s` : d.kind === 'problem' ? 'Report the problem' : 'Open Space Optimizer for this room'}</a> : <p className="ui-muted">Choose the room first.</p>}</div> : <>
+          {isTool(d.kind) ? <div className="rq-send"><p className="rq-then"><Icon name="arrow-right" size={16} /> <span>{k.then}</span></p>{go2 ? <Handoff role={role} d={d} href={go2} /> : <p className="ui-muted">Choose the room first.</p>}</div> : <>
             {needField}
             <div className="rq-send">
               {refused && <div role="alert" className="ui-notice ui-tone--bad" data-testid="rq-refused"><b>Not sent yet.</b><ul>{refused.map((x) => <li key={x}>{x}</li>)}</ul></div>}
@@ -295,7 +307,7 @@ export default function Wizard({ role, query, params }: PageProps) {
           {refused && <div role="alert" className="ui-notice ui-tone--bad" data-testid="rq-refused"><b>{step === 'review' ? 'Not sent yet.' : 'Before you go on:'}</b><ul>{refused.map((x) => <li key={x}>{x}</li>)}</ul></div>}
           <div className="ik-actions">
             {at > 0 && <Button kind="quiet" onClick={back} testId="ik-back">Back</Button>}
-            {toolEnd ? (go2 ? <a className="ui-btn ui-btn--primary" href={go2} data-testid="rq-handoff">{d.kind === 'evaluate-device' ? `Open Scouter for ${catName(d.category).toLowerCase()}s` : d.kind === 'problem' ? 'Report the problem' : 'Open Space Optimizer for this room'}</a> : <p className="ui-muted">Choose the room first.</p>)
+            {toolEnd ? (go2 ? <Handoff role={role} d={d} href={go2} /> : <p className="ui-muted">Choose the room first.</p>)
               : last ? <>
                 <Button kind="primary" onClick={submit} testId="rq-send">Send the request</Button>
                 <Button onClick={finishLater} testId="ik-later">Save and finish later</Button>

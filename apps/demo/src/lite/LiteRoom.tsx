@@ -32,6 +32,7 @@ import { PassportSheet } from './PassportSheet.js';
 import { useArrange, ArrangeBar, PrecisionPlan, withPreview, snap, movable } from './Arrange.js';
 import { v253Arranged } from './v253/v253room.js';
 import { rowsOf, res } from '../campus/cxRecord.js';
+import { openable } from '../pages/V25Nav.js';
 
 const list = (s: string | null) => (s == null ? null : s.split(',').filter(Boolean));
 
@@ -162,6 +163,8 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
               {view === 'room' && <button type="button" role="switch" aria-checked={ac} className={`lt-switch${ac ? ' on' : ''}`} onClick={() => upd('ac', ac ? null : '1')} data-testid="lite-x-acoustic" title="First reflections off the walls to the farthest seat: a training and engineering model, not a certified acoustic simulation"><span className="lt-switch__name">Sound in the room</span><span className="lt-switch__v">{ac ? 'shown' : 'hidden'}</span><span className="lt-switch__knob" aria-hidden="true" /></button>}
               <button type="button" role="switch" aria-checked={xm} className={`lt-switch${xm ? ' on' : ''}`} onClick={() => upd('xm', xm ? null : '1')} data-testid="lite-x-meas" title="Modeled figures beside measured ones, never mixed"><span className="lt-switch__name">Measurements</span><span className="lt-switch__v">{xm ? 'shown' : 'hidden'}</span><span className="lt-switch__knob" aria-hidden="true" /></button>
               {allows({ area: 'studio' }, role) && <a className="ui-btn ui-btn--quiet" href={`#/studio/room/${encodeURIComponent(id)}`} data-testid="lite-x-studio">Design a space with this room</a>}
+              {/* 24 Nov 2026 (journey J3: from the design to its engineering package): FORGE compiles this room's design record */}
+              {openable(role, '#/forge') && <a className="ui-btn ui-btn--quiet" href={`#/forge/room/${encodeURIComponent(id)}`} data-testid="lite-x-forge">Compile its engineering package</a>}
             </fieldset>; })()}
           <fieldset className="lt-switches lt-switches--layers" data-testid="lite-layers"><legend>Layers</legend>
             {mayLayers.map((x) => { const on = layers.has(x.key); return <button key={x.key} type="button" role="switch" aria-checked={on} className={`lt-switch${on ? ' on' : ''}`} onClick={() => toggle('ly', x.key, layers)} data-testid={`lite-ly-${x.key}`} title={x.says}><span className="lt-switch__name">{x.label}</span><span className="lt-switch__knob" aria-hidden="true" /></button>; })}

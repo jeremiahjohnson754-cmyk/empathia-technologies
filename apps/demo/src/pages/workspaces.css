@@ -108,3 +108,13 @@ a.wk-card:hover { border-color: var(--accent); } a.wk-card:focus-visible { outli
 .jp-note { max-width: 70ch; }
 .fl__jumps { margin-block: 8px; }
 .fl__jumps > summary { cursor: pointer; font-weight: 600; }
+
+/* 24 Nov 2026: the records a KPI passport counted, each opening where it is kept (pages/Control.tsx PassportView); the pill is the
+   room row's (spatial/core.css .room-jumps), so a record link looks the same wherever it appears */
+.exec__drill { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.exec__drill li > * { display: inline-flex; align-items: center; min-height: var(--target-min, 44px); padding: 0 14px; border-radius: var(--r-pill, 999px); border: 1px solid var(--line2); font-size: var(--fs-sm, 14px); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.exec__drill li > a { background: var(--panel); color: var(--tx); text-decoration: none; }
+.exec__drill li > a:hover { border-color: var(--accent); }
+.exec__drill li > a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.exec__drill li > span { color: var(--tx2); border-style: dashed; }
+.exec__drill small { color: var(--tx2); font-size: inherit; margin-left: 4px; }

@@ -21,6 +21,7 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import { loadDraft, personaOf, personaLabel, holds, type Draft } from '../build/store.js';
 import { NATIVE } from '../registry.js';
 import { programme } from '../campus/programme.js';
+import { openable } from './V25Nav.js';
 
 const when = (s: string | null | undefined) => (s ? s.slice(0, 16).replace('T', ' ') : '—');
 const local = (s: string) => new Date(s).toLocaleString(undefined, { hour12: false });
@@ -189,17 +190,34 @@ export function ExecPage({ perspective }: { perspective: string }) {
             <Tag tone={LEVEL[x.confidence.level]}>{x.confidence.level}</Tag></button>;
         })}</div>
       </Card>
-      {p && <PassportView p={p} />}
+      {p && <PassportView p={p} perspective={perspective} w={w} />}
       <Foot>Every figure is computed in this page from the demonstration’s synthetic records; nothing is measured from a real building.</Foot>
     </section>
   );
 }
-function PassportView({ p }: { p: Passport }) {
+/**
+ * Where one record a passport counted can be read: 24 Nov 2026 (journey J12, "every KPI links to records"). The places are in order of
+ * preference: the page the work is done on, then the record's own passport in the Core model, then, for a job, the room it was in,
+ * which is what a reader the policy keeps out of service records (an executive) may still open. `note` says so on the link.
+ * An identifier with no page open to the reader stays text.
+ */
+export function recordHrefs(id: string, w: S.Workspace): Array<{ href: string; note?: string }> {
+  const roomOf = (incId: string | undefined) => { const r = w.incidents.find((i) => i.id === incId)?.roomId; return r ? [{ href: `#/list/Room/${r}`, note: 'the room it was in' }] : []; };
+  if (/^ISS-\d/.test(id)) return [{ href: `#/v25/service?id=${id}` }, { href: `#/list/Issue/${id}` }, ...roomOf(id)];
+  if (/^WO-\d/.test(id)) { const inc = w.workOrders.find((o) => o.id === id)?.incidentId; return [{ href: `#/servicehands/wo/${id}` }, ...(inc ? [{ href: `#/list/Issue/${inc}` }] : []), ...roomOf(inc)]; }
+  if (/^R-[A-Z]{3}-/.test(id)) return [{ href: `#/room/${id}` }, { href: `#/list/Room/${id}` }];
+  if (/^AS-\d/.test(id)) return [{ href: `#/v25/asset?a=${id}` }];
+  if (/^PRJ-/.test(id)) return [{ href: `#/projects/${id}` }];
+  return [];
+}
+function PassportView({ p, perspective, w }: { p: Passport; perspective: string; w: S.Workspace }) {
   return (
     <section className="kit-card" aria-labelledby="passport-h" data-testid="passport">
       <header className="kit-card__head"><span className="kit-card__icon" aria-hidden="true"><Icon name="book" size={18} /></span><div className="kit-card__titles"><h2 id="passport-h" className="kit-card__title">KPI passport · {p.label} <Tag tone={p.state === 'MEASURED' ? 'ok' : 'muted'}>{p.state}</Tag></h2><p className="kit-card__sub">{p.definition}</p></div></header>
       <div className="kit-card__body">
-      <Facts items={[['Value', p.state === 'MEASURED' ? `${p.value}${p.unit === '%' ? '%' : ` ${p.unit}`}` : `not measurable — ${p.reason}`], ['Numerator / denominator', p.numerator === null ? '—' : `${p.numerator} / ${p.denominator}`], ['Window', `${p.window.days} days · ${when(p.window.from)} → ${when(p.window.to)}`], ['Coverage', `${p.coverage.observed} of ${p.coverage.total} eligible records observed`], ['Freshness', p.freshness === null ? '—' : `freshest source ${p.freshness} day(s) old`], ['Confidence', `${p.confidence.level}${p.confidence.reasons.length ? ` — ${p.confidence.reasons.join('; ')}` : ''}`], ['Source · owner · privacy', `${p.source} · ${p.owner} · ${p.privacy}`], ['Exclusions', p.exclusions.join('; ') || 'none'], ['Drill-down', p.drill.length ? p.drill.join(', ') : '—'], ['Version', p.version]]} />
+      <Facts items={[['Value', p.state === 'MEASURED' ? `${p.value}${p.unit === '%' ? '%' : ` ${p.unit}`}` : `not measurable — ${p.reason}`], ['Numerator / denominator', p.numerator === null ? '—' : `${p.numerator} / ${p.denominator}`], ['Window', `${p.window.days} days · ${when(p.window.from)} → ${when(p.window.to)}`], ['Coverage', `${p.coverage.observed} of ${p.coverage.total} eligible records observed`], ['Freshness', p.freshness === null ? '—' : `freshest source ${p.freshness} day(s) old`], ['Confidence', `${p.confidence.level}${p.confidence.reasons.length ? ` — ${p.confidence.reasons.join('; ')}` : ''}`], ['Source · owner · privacy', `${p.source} · ${p.owner} · ${p.privacy}`], ['Exclusions', p.exclusions.join('; ') || 'none'], ['Records counted', p.drill.length ? `${p.drill.length}, listed below` : '—'], ['Version', p.version]]} />
+      {p.drill.length ? <><h3 className="ln-h3">The records behind this figure</h3>
+        <ul className="exec__drill" data-testid="passport-records">{p.drill.map((id) => { const at = recordHrefs(id, w).find((h) => openable(perspective, h.href)); return <li key={id}>{at ? <a href={at.href} data-testid="passport-record" data-record={id}>{id}{at.note ? <small> · {at.note}</small> : null}</a> : <span title="This role is shown the identifier; the record’s page is not open to it">{id}</span>}</li>; })}</ul></> : null}
       </div>
     </section>
   );

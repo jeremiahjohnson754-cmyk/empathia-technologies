@@ -5,6 +5,7 @@
  * Search Party and to SENTINEL, which uses these screens as one of its secondary channels.
  */
 import { PageHero, Notice, Tag, Button } from '@empathia/ui';
+import { Connected } from '../mission/Connected.js';
 import type { PageProps } from '../registry.types.js';
 import { ROLES, canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
@@ -26,6 +27,7 @@ export default function PrismPage({ role, can }: PageProps) {
     <PageHero eyebrow="Empathia PRISM · simulation" title="What every screen is showing" product="pro" icon="display"
       lede="PRISM compares what the schedule intends with what each screen’s player reports, and says where there is proof of play and where there is not. It publishes nothing and replaces no content system."
       meta={[<Tag key="t" tone={sum.exceptions ? 'bad' : 'ok'}>{sum.exceptions ? `${sum.exceptions} to look at` : 'All as scheduled'}</Tag>, <span key="s">{SCHEDULE.id} r{SCHEDULE.revision}</span>]} />
+    <Connected id="prism" role={role} />
     <p className={`vc-verdict vc-verdict--${sum.exceptions ? 'outside_policy' : 'within_policy'}`} data-testid="prism-summary"><b>{sum.match} of {sum.total} as scheduled.</b> {sum.says}</p>
     <Notice tone="info"><b>Simulated.</b> The schedule is declared; every player report is a fixture. A report older than {FRESH_SECONDS / 60} minutes is stale (the synthetic tenant’s rule), and a stale or missing report is never read as correct.</Notice>
     <section className="vc-sec" aria-labelledby="pr-s-h"><h2 id="pr-s-h">Screens</h2>

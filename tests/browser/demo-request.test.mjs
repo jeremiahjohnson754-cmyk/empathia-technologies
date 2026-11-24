@@ -75,9 +75,15 @@ const state = (p) => p.evaluate(() => { const pg = document.querySelector('[data
   ok('RQ-17', 'an event needs its day: refused until it is given, then sent to ServiceHands with the date', /Say the day of the event/.test(b.refused) && !b.sent);
   await p.fill('[data-testid=rq-date]', '2026-12-04'); await p.click('[data-testid=rq-send]'); await p.waitForTimeout(400); const c = await state(p);
   ok('RQ-18', 'the event is sent with its date and listed', c.sent?.goes === 'servicehands' && /event on 2026-12-04/.test(c.items[0]?.text || ''), JSON.stringify(c.items[0]));
-  await p.click('[data-testid=rq-kind-evaluate-device]'); await p.waitForTimeout(200); const h1 = await p.getAttribute('[data-testid=rq-handoff]', 'href'); const noSend = (await p.locator('[data-testid=rq-send]').count()) === 0;
+  // RQ-19 changed 24 Nov 2026. It read the hand-off's address and never opened it: this person is an executive, Scouter is not open to
+  // executives, and the link led to the access page. The executive is now told so and offered the ordinary request with the room kept
+  // (RQ-19); that the hand-off still opens Scouter for a role it is open to is the new RQ-19b. Nothing else is relaxed.
+  await p.click('[data-testid=rq-kind-evaluate-device]'); await p.waitForTimeout(200); const h1 = await p.getAttribute('[data-testid=rq-handoff-ask]', 'href').catch(() => null); const closedSays = await p.locator('[data-testid=rq-handoff-closed]').innerText().catch(() => ''); const offered = await p.locator('[data-testid=rq-handoff]').count(); const noSend = (await p.locator('[data-testid=rq-send]').count()) === 0;
   await p.click('[data-testid=rq-kind-improve-room]'); await p.waitForTimeout(200); const h2 = await p.getAttribute('[data-testid=rq-handoff]', 'href').catch(() => null);
-  ok('RQ-19', 'checking a device opens Scouter and improving a room opens Space Optimizer for that room: neither is sent as a request', /^#\/scouter\?category=/.test(h1 || '') && noSend && /^#\/optimizer\/enterprise\/R-ATL-7-300$/.test(h2 || ''), JSON.stringify([h1, h2]));
+  ok('RQ-19', 'an executive who wants a device checked is not sent to Scouter, which is not open to executives: the page says so and offers the ordinary request for the same room; improving a room opens Space Optimizer for that room; neither is sent as a request', offered === 0 && /Scouter is not open to the Executive/.test(closedSays) && /^#\/request\/general\?room=R-ATL-7-300$/.test(h1 || '') && noSend && /^#\/optimizer\/enterprise\/R-ATL-7-300$/.test(h2 || ''), JSON.stringify([h1, h2, closedSays]));
+  { const d = await open('#/request/evaluate-device?room=R-ATL-7-300', { role: 'designer' }); await settle(d.page); const href = await d.page.getAttribute('[data-testid=rq-handoff]', 'href').catch(() => null);
+    if (href) { await d.page.click('[data-testid=rq-handoff]'); await settle(d.page); }
+    ok('RQ-19b', 'for a designer the same choice opens Scouter, and Scouter opens', /^#\/scouter\?category=/.test(href || '') && await d.page.locator('[data-testid=access-page]').count() === 0 && /^#\/scouter/.test(await d.page.evaluate(() => location.hash)), String(href)); await d.close(); }
   ok('RQ-20', 'no page error and nothing leaves the page', s.errs.length === 0 && s.off.length === 0, [...s.errs, ...s.off].join(' | ')); await s.close(); }
 
 // ── who may ask, and how they get there ─────────────────────────────────────────────────────────────────────────────────────────

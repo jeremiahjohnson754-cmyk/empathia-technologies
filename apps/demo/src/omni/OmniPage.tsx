@@ -7,6 +7,7 @@
  */
 import { useState } from 'react';
 import { PageHero, Notice, Tag, Segmented, Button } from '@empathia/ui';
+import { Connected } from '../mission/Connected.js';
 import type { PageProps } from '../registry.types.js';
 import { canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
@@ -28,6 +29,7 @@ export default function OmniPage({ role, params, query }: PageProps) {
     <PageHero eyebrow="Empathia OMNIPRESENCE · simulation" title="A building’s tag opens the building, and nothing more" product="lite" icon="place"
       lede="A tag at a building’s door opens that building on a phone: its floors, its rooms and each room’s passport, for whoever is signed in. It signs nobody in, proves nobody is there and unlocks no control."
       meta={[<Tag key="t" tone="info">{BUILDINGS.length} building tags</Tag>]} />
+    <Connected id="omnipresence" role={role} />
     <Notice tone="info"><b>What a tag carries.</b> The address of this demonstration and one building’s key. No credential, no address of equipment, no token. Scanning is simulated here: opening the link is the scan. Reading a tag with this phone’s camera is not built.</Notice>
     <ul className="om-tags" data-testid="omni-tags">{BUILDINGS.map((b) => { const text = tagPayload(base, b.key); const bad = tagProblems(text); return (<li key={b.key} className="mp-dep" data-building={b.key} data-clean={bad.length ? '0' : '1'} data-ready={bad.length ? 'NOT_READY' : 'READY'}>
       <Qr text={text} label={`Tag for ${b.name}`} />
@@ -37,7 +39,8 @@ export default function OmniPage({ role, params, query }: PageProps) {
     </li>); })}</ul>
   </div>);
   const b = buildingByKey(key);
-  if (!b || !BUILDINGS.some((x) => x.key === key)) return (<><PageHero eyebrow="OMNIPRESENCE" title="This tag names a building that is not on record" lede="Nothing is opened from an unknown tag." product="lite" icon="place" /><Notice tone="warn"><a href="#/omnipresence" data-testid="omni-unknown">Open the tags the estate does hold</a></Notice></>);
+  if (!b || !BUILDINGS.some((x) => x.key === key)) return (<><PageHero eyebrow="OMNIPRESENCE" title="This tag names a building that is not on record" lede="Nothing is opened from an unknown tag." product="lite" icon="place" />
+    <Connected id="omnipresence" role={role} /><Notice tone="warn"><a href="#/omnipresence" data-testid="omni-unknown">Open the tags the estate does hold</a></Notice></>);
   const presence: Presence = presenceOf(query.get('presence')); const sel = roomById(query.get('room') || ''); const room = sel && sel.building === key ? sel : undefined;
   const addr = (p: Presence, r?: string) => { const qs = [r ? `room=${r}` : '', p === 'anchor' ? 'presence=anchor' : ''].filter(Boolean).join('&'); return `#/omnipresence/b/${key}${qs ? `?${qs}` : ''}`; };
   const list = rooms(key, q); const ev = room ? evaluate(role, key, room.id, presence) : null; const on = room ? !!stateOf(room.id)?.power : false;
@@ -47,6 +50,7 @@ export default function OmniPage({ role, params, query }: PageProps) {
     <nav className="vc-crumb" aria-label="Where this is"><a href="#/omnipresence">OMNIPRESENCE</a><span aria-hidden="true">›</span><span>{b.name}</span></nav>
     <PageHero eyebrow="OMNIPRESENCE · opened from a building’s tag" title={b.name} product="lite" icon="place" lede={`${b.purpose}. The tag brought you to this building. What you can open and do here depends on who you are, not on the tag.`}
       meta={[<span key="f">{b.floors} floors</span>, <span key="r">{rooms(key).length} rooms</span>]} />
+    <Connected id="omnipresence" role={role} />
     <section className="vc-sec" aria-labelledby="om-c-h"><h2 id="om-c-h">Four separate claims</h2>
       <ul className="mp-deps om-claims" data-testid="omni-claims">{claims(role, key, presence).map((c) => <li key={c.id} className="mp-dep" data-claim={c.id} data-state={c.state} data-ready={c.state === 'UNKNOWN' ? 'UNKNOWN' : 'READY'}><h3>{c.title}</h3><p><State s={c.state} /></p><p>{c.says}</p></li>)}</ul>
       <div className="vc-cases"><Segmented label="Presence proof" value={presence} onChange={(p) => { setLines(null); location.hash = addr(p, room?.id); }} options={[{ value: 'none', label: 'None' }, { value: 'anchor', label: 'Simulated room anchor' }]} /></div>

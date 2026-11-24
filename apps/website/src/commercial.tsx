@@ -17,10 +17,10 @@ const REPLACED_NAME: Record<string, string> = { 'PRO-ROOM': 'Room licences (stan
 /** a product's name; a line the price books replaced is named by what replaced it */
 const skuName = (id: string) => REPLACED_NAME[id] || SKUS.find((s) => s.sku === id)?.name || id;
 const Price = ({ cents, unit }: { cents: number; unit: string }) => <div className="price"><b>{cents === 0 ? <>Free <span className="price__zero">({usd(0)})</span></> : usd(cents)}</b><span>{unit}</span></div>;
-const ListPrice = () => <p className="listprice" data-price-label><span className="tag tag--declared"><i aria-hidden="true" />List price</span> {PRICE_LABEL} Prices are in US dollars, before any applicable tax.</p>;
+const ListPrice = () => <p className="listprice" data-price-label><span className="tag tag--declared">List price</span> {PRICE_LABEL} Prices are in US dollars, before any applicable tax.</p>;
 const signal = (id: string) => SKUS.find((s) => s.sku === id)!;
 
-const ListPrice3 = () => <p className="listprice" data-price-label="3"><span className="tag tag--declared"><i aria-hidden="true" />Proposed list prices</span> {PRICE_BOOK.label} Self-serve purchase is not open yet.</p>;
+const ListPrice3 = () => <p className="listprice" data-price-label="3"><span className="tag tag--declared">Proposed list prices</span> {PRICE_BOOK.label} Self-serve purchase is not open yet.</p>;
 const pro = PRICE_BOOK.pilots[0]!;
 /** The Pro pilot (founder 20:51: "maybe the $19.99 price can be a pilot package price for just pro and another complimentary product
  * item"; its limits and conversion terms set at 04:45: "Pilots must have explicit limits, customer-approved conversion, and no unexpected

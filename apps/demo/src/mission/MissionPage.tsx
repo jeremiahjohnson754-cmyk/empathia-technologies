@@ -6,6 +6,7 @@
  */
 import { useState } from 'react';
 import { PageHero, Notice, Tag, Segmented, Button } from '@empathia/ui';
+import { Connected } from './Connected.js';
 import type { PageProps } from '../registry.types.js';
 import { canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
@@ -23,6 +24,7 @@ export default function MissionPage({ role, query, can }: PageProps) {
   return (<div className="vc" data-testid="mission" data-overall={now.overall} data-case={id}>
     <PageHero eyebrow="MissionProof · simulation" title={MISSION.name} product="pro" icon="route" lede={`${MISSION.when}. Readiness is read from the records the event depends on. Nothing here is typed in, and an unknown is never counted as ready.`}
       meta={[<Tag key="o" tone={TONE[now.overall]}>{READY_WORD[now.overall]}</Tag>, <span key="m">{MISSION.id}</span>]} />
+    <Connected id="missionproof" role={role} />
     <p className={`vc-verdict vc-verdict--${now.overall === 'READY' ? 'within_policy' : now.overall === 'UNKNOWN' ? 'unknown' : 'outside_policy'}`} data-testid="mission-overall"><b>{READY_WORD[now.overall]}.</b> {now.says}</p>
     <div className="vc-cases"><Segmented label="Which calling evidence to read" value={id} onChange={(c) => { location.hash = c === 'degraded' ? '#/missionproof' : `#/missionproof?case=${c}`; }} options={CASES.map((c) => ({ value: c.id, label: c.label }))} />
       <p className="ui-muted" data-testid="mission-delta">{id === 'degraded' ? 'This is the reading with the degraded call.' : changed.length ? `Against the degraded call, ${changed.length} dependenc${changed.length === 1 ? 'y reads' : 'ies read'} differently: ${changed.map((d) => `${d.title.split(':')[0]!.split(' (')[0]} is ${READY_WORD[d.ready].toLowerCase()}`).join('; ')}.` : 'Against the degraded call, no dependency reads differently.'}</p></div>

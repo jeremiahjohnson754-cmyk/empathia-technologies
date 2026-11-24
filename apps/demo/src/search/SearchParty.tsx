@@ -18,6 +18,7 @@ import { KnowledgeResults } from '../knowledge/hooks.js';
 // --- end knowledge hook
 import { ConnectSearch } from '../connect/search.js';
 import { noteSearch } from '../shell/trail.js';
+import { findAsset } from '../campus/assetLife.js';
 
 /** V2.5.3's tab set, at its addresses; the panes beyond Search and Relationships live in Tabs.tsx. */
 const TABS: Array<[string, string]> = [['', 'Search'], ['graph', 'Relationships'], ['people', 'People and expertise'], ['support', 'Support coverage'], ['projects', 'Project map'], ['orgs', 'Organizations'], ['activity', 'Activity'], ['vault', 'Evidence and artifacts']];
@@ -103,6 +104,11 @@ export function SearchPartyDemo({ hash, role }: { hash: string; role?: RoleKey }
           {opens('#/room') && <a className="ui-btn ui-btn--quiet" href={`#/room/${encodeURIComponent(focus.id)}`} data-testid="sp-room-open">Open the room</a>}
           {opens('#/request') && <a className="ui-btn" href={`#/request?room=${encodeURIComponent(focus.id)}`} data-testid="sp-room-ask">Ask for work in this room</a>}
           {opens('#/servicehands/new') && <a className="ui-btn" href={`#/servicehands/new?room=${encodeURIComponent(focus.id)}`} data-testid="sp-room-report">Report a problem in ServiceHands</a>}</p>}
+        {/* 24 Nov 2026 (journey J1: "opens room passport and camera physical installation position"): an asset opened in Search Party
+            leads to its own record and to its room, as a room leads to its work */}
+        {focus?.type === 'Asset' && (() => { const hit = findAsset(focus.id); const room = hit ? `#/room/${encodeURIComponent(hit.room.outline.id)}?device=${encodeURIComponent(hit.inst.position)}` : null; return (opens('#/v25/asset') || (room && opens('#/room'))) ? <p className="ops-row sp__acts" data-testid="sp-asset-acts">
+          {opens('#/v25/asset') && <a className="ui-btn ui-btn--quiet" href={`#/v25/asset?a=${encodeURIComponent(focus.id)}`} data-testid="sp-asset-open">Open the asset’s record</a>}
+          {room && opens('#/room') && <a className="ui-btn" href={room} data-testid="sp-asset-room">Open its room, at {hit!.inst.position}</a>}</p> : null; })()}
         {!PANE[tab] && <>
         <div className="sp__search"><label className="ui-visually-hidden" htmlFor="spd-q">Search</label><span className="sp__glass" aria-hidden="true"><Icon name="search" /></span><span className="sp__field"><input id="spd-q" className="sp__input" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a room, switch, device, issue, work order…" autoComplete="off" maxLength={80} />{q && <button type="button" className="sp__clear" aria-label="Clear the search" onClick={() => { setQ(''); (document.getElementById('spd-q') as HTMLInputElement | null)?.focus(); }} data-testid="sp-clear"><Icon name="close" /></button>}</span><select aria-label="Type" value={type} onChange={(e) => setType(e.target.value)}><option value="">Every type</option>{Object.entries(est.coverage.types).sort().map(([t, n]) => <option key={t} value={t}>{NODE_TYPES[t]?.[0] || t} ({n})</option>)}</select></div>
         <div className="sp__types" role="group" aria-label="Records by type">{typeCounts.map(([t, n]) => <button key={t} type="button" className="sp__tchip" aria-pressed={type === t} onClick={() => setType(type === t ? '' : t)}><span>{NODE_TYPES[t]?.[0] || t}</span><b>{n}</b></button>)}</div>

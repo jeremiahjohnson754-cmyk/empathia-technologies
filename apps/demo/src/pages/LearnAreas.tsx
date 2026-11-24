@@ -25,6 +25,7 @@ import { allRecords, roomRecord, type RoomRecord } from '../campus/design.js';
 import { shortName, fullName, roomHref } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import * as S from '../workspace/store.js';
+import { JobJumps } from '../rooms/JobJumps.js';
 import { personaOf, personaLabel } from '../build/store.js';
 import { openable } from './V25Nav.js';
 import { plural, pct } from './viz.js';
@@ -533,6 +534,8 @@ export function CaseFilePage({ perspective, params }: { perspective: string; par
         </Card>
       </div>
       <div className="ui-row"><a className="ui-btn" href={`#/replay/${c.roomId}`}>Replay the room</a><a className="ui-btn" href={roomHref(r.outline)}>Open the room</a></div>
+      {/* 24 Nov 2026 (journey J10: "return to the source job"): the job this lesson comes from, in the other products */}
+      {(() => { const src = w.incidents.find((i) => i.id === c.issueId); return src ? <JobJumps inc={src} here="learn" perspective={perspective} /> : null; })()}
     </section>
   );
 }

@@ -171,7 +171,9 @@ function Room({ id, role, query, sees, can }: { id: string } & Pick<PageProps, '
           <Stage label={`${shortName(o)}: ${view === 'plan' ? 'plan' : 'three-dimensional view'}`} testId="here-stage" toolbar={<>
             <Segmented small label="View" value={view} onChange={setView} options={[{ value: 'plan', label: 'Plan' }, { value: '3d', label: '3D' }]} />
             {view === '3d' && <button type="button" className="ui-btn ui-btn--sm" onClick={() => setAngle((a) => (a + 1) % 4)}><Icon name="undo" size={16} /> Turn</button>}
-            {opens('#/lite') && <a className="ui-btn ui-btn--sm ui-btn--quiet" href={`${roomHref(o)}?view=3d`} data-testid="here-lite">Open in Lite</a>}
+            {/* 24 Nov 2026 (journey walk J2-01): this pointed every role at the campus room in 3D, which an employee may not open, so the
+                link led to the access page. A role the room is open to still gets it; anyone else gets the room in Lite */}
+            {(() => { const href = opens(roomHref(o)) ? `${roomHref(o)}?view=3d` : opens('#/lite/room') ? `#/lite/room/${encodeURIComponent(o.id)}` : null; return href ? <a className="ui-btn ui-btn--sm ui-btn--quiet" href={href} data-testid="here-lite">Open in Lite</a> : null; })()}
           </>}>
             {view === 'plan'
               ? <PlanView w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} positions={r.positions} connections={links} layers={ALL_LAYERS} selected={sel} onSelect={(c) => setSel(c === sel ? null : c)} showLinks={links.length > 0} linksOn marked={marked} markWord={ringWord} />

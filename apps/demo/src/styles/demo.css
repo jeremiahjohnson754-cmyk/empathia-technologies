@@ -105,3 +105,9 @@ button.go { font: inherit; text-align: left; cursor: pointer; width: 100%; align
 .tour__ask summary { cursor: pointer; font-weight: 600; font-size: var(--fs-sm); min-height: 32px; display: flex; align-items: center; }
 .tour__ask p { margin: 4px 0 6px; color: var(--tx2); font-size: var(--fs-sm); max-width: 68ch; }
 .svc__practice { margin: 0; padding: 8px 12px; border-radius: var(--r-md); border: 1px dashed var(--line2); color: var(--tx2); font-size: var(--fs-sm); }
+
+/* A link whose page is not open to this role is not offered (shell/linkGuard.ts). An action goes, like any other action the role does
+   not have; a record's name or identifier keeps its text and loses only the link. */
+a[data-closed] { color: inherit; text-decoration: none; cursor: auto; pointer-events: none; }
+a[data-closed] .kit-row__chev { display: none; }   /* a row that leads nowhere for this role does not point anywhere */
+a[data-closed][data-closed-action] { display: none !important; }

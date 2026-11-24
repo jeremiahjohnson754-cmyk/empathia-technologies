@@ -14,6 +14,9 @@ import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds, loadDraft } from '../build/store.js';
 import { ExportMenu } from '../export/ExportMenu.js';
 import { apexPackage } from '../export/apex.js';
+import { canOpen, isRole } from '../access/policy.js';
+import { resolve } from '../registry.pages.js';
+import { callingReading, CALLING_WORD } from '../voice/job.js';
 
 const CONF: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { high: 'ok', medium: 'info', low: 'warn', none: 'muted' };
 const OUT: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { EXPLAINED: 'ok', PROPOSED: 'info', COMPARED: 'ok', DRAFT_STAGED: 'info', EXECUTED_SIMULATED: 'ok', DRY_RUN: 'info', BLOCKED: 'bad', HUMAN_LED: 'warn', ABSTAINED: 'muted', ROLLED_BACK: 'warn', ABORTED: 'warn', REFUSED: 'bad' };
@@ -50,7 +53,7 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
           <h2 className="build__h">Incidents without a case</h2>
           <ul className="svc__list">{open.map((i) => <li key={i.id}><span><b>{i.title}</b> <span className="ui-meta">{i.id} · {i.roomName} · {i.severity}</span></span> {holds(persona, S.APEX_ACT_AUTHORITIES[0]!) || S.APEX_ACT_AUTHORITIES.some((a) => holds(persona, a)) ? <Button small onClick={() => { const r = apply((x) => S.openApex(x, persona, i.id, cite(i.roomId))); if (!isRefusal(r)) setSel(r.id); }}>Open a case</Button> : <span className="ui-meta">not your authority</span>}</li>)}{!open.length && <li className="ui-meta">Every open incident has a case.</li>}</ul>
         </div>
-        <div className="svc__detail">{H ? <Case H={H} w={w} apply={apply} persona={persona} baseline={baselineOf(H.roomId)} /> : <div className="empty" data-testid="apex-empty"><b>No case open</b><p>Open a case from an incident on the left. A case gathers the seven layers of evidence for its room, ranks hypotheses with the reasons they are not proven, and bounds every action by tier — nothing runs without the preflight.</p></div>}</div>
+        <div className="svc__detail">{H ? <Case H={H} w={w} apply={apply} persona={persona} perspective={perspective} baseline={baselineOf(H.roomId)} /> : <div className="empty" data-testid="apex-empty"><b>No case open</b><p>Open a case from an incident on the left. A case gathers the seven layers of evidence for its room, ranks hypotheses with the reasons they are not proven, and bounds every action by tier — nothing runs without the preflight.</p></div>}</div>
       </div>
       <div className="card stack" data-testid="apex-tiers"><h2 className="build__h">Action tiers <span className="ui-meta">what each class may do</span></h2>
         <div className="pa-table-wrap"><table className="pa-table"><caption className="ui-sr">APEX action tiers</caption><thead><tr><th scope="col">Tier</th><th scope="col">Meaning</th><th scope="col">Boundary</th></tr></thead>
@@ -60,7 +63,7 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
   );
 }
 
-function Case({ H, w, apply, persona, baseline }: { H: S.ApexCase; w: S.Workspace; apply: ReturnType<typeof useWorkspace>['apply']; persona: string; baseline: { version: number; evidence: number } | null }) {
+function Case({ H, w, apply, persona, perspective, baseline }: { H: S.ApexCase; w: S.Workspace; apply: ReturnType<typeof useWorkspace>['apply']; persona: string; /** the View-as role, to check each outgoing link */ perspective: string; baseline: { version: number; evidence: number } | null }) {
   const inc = w.incidents.find((i) => i.id === H.incidentId)!;
   const [hyp, setHyp] = useState(H.hypotheses[0]!.id);
   const h = H.hypotheses.find((x) => x.id === hyp) || H.hypotheses[0]!;
@@ -71,6 +74,10 @@ function Case({ H, w, apply, persona, baseline }: { H: S.ApexCase; w: S.Workspac
     <div className="stack" data-testid="apex-case">
       <h2 className="build__h">{H.id} · {inc.title} <Tag tone="muted">{H.key} branch</Tag>{H.reviewed && <Tag tone="ok">reviewed: {H.reviewed.verdict}</Tag>}</h2>
       <Facts items={[['Incident', `${inc.id} · ${inc.state}`], ['Room', inc.roomName], ['Baseline to compare', baseline ? `v${baseline.version} (${baseline.evidence} evidence items)` : 'none accepted — nothing to compare'], ['Adapters', Object.entries(w.adapters).map(([k, v]) => `${k} ${v}`).join(' · ')]]} />
+      {(() => { const c = callingReading(w, H.roomId); if (!c) return null; const may = (h: string) => { if (!isRole(perspective)) return false; const r = resolve(h.split('?')[0]!); return !!r && canOpen(perspective, r); };
+        // 24 Nov 2026: the room's calling evidence, read from VOICE, beside the seven layers. It is cited, not folded into a hypothesis.
+        return <Notice tone={c.state === 'OUTSIDE' ? 'warn' : 'info'}><span data-testid="apex-calling" data-state={c.state}><b>Calling evidence from VOICE (simulated): {CALLING_WORD[c.state].toLowerCase()}.</b> {c.says} {c.uplink ? 'VOICE’s shared-uplink reading is a hypothesis for this case to weigh, not a root cause. ' : ''}
+          {may(c.href) ? <a href={c.href} data-testid="apex-to-voice">The room’s CallPath</a> : null}{c.uplink && may(c.uplink) ? <> · <a href={c.uplink} data-testid="apex-to-flow">The uplink in FLOW</a></> : null}</span></Notice>; })()}
       <div className="apex__layers" data-testid="layers">{H.layers.map((l) => <div key={l.layer} className={`apex__layer${l.observations.length ? ' has' : ''}`}><b>{l.label}</b>{l.observations.length ? <ul>{l.observations.map((o) => <li key={o}>{o}</li>)}</ul> : <span className="ui-meta">nothing recorded</span>}{l.cites.length > 0 && <span className="ui-meta">cites {l.cites.join(', ')}</span>}</div>)}</div>
       <h3 className="build__h">Hypotheses, ranked</h3>
       <div role="group" aria-label="Hypotheses, ranked: choose one"><ol className="apex__hyps">{H.hypotheses.map((x) => <li key={x.id} className={x.id === h.id ? 'on' : ''}><button type="button" aria-pressed={x.id === h.id} onClick={() => setHyp(x.id)}><Tag tone={CONF[x.confidence]}>{x.confidence}</Tag> <b>{x.text}</b> <span className="ui-meta">{x.layer} · {x.action.tier}{x.action.runbook ? ` · ${x.action.runbook}` : ''}</span></button></li>)}</ol></div>

@@ -15,6 +15,7 @@ import { load as loadDesk } from '../decisions/store.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel } from '../build/store.js';
 import { TrendChart } from './TrendChart.js';
+import { firstOpen } from './V25Nav.js';
 import { ExportMenu } from '../export/ExportMenu.js';
 import { DATA_EXPORT_ROLES } from '../export/model.js';
 import { serviceAnalyticsPackage } from '../export/serviceAnalytics.js';
@@ -100,7 +101,11 @@ export function ServiceAnalyticsPage({ perspective, hash }: { perspective: strin
       </Card>
       <Card icon="ticket" title={`The jobs behind the figures${picked ? `: ${picked.label}` : ''}`} sub={`${jobs.length} job${jobs.length === 1 ? '' : 's'} in this view, newest first; each names its room and the unit (asset ID) it was about`} testId="san-jobs">
         <div className="san__scroll"><table className="pa-table san__table"><thead><tr><th scope="col">Job</th><th scope="col">Opened</th><th scope="col">Room</th><th scope="col">Asset</th><th scope="col">Layer</th><th scope="col">Severity</th><th scope="col">Vendor</th><th scope="col">Response</th><th scope="col">Restore</th><th scope="col">State</th></tr></thead>
-          <tbody>{jobs.slice(0, 25).map((j) => { const rh = restoreHours(j); return <tr key={j.id} data-testid="san-job"><th scope="row">{j.source === 'workspace' ? <a href={`#/v25/service?id=${j.id}`}>{j.id}</a> : j.id}</th><td>{j.openedAt.slice(0, 10)}</td><td><a href={`#/commissioning/room/${j.roomId}`}>{j.roomName}</a></td><td>{j.asset ? <a href={`#/v25/asset?a=${j.asset}`}><code>{j.asset}</code></a> : '—'}</td><td>{LAYER_LABEL[j.layer]}</td><td>{j.severity}</td><td>{j.vendorName}</td>
+          <tbody>{jobs.slice(0, 25).map((j) => { const rh = restoreHours(j);
+            // each cell links to the first place its record is kept that this reader may open (V25Nav.firstOpen), and is plain text otherwise
+            const jobAt = j.source === 'workspace' ? firstOpen(perspective, [`#/v25/service?id=${j.id}`, `#/list/Issue/${j.id}`]) : null;
+            const roomAt = firstOpen(perspective, [`#/commissioning/room/${j.roomId}`, `#/list/Room/${j.roomId}`]); const assetAt = j.asset ? firstOpen(perspective, [`#/v25/asset?a=${j.asset}`]) : null;
+            return <tr key={j.id} data-testid="san-job"><th scope="row">{jobAt ? <a href={jobAt}>{j.id}</a> : j.id}</th><td>{j.openedAt.slice(0, 10)}</td><td>{roomAt ? <a href={roomAt} data-testid="san-room">{j.roomName}</a> : j.roomName}</td><td>{j.asset ? (assetAt ? <a href={assetAt}><code>{j.asset}</code></a> : <code>{j.asset}</code>) : '—'}</td><td>{LAYER_LABEL[j.layer]}</td><td>{j.severity}</td><td>{j.vendorName}</td>
             <td>{j.respondedAt ? <Tag tone={respondedInSla(j) ? 'ok' : 'bad'}>{respondedInSla(j) ? 'in SLA' : 'late'}</Tag> : '—'}</td><td>{rh === null ? '—' : <><Tag tone={restoredInSla(j) ? 'ok' : 'bad'}>{Math.round(rh)} h</Tag> <span className="ui-meta">target {SLA_HOURS[j.severity].restore} h</span></>}</td><td>{j.closedAt ? 'Closed' : 'Open'}{j.reopened ? ' · reopened' : ''}</td></tr>; })}</tbody></table></div>
         {jobs.length > 25 ? <p className="wk-note">The newest 25 of {jobs.length} are listed; click a month in a chart to narrow them, and every one is in the exported workbook.</p> : null}
       </Card>

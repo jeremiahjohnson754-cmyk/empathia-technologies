@@ -16,6 +16,7 @@ import { Follow } from './follow.js';
 import { Opening, type HeroFrame } from './opening.js';
 import { MODULE_LAUNCHES, PRODUCT_LAUNCHES, START_LAUNCH, launchHref } from '../../../packages/ui/src/launches.ts';
 import { FAMILIES } from '../../../packages/ui/src/families.ts';
+import { FamilyGrid, FamilyQuestions, Plate, SharedIntelligence, Thread, familyPages, POSITIONING } from './platform.tsx';
 import { DEFAULT_STATE, stateHash, type AddonSku } from './build-view.js';
 /** each product page's way into Build Your Empathia (founder 19:39: lead generation off the interactive sales part), its own line ticked */
 const PRICE_ADD: Record<string, AddonSku[]> = { commissioning: ['COMMISSION', 'ASSURANCE'], servicehands: ['SERVICE'], field: ['FIELD-CORE'], apex: ['APEX'] };
@@ -124,7 +125,11 @@ export function buildPages(ctx: SiteContext): Page[] {
       <Section eyebrow="The lifecycle, in the product" title="From an empty room to an accepted baseline" lead="Four moments of one record, each shown on the product’s own screen in the public demonstration. Every screen runs on synthetic data.">
         <Chapters items={STORY} captures={ctx.captures} />
       </Section>
-      <Section eyebrow="The products" title="Nine core products. One record." lead="Each product is a stage of the same governed lifecycle and shares one identity for every room, device, person and project. Each says how much of it you can see in the public demonstration today." tone="deep">
+      {/* 24 Nov 2026 (founder, 23 Nov 19:22): the positioning leads the list of products: seventeen capabilities are six families of one
+          platform. The home page's size budget (50 KB) leaves room for the compact picture (platform.tsx Plate); /platform tells it in full. */}
+      <Section id="platform" eyebrow="The platform" title={POSITIONING.line} lead={POSITIONING.lead} tone="deep">
+        <Plate home />
+        <p className="fam6__core">The nine core products, in lifecycle order</p>
         <ProductTiles captures={ctx.captures} />
       </Section>
       {/* a buyer meets who it is for third, not tenth (20 Nov 2026, the four-perspective pass) */}
@@ -178,15 +183,24 @@ export function buildPages(ctx: SiteContext): Page[] {
 
   const pages: Page[] = [
     home,
-    { path: '/platform', title: 'Platform — Empathia Technologies', description: 'The Empathia Living Campus platform: one identity for every room, device, person and project; one governed lifecycle; one audit record.', nav: 'Platform', body: (
+    { path: '/platform', title: 'Platform — Empathia Technologies', description: 'One platform, six product families, shared engineering intelligence: seventeen capabilities on one record of every room, device, person and job.', nav: 'Platform', body: (
       <>
-        <Hero label="Platform" action={{ href: demo(), label: 'See the record in the live demo' }} title="One record. One governed lifecycle." lead="One canonical identity for every room, device, person, project and standard; one governed lifecycle that every product reads from and writes to; one audit record of who did what, with which evidence." />
+        <Hero label="Platform" action={{ href: demo(), label: 'See the record in the live demo' }} title={POSITIONING.line} lead={POSITIONING.lead} />
+        <div className="wrap plate-wrap" id="map"><Plate demoUrl={ctx.demoUrl} back="/platform#map" /></div>
+        <Section id="families" eyebrow="Six product families" title="Six questions an estate has to answer" lead="Each family answers one of them, and hands what it records to the next.">
+          <FamilyQuestions />
+        </Section>
+        <Section id="shared" eyebrow="Shared engineering intelligence" title="What all seventeen share" lead="This is the product. The families are six views of it, not six products that were integrated afterwards." tone="deep"><SharedIntelligence /></Section>
+        <Section id="thread" eyebrow="See it connect" title="One issue, followed through the families" lead="A calling problem in one synthetic room, Atlas 4.218. Each step opens the demonstration at that same room, as the person who does that work, with the way back to this page.">
+          <Thread demoUrl={ctx.demoUrl} back="/platform#thread" />
+          <Note>The demonstration runs on synthetic data in your browser. The eight further capabilities are simulations; nothing is connected to a live system.</Note>
+        </Section>
         {film('FA') ? <Section title="The platform in two minutes">{film('FA')}</Section> : null}
         <Section title="The lifecycle"><EvidenceLine /></Section>
         <Follow demoUrl={ctx.demoUrl} captures={ctx.captures} />
         {film('F-FOLLOW') ? <Section id="follow-film" title="The same five views, as one film" lead="Recorded from the demonstration, opened the way this page opens it: each view switches to its own perspective and says so.">{film('F-FOLLOW')}</Section> : null}
         <Strip id="flow" eyebrow="The workflow" title="Five moves of one record" items={FLOW} flow />
-        <Section title="The products"><ProductTiles captures={ctx.captures} /></Section>
+        <Section title="The nine core products"><ProductTiles captures={ctx.captures} /></Section>
         <Section title="The demonstration campus" tone="deep"><Campus /></Section>
         <Section id="executive" title="Executive Intelligence" lead="Projects started and funded, commissioning conformance, open issues, standards alignment and room usage, each measure with its source, its period, its denominator and its coverage. Missing data shows as missing, never as success." />
         <Section title="What runs where" lead="The authenticated application enforces every permission on the server and in the database. The public demonstration runs on synthetic data in your browser. The two never share data." tone="deep"><Note>Integrations with manufacturers' systems are described as simulated, proposed or configured; none is claimed to work until it has been verified with that system.</Note></Section>
@@ -194,12 +208,13 @@ export function buildPages(ctx: SiteContext): Page[] {
         <CtaBand title="Walk the record with us." body="A guided demonstration on synthetic data, with your questions."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href={demo()}>Explore the live demo</a></Actions></CtaBand>
       </>
     ) },
+    ...familyPages(ctx.demoUrl),
     { path: '/products', title: 'Products — Empathia Technologies', description: `Empathia’s nine core products (${PRODUCTS.map((p) => p.name).join(', ')}) and eight further capabilities, in six families on one record.`, body: (
       <>
         <section className="hero"><div className="wrap"><Spectrum /><p className="label">Products</p><h1>Nine core products, one record</h1><p className="lede">Each product is a stage of the same lifecycle. Each page states what the public demonstration shows today, and what it does not. Scouter is part of Lite. Eight further capabilities build on the same record; the families below place all seventeen.</p><div className="actions hero__action"><a className="btn btn--primary btn--lg" href={demo()} data-hero-action>Explore the live demo</a></div></div></section>
         <Section title="The nine core products, in lifecycle order"><ProductTiles captures={ctx.captures} /></Section>
-        <Section id="families" eyebrow="The platform" title="Six families, seventeen capabilities" lead="The nine products are the core. Eight further capabilities build on the same record. Each can be opened in the demonstration as a simulation on synthetic data; none is connected to a live system.">
-          <div className="cards cards--3" data-families={FAMILIES.length}>{FAMILIES.map((f) => (<article key={f.id} className="card" data-family={f.id}><h3>{f.name}</h3><p>{f.says}</p>
+        <Section id="families" eyebrow="The platform" title="Six families, seventeen capabilities" lead={<>The nine products are the core. Eight further capabilities build on the same record. Each can be opened in the demonstration as a simulation on synthetic data; none is connected to a live system. <a href="/platform">How the six families share one record</a>.</>}>
+          <div className="cards cards--3" data-families={FAMILIES.length}>{FAMILIES.map((f) => (<article key={f.id} className="card" data-family={f.id}><h3><a className="fam__link" href={`/platform/${f.id}`}>{f.name}</a></h3><p>{f.says}</p>
             <ul className="ticks">{f.members.map((m) => (<li key={m.id} data-cap={m.id} data-built={m.built ? '1' : '0'}>{m.site ? <a href={m.site}>{m.name}</a> : m.built && MODULE_LAUNCHES[m.id] ? <a href={launchHref(ctx.demoUrl, MODULE_LAUNCHES[m.id]!, '/products#families')} data-launch={m.id}>{m.name}</a> : m.name}{m.kind === 'capability' ? <span className="note"> {m.built ? '· in the demonstration, simulated' : '· specified, not built'}</span> : null}</li>))}</ul></article>))}</div>
         </Section>
         <Section id="voice" eyebrow="Infrastructure and communications · simulation" title="VOICE: calling you can explain" lead="Telephony and unified-communications intelligence on the same record. The CallPath Digital Twin keeps what is configured apart from what was observed and what is not known. In the demonstration as a simulation; no calling platform is connected."><Actions><a className="btn btn--primary" href="/voice">Discover VOICE</a></Actions></Section>

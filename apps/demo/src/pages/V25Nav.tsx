@@ -17,6 +17,9 @@ export function openable(role: string, href: string): boolean {
   const r = resolve(href); const k = isRole(role) ? role : DEFAULT_ROLE;
   return !!r && canOpen(k, r);
 }
+/** the first of several places a record is kept that this role may open, or null: a link is offered only where it leads (24 Nov 2026,
+ *  journey walk J12-09: an executive was offered commissioning records the policy does not open to them) */
+export const firstOpen = (role: string, hrefs: string[]): string | null => hrefs.find((h) => openable(role, h)) ?? null;
 export function V25Nav({ role, current }: { role: string; current: string }) {
   const items = V25_PAGES.filter((p) => openable(role, p.href));
   if (items.length < 2) return null;
