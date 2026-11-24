@@ -12,6 +12,7 @@ import { resolve } from '../registry.pages.js';
 import { buildingByKey, fullName, roomById, roomHref } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { jobView } from './job.js';
+import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { CASES, VOICE_ROOM, LAYER_LABEL, METHOD, POLICY, SESSION, SHARED_LINK, FIXTURE_NOW, ageS, caseOf, caseView, estimate, flowFor, outsidePolicy, loadReports, type EvidenceState, type CaseId } from './model.js';
 
 const TONE: Record<EvidenceState, 'ok' | 'warn' | 'bad' | 'info' | 'muted' | 'accent'> = { DECLARED: 'info', MODELED: 'info', SIMULATED: 'accent', OBSERVED: 'ok', MEASURED: 'ok', VERIFIED: 'ok', UNKNOWN: 'warn', NOT_CONFIGURED: 'bad', STALE: 'warn' };
@@ -38,6 +39,8 @@ export default function CallPathPage({ role, params, query, sees }: PageProps) {
     <PageHero eyebrow="VOICE · CallPath Digital Twin · simulation" title={`CallPath: ${fullName(room)}`} product="pro" icon="network"
       lede="How a call from this room is meant to travel, what was observed on each hop of one session, and what is not known. Every value is synthetic."
       meta={[<span key="f">Call flow <b>{FLOW.id}</b></span>, <span key="c">Fixture clock <b>{FIXTURE_NOW.slice(0, 16).replace('T', ' ')} UTC</b></span>, <State key="s" s="SIMULATED" />]} />
+    {/* the room's places in the other products, the same row every room page carries (rooms/RoomJumps.tsx): the CallPath is one of them */}
+    <RoomJumps roomId={room.id} here="voice" opens={opensFor(role)} />
     <Notice tone="info"><b>Simulation.</b> No real call, network, carrier or provider is read. {admin ? SESSION.privacy : 'Session and signalling detail are not shown in this perspective.'}</Notice>
     {!v.observed ? <Notice tone="warn"><span data-testid="voice-configured-only"><b>Configured only.</b> This room has a declared call flow and no observed session. Nothing below says how its calls sound.</span></Notice> : null}
     {v.observed ? <div className="vc-cases"><Segmented label="Which case to show" value={id} onChange={(c) => { location.hash = withCase(c); }} options={CASES.map((c) => ({ value: c.id, label: c.label }))} /><p className="ui-muted" data-testid="voice-case-says">{CASES.find((c) => c.id === id)!.says}</p></div> : null}

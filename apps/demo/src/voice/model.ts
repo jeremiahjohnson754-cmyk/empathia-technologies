@@ -93,6 +93,10 @@ export const FLOW_MER = {
 export type Flow = typeof FLOW;
 export const FLOWS: Readonly<Record<string, Flow>> = { [VOICE_ROOM]: FLOW, [OTHER_SITE_ROOM]: FLOW_MER as Flow };
 export const flowFor = (roomId: string): Flow | null => FLOWS[roomId] || null;
+/** The position and installed asset of each room's calling endpoint, as the room's own record holds them (checked against that record by the unit suite). */
+export const ENDPOINTS: Readonly<Record<string, { position: string; asset: string }>> = { [VOICE_ROOM]: { position: 'A-0102', asset: 'AS-0108' }, [OTHER_SITE_ROOM]: { position: 'PA-0012', asset: 'AS-1608' } };
+/** The room whose calling endpoint this asset is, if any: the way from a device's passport to its CallPath. */
+export const callingRoomOf = (asset: string): string | null => Object.keys(ENDPOINTS).find((r) => ENDPOINTS[r]!.asset === asset) || null;
 
 /** The tenant's own declared targets for a voice call (synthetic calling policy). The page compares samples with these; it sets none. */
 export const POLICY = { id: 'CP-NORTH-VOICE', lossPct: 1, jitterMs: 30, oneWayDelayMs: 150, source: 'Calling policy CP-NORTH-VOICE (declared by the tenant; synthetic). Targets are the tenant’s, not a standard Empathia asserts.' };

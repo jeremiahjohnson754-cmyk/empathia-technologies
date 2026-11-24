@@ -18,8 +18,9 @@ Status words: IMPLEMENTED (code in the repository), TESTED (a suite checks it), 
 | FLOW | demo `#/flow`, `#/flow/link/<node>` (`flow/model.ts`, `FlowPage.tsx`): claims by layer from the estate's own edges, UNKNOWN where nothing is recorded, dependents by the impact traversal | IMPLEMENTED, TESTED, SIMULATED |
 | MissionProof | demo `#/missionproof` (`mission/model.ts`, `MissionPage.tsx`): readiness per dependency read from records, rehearsal log | IMPLEMENTED, TESTED, SIMULATED |
 | Platform families | demo `#/families`; `packages/ui/src/families.ts` | IMPLEMENTED, TESTED |
-| Room page | "Calling" in the shared room jumps (`rooms/RoomJumps.tsx`), only for a role that may open the CallPath | IMPLEMENTED, TESTED |
-| Fixture, method, view model | `apps/demo/src/voice/model.ts` | IMPLEMENTED, TESTED (`tests/unit/voice.test.mjs`, 15 tests) |
+| Room page | "Calling" in the shared room row (`rooms/RoomJumps.tsx`), only for a role that may open the CallPath; the CallPath carries the same row back to the room's other places | IMPLEMENTED, TESTED |
+| Device passport | The asset page of the calling endpoint (`#/v25/asset?a=AS-0108`) links to the room's CallPath (`ENDPOINTS`, `callingRoomOf`) | IMPLEMENTED, TESTED |
+| Fixture, method, view model | `apps/demo/src/voice/model.ts` | IMPLEMENTED, TESTED (`tests/unit/voice.test.mjs`, 16 tests) |
 
 ## J6B-VOICE, step by step
 

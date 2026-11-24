@@ -21,10 +21,10 @@ fs.writeFileSync(entry, [
   `export { canOpen, canSee, ROLE_KEYS } from ${at('apps/demo/src/access/policy.ts')};`,
   `export { buildEstate } from ${at('apps/demo/src/search/estate.ts')};`,
   `export * as J from ${at('apps/demo/src/voice/job.ts')};`, `export * as F from ${at('apps/demo/src/flow/model.ts')};`, `export * as MP from ${at('apps/demo/src/mission/model.ts')};`,
-  `export * as S from ${at('apps/demo/src/workspace/store.ts')};`, `export { WORK_NEEDS } from '@empathia/service-engine';`, `export { FAMILIES, CAPABILITIES } from ${at('packages/ui/src/families.ts')};`, `export { PRODUCT_IDS } from ${at('packages/ui/src/products.ts')};`, `export { roomById } from ${at('apps/demo/src/campus/canon.ts')};`,
+  `export * as S from ${at('apps/demo/src/workspace/store.ts')};`, `export { roomRecord as roomRecordOf } from ${at('apps/demo/src/campus/design.ts')};`, `export { WORK_NEEDS } from '@empathia/service-engine';`, `export { FAMILIES, CAPABILITIES } from ${at('packages/ui/src/families.ts')};`, `export { PRODUCT_IDS } from ${at('packages/ui/src/products.ts')};`, `export { roomById } from ${at('apps/demo/src/campus/canon.ts')};`,
 ].join('\n'));
 await esbuild.build({ entryPoints: [entry], bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error', jsx: 'automatic', nodePaths: [path.join(repo, 'node_modules')], loader: { '.css': 'empty', '.svg': 'text', '.png': 'empty', '.webp': 'empty', '.jpg': 'empty' } });
-const { V, resolve, canOpen, canSee, ROLE_KEYS, buildEstate, J, F, MP, S, WORK_NEEDS, FAMILIES, CAPABILITIES, PRODUCT_IDS, roomById } = await import(pathToFileURL(out).href);
+const { V, resolve, canOpen, canSee, ROLE_KEYS, buildEstate, J, F, MP, S, WORK_NEEDS, FAMILIES, CAPABILITIES, PRODUCT_IDS, roomById, roomRecordOf } = await import(pathToFileURL(out).href);
 const est = buildEstate(); const has = (type, id) => est.nodes.some((n) => n.type === type && n.id === id);
 const edge = (from, rel, to) => est.edges.some((e) => e.from.id === from && e.rel === rel && e.to.id === to);
 
@@ -37,6 +37,10 @@ test('the fixture stands on the estate: every Core record a hop names exists the
   assert.deepEqual(V.FLOW.hops.map((h) => h.layer), ['endpoint', 'access', 'core', 'wan', 'sbc', 'provider']);
 });
 
+test('the device passport: each calling endpoint is the asset installed at that position in the room’s own record, and only that asset leads to a CallPath', () => {
+  for (const [room, e] of Object.entries(V.ENDPOINTS)) { const p = roomRecordOf(room).positions.find((x) => x.code === e.position); assert.ok(p, `${room} ${e.position}`); assert.equal(p.asset, e.asset); assert.ok(has('Asset', e.asset)); assert.equal(V.callingRoomOf(e.asset), room); assert.ok(V.flowFor(room).hops[0].label.includes(e.asset)); }
+  assert.equal(V.callingRoomOf('AS-0101'), null, 'a display is not a calling endpoint'); assert.equal(V.callingRoomOf('AS-9999'), null);
+});
 test('the shared uplink’s rooms are recomputed from the estate, not typed by hand', () => {
   const fed = est.edges.filter((e) => e.from.id === V.SHARED_LINK.to && e.rel === 'FEEDS').map((e) => e.to.id);
   const rooms = [...new Set(est.edges.filter((e) => e.rel === 'PLANS_DEVICE' && fed.includes(e.to.id)).map((e) => e.from.id))].sort();

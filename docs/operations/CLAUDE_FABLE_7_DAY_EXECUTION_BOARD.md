@@ -28,7 +28,7 @@ demo-launch 13/13; demo-searchbar 120/120.
 | # | The founder's order | State | Evidence |
 |---|---|---|---|
 | 1 | VOICE mobile responsiveness; cross-site permission refusal | DONE | Sample windows read as cards at 390 px; site-scoped roles refused `#/voice/callpath/R-MER-1-140` in the page registry. demo-voice VC-04, VC-17, VC-18; voice.test "site scope" |
-| 2 | VOICE on the shared room and device passport | DONE for the room; PARTLY for the device | "Calling" in the shared room jumps for a role that may open the CallPath (VC-21); the CallPath names the endpoint's position and asset. The asset's own page does not yet link to VOICE |
+| 2 | VOICE on the shared room and device passport | DONE | Room: "Calling" is one of the room's places in the shared row on every room page, and the CallPath carries the same row back to Lite, Assurance, Commissioning and the rest (demo-room-jumps RJ-01, RJ-02; demo-voice VC-21). Device: the asset page of the room's calling endpoint links to its CallPath for a role that may open it (VC-24; voice.test "the device passport") |
 | 3 | FLOW, and its relationship to VOICE | DONE | `#/flow`, `#/flow/link/<node>`; opens from the CallPath and returns with the case kept (VC-16; voice.test "FLOW (J6A)") |
 | 4 | J6B steps 5–6: ServiceHands, independent verification, Assurance, MissionProof | DONE, except the Assurance drift record | The job panel reads the real service engine; the technician cannot verify their own work; MissionProof readiness follows the record (voice.test "J6B steps 5 and 6"; VC-12, VC-19, VC-20). An Assurance drift record written by the retest is SPECIFIED |
 | 5 | The seven outstanding modules as functional, integrated synthetic experiences | DONE | FLOW, MissionProof, PRISM, SENTINEL, ACCORD, FORGE, OMNIPRESENCE: `docs/product/MODULES_BLUEPRINT.md`; modules.test 14/14; demo-modules 56/56 (desktop and phone) |
@@ -47,12 +47,13 @@ demo-launch 13/13; demo-searchbar 120/120.
 |---|---|
 | All non-browser suites after the UC / Voice Administrator change (3cea0f52) | PASS 155 · FAIL 0 |
 | Exact-commit regression started on 3cea0f52 | **STOPPED after part 1 of 5, not a result.** Part 1: PASS 57 · FAIL 1 · NOT_RUN 1. The failure was `demo-worlds` W-27, which still counted sixteen View-as roles; corrected in the next commit with the reason. The run was stopped so that one full regression runs on the commit that also holds the five modules |
+| Exact-commit regression started on 24da3050 (the five modules) | **STOPPED in part 1 of 5, not a result.** 47 of 48 suites run had passed; `demo-room-jumps` failed: the room row now lists Calling, and the CallPath did not carry the row back. Both were real: the page now carries the row, and the suite's list of places names VOICE, with the reason |
 | Exact-commit regression on the commit that follows | See `tests/evidence/TEST_RESULTS.md` at the evidence commit. Until that file names this commit, the full regression is NOT RUN |
 
 ## Days 3–7
 
 - Day 3 (Wed 25 Nov): walk J1, J2, J4, J5, J10 and J12 step by step against the Enterprise 3.0 text on the existing screens and repair
-  what the walk finds (`docs/audit/PARITY_LEDGER.csv` marks them NOT WALKED); the asset page's link to VOICE; the APEX case record of
+  what the walk finds (`docs/audit/PARITY_LEDGER.csv` marks them NOT WALKED); the APEX case record of
   the VOICE hypothesis; the guided all-module tour (`#/tour`).
 - Day 4: redaction tests for search and exports; out-of-order events and double closure; Assurance drift record from a retest.
 - Day 5: corporate site pages for the capability families; OpenAPI paths, events and SDK contracts for the eight capabilities;

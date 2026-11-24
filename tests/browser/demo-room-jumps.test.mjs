@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // "Atlas 4.218 in" (V2.5.3 roomPlaces, restored 13 Nov 2026 on the founder's word): the same room's places across Lite, Assurance,
-// Commissioning, Control, Replay, Compare and the campus room view. Each link lands on the same room, each of those pages carries the row
+// Commissioning, Control, Replay, Compare, the campus room view and, since 23 Nov 2026 (Enterprise 3.0, founder's Day 2 order: VOICE on the
+// shared room passport), the room's CallPath in VOICE. Each link lands on the same room, each of those pages carries the row
 // back, a selected device travels to Lite and the campus view, and a role sees only places it may open (absent, not disabled).
 //   node tests/browser/demo-room-jumps.test.mjs
 import { harness } from './demo-shell-lib.mjs';
@@ -10,7 +11,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const t = await open(`#/lite/room/${ROOM}?mode=engineer`, { role: 'architect', w, h, sw: false }); const p = t.page; p.setDefaultTimeout(10000);
   const row = p.getByTestId('room-jumps'); await row.waitFor();
   const keys = await row.locator('a').evaluateAll((as) => as.map((a) => a.dataset.testid.replace('room-jump-', '')));
-  ok(`RJ-${tag}-01`, 'Lite’s room names the same room in Assurance, Commissioning, Control, Replay, Compare and on campus, right under its name', keys.join() === 'assurance,commissioning,control,replay,compare,campus' && /4\.218 in/.test(await row.innerText()), keys.join());
+  ok(`RJ-${tag}-01`, 'Lite’s room names the same room in Assurance, Commissioning, Control, Replay, Compare, on campus and in VOICE (Calling), right under its name', keys.join() === 'assurance,commissioning,control,replay,compare,campus,voice' /* + voice, 23 Nov 2026: the room has a call-flow record and the architect may open its CallPath */ && /4\.218 in/.test(await row.innerText()), keys.join());
   const landed = [];
   for (const k of keys) {
     await p.getByTestId(`room-jump-${k}`).click(); await p.waitForTimeout(700);

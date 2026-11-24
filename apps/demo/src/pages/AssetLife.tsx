@@ -13,6 +13,9 @@ import { restoredInSla } from '../service/analytics.js';
 import { load as loadDesk } from '../decisions/store.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel } from '../build/store.js';
+import { canOpen, isRole } from '../access/policy.js';
+import { resolve } from '../registry.pages.js';
+import { callingRoomOf } from '../voice/model.js';
 
 const KIND_WORD = { installed: 'Installed', registered: 'Registered', baseline: 'Baseline', issue: 'Issue', service: 'Service', retired: 'Retired', replaced: 'Replaced' } as const;
 
@@ -29,6 +32,10 @@ export function AssetLifePage({ perspective, hash }: { perspective: string; hash
   const mine = hit ? jobs.filter((j) => j.asset === hit.code) : [];
   const retired = useMemo(() => codes.filter((c) => !findAsset(c)!.current).length, [codes]);
   const go = (e: { preventDefault: () => void }) => { e.preventDefault(); location.hash = `#/v25/asset?a=${encodeURIComponent(typed.trim().toUpperCase())}`; };
+  // 24 Nov 2026 (founder's Day 2 order, item 2: VOICE on the shared device passport): the unit that is a room's calling endpoint links to
+  // that room's CallPath, for a role that may open it (the site scope of VOICE applies here as it does everywhere)
+  const callRoom = hit && hit.current ? callingRoomOf(hit.code) : null; const callHref = callRoom ? `#/voice/callpath/${callRoom}` : null;
+  const callOpen = (() => { if (!callHref || !isRole(perspective)) return false; const r = resolve(callHref); return !!r && canOpen(perspective, r); })();
   return (
     <section className="wk al" data-native="workspace" data-testid="asset-life" data-found={hit ? (hit.current ? 'in-service' : 'retired') : q ? 'none' : ''}>
       <PageHero product="commissioning" icon="device" eyebrow="Asset intelligence · one unit" title={hit ? `${hit.code}: its whole life` : 'Find an asset by its ID'}
@@ -45,6 +52,7 @@ export function AssetLifePage({ perspective, hash }: { perspective: string; hash
           <Card icon="device" title={hit.current ? 'In service' : 'Retired'} sub={hit.current ? 'in the asset inventory' : 'out of the inventory; the ID is kept and never reissued'} testId="al-state"><Tag tone={hit.current ? 'ok' : 'muted'}>{hit.current ? 'IN SERVICE' : 'RETIRED'}</Tag></Card>
           <Card icon="place" title={hit.position?.label || hit.inst.position} sub={`${hit.inst.position} in ${fullName(hit.room.outline)}`} testId="al-where"><a href={`#/commissioning/room/${hit.room.outline.id}`}>Open the room’s record</a></Card>
           <Card icon="ticket" title={`${mine.length} service job${mine.length === 1 ? '' : 's'}`} sub={mine.length ? `${mine.filter(restoredInSla).length} restored within SLA` : 'none raised against this unit'} testId="al-service" />
+          {callOpen ? <Card icon="network" title="Calling endpoint" sub="this unit is the room’s calling endpoint" testId="al-calling"><a href={callHref!}>Open the room’s CallPath in VOICE</a></Card> : null}
           <Card icon="link" title={hit.replacedBy ? `Replaced by ${hit.replacedBy}` : hit.replaced ? `Replaced ${hit.replaced}` : 'Original unit'} sub={hit.position?.device || ''} testId="al-chain">
             {hit.replacedBy ? <a href={`#/v25/asset?a=${hit.replacedBy}`} data-testid="al-next">Follow to {hit.replacedBy}</a> : hit.replaced ? <a href={`#/v25/asset?a=${hit.replaced}`} data-testid="al-prev">Back to {hit.replaced}</a> : null}</Card>
         </div>

@@ -109,6 +109,14 @@ for (const [tag, w, h] of [['desk', 1440, 900], ['phone', 390, 844]]) {
   ok(`VC-${tag}-21`, 'the room’s own page offers “Calling” to a role that may open its CallPath, and not to a caller', jump === CP && await rje.page.getByTestId('room-jump-voice').count() === 0, String(jump));
   await rj.close(); await rje.close();
 
+  // 24 Nov 2026: the device passport (founder's Day 2 order, item 2). The asset that is the room's calling endpoint links to its CallPath.
+  const al = await open('#/v25/asset?a=AS-0108', { role: 'ops', sw: false, w, h, reduced: true }); await al.page.getByTestId('asset-life').waitFor();
+  const alHref = await al.page.locator('[data-testid=al-calling] a').getAttribute('href').catch(() => null);
+  await al.page.goto(al.page.url().split('#')[0] + '#/v25/asset?a=AS-0101'); await al.page.waitForFunction(() => /AS-0101/.test(document.querySelector('main')?.innerText || '')); await al.page.waitForTimeout(300); const alOther = await al.page.getByTestId('al-calling').count();
+  const ald = await open('#/v25/asset?a=AS-0108', { role: 'designer', sw: false, w, h, reduced: true }); await ald.page.getByTestId('asset-life').waitFor(); await ald.page.waitForTimeout(300);
+  ok(`VC-${tag}-24`, 'the asset page of the room’s calling endpoint links to that room’s CallPath for a role that may open it; another unit has no such link; a role that may not open the CallPath is not offered it', alHref === CP && alOther === 0 && await ald.page.getByTestId('al-calling').count() === 0 && await overflow(al.page) <= 1 && al.errs.length === 0, `${alHref} ${alOther} ${al.errs.join(' | ')}`);
+  await al.close(); await ald.close();
+
   const f = await open('#/families', { role: 'ucadmin', sw: false, w, h, reduced: true });
   const fam = { caps: await f.page.locator('[data-cap]').count(), fams: await f.page.locator('[data-family]').count(), voice: await f.page.getByTestId('fam-open-voice').count(), flow: await f.page.getByTestId('fam-open-flow').count(), mission: await f.page.getByTestId('fam-open-missionproof').count(), prism: await f.page.getByTestId('fam-open-prism').count(), omni: await f.page.getByTestId('fam-open-omnipresence').count(), sh: await f.page.getByTestId('fam-open-servicehands').count(), notBuilt: (await f.page.locator('main').innerText()).split('Not built yet').length - 1 };
   ok(`VC-${tag}-22`, 'the platform families: six families, seventeen capabilities, none marked not built (changed 24 Nov 2026: the last five are built); VOICE, FLOW, MissionProof and OMNIPRESENCE open; a capability or product this role may not open (PRISM, ServiceHands) has no link', fam.caps === 17 && fam.fams === 6 && fam.voice === 1 && fam.flow === 1 && fam.mission === 1 && fam.omni === 1 && fam.prism === 0 && fam.sh === 0 && fam.notBuilt === 0 && await overflow(f.page) <= 1 && f.errs.length === 0, JSON.stringify(fam));
