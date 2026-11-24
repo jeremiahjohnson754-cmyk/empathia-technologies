@@ -44,6 +44,10 @@ jobs:
           corepack enable
           pnpm install --no-frozen-lockfile
           npx playwright install --with-deps chromium
+      - name: sharp for the export suite (the Word, PDF and PowerPoint exports embed the shield; without it the checker reports "no image")
+        run: |
+          npm install --no-audit --no-fund --prefix "$RUNNER_TEMP/npm-tools" sharp@0.35.4
+          echo "SHARP_PATH=$RUNNER_TEMP/npm-tools/node_modules/sharp" >> "$GITHUB_ENV"
       - name: Build everything public (the Founder Studio is private and is not built on a runner)
         run: node scripts/build.mjs
       - name: ML research prototype — synthetic dataset and model, regenerated from committed scripts

@@ -64,7 +64,22 @@ The system packages repaired five of the six suites that needed them. Eight suit
 
 **CI is still not green.** The expected state after the third commit is six failing suites, all named above.
 
+### The third run (run 45316525626, commit b57e3d29): PASS 280 · FAIL 6 · NOT_RUN 4
+
+The JSON schema packages repaired the Power BI export check. Learn labs `LL-11` passed, so it has failed once in three runs and stays
+read as intermittent. Six suites still fail on the runner:
+
+| Cause on the runner | Suites | State |
+|---|---|---|
+| `sharp` is not installed, so the exports are written without the shield and the checker reports "no image" (12 Word documents listed) | unit: export formats (864 of 893) | Fourth commit: `sharp@0.35.4`, the version used locally, installed outside the repository and named in `SHARP_PATH`, which the suite already reads. Not yet confirmed by a run |
+| The runner's browser is not the one the local regression uses. `package.json` pins Playwright 1.56.0 (Chromium 141, build 1194); every local regression has run on Playwright 1.63.0 (build 1243). Build 1194 plays no H.264 video | demo-signal-film, demo-lesson, demo-cinematic | Fourth commit: `package.json` pins Playwright 1.63.0, so the runner downloads the build the evidence was produced on. Not yet confirmed by a run |
+| Failed in all three runs, always the same way: public website `WR-ten-seconds` (40 animations still listed after the sequence has come to rest) and demo-offline `OF-13` (the chapter page does not replace the offline page) | public website, demo-offline | **OPEN.** Three identical failures do not look like timing. Both may be the older browser; the fourth run will show. No test is loosened |
+
+**CI is still not green.** After the fourth commit the expected state is between zero and two failing suites, and this document will say
+which once the run has finished.
+
 ## What merging does
 
-Merging this branch to `main` changes no application file, but any push to `main` makes Render redeploy production from the new commit.
-The founder approves that separately.
+Merging this branch to `main` changes no application file. It changes the workflow, `requirements-ci.txt`, this document, and one line of
+`package.json`: the Playwright version used by the tests (a development dependency; nothing in a built site contains it). Any push to
+`main` makes Render redeploy production from the new commit. The founder approves that separately.
