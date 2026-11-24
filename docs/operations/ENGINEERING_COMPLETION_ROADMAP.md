@@ -18,10 +18,9 @@ improvement. P3: recorded for later.
 |---|---|---|
 | `main` (production) | `27c74695`, untouched this sprint | Render production services follow `main` |
 | Canonical Next sites | `phase3/legendary-experience` at `fe30ba9d`, untouched this sprint | `docs/releases/STAGING_PREVIEW_E3.md` |
-| E3 staging pair | `preview/enterprise-3` at `26c81f0d`, live-checked 26 of 26 | same |
+| E3 staging pair | `preview/enterprise-3` at `1dae3703`, live-checked 28 of 28 on 24 Nov 13:57 UTC | same |
 | Working branch | `v18/continuation` at `1dae3703` (draft pull request 2 into `phase3/legendary-experience`) | board |
 | Last exact-commit regression that passed | `1dae3703`: PASS 293 · FAIL 0 · NOT_RUN 2 (24 Nov 13:47 UTC). It includes the design pass on the room, the job, the work order and the APEX case | `tests/evidence/TEST_RESULTS.md` |
-| Not yet on E3 | `1dae3703` is exact-commit validated; it is Staged only once `STAGING_PREVIEW_E3.md` records its deploy and live check | `docs/releases/STAGING_PREVIEW_E3.md` |
 | GitHub CI | Green only on the repair branch (`ci/e3-d5-…`, draft pull request 3, based on `main`): PASS 286 · FAIL 0 · NOT_RUN 4. Never run green on `v18/continuation` | `docs/operations/CI_REPAIR_E3-D5.md` on that branch |
 | Worlds that exist | Four (Enterprise, Stadium, University, Convention) in `apps/demo/src/worlds`, 52 role configurations | `registry.worlds.ts` |
 | Leftover branch | `wip/e3-day4-links` on GitHub: two commits, cherry-picked into `a43891c0`; kept, per the founder | — |
@@ -64,7 +63,7 @@ validated step goes to E3 only.
 | A15 | Integration and hardware readiness register: validated / awaiting live validation / simulated / adapter prepared / planned / blocked | P1 | no | — | Every integration named on a page has a row; pages use the same word | Planned |
 | A16 | Reliability: large inventories, long histories, storage limits, interrupted sessions, restart recovery | P2 | no | — | Measured timings in this environment only; no enterprise-scale claim | Planned |
 | A17 | Handoff: technical package for due diligence; sanitized investor package; adversarial review from twelve perspectives turned into tests | P1 | yes (documentation gate) | A8, A9, A15 | An engineer can build, test and deploy from the documents alone (dry run in a clean container) | Planned |
-| A18 | Release gates and the canonical release, with rollback | P0 | — | everything above marked "yes" | The seventeen gates of the directive, each with its evidence | Planned |
+| A18 | Release gates and the canonical release, with rollback | P0 | — | everything above marked "yes" | The seventeen gates of the directive, each with its evidence. The live check waits until the served `BUILD_MANIFEST.json` names the candidate commit and the served entry files match its hashes (finding of 24 Nov: the content network served the previous build for up to six minutes after "deploy live"); the live check script moves from the session's scratch area into `scripts/staging/` | Planned |
 
 Risks and remediation for A: (1) GitHub CI has never run on the working branch; the repair is based on `main`, so integrating it
 may surface new failures: do A3 early. (2) The demonstration keeps its state in the browser; role switching is a demonstration aid,
@@ -95,7 +94,7 @@ supported web stack sets the ceiling; a 2D mode is always available and performa
 
 ## Order of work
 
-1. Stage the design pass on E3 (its regression passed on `1dae3703`).
+1. Done: the design pass is exact-commit validated on `1dae3703` and staged on E3.
 2. A2, then A3 (evidence integrity and CI on the working branch), because every later step leans on them.
 3. A7 and A9 (the P0 integrity and authorization items), with A6 alongside.
 4. A1 and A8 registers, A5, A14, A15; A11 and A12 design and website; A13 once voice is decided; A17.

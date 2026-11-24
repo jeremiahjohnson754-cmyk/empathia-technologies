@@ -21,10 +21,32 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 |---|---|---|---|---|
 | 24 Nov 2026 02:09 | `8597d2ea` | PASS 291 · FAIL 0 · NOT_RUN 2 (evidence in `6f97ce6d`) | dep-dc2f35vlk1mc739pn81g, replaced | dep-dc2f36lg1s2s73b4o4h0, replaced |
 | 24 Nov 2026 07:48 | `9bc47b27` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `85264964`) | dep-dc2k1rdbedkc73b3jsfg, replaced | dep-dc2k1rdbedkc73b3jsc0, replaced |
-| 24 Nov 2026 10:26 | `26c81f0d` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `bd457a4d`) | dep-dc2mbte7bikc73fsvoi0, live | dep-dc2mbte7bikc73fsvoe0, live |
+| 24 Nov 2026 10:26 | `26c81f0d` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `bd457a4d`) | dep-dc2mbte7bikc73fsvoi0, replaced | dep-dc2mbte7bikc73fsvoe0, replaced |
+| 24 Nov 2026 13:49 | `1dae3703` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `ce773198`) | dep-dc2pb38m7kps73d58vog, live | dep-dc2pb38m7kps73d58vs0, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `1dae3703`, 24 Nov 2026 13:57 UTC
+
+Opened in a browser against the live addresses: 28 of 28 checks held. The 26 checks of the earlier live check (below) held again; the
+APEX check now also requires the hypothesis's three citations as a list and no stretched layer; two were added for the design pass:
+
+| Address | As | Result |
+|---|---|---|
+| demo `#/room` | Service Manager | all eleven device names in the 3D view are inside the drawing and none lies on another; the delivery spine's stage names sit on one line |
+| demo `#/v25/service?id=ISS-0417`, then its work order | Service Manager | the job's work order number is a link and opens that work order; the work order says where the job stands; its row of other products is not cut off |
+
+Both previews publish `BUILD_MANIFEST.json`; each named `sourceCommit` `1dae3703…` at the time of the check.
+
+**Finding: for several minutes after a deploy the previews can still serve the previous build.** The same check run at 13:52 and
+13:55 UTC, three and six minutes after Render reported both deploys live (13:49), held only 25 of 28: the three checks that depend
+on the new build failed, on old files. The static sites answer with `cache-control: public, max-age=0, s-maxage=300` and the
+entry files (`index.html`, `demo.js`, `demo.css`) keep the same names between builds, so the content network may hold each for
+up to five minutes, each on its own clock. By 13:57 all were fresh. Consequences, recorded for the release procedure
+(`docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`, A18): a live check is not started until the served manifest names the expected
+commit and the served entry files match the manifest's hashes; "deploy live" alone is not proof of what visitors receive. Not
+changed here: the cache rule is Render's default for static sites and the previews use no custom headers.
 
 ## Live check of `26c81f0d`, 24 Nov 2026 10:42 UTC
 
@@ -90,7 +112,5 @@ local build). The website has no `/flow` page at this commit; that address retur
 
 ## What is not in the previews yet
 
-Work after `26c81f0d` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. On 24 Nov that
-is the second design pass on the room, the job and the APEX case: device names in the room's 3D view kept inside the drawing and
-off each other, the delivery spine's stage names on one line, the APEX layers read from the top of their cards with a long layer
-two columns wide, and a hypothesis's citations as a list.
+Work after `1dae3703` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. Nothing
+directed on 24 Nov beyond the design pass is built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.
