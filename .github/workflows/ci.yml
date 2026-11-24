@@ -32,10 +32,10 @@ jobs:
         with: { node-version: '22.22.0' }
       - uses: actions/setup-python@v5
         with: { python-version: '3.13' }
-      - name: System packages (PostgreSQL 16 server binaries for the private test cluster, ffmpeg for media fixtures)
+      - name: System packages (PostgreSQL 16 for the private test cluster, ffmpeg for media fixtures, poppler and qpdf to reopen exported PDFs)
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-16 ffmpeg
+          sudo apt-get install -y postgresql-16 ffmpeg poppler-utils qpdf
           sudo systemctl stop postgresql || true
       - name: Python packages (pinned; intelligence service, ML prototype, Blueprint validator)
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt

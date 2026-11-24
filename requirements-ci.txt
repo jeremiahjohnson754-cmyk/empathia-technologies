@@ -2,3 +2,7 @@
 # The intelligence service and the ML research prototype share these pins; PyYAML is for the Render Blueprint validator.
 -r services/intelligence-python/requirements.txt
 PyYAML==6.0.3
+# The export checker (scripts/verify/export-formats-check.py) reopens the Excel, Word and PowerPoint files the demonstration writes.
+openpyxl==3.1.5
+python-docx==1.2.0
+python-pptx==1.0.2

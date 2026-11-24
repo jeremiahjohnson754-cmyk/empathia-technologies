@@ -33,9 +33,23 @@ CI has reported nothing about the public sites for a week.
 
 | Check | Result |
 |---|---|
-| `tests/unit/release-gate.test.mjs` | 8/8 PASS (run in a miniature checkout holding the three changed files) |
+| `tests/unit/release-gate.test.mjs` | 8/8 PASS, locally and on GitHub |
 | Workflow parses as YAML; one job; no `${{ secrets.* }}` | PASS |
-| GitHub Actions run of the repaired workflow on the pull request for this branch | See the pull request's checks. This file records the first result once the run finishes; until then it is NOT RUN, not PASS |
+| GitHub Actions run 45282298279 (first commit of this branch, pull request 3) | The build step **passed** for the first time since 17 Nov, and the whole matrix ran on GitHub for the first time: **PASS 274 · FAIL 12 · NOT_RUN 4** in 78 minutes. The four NOT RUN are the three Founder Studio suites, named, and the film decode. The gate did not run, because the matrix step failed |
+
+### The twelve failures on the runner (none is in the Founder Studio; none is caused by the repair)
+
+They had never been seen because nothing after the build step had run on GitHub. On the same commit the local regression passes them.
+
+| Cause on the runner | Suites | Addressed by |
+|---|---|---|
+| `pdftotext` and `qpdf` are not installed | security data-report, security powerbi-export, demo-exports, demo-drill, demo-service-analytics, demo-cx-analytics | Second commit: `poppler-utils` and `qpdf` in the system packages step |
+| Python `openpyxl`, `python-docx`, `python-pptx` are not installed | unit: export formats | Second commit: pinned in `requirements-ci.txt` at the versions used locally |
+| The runner's Chromium plays no H.264 video ("The element has no supported sources") | demo-signal-film, demo-lesson, demo-cinematic | **OPEN.** Needs a browser build with the codec on the runner, or the affected checks named as NOT RUN there. Not decided |
+| Slower machine | public website `WR-ten-seconds` (animations still present at the 10-second mark), demo-offline `OF-13` | **OPEN.** To be read again after the second run; no test is loosened to make them pass |
+
+So after the second commit the expected state is: seven suites repaired by the missing packages, five still failing. **CI is not green yet and
+this document does not say it is.** The result of the second run is on the pull request's checks.
 
 ## What merging does
 
