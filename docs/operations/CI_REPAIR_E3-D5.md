@@ -51,6 +51,19 @@ They had never been seen because nothing after the build step had run on GitHub.
 So after the second commit the expected state is: seven suites repaired by the missing packages, five still failing. **CI is not green yet and
 this document does not say it is.** The result of the second run is on the pull request's checks.
 
+### The second run (run 45298218738, commit b1c13df6): PASS 278 · FAIL 8 · NOT_RUN 4
+
+The system packages repaired five of the six suites that needed them. Eight suites still fail on the runner:
+
+| Cause on the runner | Suites | State |
+|---|---|---|
+| Python `jsonschema` and `referencing` are not installed | security powerbi-export (PBI-02), unit: export formats | Third commit: both pinned in `requirements-ci.txt` at the versions used locally. Not yet confirmed by a run |
+| The runner's Chromium plays no H.264 video | demo-signal-film, demo-lesson, demo-cinematic | **OPEN**, as before |
+| Timing on a slower machine | public website `WR-ten-seconds`, demo-offline `OF-13` | **OPEN**: both failed again in the second run, so it is not a one-off |
+| Not yet understood | Learn labs `LL-11` (the Lighting Lab fault "fixable to every check"; it passed in the first run and passes locally) | **OPEN.** Read as intermittent until it is seen twice; nothing is loosened |
+
+**CI is still not green.** The expected state after the third commit is six failing suites, all named above.
+
 ## What merging does
 
 Merging this branch to `main` changes no application file, but any push to `main` makes Render redeploy production from the new commit.
