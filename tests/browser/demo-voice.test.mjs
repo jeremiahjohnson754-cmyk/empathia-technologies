@@ -123,5 +123,29 @@ for (const [tag, w, h] of [['desk', 1440, 900], ['phone', 390, 844]]) {
   await f.page.goto(f.page.url().split('#')[0] + '#/home'); await settle(f.page);
   ok(`VC-${tag}-23`, 'the UC / Voice Administrator has a home, with no console error and no sideways scroll', (await f.page.locator('main h1').innerText()).length > 0 && f.errs.length === 0 && await overflow(f.page) <= 1, `${await f.page.locator('main h1').innerText()} · ${f.errs[0] || ''}`);
   await f.close();
+
+  // 24 Nov 2026: the two links the founder asked for on 23 Nov 19:22 ("repair the remaining Assurance and APEX links"). One browser,
+  // so what one person records is what the next one reads. The whole repair, through ServiceHands, is walked in demo-journeys (J6BR).
+  const swap = async (page, role, to) => { await page.evaluate((r) => localStorage.setItem('empathia.demo.perspective', r), role); await page.goto(page.url().split('#')[0] + to); await page.reload(); await settle(page); };
+  const AS = `#/assurance/room/${ROOM}`; const as = await open(AS, { role: 'ops', sw: false, w, h, reduced: true }); const ap = as.page; ap.setDefaultTimeout(15000); await settle(ap);
+  const a0 = { btn: await ap.getByTestId('as-run-btn').count(), drift: await ap.getByTestId('as-drift').count(), state: await ap.getByTestId('as-calling-says').getAttribute('data-state') };
+  await swap(ap, 'cxeng', AS); await ap.getByTestId('as-run-btn').click(); await ap.waitForTimeout(300);
+  const a1 = { says: await ap.getByTestId('as-run-says').innerText(), rows: await ap.getByTestId('as-drift-row').count(), cleared: await ap.getByTestId('as-drift-cleared').count(), disabled: await ap.getByTestId('as-run-btn').isDisabled(), over: await overflow(ap) };
+  await ap.reload(); await settle(ap); await ap.getByTestId('as-run-btn').click(); await ap.waitForTimeout(300);
+  const a2 = { says: await ap.getByTestId('as-run-says').innerText(), rows: await ap.getByTestId('as-drift-row').count(), cleared: await ap.getByTestId('as-drift-cleared').count() };
+  await swap(ap, 'ops', AS);
+  const a3 = { btn: await ap.getByTestId('as-run-btn').count(), rows: await ap.getByTestId('as-drift-row').count(), row: (await ap.getByTestId('as-drift-opened').first().innerText().catch(() => '')).slice(0, 160) };
+  ok(`VC-${tag}-25`, 'an Assurance run by the commissioning engineer writes one drift record for calling, read from VOICE and labelled simulated; a second run with nothing changed writes no second record and clears nothing; the operations lead reads the record and is not offered the run', a0.btn === 0 && a0.drift === 0 && a0.state === 'OUTSIDE' && /It wrote drift record DR-0001/.test(a1.says) && a1.rows === 1 && a1.cleared === 0 && a1.disabled && a1.over <= 1 && /DR-0001 still stands/.test(a2.says) && a2.rows === 1 && a2.cleared === 0 && a3.btn === 0 && a3.rows === 1 && /VOICE \(simulated\)/.test(a3.row) && as.errs.length === 0, JSON.stringify({ a0, a1, a2, a3, e: as.errs[0] }));
+
+  const APX = '#/v25/apex?case=APX-001'; const rec = () => ap.getByRole('button', { name: /^Record VH-0001 on this case$/ });
+  await swap(ap, 'service', APX); await ap.getByTestId('apex-calling').waitFor();
+  const x0 = { record: await rec().count(), recorded: await ap.getByTestId('apex-voice-recorded').count() };
+  await swap(ap, 'svcmgr', APX); await ap.getByTestId('apex-calling').waitFor(); const before = await ap.getByTestId('apex-case').innerText();
+  await rec().click(); await ap.waitForTimeout(300); const after = await ap.getByTestId('apex-case').innerText();
+  const x1 = { recorded: await ap.getByTestId('apex-voice-recorded').count(), again: await rec().count(), from: await ap.getByTestId('hyp-from').innerText().catch(() => ''), listed: /recorded from VOICE/.test(after) && !/recorded from VOICE/.test(before), caveat: /not a root cause/.test(after), over: await overflow(ap) };
+  await swap(ap, 'ucadmin', CP);
+  const x2 = await ap.getByTestId('voice-hyp-recorded').innerText().catch(() => '');
+  ok(`VC-${tag}-26`, 'APEX records VOICE’s hypothesis on a case only when someone who may act on the case asks: the technician reads the case and is not offered it; the service manager records VH-0001 once, with where it came from and that it is not a root cause; the CallPath then names the case', x0.record === 0 && x0.recorded === 0 && x1.recorded === 1 && x1.again === 0 && /VOICE VH-0001/.test(x1.from) && x1.listed && x1.caveat && x1.over <= 1 && /Recorded on APEX case APX-001/.test(x2) && as.errs.length === 0, JSON.stringify({ x0, x1, x2, e: as.errs[0] }));
+  await as.close();
 }
 await done();
