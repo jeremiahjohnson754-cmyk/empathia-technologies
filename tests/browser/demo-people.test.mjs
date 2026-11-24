@@ -38,7 +38,7 @@ const desc = (xs) => xs.every((x, i) => i === 0 || xs[i - 1] >= x);
   await p.evaluate(() => { localStorage.removeItem('empathia.demo.workspace.v1'); }); await p.reload(); await p.waitForSelector('[data-testid=incident]');
   await p.click('[data-testid=incident] button:has-text("Triage")'); await p.waitForSelector('[data-testid=candidates]');
   const xp = await p.getByTestId('cand-experience').allInnerTexts();
-  ok('PE-05', 'dispatch shows each eligible candidate’s record experience in the job’s layer, beside the ranking', xp.length >= 1 && xp.every((x) => /record: (\w+ experience [\d.]+ · [A-Z][a-z]+|no worked jobs on record)/.test(x)), JSON.stringify(xp.slice(0, 3)));
+  ok('PE-05', 'dispatch shows each eligible candidate’s record experience in the job’s layer, beside the ranking', xp.length >= 1 && xp.every((x) => /^record: (\w+ experience [\d.]+ · [A-Z][a-z]+|no worked jobs on record)/.test(x)), JSON.stringify(xp.slice(0, 3)));   // 24 Nov 2026: anchored at the start. The line began with "· ", which read as a stray dot whenever it wrapped onto its own line (design pass)
   await t.close(); }
 
 { const v = await open('#/v25/people', { role: 'visitor', sw: false }); await v.page.waitForTimeout(800); const seen = await v.page.getByTestId('people').count(); await v.close();

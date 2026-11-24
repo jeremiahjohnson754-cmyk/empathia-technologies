@@ -152,6 +152,24 @@ export function IsoView({ w, l, h, positions, layers, selected, onSelect, angle,
   const pts = (a: Array<[number, number, number]>) => a.map(([x, y, z]) => P(x, y, z).map((v) => v.toFixed(1)).join(',')).join(' ');
   const minX = P(0, L, 0)[0] - 30, maxX = P(W, 0, 0)[0] + 30, minY = P(0, 0, h)[1] - 30, maxY = P(W, L, 0)[1] + 40;
   const vis = positions.filter((p) => layers.has(p.layer)).map((p) => { const [x, y] = rot(p.x, p.y); return { p, x, y }; }).sort((a, b) => a.x + a.y - (b.x + b.y));
+  // Where each name sits. A name used to sit above and to the right of its device whatever was there, so the names of devices near the
+  // right corner ran off the drawing and names in a rack lay on top of each other (design pass, 24 Nov 2026). Each name now takes the
+  // first of eight places (right or left of the device, above or below it, near or one line further) that stays inside the drawing and covers neither a name
+  // already placed nor another device; devices are taken top to bottom so the result is the same on every draw. The names are
+  // drawn after every device, so a device never paints over a neighbour's name.
+  const tagW = (label: string) => 8 + Math.min(18, label.length) * 6.4;
+  const tags = new Map<string, { x: number; y: number; side: string }>();
+  { type Box = [number, number, number, number]; const hit = (a: Box, b: Box) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
+    const devs = vis.filter((v) => !v.p.furniture).map((v) => { const [px, py] = P(v.x, v.y, v.p.z); return { code: v.p.code, label: v.p.label, layer: v.p.layer, px, py }; });
+    const named = devs.filter((d) => vis.length <= 18 || ['display', 'video'].includes(d.layer)).sort((a, b) => a.py - b.py || a.px - b.px || (a.code < b.code ? -1 : 1));
+    const placed: Box[] = [];
+    for (const d of named) { const lw = tagW(d.label); const others: Box[] = devs.filter((o) => o.code !== d.code).map((o) => [o.px - 10, o.py - 10, o.px + 10, o.py + 10]);
+      const places: Array<[number, number, string]> = [[12, -21, 'right'], [12, 5, 'right'], [-12 - lw, -21, 'left'], [-12 - lw, 5, 'left'], [12, -39, 'right'], [12, 23, 'right'], [-12 - lw, -39, 'left'], [-12 - lw, 23, 'left']];
+      const box = ([x, y]: [number, number, string]): Box => [d.px + x, d.py + y, d.px + x + lw, d.py + y + 16];
+      const inside = (b: Box) => b[0] >= minX + 2 && b[2] <= maxX - 2 && b[1] >= minY + 2 && b[3] <= maxY - 2;
+      const fits = places.filter((c) => inside(box(c)));
+      const pick = fits.find((c) => !placed.some((b) => hit(b, box(c))) && !others.some((b) => hit(b, box(c)))) || fits.find((c) => !placed.some((b) => hit(b, box(c)))) || fits[0] || places[0]!;
+      placed.push(box(pick)); tags.set(d.code, { x: pick[0], y: pick[1], side: pick[2] }); } }
   return (
     <svg className="stage__svg" viewBox={`${minX} ${minY} ${maxX - minX} ${maxY - minY}`} role="group" aria-label={`Three-dimensional view of the room, angle ${angle * 90} degrees`} data-testid="room-3d">
       <polygon points={pts([[0, 0, 0], [W, 0, 0], [W, L, 0], [0, L, 0]])} className="iso__floor" />
@@ -165,10 +183,12 @@ export function IsoView({ w, l, h, positions, layers, selected, onSelect, angle,
         return (
           <g key={p.code} className={`rv__dev${selected === p.code ? ' on' : ''}${marked?.has(p.code) ? ' is-marked' : ''}`} role="button" tabIndex={0} aria-pressed={selected === p.code} aria-label={`${p.label}${marked?.has(p.code) ? `, ${markWord ?? p.provenance}` : marked ? '' : `, position ${p.code}`}, ${p.z} m high`} onClick={() => onSelect(p.code)} onKeyDown={keyAct(() => onSelect(p.code))}>
             {p.z > 0.05 && <line x1={fx} y1={fy} x2={px} y2={py} className="iso__drop" />}
-            <g transform={`translate(${px.toFixed(1)} ${py.toFixed(1)})`}><rect x={-15} y={-15} width={30} height={30} fill="transparent" className="rv__hit" />{marked?.has(p.code) && <rect x={-14} y={-14} width={28} height={28} rx={7} className="rv__mark" />}<rect x={-9} y={-9} width={18} height={18} rx={4} fill={LAYER_COLOR[p.layer]} /><text y={4} textAnchor="middle" className="rv__glyph">{LAYER_GLYPH[p.layer]}</text>{(vis.length <= 18 || ['display', 'video'].includes(p.layer)) && <g className="iso__tag" aria-hidden="true"><rect x={12} y={-21} width={8 + Math.min(18, p.label.length) * 6.4} height={16} rx={4} /><text x={16} y={-9}>{p.label.length > 18 ? `${p.label.slice(0, 17)}…` : p.label}</text></g>}</g>
+            <g transform={`translate(${px.toFixed(1)} ${py.toFixed(1)})`}><rect x={-15} y={-15} width={30} height={30} fill="transparent" className="rv__hit" />{marked?.has(p.code) && <rect x={-14} y={-14} width={28} height={28} rx={7} className="rv__mark" />}<rect x={-9} y={-9} width={18} height={18} rx={4} fill={LAYER_COLOR[p.layer]} /><text y={4} textAnchor="middle" className="rv__glyph">{LAYER_GLYPH[p.layer]}</text></g>
           </g>
         );
       })}
+      {vis.map(({ p, x, y }) => { const tg = tags.get(p.code); if (!tg) return null; const [px, py] = P(x, y, p.z);
+        return <g key={`tag-${p.code}`} className={`iso__tag${selected === p.code ? ' is-on' : ''}`} aria-hidden="true" data-side={tg.side} transform={`translate(${px.toFixed(1)} ${py.toFixed(1)})`} onClick={() => onSelect(p.code)}><rect x={tg.x} y={tg.y} width={tagW(p.label)} height={16} rx={4} /><text x={tg.x + 4} y={tg.y + 12}>{p.label.length > 18 ? `${p.label.slice(0, 17)}…` : p.label}</text></g>; })}
     </svg>
   );
 }

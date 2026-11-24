@@ -67,7 +67,13 @@ button.go { font: inherit; text-align: left; cursor: pointer; width: 100%; align
 .check { display: flex; gap: 8px; align-items: flex-start; font-size: var(--fs-sm); color: var(--tx2); } .check.inline { display: inline-flex; margin-right: 10px; }
 .card { padding: var(--sp-3) var(--sp-4); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); } .stack { display: grid; gap: var(--sp-3); } .row-actions { display: inline-flex; gap: 6px; }
 .apex__layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; }
-.apex__layer { padding: 8px 10px; border: 1px dashed var(--line); border-radius: var(--r-sm); font-size: var(--fs-sm); display: grid; gap: 4px; min-width: 0; } .apex__layer.has { border-style: solid; background: var(--panel); } .apex__layer ul { margin: 0; padding-left: 16px; }
+/* align-content: one layer with a long list stretches the row; the others keep their text at the top instead of spread down the card (design pass, 24 Nov 2026) */
+.apex__layer { padding: 8px 10px; border: 1px dashed var(--line); border-radius: var(--r-sm); font-size: var(--fs-sm); display: grid; gap: 4px; min-width: 0; align-content: start; }
+.apex__items { margin: 0; padding-left: 16px; display: grid; gap: 3px; }
+/* a layer that carries a long record (VOICE's three citations on the network layer) takes two columns, so it does not make its whole row three times as tall as the other layers need */
+.apex__layer--wide { grid-column: span 2; }
+/* on a phone the seven layers are one column in their own order: two narrow columns left a hole beside a wide layer and squeezed every sentence */
+@media (max-width: 520px) { .apex__layers { grid-template-columns: 1fr; } .apex__layer--wide { grid-column: auto; } } .apex__layer.has { border-style: solid; background: var(--panel); } .apex__layer ul { margin: 0; padding-left: 16px; }
 .apex__hyps { margin: 0; padding-left: 20px; display: grid; gap: 6px; } .apex__hyps button { all: unset; cursor: pointer; display: block; padding: 6px 8px; border-radius: var(--r-sm); } .apex__hyps li.on button { background: color-mix(in srgb, var(--accent) 10%, transparent); box-shadow: inset 0 0 0 1px var(--accent); }
 .apex__tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px; } .apex__tier { padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); display: grid; gap: 4px; font-size: var(--fs-sm); } .apex__tier.on { border-color: var(--accent); }
 .apex__log { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; } .apex__log li { padding: 8px 10px; border-left: 3px solid var(--line); }

@@ -39,6 +39,20 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
   await t.go('#/room', 600);
   const room = await t.page.evaluate(() => ({ id: document.querySelector('[data-testid="room-view"]')?.getAttribute('data-room'), stages: document.querySelectorAll('[data-testid="spine"] .spine__s').length, tiles: document.querySelectorAll('[data-testid="room-tiles"] .kit-tile').length, tabs: document.querySelectorAll('[data-testid="room-tabs"] a').length, three: !!document.querySelector('[data-testid="room-3d"]') }));
   ok(`CORE-${tag}-06`, '#/room is Atlas 4.218: room tabs, four tiles, the nine-stage delivery spine and the 3D stage', room.id === 'R-ATL-4-218' && room.stages === 9 && room.tiles === 4 && room.tabs >= 8 && room.three, JSON.stringify(room));
+  // 24 Nov 2026, design pass on the screens the journeys cross most. Found from captured screens: in the 3D view the names of the devices
+  // near the right corner ran off the drawing and the names in the rack lay on each other; in the spine a state that wrapped
+  // ("4 · IN PROGRESS") pushed that stage's name below its neighbours'.
+  const look = await t.page.evaluate(() => {
+    const svg = document.querySelector('[data-testid="room-3d"]'); const S = svg.getBoundingClientRect(); const k = S.width / svg.viewBox.baseVal.width;   // one drawing unit in pixels
+    const tags = [...svg.querySelectorAll('.iso__tag')].map((g) => ({ name: g.textContent, b: g.querySelector('rect').getBoundingClientRect() }));
+    const out = tags.filter((x) => x.b.left < S.left - 1 || x.b.right > S.right + 1 || x.b.top < S.top - 1 || x.b.bottom > S.bottom + 1).map((x) => x.name);
+    const lap = []; for (let i = 0; i < tags.length; i += 1) for (let j = i + 1; j < tags.length; j += 1) { const a = tags[i].b, b = tags[j].b; if (Math.min(a.right, b.right) - Math.max(a.left, b.left) > k && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > k) lap.push(`${tags[i].name} / ${tags[j].name}`); }
+    const rows = new Map(); for (const li of document.querySelectorAll('[data-testid="spine"] .spine__s')) { const top = Math.round(li.getBoundingClientRect().top); const b = li.querySelector('b').getBoundingClientRect().top; rows.set(top, [...(rows.get(top) || []), b]); }
+    const uneven = [...rows.values()].filter((v) => Math.max(...v) - Math.min(...v) > 1).length;
+    return { tags: tags.length, out, lap, rows: rows.size, uneven };
+  });
+  ok(`CORE-${tag}-06b`, 'the room in 3D: every device name is inside the drawing and no name lies on another', look.tags >= 8 && look.out.length === 0 && look.lap.length === 0, JSON.stringify(look));
+  ok(`CORE-${tag}-06c`, 'the delivery spine: in every row of stages the stage names sit on one line, whether or not a state wraps', look.rows >= 1 && look.uneven === 0, JSON.stringify({ rows: look.rows, uneven: look.uneven }));
   await t.close();
 }
 

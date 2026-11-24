@@ -60,14 +60,16 @@
 .spine { list-style: none; margin: 0 0 var(--sp-2); padding: 0; display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 6px; }
 @media (max-width: 1200px) { .spine { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
 @media (max-width: 520px) { .spine { grid-template-columns: 1fr 1fr; } }
-.spine__s > a, .spine__s > div { display: grid; gap: 3px; align-content: start; height: 100%; box-sizing: border-box; padding: 12px 10px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--tx); text-decoration: none; position: relative; min-width: 0; }
+/* Each stage is three lines (state, name, record). The stages share those three rows, so a state that wraps ("4 · IN PROGRESS" at nine across) no longer pushes its name below its neighbours' (design pass, 24 Nov 2026). Without subgrid the stage lays out as before. */
+.spine__s { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; min-width: 0; }
+.spine__s > a, .spine__s > div { grid-row: 1 / -1; grid-template-rows: subgrid; row-gap: 3px; display: grid; gap: 3px; align-content: start; height: 100%; box-sizing: border-box; padding: 12px 10px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--tx); text-decoration: none; position: relative; min-width: 0; }
 .spine__s > a:hover { border-color: var(--accent); }
 .spine__s > a::before, .spine__s > div::before { content: ""; position: absolute; left: 10px; right: 10px; top: 0; height: 3px; border-radius: 0 0 3px 3px; background: var(--line2); }
 .spine__s--ok > * { border-color: color-mix(in srgb, var(--ok) 35%, var(--line)); } .spine__s--ok > *::before { background: var(--ok); }
 .spine__s--accent > * { border-color: var(--accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent) inset; } .spine__s--accent > *::before { background: var(--accent); }
 .spine__s--bad > * { border-color: color-mix(in srgb, var(--bad) 55%, var(--line)); } .spine__s--bad > *::before { background: var(--bad); }
 .spine__s--muted .spine__d, .spine__s--muted b { color: var(--tx2); }
-.spine__n { display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: var(--track-caps, .06em); text-transform: uppercase; color: var(--tx2); }
+.spine__n { align-self: start; display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: var(--track-caps, .06em); text-transform: uppercase; color: var(--tx2); }
 .spine__s--ok .spine__n { color: var(--ok); } .spine__s--accent .spine__n { color: var(--accent); } .spine__s--bad .spine__n { color: var(--bad); }
 .spine__s b { font-size: var(--fs-sm); } .spine__d { font-size: var(--fs-xs); color: var(--tx2); line-height: 1.35; overflow-wrap: anywhere; }
 
@@ -256,7 +258,7 @@ main h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 .sp__browse { grid-template-columns: 1fr; }
 
 .iso__tag rect { fill: color-mix(in srgb, var(--bg) 82%, transparent); stroke: var(--line2); stroke-width: 1; } .iso__tag text { fill: var(--tx); font: 600 10.5px var(--font-sans); }
-.rv__dev.on .iso__tag rect { stroke: var(--accent); }
+.rv__dev.on .iso__tag rect, .iso__tag.is-on rect { stroke: var(--accent); } .iso__tag { cursor: pointer; }
 .room__cfg { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
 .replay { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 10px 14px; margin: 0 0 var(--sp-3); border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line)); border-radius: var(--r-lg, 14px); background: color-mix(in srgb, var(--accent) 6%, var(--panel)); }
 .replay > b { display: inline-flex; gap: 6px; align-items: center; } .replay .ui-meta { flex: 1 1 200px; }

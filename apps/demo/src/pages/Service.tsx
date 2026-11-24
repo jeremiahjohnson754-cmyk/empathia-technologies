@@ -141,7 +141,7 @@ function Candidates({ c, w, layer, onAssign }: { c: NonNullable<ReturnType<typeo
     <div className="stack" data-testid="candidates">
       <p className="ui-meta">Needs: {c.need.certs.join(', ')}; experience {Object.entries(c.need.experience).map(([k, v]) => `${k} ${v}`).join(', ')}; tools {c.need.tools.join(', ')}.</p>
       {c.none && <Notice tone="warn">{c.whyNone}</Notice>}
-      <ul className="svc__cands">{c.eligible.map((p, i) => <li key={p.id}><b>{i + 1}. {p.name}</b> <Tag tone="ok">eligible · {p.score}</Tag> <span className="ui-meta">{p.reasons.join(' · ')}</span> <span className="ui-meta" data-testid="cand-experience">· record: {xp(p.id)}</span> <Button small kind={i === 0 ? 'primary' : 'secondary'} onClick={() => onAssign(p.id)}>Assign</Button></li>)}
+      <ul className="svc__cands">{c.eligible.map((p, i) => <li key={p.id}><b>{i + 1}. {p.name}</b> <Tag tone="ok">eligible · {p.score}</Tag> <span className="ui-meta">{p.reasons.join(' · ')}</span> <span className="ui-meta" data-testid="cand-experience">record: {xp(p.id)}</span> <Button small kind={i === 0 ? 'primary' : 'secondary'} onClick={() => onAssign(p.id)}>Assign</Button></li>)}
         {c.ineligible.map((p) => <li key={p.id} className="off"><b>{p.name}</b> <Tag tone="bad">hard gate</Tag> <span className="ui-meta">{p.hardFails.join(' · ')}</span> <Button small kind="quiet" onClick={() => onAssign(p.id)} title="The engine refuses this; try it to see the refusal in the ledger">Try anyway</Button></li>)}</ul>
     </div>
   );
