@@ -11,9 +11,9 @@ Branch `v18/continuation` (draft pull request 2). Production and the two Next si
 Two isolated staging previews show 9bc47b27 (`docs/releases/STAGING_PREVIEW_E3.md`); nothing else from this sprint is deployed. Day by day, with evidence: `docs/operations/CLAUDE_FABLE_7_DAY_EXECUTION_BOARD.md`.
 State of every module and journey: `docs/audit/PARITY_LEDGER.csv`. Decisions: `docs/handoff/FOUNDER_APPROVALS_AND_OPEN_DECISIONS.md`.
 Built so far, all SIMULATED on synthetic data: VOICE (with the corporate page), FLOW, MissionProof, PRISM, SENTINEL, ACCORD, FORGE,
-OMNIPRESENCE, the UC / Voice Administrator role and the six product families. Last exact-commit regression: 9bc47b27, PASS 293 · FAIL 0 · NOT_RUN 2 (24 Nov 2026; `tests/evidence/TEST_RESULTS.md`). Commits after it are NOT RUN
-until that file names them (the run before it, on b2428342, FAILED one suite, `demo-manual`; 9bc47b27 carries the fix). GitHub CI repair: prepared on its own branch, not merged, not yet green (fourth run: one failing suite; a fifth commit addresses it).
-After 9bc47b27: APEX records VOICE’s hypothesis on a case and an Assurance run writes and clears a drift record (a43891c0; its own suites pass, its exact-commit regression is NOT RUN).
+OMNIPRESENCE, the UC / Voice Administrator role and the six product families. Last exact-commit regression: 26c81f0d, PASS 293 · FAIL 0 · NOT_RUN 2 (24 Nov 2026 10:24 UTC; `tests/evidence/TEST_RESULTS.md`). Commits after it are NOT RUN
+until that file names them (the run before it, on 9bc47b27, passed with the same totals; the one on b2428342 FAILED one suite, `demo-manual`, fixed in 9bc47b27). GitHub CI repair: on its own branch, not merged; its fifth run on GitHub is green (PASS 286 · FAIL 0 · NOT_RUN 4, the Founder Studio not covered there by design).
+26c81f0d includes a43891c0: APEX records VOICE’s hypothesis on a case and an Assurance run writes and clears a drift record.
 Since that regression (24 Nov): the twelve journeys walked on real links and what they found repaired (`docs/audit/JOURNEY_WALKS.md`);
 no page offers a role a link it may not open; the website states one platform, six families, shared engineering intelligence.
 
