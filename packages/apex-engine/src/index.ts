@@ -25,7 +25,9 @@ export const RUNBOOKS: Readonly<Record<string, Runbook>> = Object.freeze({
   'RB-CAM-HOME': { label: 'Recall the camera home preset', tier: 'A4', targets: ['camera'], allowlist: ['camera'], blastRadius: 'one camera; motion in a possibly occupied room', rollback: 'none needed', rateLimit: '3 per day', occupancyCheck: true, safety: false, signedBy: 'video_eng', version: '1.1' },
 });
 
-export interface Hypothesis { id: string; text: string; layer: Layer; confidence: 'none' | 'low' | 'medium' | 'high'; caveat: string; negative: string[]; next: string[]; action: { tier: Tier; runbook?: string }; evidence: string[]; staleEvidence?: boolean }
+export interface Hypothesis { id: string; text: string; layer: Layer; confidence: 'none' | 'low' | 'medium' | 'high'; caveat: string; negative: string[]; next: string[]; action: { tier: Tier; runbook?: string }; evidence: string[]; staleEvidence?: boolean;
+  /** set when the hypothesis was not formed by the symptom library but recorded from another product's record (for example VOICE): which product, which record, and the address of the evidence */
+  from?: { product: string; id: string; href: string } }
 export interface Branch { layers: Record<Layer, string[]>; hyps: Array<Omit<Hypothesis, 'evidence'>> }
 /** The symptom library: what each layer shows and the hypotheses it supports, with their confidence and caveats. */
 export const BRANCHES: Readonly<Record<string, Branch>> = Object.freeze({

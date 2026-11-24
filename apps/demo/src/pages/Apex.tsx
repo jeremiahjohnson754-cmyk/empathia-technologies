@@ -4,7 +4,7 @@
  * execution is a preflight that the real adapter state blocks in this build (every outcome, including the blocked ones, is in the log).
  * Engine: @empathia/apex-engine.
  */
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Button, Facts, Notice, Tag } from '@empathia/ui';
 import { TIERS, RUNBOOKS, type Tier, type Layer } from '@empathia/apex-engine';
 import { nodeKey } from '@empathia/search-party';
@@ -16,7 +16,7 @@ import { ExportMenu } from '../export/ExportMenu.js';
 import { apexPackage } from '../export/apex.js';
 import { canOpen, isRole } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
-import { callingReading, CALLING_WORD } from '../voice/job.js';
+import { callingReading, apexHypothesisFrom, CALLING_WORD, VOICE_TITLE } from '../voice/job.js';
 
 const CONF: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { high: 'ok', medium: 'info', low: 'warn', none: 'muted' };
 const OUT: Record<string, 'ok' | 'warn' | 'bad' | 'muted' | 'info'> = { EXPLAINED: 'ok', PROPOSED: 'info', COMPARED: 'ok', DRAFT_STAGED: 'info', EXECUTED_SIMULATED: 'ok', DRY_RUN: 'info', BLOCKED: 'bad', HUMAN_LED: 'warn', ABSTAINED: 'muted', ROLLED_BACK: 'warn', ABORTED: 'warn', REFUSED: 'bad' };
@@ -38,12 +38,15 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
     if (layer === 'control') return devs.filter((d) => /A-0105|A-0302/.test(d.id)).map((d) => d.id);
     return [];
   };
+  // 24 Nov 2026 (J6B-VOICE step 4): a case opened for a calling problem records VOICE's hypothesis as it opens, with its citations and
+  // what is not known. For any other case in the room the person records it with the button beside VOICE's evidence.
+  const openFor = (i: S.Incident) => { const r = apply((x) => { const o = S.openApex(x, persona, i.id, cite(i.roomId)); if (!isRefusal(o) && i.title.startsWith(VOICE_TITLE)) { const vh = apexHypothesisFrom(x, i.roomId); if (vh && !x.apexCases.find((c) => c.id === o.id)!.hypotheses.some((h) => h.id === vh.id)) S.apexRecordHypothesis(x, persona, o.id, vh); } return o; }); if (!isRefusal(r)) setSel(r.id); };
   const baselineOf = (roomId: string) => { const d = loadDraft(); if (roomId === 'R-ATL-4-231') return { version: 1, evidence: 14 }; if (d && d.code === roomId && d.baseline) return { version: d.baseline.version, evidence: Object.keys(d.baseline.results).length }; return null; };
   return (
     <section className="apex">
       <header className="build__head"><div><p className="kicker">APEX · diagnosis with its evidence</p><h1>Cited hypotheses, bounded actions, blocked outcomes</h1>
         <p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>. Seven layers of evidence, ranked hypotheses that say why they are not proven, and action tiers A0–A5. A4 needs a signed runbook, owner approval, a window, an occupancy check and a dry run — and the real adapter state blocks it here. Every outcome, including the blocked ones, is in the log.</p></div>
-        {wantInc && !H && open.some((i) => i.id === wantInc) && <Button kind="primary" onClick={() => { const r = apply((x) => S.openApex(x, persona, wantInc, cite(w.incidents.find((i) => i.id === wantInc)!.roomId))); if (!isRefusal(r)) setSel(r.id); }}>Open a case for {wantInc}</Button>}
+        {wantInc && !H && open.some((i) => i.id === wantInc) && <Button kind="primary" onClick={() => openFor(w.incidents.find((i) => i.id === wantInc)!)}>Open a case for {wantInc}</Button>}
       </header>
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.why.map((x) => <li key={x}>{x}</li>)}</ul></Notice></div>}
       <div className="svc__grid">
@@ -51,7 +54,7 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
           <h2 className="build__h">Cases</h2>
           <ul className="svc__list" data-testid="apex-cases">{w.apexCases.map((c) => <li key={c.id} className={c.id === sel ? 'on' : ''}><a href={`#/v25/apex?case=${c.id}`} onClick={(e) => { e.preventDefault(); setSel(c.id); }}><b>{c.id}</b> <span className="ui-meta">{w.incidents.find((i) => i.id === c.incidentId)?.title} · {c.hypotheses.length} hypotheses · {c.actions.length} action(s){c.reviewed ? ' · reviewed' : ''}</span></a></li>)}{!w.apexCases.length && <li className="ui-meta">No case yet.</li>}</ul>
           <h2 className="build__h">Incidents without a case</h2>
-          <ul className="svc__list">{open.map((i) => <li key={i.id}><span><b>{i.title}</b> <span className="ui-meta">{i.id} · {i.roomName} · {i.severity}</span></span> {holds(persona, S.APEX_ACT_AUTHORITIES[0]!) || S.APEX_ACT_AUTHORITIES.some((a) => holds(persona, a)) ? <Button small onClick={() => { const r = apply((x) => S.openApex(x, persona, i.id, cite(i.roomId))); if (!isRefusal(r)) setSel(r.id); }}>Open a case</Button> : <span className="ui-meta">not your authority</span>}</li>)}{!open.length && <li className="ui-meta">Every open incident has a case.</li>}</ul>
+          <ul className="svc__list">{open.map((i) => <li key={i.id}><span><b>{i.title}</b> <span className="ui-meta">{i.id} · {i.roomName} · {i.severity}</span></span> {holds(persona, S.APEX_ACT_AUTHORITIES[0]!) || S.APEX_ACT_AUTHORITIES.some((a) => holds(persona, a)) ? <Button small onClick={() => openFor(i)}>Open a case</Button> : <span className="ui-meta">not your authority</span>}</li>)}{!open.length && <li className="ui-meta">Every open incident has a case.</li>}</ul>
         </div>
         <div className="svc__detail">{H ? <Case H={H} w={w} apply={apply} persona={persona} perspective={perspective} baseline={baselineOf(H.roomId)} /> : <div className="empty" data-testid="apex-empty"><b>No case open</b><p>Open a case from an incident on the left. A case gathers the seven layers of evidence for its room, ranks hypotheses with the reasons they are not proven, and bounds every action by tier — nothing runs without the preflight.</p></div>}</div>
       </div>
@@ -69,21 +72,26 @@ function Case({ H, w, apply, persona, perspective, baseline }: { H: S.ApexCase; 
   const h = H.hypotheses.find((x) => x.id === hyp) || H.hypotheses[0]!;
   const [a4, setA4] = useState({ owner: false, window: '', occupied: false, simulate: false, targets: '', dry: false, branch: 'nominal' as 'nominal' | 'lost_signal' | 'estop' | 'incomplete' });
   const can = S.APEX_ACT_AUTHORITIES.some((a) => holds(persona, a));
+  const mayOpen = (href: string) => { if (!isRole(perspective)) return false; const r = resolve(href.split('?')[0]!); return !!r && canOpen(perspective, r); };
   const run = (tier: Tier) => apply((x) => S.apexAct(x, persona, H.id, h.id, tier === 'A4' ? { tier, ownerApproved: a4.owner, window: a4.window || null, occupied: a4.occupied, simulate: a4.simulate, targets: a4.targets ? a4.targets.split(',').map((t) => t.trim()).filter(Boolean) : null, dryRunDone: a4.dry, branch: a4.branch } : { tier }, baseline));
   return (
     <div className="stack" data-testid="apex-case">
       <h2 className="build__h">{H.id} · {inc.title} <Tag tone="muted">{H.key} branch</Tag>{H.reviewed && <Tag tone="ok">reviewed: {H.reviewed.verdict}</Tag>}</h2>
       <Facts items={[['Incident', `${inc.id} · ${inc.state}`], ['Room', inc.roomName], ['Baseline to compare', baseline ? `v${baseline.version} (${baseline.evidence} evidence items)` : 'none accepted — nothing to compare'], ['Adapters', Object.entries(w.adapters).map(([k, v]) => `${k} ${v}`).join(' · ')]]} />
-      {(() => { const c = callingReading(w, H.roomId); if (!c) return null; const may = (h: string) => { if (!isRole(perspective)) return false; const r = resolve(h.split('?')[0]!); return !!r && canOpen(perspective, r); };
-        // 24 Nov 2026: the room's calling evidence, read from VOICE, beside the seven layers. It is cited, not folded into a hypothesis.
-        return <Notice tone={c.state === 'OUTSIDE' ? 'warn' : 'info'}><span data-testid="apex-calling" data-state={c.state}><b>Calling evidence from VOICE (simulated): {CALLING_WORD[c.state].toLowerCase()}.</b> {c.says} {c.uplink ? 'VOICE’s shared-uplink reading is a hypothesis for this case to weigh, not a root cause. ' : ''}
+      {(() => { const c = callingReading(w, H.roomId); if (!c) return null; const may = mayOpen;
+        // 24 Nov 2026: the room's calling evidence, read from VOICE, beside the seven layers. VOICE's hypothesis becomes one of the case's
+        // only when a person with the authority records it (or the case was opened for the calling problem itself).
+        const onCase = H.hypotheses.find((x) => x.from?.product === 'VOICE') || null; const vh = apexHypothesisFrom(w, H.roomId);
+        return <Notice tone={c.state === 'OUTSIDE' ? 'warn' : 'info'}><span data-testid="apex-calling" data-state={c.state}><b>Calling evidence from VOICE (simulated): {CALLING_WORD[c.state].toLowerCase()}.</b> {c.says} {c.uplink && !onCase ? 'VOICE’s shared-uplink reading is a hypothesis for this case to weigh, not a root cause. ' : ''}
+          {onCase ? <span data-testid="apex-voice-recorded">{onCase.id} is recorded on this case as a hypothesis, with VOICE’s citations and what is not known. </span> : null}
+          {vh && !onCase && can ? <><Button small onClick={() => { const r = apply((x) => S.apexRecordHypothesis(x, persona, H.id, vh)); if (!isRefusal(r)) setHyp(vh.id); }}>Record {vh.id} on this case</Button>{' '}</> : null}
           {may(c.href) ? <a href={c.href} data-testid="apex-to-voice">The room’s CallPath</a> : null}{c.uplink && may(c.uplink) ? <> · <a href={c.uplink} data-testid="apex-to-flow">The uplink in FLOW</a></> : null}</span></Notice>; })()}
       <div className="apex__layers" data-testid="layers">{H.layers.map((l) => <div key={l.layer} className={`apex__layer${l.observations.length ? ' has' : ''}`}><b>{l.label}</b>{l.observations.length ? <ul>{l.observations.map((o) => <li key={o}>{o}</li>)}</ul> : <span className="ui-meta">nothing recorded</span>}{l.cites.length > 0 && <span className="ui-meta">cites {l.cites.join(', ')}</span>}</div>)}</div>
       <h3 className="build__h">Hypotheses, ranked</h3>
-      <div role="group" aria-label="Hypotheses, ranked: choose one"><ol className="apex__hyps">{H.hypotheses.map((x) => <li key={x.id} className={x.id === h.id ? 'on' : ''}><button type="button" aria-pressed={x.id === h.id} onClick={() => setHyp(x.id)}><Tag tone={CONF[x.confidence]}>{x.confidence}</Tag> <b>{x.text}</b> <span className="ui-meta">{x.layer} · {x.action.tier}{x.action.runbook ? ` · ${x.action.runbook}` : ''}</span></button></li>)}</ol></div>
+      <div role="group" aria-label="Hypotheses, ranked: choose one"><ol className="apex__hyps">{H.hypotheses.map((x) => <li key={x.id} className={x.id === h.id ? 'on' : ''}><button type="button" aria-pressed={x.id === h.id} onClick={() => setHyp(x.id)}><Tag tone={CONF[x.confidence]}>{x.confidence}</Tag> <b>{x.text}</b> <span className="ui-meta">{x.layer} · {x.action.tier}{x.action.runbook ? ` · ${x.action.runbook}` : ''}{x.from ? ` · recorded from ${x.from.product}` : ''}</span></button></li>)}</ol></div>
       <div className="card stack" data-testid="hypothesis">
         <p><b>{h.text}</b></p>
-        <Facts items={[['Why it is not proven', h.caveat], ['Evidence cited', h.evidence.length ? h.evidence.join('; ') : 'none'], ['Against it', h.negative.length ? h.negative.join('; ') : '—'], ['Next', h.next.length ? h.next.join('; ') : '—']]} />
+        <Facts items={[...(h.from ? [['Recorded from', <span key="from" data-testid="hyp-from">{h.from.product} {h.from.id}{mayOpen(h.from.href) ? <> · <a href={h.from.href}>the evidence it rests on</a></> : null}</span>] as [string, ReactNode]] : []), ['Why it is not proven', h.caveat], ['Evidence cited', h.evidence.length ? h.evidence.join('; ') : 'none'], ['Against it', h.negative.length ? h.negative.join('; ') : '—'], ['Next', h.next.length ? h.next.join('; ') : '—']]} />
         <div className="apex__tiers">{(Object.keys(TIERS) as Tier[]).map((t) => <div key={t} className={`apex__tier${t === h.action.tier ? ' on' : ''}`}><b>{t} · {TIERS[t].label}</b><span className="ui-meta">{TIERS[t].bound}</span>{can ? <Button small kind={t === h.action.tier ? 'primary' : 'secondary'} onClick={() => run(t)}>{t === 'A4' ? 'Run the preflight' : TIERS[t].label}</Button> : null}</div>)}</div>
         {h.action.runbook && RUNBOOKS[h.action.runbook] && <Facts items={[['Runbook', `${h.action.runbook} · ${RUNBOOKS[h.action.runbook]!.label} · v${RUNBOOKS[h.action.runbook]!.version} · ${RUNBOOKS[h.action.runbook]!.signedBy ? `signed by ${RUNBOOKS[h.action.runbook]!.signedBy}` : 'UNSIGNED'}`], ['Targets · allowlist', `${RUNBOOKS[h.action.runbook]!.targets.join('/')} · ${RUNBOOKS[h.action.runbook]!.allowlist.join(', ') || 'none'}`], ['Blast radius · rollback · rate', `${RUNBOOKS[h.action.runbook]!.blastRadius} · ${RUNBOOKS[h.action.runbook]!.rollback} · ${RUNBOOKS[h.action.runbook]!.rateLimit}`]]} />}
         {can && h.action.tier === 'A4' && <div className="stack" data-testid="a4">

@@ -1,6 +1,7 @@
 // The twelve Enterprise 3.0 journeys, walked hop by hop on the links a person would press (founder, 23 Nov 2026 19:22: "the next
 // milestone should be less about adding pages and more about proving all the products work together. Every product and workflow …
-// walk the 12 end-to-end journeys"). J6 is two journeys (FLOW and VOICE), so thirteen walks.
+// walk the 12 end-to-end journeys"). J6 is two journeys (FLOW and VOICE), and VOICE is walked twice (the evidence, then the repair),
+// so fourteen walks.
 //
 // What a walk proves, and what it does not. Each hop presses a real link or control on the page the hop before it reached, as the
 // role the journey names; it passes only if the address changed to the expected product, the page is not the access page, and the
@@ -26,7 +27,10 @@ const near = (p, sel) => p.evaluate((s) => { const head = (s.match(/#\/[a-z0-9]+
  *   ['…',                    { type: [css, 'text'], enter } , …]
  *   ['…',                    { back: true }                , …]
  *   ['…',                    { run: async (page) => … }    , …]     a control that is not a link (a button, a field)
+ * `open` and `id` may be functions, read when the hop is reached (added 24 Nov 2026 for the repair journey, whose later hops name the
+ * job its first hop creates; nothing about what a hop must show is changed by it).
  */
+const lazy = (v) => (typeof v === 'function' ? v() : v);
 async function journey(J, title, role, start, steps, { w = 1440, h = 900 } = {}) {
   const t = await open(start, { role, sw: false, w, h, reduced: true }); const p = t.page; p.setDefaultTimeout(15000); await settle(p);
   let n = 0; let broken = false; const tag = w < 600 ? `${J}p` : J;
@@ -38,7 +42,7 @@ async function journey(J, title, role, start, steps, { w = 1440, h = 900 } = {})
     let detail = ''; let did = true;
     try {
       if (act.click) { const l = p.locator(act.click).first(); if (!(await l.count())) { did = false; detail = `no ${act.click} on ${await hashOf(p)}; nearby: ${await near(p, act.click)}`; } else { await l.scrollIntoViewIfNeeded(); await l.click(); } }
-      else if (act.as) { await p.evaluate((r) => localStorage.setItem('empathia.demo.perspective', r), act.as); await p.goto(base + act.open); await p.reload(); }
+      else if (act.as) { await p.evaluate((r) => localStorage.setItem('empathia.demo.perspective', r), act.as); await p.goto(base + lazy(act.open)); await p.reload(); }
       else if (act.type) { const f = p.locator(act.type[0]).first(); await f.click(); await f.fill(act.type[1]); if (act.enter) await f.press('Enter'); }
       else if (act.back) await p.goBack();
       else if (act.run) await act.run(p);
@@ -46,9 +50,9 @@ async function journey(J, title, role, start, steps, { w = 1440, h = 900 } = {})
     await settle(p); const s = await state(p);
     const at = !want.at || want.at.test(s.hash);
     const see = !want.see || (want.see instanceof RegExp ? want.see.test(s.text) : await p.locator(want.see).count() > 0);
-    const kept = !want.id || s.text.includes(want.id) || s.hash.includes(want.id);
+    const wid = lazy(want.id); const kept = !wid || s.text.includes(wid) || s.hash.includes(wid);
     const pass = did && at && see && kept && !s.refused && s.wide <= 1;
-    if (!pass && !detail) detail = `${s.hash} · ${s.refused ? 'ACCESS PAGE · ' : ''}${at ? '' : 'wrong address · '}${see ? '' : `missing ${want.see} · `}${kept ? '' : `lost ${want.id} · `}${s.wide > 1 ? `sideways scroll ${s.wide}px · ` : ''}${s.h1}`;
+    if (!pass && !detail) detail = `${s.hash} · ${s.refused ? 'ACCESS PAGE · ' : ''}${at ? '' : 'wrong address · '}${see ? '' : `missing ${want.see} · `}${kept ? '' : `lost ${wid} · `}${s.wide > 1 ? `sideways scroll ${s.wide}px · ` : ''}${s.h1}`;
     ok(id, say, pass, detail); if (!pass) broken = true;
   }
   ok(`JW-${tag}-99`, `${title}: no console error and nothing requested off the page’s origin on the way`, t.errs.length === 0 && t.off.length === 0, [...t.errs, ...t.off].slice(0, 2).join(' | '));
@@ -145,6 +149,46 @@ await journey('J6B', 'J6B VOICE', 'ucadmin', '#/voice', [
   ['hand-over: the operations lead reads calling on the room’s assurance', { as: 'ops', open: `#/assurance/room/${ROOM}` }, { see: '[data-testid=as-calling]', id: '4.218' }],
   ['and opens the call path it was read from', { click: '[data-testid=as-calling-open]' }, { at: new RegExp(`^#/voice/callpath/${ROOM}`), id: '4.218' }],
 ]);
+
+// ------------------------------------------------------------------------------------------------ J6B VOICE, the repair
+// Steps 4 to 6 of the scenario on the controls a person presses, five people in one browser: the report from the room becomes a
+// ServiceHands job; an Assurance run writes an operational drift record; APEX opens a case for the job and records VOICE's
+// hypothesis as a hypothesis; the job is triaged, assigned, worked with evidence and verified by someone other than the technician;
+// the retest clears the drift record and leaves the baseline alone; MissionProof reads calling again; the report and the CallPath
+// still name the same job. The service machine's own refusals stay in demo-servicehands and tests/unit/voice.test.mjs.
+{ let job = ''; let wo = '';
+  const press = (p, name) => p.getByRole('button', { name }).first().click();
+  const board = () => `#/v25/service?id=${job}`;
+  await journey('J6BR', 'J6B VOICE, the repair', 'ops', `#/voice/report/${ROOM}`, [
+    ['the operations lead reports a calling problem from the room; the receipt names the job', { run: async (p) => { await p.getByTestId('voice-submit').click(); await p.getByTestId('voice-receipt').waitFor(); job = (/job (ISS-\d+)/.exec(await p.getByTestId('voice-receipt').innerText()) || [])[1] || ''; if (!job) throw new Error('the receipt names no job'); } }, { see: '[data-testid=voice-receipt]', id: () => job }],
+    ['hand-over: the commissioning engineer opens the room’s assurance, where calling reads outside the targets', { as: 'cxeng', open: `#/assurance/room/${ROOM}` }, { see: '[data-testid=as-calling-says][data-state=OUTSIDE]', id: '4.218' }],
+    ['an Assurance run writes an operational drift record for calling', { click: '[data-testid=as-run-btn]' }, { see: /It wrote drift record DR-0001/ }],
+    ['the record is on the room, open, and names the job it belongs to', { run: async () => undefined }, { see: '[data-testid=as-drift-row]', id: () => job }],
+    ['hand-over: the service manager is offered a diagnosis case for the job', { as: 'svcmgr', open: () => `#/v25/apex?incident=${job}` }, { at: /^#\/v25\/apex\?incident=/, see: /Open a case for ISS-/ }],
+    ['opening the case records VOICE’s hypothesis on it, as a hypothesis', { run: (p) => press(p, /^Open a case for ISS-/) }, { see: '[data-testid=apex-voice-recorded]', id: () => job }],
+    ['the case ranks it with where it came from, and never as proven', { run: async (p) => { const row = p.locator('[data-testid=apex-case]').getByText('recorded from VOICE').first(); await row.scrollIntoViewIfNeeded(); await row.click().catch(() => undefined); } }, { see: /recorded from VOICE/ }],
+    ['the service manager triages the job', { run: async (p) => { await p.goto(base + board()); await p.reload(); await settle(p); await press(p, /^Triage$/); } }, { at: /^#\/v25\/service\?id=ISS-/, see: /TRIAGED → ASSIGNED/, id: () => job }],
+    ['and assigns a technician authorised for the site; a window that collides with the room’s booking is re-planned', { run: async (p) => { await press(p, /^Open a work order and rank the pool$/); await p.waitForTimeout(300);
+      const replan = p.locator('[data-testid=dispatch-plan]').getByRole('button', { name: 'Propose the next free window' }); if (await replan.count()) { await replan.click(); await p.waitForTimeout(300); }
+      wo = await p.evaluate((id) => JSON.parse(localStorage.getItem('empathia.demo.workspace.v1') || '{}').incidents?.find((i) => i.id === id)?.workOrderId || '', job); if (!wo) throw new Error('no work order was opened'); } }, { see: /ASSIGNED → ACCEPTED/, id: () => wo }],
+    ['hand-over: the technician accepts the job, passes the preflight and starts', { as: 'service', open: board }, { see: /Accept the job/, id: () => job }],
+    ['the work starts only with the preflight passed', { run: async (p) => { await press(p, /^Accept the job/); await p.getByTestId('preflight').waitFor(); for (const cb of await p.locator('[data-testid=preflight] input[type=checkbox]').all()) await cb.check();
+      const start = p.getByRole('button', { name: /^Start the work/ }).first(); const label = await start.innerText(); if (/blocks/.test(label)) throw new Error(`the preflight still blocks: ${(await p.locator('[data-testid=preflight] .svc__checks').innerText()).replace(/\s+/g, ' ').slice(0, 200)}`); await start.click(); } }, { see: /IN_PROGRESS → VERIFYING/ }],
+    ['labelled synthetic evidence is recorded and the job handed over; the technician is not offered the verification', { run: async (p) => { await p.locator('input[aria-label="Evidence note"]').fill('SYNTHETIC: uplink patch lead on ATL-4A port 48 reseated; interface counters photographed'); await press(p, /^Record evidence$/); await p.waitForTimeout(200); await press(p, /^Hand over for independent verification/); await p.waitForTimeout(300);
+      if (await p.getByRole('button', { name: /^Verify the repair/ }).count()) throw new Error('the technician is offered “Verify the repair” on their own work'); } }, { see: /VERIFYING → RESOLVED/, id: () => job }],
+    ['hand-over: a second person, the commissioning engineer, verifies the repair', { as: 'cxeng', open: board }, { see: /Verify the repair/, id: () => job }],
+    ['the repair is verified', { run: (p) => press(p, /^Verify the repair/) }, { see: /RESOLVED/ }],
+    ['the retest: the same engineer runs Assurance on the room again', { as: 'cxeng', open: `#/assurance/room/${ROOM}` }, { see: '[data-testid=as-calling-says][data-state=WITHIN]', id: '4.218' }],
+    ['the run clears the drift record and says the accepted baseline is unchanged', { click: '[data-testid=as-run-btn]' }, { see: /Its retest cleared DR-0001.*The accepted baseline is unchanged/ }],
+    ['the cleared record stays on the room, with who cleared it', { run: async () => undefined }, { see: '[data-testid=as-drift-cleared]' }],
+    ['hand-over: the operations lead opens the later session from the room’s assurance', { as: 'ops', open: `#/assurance/room/${ROOM}` }, { see: '[data-testid=as-calling-open]', id: '4.218' }],
+    ['the call path of the session after the repair', { click: '[data-testid=as-calling-open]' }, { at: new RegExp(`^#/voice/callpath/${ROOM}\\?case=retest`), see: '[data-testid=voice-job][data-verified="1"]', id: '4.218' }],
+    ['MissionProof reads calling as ready for the town hall, from the verified job', { click: '[data-testid=voice-to-mission]' }, { at: /^#\/missionproof\?case=retest/, see: '[data-dep=calling][data-ready=READY]' }],
+    ['the original report still names the job', { run: async (p) => { await p.goto(`${base}#/voice/report/${ROOM}`); } }, { at: /^#\/voice\/report\//, see: '[data-testid=voice-mine]', id: () => job }],
+    ['hand-over: the calling administrator sees which APEX case holds the hypothesis', { as: 'ucadmin', open: `#/voice/callpath/${ROOM}` }, { see: '[data-testid=voice-hyp-recorded]', id: '4.218' }],
+    ['hand-over: the executive’s operations view counts from the same records', { as: 'exec', open: '#/v25/exec' }, { at: /^#\/v25\/exec/, see: '[data-testid=passports]' }],
+  ]);
+}
 
 // ------------------------------------------------------------------------------------------------ J7 PRISM + SENTINEL
 await journey('J7', 'J7 PRISM and SENTINEL', 'ops', '#/sentinel', [

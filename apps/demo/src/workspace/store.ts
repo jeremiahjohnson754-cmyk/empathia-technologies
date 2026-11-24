@@ -18,7 +18,11 @@ export interface WorkOrder { id: string; incidentId: string; roomId: string; bui
 export interface ApexCase { id: string; incidentId: string; roomId: string; key: string; layers: Array<{ layer: Layer; label: string; observations: string[]; cites: string[] }>; hypotheses: Hypothesis[]; actions: Array<Outcome & { at: string; by: string; hypothesisId: string }>; reviewed: { by: string; at: string; verdict: string } | null; openedAt: string; /** part of the demonstration's seed, not opened by the person */ seeded?: boolean }
 export interface LearnCase { id: string; incidentId: string; apexId: string | null; title: string; lesson: string; permission: { by: string; at: string } | null; deidentified: boolean; proposedBy: string; proposedAt: string; smeReview: { decision: 'approve' | 'reject'; by: string; at: string; note: string } | null; state: 'PROPOSED' | 'SME_REVIEWED' | 'REJECTED' | 'APPROVED'; approvedBy: string | null }
 export interface Training { drillId: string; at: string; by: string; correct: boolean; elapsedS: number }
-export interface Workspace { v: 1; seededAt: string; incidents: Incident[]; workOrders: WorkOrder[]; staff: Staff[]; apexCases: ApexCase[]; learnCases: LearnCase[]; events: Evt[]; training: Training[]; fiSessions: FI.Session[]; licenses: Record<string, boolean>; adapters: Record<string, 'NOT_CONFIGURED' | 'DECLARED' | 'SUPPORTED_VERIFIED'>; stock: Record<string, { onHand: number; checkedAt: string; location: string }>; bookings: Record<string, Array<{ from: string; to: string; title: string }>>; seq: { wo: number; apex: number; learn: number; inc: number; fi: number } }
+/** What an Assurance run found about one subject of a room, read from the product that holds the evidence (for calling: VOICE). */
+export interface AssuranceFinding { subject: string; state: 'OUTSIDE' | 'WITHIN' | 'UNKNOWN'; says: string; basis: string; source: { product: string; href: string }; incidentId: string | null }
+/** An operational drift record: written by an Assurance run that finds a subject outside its declared targets, and cleared only by a later run that finds it within them. It stands beside the accepted baseline and changes neither it nor a commissioning test. */
+export interface DriftRecord { id: string; roomId: string; subject: string; basis: string; source: { product: string; href: string }; incidentId: string | null; opened: { at: string; by: string; says: string }; cleared: { at: string; by: string; says: string } | null }
+export interface Workspace { v: 1; seededAt: string; incidents: Incident[]; workOrders: WorkOrder[]; staff: Staff[]; apexCases: ApexCase[]; learnCases: LearnCase[]; events: Evt[]; training: Training[]; fiSessions: FI.Session[]; licenses: Record<string, boolean>; adapters: Record<string, 'NOT_CONFIGURED' | 'DECLARED' | 'SUPPORTED_VERIFIED'>; stock: Record<string, { onHand: number; checkedAt: string; location: string }>; bookings: Record<string, Array<{ from: string; to: string; title: string }>>; drift: DriftRecord[]; seq: { wo: number; apex: number; learn: number; inc: number; fi: number; drift: number } }
 export type Refusal = { why: string[] };
 export const refused = (why: string[]): Refusal => ({ why });
 const KEY = 'empathia.demo.workspace.v1';
@@ -53,15 +57,15 @@ export function seed(): Workspace {
   // its layers citing the room's own planned assets. Nothing has been acted on; the tiers start from here.
   const a0 = incidents[0]!; const c0 = openCase(`${a0.title} ${a0.summary}`, (layer) => (layer === 'physical' ? ['A-0101', 'A-0102'] : layer === 'media' ? ['A-0103'] : layer === 'control' ? ['A-0105'] : []));
   const apexCases: ApexCase[] = [{ id: 'APX-001', incidentId: a0.id, roomId: a0.roomId, key: c0.key, layers: c0.layers, hypotheses: c0.hypotheses, actions: [], reviewed: null, openedAt: ago(2), seeded: true }]; a0.apexId = 'APX-001';
-  return { v: 1, seededAt: t0, incidents, workOrders, staff, apexCases, learnCases: [], training: [], fiSessions: [], licenses: { 'SITE-NORTH:BRD': true, 'SITE-NORTH:TWN': false, 'SITE-NORTH:HUD': false },
+  return { v: 1, seededAt: t0, incidents, workOrders, staff, apexCases, learnCases: [], training: [], fiSessions: [], drift: [], licenses: { 'SITE-NORTH:BRD': true, 'SITE-NORTH:TWN': false, 'SITE-NORTH:HUD': false },
     events: [{ at: t0, by: 'system', type: 'workspace.seeded', aggregate: 'Workspace', detail: '5 incidents, 2 work orders, 1 APEX case, 4 people, synthetic estate', outcome: 'ALLOWED' }],
     adapters: { 'ADP-DSP': 'NOT_CONFIGURED', 'ADP-CAM': 'NOT_CONFIGURED', 'ADP-NET': 'NOT_CONFIGURED' },
     stock: { 'camera unit': { onHand: 2, checkedAt: ago(10), location: 'ATL store' }, 'mounting plate': { onHand: 6, checkedAt: ago(10), location: 'ATL store' }, processor: { onHand: 1, checkedAt: ago(33), location: 'MER store' }, loudspeakers: { onHand: 0, checkedAt: ago(40), location: 'ATL store' } },
     bookings: { 'R-ATL-4-218': [{ from: ago(-1, 2).slice(0, 16), to: ago(-1, 0).slice(0, 16), title: 'Board review' }], 'R-ATL-4-220': [] },
-    seq: { wo: 88, apex: 1, learn: 0, inc: 421, fi: 0 } };
+    seq: { wo: 88, apex: 1, learn: 0, inc: 421, fi: 0, drift: 0 } };
 }
 
-export function load(): Workspace { try { const s = localStorage.getItem(KEY); if (s) { const w = JSON.parse(s) as Workspace; if (w.v === 1) { if (!w.fiSessions) { w.fiSessions = []; w.licenses = seed().licenses; w.seq.fi = 0; } return w; } } } catch { /* storage unavailable */ } const w = seed(); save(w); return w; }
+export function load(): Workspace { try { const s = localStorage.getItem(KEY); if (s) { const w = JSON.parse(s) as Workspace; if (w.v === 1) { if (!w.fiSessions) { w.fiSessions = []; w.licenses = seed().licenses; w.seq.fi = 0; } if (!w.drift) { w.drift = []; w.seq.drift = 0; } return w; } } } catch { /* storage unavailable */ } const w = seed(); save(w); return w; }
 export function save(w: Workspace | null): void { try { if (w) localStorage.setItem(KEY, JSON.stringify(w)); else localStorage.removeItem(KEY); } catch { /* the workspace lasts the page */ } }
 export function reset(): Workspace { const w = seed(); save(w); return w; }
 
@@ -232,10 +236,58 @@ export function apexAct(w: Workspace, persona: string, caseId: string, hypId: st
   if (o.compensation) log(w, persona, 'workflow.compensation_requested', H.id, o.detail.slice(0, 160));
   return o;
 }
+/**
+ * Record on a case a hypothesis another product offers from its own evidence (J6B-VOICE step 4: "Pro/APEX records an explainable
+ * operational hypothesis, not a root-cause certainty"). The record keeps where it came from, its citations and what is not known. It is
+ * refused without a source or without cited evidence, refused twice, and refused at high confidence: proof is a verification's to give.
+ */
+export function apexRecordHypothesis(w: Workspace, persona: string, caseId: string, h: Hypothesis): Refusal | null {
+  const H = w.apexCases.find((c) => c.id === caseId); if (!H) return refused(['no such case']);
+  const n = need(w, persona, APEX_ACT_AUTHORITIES, 'apex.hypothesis_recorded', H.id); if (n) return n;
+  if (!h.from) return deny(w, persona, 'apex.hypothesis_recorded', H.id, ['a recorded hypothesis names the product and the record it came from']);
+  if (!h.evidence.length) return deny(w, persona, 'apex.hypothesis_recorded', H.id, [`${h.id} cites no evidence: a hypothesis with nothing behind it is not recorded`]);
+  if (h.confidence === 'high') return deny(w, persona, 'apex.hypothesis_recorded', H.id, [`${h.id} arrives as a hypothesis: it is not recorded at high confidence`]);
+  if (H.hypotheses.some((x) => x.id === h.id)) return deny(w, persona, 'apex.hypothesis_recorded', H.id, [`${h.id} is already on ${H.id}`]);
+  H.hypotheses.push(structuredClone(h));
+  // ranked as the case's own are (confidence, then the fewest points against); equal ranks keep their order, so it never passes one of the case's own at the same rank
+  const rank = { high: 3, medium: 2, low: 1, none: 0 }; H.hypotheses = H.hypotheses.map((x, i) => ({ x, i })).sort((a, b) => rank[b.x.confidence] - rank[a.x.confidence] || a.x.negative.length - b.x.negative.length || a.i - b.i).map((e) => e.x);
+  const L = H.layers.find((l) => l.layer === h.layer); if (L) for (const e of h.evidence) { const o = `${h.from.product} ${h.from.id}: ${e}`; if (!L.observations.includes(o)) L.observations.push(o); }
+  log(w, persona, 'apex.hypothesis_recorded', H.id, `${h.id} from ${h.from.product}, with ${h.evidence.length} citation${h.evidence.length === 1 ? '' : 's'}: a hypothesis, not a root cause. ${h.text.slice(0, 110)}`); return null;
+}
 export function apexReview(w: Workspace, persona: string, caseId: string, verdict: string): Refusal | null {
   const H = w.apexCases.find((c) => c.id === caseId); if (!H) return refused(['no such case']);
   const n = need(w, persona, ['tests.verify.all', 'service.verify', 'baseline.approve'], 'apex.diagnosis_reviewed', H.id); if (n) return n;
   H.reviewed = { by: persona, at: now(), verdict }; log(w, persona, 'apex.diagnosis_reviewed', H.id, verdict); return null;
+}
+
+// ------------------------------------------------------------------------------------------------------------ Assurance (operational drift, beside the baseline)
+export const ASSURE_RUN = ['assure.run', 'tests.verify.all'];
+export const driftOf = (w: Workspace, roomId: string) => w.drift.filter((d) => d.roomId === roomId);
+/**
+ * An Assurance run for one room (J6B-VOICE step 6: "Assurance records the relevant operational state; issue closure does not imply a
+ * passing acceptance test"). The run is logged with its summary. For each finding the caller read from the product that holds the
+ * evidence: OUTSIDE opens a drift record if none is open for that subject; WITHIN clears the open one (the retest); UNKNOWN changes
+ * nothing, because a missing observation is not a pass. Only a holder of the run authority writes or clears a record: a technician
+ * does not hold it, so the person who did a repair cannot clear the record raised for it. Nothing here touches a baseline, a test
+ * result or the job.
+ */
+export function assuranceRun(w: Workspace, persona: string, roomId: string, summary: string, findings: AssuranceFinding[]): Refusal | { opened: string[]; cleared: string[]; standing: string[] } {
+  const n = need(w, persona, ASSURE_RUN, 'assurance.run', roomId); if (n) return n;
+  log(w, persona, 'assurance.run', roomId, summary);
+  const out = { opened: [] as string[], cleared: [] as string[], standing: [] as string[] };
+  for (const f of findings) {
+    const open = w.drift.find((d) => d.roomId === roomId && d.subject === f.subject && !d.cleared);
+    if (f.state === 'OUTSIDE' && !open) {
+      const id = `DR-${String(++w.seq.drift).padStart(4, '0')}`;
+      w.drift.unshift({ id, roomId, subject: f.subject, basis: f.basis, source: f.source, incidentId: f.incidentId, opened: { at: now(), by: persona, says: f.says }, cleared: null });
+      log(w, persona, 'assurance.drift_recorded', id, `${f.subject} in ${roomId}, read from ${f.source.product} (${f.basis.toLowerCase()}): ${f.says.slice(0, 140)}`); out.opened.push(id);
+    } else if (f.state === 'WITHIN' && open) {
+      if (!open.incidentId && f.incidentId) open.incidentId = f.incidentId;
+      open.cleared = { at: now(), by: persona, says: f.says };
+      log(w, persona, 'assurance.drift_cleared', open.id, `retest: ${f.subject} in ${roomId} is within its declared targets (${f.basis.toLowerCase()}). The accepted baseline is unchanged. ${f.says.slice(0, 110)}`); out.cleared.push(open.id);
+    } else if (open) { if (!open.incidentId && f.incidentId) open.incidentId = f.incidentId; out.standing.push(open.id); }
+  }
+  return out;
 }
 
 // ------------------------------------------------------------------------------------------------------------ Learn (cases from what actually happened)

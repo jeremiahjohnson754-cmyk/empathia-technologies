@@ -4,7 +4,8 @@
  * the service machine's own steps with their own guards (the technician cannot verify their own work). This file only reads that
  * record and says what it does and does not prove. No React: the unit suite runs the whole journey on the engine through it.
  */
-import type { Workspace, Incident, WorkOrder } from '../workspace/store.js';
+import type { Workspace, Incident, WorkOrder, AssuranceFinding, ApexCase } from '../workspace/store.js';
+import type { Hypothesis } from '@empathia/apex-engine';
 import { SHARED_LINK, caseView, flowFor, outsidePolicy, type CaseId, type EvidenceState } from './model.js';
 
 export const VOICE_TITLE = 'Calling problem';
@@ -45,4 +46,27 @@ export function callingReading(w: Workspace, roomId: string): CallingReading | n
   if (v.verdict === 'WITHIN_POLICY') return { state: 'WITHIN', vcase, basis: 'SIMULATED', job, href, uplink, says: `After the repair verified by ${job!.incident.verifiedBy} (${job!.incident.id}), a later simulated session is within the declared calling targets in every window.` };
   const out = v.samples.filter((x) => outsidePolicy(x).length).length;
   return { state: 'OUTSIDE', vcase, basis: 'SIMULATED', job, href, uplink, says: `The newest simulated session is outside the declared calling targets in ${out} of ${v.samples.length} windows. ${job ? `Job ${job.incident.id} is ${job.incident.state.toLowerCase().replace(/_/g, ' ')}${job.verified ? ' and verified' : ''}.` : 'No job has been raised for it.'}` };
+}
+
+/**
+ * J6B-VOICE step 4, the part APEX keeps: "Pro/APEX records an explainable operational hypothesis, not a root-cause certainty". VOICE's
+ * hypothesis in the shape an APEX case records, or null when there is none to record (no observed session, missing or stale samples,
+ * or a later session within the targets). Nothing is added to what VOICE says: the statement, the citations and the unknowns are its
+ * own; the confidence is the lowest APEX has for a hypothesis with evidence, because the evidence is simulated and coincident in
+ * time only; the only action it carries is read-only (A2).
+ */
+export function apexHypothesisFrom(w: Workspace, roomId: string): Hypothesis | null {
+  const c = callingReading(w, roomId); if (!c || c.state !== 'OUTSIDE') return null;
+  const h = caseView(c.vcase, roomId).hypothesis; if (!h) return null;
+  return { id: h.id, text: h.statement, layer: 'network', confidence: 'low',
+    caveat: `Recorded from VOICE as a hypothesis, not a root cause; its evidence is simulated. Not known: ${h.unknowns.join('; ')}`,
+    negative: [], next: [h.wouldChange], action: { tier: 'A2' }, evidence: [...h.cites], from: { product: 'VOICE', id: h.id, href: c.href } };
+}
+/** The APEX case of this room that carries VOICE's hypothesis, if one does: where the CallPath says it was recorded. */
+export const apexCaseWith = (w: Workspace, roomId: string, hypothesisId: string): ApexCase | null => w.apexCases.find((c) => c.roomId === roomId && c.hypotheses.some((x) => x.id === hypothesisId && x.from?.product === 'VOICE')) || null;
+
+/** What an Assurance run finds about this room's calling: the same reading, as a finding the run can record (workspace/store.ts assuranceRun). null: no call flow, nothing to find. */
+export function callingFinding(w: Workspace, roomId: string): AssuranceFinding | null {
+  const c = callingReading(w, roomId); if (!c) return null;
+  return { subject: 'Calling', state: c.state, says: c.says, basis: c.basis, source: { product: 'VOICE', href: c.href }, incidentId: c.job?.incident.id ?? null };
 }

@@ -15,7 +15,7 @@ import { useState, type ReactNode } from 'react';
 import { Segmented, PageHero, StatTile, Card, Chip, List, ListRow, Tag, Notice, EmptyState, ProgressBar, Icon, ScoreRing, Donut, type Tone, type Series } from '@empathia/ui';
 import { allRecords, roomRecord, openIssues, type RoomRecord } from '../campus/design.js';
 import { shortName, fullName, roomHref, buildingByKey } from '../campus/canon.js';
-import { useWorkspace } from '../workspace/useWorkspace.js';
+import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import * as S from '../workspace/store.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
 import { openable } from './V25Nav.js';
@@ -28,7 +28,7 @@ import { plural, pct, weekCounts, Foot } from './viz.js';
 import { rowsOf, PHASES, RES, res, ymd, phaseStats, blockers } from '../campus/cxRecord.js';
 import { ExportMenu } from '../export/ExportMenu.js';
 import { Registers } from '../campus/RegisterCard.js';
-import { callingReading, CALLING_WORD } from '../voice/job.js';
+import { callingReading, callingFinding, CALLING_WORD } from '../voice/job.js';
 import { TRACKED_ROOM, TRACKED_REPORT } from '../docs5/model.js';
 import { WhoTouched } from '../people/WhoTouched.js';
 import { LAYERS, assuranceDims, changeCards } from '../campus/asRecord.js';
@@ -177,7 +177,7 @@ function Signoff({ r, bl, perspective }: { r: RoomRecord; bl: ReturnType<typeof 
 const DIM_TONE: Record<string, Tone> = { match: 'ok', drift: 'warn', failed: 'bad', reported: 'info' };
 export function AsRoomPage({ perspective, params, hash }: { perspective: string; params: Record<string, string>; hash: string }) {
   const r = roomRecord(params.room || ''); const { w, apply, refusal } = useWorkspace(); const persona = personaOf(perspective);
-  const [ran, setRan] = useState(false);
+  const [ran, setRan] = useState<null | { opened: string[]; cleared: string[]; standing: string[] }>(null);
   if (!r) return <NoRoom perspective={perspective} id={params.room || ''} kind="as" hash={hash} />;
   const view = /\/recommission\b/.test(hash) ? 'recommission' : /\/ready\b/.test(hash) ? 'ready' : /\/history\b/.test(hash) ? 'history' : 'assurance';
   const inc = w.incidents.filter((i) => i.roomId === r.outline.id); const base = `#/assurance/room/${r.outline.id}`;
@@ -185,7 +185,11 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
   const n = { match: dims.filter((d) => d.state === 'match').length, drift: dims.filter((d) => d.state === 'drift').length, failed: dims.filter((d) => d.state === 'failed').length, reported: dims.filter((d) => d.state === 'reported').length };
   const cur = r.baselines.find((b) => b.state === 'CURRENT');
   const calling = callingReading(w, r.outline.id);   // 24 Nov 2026: the room's calling evidence, read from VOICE, beside the baseline
-  const runIt = () => { setRan(true); apply((x) => { x.events.unshift({ at: new Date().toISOString(), by: persona, type: 'assurance.run', aggregate: r.outline.id, detail: `simulated discovery over 17 dimensions from the records: ${n.match} match, ${n.drift} drift, ${n.failed} failed, ${n.reported} reported — nothing measured, no device contacted`, outcome: 'ALLOWED' }); return null; }); };
+  // 24 Nov 2026: the run goes through the workspace engine, which checks the authority, logs it and writes or clears the room's
+  // operational drift records from what it finds (for calling: VOICE's reading). It changes no baseline and no test.
+  const drift = S.driftOf(w, r.outline.id);
+  const runIt = () => { const res = apply((x) => { const f = callingFinding(x, r.outline.id); return S.assuranceRun(x, persona, r.outline.id, `simulated discovery over 17 dimensions from the records: ${n.match} match, ${n.drift} drift, ${n.failed} failed, ${n.reported} reported — nothing measured, no device contacted`, f ? [f] : []); }); if (!isRefusal(res)) setRan(res); };
+  const ranSays = ran ? ['Run recorded in the ledger as a simulated discovery.', ran.opened.length ? `It wrote drift record ${ran.opened.join(', ')}: calling is outside the declared targets.` : '', ran.cleared.length ? `Its retest cleared ${ran.cleared.join(', ')}: calling is within the declared targets. The accepted baseline is unchanged.` : '', ran.standing.length ? `${ran.standing.join(', ')} still stands: nothing in this run shows calling within the targets.` : ''].filter(Boolean).join(' ') : '';
   return (
     <section className="wk cx" data-native="workspace" data-testid="as-room" data-room={r.outline.id}>
       <Head r={r} kind="as" perspective={perspective} tab={<RoomTabs r={r} kind="as" current={view === 'assurance' ? base : `${base}/${view}`} />} />
@@ -203,8 +207,8 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
           </Card>
           <Card icon="pulse" tone="commissioning" title="Run Assurance" sub="Simulated discovery from the records · nothing measured" testId="as-run">
             <Donut label="Seventeen dimensions" segments={[{ key: 'm', label: 'Match', value: n.match, tone: 'ok' }, { key: 'd', label: 'Drift', value: n.drift, tone: 'warn' }, { key: 'f', label: 'Failed', value: n.failed, tone: 'bad' }, { key: 'r', label: 'Reported', value: n.reported, tone: 'info' }]} total="dimensions" />
-            <p className="ln-p">{ran ? 'Run recorded in the ledger as a simulated discovery.' : `From the checks and records Core holds: ${n.match} match, ${n.drift} drift, ${n.failed} failed, ${n.reported} reported by people.`}</p>
-            {holds(persona, 'assure.run') || holds(persona, 'tests.verify.all') ? <button type="button" className="ui-btn ui-btn--primary" onClick={runIt} data-testid="as-run-btn" disabled={ran}>{ran ? 'Run recorded' : 'Run Assurance'}</button> : null}
+            <p className="ln-p" data-testid="as-run-says">{ran ? ranSays : `From the checks and records Core holds: ${n.match} match, ${n.drift} drift, ${n.failed} failed, ${n.reported} reported by people.`}</p>
+            {holds(persona, 'assure.run') || holds(persona, 'tests.verify.all') ? <button type="button" className="ui-btn ui-btn--primary" onClick={runIt} data-testid="as-run-btn" disabled={!!ran}>{ran ? 'Run recorded' : 'Run Assurance'}</button> : null}
           </Card>
         </div>
         <ChangeCards r={r} perspective={perspective} />
@@ -212,6 +216,14 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
           <p className="ln-p" data-testid="as-calling-says" data-state={calling.state}><Tag tone={calling.state === 'WITHIN' ? 'ok' : calling.state === 'OUTSIDE' ? 'warn' : 'muted'}>{CALLING_WORD[calling.state]}</Tag> {calling.says}</p>
           <p className="wk-note">Calling quality is not one of this room’s commissioning tests, so this reading changes neither the accepted baseline nor the seventeen dimensions. It is shown so that a clean baseline does not hide a room that cannot hold a call. A closed job does not change it; a verified repair and a later session do.</p>
           {openable(perspective, calling.href.split('?')[0]!) ? <p><a href={calling.href} data-testid="as-calling-open">Open the room’s CallPath</a></p> : null}
+        </Card> : null}
+        {drift.length ? <Card icon="pulse" title="Operational drift records" sub="Written by an Assurance run · beside the baseline, not part of it" testId="as-drift">
+          {/* not ListRow: a list row keeps its text to one line, and a drift record is read whole (checked on a phone, 24 Nov 2026) */}
+          <ul className="plain" aria-label="Drift records">{drift.map((d) => <li key={d.id} data-testid="as-drift-row"><b>{d.id} · {d.subject}</b> <Tag tone={d.cleared ? 'ok' : 'warn'}>{d.cleared ? 'Cleared by retest' : 'Open'}</Tag>
+            <p className="ln-p" data-testid="as-drift-opened">Recorded {ymd(d.opened.at)} by {personaLabel(d.opened.by)}, read from {d.source.product} ({d.basis.toLowerCase()}): {d.opened.says}</p>
+            {d.cleared ? <p className="ln-p" data-testid="as-drift-cleared">Cleared by the retest of {ymd(d.cleared.at)}, run by {personaLabel(d.cleared.by)}: {d.cleared.says}</p> : null}
+            {d.incidentId ? <p className="ui-meta">Job {openable(perspective, '#/servicehands') ? <a href={`#/servicehands?id=${d.incidentId}`} data-testid="as-drift-job">{d.incidentId}</a> : d.incidentId}</p> : null}</li>)}</ul>
+          <p className="wk-note">A drift record is written when an Assurance run finds something outside its declared targets, and cleared only by a later run that finds it within them. An unknown reading clears nothing. The record stands beside the accepted baseline: it changes neither the baseline nor a commissioning test, and closing the job does not clear it.</p>
         </Card> : null}
         <Card icon="chart" title="Seventeen dimensions, seven layers" sub={n.drift + n.failed ? `${n.match} match · ${n.drift} drift · ${n.failed} failed · ${n.reported} reported: ${plural(n.drift + n.failed, 'dimension')} differ from the commissioned state` : 'Nothing changed: the current state reads the same as the commissioned one in every value Assurance compares.'} testId="as-dims">
           <div className="cx-dims">{LAYERS.map((L) => { const ds = dims.filter((d) => d.layer === L); const off = ds.filter((d) => d.state !== 'match'); return <Card key={L} level={3} title={L} sub={ds[0]?.what && L !== 'Functional' ? ds[0].what : `${ds.length} dimensions`}>
