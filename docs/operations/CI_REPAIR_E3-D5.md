@@ -10,7 +10,7 @@ pull request 2). The workflow built with `--studio`. Since 17 Nov (1cba676) the 
 Edition and the films, which is never in the repository (it is public) and never on a runner. Nothing after that step ran on GitHub, so
 CI has reported nothing about the public sites for a week.
 
-## The repair (three files, no application code)
+## The repair (no application code)
 
 | File | Change |
 |---|---|
@@ -75,8 +75,22 @@ read as intermittent. Six suites still fail on the runner:
 | The runner's browser is not the one the local regression uses. `package.json` pins Playwright 1.56.0 (Chromium 141, build 1194); every local regression has run on Playwright 1.63.0 (build 1243). Build 1194 plays no H.264 video | demo-signal-film, demo-lesson, demo-cinematic | Fourth commit: `package.json` pins Playwright 1.63.0, so the runner downloads the build the evidence was produced on. Not yet confirmed by a run |
 | Failed in all three runs, always the same way: public website `WR-ten-seconds` (40 animations still listed after the sequence has come to rest) and demo-offline `OF-13` (the chapter page does not replace the offline page) | public website, demo-offline | **OPEN.** Three identical failures do not look like timing. Both may be the older browser; the fourth run will show. No test is loosened |
 
-**CI is still not green.** After the fourth commit the expected state is between zero and two failing suites, and this document will say
-which once the run has finished.
+**CI is still not green.** After the fourth commit the expected state was between zero and two failing suites.
+
+### The fourth run (run 45331647050, commit 8b00835b): PASS 285 · FAIL 1 · NOT_RUN 4, in 110 minutes
+
+The browser the evidence was produced on repaired five suites at once: the three film suites, and also public website `WR-ten-seconds`
+and demo-offline `OF-13`. Those two were never timing; they were the older browser, as the third run's note suspected. No test was
+changed. `sharp` repaired the missing shield: the export suite went from 864 of 893 to 912 of 913.
+
+| Cause on the runner | Suites | State |
+|---|---|---|
+| LibreOffice is not installed. The export suite converts one Word, one Excel and one PowerPoint export to PDF with `soffice`; when it is absent the suite records "LibreOffice available: NOT RUN" and counts that as a failure, which is the suite doing its job | unit: export formats (912 of 913) | Fifth commit: `libreoffice-writer`, `libreoffice-calc` and `libreoffice-impress` from the runner's own package archive (Ubuntu 24.04 carries 24.2, the series used locally), with two font families so the converted pages are not empty. Not yet confirmed by a run |
+
+The gate step has still never run on GitHub, because it runs only after a matrix with no failure.
+
+**CI is still not green.** After the fifth commit the expected state is no failing suite and four NOT RUN (the three Founder Studio
+suites, named, and the film decode), and then the gate decides. This document will say what the fifth run did once it has finished.
 
 ## What merging does
 

@@ -37,6 +37,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-16 ffmpeg poppler-utils qpdf
           sudo systemctl stop postgresql || true
+      - name: LibreOffice (the export suite converts one Word, Excel and PowerPoint export to PDF with it; without it that check is NOT RUN, which the suite counts as a failure)
+        run: |
+          sudo apt-get install -y --no-install-recommends libreoffice-writer libreoffice-calc libreoffice-impress fonts-liberation fonts-dejavu-core
+          soffice --version
       - name: Python packages (pinned; intelligence service, ML prototype, Blueprint validator)
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Node packages (pnpm) and Playwright Chromium
