@@ -12,7 +12,7 @@ import { canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
 import { buildingByKey, fullName, roomById, roomHref } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
-import { jobView } from './job.js';
+import { jobView, apexCaseWith } from './job.js';
 import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { CASES, VOICE_ROOM, LAYER_LABEL, METHOD, POLICY, SESSION, SHARED_LINK, FIXTURE_NOW, ageS, caseOf, caseView, estimate, flowFor, outsidePolicy, loadReports, type EvidenceState, type CaseId } from './model.js';
 
@@ -103,6 +103,9 @@ export default function CallPathPage({ role, params, query, sees }: PageProps) {
           <h4>It rests on</h4><ul>{v.hypothesis.cites.map((c) => <li key={c}>{c}</li>)}</ul>
           <h4>Not known</h4><ul>{v.hypothesis.unknowns.map((c) => <li key={c}>{c}</li>)}</ul>
           <p className="ui-muted">{v.hypothesis.wouldChange}</p>
+          {(() => { const c = apexCaseWith(w, room.id, v.hypothesis!.id); return c
+            ? <p data-testid="voice-hyp-recorded">Recorded on APEX case {opens('#/v25/apex') ? <a href={`#/v25/apex?case=${c.id}`}>{c.id}</a> : c.id} as a hypothesis, with these citations and unknowns.</p>
+            : <p className="ui-muted" data-testid="voice-hyp-unrecorded">Not recorded on an APEX case yet. A case opened for this room’s calling problem records it.</p>; })()}
         </> : <p data-testid="voice-nohyp">There is not enough evidence to suggest a cause. Nothing is inferred from a missing or stale record.</p>}
         <p className="ui-muted">{v.downstream}</p>
       </Card>

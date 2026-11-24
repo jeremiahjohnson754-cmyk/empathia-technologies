@@ -161,6 +161,74 @@ test('J6B steps 5 and 6 on the real service engine: assigned, evidence, an indep
   for (const k of ['missing', 'stale']) assert.equal(MP.readiness(w, k, reh).deps.find((d) => d.id === 'calling').ready, 'UNKNOWN', `${k} evidence is unknown, never ready`);
 });
 
+// 24 Nov 2026 — J6B-VOICE step 4 ("Pro/APEX records an explainable operational hypothesis, not a root-cause certainty") and step 6
+// ("Assurance records the relevant operational state; issue closure does not imply a passing acceptance test"), on the engines.
+test('APEX records VOICE’s hypothesis as a hypothesis: its own words, citations and unknowns, lowest confidence, read-only; refused without authority, a source or evidence, and refused twice', () => {
+  const w = S.seed(); const view = V.caseView('degraded', V.VOICE_ROOM); const vh = J.apexHypothesisFrom(w, V.VOICE_ROOM);
+  assert.ok(vh, 'a degraded session with a hypothesis is offered to APEX');
+  assert.equal(vh.id, view.hypothesis.id); assert.equal(vh.text, view.hypothesis.statement); assert.deepEqual(vh.evidence, view.hypothesis.cites);
+  assert.equal(vh.confidence, 'low'); assert.equal(vh.action.tier, 'A2'); assert.equal(vh.action.runbook, undefined, 'no runbook: nothing can be executed from it');
+  for (const u of view.hypothesis.unknowns) assert.ok(vh.caveat.includes(u), `the caveat carries the unknown: ${u}`);
+  assert.match(vh.caveat, /not a root cause/); assert.match(vh.caveat, /simulated/); assert.deepEqual(vh.next, [view.hypothesis.wouldChange]);
+  assert.deepEqual(vh.from, { product: 'VOICE', id: 'VH-0001', href: `#/voice/callpath/${V.VOICE_ROOM}` }); assert.ok(resolve(vh.from.href));
+  // nothing to record where VOICE has no hypothesis: another room, a room with no flow
+  assert.equal(J.apexHypothesisFrom(w, V.OTHER_SITE_ROOM), null); assert.equal(J.apexHypothesisFrom(w, 'R-ATL-4-220'), null);
+  const made = S.raiseIncident(w, 'requestor', { roomId: V.VOICE_ROOM, roomName: 'Atlas 4.218 — Executive Boardroom', buildingKey: 'ATL', title: `${J.VOICE_TITLE}: audio breaking up`, summary: 'Reported from the room’s calling page.' });
+  const opened = S.openApex(w, 'svcmgr', made.id, () => []); assert.ok(opened.id, JSON.stringify(opened)); const H = () => w.apexCases.find((c) => c.id === opened.id);
+  const before = H().hypotheses.length; assert.equal(J.apexCaseWith(w, V.VOICE_ROOM, 'VH-0001'), null);
+  assert.ok(S.apexRecordHypothesis(w, 'requestor', opened.id, vh)?.why, 'a requester does not write on an APEX case');
+  assert.ok(S.apexRecordHypothesis(w, 'svcmgr', opened.id, { ...vh, from: undefined })?.why, 'no source, no record');
+  assert.ok(S.apexRecordHypothesis(w, 'svcmgr', opened.id, { ...vh, evidence: [] })?.why, 'no cited evidence, no record');
+  assert.ok(S.apexRecordHypothesis(w, 'svcmgr', opened.id, { ...vh, confidence: 'high' })?.why, 'another product’s hypothesis is not recorded as proven');
+  assert.equal(H().hypotheses.length, before, 'the refusals wrote nothing');
+  assert.equal(S.apexRecordHypothesis(w, 'svcmgr', opened.id, vh), null);
+  const rec = H().hypotheses.find((x) => x.id === 'VH-0001'); assert.ok(rec); assert.equal(rec.from.product, 'VOICE'); assert.equal(H().hypotheses.length, before + 1);
+  assert.equal(H().key, 'generic'); assert.equal(H().hypotheses[0].id, 'VH-0001', 'the symptom library abstained (confidence none), so a cited hypothesis ranks above the abstention');
+  // on a case whose own leading hypothesis is stronger, it ranks below it and after the case's own at the same rank
+  { const seeded = w.apexCases.find((c) => c.seeded && c.roomId === V.VOICE_ROOM); assert.ok(seeded, 'the seeded case is in the VOICE room'); const own = seeded.hypotheses.map((x) => x.id); assert.equal(S.apexRecordHypothesis(w, 'svcmgr', seeded.id, vh), null);
+    const ids = seeded.hypotheses.map((x) => x.id); assert.equal(ids[0], own[0], 'the case’s leading hypothesis stays first'); const rank = { high: 3, medium: 2, low: 1, none: 0 }; const at = ids.indexOf('VH-0001');
+    assert.ok(at > 0, ids.join(' ')); assert.deepEqual(ids.filter((x) => x !== 'VH-0001'), own, 'the case’s own hypotheses keep their order');
+    for (let i = 1; i < seeded.hypotheses.length; i += 1) assert.ok(rank[seeded.hypotheses[i - 1].confidence] >= rank[seeded.hypotheses[i].confidence], `ranked by confidence: ${ids.join(' ')}`); }
+  assert.ok(H().layers.find((l) => l.layer === 'network').observations.some((o) => o.startsWith('VOICE VH-0001: ')), 'its citations are on the network layer, marked as VOICE’s');
+  assert.ok(S.apexRecordHypothesis(w, 'svcmgr', opened.id, vh)?.why, 'the same hypothesis is not recorded twice'); assert.equal(H().hypotheses.length, before + 1);
+  assert.equal(J.apexCaseWith(w, V.VOICE_ROOM, 'VH-0001').id, opened.id, 'the CallPath can say which case holds it');
+  const ev = w.events.filter((e) => e.type === 'apex.hypothesis_recorded'); assert.equal(ev.filter((e) => e.outcome === 'ALLOWED').length, 2); assert.equal(ev.filter((e) => e.outcome === 'DENIED').length, 5); assert.match(ev.find((e) => e.outcome === 'ALLOWED').detail, /a hypothesis, not a root cause/);
+  // acting on it stays read-only: A2 compares, and there is no runbook to run
+  const o = S.apexAct(w, 'svcmgr', opened.id, 'VH-0001', { tier: 'A4' }, null); assert.equal(o.outcome, 'BLOCKED'); assert.match(o.detail, /no runbook/);
+});
+
+test('an Assurance run writes a drift record when calling is outside its targets, and only a retest that finds it within them clears it: not a verified job, not an unknown reading, not a role without the run authority', () => {
+  const ok = (x, l) => assert.equal(x, null, `${l}: ${x && x.why.join('; ')}`); const w = S.seed(); const room = V.VOICE_ROOM; const run = (who, f = J.callingFinding(w, room)) => S.assuranceRun(w, who, room, 'test run', f ? [f] : []);
+  assert.equal(J.callingFinding(w, 'R-ATL-4-220'), null, 'no call flow, nothing to find'); assert.deepEqual(S.driftOf(w, room), []);
+  const f0 = J.callingFinding(w, room); assert.equal(f0.state, 'OUTSIDE'); assert.equal(f0.subject, 'Calling'); assert.equal(f0.basis, 'SIMULATED'); assert.equal(f0.source.product, 'VOICE'); assert.equal(f0.incidentId, null);
+  assert.ok(run('requestor').why, 'a requester does not run Assurance'); assert.deepEqual(S.driftOf(w, room), []);
+  const r1 = run('cxeng'); assert.deepEqual(r1, { opened: ['DR-0001'], cleared: [], standing: [] });
+  const d = () => S.driftOf(w, room)[0]; assert.equal(d().id, 'DR-0001'); assert.equal(d().cleared, null); assert.equal(d().opened.by, 'cxeng'); assert.match(d().opened.says, /outside the declared calling targets/); assert.equal(d().basis, 'SIMULATED');
+  assert.deepEqual(run('cxeng'), { opened: [], cleared: [], standing: ['DR-0001'] }, 'a second run with the same finding does not write a second record'); assert.equal(S.driftOf(w, room).length, 1);
+  // an unknown reading clears nothing; a WITHIN finding for another subject clears nothing
+  assert.deepEqual(run('cxeng', { ...f0, state: 'UNKNOWN', says: 'no session observed' }), { opened: [], cleared: [], standing: ['DR-0001'] }); assert.equal(d().cleared, null);
+  assert.deepEqual(run('cxeng', { ...f0, subject: 'Something else', state: 'WITHIN' }), { opened: [], cleared: [], standing: [] }); assert.equal(d().cleared, null);
+  // the job: reported, repaired, handed over. Until a second person verifies, the reading is still OUTSIDE and the record stands
+  const made = S.raiseIncident(w, 'requestor', { roomId: room, roomName: 'Atlas 4.218 — Executive Boardroom', buildingKey: 'ATL', title: `${J.VOICE_TITLE}: audio breaking up`, summary: 'Reported from the room’s calling page.' });
+  ok(S.triage(w, 'svcmgr', made.id, 'High'), 'triage'); ok(S.assign(w, 'svcmgr', made.id, 'tech-ana'), 'assign'); ok(S.accept(w, 'service', made.id), 'accept');
+  const wo = S.workOrderOf(w, S.incidentOf(w, made.id).workOrderId); const tools = WORK_NEEDS[wo.workType]?.tools || [];
+  if (!S.preflightFor(w, wo.id, { access: true, safety: true, heightPermit: true, tools }).ok) ok(S.replanWindow(w, 'svcmgr', made.id), 'replan');
+  ok(S.start(w, 'service', made.id, { access: true, safety: true, heightPermit: true, tools }), 'start'); ok(S.recordEvidence(w, 'service', made.id, 'photo', 'SYNTHETIC: uplink patch lead reseated'), 'evidence'); ok(S.submitForVerification(w, 'service', made.id), 'submit');
+  assert.deepEqual(run('cxeng'), { opened: [], cleared: [], standing: ['DR-0001'] }, 'work handed over is not a retest'); assert.equal(d().incidentId, made.id, 'the standing record now names the job raised for it');
+  ok(S.verify(w, 'cxeng', made.id), 'verify'); assert.equal(J.callingFinding(w, room).state, 'WITHIN');
+  assert.equal(d().cleared, null, 'verifying the repair does not clear the record: only an Assurance run does');
+  // the technician who did the repair, the service manager and the operations lead do not hold the run authority: none of them clears it
+  for (const who of ['service', 'svcmgr', 'opslead']) { assert.ok(run(who).why, `${who} does not run Assurance`); assert.equal(d().cleared, null); }
+  assert.deepEqual(run('cxeng'), { opened: [], cleared: ['DR-0001'], standing: [] }); assert.equal(d().cleared.by, 'cxeng'); assert.match(d().cleared.says, /within the declared calling targets/);
+  const cl = w.events.find((e) => e.type === 'assurance.drift_cleared' && e.outcome === 'ALLOWED'); assert.match(cl.detail, /retest/); assert.match(cl.detail, /accepted baseline is unchanged/);
+  assert.deepEqual(run('cxeng'), { opened: [], cleared: [], standing: [] }, 'within the targets and nothing open: nothing to write'); assert.equal(S.driftOf(w, room).length, 1);
+  assert.equal(J.apexHypothesisFrom(w, room), null, 'and VOICE no longer offers APEX a hypothesis: the later session is within the targets');
+  // a workspace saved before drift records existed is read with none, not with an error
+  { const old = JSON.parse(JSON.stringify(S.seed())); delete old.drift; delete old.seq.drift; const store = new Map([['empathia.demo.workspace.v1', JSON.stringify(old)]]); const had = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+    Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v), removeItem: (k) => store.delete(k) } });
+    try { const l = S.load(); assert.deepEqual(l.drift, []); assert.equal(l.seq.drift, 0); } finally { if (had) Object.defineProperty(globalThis, 'localStorage', had); else delete globalThis.localStorage; } }
+});
+
 test('FLOW (J6A): claims by layer from the estate’s own edges, UNKNOWN where nothing is recorded, dependents by the impact traversal', () => {
   const v = F.linkView('SW-ATL-4A'); assert.ok(v); assert.deepEqual(v.rooms.map((r) => r.id), [...V.SHARED_LINK.rooms].sort());
   const by = (l) => v.claims.filter((c) => c.layer === l);
