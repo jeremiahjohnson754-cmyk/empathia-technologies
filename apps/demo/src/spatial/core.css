@@ -285,6 +285,8 @@ main h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 /* "Atlas 4.218 in": one room's places across the products (V2.5.3 jumps bar). A scrolling row on a phone, never wider than the page. */
 .room-jumps { display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 4px 0 14px; padding-bottom: 2px; position: relative; max-width: 100%; }
 .room-jumps::-webkit-scrollbar { display: none; }
+/* the job's row sits inside cards, often a narrow one: it wraps instead of scrolling sideways with its last place cut off (design pass, 24 Nov 2026) */
+.job-jumps { flex-wrap: wrap; overflow-x: visible; }
 .room-jumps__l { flex: none; font-size: var(--fs-sm, 14px); color: var(--tx2); margin-right: 2px; white-space: nowrap; }
 .room-jumps a, .room-jumps__copy { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: var(--target-min, 44px); padding: 0 14px; border-radius: var(--r-pill, 999px); border: 1px solid var(--line2); background: var(--panel); color: var(--tx); font: inherit; font-size: var(--fs-sm, 14px); text-decoration: none; white-space: nowrap; cursor: pointer; }
 .room-jumps a:hover, .room-jumps__copy:hover { border-color: var(--accent); }

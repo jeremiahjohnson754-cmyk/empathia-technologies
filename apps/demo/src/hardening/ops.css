@@ -16,6 +16,8 @@
 .ops-card { background: var(--panel); border: 1px solid var(--line2); border-radius: var(--r-md); padding: var(--sp-4); display: grid; gap: var(--sp-3); align-content: start; }
 .ops-card h2, .ops-card h3 { margin: 0; font-size: var(--fs-md); }
 .ops-grid { display: grid; gap: var(--sp-4); grid-template-columns: minmax(0, 1fr); }
+/* the work order's "nothing to do here yet" card: only when nothing else is in the main column (service/ServiceHands.tsx) */
+.wo-next:not(:only-child) { display: none; } .wo-next { align-self: start; }
 @media (min-width: 900px) { .ops-grid--2 { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } .ops-grid--2b { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); } }
 .ops-stats { display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
 .ops-stat { background: var(--panel); border: 1px solid var(--line2); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); }
