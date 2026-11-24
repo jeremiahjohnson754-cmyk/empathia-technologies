@@ -11,11 +11,12 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/founder-studio/dist'));
-const out = path.resolve(process.argv[3] || path.join(repo, 'tests/evidence/founder-studio'));
+const out = path.resolve(process.argv[3] || evidencePath('founder-studio'));
 fs.mkdirSync(out, { recursive: true });
 // 17 Nov 2026 (founder: "Resolve Founder Studio's private-asset testing issue. Remove that recurring regression exception
 // permanently."). The studio embeds a page and plays films that are private and not in the repository. In a checkout without them

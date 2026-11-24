@@ -5,6 +5,7 @@
 //   node tests/browser/demo-field-ux.test.mjs
 import fs from 'node:fs'; import path from 'node:path';
 import { harness, repo } from './demo-shell-lib.mjs';
+import { evidencePath } from '../lib/evidence.mjs';
 const { ok, open, done } = await harness('demo-field-ux');
 const PAGES = [
   ['#/commissioning/room/R-ATL-4-218', 'installer', 'the room record with its registers'],
@@ -38,5 +39,5 @@ for (const [hash, role, what] of PAGES) {
     `overflow ${r.over} · ${r.n} controls, ${r.comfy} at 44 px · small: ${r.small.slice(0, 3).join(', ')} · unnamed: ${r.unnamed.slice(0, 2).join(', ')} ${t.errs.slice(0, 1)}`);
   await t.close();
 }
-fs.mkdirSync(path.join(repo, 'tests/evidence'), { recursive: true }); fs.writeFileSync(path.join(repo, 'tests/evidence/demo-field-ux.json'), JSON.stringify({ at: new Date().toISOString(), viewport: '390x844', pages: evidence }, null, 1));
+fs.mkdirSync(evidencePath(), { recursive: true }); fs.writeFileSync(evidencePath('demo-field-ux.json'), JSON.stringify({ at: new Date().toISOString(), viewport: '390x844', pages: evidence }, null, 1));
 await done();

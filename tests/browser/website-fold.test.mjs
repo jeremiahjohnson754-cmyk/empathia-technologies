@@ -5,10 +5,11 @@
 // removed. The audit and before/after captures are in docs/surpass/FIRST_SCREEN_AUDIT.md.
 // Run it in both schemes: PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/website-fold.test.mjs
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const scheme = process.env.PW_COLOR_SCHEME || 'light';
-const out = path.join(repo, `tests/evidence/website-fold${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
+const out = evidencePath(`website-fold${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
 const PORT = await new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const results = []; let failed = 0;
 const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 400) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${name}${cond ? '' : ' — ' + String(detail).slice(0, 400)}`); };

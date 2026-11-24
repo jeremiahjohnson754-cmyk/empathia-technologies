@@ -13,6 +13,7 @@
 //   status, the V/C/T key, its technical contents, the checks anyone can repeat, the next decision, and its own enquiry source.
 // Run it in both schemes: PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/website-fieldlink.test.mjs
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const scheme = process.env.PW_COLOR_SCHEME || 'light';
@@ -96,7 +97,7 @@ try {
   await ctx.close();
 } finally {
   await browser.close(); srv.kill();
-  const out = path.join(repo, `tests/evidence/website-fieldlink${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
+  const out = evidencePath(`website-fieldlink${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
   fs.writeFileSync(path.join(out, 'RESULTS.json'), JSON.stringify({ suite: 'website-fieldlink', scheme, at: new Date().toISOString(), results }, null, 1));
   console.log(`\n${results.length - failed} passed, ${failed} failed (${scheme})`); process.exit(failed ? 1 : 0);
 }

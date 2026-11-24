@@ -16,11 +16,12 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/founder-studio/dist'));
-const out = path.resolve(process.argv[3] || path.join(repo, 'tests/evidence/founder-townhall'));
+const out = path.resolve(process.argv[3] || evidencePath('founder-townhall'));
 fs.mkdirSync(out, { recursive: true });
 const PORT = 4393; const KEY = 'e2e-key';
 const results = []; let failed = 0;

@@ -13,6 +13,7 @@
 // No check was dropped: each one still compares the page with estimate() line by line, and new checks cover what price book 3 adds.
 // Run it in both schemes: PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/website-pricing.test.mjs
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath, pathToFileURL } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const C = await import(pathToFileURL(path.join(repo, 'packages/commercial/dist/src/index.js')).href);
@@ -155,7 +156,7 @@ try {
     await ctx.close(); }
 } finally {
   await browser.close(); srv.kill();
-  const out = path.join(repo, `tests/evidence/website-pricing${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
+  const out = evidencePath(`website-pricing${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
   fs.writeFileSync(path.join(out, 'RESULTS.json'), JSON.stringify({ suite: 'website-pricing', scheme, at: new Date().toISOString(), results }, null, 1));
   console.log(`\n${results.length - failed} passed, ${failed} failed (${scheme})`); process.exit(failed ? 1 : 0);
 }

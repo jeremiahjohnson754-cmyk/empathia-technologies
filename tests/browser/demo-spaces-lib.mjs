@@ -2,6 +2,7 @@
 // serves the built demo on a free port, opens pages at 390 / 768 / 1440 in the colour scheme of PW_COLOR_SCHEME (default: both light and
 // dark, one after the other), and records page errors, console errors, requests that leave the page and horizontal overflow.
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import net from 'node:net'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 export const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 export const VIEWPORTS = [[390, 844, 'phone'], [768, 1024, 'tablet'], [1440, 900, 'desktop']];
@@ -11,7 +12,7 @@ const freePort = () => new Promise((ok) => { const s = net.createServer(); s.lis
 
 export async function harness(name) {
   if (!fs.existsSync(path.join(repo, 'apps/demo/dist/index.html'))) { console.log('demo not built (node scripts/build.mjs)'); process.exit(1); }
-  const out = path.join(repo, 'tests/evidence', name); fs.mkdirSync(out, { recursive: true });
+  const out = evidencePath(name); fs.mkdirSync(out, { recursive: true });
   const port = await freePort();
   const srv = spawn(process.execPath, [path.join(repo, 'apps/demo/server/serve.mjs'), `--port=${port}`], { stdio: ['ignore', 'pipe', 'pipe'] });
   await new Promise((r) => { srv.stdout.on('data', () => r()); srv.stderr.on('data', () => r()); setTimeout(r, 2500); });

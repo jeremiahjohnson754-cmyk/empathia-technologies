@@ -7,9 +7,10 @@
  */
 import { spawn, execFileSync } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { setup, client } from '../integration/harness.mjs';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
-const out = path.resolve(process.argv[2] || path.join(repo, 'tests/evidence/website-lead')); fs.mkdirSync(out, { recursive: true });
+const out = path.resolve(process.argv[2] || evidencePath('website-lead')); fs.mkdirSync(out, { recursive: true });
 const WWW = 4396; const API = 4194; const results = []; let failed = 0;
 const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 500) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${name}${cond ? '' : ' — ' + String(detail).slice(0, 300)}`); };
 const h = await setup({ db: 'empathia_test_lead_e2e', port: API, env: { CORS_ORIGINS: `http://127.0.0.1:${WWW}` } });

@@ -10,10 +10,11 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const index = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : path.join(repo, 'apps/founder-studio/dist/studio/films.json');
 const films = JSON.parse(fs.readFileSync(index, 'utf8'));
-const out = path.join(repo, 'tests/evidence/films'); fs.mkdirSync(out, { recursive: true });
+const out = evidencePath('films'); fs.mkdirSync(out, { recursive: true });
 const results = [];
 for (const f of films) {
   const p = path.isAbsolute(f.path) ? f.path : path.join(process.env.EMPATHIA_WORKSPACE || '/home/claude', f.path);   // the founder's film folder root

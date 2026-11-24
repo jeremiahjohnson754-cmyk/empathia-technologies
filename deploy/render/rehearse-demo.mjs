@@ -38,6 +38,7 @@ import crypto from 'node:crypto';
 import net from 'node:net';
 import { spawn, spawnSync, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../../tests/lib/evidence.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const rt = path.resolve(repo, (process.argv.find((a) => a.startsWith('--rt=')) || '--rt=.local/demo-rt').slice(5));
@@ -243,8 +244,8 @@ finally { await stop(); try { clusterDown(); } catch { /* reported by the next r
 const want = ['R-01', 'R-02', 'R-03', 'R-04', 'R-05', 'R-06', 'R-07', 'R-08', 'R-09', 'R-10', 'R-11', 'R-12', 'R-13']; for (const id of want) if (!steps.some((x) => x.id === id)) step(id, 'NOT RUN', false, 'an earlier step stopped the rehearsal');
 const pass = steps.filter((x) => x.result === 'PASS').length; const fail = steps.length - pass;
 let commit = ''; try { commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(); } catch { /* not a checkout */ }
-fs.mkdirSync(path.join(repo, 'tests/evidence'), { recursive: true });
-fs.writeFileSync(path.join(repo, 'tests/evidence/RENDER_DEMO_REHEARSAL.json'), JSON.stringify({ at: new Date().toISOString(), commit, blueprint: 'deploy/render/demo.render.yaml', startCommand: sh, passed: pass, failed: fail, steps, recovery,
+fs.mkdirSync(evidencePath(), { recursive: true });
+fs.writeFileSync(evidencePath('RENDER_DEMO_REHEARSAL.json'), JSON.stringify({ at: new Date().toISOString(), commit, blueprint: 'deploy/render/demo.render.yaml', startCommand: sh, passed: pass, failed: fail, steps, recovery,
   smoke: fs.existsSync(path.join(repo, '.local/demo-rehearsal-smoke.json')) ? JSON.parse(fs.readFileSync(path.join(repo, '.local/demo-rehearsal-smoke.json'), 'utf8')).results : [],
   database: `a PostgreSQL ${pgVersion} cluster created for this run and removed after it; owner: not a superuser, may create roles`,
   limits: 'No TLS in the rehearsal cluster (PGSSLMODE rehearsed as disable); no Render proxy, container or free-plan sleep; the owner\'s attributes beyond "not a superuser, may create roles" are an assumption about the platform\'s user. The image build and the edge are seen only on Render.' }, null, 1) + '\n');

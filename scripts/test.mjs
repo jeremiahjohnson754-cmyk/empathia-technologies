@@ -1,11 +1,17 @@
 #!/usr/bin/env node
 /**
- * Run the test suites and write one machine-readable result: tests/evidence/TEST_RESULTS.json (+ a Markdown table).
+ * Run the test suites and write one machine-readable result: TEST_RESULTS.json (+ a Markdown table).
+ *
+ * A run of record writes to tests/evidence, the evidence that is committed with the commit it describes: any run with --part, --merge or
+ * --record, and any run under CI. Every other run is a working run and writes to .local/evidence/run-<time>, so it cannot change the
+ * record of a regression it is not part of (tests/lib/evidence.mjs; founder directive, 24 Nov 2026).
  *
  *   node scripts/test.mjs                 unit + integration + security (needs: node scripts/build.mjs; node scripts/db.mjs up)
  *   node scripts/test.mjs --browser       + enterprise web E2E (Chromium)
  *   node scripts/test.mjs --studio        + Founder Studio browser test and the town-hall E2E (need the built studio and the films)
  *   node scripts/test.mjs --films         + full ffmpeg decode of every curated film (slow)
+ *   node scripts/test.mjs --only=<text>   a working run of the suites whose name contains the text
+ *   node scripts/test.mjs --record        a run of record without parts (what the release scripts use)
  *
  * Every suite is PASS, FAIL or NOT_RUN — a suite that was not run is never counted as passed. Counts come from the runners' own output.
  */
@@ -22,6 +28,24 @@ const has = (f) => process.argv.includes(f);
 // `node scripts/test.mjs --merge=M` joins the parts into TEST_RESULTS.json/.md — failing if any part is missing or ran another commit.
 const partArg = /^--part=(\d+)\/(\d+)$/.exec(process.argv.find((a) => a.startsWith('--part=')) || ''); const PART = partArg ? { n: Number(partArg[1]), of: Number(partArg[2]) } : null;
 const mergeArg = /^--merge=(\d+)$/.exec(process.argv.find((a) => a.startsWith('--merge=')) || '');
+// --only=<text> runs just the suites whose name contains the text: for working runs. A run of record is never narrowed.
+const ONLY = (process.argv.find((a) => a.startsWith('--only=')) || '').slice(7);
+// ---- where this run writes, and whether it is a run of record
+const RECORD = !!(PART || mergeArg || has('--record') || (process.env.CI === 'true' && !ONLY));
+if (ONLY && (PART || mergeArg || has('--record'))) { console.error('--only narrows a working run; it cannot be combined with --part, --merge or --record (a run of record runs every suite)'); process.exit(2); }
+const out = RECORD ? path.join(root, 'tests/evidence') : path.join(root, '.local/evidence', `run-${new Date().toISOString().replace(/[:.]/g, '-')}`);
+if (RECORD) { process.env.EMPATHIA_EVIDENCE = 'record'; delete process.env.EMPATHIA_EVIDENCE_DIR; } else { process.env.EMPATHIA_EVIDENCE = 'scratch'; process.env.EMPATHIA_EVIDENCE_DIR = out; }
+fs.mkdirSync(out, { recursive: true });
+// ---- disk: refuse to start a run of record without room for it (24 Nov 2026: a regression once ran the disk out part-way through)
+const MIN_FREE_GB = Number(process.env.EMPATHIA_MIN_FREE_GB || 3);
+if (RECORD && !mergeArg) { const s = fs.statfsSync(root); const free = Number(s.bavail) * Number(s.bsize) / 2 ** 30;
+  if (free < MIN_FREE_GB) { console.error(`not started: ${free.toFixed(1)} GB free, and a run of record needs ${MIN_FREE_GB} GB. Free space first (node scripts/dev/clean-test-temp.mjs --apply removes what earlier test runs left in the temp directory).`); process.exit(3); } }
+// ---- temp: everything the suites create under the temp directory goes into one directory for this run, removed when it ends.
+// Suites make hundreds of small build directories and never remove them; 13,000 of them (5 GB) had collected by 24 Nov 2026.
+const RUN_TMP = mergeArg ? null : fs.mkdtempSync(path.join(os.tmpdir(), 'empathia-test-run-'));
+// It has the temp directory's own permissions (anyone may create, only the owner may remove): the deployment rehearsal starts a database
+// as another user, which puts its socket there.
+if (RUN_TMP) { fs.chmodSync(RUN_TMP, 0o1777); process.env.TMPDIR = RUN_TMP; process.on('exit', () => { if (!has('--keep-tmp')) fs.rmSync(RUN_TMP, { recursive: true, force: true }); }); for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => process.exit(130)); }
 let seq = 0;
 const suites = [];
 const tap = (out) => ({ tests: Number(/^# tests (\d+)/m.exec(out)?.[1] ?? NaN), pass: Number(/^# pass (\d+)/m.exec(out)?.[1] ?? NaN), fail: Number(/^# fail (\d+)/m.exec(out)?.[1] ?? NaN) });
@@ -37,6 +61,7 @@ const built = (out) => { const ok = /website built:/.test(out) && !/BUDGET EXCEE
 
 function suite(name, kind, cmd, args, parse, opts = {}) {
   seq += 1; if (mergeArg || (PART && (seq - PART.n) % PART.of !== 0)) return;
+  if (ONLY && !name.includes(ONLY)) return;
   if (opts.skip) { suites.push({ suite: name, kind, result: 'NOT_RUN', why: opts.skip }); console.log(`NOT_RUN  ${name} — ${opts.skip}`); return; }
   const t0 = Date.now();
   const r = spawnSync(cmd, args, { cwd: opts.cwd || root, encoding: 'utf8', maxBuffer: 256 << 20, timeout: opts.timeout || 600000, env: { ...process.env, LOG_LEVEL: 'error' } });
@@ -93,7 +118,7 @@ suite('unit: Search Party by asset ID and by person — every unit searchable, s
 suite('unit: STI workflow — readings against the project policy, flags, the intelligibility exception and its refusals', 'unit', node, ['--test', 'tests/unit/bench-sti.test.mjs'], tap);
 suite('unit: ServiceHands analytics — measures on hand-built jobs, the synthetic history, the vendor scorecard', 'unit', node, ['--test', 'tests/unit/service-analytics.test.mjs'], tap);
 suite('unit: training and simulation never touch the real record (SIGNAL game day, drills, Learn cases, FI simulated run)', 'unit', node, ['--test', 'tests/unit/training-isolation.test.mjs'], tap);
-suite('unit: export formats (every report in PDF, Word, Excel, PowerPoint, JSON and CSV, reopened by independent readers)', 'unit', node, ['scripts/verify/export-formats.mjs', '--out=tests/evidence/exports'], custom);
+suite('unit: export formats (every report in PDF, Word, Excel, PowerPoint, JSON and CSV, reopened by independent readers)', 'unit', node, ['scripts/verify/export-formats.mjs', `--out=${path.join(out, 'exports')}`], custom);
 for (const [n, f] of [['dispatch', 'demo-dispatch'], ['ServiceHands', 'demo-servicehands'], ['Core Replay', 'demo-replay'], ['FI scan replay', 'demo-fi-scan'], ['decisions', 'demo-decisions'], ['destructive-action safeguards', 'demo-destructive'], ['enquiry links', 'demo-enquiry'], ['Learn labs', 'learn-labs'], ['hardening', 'demo-hardening']])
   suite(`browser: investor demo ${n}`, 'browser', node, [`tests/browser/${f}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 // uplift/parity-areas: the fifteen V2.5.3 areas the rebuild lacked, the Control Tower, and the repo-wide no-placeholder check
@@ -172,11 +197,13 @@ const counted = (out) => { const m = /PASS (\d+) · FAIL (\d+)/.exec(out); retur
 const pyyaml = spawnSync('python3', ['-I', '-c', 'import yaml'], { encoding: 'utf8' }).status === 0;
 suite('deploy: Render Blueprints (static validation)', 'deploy', 'python3', ['-I', 'scripts/staging/validate-blueprints.py'], counted, pyyaml ? {} : { skip: 'PyYAML not installed (pip install pyyaml)' });
 suite('deploy: the demonstration staging rehearsed from its Blueprint — the start command on an empty database, the deployment check (permissions, unauthorized access, isolation, persistence, cross-origin, reset), a restart, the V-1 gate', 'deploy', node, ['deploy/render/rehearse-demo.mjs', '--assemble'], counted, fs.existsSync(path.join(root, 'services/enterprise-api/dist/src/main.js')) ? {} : { skip: 'the API is not built (node scripts/build.mjs)' });
-suite('deploy: public sites audit (functional, a11y, responsive; no P0/P1)', 'deploy', node, ['scripts/audit/site-audit.mjs', '--strict', '--out=tests/evidence/SITE_AUDIT.json'], counted, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) && fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1800000 } : { skip: 'public sites not built' }) : { skip: 'pass --browser' });
+suite('deploy: public sites audit (functional, a11y, responsive; no P0/P1)', 'deploy', node, ['scripts/audit/site-audit.mjs', '--strict', `--out=${path.join(out, 'SITE_AUDIT.json')}`], counted, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) && fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1800000 } : { skip: 'public sites not built' }) : { skip: 'pass --browser' });
 suite('deploy: public static sites under the declared headers', 'deploy', node, ['scripts/staging/verify-static.mjs'], counted, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) && fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'public sites not built (node scripts/build.mjs --public)' }) : { skip: 'pass --browser' });
 // security assessment 2026-11-04 (docs/security/ASSESSMENT_2026-11-04.md): Blueprint, build chain, local servers and dist (no database), then the browser checks under no headers
 suite('security: public sites (headers, build chain, servers, dist)', 'security', node, ['--test', 'tests/security/public-sites.test.mjs'], tap);
 suite('browser: public sites security (CSP in the page, no request leaves, injection, tampering, View-as)', 'browser', node, ['tests/browser/public-security.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) && fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'public sites not built (node scripts/build.mjs --public)' }) : { skip: 'pass --browser' });
+// founder 24 Nov 05:32: a working run cannot change the evidence of record; failed runs are kept; the temp directory is cleaned
+suite('unit: evidence of record (a working run or a suite run by hand leaves tests/evidence and the ledger untouched; a run of record cannot be narrowed; temp cleanup removes only test directories)', 'unit', node, ['--test', 'tests/unit/evidence-isolation.test.mjs'], tap);
 suite('unit: the public exposure audit catches each planted finding (secrets, maps, contact data, machine paths, embedded data, private markers)', 'unit', node, ['--test', 'tests/unit/public-exposure.test.mjs'], tap);
 suite('unit: link previews: both share cards are 1200 × 630, and the tags name the image only with a public address', 'unit', node, ['--test', 'tests/unit/share-meta.test.mjs'], tap);
 // founder 19 Nov 06:08: the public builds checked for secrets, source maps, embedded data and anything that is not a public file
@@ -190,10 +217,9 @@ suite('browser: website Follow one device and product launches (#232, 17:25 §6)
 suite('browser: website home opening (17:25 §4: the founder headline, the room-to-estate sequence from the demonstration, two actions)', 'browser', node, ['tests/browser/website-opening.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/index.html')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 suite('browser: website first screen (90-1)', 'browser', node, ['tests/browser/website-fold.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/website/dist/pilot.js')) ? {} : { skip: 'website not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 
-const out = path.join(root, 'tests/evidence'); fs.mkdirSync(out, { recursive: true });
 const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();
 // the enterprise web E2E re-takes its screenshots into media/screenshots by design; those, like tests/evidence, are not the tree under test
-const dirty = spawnSync('git', ['status', '--porcelain', '--untracked-files=no', '--', '.', ':!tests/evidence', ':!media/screenshots'], { cwd: root, encoding: 'utf8' }).stdout.trim() !== '';
+const dirty = spawnSync('git', ['status', '--porcelain', '--untracked-files=no', '--', '.', ':!tests/evidence', ':!media/screenshots', ':!tests/REGRESSION_LEDGER.jsonl', ':!tests/evidence-failed'], { cwd: root, encoding: 'utf8' }).stdout.trim() !== '';
 if (PART) { fs.writeFileSync(path.join(out, `TEST_RESULTS.part-${PART.n}-of-${PART.of}.json`), JSON.stringify({ at: new Date().toISOString(), commit: head, dirty, part: PART, suites }, null, 2)); console.log(`\npart ${PART.n} of ${PART.of} on ${head.slice(0, 7)}${dirty ? ' (working tree changed)' : ''}: PASS ${suites.filter((x) => x.result === 'PASS').length} · FAIL ${suites.filter((x) => x.result === 'FAIL').length} · NOT_RUN ${suites.filter((x) => x.result === 'NOT_RUN').length}`); process.exit(suites.some((x) => x.result === 'FAIL') ? 1 : 0); }
 if (mergeArg) { const M = Number(mergeArg[1]); const parts = Array.from({ length: M }, (_, i) => { const f = path.join(out, `TEST_RESULTS.part-${i + 1}-of-${M}.json`); return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null; });
   const bad = parts.map((x, i) => (!x ? `part ${i + 1} missing` : x.commit !== head ? `part ${i + 1} ran ${x.commit.slice(0, 7)}, not ${head.slice(0, 7)}` : x.dirty ? `part ${i + 1} ran on a changed working tree` : '')).filter(Boolean);
@@ -203,5 +229,12 @@ const sum = { at: new Date().toISOString(), node: process.version, commit: head,
 fs.writeFileSync(path.join(out, 'TEST_RESULTS.json'), JSON.stringify(sum, null, 2));
 fs.writeFileSync(path.join(out, 'TEST_RESULTS.md'), ['# Test results', '', `Run ${sum.at} on Node ${sum.node}. PASS ${sum.pass} · FAIL ${sum.fail} · NOT_RUN ${sum.notRun} suites.`, '', '| Suite | Kind | Result | Passed / tests | Seconds | Why not run |', '|---|---|---|---|---|---|',
   ...suites.map((s) => `| ${s.suite} | ${s.kind} | ${s.result} | ${s.result === 'NOT_RUN' ? '—' : `${s.pass}/${s.tests}`} | ${s.seconds ?? '—'} | ${s.why ?? ''} |`)].join('\n') + '\n');
-console.log(`\nPASS ${sum.pass} · FAIL ${sum.fail} · NOT_RUN ${sum.notRun} — tests/evidence/TEST_RESULTS.md`);
+// ---- the ledger: one line for every finished run of record, pass or fail, so a later pass does not erase an earlier failure; and a
+// failed run's results kept under its commit (tests/evidence itself is overwritten by the next run)
+if (RECORD && !PART) {
+  const failed = suites.filter((s) => s.result === 'FAIL').map((s) => s.suite); const notRun = suites.filter((s) => s.result === 'NOT_RUN').map((s) => ({ suite: s.suite, why: s.why || '' }));
+  fs.appendFileSync(path.join(root, 'tests/REGRESSION_LEDGER.jsonl'), JSON.stringify({ at: sum.at, commit: head, ci: process.env.CI === 'true', pass: sum.pass, fail: sum.fail, notRun: sum.notRun, failed, notRunSuites: notRun }) + '\n');
+  if (sum.fail) { const keep = path.join(root, 'tests/evidence-failed', `${head.slice(0, 8)}-${sum.at.replace(/[:.]/g, '-')}`); fs.mkdirSync(keep, { recursive: true }); for (const f of ['TEST_RESULTS.json', 'TEST_RESULTS.md']) fs.copyFileSync(path.join(out, f), path.join(keep, f)); console.log(`failed run kept in ${path.relative(root, keep)}`); }
+}
+console.log(`\nPASS ${sum.pass} · FAIL ${sum.fail} · NOT_RUN ${sum.notRun} — ${path.relative(root, path.join(out, 'TEST_RESULTS.md'))}${RECORD ? '' : '  (a working run: tests/evidence is unchanged; pass --record for a run of record)'}`);
 process.exit(sum.fail ? 1 : 0);

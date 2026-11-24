@@ -36,7 +36,7 @@ ok = ok && step('database', process.execPath, ['scripts/db.mjs', 'up'], { env })
 ok = ok && step('build', process.execPath, ['scripts/build.mjs', '--studio'], { env });
 // derived inputs regenerated from committed scripts (git-ignored outputs), exactly as a new machine would
 ok = ok && step('ml dataset', process.execPath, ['ml/datasets/generate_synthetic.mjs'], { env }) && step('ml training', 'python3', ['-I', 'ml/training/train.py'], { env });
-const ran = ok && (step('test', process.execPath, ['scripts/test.mjs', '--browser', '--studio'], { env }), true);
+const ran = ok && (step('test', process.execPath, ['scripts/test.mjs', '--browser', '--studio', '--record'], { env }), true);
 const gate = ran && ci ? step('release gate (platform)', process.execPath, ['scripts/verify/no-unexpected-skips.mjs', '--profile=platform'], { env }) : null;
 spawnSync(process.execPath, ['scripts/db.mjs', 'down'], { cwd: dir, env: { ...process.env, ...env } });
 

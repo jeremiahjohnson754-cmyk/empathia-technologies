@@ -7,9 +7,10 @@
  */
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { setup } from '../integration/harness.mjs';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
-const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/founder-studio/dist')); const out = path.resolve(process.argv[3] || path.join(repo, 'tests/evidence/founder-decisions')); fs.mkdirSync(out, { recursive: true });
+const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/founder-studio/dist')); const out = path.resolve(process.argv[3] || evidencePath('founder-decisions')); fs.mkdirSync(out, { recursive: true });
 const PORT = 4394; const KEY = 'e2e-key'; const API_PORT = 4196; const results = []; let failed = 0;
 const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 500) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${name}${cond ? '' : ' — ' + String(detail).slice(0, 300)}`); };
 const h = await setup({ db: 'empathia_test_founder_e2e', port: API_PORT, env: { CORS_ORIGINS: `http://127.0.0.1:${PORT}` } });

@@ -8,6 +8,7 @@
 //   node tests/browser/demo-route-sweep.test.mjs
 import fs from 'node:fs'; import path from 'node:path';
 import { harness, repo } from './demo-shell-lib.mjs';
+import { evidencePath } from '../lib/evidence.mjs';
 const { open, ok, done } = await harness('demo-route-sweep');
 
 const routes = [];
@@ -38,6 +39,6 @@ for (const [tag, w, h] of [['phone', 390, 844], ['desk', 1440, 900]]) {
   await t.close();
 }
 for (const [id, o] of out) ok(`RS-${id}`, `${o.hash}: a heading at 390 and 1440 px, no error, nothing off the page, no sideways scroll`, !o.notes.length, o.notes.length ? o.notes.join(' | ') : `“${o.desk?.h1}”${o.desk?.access ? ' (access page)' : ''}`);
-fs.mkdirSync(path.join(repo, 'tests/evidence/demo-shell'), { recursive: true });
-fs.writeFileSync(path.join(repo, 'tests/evidence/demo-shell/route-inventory.json'), JSON.stringify({ at: new Date().toISOString(), routes: [...out].map(([id, o]) => ({ id, hash: o.hash, phone: o.phone, desk: o.desk, notes: o.notes })) }, null, 1));
+fs.mkdirSync(evidencePath('demo-shell'), { recursive: true });
+fs.writeFileSync(evidencePath('demo-shell/route-inventory.json'), JSON.stringify({ at: new Date().toISOString(), routes: [...out].map(([id, o]) => ({ id, hash: o.hash, phone: o.phone, desk: o.desk, notes: o.notes })) }, null, 1));
 await done();

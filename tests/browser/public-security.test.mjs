@@ -4,6 +4,7 @@
 // here rests on what the pages themselves carry (the <meta> CSP) and on the code. 127.0.0.1 only.
 //   node tests/browser/public-security.test.mjs   (PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs … for dark)
 import fs from 'node:fs'; import http from 'node:http'; import net from 'node:net'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 for (const a of ['website', 'demo']) if (!fs.existsSync(path.join(repo, `apps/${a}/dist/index.html`))) { console.error('build first: node scripts/build.mjs --public'); process.exit(1); }
@@ -111,6 +112,6 @@ try {
     const disclosed = await t.page.evaluate(() => /tally\.so/i.test(document.body.innerText) && /new tab/i.test(document.body.innerText));
     ok('PS-10', 'enquiries leave only for tally.so/r/<form> with a fixed source, in a new tab, disclosed before the click; no form posts from the site', hrefs.length >= 1 && hrefs.every((x) => /^https:\/\/tally\.so\/r\/[A-Za-z0-9]+(\?source=[a-z-]+)?$/.test(x.h) && x.t === '_blank') && disclosed && await t.page.locator('form[action]').count() === 0, JSON.stringify(hrefs).slice(0, 200)); await t.close(); }
 } finally { await browser.close(); demo.s.close(); www.s.close(); }
-const out = path.join(repo, 'tests/evidence/security'); fs.mkdirSync(out, { recursive: true });
+const out = evidencePath('security'); fs.mkdirSync(out, { recursive: true });
 fs.writeFileSync(path.join(out, `public-security-${scheme}.json`), JSON.stringify({ suite: 'public-security', scheme, at: new Date().toISOString(), results }, null, 1));
 console.log(`\n${results.length - failed} passed, ${failed} failed`); process.exit(failed ? 1 : 0);

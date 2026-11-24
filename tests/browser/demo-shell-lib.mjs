@@ -2,6 +2,7 @@
 // demo on a free port, opens contexts with a role already chosen, counts results in the "N passed, M failed" form scripts/test.mjs reads,
 // and fails any page that logged a console error or requested anything off the page's origin.
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import net from 'node:net'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 export const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const freePort = () => new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
@@ -34,7 +35,7 @@ export async function harness(name) {
   const main = (p) => p.evaluate(() => document.querySelector('main').innerText);
   async function done() {
     await browser.close(); srv.kill();
-    const out = path.join(repo, 'tests/evidence/demo-shell'); fs.mkdirSync(out, { recursive: true });
+    const out = evidencePath('demo-shell'); fs.mkdirSync(out, { recursive: true });
     fs.writeFileSync(path.join(out, `${name}-${scheme}.json`), JSON.stringify({ suite: name, scheme, at: new Date().toISOString(), results }, null, 1));
     console.log(`\n${results.length - failed} passed, ${failed} failed`); process.exit(failed ? 1 : 0);
   }

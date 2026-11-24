@@ -9,6 +9,7 @@
 //   node tests/browser/demo-deadends.test.mjs [--only=/path,/path] [--max=30]
 import fs from 'node:fs'; import path from 'node:path';
 import { harness, repo } from './demo-shell-lib.mjs';
+import { evidencePath } from '../lib/evidence.mjs';
 const { ok, open, done } = await harness('demo-deadends');
 const arg = (k, d) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=').slice(1).join('=') || d;
 const MAX = Number(arg('max', 30));
@@ -72,7 +73,7 @@ for (const p of PAGES) {
   ok(`DE-${p}`, `${p}: every control pressed does something (${evidence.filter((e) => e.page === p && e.effect).length} pressed)`, !dead.some((d) => d.startsWith(`${p} ›`)) && !errs.length, [...dead.filter((d) => d.startsWith(`${p} ›`)), ...errs.slice(0, 2)].join(' | '));
   await t.close();
 }
-const out = path.join(repo, 'tests/evidence'); fs.mkdirSync(out, { recursive: true });
+const out = evidencePath(); fs.mkdirSync(out, { recursive: true });
 fs.writeFileSync(path.join(out, 'demo-deadends.json'), JSON.stringify({ at: new Date().toISOString(), pages: PAGES.length, pressed, dead, evidence }, null, 1));
 ok('DE-total', `the crawl pressed controls on ${PAGES.length} pages and found no dead end`, pressed > 0 && !dead.length, `${dead.length} dead: ${dead.slice(0, 12).join(' | ')}`);
 await done();

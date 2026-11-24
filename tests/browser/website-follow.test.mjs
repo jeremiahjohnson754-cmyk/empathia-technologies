@@ -13,6 +13,7 @@
 // tab, as a finger would on a phone, and checks that the capture under the tabs is that tab's. Nothing was relaxed.
 //   node tests/browser/website-follow.test.mjs   (PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs … for dark)
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import crypto from 'node:crypto'; import { fileURLToPath, pathToFileURL } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const L = await import(pathToFileURL(path.join(repo, 'packages/ui/src/launches.ts')).href);
@@ -79,7 +80,7 @@ try {
     ok('FO-10', `the ${slugs.length} product pages open their own catalogued launch (perspective named on the page, way back to the page)`, slugs.length === 9 && !bad.length, JSON.stringify(bad).slice(0, 400)); await ctx.close(); }
 } finally {
   await browser.close(); srv.kill();
-  const out = path.join(repo, `tests/evidence/website-follow${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
+  const out = evidencePath(`website-follow${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
   fs.writeFileSync(path.join(out, 'RESULTS.json'), JSON.stringify({ suite: 'website-follow', scheme, at: new Date().toISOString(), results }, null, 1));
   console.log(`\n${results.length - failed} passed, ${failed} failed (${scheme})`); process.exit(failed ? 1 : 0);
 }

@@ -9,10 +9,11 @@
 //   node tests/browser/website.test.mjs [dist] [evidence-dir]
 import { spawn } from 'node:child_process'; import fs from 'node:fs';
 import crypto from 'node:crypto'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath, pathToFileURL } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const scheme = process.env.PW_COLOR_SCHEME || 'light';
-const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/website/dist')); const out = path.resolve(process.argv[3] || path.join(repo, `tests/evidence/website${scheme === 'dark' ? '-dark' : ''}`)); fs.mkdirSync(out, { recursive: true });
+const dist = path.resolve(process.argv[2] || path.join(repo, 'apps/website/dist')); const out = path.resolve(process.argv[3] || evidencePath(`website${scheme === 'dark' ? '-dark' : ''}`)); fs.mkdirSync(out, { recursive: true });
 // a free port (the suite used the fixed 4397; parallel suites collided)
 const PORT = await new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const results = []; let failed = 0;

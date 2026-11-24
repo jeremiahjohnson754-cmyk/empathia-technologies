@@ -39,7 +39,7 @@ if (cmd === 'prepare') {
   console.log(`build ${b.exit === 0 ? 'PASS' : 'FAIL'} (${b.seconds} s); studio ${s.exit === 0 ? 'PROVISIONED' : 'NOT PROVISIONED'}: ${last(s.text)}`);
   process.exit(b.exit === 0 && s.exit === 0 ? 0 : 1);
 } else if (cmd === 'base') {
-  const r = step('base', [path.join(root, 'scripts/test.mjs')], 7200000);
+  const r = step('base', [path.join(root, 'scripts/test.mjs'), '--record'], 7200000);
   const line = (/^PASS \d+ · FAIL \d+[^\n]*/m.exec(r.text) || [''])[0];
   const ok = r.exit === 0 && /FAIL 0\b/.test(line);
   save('base.json', { commit, dirty, at: new Date().toISOString(), result: ok ? 'PASS' : 'FAIL', exit: r.exit, line, seconds: r.seconds });

@@ -5,8 +5,9 @@
 // Writes connected-1-open.png (a new sandbox), connected-2-refused.png (a step tried as the wrong person), connected-3-whole.png (the
 // whole thread, desktop) and connected-4-phone-resumed.png (the same sandbox opened on a phone-width browser from its resume code).
 import { execFileSync, spawn } from 'node:child_process'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../../tests/lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const out = path.resolve(process.argv[2] || path.join(repo, 'tests/evidence/demo-connected')); fs.mkdirSync(out, { recursive: true });
+const out = path.resolve(process.argv[2] || evidencePath('demo-connected')); fs.mkdirSync(out, { recursive: true });
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const { setup } = await import(path.join(repo, 'tests/integration/harness.mjs'));
 const API_PORT = 4187; const API = `http://127.0.0.1:${API_PORT}`;

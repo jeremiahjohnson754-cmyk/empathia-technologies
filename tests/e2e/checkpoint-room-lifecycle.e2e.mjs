@@ -22,6 +22,7 @@
  */
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 import { setup, client, DEV_PASSWORD, mail, registerRoom, documentRoom } from '../integration/harness.mjs';
+import { evidencePath } from '../lib/evidence.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 // the shared engine's sentence builders: the expected acceptance blockers are built with them, so the API's wording and order are the engine's
@@ -29,7 +30,7 @@ const CE = await import(pathToFileURL(path.join(repo, 'packages/commissioning-en
 /** The documented order of the acceptance blockers (CE.ACCEPTANCE_BLOCKER_ORDER): the kind of one blocker sentence. */
 const blockerKind = (s) => (/^the design changed while the room is recommissioned/.test(s) ? 'design-binding' : /^\d+ open issue\(s\): /.test(s) ? 'open-issues' : /^\d+ (test\(s\) were last recorded|reopened test\(s\) were re-run)/.test(s) ? 'reopened-tests' : /^acceptance needs every applicable test/.test(s) ? 'acceptance-count' : 'other');
 const inOrder = (list) => list.map(blockerKind).every((k, i, a) => k !== 'other' && (i === 0 || CE.ACCEPTANCE_BLOCKER_ORDER.indexOf(a[i - 1]) <= CE.ACCEPTANCE_BLOCKER_ORDER.indexOf(k)));
-const out = path.resolve(process.argv[2] || path.join(repo, 'tests/evidence/checkpoint')); fs.mkdirSync(out, { recursive: true });
+const out = path.resolve(process.argv[2] || evidencePath('checkpoint')); fs.mkdirSync(out, { recursive: true });
 for (const f of fs.readdirSync(out)) if (/^\d{2}-[a-z0-9-]+\.json$/.test(f) || f === 'CHECKPOINT.md' || f === 'checkpoint.json') fs.rmSync(path.join(out, f));   // only this suite's own files
 const PORT = 4183; const DB = 'empathia_test_checkpoint_e2e';
 const INSTRUMENT = 'SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09';

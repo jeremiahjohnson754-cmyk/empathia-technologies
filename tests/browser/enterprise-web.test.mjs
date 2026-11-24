@@ -10,10 +10,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setup, client, registerRoom } from '../integration/harness.mjs';
+import { evidencePath } from '../lib/evidence.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const out = path.resolve(process.argv[2] || path.join(repo, 'tests/evidence/enterprise-web'));
-const shots = path.join(repo, 'media/screenshots/enterprise-web');
+const out = path.resolve(process.argv[2] || evidencePath('enterprise-web'));
+// 24 Nov 2026: the screenshots under media/screenshots are tracked product pictures. Every run used to re-take them, so every run left
+// 20-odd changed files to restore by hand. They are refreshed only when asked for (EMPATHIA_SCREENSHOTS=refresh); otherwise the run's
+// pictures go with its evidence.
+const shots = process.env.EMPATHIA_SCREENSHOTS === 'refresh' ? path.join(repo, 'media/screenshots/enterprise-web') : evidencePath('enterprise-web/screenshots');
 fs.mkdirSync(out, { recursive: true }); fs.mkdirSync(shots, { recursive: true });
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const WEB = 4291, API = 4195;

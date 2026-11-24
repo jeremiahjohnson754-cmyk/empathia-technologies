@@ -30,7 +30,7 @@ const pass = (f) => process.argv.filter((a) => a === f);
 const frozen = (process.argv.find((a) => a.startsWith('--frozen=')) || '').split('=')[1] || '/home/claude/Empathia_V25';
 
 check('build (tsc, type-check, OpenAPI contract, web bundle)', process.execPath, ['scripts/build.mjs'], { evidence: '.local/logs/BUILD_SUMMARY.json' });
-check('test suites', process.execPath, ['scripts/test.mjs', ...pass('--browser'), ...pass('--studio'), ...pass('--films')], { evidence: 'tests/evidence/TEST_RESULTS.md' });
+check('test suites', process.execPath, ['scripts/test.mjs', '--record', ...pass('--browser'), ...pass('--studio'), ...pass('--films')], { evidence: 'tests/evidence/TEST_RESULTS.md' });
 check('secret scan of tracked files', 'python3', ['-I', 'scripts/verify/scan-secrets.py', root, path.join(ev, 'SECRET_SCAN.json')], { evidence: 'tests/evidence/SECRET_SCAN.json' });
 check('documentation links resolve', process.execPath, ['scripts/verify/check-links.mjs', path.join(ev, 'LINK_CHECK.json')], { evidence: 'tests/evidence/LINK_CHECK.json' });
 check('frozen releases unchanged', 'python3', ['-I', 'scripts/verify/verify-frozen.py', frozen, path.join(ev, 'FROZEN_CHECK.json')], fs.existsSync(frozen) ? { evidence: 'tests/evidence/FROZEN_CHECK.json' } : { skip: `release folder ${frozen} not present on this machine` });

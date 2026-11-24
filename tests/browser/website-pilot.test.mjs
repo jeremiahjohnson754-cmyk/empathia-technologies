@@ -6,12 +6,13 @@
 // existing enquiry form, never a checkout. Also: navigation and sitemap, 390 / 768 / 1440, keyboard, 44 px targets, contrast, CSP.
 // Run it in both schemes: PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs tests/browser/website-pilot.test.mjs
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import { fileURLToPath, pathToFileURL } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const C = await import(pathToFileURL(path.join(repo, 'packages/commercial/dist/src/index.js')).href);
 const { CONNECTORS } = await import(pathToFileURL(path.join(repo, 'packages/commercial/dist/src/generated/connectors.js')).href);
 const scheme = process.env.PW_COLOR_SCHEME || 'light';
-const dist = path.join(repo, 'apps/website/dist'); const out = path.join(repo, `tests/evidence/website-pilot${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
+const dist = path.join(repo, 'apps/website/dist'); const out = evidencePath(`website-pilot${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
 const PORT = await new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const results = []; let failed = 0;
 const ok = (id, name, cond, detail = '') => { results.push({ id, name, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 400) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${name}${cond ? '' : ' — ' + String(detail).slice(0, 400)}`); };

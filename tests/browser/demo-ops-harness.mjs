@@ -3,13 +3,14 @@
 // runs every check at 390, 768 and 1440 px, collects page errors, console errors and any request that leaves the page, and writes the
 // result as JSON. Colour scheme: PW_COLOR_SCHEME (or tests/browser/color-scheme.mjs) — the evidence file name carries it.
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 export const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 export const VIEWPORTS = [[1440, 900, 'desktop'], [768, 1024, 'tablet'], [390, 844, 'phone']];
 export const SCHEME = process.env.PW_COLOR_SCHEME || 'light';
 
 export async function suite(name, port, body) {
-  const out = path.join(repo, 'tests/evidence/demo-ops'); fs.mkdirSync(out, { recursive: true });
+  const out = evidencePath('demo-ops'); fs.mkdirSync(out, { recursive: true });
   const results = []; let failed = 0;
   const ok = (id, label, cond, detail = '') => { results.push({ id, name: label, result: cond ? 'PASS' : 'FAIL', detail: String(detail).slice(0, 400) }); if (!cond) failed += 1; console.log(`${cond ? 'PASS' : 'FAIL'} ${id} ${label}${cond ? '' : ' — ' + String(detail).slice(0, 300)}`); };
   const srv = spawn(process.execPath, [path.join(repo, 'apps/demo/server/serve.mjs'), `--port=${port}`], { stdio: ['ignore', 'pipe', 'pipe'] });

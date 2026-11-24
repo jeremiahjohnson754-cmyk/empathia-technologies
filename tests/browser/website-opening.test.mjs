@@ -9,6 +9,7 @@
 // - phone and desktop: no sideways scroll; no console error (CSP intact), nothing off the site.
 //   node tests/browser/website-opening.test.mjs   (PW_COLOR_SCHEME=dark node --import ./tests/browser/color-scheme.mjs … for dark)
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net'; import crypto from 'node:crypto'; import { fileURLToPath } from 'node:url';
+import { evidencePath } from '../lib/evidence.mjs';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const { chromium } = await import(path.join(repo, 'node_modules/playwright/index.mjs'));
 const scheme = process.env.PW_COLOR_SCHEME || 'light';
@@ -61,7 +62,7 @@ try {
     ok('OP-11', 'the film sits under the hero, captioned and not preloaded, and links its full transcript on the Films page', f.track && f.preload === 'none' && f.link === '/films#film-M2' && !f.inHero && t > 10, JSON.stringify({ ...f, t })); await ctx.close(); }
 } finally {
   await browser.close(); srv.kill();
-  const out = path.join(repo, `tests/evidence/website-opening${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
+  const out = evidencePath(`website-opening${scheme === 'dark' ? '-dark' : ''}`); fs.mkdirSync(out, { recursive: true });
   fs.writeFileSync(path.join(out, 'RESULTS.json'), JSON.stringify({ suite: 'website-opening', scheme, at: new Date().toISOString(), results }, null, 1));
   console.log(`\n${results.length - failed} passed, ${failed} failed (${scheme})`); process.exit(failed ? 1 : 0);
 }
