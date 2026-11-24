@@ -58,7 +58,7 @@ export function StadiumLivePage() {
   const [wave, setWave] = useState(false); const waveRef = useRef(wave); waveRef.current = wave;
   const [replay, setReplay] = useState<number | null>(null); const [board, setBoard] = useState<string | null>(null); const boardRef = useRef(board); boardRef.current = board;
   const [zone, setZone] = useState<number | null>(null); const [device, setDevice] = useState<string | null>(null);
-  const [soundOn, setSoundOn] = useState(false); const snd = useRef<Sound | null>(null); const [fps, setFps] = useState(0);
+  const [soundOn, setSoundOn] = useState(false); const snd = useRef<Sound | null>(null); const [fps, setFps] = useState(0); const [detail, setDetail] = useState(100);
   const [reduced, setReduced] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches); const reducedRef = useRef(reduced); reducedRef.current = reduced;
   const [votes, setVotes] = useState<Record<string, number>>(() => { try { return JSON.parse(localStorage.getItem('empathia.stadiumlive.poll') || '{}'); } catch { return {}; } });
   const [mine, setMine] = useState<string | null>(() => { try { return localStorage.getItem('empathia.stadiumlive.mine'); } catch { return null; } });
@@ -143,8 +143,8 @@ export function StadiumLivePage() {
   useEffect(() => {
     let raf = 0; let last = performance.now(); let frames = 0, fpsAt = last; let labAt = 0;
     const loop = (now: number) => {
-      raf = requestAnimationFrame(loop); const M = meshes.current; if (!M) return; const r = M.r; const dt = Math.min(0.05, (now - last) / 1000); last = now;
-      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); frames = 0; fpsAt = now; }
+      raf = requestAnimationFrame(loop); const M = meshes.current; if (!M) return; const r = M.r; r.pace(now - last); const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setDetail(Math.round(r.detail * 100)); frames = 0; fpsAt = now; }
       const P = pr.current; const A = ATMOS[replayRef.current !== null ? TIMELINE[replayRef.current]!.atmos : P.atmos]; const S = state.current;
       // ease every light change over about half a second: no flash, no strobe
       const k = reducedRef.current ? 1 : Math.min(1, dt * 3); S.light += ((A.night ? 1 : 0) - S.light) * k; S.lc = lerp(S.lc, hex(A.lights), k);
@@ -219,7 +219,7 @@ export function StadiumLivePage() {
   const opt = <T extends string>(cur: T, val: T, label: string, set: (v: T) => void, id: string) => <button key={val} type="button" className="slv-chip" aria-pressed={cur === val} onClick={() => set(val)} data-testid={`${id}-${val}`}>{label}</button>;
   const levels = useMemo(() => Array.from({ length: SECTIONS }, (_, s) => ({ s, name: sectionName(s, false), db: modeledDba(s, fill, excite, null), away: AWAY.includes(s) })), [fill, excite]);
 
-  return <section className="slv" data-testid="stadium-live" data-ready={!err} data-atmos={replay !== null ? TIMELINE[replay]!.atmos : p.atmos} data-view={p.view} data-overlay={p.overlay} data-ops={p.ops} data-look={p.look} data-fill={fill} data-cheer={cheer?.side || ''} data-wave={wave} data-sound={soundOn} data-fps={fps} data-replay={replay ?? ''}>
+  return <section className="slv" data-testid="stadium-live" data-ready={!err} data-detail={detail} data-atmos={replay !== null ? TIMELINE[replay]!.atmos : p.atmos} data-view={p.view} data-overlay={p.overlay} data-ops={p.ops} data-look={p.look} data-fill={fill} data-cheer={cheer?.side || ''} data-wave={wave} data-sound={soundOn} data-fps={fps} data-replay={replay ?? ''}>
     <header className="cl-head"><h1>Stadium LIVE</h1><p>Harborlight Stadium, a fictional venue, in 3D. The console changes the bowl itself: its light, crowd, boards, sound and overlays. Levels are modeled, device states simulated; nothing here is a live feed.</p></header>
     <div className="slv-grid">
       <div className="slv-stage" ref={stage}>
@@ -261,7 +261,7 @@ export function StadiumLivePage() {
           {dev ? <div className="slv-card" data-testid="slv-dev-card"><b>{dev.label}</b><p>{dev.info}</p><p className="slv-note">State: {dev.status === 'ok' ? 'normal' : dev.status === 'warn' ? 'attention' : 'fault'} (simulated). {dev.status === 'fault' ? <>In the product, this would open an incident: <a href="#/v25/service">ServiceHands</a>.</> : null}</p></div> : null}</div> : null}
         {tab === 'people' ? <div className="slv-pane"><p className="slv-h">Poll · Fan of the match</p>{['Number 7', 'Number 10', 'The goalkeeper'].map((o) => <button key={o} type="button" className="slv-vote" disabled={!!mine} aria-pressed={mine === o} onClick={() => vote(o)} data-testid={`slv-vote-${o.replace(/\W+/g, '').toLowerCase()}`}><span>{o}</span><i style={{ width: `${total ? Math.round((votes[o] || 0) / total * 100) : 0}%` }} /><em>{votes[o] || 0}</em></button>)}
           <p className="slv-note" data-testid="slv-poll-note">{mine ? `You voted for ${mine}. ` : ''}Votes on this page are kept in this browser only; in the Experiences product a poll collects real votes from consenting attendees.</p></div> : null}
-        <p className="slv-note">Frame rate here: {fps} fps (this machine).</p>
+        <p className="slv-note">Frame rate here: {fps} fps (this machine).{detail < 100 ? ` Drawn at ${detail}% of full detail to keep the motion smooth.` : ''}</p>
       </aside>
     </div>
   </section>;

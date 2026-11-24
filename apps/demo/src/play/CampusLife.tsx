@@ -52,7 +52,7 @@ export function CampusLifePage() {
   const canvas = useRef<HTMLCanvasElement>(null); const root = useRef<HTMLDivElement>(null);
   const st = useRef<State>(load() || fresh()); const keys = useRef(new Set<string>()); const stick = useRef({ x: 0, y: 0, on: false });
   const turnBy = useRef({ yaw: 0, pitch: 0 }); const runToggle = useRef(false);
-  const [hud, setHud] = useState(() => ({ ...st.current, reach: null as Reach | null, fps: 0, inside: false, eyeZ: 0 }));
+  const [hud, setHud] = useState(() => ({ ...st.current, reach: null as Reach | null, fps: 0, detail: 100, inside: false, eyeZ: 0 }));
   const [paused, setPaused] = useState(false); const [panel, setPanel] = useState<null | 'talk' | 'circuits' | 'screen' | { card: string }>(null);
   const [map, setMap] = useState(true); const [sound, setSound] = useState(false); const [reduced, setReduced] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [saved, setSaved] = useState<string | null>(() => (load() ? 'Resumed from this browser' : null)); const [err, setErr] = useState<string | null>(null); const [toast, setToast] = useState<string | null>(null);
@@ -88,7 +88,7 @@ export function CampusLifePage() {
     const world: number[] = [], roof: number[] = []; for (const b of boxes) boxVerts(b, b.tag === 'roof' ? roof : world); for (const v of round) world.push(v);
     const W = r.mesh(world), RF = r.mesh(roof); let raf = 0; let last = performance.now(); let hudAt = 0; let frames = 0, fpsAt = last, fps = 0;
     const loop = (now: number) => {
-      raf = requestAnimationFrame(loop); const dt = Math.min(0.1, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { fps = Math.round(frames * 1000 / (now - fpsAt)); frames = 0; fpsAt = now; }
+      raf = requestAnimationFrame(loop); r.pace(now - last); const dt = Math.min(0.1, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { fps = Math.round(frames * 1000 / (now - fpsAt)); frames = 0; fpsAt = now; }
       const k = keys.current; const inp: Input = { fwd: 0, right: 0, run: k.has('Shift') || runToggle.current, turn: 0, tilt: 0 };
       if (!frozenRef.current) {
         inp.fwd = (k.has('w') || k.has('ArrowUp') ? 1 : 0) - (k.has('s') || k.has('ArrowDown') ? 1 : 0); inp.right = (k.has('d') ? 1 : 0) - (k.has('a') ? 1 : 0);
@@ -120,7 +120,7 @@ export function CampusLifePage() {
         if (!inside) for (const g of signs) { const q = proj(g.at); if (q && q.d < 70) L.push({ x: q.x, y: q.y, text: g.text, sub: g.sub, kind: 'sign' }); }
         const qn = proj([NPC.x, 2.15, NPC.z]); if (qn && qn.d < 25) L.push({ x: qn.x, y: qn.y, text: NPC.name, sub: NPC.role, kind: 'npc' });
         if (inside) { const qb = proj([BENCH.x, 1.6, BENCH.z]); if (qb) L.push({ x: qb.x, y: qb.y, text: BENCH.label, kind: 'thing' }); const qs = proj([0, 4.8, -41.4]); if (qs) L.push({ x: qs.x, y: qs.y, text: 'SCI-110 · Lecture theatre', kind: 'thing' }); }
-        setLabels(L); setHud({ ...s, reach: reach(s), fps, inside, eyeZ: cam.eye[2] });
+        setLabels(L); setHud({ ...s, reach: reach(s), fps, detail: Math.round(r.detail * 100), inside, eyeZ: cam.eye[2] });
       }
       r.draw(r.unit, m4.ident(), undefined, 0);   // keep the program bound for the next frame's begin
     };
@@ -141,7 +141,7 @@ export function CampusLifePage() {
   const restart = () => { const f = fresh(); st.current = f; store(f); setSaved('Started again'); setPaused(false); setPanel(null); };
 
   return <section className="cl" ref={root} data-testid="campus-life" data-ready={!err} data-x={s.x.toFixed(2)} data-z={s.z.toFixed(2)} data-yaw={s.camYaw.toFixed(3)} data-cam={s.camDist.toFixed(2)} data-eye-z={s.eyeZ.toFixed(2)}
-    data-xp={s.xp} data-level={lvl} data-quest={s.stage} data-door={s.door ? 'open' : 'closed'} data-inside={s.inside} data-fps={s.fps} data-cards={s.cards.length} data-speed={s.speed.toFixed(2)}>
+    data-xp={s.xp} data-level={lvl} data-quest={s.stage} data-door={s.door ? 'open' : 'closed'} data-inside={s.inside} data-fps={s.fps} data-detail={s.detail} data-cards={s.cards.length} data-speed={s.speed.toFixed(2)}>
     <header className="cl-head"><h1>Campus Life</h1><p>Kestrel Valley University · the Quad and Science Hall · a first playable slice. Everything here is fictional; progress is kept <b>in this browser</b>.</p></header>
     <div className="cl-stage" ref={stageEl}>
       <canvas ref={canvas} className="cl-canvas" tabIndex={0} aria-label="Campus Life: the Quad and Science Hall. Move with W A S D, run with Shift, act with E, turn the camera with the left and right arrow keys or by dragging (two fingers on a phone, or one in full screen), C to put it behind you." data-testid="cl-canvas" />
@@ -186,7 +186,7 @@ export function CampusLifePage() {
       </div></div> : null}
       {panel ? <Panel panel={panel} s={st.current} onClose={() => { setPanel(null); canvas.current?.focus(); }} onSolved={(first) => commit(solved(st.current, first), 'solved')} /> : null}
     </div>
-    <p className="cl-foot">A first playable slice: one plaza, one building, one furnished classroom, one person to meet and one quest. The other buildings are seen from outside and open in later releases. Frame rate here: {s.fps} fps (this machine, this browser).</p>
+    <p className="cl-foot">A first playable slice: one plaza, one building, one furnished classroom, one person to meet and one quest. The other buildings are seen from outside and open in later releases. Frame rate here: {s.fps} fps (this machine, this browser).{s.detail < 100 ? <> <span data-testid="cl-detail">Drawn at {s.detail}% of full detail to keep the motion smooth on this machine.</span></> : null}</p>
   </section>;
 }
 

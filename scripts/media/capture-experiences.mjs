@@ -11,10 +11,11 @@ const out = path.join(repo, 'apps/website/media/product'); const provFile = path
 const port = await new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
 const srv = spawn(process.execPath, [path.join(repo, 'apps/demo/server/serve.mjs'), `--port=${port}`], { stdio: ['ignore', 'pipe', 'pipe'] }); await new Promise((r) => { srv.stdout.on('data', r); setTimeout(r, 2500); });
 const commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: repo, encoding: 'utf8' }).trim();
+// `?detail=full`: product pictures are taken at full drawing detail whatever the capturing machine's pace (play/gl.ts, DetailGovernor).
 const SHOTS = [
-  { id: 'exp-campus', route: '#/play/campus', store: { 'empathia.campuslife.v1': JSON.stringify({ v: 1, x: 10.6, z: -33.5, yaw: Math.PI, camYaw: Math.PI * 1.15, xp: 25, stage: 'inside', cards: [], door: true, at: '2026-11-18T00:00:00Z' }) } },
-  { id: 'exp-stadium', route: '#/play/stadium', store: { 'empathia.stadiumlive.v1': JSON.stringify({ atmos: 'live', view: 'orbit', overlay: 'none', ops: false, look: 'neutral', ribbon: '#0E8F83', layers: { crowd: 0.7, pa: 0.4, commentary: 0.4 }, master: 0.5, mix: 'spectator' }) } },
-  { id: 'exp-expo', route: '#/play/expo', store: {}, after: async (p) => { await p.getByTestId('xpo-plan-E1').click(); await p.waitForTimeout(2500); } },
+  { id: 'exp-campus', route: '#/play/campus?detail=full', store: { 'empathia.campuslife.v1': JSON.stringify({ v: 1, x: 10.6, z: -33.5, yaw: Math.PI, camYaw: Math.PI * 1.15, xp: 25, stage: 'inside', cards: [], door: true, at: '2026-11-18T00:00:00Z' }) } },
+  { id: 'exp-stadium', route: '#/play/stadium?detail=full', store: { 'empathia.stadiumlive.v1': JSON.stringify({ atmos: 'live', view: 'orbit', overlay: 'none', ops: false, look: 'neutral', ribbon: '#0E8F83', layers: { crowd: 0.7, pa: 0.4, commentary: 0.4 }, master: 0.5, mix: 'spectator' }) } },
+  { id: 'exp-expo', route: '#/play/expo?detail=full', store: {}, after: async (p) => { await p.getByTestId('xpo-plan-E1').click(); await p.waitForTimeout(2500); } },
 ];
 const browser = await chromium.launch();
 for (const s of SHOTS) {

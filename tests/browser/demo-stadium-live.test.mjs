@@ -11,7 +11,11 @@ const { open, ok, done } = await harness('demo-stadium-live');
 const init = () => { try { if (!sessionStorage.getItem('slv-fresh')) { for (const k of ['empathia.stadiumlive.v1', 'empathia.stadiumlive.poll', 'empathia.stadiumlive.mine']) localStorage.removeItem(k); sessionStorage.setItem('slv-fresh', '1'); } } catch { /* none */ }
   const A = window.AudioContext; window.__audioMade = 0; window.AudioContext = class extends A { constructor(...a) { super(...a); window.__audioMade += 1; } }; };
 
-const t = await open('#/play/stadium', { role: 'architect', sw: false, w: 1440, h: 900, reduced: true, init }); const p = t.page; p.setDefaultTimeout(20000);
+// 24 Nov 2026: the scene now lowers its drawing detail on a machine that cannot hold the pace (play/gl.ts, DetailGovernor), which changes
+// the canvas's pixels by itself. A pixel comparison is a fair judge of a control only while the detail is fixed, so this page is opened
+// with the documented switch `?detail=full`, as it was drawn before the governor existed. Every check below is as strict as it was. The
+// governor itself is checked in SLV-15 (this scene left to adapt), CL-21 and CL-22 (campus) and tests/unit/render-detail.test.mjs.
+const t = await open('#/play/stadium?detail=full', { role: 'architect', sw: false, w: 1440, h: 900, reduced: true, init }); const p = t.page; p.setDefaultTimeout(20000);
 await p.waitForSelector('[data-testid=stadium-live][data-ready=true]'); await p.waitForTimeout(2500);
 const attr = (k) => p.getByTestId('stadium-live').getAttribute(`data-${k}`);
 // the picture: the canvas's own pixels (the renderer keeps its last frame) and the labels drawn over it, read in one step so a short-lived
@@ -74,7 +78,18 @@ ok('SLV-11', 'kept in this browser: the camera and look survive a reload; a vote
 const fps = Number(await attr('fps'));
 ok('SLV-12', `frame rate in this machine's headless software-rendered Chromium: ${fps} fps; floor ≥ 2 (a regression floor, not a device claim)`, fps >= 2, `${fps}`);
 ok('SLV-13', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+const shapeOf = (q) => q.evaluate(() => { const c = document.querySelector('[data-testid=slv-canvas]'); const r = document.querySelector('[data-testid=stadium-live]'); return { cssW: c.clientWidth, cssH: c.clientHeight, w: c.width, dpr: Math.min(devicePixelRatio || 1, 2), detail: Number(r.getAttribute('data-detail')), fps: Number(r.getAttribute('data-fps')), wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
+const pinned = await shapeOf(p);
 await t.close();
+
+{ // SLV-15: the same scene left to adapt, as a visitor opens it. Waits until the level has held for three seconds (it is decided in the first few).
+  const a = await open('#/play/stadium', { role: 'architect', sw: false, w: 1440, h: 900, init }); const q = a.page; await q.waitForSelector('[data-testid=stadium-live][data-ready=true]');
+  let held = 0, lastD = -1; for (let i = 0; i < 18 && held < 3; i += 1) { await q.waitForTimeout(1100); const d = Number(await q.getByTestId('stadium-live').getAttribute('data-detail')); held = d === lastD ? held + 1 : 0; lastD = d; }
+  const auto = await shapeOf(q); const slow = pinned.fps < 24;
+  ok('SLV-15', `adaptive detail on this machine: ${pinned.fps} fps held at full detail, ${auto.fps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the stadium must draw fewer pixels, not fewer than half, and not be slower for it' : 'Full detail holds 24 here, so the stadium must stay at full detail'}; the canvas keeps its size on the page`,
+    held >= 3 && pinned.detail === 100 && Math.abs(pinned.w - Math.round(pinned.cssW * pinned.dpr)) <= 2 && auto.cssW === pinned.cssW && auto.cssH === pinned.cssH && Math.abs(auto.w - Math.round(auto.cssW * auto.dpr * auto.detail / 100)) <= 2 && auto.wide <= 1 && !a.errs.length
+    && (slow ? auto.detail < 100 && auto.detail >= 50 && auto.fps >= pinned.fps : auto.detail === 100), JSON.stringify({ held, pinned, auto, e: a.errs[0] }));
+  await a.close(); }
 
 { const ph = await open('#/play/stadium', { role: 'architect', sw: false, w: 390, h: 844, reduced: true }); await ph.page.waitForSelector('[data-testid=stadium-live][data-ready=true]'); await ph.page.waitForTimeout(1200);
   const over = await ph.page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); const stacked = await ph.page.evaluate(() => { const a = document.querySelector('.slv-stage').getBoundingClientRect(), b = document.querySelector('.slv-console').getBoundingClientRect(); return b.top >= a.bottom - 1; });

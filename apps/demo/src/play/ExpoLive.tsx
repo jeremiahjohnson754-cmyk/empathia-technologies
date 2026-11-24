@@ -21,7 +21,7 @@ const SHIRTS = ['#2C5FA8', '#C2553F', '#0E8F83', '#E0A43B', '#6B4FA0', '#3D4A5C'
 
 export default function ExpoLive() { return <ExpoLivePage />; }
 export function ExpoLivePage() {
-  const canvas = useRef<HTMLCanvasElement>(null); const [err, setErr] = useState<string | null>(null); const [fps, setFps] = useState(0);
+  const canvas = useRef<HTMLCanvasElement>(null); const [err, setErr] = useState<string | null>(null); const [fps, setFps] = useState(0); const [detail, setDetail] = useState(100);
   const [sel, setSel] = useState<string | null>(null); const selRef = useRef(sel); selRef.current = sel;
   const [organiser, setOrganiser] = useState(false); const orgRef = useRef(organiser); orgRef.current = organiser;
   const [session, setSession] = useState<string | null>(null); const sessRef = useRef(session); sessRef.current = session;
@@ -72,7 +72,7 @@ export function ExpoLivePage() {
     const audience = r.mesh(figs);
     let raf = 0, last = performance.now(), frames = 0, fpsAt = last, labAt = 0;
     const loop = (now: number) => {
-      raf = requestAnimationFrame(loop); const dt = Math.min(0.05, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); frames = 0; fpsAt = now; }
+      raf = requestAnimationFrame(loop); r.pace(now - last); const dt = Math.min(0.05, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setDetail(Math.round(r.detail * 100)); frames = 0; fpsAt = now; }
       const C = cam.current; if (C.goal) { const k = Math.min(1, dt * 3); C.yaw += (C.goal.yaw - C.yaw) * k; C.pitch += (C.goal.pitch - C.pitch) * k; C.dist += (C.goal.dist - C.dist) * k; C.at = lerp(C.at, C.goal.at, k); if (Math.abs(C.dist - C.goal.dist) < 0.05) C.goal = null; }
       r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = canvas.current!; const aspect = cv.width / Math.max(1, cv.height);
       const eye: V3 = [C.at[0] + Math.sin(C.yaw) * Math.cos(C.pitch) * C.dist, C.at[1] + Math.sin(C.pitch) * C.dist, C.at[2] + Math.cos(C.yaw) * Math.cos(C.pitch) * C.dist];
@@ -126,7 +126,7 @@ export function ExpoLivePage() {
   const visible = useMemo(() => [...BOOTHS].sort((a, b) => a.id.localeCompare(b.id)), []);
   const inAgenda = booth ? saved.agenda.includes(booth.id) : false; const left = booth ? saved.leads.some((l) => l.booth === booth.id) : false;
 
-  return <section className="xpo" data-testid="expo-live" data-ready={!err} data-sel={sel || ''} data-organiser={organiser} data-session={session || ''} data-fps={fps} data-agenda={saved.agenda.length} data-leads={saved.leads.length}>
+  return <section className="xpo" data-testid="expo-live" data-ready={!err} data-sel={sel || ''} data-organiser={organiser} data-session={session || ''} data-fps={fps} data-detail={detail} data-agenda={saved.agenda.length} data-leads={saved.leads.length}>
     <header className="cl-head"><h1>Expo LIVE</h1><p>The Northlight Technology Expo, Hall A of the Larkspur Exchange Convention Centre: a fictional expo, twenty fictional exhibitors and the Empathia showcase. Your agenda, details, votes and questions stay in this browser.</p></header>
     <div className="xpo-grid">
       <div className="xpo-stage" ref={stage}>
@@ -138,7 +138,7 @@ export function ExpoLivePage() {
         <MovePad moves={moves} what="hall" prefix="xpo" />
         <div className="xpo-bar"><button type="button" className="cl-btn" onClick={() => flyTo(null)} data-testid="xpo-overview">Whole hall</button>
           <button type="button" className="cl-btn" aria-pressed={full} onClick={() => toggleFull(!full)} data-testid="xpo-full">{full ? 'Done' : 'Full screen'}</button>
-          <label className="cl-btn xpo-org"><input type="checkbox" checked={organiser} onChange={(e) => setOrganiser(e.target.checked)} data-testid="xpo-organiser" /> Organiser view</label><span className="xpo-fps">{fps} fps here</span></div>
+          <label className="cl-btn xpo-org"><input type="checkbox" checked={organiser} onChange={(e) => setOrganiser(e.target.checked)} data-testid="xpo-organiser" /> Organiser view</label><span className="xpo-fps">{fps} fps here{detail < 100 ? `, drawn at ${detail}% of full detail` : ''}</span></div>
       </div>
       <aside className="xpo-side" aria-label="Plan, booths and sessions">
         <svg className="xpo-plan" viewBox={`${HALL.x0 - 2} ${HALL.z0 - 2} ${HALL.x1 - HALL.x0 + 4} ${HALL.z1 - HALL.z0 + 4}`} role="group" aria-label="Plan of Hall A" data-testid="xpo-plan">

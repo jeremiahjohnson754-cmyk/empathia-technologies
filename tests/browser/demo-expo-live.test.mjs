@@ -8,7 +8,11 @@ import crypto from 'node:crypto';
 import { harness } from './demo-shell-lib.mjs';
 const { open, ok, done } = await harness('demo-expo-live');
 const init = () => { try { if (!sessionStorage.getItem('xpo-fresh')) { localStorage.removeItem('empathia.expolive.v1'); sessionStorage.setItem('xpo-fresh', '1'); } } catch { /* none */ } };
-const t = await open('#/play/expo', { role: 'architect', sw: false, w: 1440, h: 900, reduced: true, init }); const p = t.page; p.setDefaultTimeout(20000);
+// 24 Nov 2026: the scene now lowers its drawing detail on a machine that cannot hold the pace (play/gl.ts, DetailGovernor), which changes
+// the canvas's pixels by itself. A pixel comparison is a fair judge of a control only while the detail is fixed, so this page is opened
+// with the documented switch `?detail=full`, as it was drawn before the governor existed. Every check below is as strict as it was. The
+// governor itself is checked in XPO-13 (this scene left to adapt), CL-21 and CL-22 (campus) and tests/unit/render-detail.test.mjs.
+const t = await open('#/play/expo?detail=full', { role: 'architect', sw: false, w: 1440, h: 900, reduced: true, init }); const p = t.page; p.setDefaultTimeout(20000);
 await p.waitForSelector('[data-testid=expo-live][data-ready=true]'); await p.waitForTimeout(2500);
 const attr = (k) => p.getByTestId('expo-live').getAttribute(`data-${k}`);
 const shot = async () => { await p.waitForTimeout(700); return crypto.createHash('sha1').update(await p.evaluate(() => document.querySelector('[data-testid=xpo-canvas]').toDataURL('image/png'))).digest('hex'); };
@@ -47,7 +51,17 @@ ok('XPO-09', 'the plan is keyboard-reachable: Enter on a booth chooses it', (awa
 const fps = Number(await attr('fps'));
 ok('XPO-10', `frame rate in this machine's headless software-rendered Chromium: ${fps} fps; floor ≥ 4 (not a device claim)`, fps >= 4, `${fps}`);
 ok('XPO-11', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+const shapeOf = (q) => q.evaluate(() => { const c = document.querySelector('[data-testid=xpo-canvas]'); const r = document.querySelector('[data-testid=expo-live]'); return { cssW: c.clientWidth, cssH: c.clientHeight, w: c.width, dpr: Math.min(devicePixelRatio || 1, 2), detail: Number(r.getAttribute('data-detail')), fps: Number(r.getAttribute('data-fps')), wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
+const pinned = await shapeOf(p);
 await t.close();
+{ // XPO-13: the same scene left to adapt, as a visitor opens it. Waits until the level has held for three seconds (it is decided in the first few).
+  const a = await open('#/play/expo', { role: 'architect', sw: false, w: 1440, h: 900, init }); const q = a.page; await q.waitForSelector('[data-testid=expo-live][data-ready=true]');
+  let held = 0, lastD = -1; for (let i = 0; i < 18 && held < 3; i += 1) { await q.waitForTimeout(1100); const d = Number(await q.getByTestId('expo-live').getAttribute('data-detail')); held = d === lastD ? held + 1 : 0; lastD = d; }
+  const auto = await shapeOf(q); const slow = pinned.fps < 24;
+  ok('XPO-13', `adaptive detail on this machine: ${pinned.fps} fps held at full detail, ${auto.fps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the hall must draw fewer pixels, not fewer than half, and not be slower for it' : 'Full detail holds 24 here, so the hall must stay at full detail'}; the canvas keeps its size on the page`,
+    held >= 3 && pinned.detail === 100 && Math.abs(pinned.w - Math.round(pinned.cssW * pinned.dpr)) <= 2 && auto.cssW === pinned.cssW && auto.cssH === pinned.cssH && Math.abs(auto.w - Math.round(auto.cssW * auto.dpr * auto.detail / 100)) <= 2 && auto.wide <= 1 && !a.errs.length
+    && (slow ? auto.detail < 100 && auto.detail >= 50 && auto.fps >= pinned.fps : auto.detail === 100), JSON.stringify({ held, pinned, auto, e: a.errs[0] }));
+  await a.close(); }
 { const ph = await open('#/play/expo', { role: 'architect', sw: false, w: 390, h: 844, reduced: true }); await ph.page.waitForSelector('[data-testid=expo-live][data-ready=true]'); await ph.page.waitForTimeout(1000);
   const over = await ph.page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   ok('XPO-12', 'a phone-sized screen: no sideways scroll; the plan and sessions sit under the hall', over <= 0, `overflow ${over}`); await ph.close(); }

@@ -62,6 +62,24 @@ the machine stalled.
 This measures the machine; it does not prove why a check failed. A second run that passes says the first failure coincided with a
 stall, not that the product cannot fail that way.
 
+## Frame rates and pixel comparisons in the 3D scenes
+
+The three live scenes (`#/play/campus`, `#/play/stadium`, `#/play/expo`) share one WebGL2 renderer, `apps/demo/src/play/gl.ts`. Where a
+scene cannot hold 24 frames a second it draws fewer pixels: the canvas keeps its size on the page and the picture is scaled up. The
+rule is `governDetail` and `DetailGovernor` in that file. It never goes below half resolution, it restores full detail if the minimum
+buys less than 1.25 times the full-detail pace, and `?detail=full` in the address turns it off.
+
+Two things follow for tests.
+
+- A check that compares canvas pixels before and after a control must fix the detail, or a change of detail reads as the control's
+  effect. The stadium and expo suites open their main page with `?detail=full` for this reason. A new pixel-comparison check on any
+  of these scenes must do the same.
+- Every frame rate a suite prints is of the test machine: two cores, no graphics processor, Chromium drawing WebGL in software. The
+  floors (campus 8, expo 4, stadium 2) catch a regression on that machine. They are not device figures, and no device frame rate has
+  been measured. The target for ordinary hardware is 30 frames a second; it is a target until a real device is measured.
+
+Product pictures (`scripts/media/capture-experiences.mjs`) are taken with `?detail=full`.
+
 ## Suites not run, and why
 
 | Suite | Where it does not run | Reason | What covers the risk |

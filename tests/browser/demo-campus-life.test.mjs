@@ -107,6 +107,22 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
   ok('CL-14', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close(); }
 
+{ // CL-21, CL-22 (24 Nov 2026): adaptive detail. CL-13 measured 7 frames a second against its floor of 8 in two regressions on a machine
+  // that had not stalled; the scene is bound by the pixels it draws. The renderer now draws fewer pixels when it cannot hold 24 frames a
+  // second. This compares the same scene on the same machine, forced to full detail and left to adapt. The floor in CL-13 is unchanged.
+  const sample = async (p) => { const v = []; for (let i = 0; i < 4; i += 1) { await p.waitForTimeout(1150); v.push(Number(await p.getByTestId('campus-life').getAttribute('data-fps'))); } v.sort((a, b) => a - b); return Math.round((v[1] + v[2]) / 2); };
+  const shape = (p) => p.evaluate(() => { const c = document.querySelector('[data-testid=campus-life] canvas'); const r = document.querySelector('[data-testid=campus-life]'); return { cssW: c.clientWidth, cssH: c.clientHeight, w: c.width, h: c.height, dpr: Math.min(devicePixelRatio || 1, 2), detail: Number(r.getAttribute('data-detail')), note: document.querySelector('[data-testid=cl-detail]')?.textContent || '', wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
+  const init = () => { try { localStorage.removeItem('empathia.campuslife.v1'); } catch { /* none */ } };
+  const f = await open('#/play/campus?detail=full', { role: 'architect', sw: false, w: 1280, h: 860, init }); await f.page.waitForSelector('[data-testid=campus-life][data-ready=true]'); await f.page.waitForTimeout(6000);
+  const fullFps = await sample(f.page); const full = await shape(f.page); await f.close();
+  const a = await open('#/play/campus', { role: 'architect', sw: false, w: 1280, h: 860, init }); await a.page.waitForSelector('[data-testid=campus-life][data-ready=true]'); await a.page.waitForTimeout(6000);
+  const autoFps = await sample(a.page); const auto = await shape(a.page);
+  const slow = fullFps < 24;
+  ok('CL-21', `adaptive detail on this machine: ${fullFps} fps forced to full detail, ${autoFps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the scene must draw fewer pixels and be faster for it' : 'Full detail holds 24 here, so the scene must stay at full detail'}`,
+    full.detail === 100 && !full.note && (slow ? auto.detail < 100 && auto.detail >= 50 && autoFps > fullFps && /Drawn at \d+% of full detail/.test(auto.note) : auto.detail === 100 && !auto.note), JSON.stringify({ fullFps, autoFps, full, auto }));
+  ok('CL-22', 'adaptive detail changes the pixels drawn, not the page: the canvas keeps its size on the page, is drawn at the device ratio times the detail, and nothing scrolls sideways', auto.cssW === full.cssW && auto.cssH === full.cssH && Math.abs(auto.w - Math.round(auto.cssW * auto.dpr * auto.detail / 100)) <= 2 && Math.abs(full.w - Math.round(full.cssW * full.dpr)) <= 2 && auto.wide <= 1 && !a.errs.length, JSON.stringify({ full, auto, e: a.errs[0] }));
+  await a.close(); }
+
 { // a phone: the thumb-stick moves the student; the act button acts; frame rate at phone size
   const t = await open('#/play/campus', { role: 'architect', sw: false, w: 390, h: 844, init: () => { try { localStorage.removeItem('empathia.campuslife.v1'); } catch { /* none */ } } });
   const p = t.page; await p.waitForSelector('[data-testid=campus-life][data-ready=true]'); await p.waitForTimeout(1200);

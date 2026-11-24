@@ -115,6 +115,63 @@ export function cylinderVerts(x: number, z: number, rx: number, rz: number, y0: 
 }
 
 export interface Mesh { vao: WebGLVertexArrayObject; n: number }
+/**
+ * Adaptive detail (24 Nov 2026; the founder's stated biggest concern is spatial rendering performance, target 30 frames a second).
+ *
+ * These scenes are bound by the number of pixels drawn where there is no fast graphics processor: the campus measured 16 to 18 frames
+ * a second at phone size and 7 to 9 at desktop size in software rendering, a third of the pixels for twice the speed. So when a scene
+ * cannot hold PACE_SLOW frames a second it draws fewer pixels (the canvas keeps its size on the page; the picture is scaled up), down
+ * to DETAIL_MIN of full resolution. The step down follows the shortfall (pixels go with the square of the detail, so the detail is
+ * multiplied by the square root of pace over target, never by less than DETAIL_STEP_MAX nor more than DETAIL_STEP_MIN in one second),
+ * so a slow machine is helped within two or three seconds; steps back up are small and need clear headroom, so it does not hunt.
+ * The rule is a pure function so it can be tested without a browser.
+ */
+export const DETAIL_MIN = 0.5; export const PACE_SLOW = 24; export const PACE_FAST = 50; export const DETAIL_STEP_MAX = 0.6; export const DETAIL_STEP_MIN = 0.8;
+export function governDetail(detail: number, fps: number): number {
+  if (!(fps > 0) || !(detail > 0)) return detail;
+  if (fps < PACE_SLOW && detail > DETAIL_MIN) { const k = Math.min(DETAIL_STEP_MIN, Math.max(DETAIL_STEP_MAX, Math.sqrt(fps / PACE_SLOW))); return Math.max(DETAIL_MIN, Math.round(detail * k * 100) / 100); }
+  if (fps > PACE_FAST && detail < 1) return Math.min(1, Math.round((detail / 0.9) * 100) / 100);
+  return detail;
+}
+
+/** lowering the detail all the way must buy at least this much speed, or the scene is not bound by pixels and full detail is restored */
+export const DETAIL_WORTH = 1.25;
+/** the first frames of a scene compile its shaders and upload its geometry; they say nothing about its pace */
+export const WARM_FRAMES = 5;
+/**
+ * Holds the detail level for one scene and applies the rule about once a second. Frames that say nothing about drawing are not
+ * counted: the first WARM_FRAMES, and any frame after a pause or a hidden tab.
+ *
+ * Fewer pixels are only worth a softer picture if they buy speed, so the governor measures both ends and compares them. The pace at
+ * full detail is kept (the best second seen there). If a scene reaches the minimum and is still slow, it is watched there for two
+ * seconds; unless that pace is at least DETAIL_WORTH times the full-detail pace, the scene is bound by something other than pixels
+ * (its geometry, or the processor), so full detail comes back and stays: a softer picture for no speed is a loss. A scene that does
+ * gain keeps the gain. Measured on the test machine (two cores, no graphics processor, software rendering; not a device claim):
+ * campus 9 to 10 at full and 21 to 23 at half; expo 16 to 17 at full and about 30 at 64%; stadium 5 at full and 8 to 9 at half, a
+ * real gain that still leaves the stadium far from smooth there.
+ */
+export class DetailGovernor {
+  detail = 1; notPixelBound = false; private ms = 0; private n = 0; private warm = 0; private fullFps = 0; private atMin: number[] = []; private judged = false;
+  constructor(public adaptive = true) {}
+  frame(ms: number): number {
+    if (!this.adaptive) { this.detail = 1; return 1; }
+    if (!(ms > 0) || ms > 1000) return this.detail;
+    if (this.warm < WARM_FRAMES) { this.warm += 1; return this.detail; }
+    this.ms += ms; this.n += 1;
+    if (this.ms < 1000) return this.detail;
+    const fps = this.n * 1000 / this.ms; this.ms = 0; this.n = 0;
+    if (this.detail >= 1 && fps > this.fullFps) this.fullFps = fps;
+    if (!this.judged && this.detail <= DETAIL_MIN && fps < PACE_SLOW) {
+      this.atMin.push(fps);
+      if (this.atMin.length >= 2) { this.judged = true; const pace = (this.atMin[0]! + this.atMin[1]!) / 2;
+        if (this.fullFps > 0 && pace < this.fullFps * DETAIL_WORTH) { this.detail = 1; this.adaptive = false; this.notPixelBound = true; } }
+      return this.detail;
+    }
+    this.detail = governDetail(this.detail, fps);
+    return this.detail;
+  }
+}
+
 export class Renderer {
   gl: WebGL2RenderingContext; prog: WebGLProgram; u: Record<string, WebGLUniformLocation | null> = {}; unit: Mesh; disc: Mesh; ball: Mesh; tube: Mesh;
   constructor(public canvas: HTMLCanvasElement) {
@@ -132,7 +189,13 @@ export class Renderer {
     for (let i = 0; i < 3; i++) { gl.enableVertexAttribArray(i); gl.vertexAttribPointer(i, 3, gl.FLOAT, false, 36, i * 12); }
     gl.bindVertexArray(null); return { vao, n: v.length / 9 };
   }
-  resize(dpr: number) { const c = this.canvas; const w = Math.max(1, Math.round(c.clientWidth * dpr)), h = Math.max(1, Math.round(c.clientHeight * dpr)); if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } this.gl.viewport(0, 0, w, h); }
+  /** decides how many pixels to draw (DetailGovernor above); `?detail=full` in the address keeps full detail */
+  gov = new DetailGovernor(typeof location === 'undefined' || !/[?&]detail=full\b/.test(location.hash));
+  /** the fraction of full resolution being drawn (1 = full) */
+  get detail(): number { return this.gov.detail; }
+  /** tell the renderer how long the last frame took */
+  pace(ms: number) { this.gov.frame(ms); }
+  resize(dprFull: number) { const dpr = dprFull * this.detail; const c = this.canvas; const w = Math.max(1, Math.round(c.clientWidth * dpr)), h = Math.max(1, Math.round(c.clientHeight * dpr)); if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } this.gl.viewport(0, 0, w, h); }
   /** the light of the scene: the defaults are Campus Life's daylight */
   light: { sun: V3; sunCol: V3; sky: V3; ground: V3; amb: number } = { sun: norm([0.45, 0.8, 0.35]), sunCol: [0.72, 0.69, 0.63], sky: [0.78, 0.86, 0.95], ground: [0.45, 0.42, 0.36], amb: 0.48 };
   begin(vp: M4, eye: V3, fog: V3, near: number, far: number) {
