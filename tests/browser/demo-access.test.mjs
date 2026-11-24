@@ -67,7 +67,12 @@ for (const [role, pick] of [['designer', true], ['ops', false], ['syseng', true]
 { const t = await open('#/investor', { role: 'architect' });
   // R1-03: route focus lands on the heading without drawing a ring, even after a keyboard navigation; a control focused next keeps its ring
   // QUALITY_UPLIFT shell: the Search link lives in the role's rail now (not in the header)
-  await t.page.focus('[data-testid=hometabs] a[href="#/search"]').catch(() => undefined); await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(400);
+  // 24 Nov 2026: this waited a fixed 400 ms after the key press and then read where the focus was. In the regression on 2521c34f the
+  // Search page's code took longer than that to load once, so the check read the focus before the page had taken it (the link was still
+  // focused) and failed; run by hand it passed three times in three. What is asserted is unchanged. The wait is now for the thing itself:
+  // the address has changed and the focus has left the link, for at most five seconds, so a page that never takes the focus still fails.
+  await t.page.focus('[data-testid=hometabs] a[href="#/search"]').catch(() => undefined); await t.page.keyboard.press('Enter');
+  await t.page.waitForFunction(() => location.hash.startsWith('#/search') && document.activeElement?.tagName === 'H1', null, { timeout: 5000 }).catch(() => undefined); await t.page.waitForTimeout(100);
   const f = await t.page.evaluate(() => { const e = document.activeElement; const cs = getComputedStyle(e); return { tag: e.tagName, inMain: !!e.closest('main'), outline: cs.outlineStyle, w: parseFloat(cs.outlineWidth) }; });
   await t.page.keyboard.press('Tab'); const n = await t.page.evaluate(() => { const cs = getComputedStyle(document.activeElement); return cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0 || cs.boxShadow !== 'none'; });
   ok('R1-03', 'after a keyboard navigation the route focus is on the page h1 with no focus ring; the next Tab stop shows its ring', f.tag === 'H1' && f.inMain && (f.outline === 'none' || f.w === 0) && n, JSON.stringify({ f, n }));

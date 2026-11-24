@@ -5,7 +5,8 @@ One roadmap for everything the founder has directed since 24 Nov 2026. It extend
 
 **Sources (founder directives, kept privately, not in this repository):** Master Engineering Completion (24 Nov 05:32); Six Worlds,
 Spatial Intelligence 3.0 and ExpoSpace Live (24 Nov 05:32); Festival, the seventh world (24 Nov 06:10); Community, the eighth world
-(24 Nov 06:10). Earlier decisions E3-D1 to E3-D5 still apply.
+(24 Nov 06:10); E-Waste: Living Facility, the ninth world, with SIGNAL: The Second Life inside it, and its addendum that the expansion is
+strictly additive and that an earlier directive wins on any conflict (24 Nov 09:16). Earlier decisions E3-D1 to E3-D5 still apply.
 
 **Words used here.** Planned · In progress · Implemented · Unit-tested · Browser-tested · Exact-commit validated · Staged (on E3) ·
 Released (on the canonical Next sites) · Blocked · Not run. A line is never moved to a later word than its evidence supports.
@@ -22,7 +23,7 @@ improvement. P3: recorded for later.
 | Working branch | `v18/continuation` at `1dae3703` (draft pull request 2 into `phase3/legendary-experience`) | board |
 | Last exact-commit regression that passed | `1dae3703`: PASS 293 · FAIL 0 · NOT_RUN 2 (24 Nov 13:47 UTC). It includes the design pass on the room, the job, the work order and the APEX case | `tests/evidence/TEST_RESULTS.md` |
 | GitHub CI | Green on the repair branch (`ci/e3-d5-…`, draft pull request 3, based on `main`): PASS 286 · FAIL 0 · NOT_RUN 4. The repair is merged into `v18/continuation` (not into `main`); no run on this branch has been read yet | `docs/operations/CI_REPAIR_E3-D5.md` |
-| Worlds that exist | Four (Enterprise, Stadium, University, Convention) in `apps/demo/src/worlds`, 52 role configurations | `registry.worlds.ts` |
+| Worlds that exist | Four (Enterprise, Stadium, University, Convention) in `apps/demo/src/worlds`, 52 role configurations. Airport, Hospital, Festival, Community (with Collaboro-Sing and the shelter-resource network) and E-Waste are planned, not built | `registry.worlds.ts` |
 | Leftover branch | `wip/e3-day4-links` on GitHub: two commits, cherry-picked into `a43891c0`; kept, per the founder | — |
 
 Open decisions that only the founder (or counsel) can make: E3-D6 repository visibility and the invention disclosures (A10);
@@ -40,6 +41,7 @@ validated step goes to E3 only.
 | R3 | B7: ExpoSpace Live on the Convention world | X1–X18, staged |
 | R4 | B8: Festival | F1–F35, staged |
 | R5 | B9–B10: Community, cross-world reuse, eight-world website | C1–C40, staged |
+| R6 | B12: E-Waste: Living Facility and SIGNAL: The Second Life | journeys A–G and the E-Waste acceptance matrix (at least 50 browser journeys), staged |
 | Final | A18: release gates, then both canonical Next sites together | post-deployment verification recorded |
 
 ## Workstream A: completing and hardening what exists
@@ -70,7 +72,7 @@ may surface new failures: do A3 early. (2) The demonstration keeps its state in 
 not authorization, and the documents must keep saying so (A9, A17). (3) A10 may need legal advice; engineering can prevent new
 exposure but cannot undo a past one.
 
-## Workstream B: Spatial Intelligence 3.0 and four new worlds
+## Workstream B: Spatial Intelligence 3.0 and five new worlds
 
 | ID | Workstream | P | Depends on | Acceptance criteria and required tests | Status |
 |---|---|---|---|---|---|
@@ -84,13 +86,17 @@ exposure but cannot undo a past one.
 | B8 | Festival (modelled, fictional line-up): attendee, commerce, friends, artists, production engineering, executive | P1 | B2–B4, B7 gameplay | F1–F35 | Planned |
 | B9 | Community: church and nonprofit campus, interoperability contracts for BiblefyMe and InfiniSpeak with labelled simulators, Collaboro-Sing, church production, citywide resource coordination | P1, safeguarding and assistance privacy P0 | B1, B2–B4 | C1–C40 | Planned |
 | B10 | Cross-world reuse, website pages for eight worlds, tour extended | P1 | B5–B9 | One engine routes a person in each world (test); pages state implementation status | Planned |
-| B11 | Integrated validation of the worlds: authorization and cross-tenant negatives, accessibility, measured performance with a lower-complexity mode | P0 gate | B5–B10 | Regression, CI and E3 live checks on the integrated commit | Planned |
+| B12 | E-Waste: Living Facility (a fictional Chicago-area electronics recycling facility; a ninth world) and SIGNAL: The Second Life (twelve chapters, inside the world and Learn; not a tenth world). Industrial entities by contract on the shared platform; one seeded event history that every KPI is derived from; chain of custody with holds and kept corrections; simulated read-only equipment telemetry with a capability matrix; safety-sensitive learning content with a provenance register and review status | P1; custody, authorization and safety-content rules P0 | B1, B2–B4; the Enterprise service, assurance and Learn engines | Journeys A–G; at least 50 browser-executed acceptance journeys, additional to every existing one; twenty documentation deliverables | Planned |
+| B11 | Integrated validation of the worlds: authorization and cross-tenant negatives, accessibility, measured performance with a lower-complexity mode | P0 gate | B5–B10, B12 | Regression, CI and E3 live checks on the integrated commit | Planned |
 
-Risks and remediation for B: (1) Scope. Four worlds with 117 acceptance journeys (A1–A12, H1–H12, X1–X18, F1–F35, C1–C40) is far more than the Enterprise 3.0 sprint; it is
+Risks and remediation for B: (1) Scope. Five worlds with at least 167 acceptance journeys (A1–A12, H1–H12, X1–X18, F1–F35, C1–C40, and 50 or more for E-Waste) is far more than the Enterprise 3.0 sprint; it is
 built as vertical slices, and a journey counts only when a browser test executes it. (2) Real places and organizations: every world is
 an independent model with fictional operators; no partnership, accuracy or compliance is claimed. (3) External products (Frontline,
 BiblefyMe, InfiniSpeak): public pages only until access is authorized; simulators are labelled as simulators. (4) Rendering: the
-supported web stack sets the ceiling; a 2D mode is always available and performance is measured, not promised.
+supported web stack sets the ceiling; a 2D mode is always available and performance is measured, not promised. (5) Commercial confidentiality: prospective partners, discussions and proposed terms named in the
+directives are never written into this repository, the websites or any connected service; the design-partner package is kept
+privately. (6) Safety-sensitive training content (E-Waste) stays awareness-level until a qualified reviewer and the employer approve it;
+no certification is claimed for Empathia or the fictional facility.
 
 ## Order of work
 
@@ -99,5 +105,5 @@ supported web stack sets the ceiling; a 2D mode is always available and performa
 3. A7 and A9 (the P0 integrity and authorization items), with A6 alongside.
 4. A1 and A8 registers, A5, A14, A15; A11 and A12 design and website; A13 once voice is decided; A17.
 5. R1 candidate: regression, CI, E3.
-6. B1, then B2–B4, then the worlds in the order R2 to R5.
+6. B1, then B2–B4, then the worlds in the order R2 to R6.
 7. A18: gates and the canonical release.

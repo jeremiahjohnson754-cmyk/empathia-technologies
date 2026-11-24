@@ -30,8 +30,9 @@ a result: the cause is fixed with its reason, committed, and the regression is r
 
 ## What is kept
 
-- `tests/evidence/TEST_RESULTS.json` and `.md`: the last run of record. PASS, FAIL and NOT_RUN per suite; a suite that was not run is
-  never counted as passed and carries its reason.
+- `tests/evidence/TEST_RESULTS.json` and `.md`: the last run of record that passed, committed with the commit it tested. PASS, FAIL
+  and NOT_RUN per suite; a suite that was not run is never counted as passed and carries its reason. A failed run's files are not
+  committed here (the working copy is restored to the last pass); they are kept in `tests/evidence-failed`.
 - `tests/REGRESSION_LEDGER.jsonl`: one line for every finished run of record, pass or fail. A later pass does not remove an earlier
   failure.
 - `tests/evidence-failed/<commit>-<time>/`: the result files of every failed run of record.
