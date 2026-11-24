@@ -1,8 +1,12 @@
 # Empathia CI: the complete build and test matrix on every push and pull request, then the release-control gate.
 # One job and one database cluster; suites run in series, because the test runner owns its ports and databases and two copies would
-# collide. Every application is built before its tests run: the Founder Studio is built from committed, hash-pinned inputs
-# (apps/founder-studio/inputs), and the ML dataset and model are regenerated from committed scripts. A suite that cannot run is a
-# release blocker unless the release profile names it, with its reason (scripts/verify/no-unexpected-skips.mjs).
+# collide. Every public application is built before its tests run, and the ML dataset and model are regenerated from committed
+# scripts. A suite that cannot run is a release blocker unless it is named, with its reason (scripts/verify/no-unexpected-skips.mjs).
+#
+# The Founder Studio is NOT built or tested here (founder decision E3-D5, 23 Nov 2026). Since 17 Nov 2026 it is built from a private
+# store (the Founder Edition and the films) that is never in this repository, which is public, and never on a runner. This workflow
+# therefore asks for no secret, downloads nothing private, and says so to the gate (--private-store=absent): the three studio suites are
+# reported NOT RUN, by name, and are never counted as passed. They run in the local exact-commit regression, where the store is.
 name: ci
 on:
   push: { branches: [main, 'restoration/**'] }
@@ -18,7 +22,7 @@ permissions: { contents: read }
 jobs:
   build-and-test:
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    timeout-minutes: 180   # the full matrix took 106 minutes in series on 20 Nov 2026 (fe30ba9d); 75 was set when it was a third of the size
     env:
       RELEASE_PROFILE: ${{ github.event.inputs.profile || 'platform' }}
       EMPATHIA_WORKSPACE: ${{ github.workspace }}/.no-film-masters   # film masters are not in the repository; tests use synthetic fixtures and say so
@@ -28,11 +32,15 @@ jobs:
         with: { node-version: '22.22.0' }
       - uses: actions/setup-python@v5
         with: { python-version: '3.13' }
-      - name: System packages (PostgreSQL 16 server binaries for the private test cluster, ffmpeg for media fixtures)
+      - name: System packages (PostgreSQL 16 for the private test cluster, ffmpeg for media fixtures, poppler and qpdf to reopen exported PDFs)
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-16 ffmpeg
+          sudo apt-get install -y postgresql-16 ffmpeg poppler-utils qpdf
           sudo systemctl stop postgresql || true
+      - name: LibreOffice (the export suite converts one Word, Excel and PowerPoint export to PDF with it; without it that check is NOT RUN, which the suite counts as a failure)
+        run: |
+          sudo apt-get install -y --no-install-recommends libreoffice-writer libreoffice-calc libreoffice-impress fonts-liberation fonts-dejavu-core
+          soffice --version
       - name: Python packages (pinned; intelligence service, ML prototype, Blueprint validator)
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
       - name: Node packages (pnpm) and Playwright Chromium
@@ -40,18 +48,22 @@ jobs:
           corepack enable
           pnpm install --no-frozen-lockfile
           npx playwright install --with-deps chromium
-      - name: Build everything, Founder Studio included (inputs checked against INPUTS.json)
-        run: node scripts/build.mjs --studio
+      - name: sharp for the export suite (the Word, PDF and PowerPoint exports embed the shield; without it the checker reports "no image")
+        run: |
+          npm install --no-audit --no-fund --prefix "$RUNNER_TEMP/npm-tools" sharp@0.35.4
+          echo "SHARP_PATH=$RUNNER_TEMP/npm-tools/node_modules/sharp" >> "$GITHUB_ENV"
+      - name: Build everything public (the Founder Studio is private and is not built on a runner)
+        run: node scripts/build.mjs
       - name: ML research prototype — synthetic dataset and model, regenerated from committed scripts
         run: |
           node ml/datasets/generate_synthetic.mjs
           python3 -I ml/training/train.py
       - name: Test database (private PostgreSQL 16 cluster under .local/pg)
         run: node scripts/db.mjs up
-      - name: Full test matrix (unit, contract, database, HTTP, security, browser, studio, deploy) — serial
-        run: node scripts/test.mjs --browser --studio
-      - name: Release-control gate (no FAIL; no skip the profile does not name)
-        run: node scripts/verify/no-unexpected-skips.mjs --profile=$RELEASE_PROFILE
+      - name: Full test matrix (unit, contract, database, HTTP, security, browser, deploy) — serial; the three studio suites report NOT RUN
+        run: node scripts/test.mjs --browser
+      - name: Release-control gate (no FAIL; no skip that is not named; the studio suites named as NOT RUN, never passed)
+        run: node scripts/verify/no-unexpected-skips.mjs --profile=$RELEASE_PROFILE --private-store=absent
       - name: Stop the test database
         if: always()
         run: node scripts/db.mjs down || true
@@ -66,6 +78,5 @@ jobs:
             tests/evidence/**/*.png
             .local/logs/
             apps/website/dist/BUILD_MANIFEST.json
-            apps/founder-studio/dist/BUILD_MANIFEST.json
           if-no-files-found: warn
           retention-days: 90
