@@ -178,12 +178,18 @@ await journey('J6B', 'J6B VOICE', 'ucadmin', '#/voice', [
       if (await p.getByRole('button', { name: /^Verify the repair/ }).count()) throw new Error('the technician is offered “Verify the repair” on their own work'); } }, { see: /VERIFYING → RESOLVED/, id: () => job }],
     ['hand-over: a second person, the commissioning engineer, verifies the repair', { as: 'cxeng', open: board }, { see: /Verify the repair/, id: () => job }],
     ['the repair is verified', { run: (p) => press(p, /^Verify the repair/) }, { see: /RESOLVED/ }],
+    // 24 Nov 2026 (founder directive, completion §6): a verified repair is not readiness. MissionProof, opened without a case, reads the
+    // records: the later session is on record, and calling waits for the Assurance retest that clears the open drift record.
+    ['verified is not ready: MissionProof, reading the records, holds calling until the retest', { as: 'ops', open: '#/missionproof' }, { at: /^#\/missionproof$/, see: '[data-testid=mission][data-on-record=retest] [data-dep=calling][data-ready=UNKNOWN]' }],
+    ['and it names the drift record it is waiting for', { run: async () => undefined }, { see: /DR-0001 is still open/ }],
     ['the retest: the same engineer runs Assurance on the room again', { as: 'cxeng', open: `#/assurance/room/${ROOM}` }, { see: '[data-testid=as-calling-says][data-state=WITHIN]', id: '4.218' }],
     ['the run clears the drift record and says the accepted baseline is unchanged', { click: '[data-testid=as-run-btn]' }, { see: /Its retest cleared DR-0001.*The accepted baseline is unchanged/ }],
     ['the cleared record stays on the room, with who cleared it', { run: async () => undefined }, { see: '[data-testid=as-drift-cleared]' }],
     ['hand-over: the operations lead opens the later session from the room’s assurance', { as: 'ops', open: `#/assurance/room/${ROOM}` }, { see: '[data-testid=as-calling-open]', id: '4.218' }],
     ['the call path of the session after the repair', { click: '[data-testid=as-calling-open]' }, { at: new RegExp(`^#/voice/callpath/${ROOM}\\?case=retest`), see: '[data-testid=voice-job][data-verified="1"]', id: '4.218' }],
     ['MissionProof reads calling as ready for the town hall, from the verified job', { click: '[data-testid=voice-to-mission]' }, { at: /^#\/missionproof\?case=retest/, see: '[data-dep=calling][data-ready=READY]' }],
+    ['and it says which drift record the retest cleared', { run: async () => undefined }, { see: /retest cleared drift record DR-0001/ }],
+    ['opened without a case it reads the same records: ready, and says this is the evidence on record', { run: async (p) => { await p.goto(`${base}#/missionproof`); } }, { at: /^#\/missionproof$/, see: '[data-testid=mission][data-on-record=retest] [data-dep=calling][data-ready=READY]' }],
     ['the original report still names the job', { run: async (p) => { await p.goto(`${base}#/voice/report/${ROOM}`); } }, { at: /^#\/voice\/report\//, see: '[data-testid=voice-mine]', id: () => job }],
     ['hand-over: the calling administrator sees which APEX case holds the hypothesis', { as: 'ucadmin', open: `#/voice/callpath/${ROOM}` }, { see: '[data-testid=voice-hyp-recorded]', id: '4.218' }],
     ['hand-over: the executive’s operations view counts from the same records', { as: 'exec', open: '#/v25/exec' }, { at: /^#\/v25\/exec/, see: '[data-testid=passports]' }],

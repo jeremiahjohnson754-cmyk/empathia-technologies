@@ -6,12 +6,12 @@
  * ready makes the mission not ready; an unknown is never counted as ready. A rehearsal is a declaration someone records, kept in
  * this browser. Post-event learning and archiving are specified, not built. No React: the unit suite runs it.
  */
-import type { Workspace } from '../workspace/store.js';
+import { driftOf, type Workspace } from '../workspace/store.js';
 import type { RoleKey } from '../registry.types.js';
 import { roomRecord } from '../campus/design.js';
 import { roomById, fullName } from '../campus/canon.js';
 import { SHARED_LINK, VOICE_ROOM, caseView, type CaseId, type EvidenceState } from '../voice/model.js';
-import { jobView } from '../voice/job.js';
+import { jobView, callingReading } from '../voice/job.js';
 
 export type Ready = 'READY' | 'AT_RISK' | 'NOT_READY' | 'UNKNOWN';
 export const READY_WORD: Record<Ready, string> = { READY: 'Ready', AT_RISK: 'At risk', NOT_READY: 'Not ready', UNKNOWN: 'Unknown' };
@@ -24,14 +24,28 @@ export function loadRehearsals(): Rehearsal[] { try { const v = JSON.parse(local
 export function recordRehearsal(by: RoleKey, note: string): Rehearsal[] { const all = [{ at: new Date().toISOString(), by, note: note.trim().slice(0, 200) }, ...loadRehearsals()]; try { localStorage.setItem(KEY, JSON.stringify(all)); } catch { /* lasts the page */ } return all; }
 
 export interface Readiness { deps: Dep[]; overall: Ready; notReady: number; says: string }
+/**
+ * Which calling evidence is on record for the mission now: the reading Assurance and APEX read (voice/job.ts callingReading), in which
+ * the later session exists only once the repair has been verified by a second person. MissionProof reads this unless the address asks
+ * for another case; before 24 Nov 2026 it read the degraded call by default whatever the records said, so after a verified repair and
+ * a cleared retest the page still opened on "at risk" until someone picked the other case by hand.
+ */
+export const caseOnRecord = (w: Workspace): CaseId => callingReading(w, VOICE_ROOM)?.vcase ?? 'degraded';
 export function readiness(w: Workspace, vcase: CaseId, rehearsals: Rehearsal[]): Readiness {
   const host = roomRecord(MISSION.hostRoom); const hostName = roomById(MISSION.hostRoom) ? fullName(roomById(MISSION.hostRoom)!) : MISSION.hostRoom; const accepted = !!host && ['ACCEPTED', 'OPERATIONAL'].includes(host.lifecycle);
-  const v = caseView(vcase); const job = jobView(w, VOICE_ROOM); const cq = `#/voice/callpath/${VOICE_ROOM}${vcase === 'degraded' ? '' : `?case=${vcase}`}`;
+  const v = caseView(vcase); const job = jobView(w, VOICE_ROOM); const drift = driftOf(w, VOICE_ROOM).filter((d) => d.subject === 'Calling'); const openDrift = drift.find((d) => !d.cleared) || null; const clearedDrift = drift.find((d) => !!d.cleared && d.incidentId === job?.incident.id) || null; const cq = `#/voice/callpath/${VOICE_ROOM}${vcase === 'degraded' ? '' : `?case=${vcase}`}`;
   const calling: Pick<Dep, 'ready' | 'why' | 'basis'> = v.verdict === 'UNKNOWN' ? { ready: 'UNKNOWN', basis: 'UNKNOWN', why: v.verdictWhy }
     : v.verdict === 'OUTSIDE_POLICY' ? { ready: 'AT_RISK', basis: 'SIMULATED', why: `${v.verdictWhy} ${job ? `Job ${job.incident.id} is ${job.incident.state}${job.verified ? ', verified, but no later session shows the call within targets' : ''}.` : 'No job has been raised.'}` }
-    : job?.verified ? { ready: 'READY', basis: 'SIMULATED', why: `The repair (${job.incident.id}) is verified by ${job.incident.verifiedBy}, and a later simulated session is within the declared targets. Ready on simulated evidence only.` }
+    // 24 Nov 2026 (founder directive, completion §6): a verified repair is not readiness while Assurance still holds an open drift record
+    // for this room's calling. The record is cleared only by an Assurance retest; until then the dependency is unknown, not ready.
+    : job?.verified && openDrift ? { ready: 'UNKNOWN', basis: 'SIMULATED', why: `The repair (${job.incident.id}) is verified by ${job.incident.verifiedBy} and a later simulated session is within the declared targets, but Assurance drift record ${openDrift.id} is still open. Only an Assurance retest clears it; until then this is not counted ready.` }
+    : job?.verified ? { ready: 'READY', basis: 'SIMULATED', why: `The repair (${job.incident.id}) is verified by ${job.incident.verifiedBy}, and a later simulated session is within the declared targets${clearedDrift ? `; Assurance's retest cleared drift record ${clearedDrift.id}` : ''}. Ready on simulated evidence only.` }
     : { ready: 'UNKNOWN', basis: 'SIMULATED', why: `A later simulated session is within targets, but ${job ? `job ${job.incident.id} is not verified` : 'no repair is on record'}: the cause is not shown to be gone.` };
   const uplink: Pick<Dep, 'ready' | 'why' | 'basis'> = vcase === 'degraded' ? { ready: 'AT_RISK', basis: 'SIMULATED', why: 'Simulated interface counters show discards rising on the ATL-4A uplink. Three remote rooms share it.' }
+    // 24 Nov 2026: the later window belongs to the same later session as the call's. It is read as the uplink's state only when that
+    // session is on record, which is after a verified repair. Before this, picking the "after the repair" case in the address made the
+    // uplink read ready on any workspace, repaired or not.
+    : vcase === 'retest' && !job?.verified ? { ready: 'UNKNOWN', basis: 'SIMULATED', why: `A later window without discards is shown, but ${job ? `job ${job.incident.id} is not verified` : 'no repair is on record'}: it is not read as the uplink's state.` }
     : vcase === 'retest' ? { ready: 'READY', basis: 'SIMULATED', why: 'Simulated interface counters show no discards in the later window. Ready on simulated evidence only.' }
     : { ready: 'UNKNOWN', basis: 'UNKNOWN', why: 'There is no current observation of the uplink.' };
   const deps: Dep[] = [

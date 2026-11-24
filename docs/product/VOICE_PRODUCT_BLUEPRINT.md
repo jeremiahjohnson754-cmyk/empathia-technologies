@@ -93,6 +93,8 @@ CONTRACT_ONLY. Nothing is connected and no partnership is claimed.
 | Report becomes a real job; its four steps read from ServiceHands | VC-11, VC-12 | PASS |
 | Technician cannot verify own work; closure only after verification | voice.test "J6B steps 5 and 6" (real service engine) | PASS |
 | MissionProof readiness follows the record, not a click | voice.test "J6B steps 5 and 6"; demo-voice VC-19, VC-20 | PASS |
+| MissionProof reads the evidence on record, not the address: opened without a case it reads the session Assurance and APEX read; the "after the repair" case in the address makes neither calling nor the uplink ready where no verified repair is on record (the uplink used to read READY) | voice.test "readiness follows the records"; demo-voice VC-19 (expectation changed, reason in the file), VC-28 | PASS; the new unit test fails on the rules before 24 Nov |
+| A verified repair is not readiness: calling stays unknown while an Assurance drift record is open, and is ready only after the retest that clears it; a retest that still finds it outside keeps the record; a reopened job or a new report returns the record to the degraded call and a new run writes a new drift record, keeping the cleared one | voice.test "readiness follows the records", "a new calling report after a verified repair is the record"; demo-journeys JW-J6BR (29 hops) | PASS |
 | FLOW keeps the VOICE case and returns | demo-voice VC-16; voice.test "FLOW (J6A)" | PASS |
 | VOICE on the shared room page | demo-voice VC-21 | PASS |
 | Phone layout (390 px) without sideways scrolling | demo-voice VC-04, and every check repeated on a phone | PASS |

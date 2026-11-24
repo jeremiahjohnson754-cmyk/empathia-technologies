@@ -13,20 +13,22 @@ import { resolve } from '../registry.pages.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { State } from '../voice/CallPathPage.js';
 import { CASES, caseOf, type CaseId } from '../voice/model.js';
-import { MISSION, READY_WORD, loadRehearsals, readiness, recordRehearsal, type Ready } from './model.js';
+import { MISSION, READY_WORD, caseOnRecord, loadRehearsals, readiness, recordRehearsal, type Ready } from './model.js';
 
 const TONE: Record<Ready, 'ok' | 'warn' | 'bad'> = { READY: 'ok', AT_RISK: 'bad', NOT_READY: 'bad', UNKNOWN: 'warn' };
 export default function MissionPage({ role, query, can }: PageProps) {
-  const { w } = useWorkspace(); const id: CaseId = caseOf(query.get('case')); const [reh, setReh] = useState(() => loadRehearsals());
+  const { w } = useWorkspace(); const onRecord = caseOnRecord(w); const asked = query.get('case'); const id: CaseId = asked ? caseOf(asked) : onRecord; const [reh, setReh] = useState(() => loadRehearsals());
   const opens = (h: string) => { const r = resolve(h.split('?')[0]!); return !!r && canOpen(role, r); };
   const now = readiness(w, id, reh); const base = readiness(w, 'degraded', reh);
   const changed = now.deps.filter((d, i) => d.ready !== base.deps[i]!.ready);
-  return (<div className="vc" data-testid="mission" data-overall={now.overall} data-case={id}>
+  return (<div className="vc" data-testid="mission" data-overall={now.overall} data-case={id} data-on-record={onRecord}>
     <PageHero eyebrow="MissionProof · simulation" title={MISSION.name} product="pro" icon="route" lede={`${MISSION.when}. Readiness is read from the records the event depends on. Nothing here is typed in, and an unknown is never counted as ready.`}
       meta={[<Tag key="o" tone={TONE[now.overall]}>{READY_WORD[now.overall]}</Tag>, <span key="m">{MISSION.id}</span>]} />
     <Connected id="missionproof" role={role} />
     <p className={`vc-verdict vc-verdict--${now.overall === 'READY' ? 'within_policy' : now.overall === 'UNKNOWN' ? 'unknown' : 'outside_policy'}`} data-testid="mission-overall"><b>{READY_WORD[now.overall]}.</b> {now.says}</p>
-    <div className="vc-cases"><Segmented label="Which calling evidence to read" value={id} onChange={(c) => { location.hash = c === 'degraded' ? '#/missionproof' : `#/missionproof?case=${c}`; }} options={CASES.map((c) => ({ value: c.id, label: c.label }))} />
+    <div className="vc-cases"><Segmented label="Which calling evidence to read" value={id} onChange={(c) => { location.hash = c === onRecord ? '#/missionproof' : `#/missionproof?case=${c}`; }} options={CASES.map((c) => ({ value: c.id, label: c.label }))} />
+      {/* 24 Nov 2026: say which evidence is on record, so a case picked in the address is never mistaken for the state of the records */}
+      <p className="ui-muted" data-testid="mission-on-record" data-reading-record={id === onRecord ? '1' : '0'}>{id === onRecord ? <>This is the calling evidence on record now: <b>{CASES.find((c) => c.id === onRecord)!.label}</b>.</> : <>You are reading another case, not the records. On record now: <a href="#/missionproof">{CASES.find((c) => c.id === onRecord)!.label}</a>.</>}</p>
       <p className="ui-muted" data-testid="mission-delta">{id === 'degraded' ? 'This is the reading with the degraded call.' : changed.length ? `Against the degraded call, ${changed.length} dependenc${changed.length === 1 ? 'y reads' : 'ies read'} differently: ${changed.map((d) => `${d.title.split(':')[0]!.split(' (')[0]} is ${READY_WORD[d.ready].toLowerCase()}`).join('; ')}.` : 'Against the degraded call, no dependency reads differently.'}</p></div>
     <section className="vc-sec" aria-labelledby="mp-d-h"><h2 id="mp-d-h">What the town hall depends on</h2>
       <ul className="mp-deps" data-testid="mission-deps">{now.deps.map((d) => (<li key={d.id} className="mp-dep" data-dep={d.id} data-ready={d.ready}>

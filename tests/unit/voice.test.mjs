@@ -229,6 +229,51 @@ test('an Assurance run writes a drift record when calling is outside its targets
     try { const l = S.load(); assert.deepEqual(l.drift, []); assert.equal(l.seq.drift, 0); } finally { if (had) Object.defineProperty(globalThis, 'localStorage', had); else delete globalThis.localStorage; } }
 });
 
+// Founder directive of 24 Nov (completion §6): "Repair completion does not automatically establish operational readiness"; "Failed
+// retests retain unresolved drift"; "MissionProof reads readiness from the appropriate verified evidence"; "Reopened or recurring
+// incidents correctly affect operational readiness"; "Missing or stale evidence does not produce misleading readiness declarations".
+// Before this test MissionProof read the degraded call unless the address named another case, read the uplink as ready whenever the
+// address said "retest", and counted calling ready on a verified repair while Assurance still held an open drift record.
+test('readiness follows the records: not from the address alone, not before the Assurance retest, and not after a reopen or a new report', () => {
+  const ok = (x, l) => assert.equal(x, null, `${l}: ${x && x.why.join('; ')}`); const w = S.seed(); const room = V.VOICE_ROOM; const dep = (c, id) => MP.readiness(w, c, []).deps.find((d) => d.id === id);
+  const run = () => S.assuranceRun(w, 'cxeng', room, 'test run', [J.callingFinding(w, room)]);
+  const repair = (title) => { const made = S.raiseIncident(w, 'requestor', { roomId: room, roomName: 'Atlas 4.218 — Executive Boardroom', buildingKey: 'ATL', title: `${J.VOICE_TITLE}: ${title}`, summary: 'Reported from the room’s calling page.' });
+    ok(S.triage(w, 'svcmgr', made.id, 'High'), 'triage'); ok(S.assign(w, 'svcmgr', made.id, 'tech-ana'), 'assign'); ok(S.accept(w, 'service', made.id), 'accept');
+    const wo = S.workOrderOf(w, S.incidentOf(w, made.id).workOrderId); const tools = WORK_NEEDS[wo.workType]?.tools || [];
+    if (!S.preflightFor(w, wo.id, { access: true, safety: true, heightPermit: true, tools }).ok) ok(S.replanWindow(w, 'svcmgr', made.id), 'replan');
+    ok(S.start(w, 'service', made.id, { access: true, safety: true, heightPermit: true, tools }), 'start'); ok(S.recordEvidence(w, 'service', made.id, 'photo', 'SYNTHETIC: patch lead reseated'), 'evidence'); ok(S.submitForVerification(w, 'service', made.id), 'submit'); return made.id; };
+  // nothing repaired: the record is the degraded call, and naming the later case in the address makes nothing ready
+  assert.equal(MP.caseOnRecord(w), 'degraded'); assert.equal(dep('degraded', 'calling').ready, 'AT_RISK');
+  assert.equal(dep('retest', 'calling').ready, 'UNKNOWN'); assert.equal(dep('retest', 'uplink').ready, 'UNKNOWN', 'the address alone does not make the uplink ready'); assert.match(dep('retest', 'uplink').why, /no repair is on record/);
+  // Assurance records the drift; the repair is done and handed over: still nothing ready, and the technician cannot verify the work
+  assert.deepEqual(run().opened, ['DR-0001']); const job = repair('audio breaking up');
+  assert.ok(S.verify(w, 'service', job)?.why, 'the technician who did the work cannot verify it'); assert.equal(MP.caseOnRecord(w), 'degraded'); assert.equal(dep('retest', 'calling').ready, 'UNKNOWN'); assert.equal(dep('retest', 'uplink').ready, 'UNKNOWN'); assert.match(dep('retest', 'uplink').why, /is not verified/);
+  // verified by a second person: the later session is now on record, the uplink reads from it, but calling waits for the retest
+  ok(S.verify(w, 'cxeng', job), 'verify'); assert.equal(MP.caseOnRecord(w), 'retest'); assert.equal(dep('retest', 'uplink').ready, 'READY');
+  { const c = dep('retest', 'calling'); assert.equal(c.ready, 'UNKNOWN', 'a verified repair is not readiness while a drift record is open'); assert.match(c.why, /DR-0001 is still open/); assert.match(c.why, /Only an Assurance retest clears it/); }
+  assert.notEqual(MP.readiness(w, 'retest', []).overall, 'READY');
+  // a retest that still finds it outside keeps the record, and readiness stays where it was
+  assert.deepEqual(S.assuranceRun(w, 'cxeng', room, 'failed retest', [{ ...J.callingFinding(w, room), state: 'OUTSIDE', says: 'still outside in the retest window' }]), { opened: [], cleared: [], standing: ['DR-0001'] }); assert.equal(dep('retest', 'calling').ready, 'UNKNOWN');
+  // the retest that finds it within clears the record: now, and only now, calling is ready, and it says which record was cleared
+  assert.deepEqual(run().cleared, ['DR-0001']); { const c = dep('retest', 'calling'); assert.equal(c.ready, 'READY'); assert.match(c.why, /retest cleared drift record DR-0001/); assert.match(c.why, /simulated evidence only/); }
+  // the job is reopened: the later session is no longer the record; readiness drops; a new run writes a new record and keeps the old one
+  ok(S.reopen(w, 'svcmgr', job, 'the fault came back on the next call'), 'reopen'); assert.equal(MP.caseOnRecord(w), 'degraded'); assert.equal(dep(MP.caseOnRecord(w), 'calling').ready, 'AT_RISK');
+  assert.equal(dep('retest', 'calling').ready, 'UNKNOWN'); assert.equal(dep('retest', 'uplink').ready, 'UNKNOWN');
+  assert.deepEqual(run().opened, ['DR-0002']); const all = S.driftOf(w, room); assert.equal(all.length, 2); assert.ok(all.find((d) => d.id === 'DR-0001').cleared, 'the cleared record is kept as history'); assert.equal(all.find((d) => d.id === 'DR-0002').cleared, null);
+});
+
+test('a new calling report after a verified repair is the record: the earlier repair no longer speaks for the room', () => {
+  const ok = (x, l) => assert.equal(x, null, `${l}: ${x && x.why.join('; ')}`); const w = S.seed(); const room = V.VOICE_ROOM;
+  const first = S.raiseIncident(w, 'requestor', { roomId: room, roomName: 'Atlas 4.218 — Executive Boardroom', buildingKey: 'ATL', title: `${J.VOICE_TITLE}: audio breaking up`, summary: 'first report' });
+  ok(S.triage(w, 'svcmgr', first.id, 'High'), 'triage'); ok(S.assign(w, 'svcmgr', first.id, 'tech-ana'), 'assign'); ok(S.accept(w, 'service', first.id), 'accept');
+  const wo = S.workOrderOf(w, S.incidentOf(w, first.id).workOrderId); const tools = WORK_NEEDS[wo.workType]?.tools || []; if (!S.preflightFor(w, wo.id, { access: true, safety: true, heightPermit: true, tools }).ok) ok(S.replanWindow(w, 'svcmgr', first.id), 'replan');
+  ok(S.start(w, 'service', first.id, { access: true, safety: true, heightPermit: true, tools }), 'start'); ok(S.recordEvidence(w, 'service', first.id, 'photo', 'SYNTHETIC: patch lead reseated'), 'evidence'); ok(S.submitForVerification(w, 'service', first.id), 'submit'); ok(S.verify(w, 'cxeng', first.id), 'verify');
+  assert.equal(MP.caseOnRecord(w), 'retest'); assert.equal(MP.readiness(w, 'retest', []).deps.find((d) => d.id === 'calling').ready, 'READY');
+  const second = S.raiseIncident(w, 'requestor', { roomId: room, roomName: 'Atlas 4.218 — Executive Boardroom', buildingKey: 'ATL', title: `${J.VOICE_TITLE}: dropped again`, summary: 'second report' });
+  assert.equal(J.jobView(w, room).incident.id, second.id, 'the newest report is the room’s job'); assert.equal(J.callingReading(w, room).state, 'OUTSIDE'); assert.equal(MP.caseOnRecord(w), 'degraded');
+  assert.equal(MP.readiness(w, MP.caseOnRecord(w), []).deps.find((d) => d.id === 'calling').ready, 'AT_RISK'); assert.equal(MP.readiness(w, 'retest', []).deps.find((d) => d.id === 'calling').ready, 'UNKNOWN', 'and the later case cannot be read as ready: the open job is not verified');
+});
+
 test('FLOW (J6A): claims by layer from the estate’s own edges, UNKNOWN where nothing is recorded, dependents by the impact traversal', () => {
   const v = F.linkView('SW-ATL-4A'); assert.ok(v); assert.deepEqual(v.rooms.map((r) => r.id), [...V.SHARED_LINK.rooms].sort());
   const by = (l) => v.claims.filter((c) => c.layer === l);
