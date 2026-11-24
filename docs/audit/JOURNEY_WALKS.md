@@ -14,7 +14,8 @@ link or control that is on the page the hop before reached, as the role the jour
 - the page does not scroll sideways, and nothing logged a console error on the way.
 
 A hand-over to another role changes the role in the same browser, so what the first person did is what the next one finds.
-J6 is two journeys (FLOW and VOICE), so there are thirteen walks; J5 and J12 are also walked on a phone (390 px).
+J6 is two journeys (FLOW and VOICE), and VOICE is walked twice (the evidence, then the repair), so there are fourteen walks; J5 and
+J12 are also walked on a phone (390 px).
 
 A walk does not re-test a product's own rules. Those stay in the product's suite, named in the last column.
 
@@ -27,6 +28,7 @@ A walk does not re-test a product's own rules. Those stay in the product's suite
 | J5 Failure → Field Intelligence → APEX → ServiceHands → close | AV Operations Lead → Systems Engineer → Service Manager → Service Engineer → Commissioning Engineer → Executive | 13 | the room's open job → the graph → the scan → the diagnosis of the same job → APEX reads calling from VOICE → the call path → the queue → the work order → "closing does not pass a commissioning test" → the commissioning record → the executive's figure | service-engine, apex-engine, demo-servicehands |
 | J6A FLOW | Systems Engineer | 4 | a switch → a room that depends on it in CallPath → back to the link → the platform map | voice.test, demo-voice VC-16 |
 | J6B VOICE | UC / Voice Administrator → AV Operations Lead | 6 | VOICE → CallPath → the network hop → back → MissionProof → Assurance reads calling → the call path it was read from | voice.test, demo-voice |
+| J6B VOICE, the repair | AV Operations Lead → Commissioning Engineer → Service Manager → Service Engineer → Commissioning Engineer → AV Operations Lead → UC / Voice Administrator → Executive | 25 | The report from the room names its job → an Assurance run writes drift record DR-0001 → APEX opens a case for the job and records VOICE’s hypothesis as a hypothesis → triage, assignment (a window that collides with the room’s booking is re-planned) → the technician accepts, passes the preflight, records labelled synthetic evidence and hands over, and is not offered the verification → a second person verifies → the retest clears the drift record and says the baseline is unchanged → the later call path → MissionProof reads calling as ready → the original report and the CallPath still name the job and the case | demo-servicehands (the job’s refusals), voice.test, demo-voice VC-25, VC-26 |
 | J7 PRISM and SENTINEL | AV Operations Lead | 6 | the banner → PRISM → one screen in Search Party → its room → back → ServiceHands | modules.test, demo-modules MD-01..10 |
 | J8 MissionProof | AV Operations Lead | 5 | calling dependency and back → uplink dependency and back → the host room's commissioning record | voice.test, demo-voice VC-19, VC-20 |
 | J9 ACCORD | AV Operations Lead | 5 | the capsule names one job → the call path → back → the commissioning record → ServiceHands, where the job is | modules.test, demo-modules MD-11..15 |

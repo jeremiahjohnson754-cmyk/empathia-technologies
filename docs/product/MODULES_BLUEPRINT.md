@@ -75,7 +75,7 @@ no design; a tag carrying a token, an address of equipment or a room; a presence
 ## Not built (each page says so)
 
 - FLOW: timing, multicast and WAN records; any live network read.
-- MissionProof: the archive of the event and the lessons after it; an Assurance drift record written by the retest.
+- MissionProof: the archive of the event and the lessons after it.
 - PRISM: any content system or player connection; a visual check of a screen.
 - SENTINEL: any alerting source, any real channel, and the review record of a qualified life-safety designer.
 - ACCORD: two real tenants, signed capsules, a dispute record, enforcement of the delegation.

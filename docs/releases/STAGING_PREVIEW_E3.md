@@ -19,12 +19,35 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 
 | Date (UTC) | Commit | Regression on that commit | Website deploy | Demo deploy |
 |---|---|---|---|---|
-| 24 Nov 2026 02:09 | `8597d2ea` | PASS 291 · FAIL 0 · NOT_RUN 2 (evidence in `6f97ce6d`) | dep-dc2f35vlk1mc739pn81g, live | dep-dc2f36lg1s2s73b4o4h0, live |
+| 24 Nov 2026 02:09 | `8597d2ea` | PASS 291 · FAIL 0 · NOT_RUN 2 (evidence in `6f97ce6d`) | dep-dc2f35vlk1mc739pn81g, replaced | dep-dc2f36lg1s2s73b4o4h0, replaced |
+| 24 Nov 2026 07:48 | `9bc47b27` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `85264964`) | dep-dc2k1rdbedkc73b3jsfg, live | dep-dc2k1rdbedkc73b3jsc0, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
 
-## Live check, 24 Nov 2026 02:40 UTC
+## Live check of `9bc47b27`, 24 Nov 2026 08:20 UTC
+
+Opened in a browser against the live addresses (not the local build): 22 of 22 checks held.
+
+| Address | As | Result |
+|---|---|---|
+| website `/` | visitor | 200; the platform in one figure, six families on "Shared engineering intelligence"; demo links point at the demo preview only |
+| website `/platform` | visitor | 200; the figure states 6 families and 17 capabilities, 9 of them the original products; six questions; the issue thread of ten steps |
+| website `/platform/operations`, `/design`, `/field`, `/infrastructure`, `/experience`, `/collaboration` | visitor | 200 each; the family is marked in its place in the figure |
+| website `/platform` at 390 px | visitor | no sideways scroll; no link in the figure under 24 px tall |
+| website `/voice`, `/robots.txt` | visitor | 200; `Disallow: /` |
+| demo `#/families` | Executive, Product Architect, AV Operations Lead at 390 px | the platform map; some capabilities closed to the Executive, none to the Architect; no sideways scroll on a phone |
+| demo `#/servicehands?id=ISS-0417` | Service Engineer | the incident carries its job row |
+| demo `#/here/R-ATL-4-218` | Employee | not sent to a refused page |
+| demo `#/campus/BCN/3/R-BCN-3-225?tab=tests` | Installation Engineer | links the role may not open are text, not links |
+| demo `#/control`, `#/request` | Executive | open |
+| demo `#/voice` | UC / Voice Administrator; Employee | opens; refused |
+| demo `#/commissioning/room/R-ATL-4-218` | Commissioning Engineer | opens |
+
+Not checked live: the offline worker, exports, and the twelve journeys end to end (covered by the regression on the same commit, on
+the local build).
+
+## Live check of `8597d2ea`, 24 Nov 2026 02:40 UTC
 
 Opened in a browser against the live addresses (not the local build).
 
@@ -49,6 +72,6 @@ local build). The website has no `/flow` page at this commit; that address retur
 
 ## What is not in the previews yet
 
-Work after `8597d2ea` (the job row across products, calling read by Assurance and APEX, the platform map and the "works with" row,
-the six family pages on the website, the journey walks and the links they repaired) is on `v18/continuation` and reaches the previews
-only after its own exact-commit regression.
+Work after `9bc47b27` (APEX recording VOICE's hypothesis on a case, the Assurance drift record written by a run and cleared by a
+retest, and the repair journey that walks both) is on `v18/continuation` from `a43891c0` and reaches the previews only after its own
+exact-commit regression.
