@@ -74,6 +74,17 @@ await t.close();
 { const ph = await open('#/play/expo', { role: 'architect', sw: false, w: 390, h: 844, reduced: true }); await ph.page.waitForSelector('[data-testid=expo-live][data-ready=true]'); await ph.page.waitForTimeout(1000);
   const over = await ph.page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   ok('XPO-12', 'a phone-sized screen: no sideways scroll; the plan and sessions sit under the hall', over <= 0, `overflow ${over}`); await ph.close(); }
+{ // XPO-16 (25 Nov 2026): Full quality, as on Stadium LIVE. The hall opened as a visitor opens it; the box pins full detail whatever the
+  // frame rate; opened with ?detail=full it starts ticked; the frame-rate text links to the performance check.
+  const q = await open('#/play/expo', { role: 'architect', sw: false, w: 1280, h: 860, reduced: true }); const qp = q.page;
+  await qp.waitForSelector('[data-testid=expo-live][data-ready=true]', { timeout: 20000 }); await qp.waitForTimeout(3000);
+  const before = { ticked: await qp.getByTestId('xpo-quality').isChecked(), quality: await qp.getByTestId('expo-live').getAttribute('data-quality') };
+  await qp.getByTestId('xpo-quality').check(); await qp.waitForTimeout(2500);
+  const after = { quality: await qp.getByTestId('expo-live').getAttribute('data-quality'), detail: Number(await qp.getByTestId('expo-live').getAttribute('data-detail')), pace: (await qp.getByTestId('xpo-pace').innerText()).replace(/\s+/g, ' '), href: await qp.getByTestId('xpo-measure').getAttribute('href') };
+  await qp.goto(qp.url().replace('#/play/expo', '#/play/expo?detail=full')); await qp.waitForSelector('[data-testid=expo-live][data-ready=true]', { timeout: 20000 }); await qp.waitForTimeout(800);
+  const pinned = await qp.getByTestId('xpo-quality').isChecked();
+  ok('XPO-16', 'Full quality: off as a visitor opens the hall; ticked, the hall is held at 100% detail and the frame-rate text says so; ticked already with ?detail=full; the text links to the performance check', !before.ticked && before.quality === 'auto' && after.quality === 'full' && after.detail === 100 && /held at full detail/.test(after.pace) && after.href === '#/play/performance' && pinned && !q.errs.length, JSON.stringify({ before, after, pinned, errs: q.errs.slice(0, 2) }));
+  await q.close(); }
 { let file = '', why = ''; try { file = recordFrameRates('expo', FR, { renderer: GL }); } catch (e) { why = String(e.message); }
   ok('XPO-14', 'the frame rates this run measured are written beside its evidence, each with the detail it was drawn at, as this machine’s figures and not a device’s', !!file && FR.length === 2, file ? `${FR.length} readings` : why); }
 await done();

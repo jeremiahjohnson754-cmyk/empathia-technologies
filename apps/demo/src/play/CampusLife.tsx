@@ -53,6 +53,9 @@ export function CampusLifePage() {
   const st = useRef<State>(load() || fresh()); const keys = useRef(new Set<string>()); const stick = useRef({ x: 0, y: 0, on: false });
   const turnBy = useRef({ yaw: 0, pitch: 0 }); const runToggle = useRef(false);
   const [hud, setHud] = useState(() => ({ ...st.current, reach: null as Reach | null, fps: 0, detail: 100, inside: false, eyeZ: 0 }));
+  // Full quality (25 Nov 2026, as on Stadium LIVE): pins full detail whatever the frame rate; ticked when the address asks for ?detail=full
+  // a rebuilt scene (if its effect ever runs again) is told the choice too, rather than starting adaptive from the address alone
+  const rRef = useRef<Renderer | null>(null); const [fullQ, setFullQ] = useState(() => typeof location !== 'undefined' && /[?&]detail=full\b/.test(location.hash)); const fullQRef = useRef(fullQ); fullQRef.current = fullQ;
   const [paused, setPaused] = useState(false); const [panel, setPanel] = useState<null | 'talk' | 'circuits' | 'screen' | { card: string }>(null);
   const [map, setMap] = useState(true); const [sound, setSound] = useState(false); const [reduced, setReduced] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [saved, setSaved] = useState<string | null>(() => (load() ? 'Resumed from this browser' : null)); const [err, setErr] = useState<string | null>(null); const [toast, setToast] = useState<string | null>(null);
@@ -60,7 +63,11 @@ export function CampusLifePage() {
   const audio = useRef<AudioContext | null>(null); const frozen = paused || !!panel;
   const frozenRef = useRef(frozen); frozenRef.current = frozen; const reducedRef = useRef(reduced); reducedRef.current = reduced;
 
-  const chime = useCallback((f = 660) => { if (!sound) return; try { const a = audio.current || (audio.current = new AudioContext()); const o = a.createOscillator(), g = a.createGain(); o.frequency.value = f; o.type = 'sine'; g.gain.setValueAtTime(0.0001, a.currentTime); g.gain.exponentialRampToValueAtTime(0.06, a.currentTime + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + 0.5); o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + 0.55); } catch { /* no audio */ } }, [sound]);
+  // 25 Nov 2026: the chime reads Sound through a ref. It used to close over `sound`, so turning Sound on made a new chime, a new commit
+  // and a new scene effect: the old renderer was disposed (which loses the canvas's WebGL context) and the new one was built on that lost
+  // context, so the page said "This browser cannot draw the campus" and the game stopped (found by CL-25, live on the previews).
+  const soundRef = useRef(sound); soundRef.current = sound;
+  const chime = useCallback((f = 660) => { if (!soundRef.current) return; try { const a = audio.current || (audio.current = new AudioContext()); const o = a.createOscillator(), g = a.createGain(); o.frequency.value = f; o.type = 'sine'; g.gain.setValueAtTime(0.0001, a.currentTime); g.gain.exponentialRampToValueAtTime(0.06, a.currentTime + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + 0.5); o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + 0.55); } catch { /* no audio */ } }, []);
   const commit = useCallback((s: State, note?: string) => { const before = st.current; st.current = s; if (s.xp > before.xp) chime(s.stage !== before.stage ? 880 : 660);
     if (s.stage !== before.stage || s.cards.length !== before.cards.length || note) { if (store(s)) setSaved(`Saved in this browser · ${new Date().toLocaleTimeString()}`); }
     if (s.log.length > before.log.length) { setToast(s.log[s.log.length - 1]!); window.setTimeout(() => setToast(null), 2600); } }, [chime]);
@@ -85,6 +92,7 @@ export function CampusLifePage() {
   // the loop
   useEffect(() => {
     let r: Renderer; try { r = new Renderer(canvas.current!); } catch (e) { setErr((e as Error).message); return; }
+    rRef.current = r; if (fullQRef.current) r.setFull(true);
     const world: number[] = [], roof: number[] = []; for (const b of boxes) boxVerts(b, b.tag === 'roof' ? roof : world); for (const v of round) world.push(v);
     const W = r.mesh(world), RF = r.mesh(roof); let raf = 0; let last = performance.now(); let hudAt = 0; let frames = 0, fpsAt = last, fps = 0;
     const loop = (now: number) => {
@@ -125,7 +133,7 @@ export function CampusLifePage() {
       r.draw(r.unit, m4.ident(), undefined, 0);   // keep the program bound for the next frame's begin
     };
     raf = requestAnimationFrame(loop);
-    return () => { cancelAnimationFrame(raf); r.dispose(); };
+    return () => { cancelAnimationFrame(raf); r.dispose(); if (rRef.current === r) rRef.current = null; };
   }, [commit]);
 
   // the camera: a drag turns it (gestures.ts: on a phone, two fingers, or one in full screen, so the page still scrolls under a finger;
@@ -141,7 +149,7 @@ export function CampusLifePage() {
   const restart = () => { const f = fresh(); st.current = f; store(f); setSaved('Started again'); setPaused(false); setPanel(null); };
 
   return <section className="cl" ref={root} data-testid="campus-life" data-ready={!err} data-x={s.x.toFixed(2)} data-z={s.z.toFixed(2)} data-yaw={s.camYaw.toFixed(3)} data-cam={s.camDist.toFixed(2)} data-eye-z={s.eyeZ.toFixed(2)}
-    data-xp={s.xp} data-level={lvl} data-quest={s.stage} data-door={s.door ? 'open' : 'closed'} data-inside={s.inside} data-fps={s.fps} data-detail={s.detail} data-cards={s.cards.length} data-speed={s.speed.toFixed(2)}>
+    data-xp={s.xp} data-level={lvl} data-quest={s.stage} data-door={s.door ? 'open' : 'closed'} data-inside={s.inside} data-fps={s.fps} data-detail={s.detail} data-quality={fullQ ? 'full' : 'auto'} data-cards={s.cards.length} data-speed={s.speed.toFixed(2)}>
     <header className="cl-head"><h1>Campus Life</h1><p>Kestrel Valley University · the Quad and Science Hall · a first playable slice. Everything here is fictional; progress is kept <b>in this browser</b>.</p></header>
     <div className="cl-stage" ref={stageEl}>
       <canvas ref={canvas} className="cl-canvas" tabIndex={0} aria-label="Campus Life: the Quad and Science Hall. Move with W A S D, run with Shift, act with E, turn the camera with the left and right arrow keys or by dragging (two fingers on a phone, or one in full screen), C to put it behind you." data-testid="cl-canvas" />
@@ -180,6 +188,7 @@ export function CampusLifePage() {
         <p className="cl-keys"><kbd>W A S D</kbd> move · <kbd>Shift</kbd> run · <kbd>E</kbd> act · <kbd>←</kbd><kbd>→</kbd> turn the camera · drag to look · <kbd>C</kbd> camera behind you · <kbd>M</kbd> map · <kbd>Esc</kbd> pause</p>
         <label className="cl-opt"><input type="checkbox" checked={sound} onChange={(e) => setSound(e.target.checked)} data-testid="cl-sound" /> Sound (quiet chimes when you earn experience; off until you turn it on)</label>
         <label className="cl-opt"><input type="checkbox" checked={reduced} onChange={(e) => setReduced(e.target.checked)} /> Reduce motion (no bobbing or spinning)</label>
+        <label className="cl-opt"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); rRef.current?.setFull(e.target.checked); }} data-testid="cl-quality" /> Full quality: drawn at full detail, whatever the frame rate</label>
         <p>Progress is kept in this browser only, on this device. <button type="button" className="cl-btn" onClick={restart} data-testid="cl-restart">Start again</button></p>
         <p>Also: <a href="#/learn/practice">Learn</a> · <a href="#/lite">Lite</a> · <a href="#/worlds/university">the University world</a> · <a href="#/field-tools/ohms-law">Ohm’s law in Field Tools</a></p>
         <button type="button" className="cl-btn cl-btn--go" onClick={() => { setPaused(false); canvas.current?.focus(); }} data-testid="cl-resume" autoFocus>Resume</button>

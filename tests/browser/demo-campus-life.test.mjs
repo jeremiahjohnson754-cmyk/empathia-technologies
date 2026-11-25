@@ -168,6 +168,21 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
   const hud = await p.evaluate(() => { const r = (s) => { const b = document.querySelector(s)?.getBoundingClientRect(); return b && b.width ? { s, l: b.left, t: b.top, r: b.right, b: b.bottom } : null; }; const xs = ['.cl-who', '.cl-quest', '.cl-map', '.cl-stick', '.cl-acts', '.cl-bar'].map(r).filter(Boolean); const hit = []; for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i], b = xs[j]; if (a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1) hit.push(`${a.s}×${b.s}`); } return { n: xs.length, hit }; });
   ok('CL-20', `touch phone (390 × 844): the ${hud.n} HUD pieces (player, quest, map, stick, actions, bar) do not overlap`, hud.n >= 5 && !hud.hit.length, JSON.stringify(hud));
   await ctx.close(); }
+{ // CL-25 (25 Nov 2026): Full quality, as on Stadium LIVE, in the pause sheet with the campus's other options. Opened as a visitor opens it;
+  // the box pins full detail whatever the frame rate; opened with ?detail=full it starts ticked.
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 }, reducedMotion: 'reduce', serviceWorkers: 'block' }); const p = await ctx.newPage(); const errs = []; p.on('pageerror', (e) => errs.push(e.message));
+  await p.goto(base + '#/play/campus'); await p.waitForSelector('[data-testid=campus-life][data-ready=true]', { timeout: 20000 }); await p.waitForTimeout(3000);
+  await p.getByTestId('cl-canvas').focus(); await press(p, 'Escape'); const before = { ticked: await p.getByTestId('cl-quality').isChecked(), quality: await p.getByTestId('campus-life').getAttribute('data-quality') };
+  await p.getByTestId('cl-quality').check(); await p.getByTestId('cl-resume').click(); await p.waitForTimeout(2500);
+  const after = { quality: await p.getByTestId('campus-life').getAttribute('data-quality'), detail: Number(await p.getByTestId('campus-life').getAttribute('data-detail')), note: await p.getByTestId('cl-detail').count() };
+  // turning Sound on must leave the scene drawing, still held at full detail. Until 25 Nov it rebuilt the scene on a lost WebGL context and
+  // the page said "This browser cannot draw the campus" (found while writing this check; it was live on the previews)
+  await p.getByTestId('cl-canvas').focus(); await press(p, 'Escape'); await p.getByTestId('cl-sound').check(); await p.getByTestId('cl-resume').click(); await p.waitForTimeout(2500);
+  const rebuilt = { ready: await p.getByTestId('campus-life').getAttribute('data-ready'), error: await p.locator('[data-testid=campus-life] .cl-err').count(), quality: await p.getByTestId('campus-life').getAttribute('data-quality'), detail: Number(await p.getByTestId('campus-life').getAttribute('data-detail')), held: await p.evaluate(() => /[?&]detail=full/.test(location.hash)) };
+  await p.goto(base + '#/play/campus?detail=full'); await p.waitForSelector('[data-testid=campus-life][data-ready=true]', { timeout: 20000 }); await p.waitForTimeout(800);
+  await p.getByTestId('cl-canvas').focus(); await press(p, 'Escape'); const pinned = await p.getByTestId('cl-quality').isChecked();
+  ok('CL-25', 'Full quality in the pause sheet: off as a visitor opens the campus; ticked, it is drawn at 100% detail and the note no longer says it is drawn at less, and turning Sound on leaves the scene drawing, still at full detail; ticked already with ?detail=full', !before.ticked && before.quality === 'auto' && after.quality === 'full' && after.detail === 100 && after.note === 0 && rebuilt.ready === 'true' && rebuilt.error === 0 && rebuilt.quality === 'full' && rebuilt.detail === 100 && pinned && !errs.length, JSON.stringify({ before, after, rebuilt, pinned, errs: errs.slice(0, 2) }));
+  await ctx.close(); }
 { let file = '', why = ''; try { file = recordFrameRates('campus', FR, { renderer: GL }); } catch (e) { why = String(e.message); }
   ok('CL-23', 'the frame rates this run measured are written beside its evidence, each with the detail it was drawn at, as this machine’s figures and not a device’s', !!file && FR.length === 4, file ? `${FR.length} readings` : why); }
 await done();

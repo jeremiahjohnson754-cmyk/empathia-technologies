@@ -22,6 +22,8 @@ const SHIRTS = ['#2C5FA8', '#C2553F', '#0E8F83', '#E0A43B', '#6B4FA0', '#3D4A5C'
 export default function ExpoLive() { return <ExpoLivePage />; }
 export function ExpoLivePage() {
   const canvas = useRef<HTMLCanvasElement>(null); const [err, setErr] = useState<string | null>(null); const [fps, setFps] = useState(0); const [detail, setDetail] = useState(100);
+  // Full quality (25 Nov 2026, as on Stadium LIVE): pins full detail whatever the frame rate; ticked when the address asks for ?detail=full
+  const rRef = useRef<Renderer | null>(null); const [fullQ, setFullQ] = useState(() => typeof location !== 'undefined' && /[?&]detail=full\b/.test(location.hash));
   const [sel, setSel] = useState<string | null>(null); const selRef = useRef(sel); selRef.current = sel;
   const [organiser, setOrganiser] = useState(false); const orgRef = useRef(organiser); orgRef.current = organiser;
   const [session, setSession] = useState<string | null>(null); const sessRef = useRef(session); sessRef.current = session;
@@ -40,6 +42,7 @@ export function ExpoLivePage() {
 
   useEffect(() => {
     let r: Renderer; try { r = new Renderer(canvas.current!); } catch (e) { setErr((e as Error).message); return; }
+    rRef.current = r;
     const hall: number[] = [], glowv: number[] = [], screens: number[] = [], carpet: number[] = [];
     boxVerts({ min: [-400, -0.3, -400], max: [400, -0.05, 400], color: '#3B4148' }, hall);
     boxVerts({ min: [HALL.x0, -0.05, HALL.z0], max: [HALL.x1, 0, HALL.z1], color: '#4A4E55' }, hall);
@@ -99,7 +102,7 @@ export function ExpoLivePage() {
         const qs = proj([STAGE.x, 9.5, STAGE.z]); if (qs) L.push({ ...qs, text: 'Main stage', id: 'stage', kind: 'place' }); const qr = proj([REG.x, 5, REG.z]); if (qr) L.push({ ...qr, text: 'Registration', id: 'reg', kind: 'place' });
         setLabels(L); }
     };
-    raf = requestAnimationFrame(loop); return () => { cancelAnimationFrame(raf); r.dispose(); };
+    raf = requestAnimationFrame(loop); return () => { cancelAnimationFrame(raf); r.dispose(); if (rRef.current === r) rRef.current = null; };
   }, []);
 
   // which booth is under a point of the canvas: each booth's footprint, raised to its wall height, projected; the nearest one that contains it
@@ -126,7 +129,7 @@ export function ExpoLivePage() {
   const visible = useMemo(() => [...BOOTHS].sort((a, b) => a.id.localeCompare(b.id)), []);
   const inAgenda = booth ? saved.agenda.includes(booth.id) : false; const left = booth ? saved.leads.some((l) => l.booth === booth.id) : false;
 
-  return <section className="xpo" data-testid="expo-live" data-ready={!err} data-sel={sel || ''} data-organiser={organiser} data-session={session || ''} data-fps={fps} data-detail={detail} data-agenda={saved.agenda.length} data-leads={saved.leads.length}>
+  return <section className="xpo" data-testid="expo-live" data-ready={!err} data-sel={sel || ''} data-organiser={organiser} data-session={session || ''} data-fps={fps} data-detail={detail} data-quality={fullQ ? 'full' : 'auto'} data-agenda={saved.agenda.length} data-leads={saved.leads.length}>
     <header className="cl-head"><h1>Expo LIVE</h1><p>The Northlight Technology Expo, Hall A of the Larkspur Exchange Convention Centre: a fictional expo, twenty fictional exhibitors and the Empathia showcase. Your agenda, details, votes and questions stay in this browser.</p></header>
     <div className="xpo-grid">
       <div className="xpo-stage" ref={stage}>
@@ -138,7 +141,8 @@ export function ExpoLivePage() {
         <MovePad moves={moves} what="hall" prefix="xpo" />
         <div className="xpo-bar"><button type="button" className="cl-btn" onClick={() => flyTo(null)} data-testid="xpo-overview">Whole hall</button>
           <button type="button" className="cl-btn" aria-pressed={full} onClick={() => toggleFull(!full)} data-testid="xpo-full">{full ? 'Done' : 'Full screen'}</button>
-          <label className="cl-btn xpo-org"><input type="checkbox" checked={organiser} onChange={(e) => setOrganiser(e.target.checked)} data-testid="xpo-organiser" /> Organiser view</label><span className="xpo-fps">{fps} fps here{detail < 100 ? `, drawn at ${detail}% of full detail` : ''}</span></div>
+          <label className="cl-btn xpo-org"><input type="checkbox" checked={organiser} onChange={(e) => setOrganiser(e.target.checked)} data-testid="xpo-organiser" /> Organiser view</label>
+          <label className="cl-btn xpo-org"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); rRef.current?.setFull(e.target.checked); if (e.target.checked) setDetail(100); }} data-testid="xpo-quality" /> Full quality</label><span className="xpo-fps" data-testid="xpo-pace">{fps} fps here{fullQ ? ', held at full detail' : detail < 100 ? `, drawn at ${detail}% of full detail` : ''} · <a href="#/play/performance" data-testid="xpo-measure">Measure this device</a></span></div>
       </div>
       <aside className="xpo-side" aria-label="Plan, booths and sessions">
         <svg className="xpo-plan" viewBox={`${HALL.x0 - 2} ${HALL.z0 - 2} ${HALL.x1 - HALL.x0 + 4} ${HALL.z1 - HALL.z0 + 4}`} role="group" aria-label="Plan of Hall A" data-testid="xpo-plan">
