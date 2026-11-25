@@ -189,7 +189,7 @@ export function StadiumLivePage() {
       const boardCol: V3 = cheerNow ? hex(cheerNow.side === 'away' ? '#7A1A13' : '#0A6B62') : A.label === 'Concert' ? hex('#3A1460') : A.label === 'Technical rehearsal' ? hex('#3B3B3B') : hex('#0F2A33');
       r.draw(M.screens, m4.ident(), boardCol); r.glow(0);
       // the crowd: a cheer lifts the cheering side; a wave runs round the bowl
-      let farSections = 0, nearSections = 0;
+      let farSections = 0, nearSections = 0, farPx = 0;   // farPx: the tallest a spectator can be, in drawn pixels, among the sections drawn simply
       for (const g of M.crowd) { if (!r.seen(g.mesh, 1)) continue;   // a section wholly outside the view is not drawn (it rises 0.9 m at most in a wave)
         const away = AWAY.includes(g.section); let y = 0;
         if (!reducedRef.current) { if (cheerNow && (cheerNow.side === 'all' || (cheerNow.side === 'away') === away)) y = 0.35 * ce * Math.abs(Math.sin(now / 160 + g.section)); if (waveRef.current) { const ph = ((now / 1000) * 1.6 - g.section / SECTIONS * Math.PI * 2) % (Math.PI * 2); y = Math.max(y, Math.max(0, Math.cos(ph)) ** 6 * 0.9); } }
@@ -203,10 +203,10 @@ export function StadiumLivePage() {
         // From below the seats the heads cannot be seen and the sides alone are already exact, so there the whole figures are kept.
         const P4 = g.parts; const seenPX = facesSeen(eye, 0, 1, P4[2]!.lo, P4[2]!.hi), seenNX = facesSeen(eye, 0, -1, P4[3]!.lo, P4[3]!.hi), seenPZ = facesSeen(eye, 2, 1, P4[0]!.lo, P4[0]!.hi), seenNZ = facesSeen(eye, 2, -1, P4[1]!.lo, P4[1]!.hi);
         g.lod = facesSeen(eye, 1, 1, P4[4]!.lo, P4[4]!.hi) ? r.lod(g.mesh, eye, fovy, 0.8, g.lod) : 0;
-        if (g.lod === 1) { farSections += 1; FAR_QUARTERS.forEach(({ sx, sz }, f) => { const run = g.far[f]!; if (run.count && (sx > 0 ? seenPX : seenNX) && (sz > 0 ? seenPZ : seenNZ)) r.draw(g.mesh, model, tn, 1, false, run.first, run.count); }); }
+        if (g.lod === 1) { farSections += 1; farPx = Math.max(farPx, r.pixels(g.mesh, eye, fovy, 0.8)); FAR_QUARTERS.forEach(({ sx, sz }, f) => { const run = g.far[f]!; if (run.count && (sx > 0 ? seenPX : seenNX) && (sz > 0 ? seenPZ : seenNZ)) r.draw(g.mesh, model, tn, 1, false, run.first, run.count); }); }
         else { nearSections += 1; g.parts.forEach((part, f) => { const { axis, sign } = FIGURE_SIDES[f]!; if (part.count && facesSeen(eye, axis, sign, part.lo, part.hi)) r.draw(g.mesh, model, tn, 1, false, part.first, part.count); }); }
         r.glow(0); }
-      { const cvx = canvas.current; const fs = String(farSections), ns = String(nearSections); if (cvx && (cvx.dataset.far !== fs || cvx.dataset.near !== ns)) { cvx.dataset.far = fs; cvx.dataset.near = ns; } }   // how many sections were drawn simply and whole in this frame, read by the tests
+      { const cvx = canvas.current; const fs = String(farSections), ns = String(nearSections); const fp = farPx.toFixed(2); if (cvx && (cvx.dataset.far !== fs || cvx.dataset.near !== ns || cvx.dataset.farPx !== fp)) { cvx.dataset.far = fs; cvx.dataset.near = ns; cvx.dataset.farPx = fp; } }   // how many sections were drawn simply and whole in this frame, read by the tests
       if (A.label === 'Concert') { r.glow(1); for (let i = 0; i < 4; i++) r.draw(r.unit, m4.trs([-30 + i * 14, 0.4, Math.sin(now / 700 * (reducedRef.current ? 0 : 1) + i) * 12], 0, [10, 0.2, 10]), S.lc, 0.35); r.glow(0); }
       // overlays
       if (P.overlay === 'dba') { r.glow(1); for (const g of M.dba) { const db = modeledDba(g.section, fill, exciteRef.current, cheerNow ? (cheerNow.side === 'all' ? 'home' : cheerNow.side) : null); const k2 = Math.max(0, Math.min(1, (db - 70) / 40)); r.draw(g.mesh, m4.ident(), lerp([0.2, 0.62, 0.9], [0.86, 0.15, 0.12], k2), 0.62); } r.glow(0); }

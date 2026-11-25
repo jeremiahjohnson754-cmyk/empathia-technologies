@@ -97,6 +97,31 @@ Overlays, labels, modeled measurements, device markers and anything a visitor ca
 crowd's buffers, and are never simplified. The stadium's suite checks that the modeled level of every section, every label and its
 position, and the triangles each overlay adds are identical with the crowd whole and simple (SLV-19).
 
+## What counts as the same picture
+
+The founder's direction (24 Nov 2026): acceptable visual differences are defined from the quality requirements, not derived from what
+a new drawing happens to produce. So the limits a simplified drawing must meet were written and committed before the simplified crowd
+was built into a page or measured, and a drawing that fails them is changed; the limits are not. They are in
+`tests/lib/picture-diff.mjs` and pinned by `tests/unit/picture-diff.test.mjs`, which also shows what they refuse (a crowd that is
+dimmer, thinner, another colour, or smeared into its average) and what they accept (the same crowd with each person a pixel aside).
+
+The whole drawing and the simple one are compared in the same view, at the same still moment and the same resolution.
+
+| | Requirement it comes from | Limit |
+|---|---|---|
+| NEAR | "Preserve full graphical detail for nearby spectators" | Nothing 6.9 drawn pixels or taller is ever simplified. Where nothing is simplified, zero pixels differ |
+| COLOUR | "Preserve crowd density… and visual identity" | In blocks of 16 pixels (about 0.4° of the eye at a desk), the difference of the average colour in CIELAB, where about 1 is not seen, about 2.3 is the least an eye notices side by side, and about 5 is seen at a glance: average block ≤ 1.0; 99 of 100 blocks ≤ 2.3; no block above 5.0 |
+| TEXTURE | "Preserve… atmosphere"; a crowd must read as people in rows, not a smear | In each block with texture, the variation of lightness against the whole drawing's: the middle block within 0.90 to 1.10; 95 of 100 blocks within 0.80 to 1.25 (an eye tells two contrasts apart at roughly a tenth to a fifth) |
+| STILL | "You shouldn't have to sacrifice the cinematic experience" | Two readings of a still simple picture are the same picture |
+
+COLOUR and TEXTURE are judged only over the blocks in which the two pictures differ at all, so the sky, the pitch and the city, which
+are identical, cannot make the crowd look better than it is.
+
+What these do not judge: the change seen in motion, as a camera crosses the line between whole and simple. The band around the line
+keeps a section from flickering, but whether the moment of change is noticed needs a person's eye on a real device. Not done.
+
+A new world's far forms are held to the same limits, by the same file.
+
 ### 8. A counted budget beside every frame-rate floor
 
 The renderer counts the draw calls and triangles of each frame and puts them on its canvas (`data-draws`, `data-tris`). Each scene's
@@ -119,4 +144,7 @@ expo hall 8,000 and 150. A new world gets a budget on the day it gets a scene.
   real devices. An in-app check a visitor can run and export is planned, not built.
 - The campus and the expo hall are bound by pixels and have no far forms; neither needs one at its present size.
 - The "Full quality" control is on the stadium's page only; the campus and the expo hall have the address switch.
-- Indexed geometry (sharing the corners of a face between its two triangles) is untried; it may cut the work per triangle further.
+- Indexed geometry (sharing the corners of a face between its two triangles) is untried. Deliberately not pursued now: the founder's
+  direction (24 Nov 2026) is not to spend engineering time chasing 30 frames a second on a test machine without a graphics processor
+  before there are representative measurements on customer hardware. The next piece of this work is the means to take those
+  measurements, not more optimisation against this machine.

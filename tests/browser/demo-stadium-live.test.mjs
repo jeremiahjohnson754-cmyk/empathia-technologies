@@ -8,6 +8,8 @@
 import crypto from 'node:crypto';
 import { harness } from './demo-shell-lib.mjs';
 import { recordFrameRates, glRenderer } from '../lib/frame-rates.mjs';
+import { comparePictures, verdict, LIMITS } from '../lib/picture-diff.mjs';
+const LOD_NEAR_PX = 6, LOD_BAND = 0.15;   // the line between whole and simple (gl.ts; pinned by tests/unit/render-cost.test.mjs RC-07)
 // 25 Nov 2026: the figures the frame-rate checks measure are also written beside the run's evidence (tests/lib/frame-rates.mjs), so the
 // record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; SLV-16 and SLV-17 are new, and SLV-18 to SLV-20 (distant spectators).
 const FR = [];
@@ -117,22 +119,33 @@ await t.close();
 { // SLV-18, SLV-19 (25 Nov 2026; founder: "Preserve full graphical detail for nearby spectators. Simplify distant spectators dynamically.
   // Preserve crowd density, atmosphere and visual identity… Ensure engineering overlays, measurements and interactive objects remain
   // accurate"). Two pages at the same resolution and the same still moment: one whole (`?detail=full`), one with its distant spectators
-  // drawn simply whatever the pace (`&lod=simple`, the documented switch for looking at the simple drawing). The picture is compared in
-  // a grid of 192 cells, each cell's average colour, so that what is judged is density and colour where the crowd sits, not single pixels.
-  const grid = (pg) => pg.evaluate(() => { const g = document.querySelector('[data-testid=slv-canvas]'); const c = document.createElement('canvas'); c.width = g.width; c.height = g.height; const x = c.getContext('2d'); x.drawImage(g, 0, 0); const d = x.getImageData(0, 0, c.width, c.height).data; const GX = 16, GY = 12; const cells = [];
-    for (let gy = 0; gy < GY; gy++) for (let gx = 0; gx < GX; gx++) { let r = 0, gg = 0, b = 0, n = 0; for (let y = Math.floor(gy * c.height / GY); y < Math.floor((gy + 1) * c.height / GY); y++) for (let xx = Math.floor(gx * c.width / GX); xx < Math.floor((gx + 1) * c.width / GX); xx++) { const i = (y * c.width + xx) * 4; r += d[i]; gg += d[i + 1]; b += d[i + 2]; n += 1; } cells.push([r / n, gg / n, b / n]); }
-    return { cells, far: Number(g.dataset.far), near: Number(g.dataset.near), tris: Number(g.dataset.tris), w: c.width, h: c.height }; });
+  // drawn simply whatever the pace (`&lod=simple`, the documented switch for looking at the simple drawing).
+  // What is acceptable was set before the simple drawing was measured, from the requirements and from what an eye can tell apart:
+  // tests/lib/picture-diff.mjs (NEAR, COLOUR, TEXTURE, STILL), pinned by tests/unit/picture-diff.test.mjs. This check applies those
+  // limits; it does not have limits of its own.
+  const picture = (pg) => pg.evaluate(() => { const g = document.querySelector('[data-testid=slv-canvas]'); const c = document.createElement('canvas'); c.width = g.width; c.height = g.height; const x = c.getContext('2d'); x.drawImage(g, 0, 0); const d = x.getImageData(0, 0, c.width, c.height).data; let s2 = ''; const CH = 0x8000; for (let i = 0; i < d.length; i += CH) s2 += String.fromCharCode.apply(null, d.subarray(i, i + CH));
+    return { b64: btoa(s2), far: Number(g.dataset.far), near: Number(g.dataset.near), farPx: Number(g.dataset.farPx), tris: Number(g.dataset.tris), w: c.width, h: c.height }; }).then((r) => ({ ...r, px: Buffer.from(r.b64, 'base64'), b64: undefined }));
   const state = (pg) => pg.evaluate(() => ({ labels: [...document.querySelectorAll('.slv-stage .cl-labels .slv-tag')].map((e) => `${e.className.replace(/.*slv-tag--/, '')}:${e.textContent}@${e.style.transform}`), table: document.querySelector('.slv-table')?.innerText || '', tris: Number(document.querySelector('[data-testid=slv-canvas]').dataset.tris) }));
   const pair = []; for (const sw of ['?detail=full', '?detail=full&lod=simple']) { const t2 = await open('#/play/stadium' + sw, { role: 'architect', sw: false, w: 1440, h: 900, reduced: true, init }); await t2.page.waitForSelector('[data-testid=stadium-live][data-ready=true]'); await t2.page.waitForTimeout(2500); pair.push(t2); }
-  const [W, S] = pair; const gw = await grid(W.page), gs = await grid(S.page);
-  const diffs = gw.cells.map((c, i) => Math.max(...c.map((v, k) => Math.abs(v - gs.cells[i][k])))); const worst = Math.max(...diffs), mean = diffs.reduce((a2, v) => a2 + v, 0) / diffs.length;
-  // near and far in one view: from the seat in section 112 the neighbours are whole and the far side is simple
-  for (const pg of [W.page, S.page]) { await pg.getByTestId('slv-tab-view').click(); await pg.getByTestId('slv-view-seat').click(); } await S.page.waitForTimeout(1500); const seatW = await grid(W.page), seatS = await grid(S.page);
-  const sd = seatW.cells.map((c, i) => Math.max(...c.map((v, k) => Math.abs(v - seatS.cells[i][k])))); const seatWorst = Math.max(...sd);
-  ok('SLV-18', `distant spectators drawn simply, at the same resolution as the whole picture: in the overview ${gs.far} of ${gs.far + gs.near} sections simply and ${gs.tris} triangles a frame against ${gw.tris}; across 192 cells of the picture the average colour differs by ${mean.toFixed(2)} of 255 on average and ${worst.toFixed(2)} at most. From the seat in section 112, ${seatS.near} sections near the camera are whole and ${seatS.far} far ones simple (largest cell difference ${seatWorst.toFixed(2)})`,
-    gw.far === 0 && gw.near > 20 && gs.far > 20 && gs.near === 0 && gs.tris < gw.tris * 0.75 && gw.w === gs.w && gw.h === gs.h && mean <= 1.5 && worst <= 8 && seatW.far === 0 && seatS.near >= 2 && seatS.far >= 2 && seatWorst <= 8, JSON.stringify({ mean, worst, seatWorst, w: { far: gw.far, near: gw.near, tris: gw.tris }, s: { far: gs.far, near: gs.near, tris: gs.tris }, seat: { near: seatS.near, far: seatS.far } }));
+  const [W, S] = pair; const views = [];
+  const look = async (name, set) => { if (set) { for (const pg of [W.page, S.page]) await set(pg); await S.page.waitForTimeout(1500); } const pw = await picture(W.page), ps = await picture(S.page); await S.page.waitForTimeout(700); const ps2 = await picture(S.page);
+    const c = pw.w === ps.w && pw.h === ps.h ? comparePictures(pw.px, ps.px, pw.w, pw.h) : null; views.push({ name, whole: { far: pw.far, near: pw.near, tris: pw.tris }, simple: { far: ps.far, near: ps.near, farPx: ps.farPx, tris: ps.tris }, c, bad: c ? verdict(c) : ['the two pictures are not the same size'], still: Buffer.compare(ps.px, ps2.px) === 0 }); };
+  await look('the overview');
+  await look('the seat in section 112', async (pg) => { await pg.getByTestId('slv-tab-view').click(); await pg.getByTestId('slv-view-seat').click(); });
+  await look('the broadcast gallery', async (pg) => { await pg.getByTestId('slv-view-gallery').click(); });
+  await look('field level', async (pg) => { await pg.getByTestId('slv-view-field').click(); });
+  await look('the flyover', async (pg) => { await pg.getByTestId('slv-view-flyover').click(); });
+  await look('the overview at a concert', async (pg) => { await pg.getByTestId('slv-view-orbit').click(); await pg.getByTestId('slv-tab-atmos').click(); await pg.getByTestId('slv-atmos-concert').click(); });
+  await look('the overview before the game, by day', async (pg) => { await pg.getByTestId('slv-atmos-pregame').click(); });
+  for (const pg of [W.page, S.page]) await pg.getByTestId('slv-atmos-live').click(); await S.page.waitForTimeout(1500);
+  const line = LOD_NEAR_PX * (1 + LOD_BAND);   // nothing this tall or taller may ever be drawn simply
+  const nearKept = views.every((v) => v.whole.far === 0 && (v.simple.far === 0 || v.simple.farPx <= line + 0.01)); const untouched = views.filter((v) => v.simple.far === 0); const mixed = views.filter((v) => v.simple.far > 0 && v.simple.near > 0);
+  const failing = views.filter((v) => v.bad.length); const o = views[0];
+  ok('SLV-18', `distant spectators drawn simply, judged by limits set beforehand (tests/lib/picture-diff.mjs). ${views.length} views, the same resolution and moment as the whole drawing. NEAR: no section whose nearest spectator is ${line.toFixed(1)} drawn pixels or taller was simplified (the tallest simplified: ${Math.max(...views.map((v) => v.simple.farPx || 0)).toFixed(2)}); ${mixed.length} view(s) had whole and simple sections together; ${untouched.length} view(s) had nothing simplified and there ${untouched.every((v) => v.c && v.c.pixels === 0) ? 'no pixel differs' : 'PIXELS DIFFER'}. COLOUR and TEXTURE over the blocks that differ: ${failing.length ? failing.map((v) => `${v.name}: ${v.bad.join('; ')}`).join(' | ') : `all within the limits (worst view: average ΔE ${Math.max(...views.map((v) => v.c?.meanDE || 0)).toFixed(2)}, 99th percentile ${Math.max(...views.map((v) => v.c?.p99DE || 0)).toFixed(2)}, largest ${Math.max(...views.map((v) => v.c?.maxDE || 0)).toFixed(2)})`}. STILL: ${views.every((v) => v.still) ? 'two readings of each simple picture are the same' : 'A STILL PICTURE CHANGED'}. Cost in the overview: ${o.simple.tris} triangles a frame against ${o.whole.tris}`,
+    nearKept && mixed.length >= 1 && untouched.every((v) => v.c && v.c.pixels === LIMITS.nearPixels) && failing.length === 0 && views.every((v) => v.still) && o.simple.far > 20 && o.simple.tris < o.whole.tris && !W.errs.length && !S.errs.length,
+    JSON.stringify(views.map((v) => ({ n: v.name, w: v.whole, s: v.simple, c: v.c && { px: v.c.pixels, blocks: v.c.differing, mean: +v.c.meanDE.toFixed(2), p99: +v.c.p99DE.toFixed(2), max: +v.c.maxDE.toFixed(2), tex: v.c.textured, med: +v.c.medianContrast.toFixed(2), band: +v.c.contrastInBand.toFixed(2) }, still: v.still }))).slice(0, 1400));
   // the overlays, the labels and the modeled levels are the same whichever way the crowd is drawn
-  for (const pg of [W.page, S.page]) { await pg.getByTestId('slv-view-orbit').click(); } await S.page.waitForTimeout(1200); const w0 = await state(W.page), s0 = await state(S.page);
+  const w0 = await state(W.page), s0 = await state(S.page);   // both pages are back at the overview of the live game
   for (const pg of [W.page, S.page]) { await pg.getByTestId('slv-tab-audio').click(); await pg.getByTestId('slv-overlay-dba').click(); } await S.page.waitForTimeout(1200); const w1 = await state(W.page), s1 = await state(S.page);
   for (const pg of [W.page, S.page]) { await pg.getByTestId('slv-tab-ops').click(); await pg.getByTestId('slv-ops').check(); } await S.page.waitForTimeout(1200); const w2 = await state(W.page), s2 = await state(S.page);
   const same = (x, y) => JSON.stringify(x) === JSON.stringify(y);

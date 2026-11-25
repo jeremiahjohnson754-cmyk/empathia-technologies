@@ -322,8 +322,10 @@ export class Renderer {
    */
   lod(m: Mesh, eye: V3, fovy: number, size: number, was: 0 | 1): 0 | 1 {
     if (!this.gov.simple && !this.forceSimple) return 0;
-    return lodLevel(pixelsTall(size, Math.max(0.01, Math.hypot(eye[0] - m.c[0], eye[1] - m.c[1], eye[2] - m.c[2]) - m.r), fovy, this.canvas.height), was);
+    return lodLevel(this.pixels(m, eye, fovy, size), was);
   }
+  /** how tall, in drawn pixels, the nearest thing of a mesh of things `size` metres tall can be: the distance is to the nearest edge of the mesh's sphere */
+  pixels(m: Mesh, eye: V3, fovy: number, size: number): number { return pixelsTall(size, Math.max(0.01, Math.hypot(eye[0] - m.c[0], eye[1] - m.c[1], eye[2] - m.c[2]) - m.r), fovy, this.canvas.height); }
   resize(dprFull: number) { const dpr = dprFull * this.detail; const c = this.canvas; const w = Math.max(1, Math.round(c.clientWidth * dpr)), h = Math.max(1, Math.round(c.clientHeight * dpr)); if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } this.gl.viewport(0, 0, w, h); }
   /** the light of the scene: the defaults are Campus Life's daylight */
   light: { sun: V3; sunCol: V3; sky: V3; ground: V3; amb: number } = { sun: norm([0.45, 0.8, 0.35]), sunCol: [0.72, 0.69, 0.63], sky: [0.78, 0.86, 0.95], ground: [0.45, 0.42, 0.36], amb: 0.48 };
