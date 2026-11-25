@@ -23,6 +23,9 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export const rel = (root, f) => path.relative(root, f).split(path.sep).join('/');
+/** a NOT RUN line a working run may have: one step 3 covers (pass --browser, pass --studio), or one of the two the regression itself leaves NOT
+ *  RUN on the workstation, matched by the runner's own reasons (scripts/test.mjs): the ML prototype's dataset, and the full film decode */
+export const MAY_NOT_RUN = /— pass --browser|— pass --studio|^NOT_RUN\s+unit: ml research prototype \(python\) — dataset not generated|^NOT_RUN\s+media: full decode of every curated film — pass --films/;
 
 // ---- addresses ----------------------------------------------------------------------------------------------------------------------
 /** the segments of a route pattern or an address; an address a suite builds at run time ('#/here/${id}') keeps its open last segment */

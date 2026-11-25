@@ -13,7 +13,7 @@
 //   node --test tests/unit/preflight.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { matches, addressesIn, select, registered, ACROSS } from '../../scripts/lib/impact.mjs';
+import { matches, addressesIn, select, registered, ACROSS, MAY_NOT_RUN } from '../../scripts/lib/impact.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const scratch = path.join(repo, '.local/preflight/tmp-unit');
@@ -63,6 +63,10 @@ test('PRE-06 placed or every suite; documents nothing; the server and the studio
 });
 
 test('PRE-07 every browser suite is run by the regression; the preflight writes nothing of record', () => {
+  // the two NOT RUN the regression itself has on the workstation are allowed by their real wording, and nothing else is
+  const last = JSON.parse(fs.readFileSync(path.join(repo, 'tests/evidence/TEST_RESULTS.json'), 'utf8')).suites.filter((x) => x.result === 'NOT_RUN').map((x) => `NOT_RUN  ${x.suite} — ${x.why}`);
+  assert.ok(last.length >= 1 && last.every((l) => MAY_NOT_RUN.test(l)), `the regression's own NOT RUN lines are allowed: ${last.filter((l) => !MAY_NOT_RUN.test(l)).join(' | ')}`);
+  for (const bad of ['NOT_RUN  security: incidents.test.mjs — no local database', 'NOT_RUN  unit: something new — dataset not generated']) assert.ok(!MAY_NOT_RUN.test(bad), `${bad} is refused`);
   assert.deepEqual(registered(repo).unregistered, [], 'a suite no regression runs is a gap in the gate');
   const s = fs.readFileSync(path.join(repo, 'scripts/preflight.mjs'), 'utf8').replace(/^\s*(\/\/|\*).*$/gm, '');
   const mentions = [...s.matchAll(/[^\n]*tests\/evidence[^\n]*/g)].map((m) => m[0]); assert.ok(mentions.length === 1 && /readFileSync\(path\.join\(root, 'tests\/evidence\/TEST_RESULTS\.json'\)/.test(mentions[0]), 'it only reads the last results, for timings');

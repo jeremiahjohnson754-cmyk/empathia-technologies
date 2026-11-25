@@ -24,7 +24,7 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { select, registered, ACROSS, rel } from './lib/impact.mjs';
+import { select, registered, ACROSS, rel, MAY_NOT_RUN } from './lib/impact.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (k) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').slice(k.length + 3);
@@ -60,8 +60,8 @@ const commit = git('rev-parse', 'HEAD'); const stamp = new Date().toISOString().
 // never a run of record: not under CI, and every suite writes to scratch evidence
 const env = { ...process.env, EMPATHIA_EVIDENCE_DIR: path.join(out, `evidence-${stamp}`) }; delete env.CI; delete env.EMPATHIA_EVIDENCE;
 const report = [`# Preflight on ${commit.slice(0, 8)}${git('status', '--porcelain') ? ' plus uncommitted changes' : ''}, ${new Date().toISOString()}`, '', `Measured from ${base}. Not evidence of record: the exact-commit regression is.`, ''];
-// what a working run may leave NOT RUN: the browser, end-to-end and site suites (step 3's), and the two the regression itself never runs here
-const MAY_NOT_RUN = /— pass --browser|— pass --studio|machine-learning|ML dataset|film decode|full film/i;
+// what a working run may leave NOT RUN: the browser, end-to-end and site suites (step 3's), and the two the regression itself leaves NOT RUN
+// here, in the runner's own words (the first version guessed the wording and refused both: tests/unit/preflight.test.mjs PRE-07 now reads it)
 const step = (label, args, timeoutMs) => { const t0 = Date.now(); const p = spawnSync(process.execPath, args, { cwd: root, encoding: 'utf8', maxBuffer: 256 << 20, env, timeout: timeoutMs });
   const s = Math.round((Date.now() - t0) / 1000); const text = `${p.stdout || ''}${p.stderr || ''}`; const lines = text.trim().split('\n');
   const notRun = lines.filter((l) => /^NOT_RUN\s/.test(l)).filter((l) => !MAY_NOT_RUN.test(l));
