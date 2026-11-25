@@ -1,8 +1,8 @@
 {
-  "at": "2026-11-24T13:47:26.966Z",
+  "at": "2026-11-25T00:27:35.061Z",
   "node": "v22.23.4",
-  "commit": "1dae37033a303081304ce5ceee6c3d6a2f6c43f7",
-  "pass": 293,
+  "commit": "87956a57f4c432668775f743af78e42d32c1d567",
+  "pass": 296,
   "fail": 0,
   "notRun": 2,
   "suites": [
@@ -13,7 +13,7 @@
       "tests": 158,
       "pass": 158,
       "fail": 0,
-      "seconds": 1,
+      "seconds": 0.9,
       "command": "../../../opt/node22/bin/node --test packages/commissioning-engine/dist/test/**/*.test.js"
     },
     {
@@ -59,7 +59,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 2.7,
+      "seconds": 2.5,
       "command": "../../../opt/node22/bin/node --test tests/integration/api-client.test.mjs"
     },
     {
@@ -69,7 +69,7 @@
       "tests": 12,
       "pass": 12,
       "fail": 0,
-      "seconds": 3.5,
+      "seconds": 3.1,
       "command": "../../../opt/node22/bin/node --test tests/security/proof-registry.test.mjs"
     },
     {
@@ -79,7 +79,7 @@
       "tests": 2,
       "pass": 2,
       "fail": 0,
-      "seconds": 15.6,
+      "seconds": 16.1,
       "command": "../../../opt/node22/bin/node --test tests/security/authority-matrix.test.mjs"
     },
     {
@@ -89,7 +89,7 @@
       "tests": 16,
       "pass": 16,
       "fail": 0,
-      "seconds": 11.5,
+      "seconds": 10.8,
       "command": "../../../opt/node22/bin/node --test tests/security/project-lifecycle.test.mjs"
     },
     {
@@ -99,7 +99,7 @@
       "tests": 8,
       "pass": 8,
       "fail": 0,
-      "seconds": 4.3,
+      "seconds": 4.7,
       "command": "../../../opt/node22/bin/node --test tests/security/mission-control.test.mjs"
     },
     {
@@ -109,7 +109,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 22.2,
+      "seconds": 22.3,
       "command": "../../../opt/node22/bin/node --test tests/security/training-isolation.test.mjs"
     },
     {
@@ -119,7 +119,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 7.3,
+      "seconds": 7.9,
       "command": "../../../opt/node22/bin/node --test tests/security/placement.test.mjs"
     },
     {
@@ -129,7 +129,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 5.2,
+      "seconds": 5.8,
       "command": "../../../opt/node22/bin/node --test tests/security/flagship-model.test.mjs"
     },
     {
@@ -139,7 +139,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 7.3,
+      "seconds": 7,
       "command": "../../../opt/node22/bin/node --test tests/security/directory.test.mjs"
     },
     {
@@ -150,7 +150,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 10.5,
+      "seconds": 10.2,
       "command": "../../../opt/node22/bin/node tests/e2e/website-lead.e2e.mjs"
     },
     {
@@ -161,7 +161,7 @@
       "pass": 110,
       "fail": 0,
       "notRun": 0,
-      "seconds": 136.1,
+      "seconds": 136.2,
       "command": "../../../opt/node22/bin/node tests/browser/demo.test.mjs"
     },
     {
@@ -171,7 +171,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.8,
+      "seconds": 0.7,
       "command": "../../../opt/node22/bin/node --test tests/unit/people-involvement.test.mjs"
     },
     {
@@ -191,7 +191,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.8,
+      "seconds": 0.7,
       "command": "../../../opt/node22/bin/node --test tests/unit/universal-phases.test.mjs"
     },
     {
@@ -202,7 +202,7 @@
       "pass": 915,
       "fail": 0,
       "notRun": 0,
-      "seconds": 32.2,
+      "seconds": 25.3,
       "command": "../../../opt/node22/bin/node scripts/verify/export-formats.mjs --out=tests/evidence/exports"
     },
     {
@@ -213,7 +213,7 @@
       "pass": 25,
       "fail": 0,
       "notRun": 0,
-      "seconds": 10.5,
+      "seconds": 8.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-decisions.test.mjs"
     },
     {
@@ -224,7 +224,7 @@
       "pass": 115,
       "fail": 0,
       "notRun": 0,
-      "seconds": 205.5,
+      "seconds": 179.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-parity-areas.test.mjs"
     },
     {
@@ -235,7 +235,7 @@
       "pass": 21,
       "fail": 0,
       "notRun": 0,
-      "seconds": 19.7,
+      "seconds": 18,
       "command": "../../../opt/node22/bin/node tests/browser/demo-rolemotion.test.mjs"
     },
     {
@@ -246,18 +246,18 @@
       "pass": 28,
       "fail": 0,
       "notRun": 0,
-      "seconds": 13.9,
+      "seconds": 12,
       "command": "../../../opt/node22/bin/node tests/browser/demo-certs.test.mjs"
     },
     {
       "suite": "browser: demo-campus-life",
       "kind": "browser",
       "result": "PASS",
-      "tests": 20,
-      "pass": 20,
+      "tests": 22,
+      "pass": 22,
       "fail": 0,
       "notRun": 0,
-      "seconds": 210.5,
+      "seconds": 181.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-campus-life.test.mjs"
     },
     {
@@ -268,7 +268,7 @@
       "pass": 38,
       "fail": 0,
       "notRun": 0,
-      "seconds": 261.7,
+      "seconds": 151.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-gestures.test.mjs"
     },
     {
@@ -279,7 +279,7 @@
       "pass": 71,
       "fail": 0,
       "notRun": 0,
-      "seconds": 83.9,
+      "seconds": 81.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-links.test.mjs"
     },
     {
@@ -289,7 +289,7 @@
       "tests": 16,
       "pass": 16,
       "fail": 0,
-      "seconds": 1.3,
+      "seconds": 1,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-lite.test.mjs"
     },
     {
@@ -309,7 +309,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.7,
+      "seconds": 0.8,
       "command": "../../../opt/node22/bin/node --test tests/unit/heat-metrics.test.mjs"
     },
     {
@@ -369,7 +369,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 1,
+      "seconds": 0.9,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-docs5.test.mjs"
     },
     {
@@ -399,7 +399,7 @@
       "tests": 11,
       "pass": 11,
       "fail": 0,
-      "seconds": 0.7,
+      "seconds": 0.9,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-core-metrics.test.mjs"
     },
     {
@@ -409,7 +409,7 @@
       "tests": 372,
       "pass": 372,
       "fail": 0,
-      "seconds": 305.9,
+      "seconds": 293.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite.test.mjs"
     },
     {
@@ -420,7 +420,7 @@
       "pass": 10,
       "fail": 0,
       "notRun": 0,
-      "seconds": 11.1,
+      "seconds": 10.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lesson.test.mjs"
     },
     {
@@ -431,7 +431,7 @@
       "pass": 74,
       "fail": 0,
       "notRun": 0,
-      "seconds": 46.6,
+      "seconds": 40.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite-spatial.test.mjs"
     },
     {
@@ -442,7 +442,7 @@
       "pass": 22,
       "fail": 0,
       "notRun": 0,
-      "seconds": 23.1,
+      "seconds": 22.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite-rooms.test.mjs"
     },
     {
@@ -452,7 +452,7 @@
       "tests": 317,
       "pass": 317,
       "fail": 0,
-      "seconds": 158.3,
+      "seconds": 152.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-core.test.mjs"
     },
     {
@@ -463,7 +463,7 @@
       "pass": 42,
       "fail": 0,
       "notRun": 0,
-      "seconds": 22.8,
+      "seconds": 20.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-estate.test.mjs"
     },
     {
@@ -474,7 +474,7 @@
       "pass": 44,
       "fail": 0,
       "notRun": 0,
-      "seconds": 55.1,
+      "seconds": 52.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-offline.test.mjs"
     },
     {
@@ -485,7 +485,7 @@
       "pass": 93,
       "fail": 0,
       "notRun": 0,
-      "seconds": 33.3,
+      "seconds": 30.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-critical-signal.test.mjs"
     },
     {
@@ -496,7 +496,7 @@
       "pass": 21,
       "fail": 0,
       "notRun": 0,
-      "seconds": 15,
+      "seconds": 12.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-champion-start.test.mjs"
     },
     {
@@ -507,7 +507,7 @@
       "pass": 50,
       "fail": 0,
       "notRun": 0,
-      "seconds": 15.2,
+      "seconds": 12.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-learn.test.mjs"
     },
     {
@@ -518,7 +518,7 @@
       "pass": 13,
       "fail": 0,
       "notRun": 0,
-      "seconds": 8.4,
+      "seconds": 6.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-drill.test.mjs"
     },
     {
@@ -529,7 +529,7 @@
       "pass": 7,
       "fail": 0,
       "notRun": 0,
-      "seconds": 16.2,
+      "seconds": 15.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-room-qr.test.mjs"
     },
     {
@@ -540,7 +540,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7.9,
+      "seconds": 7.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-asset-life.test.mjs"
     },
     {
@@ -551,7 +551,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 3.5,
+      "seconds": 3.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-plan-why.test.mjs"
     },
     {
@@ -562,7 +562,7 @@
       "pass": 3,
       "fail": 0,
       "notRun": 0,
-      "seconds": 2.7,
+      "seconds": 2.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite-device-checks.test.mjs"
     },
     {
@@ -573,49 +573,60 @@
       "pass": 17,
       "fail": 0,
       "notRun": 0,
-      "seconds": 80.3,
+      "seconds": 71.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-connected.test.mjs"
     },
     {
-      "suite": "browser: Founder Studio",
+      "suite": "unit: the durable copy of the private assets (requests signed as the published example; push only to a bucket that keeps versions and gives nothing without a credential; pull keeps only files the manifest names; encrypted backups open only with the recipient’s key and restore all or nothing; no secret printed)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "seconds": 2.3,
+      "command": "../../../opt/node22/bin/node --test tests/unit/private-bucket.test.mjs"
+    },
+    {
+      "suite": "deploy: Render Blueprints (static validation)",
+      "kind": "deploy",
+      "result": "PASS",
+      "tests": 37,
+      "pass": 37,
+      "fail": 0,
+      "seconds": 0.1,
+      "command": "python3 -I scripts/staging/validate-blueprints.py"
+    },
+    {
+      "suite": "browser: public sites security (CSP in the page, no request leaves, injection, tampering, View-as)",
+      "kind": "browser",
+      "result": "PASS",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "notRun": 0,
+      "seconds": 158.2,
+      "command": "../../../opt/node22/bin/node tests/browser/public-security.test.mjs"
+    },
+    {
+      "suite": "security: public builds expose nothing private (secrets, source maps, contact data, build-machine paths, embedded data, private markers)",
+      "kind": "security",
+      "result": "PASS",
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "seconds": 0.8,
+      "command": "../../../opt/node22/bin/node scripts/audit/public-exposure.mjs"
+    },
+    {
+      "suite": "browser: website Follow one device and product launches (#232, 17:25 §6)",
       "kind": "browser",
       "result": "PASS",
       "tests": 19,
       "pass": 19,
       "fail": 0,
       "notRun": 0,
-      "seconds": 68.1,
-      "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
-    },
-    {
-      "suite": "deploy: the demonstration staging rehearsed from its Blueprint — the start command on an empty database, the deployment check (permissions, unauthorized access, isolation, persistence, cross-origin, reset), a restart, the V-1 gate",
-      "kind": "deploy",
-      "result": "PASS",
-      "tests": 13,
-      "pass": 13,
-      "fail": 0,
-      "seconds": 52.4,
-      "command": "../../../opt/node22/bin/node deploy/render/rehearse-demo.mjs --assemble"
-    },
-    {
-      "suite": "unit: the public exposure audit catches each planted finding (secrets, maps, contact data, machine paths, embedded data, private markers)",
-      "kind": "unit",
-      "result": "PASS",
-      "tests": 13,
-      "pass": 13,
-      "fail": 0,
-      "seconds": 0.9,
-      "command": "../../../opt/node22/bin/node --test tests/unit/public-exposure.test.mjs"
-    },
-    {
-      "suite": "build: the website within its budgets with the staging URLs (19 Nov 2026: the Render build failed at 49,186 B while the local build passed)",
-      "kind": "build",
-      "result": "PASS",
-      "tests": 1,
-      "pass": 1,
-      "fail": 0,
-      "seconds": 1.1,
-      "command": "../../../opt/node22/bin/node apps/website/build.mjs --out=/tmp/empathia-website-staging-budget --base=https://empathia-website-next.onrender.com --demo=https://empathia-demo-next.onrender.com --api=https://empathia-demo-api-l04n.onrender.com"
+      "seconds": 5.6,
+      "command": "../../../opt/node22/bin/node tests/browser/website-follow.test.mjs"
     },
     {
       "suite": "unit: packages/event-contracts",
@@ -644,7 +655,7 @@
       "tests": 18,
       "pass": 18,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/assurance-engine/dist/test/**/*.test.js"
     },
     {
@@ -654,7 +665,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test integrations/mocks/dist/test/**/*.test.js"
     },
     {
@@ -664,7 +675,7 @@
       "tests": 15,
       "pass": 15,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.4,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-policy.test.mjs"
     },
     {
@@ -674,7 +685,7 @@
       "tests": 1,
       "pass": 1,
       "fail": 0,
-      "seconds": 3.3,
+      "seconds": 2.3,
       "command": "../../../opt/node22/bin/node --test tests/integration/integration-worker.test.mjs"
     },
     {
@@ -684,7 +695,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 10,
+      "seconds": 7.4,
       "command": "../../../opt/node22/bin/node --test tests/security/room-thread.test.mjs"
     },
     {
@@ -694,7 +705,7 @@
       "tests": 10,
       "pass": 10,
       "fail": 0,
-      "seconds": 12.3,
+      "seconds": 9.2,
       "command": "../../../opt/node22/bin/node --test tests/security/governance.test.mjs"
     },
     {
@@ -704,7 +715,7 @@
       "tests": 11,
       "pass": 11,
       "fail": 0,
-      "seconds": 5,
+      "seconds": 4,
       "command": "../../../opt/node22/bin/node --test tests/security/service-lifecycle.test.mjs"
     },
     {
@@ -714,7 +725,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 5.8,
+      "seconds": 4.6,
       "command": "../../../opt/node22/bin/node --test tests/security/competency.test.mjs"
     },
     {
@@ -724,7 +735,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 3.9,
+      "seconds": 3.2,
       "command": "../../../opt/node22/bin/node --test tests/security/asset-retirement.test.mjs"
     },
     {
@@ -734,7 +745,7 @@
       "tests": 13,
       "pass": 13,
       "fail": 0,
-      "seconds": 22.4,
+      "seconds": 16.9,
       "command": "../../../opt/node22/bin/node --test tests/security/criteria.test.mjs"
     },
     {
@@ -744,7 +755,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 17.8,
+      "seconds": 12.2,
       "command": "../../../opt/node22/bin/node --test tests/security/second-room.test.mjs"
     },
     {
@@ -754,7 +765,7 @@
       "tests": 2,
       "pass": 2,
       "fail": 0,
-      "seconds": 3.6,
+      "seconds": 2.8,
       "command": "../../../opt/node22/bin/node --test tests/security/vocabulary.test.mjs"
     },
     {
@@ -764,7 +775,7 @@
       "tests": 89,
       "pass": 89,
       "fail": 0,
-      "seconds": 34.3,
+      "seconds": 28.9,
       "command": "../../../opt/node22/bin/node tests/browser/enterprise-web.test.mjs"
     },
     {
@@ -784,7 +795,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/engineer-faults.test.mjs"
     },
     {
@@ -794,7 +805,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/field-tools.test.mjs"
     },
     {
@@ -804,7 +815,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.9,
+      "seconds": 0.7,
       "command": "../../../opt/node22/bin/node --test tests/unit/search-asset-person.test.mjs"
     },
     {
@@ -815,7 +826,7 @@
       "pass": 29,
       "fail": 0,
       "notRun": 0,
-      "seconds": 9.4,
+      "seconds": 7.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-dispatch.test.mjs"
     },
     {
@@ -826,7 +837,7 @@
       "pass": 164,
       "fail": 0,
       "notRun": 0,
-      "seconds": 29.8,
+      "seconds": 25,
       "command": "../../../opt/node22/bin/node tests/browser/demo-destructive.test.mjs"
     },
     {
@@ -837,7 +848,7 @@
       "pass": 31,
       "fail": 0,
       "notRun": 0,
-      "seconds": 80.2,
+      "seconds": 66,
       "command": "../../../opt/node22/bin/node tests/browser/demo-access.test.mjs"
     },
     {
@@ -848,7 +859,7 @@
       "pass": 29,
       "fail": 0,
       "notRun": 0,
-      "seconds": 38.9,
+      "seconds": 30.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-searchparty-bar.test.mjs"
     },
     {
@@ -859,18 +870,18 @@
       "pass": 9,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7.9,
+      "seconds": 5.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-quizlib.test.mjs"
     },
     {
       "suite": "browser: demo-stadium-live",
       "kind": "browser",
       "result": "PASS",
-      "tests": 14,
-      "pass": 14,
+      "tests": 15,
+      "pass": 15,
       "fail": 0,
       "notRun": 0,
-      "seconds": 184.6,
+      "seconds": 147.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-stadium-live.test.mjs"
     },
     {
@@ -881,7 +892,7 @@
       "pass": 29,
       "fail": 0,
       "notRun": 0,
-      "seconds": 34.2,
+      "seconds": 30.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-search-journey.test.mjs"
     },
     {
@@ -892,7 +903,7 @@
       "pass": 153,
       "fail": 0,
       "notRun": 0,
-      "seconds": 109.3,
+      "seconds": 100.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-route-sweep.test.mjs"
     },
     {
@@ -902,7 +913,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-worlds.test.mjs"
     },
     {
@@ -932,7 +943,7 @@
       "tests": 8,
       "pass": 8,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-ratings.test.mjs"
     },
     {
@@ -962,7 +973,7 @@
       "tests": 10,
       "pass": 10,
       "fail": 0,
-      "seconds": 1,
+      "seconds": 0.9,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-manual.test.mjs"
     },
     {
@@ -972,7 +983,7 @@
       "tests": 8,
       "pass": 8,
       "fail": 0,
-      "seconds": 1.1,
+      "seconds": 1.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-control.test.mjs"
     },
     {
@@ -982,7 +993,7 @@
       "tests": 8,
       "pass": 8,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-champion-start.test.mjs"
     },
     {
@@ -992,7 +1003,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-guide-chapters.test.mjs"
     },
     {
@@ -1002,7 +1013,7 @@
       "tests": 19,
       "pass": 19,
       "fail": 0,
-      "seconds": 1.5,
+      "seconds": 1.1,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-rolehome.test.mjs"
     },
     {
@@ -1013,7 +1024,7 @@
       "pass": 11,
       "fail": 0,
       "notRun": 0,
-      "seconds": 39.1,
+      "seconds": 34.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-welcome.test.mjs"
     },
     {
@@ -1024,7 +1035,7 @@
       "pass": 10,
       "fail": 0,
       "notRun": 0,
-      "seconds": 13.2,
+      "seconds": 11,
       "command": "../../../opt/node22/bin/node tests/browser/demo-journey.test.mjs"
     },
     {
@@ -1035,7 +1046,7 @@
       "pass": 17,
       "fail": 0,
       "notRun": 0,
-      "seconds": 29.8,
+      "seconds": 26.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-cinematic.test.mjs"
     },
     {
@@ -1046,7 +1057,7 @@
       "pass": 30,
       "fail": 0,
       "notRun": 0,
-      "seconds": 19.9,
+      "seconds": 15.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite-tabs.test.mjs"
     },
     {
@@ -1057,7 +1068,7 @@
       "pass": 15,
       "fail": 0,
       "notRun": 0,
-      "seconds": 21.2,
+      "seconds": 16.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite-views.test.mjs"
     },
     {
@@ -1068,7 +1079,7 @@
       "pass": 94,
       "fail": 0,
       "notRun": 0,
-      "seconds": 85.6,
+      "seconds": 69.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-proof.test.mjs"
     },
     {
@@ -1079,7 +1090,7 @@
       "pass": 36,
       "fail": 0,
       "notRun": 0,
-      "seconds": 13.8,
+      "seconds": 11.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-optimizer.test.mjs"
     },
     {
@@ -1090,7 +1101,7 @@
       "pass": 125,
       "fail": 0,
       "notRun": 0,
-      "seconds": 184.3,
+      "seconds": 157.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-rolehome.test.mjs"
     },
     {
@@ -1101,7 +1112,7 @@
       "pass": 21,
       "fail": 0,
       "notRun": 0,
-      "seconds": 57.4,
+      "seconds": 48.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-champion.test.mjs"
     },
     {
@@ -1112,7 +1123,7 @@
       "pass": 33,
       "fail": 0,
       "notRun": 0,
-      "seconds": 19,
+      "seconds": 15.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-onboard.test.mjs"
     },
     {
@@ -1123,7 +1134,7 @@
       "pass": 38,
       "fail": 0,
       "notRun": 0,
-      "seconds": 61.4,
+      "seconds": 45.2,
       "command": "../../../opt/node22/bin/node tests/browser/demo-boss.test.mjs"
     },
     {
@@ -1134,7 +1145,7 @@
       "pass": 7,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7.3,
+      "seconds": 5.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-search-parity.test.mjs"
     },
     {
@@ -1145,7 +1156,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 21.3,
+      "seconds": 18.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-request-45s.test.mjs"
     },
     {
@@ -1156,7 +1167,7 @@
       "pass": 7,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7.3,
+      "seconds": 5.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-deficiencies.test.mjs"
     },
     {
@@ -1167,7 +1178,7 @@
       "pass": 5,
       "fail": 0,
       "notRun": 0,
-      "seconds": 3.7,
+      "seconds": 2.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-scenarios.test.mjs"
     },
     {
@@ -1178,7 +1189,7 @@
       "pass": 5,
       "fail": 0,
       "notRun": 0,
-      "seconds": 9.6,
+      "seconds": 7.2,
       "command": "../../../opt/node22/bin/node tests/browser/demo-refresh.test.mjs"
     },
     {
@@ -1189,49 +1200,61 @@
       "pass": 44,
       "fail": 0,
       "notRun": 0,
-      "seconds": 180,
+      "seconds": 146.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-flagship.test.mjs"
     },
     {
-      "suite": "e2e: founder town hall (Founder Edition)",
-      "kind": "e2e",
-      "result": "PASS",
-      "tests": 25,
-      "pass": 25,
-      "fail": 0,
-      "seconds": 50.7,
-      "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
-    },
-    {
-      "suite": "deploy: public sites audit (functional, a11y, responsive; no P0/P1)",
-      "kind": "deploy",
-      "result": "PASS",
-      "tests": 260,
-      "pass": 260,
-      "fail": 0,
-      "seconds": 408.1,
-      "command": "../../../opt/node22/bin/node scripts/audit/site-audit.mjs --strict --out=tests/evidence/SITE_AUDIT.json"
-    },
-    {
-      "suite": "unit: link previews: both share cards are 1200 × 630, and the tags name the image only with a public address",
-      "kind": "unit",
-      "result": "PASS",
-      "tests": 2,
-      "pass": 2,
-      "fail": 0,
-      "seconds": 0.1,
-      "command": "../../../opt/node22/bin/node --test tests/unit/share-meta.test.mjs"
-    },
-    {
-      "suite": "browser: website Build Your Empathia (price book 3: every figure from estimate(), shareable, enquiry and demonstration one click away)",
+      "suite": "browser: Founder Studio",
       "kind": "browser",
       "result": "PASS",
-      "tests": 29,
-      "pass": 29,
+      "tests": 19,
+      "pass": 19,
       "fail": 0,
       "notRun": 0,
-      "seconds": 16.4,
-      "command": "../../../opt/node22/bin/node tests/browser/website-pricing.test.mjs"
+      "seconds": 64.8,
+      "command": "../../../opt/node22/bin/node tests/browser/founder-studio.test.mjs"
+    },
+    {
+      "suite": "deploy: the demonstration staging rehearsed from its Blueprint — the start command on an empty database, the deployment check (permissions, unauthorized access, isolation, persistence, cross-origin, reset), a restart, the V-1 gate",
+      "kind": "deploy",
+      "result": "PASS",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "seconds": 42.5,
+      "command": "../../../opt/node22/bin/node deploy/render/rehearse-demo.mjs --assemble"
+    },
+    {
+      "suite": "unit: drawing detail follows the frame rate (lowered step by step when a scene is slow, restored when fewer pixels buy no speed, never below half, off with detail=full)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "seconds": 0.2,
+      "command": "../../../opt/node22/bin/node --test tests/unit/render-detail.test.mjs"
+    },
+    {
+      "suite": "browser: website pricing and pilot readiness",
+      "kind": "browser",
+      "result": "PASS",
+      "tests": 54,
+      "pass": 54,
+      "fail": 0,
+      "notRun": 0,
+      "seconds": 18.1,
+      "command": "../../../opt/node22/bin/node tests/browser/website-pilot.test.mjs"
+    },
+    {
+      "suite": "browser: website home opening (17:25 §4: the founder headline, the room-to-estate sequence from the demonstration, two actions)",
+      "kind": "browser",
+      "result": "PASS",
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "notRun": 0,
+      "seconds": 6,
+      "command": "../../../opt/node22/bin/node tests/browser/website-opening.test.mjs"
     },
     {
       "suite": "unit: packages/relationship-engine",
@@ -1240,7 +1263,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/relationship-engine/dist/test/**/*.test.js"
     },
     {
@@ -1250,7 +1273,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/kpi-engine/dist/test/**/*.test.js"
     },
     {
@@ -1280,7 +1303,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.7,
+      "seconds": 0.6,
       "command": "python3 -I -m unittest discover -s services/intelligence-python/tests"
     },
     {
@@ -1290,7 +1313,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 3,
+      "seconds": 2.2,
       "command": "../../../opt/node22/bin/node --test tests/integration/observability.test.mjs"
     },
     {
@@ -1300,7 +1323,7 @@
       "tests": 18,
       "pass": 18,
       "fail": 0,
-      "seconds": 34.1,
+      "seconds": 25.6,
       "command": "../../../opt/node22/bin/node --test tests/security/demo-sandbox.test.mjs"
     },
     {
@@ -1310,7 +1333,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 4,
+      "seconds": 3,
       "command": "../../../opt/node22/bin/node --test tests/security/administration.test.mjs"
     },
     {
@@ -1320,7 +1343,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 5,
+      "seconds": 3.8,
       "command": "../../../opt/node22/bin/node --test tests/security/apex.test.mjs"
     },
     {
@@ -1330,7 +1353,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 3.9,
+      "seconds": 2.9,
       "command": "../../../opt/node22/bin/node --test tests/security/ledger.test.mjs"
     },
     {
@@ -1340,7 +1363,7 @@
       "tests": 10,
       "pass": 10,
       "fail": 0,
-      "seconds": 5.3,
+      "seconds": 3.5,
       "command": "../../../opt/node22/bin/node --test tests/security/device-register.test.mjs"
     },
     {
@@ -1350,7 +1373,7 @@
       "tests": 1,
       "pass": 1,
       "fail": 0,
-      "seconds": 4.2,
+      "seconds": 3.6,
       "command": "../../../opt/node22/bin/node --test tests/security/shutdown.test.mjs"
     },
     {
@@ -1360,7 +1383,7 @@
       "tests": 8,
       "pass": 8,
       "fail": 0,
-      "seconds": 10,
+      "seconds": 7.4,
       "command": "../../../opt/node22/bin/node --test tests/security/measured-exception.test.mjs"
     },
     {
@@ -1370,7 +1393,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 4.6,
+      "seconds": 3,
       "command": "../../../opt/node22/bin/node --test tests/security/platform-jumps.test.mjs"
     },
     {
@@ -1380,7 +1403,7 @@
       "tests": 29,
       "pass": 29,
       "fail": 0,
-      "seconds": 3.6,
+      "seconds": 2.8,
       "command": "../../../opt/node22/bin/node tests/browser/tokens.test.mjs"
     },
     {
@@ -1390,7 +1413,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/service-import.test.mjs"
     },
     {
@@ -1410,7 +1433,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/field-record.test.mjs"
     },
     {
@@ -1431,7 +1454,7 @@
       "pass": 31,
       "fail": 0,
       "notRun": 0,
-      "seconds": 11.1,
+      "seconds": 8.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-servicehands.test.mjs"
     },
     {
@@ -1442,7 +1465,7 @@
       "pass": 23,
       "fail": 0,
       "notRun": 0,
-      "seconds": 11,
+      "seconds": 7.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-enquiry.test.mjs"
     },
     {
@@ -1453,7 +1476,7 @@
       "pass": 20,
       "fail": 0,
       "notRun": 0,
-      "seconds": 38.3,
+      "seconds": 28.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-viewas.test.mjs"
     },
     {
@@ -1464,7 +1487,7 @@
       "pass": 5,
       "fail": 0,
       "notRun": 0,
-      "seconds": 19.2,
+      "seconds": 16,
       "command": "../../../opt/node22/bin/node tests/browser/demo-boundaries.test.mjs"
     },
     {
@@ -1475,29 +1498,29 @@
       "pass": 13,
       "fail": 0,
       "notRun": 0,
-      "seconds": 12,
+      "seconds": 8.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-fieldcalc.test.mjs"
     },
     {
       "suite": "browser: demo-expo-live",
       "kind": "browser",
       "result": "PASS",
-      "tests": 12,
-      "pass": 12,
+      "tests": 13,
+      "pass": 13,
       "fail": 0,
       "notRun": 0,
-      "seconds": 37.9,
+      "seconds": 36.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-expo-live.test.mjs"
     },
     {
       "suite": "browser: demo-voice",
       "kind": "browser",
       "result": "PASS",
-      "tests": 58,
-      "pass": 58,
+      "tests": 60,
+      "pass": 60,
       "fail": 0,
       "notRun": 0,
-      "seconds": 73.5,
+      "seconds": 64.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-voice.test.mjs"
     },
     {
@@ -1508,7 +1531,7 @@
       "pass": 39,
       "fail": 0,
       "notRun": 0,
-      "seconds": 73.2,
+      "seconds": 65.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-signal-film.test.mjs"
     },
     {
@@ -1518,7 +1541,7 @@
       "tests": 21,
       "pass": 21,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-estates.test.mjs"
     },
     {
@@ -1528,7 +1551,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 1.8,
+      "seconds": 1.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/launch-intents.test.mjs"
     },
     {
@@ -1538,7 +1561,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-drills.test.mjs"
     },
     {
@@ -1548,7 +1571,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.6,
+      "seconds": 0.5,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-meltdown.test.mjs"
     },
     {
@@ -1558,7 +1581,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-mentor.test.mjs"
     },
     {
@@ -1568,7 +1591,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/build-workbook.test.mjs"
     },
     {
@@ -1578,7 +1601,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 2.4,
+      "seconds": 1.6,
       "command": "../../../opt/node22/bin/node --test tests/unit/docs-generated.test.mjs"
     },
     {
@@ -1588,7 +1611,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 1.2,
+      "seconds": 0.8,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-champion.test.mjs"
     },
     {
@@ -1598,7 +1621,7 @@
       "tests": 11,
       "pass": 11,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-knowledge-graph.test.mjs"
     },
     {
@@ -1608,7 +1631,7 @@
       "tests": 8,
       "pass": 8,
       "fail": 0,
-      "seconds": 1.9,
+      "seconds": 1.4,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-harmony.test.mjs"
     },
     {
@@ -1629,7 +1652,7 @@
       "pass": 14,
       "fail": 0,
       "notRun": 0,
-      "seconds": 55.8,
+      "seconds": 51.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-coach.test.mjs"
     },
     {
@@ -1640,7 +1663,7 @@
       "pass": 11,
       "fail": 0,
       "notRun": 0,
-      "seconds": 18.9,
+      "seconds": 16.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-room-jumps.test.mjs"
     },
     {
@@ -1651,7 +1674,7 @@
       "pass": 9,
       "fail": 0,
       "notRun": 0,
-      "seconds": 15.9,
+      "seconds": 12.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-signal-lite.test.mjs"
     },
     {
@@ -1662,7 +1685,7 @@
       "pass": 28,
       "fail": 0,
       "notRun": 0,
-      "seconds": 18.6,
+      "seconds": 15.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite-arrange.test.mjs"
     },
     {
@@ -1672,7 +1695,7 @@
       "tests": 178,
       "pass": 178,
       "fail": 0,
-      "seconds": 427.7,
+      "seconds": 384.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-tours.test.mjs"
     },
     {
@@ -1683,7 +1706,7 @@
       "pass": 68,
       "fail": 0,
       "notRun": 0,
-      "seconds": 54.1,
+      "seconds": 41,
       "command": "../../../opt/node22/bin/node tests/browser/demo-docs5.test.mjs"
     },
     {
@@ -1694,7 +1717,7 @@
       "pass": 99,
       "fail": 0,
       "notRun": 0,
-      "seconds": 157.3,
+      "seconds": 113.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-story.test.mjs"
     },
     {
@@ -1705,7 +1728,7 @@
       "pass": 67,
       "fail": 0,
       "notRun": 0,
-      "seconds": 90.8,
+      "seconds": 74.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-request.test.mjs"
     },
     {
@@ -1716,7 +1739,7 @@
       "pass": 120,
       "fail": 0,
       "notRun": 0,
-      "seconds": 89.3,
+      "seconds": 74.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-connect.test.mjs"
     },
     {
@@ -1727,7 +1750,7 @@
       "pass": 27,
       "fail": 0,
       "notRun": 0,
-      "seconds": 17.3,
+      "seconds": 14.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-instant.test.mjs"
     },
     {
@@ -1738,7 +1761,7 @@
       "pass": 23,
       "fail": 0,
       "notRun": 0,
-      "seconds": 9.9,
+      "seconds": 7.2,
       "command": "../../../opt/node22/bin/node tests/browser/demo-bench.test.mjs"
     },
     {
@@ -1749,7 +1772,7 @@
       "pass": 7,
       "fail": 0,
       "notRun": 0,
-      "seconds": 12.6,
+      "seconds": 10.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-workflows.test.mjs"
     },
     {
@@ -1760,7 +1783,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 4.5,
+      "seconds": 3.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-service-import.test.mjs"
     },
     {
@@ -1771,7 +1794,7 @@
       "pass": 7,
       "fail": 0,
       "notRun": 0,
-      "seconds": 9.1,
+      "seconds": 7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-people.test.mjs"
     },
     {
@@ -1782,7 +1805,7 @@
       "pass": 5,
       "fail": 0,
       "notRun": 0,
-      "seconds": 9.3,
+      "seconds": 6.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-waiting.test.mjs"
     },
     {
@@ -1793,7 +1816,7 @@
       "pass": 7,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7.9,
+      "seconds": 6.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-field-redline.test.mjs"
     },
     {
@@ -1803,50 +1826,60 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test tests/unit/migration-ledger.test.mjs"
     },
     {
-      "suite": "e2e: founder decisions (hosted studio over the API)",
+      "suite": "e2e: founder town hall (Founder Edition)",
       "kind": "e2e",
       "result": "PASS",
-      "tests": 9,
-      "pass": 9,
+      "tests": 25,
+      "pass": 25,
       "fail": 0,
-      "notRun": 0,
-      "seconds": 8.2,
-      "command": "../../../opt/node22/bin/node tests/e2e/founder-decisions.e2e.mjs"
+      "seconds": 47.1,
+      "command": "../../../opt/node22/bin/node tests/e2e/founder-townhall.e2e.mjs"
     },
     {
-      "suite": "deploy: public static sites under the declared headers",
+      "suite": "deploy: public sites audit (functional, a11y, responsive; no P0/P1)",
       "kind": "deploy",
       "result": "PASS",
-      "tests": 26,
-      "pass": 26,
+      "tests": 260,
+      "pass": 260,
       "fail": 0,
-      "seconds": 20.9,
-      "command": "../../../opt/node22/bin/node scripts/staging/verify-static.mjs"
+      "seconds": 353.9,
+      "command": "../../../opt/node22/bin/node scripts/audit/site-audit.mjs --strict --out=tests/evidence/SITE_AUDIT.json"
     },
     {
-      "suite": "security: public builds expose nothing private (secrets, source maps, contact data, build-machine paths, embedded data, private markers)",
-      "kind": "security",
+      "suite": "unit: evidence of record (a working run or a suite run by hand leaves tests/evidence and the ledger untouched; a run of record cannot be narrowed; temp cleanup removes only test directories; machine stalls are measured and only a failure during one is run a second time)",
+      "kind": "unit",
       "result": "PASS",
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 1,
-      "command": "../../../opt/node22/bin/node scripts/audit/public-exposure.mjs"
+      "seconds": 7.6,
+      "command": "../../../opt/node22/bin/node --test tests/unit/evidence-isolation.test.mjs"
     },
     {
-      "suite": "browser: website Follow one device and product launches (#232, 17:25 §6)",
+      "suite": "browser: website FieldLink (optional hardware, a concept: optional, labelled, no cost internals)",
       "kind": "browser",
       "result": "PASS",
-      "tests": 19,
-      "pass": 19,
+      "tests": 26,
+      "pass": 26,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7,
-      "command": "../../../opt/node22/bin/node tests/browser/website-follow.test.mjs"
+      "seconds": 4.5,
+      "command": "../../../opt/node22/bin/node tests/browser/website-fieldlink.test.mjs"
+    },
+    {
+      "suite": "browser: website first screen (90-1)",
+      "kind": "browser",
+      "result": "PASS",
+      "tests": 37,
+      "pass": 37,
+      "fail": 0,
+      "notRun": 0,
+      "seconds": 23.5,
+      "command": "../../../opt/node22/bin/node tests/browser/website-fold.test.mjs"
     },
     {
       "suite": "unit: packages/search-party",
@@ -1855,7 +1888,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/search-party/dist/test/**/*.test.js"
     },
     {
@@ -1865,7 +1898,7 @@
       "tests": 43,
       "pass": 43,
       "fail": 0,
-      "seconds": 1.5,
+      "seconds": 1.2,
       "command": "../../../opt/node22/bin/node --test packages/proof-registry/dist/test/**/*.test.js"
     },
     {
@@ -1875,7 +1908,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/api-client/dist/test/**/*.test.js"
     },
     {
@@ -1885,7 +1918,7 @@
       "tests": 23,
       "pass": 23,
       "fail": 0,
-      "seconds": 0.1,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test packages/design-tokens/test/*.test.mjs"
     },
     {
@@ -1895,7 +1928,7 @@
       "tests": 22,
       "pass": 22,
       "fail": 0,
-      "seconds": 7.9,
+      "seconds": 5.3,
       "command": "../../../opt/node22/bin/node --test tests/integration/api.test.mjs"
     },
     {
@@ -1905,7 +1938,7 @@
       "tests": 45,
       "pass": 45,
       "fail": 0,
-      "seconds": 6.3,
+      "seconds": 4.4,
       "command": "../../../opt/node22/bin/node --test tests/security/authz.test.mjs"
     },
     {
@@ -1915,7 +1948,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 12.1,
+      "seconds": 7.7,
       "command": "../../../opt/node22/bin/node --test tests/security/field-record.test.mjs"
     },
     {
@@ -1925,7 +1958,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 4.6,
+      "seconds": 3.1,
       "command": "../../../opt/node22/bin/node --test tests/security/search-party.test.mjs"
     },
     {
@@ -1935,7 +1968,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 4.9,
+      "seconds": 3.1,
       "command": "../../../opt/node22/bin/node --test tests/security/field-intelligence.test.mjs"
     },
     {
@@ -1945,7 +1978,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 4.1,
+      "seconds": 2.5,
       "command": "../../../opt/node22/bin/node --test tests/security/measurement-import.test.mjs"
     },
     {
@@ -1955,7 +1988,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 5.3,
+      "seconds": 3.4,
       "command": "../../../opt/node22/bin/node --test tests/security/deficiency-workflow.test.mjs"
     },
     {
@@ -1965,7 +1998,7 @@
       "tests": 11,
       "pass": 11,
       "fail": 0,
-      "seconds": 15,
+      "seconds": 9.4,
       "command": "../../../opt/node22/bin/node --test tests/security/incidents.test.mjs"
     },
     {
@@ -1975,7 +2008,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 10.8,
+      "seconds": 7.3,
       "command": "../../../opt/node22/bin/node --test tests/security/intelligibility-standard.test.mjs"
     },
     {
@@ -1985,7 +2018,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 4.3,
+      "seconds": 2.8,
       "command": "../../../opt/node22/bin/node --test tests/security/data-report.test.mjs"
     },
     {
@@ -1995,7 +2028,7 @@
       "tests": 66,
       "pass": 66,
       "fail": 0,
-      "seconds": 9.8,
+      "seconds": 7.9,
       "command": "../../../opt/node22/bin/node tests/browser/brand.test.mjs"
     },
     {
@@ -2005,7 +2038,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 2.3,
+      "seconds": 1.6,
       "command": "../../../opt/node22/bin/node --test tests/unit/bench-reverb.test.mjs"
     },
     {
@@ -2015,7 +2048,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/thread-slice.test.mjs"
     },
     {
@@ -2035,7 +2068,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.8,
+      "seconds": 0.7,
       "command": "../../../opt/node22/bin/node --test tests/unit/service-analytics.test.mjs"
     },
     {
@@ -2046,7 +2079,7 @@
       "pass": 30,
       "fail": 0,
       "notRun": 0,
-      "seconds": 16,
+      "seconds": 13.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-replay.test.mjs"
     },
     {
@@ -2057,7 +2090,7 @@
       "pass": 29,
       "fail": 0,
       "notRun": 0,
-      "seconds": 12.4,
+      "seconds": 8.9,
       "command": "../../../opt/node22/bin/node tests/browser/learn-labs.test.mjs"
     },
     {
@@ -2068,7 +2101,7 @@
       "pass": 49,
       "fail": 0,
       "notRun": 0,
-      "seconds": 50.4,
+      "seconds": 36.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-phoneshell.test.mjs"
     },
     {
@@ -2079,7 +2112,7 @@
       "pass": 12,
       "fail": 0,
       "notRun": 0,
-      "seconds": 115.8,
+      "seconds": 104.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-training-isolation.test.mjs"
     },
     {
@@ -2090,7 +2123,7 @@
       "pass": 11,
       "fail": 0,
       "notRun": 0,
-      "seconds": 8.6,
+      "seconds": 5.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-story-keys.test.mjs"
     },
     {
@@ -2101,7 +2134,7 @@
       "pass": 21,
       "fail": 0,
       "notRun": 0,
-      "seconds": 32.3,
+      "seconds": 30.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-return-trail.test.mjs"
     },
     {
@@ -2112,7 +2145,7 @@
       "pass": 60,
       "fail": 0,
       "notRun": 0,
-      "seconds": 56.6,
+      "seconds": 50,
       "command": "../../../opt/node22/bin/node tests/browser/demo-modules.test.mjs"
     },
     {
@@ -2123,7 +2156,7 @@
       "pass": 13,
       "fail": 0,
       "notRun": 0,
-      "seconds": 58.1,
+      "seconds": 49.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-launch.test.mjs"
     },
     {
@@ -2133,7 +2166,7 @@
       "tests": 14,
       "pass": 14,
       "fail": 0,
-      "seconds": 0.8,
+      "seconds": 0.6,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-optimizer.test.mjs"
     },
     {
@@ -2143,7 +2176,7 @@
       "tests": 18,
       "pass": 18,
       "fail": 0,
-      "seconds": 2.5,
+      "seconds": 1.8,
       "command": "../../../opt/node22/bin/node --test tests/unit/modules.test.mjs"
     },
     {
@@ -2153,7 +2186,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-incidents.test.mjs"
     },
     {
@@ -2163,7 +2196,7 @@
       "tests": 131,
       "pass": 131,
       "fail": 0,
-      "seconds": 0.7,
+      "seconds": 0.6,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-challenges.test.mjs"
     },
     {
@@ -2173,7 +2206,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/lite-studio.test.mjs"
     },
     {
@@ -2183,7 +2216,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/ui-axes.test.mjs"
     },
     {
@@ -2193,7 +2226,7 @@
       "tests": 13,
       "pass": 13,
       "fail": 0,
-      "seconds": 1.1,
+      "seconds": 0.8,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-understand.test.mjs"
     },
     {
@@ -2203,7 +2236,7 @@
       "tests": 33,
       "pass": 33,
       "fail": 0,
-      "seconds": 18.3,
+      "seconds": 14.1,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-connect.test.mjs"
     },
     {
@@ -2213,7 +2246,7 @@
       "tests": 10,
       "pass": 10,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-onboard.test.mjs"
     },
     {
@@ -2223,7 +2256,7 @@
       "tests": 12,
       "pass": 12,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-knowledge-contract.test.mjs"
     },
     {
@@ -2243,7 +2276,7 @@
       "tests": 102,
       "pass": 102,
       "fail": 0,
-      "seconds": 52.8,
+      "seconds": 44.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-campus.test.mjs"
     },
     {
@@ -2254,7 +2287,7 @@
       "pass": 20,
       "fail": 0,
       "notRun": 0,
-      "seconds": 10.9,
+      "seconds": 9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-cx-as-rooms.test.mjs"
     },
     {
@@ -2265,7 +2298,7 @@
       "pass": 31,
       "fail": 0,
       "notRun": 0,
-      "seconds": 29.2,
+      "seconds": 21,
       "command": "../../../opt/node22/bin/node tests/browser/demo-mixlab.test.mjs"
     },
     {
@@ -2276,7 +2309,7 @@
       "pass": 46,
       "fail": 0,
       "notRun": 0,
-      "seconds": 32.2,
+      "seconds": 27.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite-worlds.test.mjs"
     },
     {
@@ -2286,7 +2319,7 @@
       "tests": 120,
       "pass": 120,
       "fail": 0,
-      "seconds": 70.8,
+      "seconds": 65.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-searchbar.test.mjs"
     },
     {
@@ -2297,7 +2330,7 @@
       "pass": 25,
       "fail": 0,
       "notRun": 0,
-      "seconds": 12.2,
+      "seconds": 9.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-guides.test.mjs"
     },
     {
@@ -2308,7 +2341,7 @@
       "pass": 19,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7.3,
+      "seconds": 5.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-gameday.test.mjs"
     },
     {
@@ -2319,7 +2352,7 @@
       "pass": 57,
       "fail": 0,
       "notRun": 0,
-      "seconds": 28.5,
+      "seconds": 24.2,
       "command": "../../../opt/node22/bin/node tests/browser/demo-here.test.mjs"
     },
     {
@@ -2330,7 +2363,7 @@
       "pass": 104,
       "fail": 0,
       "notRun": 0,
-      "seconds": 74,
+      "seconds": 65.2,
       "command": "../../../opt/node22/bin/node tests/browser/demo-knowledge.test.mjs"
     },
     {
@@ -2341,7 +2374,7 @@
       "pass": 24,
       "fail": 0,
       "notRun": 0,
-      "seconds": 8.6,
+      "seconds": 7.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-drawing.test.mjs"
     },
     {
@@ -2352,7 +2385,7 @@
       "pass": 55,
       "fail": 0,
       "notRun": 0,
-      "seconds": 59.8,
+      "seconds": 49.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-story-more.test.mjs"
     },
     {
@@ -2363,7 +2396,7 @@
       "pass": 10,
       "fail": 0,
       "notRun": 0,
-      "seconds": 8.3,
+      "seconds": 7.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-registers.test.mjs"
     },
     {
@@ -2374,7 +2407,7 @@
       "pass": 5,
       "fail": 0,
       "notRun": 0,
-      "seconds": 9,
+      "seconds": 7.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-mission-work.test.mjs"
     },
     {
@@ -2385,7 +2418,7 @@
       "pass": 10,
       "fail": 0,
       "notRun": 0,
-      "seconds": 9.5,
+      "seconds": 8.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-service-phases.test.mjs"
     },
     {
@@ -2396,7 +2429,7 @@
       "pass": 4,
       "fail": 0,
       "notRun": 0,
-      "seconds": 6.1,
+      "seconds": 4.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-cx-analytics.test.mjs"
     },
     {
@@ -2407,7 +2440,7 @@
       "pass": 11,
       "fail": 0,
       "notRun": 0,
-      "seconds": 44.6,
+      "seconds": 41.2,
       "command": "../../../opt/node22/bin/node tests/browser/demo-vertical-slice.test.mjs"
     },
     {
@@ -2417,46 +2450,49 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 0.8,
+      "seconds": 0.6,
       "command": "../../../opt/node22/bin/node --test tests/unit/private-assets.test.mjs"
     },
     {
-      "suite": "media: full decode of every curated film",
-      "kind": "media",
-      "result": "NOT_RUN",
-      "why": "pass --films (slow: decodes ~47 minutes of video)"
-    },
-    {
-      "suite": "security: public sites (headers, build chain, servers, dist)",
-      "kind": "security",
+      "suite": "e2e: founder decisions (hosted studio over the API)",
+      "kind": "e2e",
       "result": "PASS",
-      "tests": 10,
-      "pass": 10,
-      "fail": 0,
-      "seconds": 5.9,
-      "command": "../../../opt/node22/bin/node --test tests/security/public-sites.test.mjs"
-    },
-    {
-      "suite": "browser: website pricing and pilot readiness",
-      "kind": "browser",
-      "result": "PASS",
-      "tests": 54,
-      "pass": 54,
+      "tests": 9,
+      "pass": 9,
       "fail": 0,
       "notRun": 0,
-      "seconds": 19.8,
-      "command": "../../../opt/node22/bin/node tests/browser/website-pilot.test.mjs"
+      "seconds": 7,
+      "command": "../../../opt/node22/bin/node tests/e2e/founder-decisions.e2e.mjs"
     },
     {
-      "suite": "browser: website home opening (17:25 §4: the founder headline, the room-to-estate sequence from the demonstration, two actions)",
-      "kind": "browser",
+      "suite": "deploy: public static sites under the declared headers",
+      "kind": "deploy",
       "result": "PASS",
-      "tests": 19,
-      "pass": 19,
+      "tests": 26,
+      "pass": 26,
       "fail": 0,
-      "notRun": 0,
-      "seconds": 6.7,
-      "command": "../../../opt/node22/bin/node tests/browser/website-opening.test.mjs"
+      "seconds": 18.9,
+      "command": "../../../opt/node22/bin/node scripts/staging/verify-static.mjs"
+    },
+    {
+      "suite": "unit: the public exposure audit catches each planted finding (secrets, maps, contact data, machine paths, embedded data, private markers)",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "seconds": 0.7,
+      "command": "../../../opt/node22/bin/node --test tests/unit/public-exposure.test.mjs"
+    },
+    {
+      "suite": "build: the website within its budgets with the staging URLs (19 Nov 2026: the Render build failed at 49,186 B while the local build passed)",
+      "kind": "build",
+      "result": "PASS",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "seconds": 0.7,
+      "command": "../../../opt/node22/bin/node apps/website/build.mjs --out=/tmp/empathia-test-run-iivOJk/empathia-website-staging-budget --base=https://empathia-website-next.onrender.com --demo=https://empathia-demo-next.onrender.com --api=https://empathia-demo-api-l04n.onrender.com"
     },
     {
       "suite": "unit: packages/project-governance",
@@ -2465,7 +2501,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/project-governance/dist/test/**/*.test.js"
     },
     {
@@ -2475,7 +2511,7 @@
       "tests": 22,
       "pass": 22,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/field-queue/dist/test/**/*.test.js"
     },
     {
@@ -2485,7 +2521,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/schemas/dist/test/**/*.test.js"
     },
     {
@@ -2495,7 +2531,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 0.2,
+      "seconds": 0.1,
       "command": "../../../opt/node22/bin/node --test packages/ui/test/*.test.mjs"
     },
     {
@@ -2505,7 +2541,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 2.8,
+      "seconds": 2.1,
       "command": "../../../opt/node22/bin/node --test tests/integration/leads.test.mjs"
     },
     {
@@ -2515,7 +2551,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 3.4,
+      "seconds": 2.3,
       "command": "../../../opt/node22/bin/node --test tests/security/founder-boundary.test.mjs"
     },
     {
@@ -2525,7 +2561,7 @@
       "tests": 3,
       "pass": 3,
       "fail": 0,
-      "seconds": 4,
+      "seconds": 2.6,
       "command": "../../../opt/node22/bin/node --test tests/security/site-scope.test.mjs"
     },
     {
@@ -2535,7 +2571,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 3.1,
+      "seconds": 2,
       "command": "../../../opt/node22/bin/node --test tests/security/oidc.test.mjs"
     },
     {
@@ -2545,7 +2581,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 4.5,
+      "seconds": 3.2,
       "command": "../../../opt/node22/bin/node --test tests/security/learn.test.mjs"
     },
     {
@@ -2555,7 +2591,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 5.4,
+      "seconds": 4.3,
       "command": "../../../opt/node22/bin/node --test tests/security/hardening.test.mjs"
     },
     {
@@ -2565,7 +2601,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 4.3,
+      "seconds": 2.6,
       "command": "../../../opt/node22/bin/node --test tests/security/privileges.test.mjs"
     },
     {
@@ -2575,7 +2611,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 6.8,
+      "seconds": 4.5,
       "command": "../../../opt/node22/bin/node --test tests/security/second-technician.test.mjs"
     },
     {
@@ -2585,7 +2621,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 9.3,
+      "seconds": 6.2,
       "command": "../../../opt/node22/bin/node --test tests/security/documentation.test.mjs"
     },
     {
@@ -2595,7 +2631,7 @@
       "tests": 4,
       "pass": 4,
       "fail": 0,
-      "seconds": 4.2,
+      "seconds": 2.7,
       "command": "../../../opt/node22/bin/node --test tests/security/powerbi-export.test.mjs"
     },
     {
@@ -2606,7 +2642,7 @@
       "pass": 298,
       "fail": 0,
       "notRun": 0,
-      "seconds": 166.1,
+      "seconds": 139.9,
       "command": "../../../opt/node22/bin/node tests/browser/website.test.mjs"
     },
     {
@@ -2626,7 +2662,7 @@
       "tests": 7,
       "pass": 7,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.4,
       "command": "../../../opt/node22/bin/node --test tests/unit/certs.test.mjs"
     },
     {
@@ -2636,7 +2672,7 @@
       "tests": 5,
       "pass": 5,
       "fail": 0,
-      "seconds": 0.8,
+      "seconds": 0.7,
       "command": "../../../opt/node22/bin/node --test tests/unit/refresh-plan.test.mjs"
     },
     {
@@ -2657,7 +2693,7 @@
       "pass": 33,
       "fail": 0,
       "notRun": 0,
-      "seconds": 8.4,
+      "seconds": 6.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-fi-scan.test.mjs"
     },
     {
@@ -2668,7 +2704,7 @@
       "pass": 38,
       "fail": 0,
       "notRun": 0,
-      "seconds": 7.9,
+      "seconds": 6.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-hardening.test.mjs"
     },
     {
@@ -2679,7 +2715,7 @@
       "pass": 31,
       "fail": 0,
       "notRun": 0,
-      "seconds": 17.8,
+      "seconds": 14.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-scouter.test.mjs"
     },
     {
@@ -2690,7 +2726,7 @@
       "pass": 35,
       "fail": 0,
       "notRun": 0,
-      "seconds": 14.4,
+      "seconds": 12,
       "command": "../../../opt/node22/bin/node tests/browser/demo-fieldtools.test.mjs"
     },
     {
@@ -2701,7 +2737,7 @@
       "pass": 11,
       "fail": 0,
       "notRun": 0,
-      "seconds": 4.2,
+      "seconds": 3.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-chal-drawings.test.mjs"
     },
     {
@@ -2712,18 +2748,18 @@
       "pass": 35,
       "fail": 0,
       "notRun": 0,
-      "seconds": 79.8,
+      "seconds": 72.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-map.test.mjs"
     },
     {
       "suite": "browser: demo-journeys",
       "kind": "browser",
       "result": "PASS",
-      "tests": 158,
-      "pass": 158,
+      "tests": 162,
+      "pass": 162,
       "fail": 0,
       "notRun": 0,
-      "seconds": 110.1,
+      "seconds": 102,
       "command": "../../../opt/node22/bin/node tests/browser/demo-journeys.test.mjs"
     },
     {
@@ -2733,7 +2769,7 @@
       "tests": 11,
       "pass": 11,
       "fail": 0,
-      "seconds": 1.8,
+      "seconds": 1.4,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-spaces.test.mjs"
     },
     {
@@ -2743,17 +2779,17 @@
       "tests": 19,
       "pass": 19,
       "fail": 0,
-      "seconds": 0.8,
+      "seconds": 0.7,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-canon.test.mjs"
     },
     {
       "suite": "unit: Empathia VOICE (Enterprise 3.0 directive 1A, J6B: the CallPath fixture stands on the estate; unknown is never healthy; the quality method refuses rather than guesses; privacy; who may open what)",
       "kind": "unit",
       "result": "PASS",
-      "tests": 18,
-      "pass": 18,
+      "tests": 20,
+      "pass": 20,
       "fail": 0,
-      "seconds": 2.2,
+      "seconds": 1.8,
       "command": "../../../opt/node22/bin/node --test tests/unit/voice.test.mjs"
     },
     {
@@ -2763,7 +2799,7 @@
       "tests": 15,
       "pass": 15,
       "fail": 0,
-      "seconds": 0.3,
+      "seconds": 0.2,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-labs.test.mjs"
     },
     {
@@ -2773,7 +2809,7 @@
       "tests": 30,
       "pass": 30,
       "fail": 0,
-      "seconds": 0.5,
+      "seconds": 0.4,
       "command": "../../../opt/node22/bin/node --test tests/unit/signal-boss.test.mjs"
     },
     {
@@ -2803,7 +2839,7 @@
       "tests": 22,
       "pass": 22,
       "fail": 0,
-      "seconds": 1.2,
+      "seconds": 0.9,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-intake.test.mjs"
     },
     {
@@ -2813,7 +2849,7 @@
       "tests": 6,
       "pass": 6,
       "fail": 0,
-      "seconds": 0.9,
+      "seconds": 0.7,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-guides.test.mjs"
     },
     {
@@ -2823,7 +2859,7 @@
       "tests": 9,
       "pass": 9,
       "fail": 0,
-      "seconds": 0.4,
+      "seconds": 0.3,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-instant.test.mjs"
     },
     {
@@ -2833,7 +2869,7 @@
       "tests": 13,
       "pass": 13,
       "fail": 0,
-      "seconds": 12.9,
+      "seconds": 10,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-knowledge.test.mjs"
     },
     {
@@ -2843,7 +2879,7 @@
       "tests": 22,
       "pass": 22,
       "fail": 0,
-      "seconds": 1.4,
+      "seconds": 0.9,
       "command": "../../../opt/node22/bin/node --test tests/unit/demo-critical-signal.test.mjs"
     },
     {
@@ -2853,7 +2889,7 @@
       "tests": 86,
       "pass": 86,
       "fail": 0,
-      "seconds": 104.7,
+      "seconds": 99.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-rooms.test.mjs"
     },
     {
@@ -2864,7 +2900,7 @@
       "pass": 39,
       "fail": 0,
       "notRun": 0,
-      "seconds": 21.3,
+      "seconds": 17.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-assurance-v253.test.mjs"
     },
     {
@@ -2875,7 +2911,7 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 19.6,
+      "seconds": 16.1,
       "command": "../../../opt/node22/bin/node tests/browser/demo-signal-s1.test.mjs"
     },
     {
@@ -2886,7 +2922,7 @@
       "pass": 20,
       "fail": 0,
       "notRun": 0,
-      "seconds": 32.9,
+      "seconds": 29.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-lite-eye.test.mjs"
     },
     {
@@ -2896,7 +2932,7 @@
       "tests": 108,
       "pass": 108,
       "fail": 0,
-      "seconds": 30.8,
+      "seconds": 28,
       "command": "../../../opt/node22/bin/node tests/browser/demo-search-scenarios.test.mjs"
     },
     {
@@ -2907,7 +2943,7 @@
       "pass": 67,
       "fail": 0,
       "notRun": 0,
-      "seconds": 165,
+      "seconds": 154.4,
       "command": "../../../opt/node22/bin/node tests/browser/demo-worlds.test.mjs"
     },
     {
@@ -2918,7 +2954,7 @@
       "pass": 24,
       "fail": 0,
       "notRun": 0,
-      "seconds": 20.4,
+      "seconds": 17.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-play.test.mjs"
     },
     {
@@ -2929,7 +2965,7 @@
       "pass": 34,
       "fail": 0,
       "notRun": 0,
-      "seconds": 45.6,
+      "seconds": 39.5,
       "command": "../../../opt/node22/bin/node tests/browser/demo-control.test.mjs"
     },
     {
@@ -2940,7 +2976,7 @@
       "pass": 22,
       "fail": 0,
       "notRun": 0,
-      "seconds": 47,
+      "seconds": 44.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-harmony.test.mjs"
     },
     {
@@ -2951,7 +2987,7 @@
       "pass": 46,
       "fail": 0,
       "notRun": 0,
-      "seconds": 36,
+      "seconds": 31.6,
       "command": "../../../opt/node22/bin/node tests/browser/demo-manual.test.mjs"
     },
     {
@@ -2962,7 +2998,7 @@
       "pass": 21,
       "fail": 0,
       "notRun": 0,
-      "seconds": 20.7,
+      "seconds": 17.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-exports.test.mjs"
     },
     {
@@ -2973,7 +3009,7 @@
       "pass": 8,
       "fail": 0,
       "notRun": 0,
-      "seconds": 12.5,
+      "seconds": 10.9,
       "command": "../../../opt/node22/bin/node tests/browser/demo-service-analytics.test.mjs"
     },
     {
@@ -2984,7 +3020,7 @@
       "pass": 8,
       "fail": 0,
       "notRun": 0,
-      "seconds": 5.4,
+      "seconds": 4.3,
       "command": "../../../opt/node22/bin/node tests/browser/demo-reverb.test.mjs"
     },
     {
@@ -2995,7 +3031,7 @@
       "pass": 7,
       "fail": 0,
       "notRun": 0,
-      "seconds": 5.7,
+      "seconds": 4.8,
       "command": "../../../opt/node22/bin/node tests/browser/demo-sti.test.mjs"
     },
     {
@@ -3006,7 +3042,7 @@
       "pass": 10,
       "fail": 0,
       "notRun": 0,
-      "seconds": 21,
+      "seconds": 18.2,
       "command": "../../../opt/node22/bin/node tests/browser/demo-field-ux.test.mjs"
     },
     {
@@ -3017,61 +3053,55 @@
       "pass": 6,
       "fail": 0,
       "notRun": 0,
-      "seconds": 11.2,
+      "seconds": 9.7,
       "command": "../../../opt/node22/bin/node tests/browser/demo-engineer-start.test.mjs"
     },
     {
-      "suite": "unit: the durable copy of the private assets (requests signed as the published example; push only to a bucket that keeps versions and gives nothing without a credential; pull keeps only files the manifest names; encrypted backups open only with the recipient’s key and restore all or nothing; no secret printed)",
+      "suite": "unit: the release gate (a FAIL or an unnamed skip is refused; the Founder Studio suites may be NOT RUN only where the runner declares it has no private store, never where the studio is built, never for a media release; the workflow asks for no secret and builds nothing private)",
       "kind": "unit",
       "result": "PASS",
-      "tests": 9,
-      "pass": 9,
+      "tests": 8,
+      "pass": 8,
       "fail": 0,
-      "seconds": 2.4,
-      "command": "../../../opt/node22/bin/node --test tests/unit/private-bucket.test.mjs"
+      "seconds": 0.5,
+      "command": "../../../opt/node22/bin/node --test tests/unit/release-gate.test.mjs"
     },
     {
-      "suite": "deploy: Render Blueprints (static validation)",
-      "kind": "deploy",
+      "suite": "media: full decode of every curated film",
+      "kind": "media",
+      "result": "NOT_RUN",
+      "why": "pass --films (slow: decodes ~47 minutes of video)"
+    },
+    {
+      "suite": "security: public sites (headers, build chain, servers, dist)",
+      "kind": "security",
       "result": "PASS",
-      "tests": 37,
-      "pass": 37,
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "seconds": 5.7,
+      "command": "../../../opt/node22/bin/node --test tests/security/public-sites.test.mjs"
+    },
+    {
+      "suite": "unit: link previews: both share cards are 1200 × 630, and the tags name the image only with a public address",
+      "kind": "unit",
+      "result": "PASS",
+      "tests": 2,
+      "pass": 2,
       "fail": 0,
       "seconds": 0.1,
-      "command": "python3 -I scripts/staging/validate-blueprints.py"
+      "command": "../../../opt/node22/bin/node --test tests/unit/share-meta.test.mjs"
     },
     {
-      "suite": "browser: public sites security (CSP in the page, no request leaves, injection, tampering, View-as)",
+      "suite": "browser: website Build Your Empathia (price book 3: every figure from estimate(), shareable, enquiry and demonstration one click away)",
       "kind": "browser",
       "result": "PASS",
-      "tests": 13,
-      "pass": 13,
+      "tests": 29,
+      "pass": 29,
       "fail": 0,
       "notRun": 0,
-      "seconds": 183.6,
-      "command": "../../../opt/node22/bin/node tests/browser/public-security.test.mjs"
-    },
-    {
-      "suite": "browser: website FieldLink (optional hardware, a concept: optional, labelled, no cost internals)",
-      "kind": "browser",
-      "result": "PASS",
-      "tests": 26,
-      "pass": 26,
-      "fail": 0,
-      "notRun": 0,
-      "seconds": 5.4,
-      "command": "../../../opt/node22/bin/node tests/browser/website-fieldlink.test.mjs"
-    },
-    {
-      "suite": "browser: website first screen (90-1)",
-      "kind": "browser",
-      "result": "PASS",
-      "tests": 37,
-      "pass": 37,
-      "fail": 0,
-      "notRun": 0,
-      "seconds": 25.5,
-      "command": "../../../opt/node22/bin/node tests/browser/website-fold.test.mjs"
+      "seconds": 14.9,
+      "command": "../../../opt/node22/bin/node tests/browser/website-pricing.test.mjs"
     }
   ]
 }
