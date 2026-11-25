@@ -24,10 +24,32 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 24 Nov 2026 10:26 | `26c81f0d` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `bd457a4d`) | dep-dc2mbte7bikc73fsvoi0, replaced | dep-dc2mbte7bikc73fsvoe0, replaced |
 | 24 Nov 2026 13:49 | `1dae3703` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `ce773198`) | dep-dc2pb38m7kps73d58vog, replaced | dep-dc2pb38m7kps73d58vs0, replaced |
 | 25 Nov 2026 00:30 | `87956a57` | PASS 296 · FAIL 0 · NOT_RUN 2 (evidence in `bf9adfa8`) | dep-dc32ni4s728c738h7l6g, replaced | dep-dc32ni4s728c738h7l30, replaced |
-| 25 Nov 2026 03:14 | `037b9f76` | PASS 298 · FAIL 0 · NOT_RUN 2 (evidence in `54352acd`) | dep-dc354ass728c738juaeg, live | dep-dc354ass728c738juab0, live |
+| 25 Nov 2026 03:14 | `037b9f76` | PASS 298 · FAIL 0 · NOT_RUN 2 (evidence in `54352acd`) | dep-dc354ass728c738juaeg, replaced | dep-dc354ass728c738juab0, replaced |
+| 25 Nov 2026 06:28 | `8891a3fd` | PASS 299 · FAIL 0 · NOT_RUN 2 (evidence in `ddec71b7`) | dep-dc37v8gae00c738gh0sg, live | dep-dc37v8gae00c738gh0p0, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `8891a3fd`, 25 Nov 2026 06:30 UTC
+
+Opened in a browser against the live addresses: 33 of 33 checks held. The 31 of the checks below held again, and two were added for
+what this commit brings, the simpler drawing of distant spectators and the control that overrides it:
+
+| Address | Result |
+|---|---|
+| demo `#/play/stadium?detail=full`, and the same with `&lod=simple` | full quality draws all 48 sections in view whole, 53,174 triangles a frame, and its "Full quality" box is ticked; the simple drawing draws all 48 simply, 34,394 triangles, the tallest simplified spectator 4.1 drawn pixels (the line is 6.9) |
+| demo `#/play/stadium`, then its "Full quality" box ticked | as opened on the checking machine: 50% detail, the far crowd simple, and the page says so; ticked: every section whole, 100% detail, 53,174 triangles, and the note no longer says otherwise |
+
+What the scene chose on its own is the checking machine's choice, not a visitor's: that machine has no graphics processor. On a
+device that holds 24 frames a second the stadium draws every spectator whole at full detail without the box being ticked. No
+visitor's device has been measured.
+
+Before the check both served manifests named `sourceCommit` `8891a3fd…` (from 06:28 UTC, about half a minute after Render reported
+the second deploy live) and every script, style and page in the demonstration's manifest matched its hash.
+
+FOUND in this check, not yet corrected in the previews: opened with the diagnostic switch `&lod=simple` beside `?detail=full`, the
+page draws the far crowd simply (as the switch asks) while its "Full quality" box shows ticked. A visitor does not meet that
+address; the box should not claim what is not drawn. Corrected on `v18/continuation` after this commit.
 
 ## Live check of `037b9f76`, 25 Nov 2026 03:32 UTC
 
@@ -141,6 +163,6 @@ local build). The website has no `/flow` page at this commit; that address retur
 
 ## What is not in the previews yet
 
-Work after `037b9f76` is on `v18/continuation` and reaches the previews only after its own exact-commit regression: at the time of
-writing, the simpler drawing of distant spectators and the stadium's "Full quality" control. Of what was directed on 24 Nov, the
-previews carry the design pass and three pieces of the rendering-performance work; the rest is not built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.
+Work after `8891a3fd` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. Of what was
+directed on 24 and 25 Nov, the previews carry the design pass and four pieces of the rendering-performance work, the simpler
+drawing of distant spectators among them; the rest is not built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.
