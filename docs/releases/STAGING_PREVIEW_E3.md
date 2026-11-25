@@ -23,10 +23,18 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 24 Nov 2026 07:48 | `9bc47b27` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `85264964`) | dep-dc2k1rdbedkc73b3jsfg, replaced | dep-dc2k1rdbedkc73b3jsc0, replaced |
 | 24 Nov 2026 10:26 | `26c81f0d` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `bd457a4d`) | dep-dc2mbte7bikc73fsvoi0, replaced | dep-dc2mbte7bikc73fsvoe0, replaced |
 | 24 Nov 2026 13:49 | `1dae3703` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `ce773198`) | dep-dc2pb38m7kps73d58vog, replaced | dep-dc2pb38m7kps73d58vs0, replaced |
-| 25 Nov 2026 00:30 | `87956a57` | PASS 296 · FAIL 0 · NOT_RUN 2 (evidence in `bf9adfa8`) | dep-dc32ni4s728c738h7l6g, live | dep-dc32ni4s728c738h7l30, live |
+| 25 Nov 2026 00:30 | `87956a57` | PASS 296 · FAIL 0 · NOT_RUN 2 (evidence in `bf9adfa8`) | dep-dc32ni4s728c738h7l6g, replaced | dep-dc32ni4s728c738h7l30, replaced |
+| 25 Nov 2026 03:14 | `037b9f76` | PASS 298 · FAIL 0 · NOT_RUN 2 (evidence in `54352acd`) | dep-dc354ass728c738juaeg, live | dep-dc354ass728c738juab0, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `037b9f76`, 25 Nov 2026 03:32 UTC
+
+Opened in a browser against the live addresses: 31 of 31 checks held, the same 31 as the check below. This commit changes what a
+frame costs and not what a page shows (the stadium sends about half the triangles for the same picture), so no check was added for
+it; the regression on the commit holds each scene to its counted budget. Before the check both served manifests named
+`sourceCommit` `037b9f76…` (from 03:29 UTC) and every script, style and page in the demonstration's manifest matched its hash.
 
 ## Live check of `87956a57`, 25 Nov 2026 00:33 UTC
 
@@ -133,5 +141,6 @@ local build). The website has no `/flow` page at this commit; that address retur
 
 ## What is not in the previews yet
 
-Work after `87956a57` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. Of what was
-directed on 24 Nov, the previews carry the design pass and the first piece of the rendering-performance work; the rest is not built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.
+Work after `037b9f76` is on `v18/continuation` and reaches the previews only after its own exact-commit regression: at the time of
+writing, the simpler drawing of distant spectators and the stadium's "Full quality" control. Of what was directed on 24 Nov, the
+previews carry the design pass and three pieces of the rendering-performance work; the rest is not built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.

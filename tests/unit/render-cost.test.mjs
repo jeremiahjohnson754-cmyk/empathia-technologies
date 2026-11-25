@@ -83,3 +83,70 @@ test('RC-05 the stadium spends its triangles on what can be seen, and the render
   assert.ok(g.includes('this.tally.draws += 1; this.tally.tris += count / 3;') && g.includes('this.canvas.dataset.tris = String(t.tris)'), 'the count of a frame is on the canvas for a test to hold to a budget');
   assert.ok(g.includes('seen(m: Mesh, pad = 0): boolean { return !this.vp || m.r <= 0 || sphereInView(this.vp, m.c, m.r + pad); }'), 'with nothing known, a mesh is drawn');
 });
+
+// 25 Nov 2026, founder decision on distant spectators: "Preserve full graphical detail for nearby spectators. Simplify distant
+// spectators dynamically. Preserve crowd density, atmosphere and visual identity."
+//   RC-06  the far figure: one face a quarter; from any direction in its quarter at or above the seat it covers exactly the area the
+//          whole figure covers; the figure's colours; it faces every eye in its quarter that is above the seat
+//   RC-07  the level goes by the size on the screen, with a band so nothing flickers; what is near is whole
+test('RC-06 a far figure is one face that covers what the whole figure covers from anywhere in its quarter, in the figure’s colours', () => {
+  assert.deepEqual(G.FAR_QUARTERS, [{ sx: 1, sz: 1 }, { sx: -1, sz: 1 }, { sx: 1, sz: -1 }, { sx: -1, sz: -1 }]); assert.deepEqual(G.FIGURE, { w: 0.22, d: 0.2, h: 0.8, skin: [0.78, 0.6, 0.47] });
+  const X = 30, Y = 9, Z = 55; const lists = [[], [], [], []]; G.figureFar(X, Y, Z, '#0E8F83', lists); const whole = []; G.figureVerts(X, Y, Z, '#0E8F83', whole);
+  const corners = (v) => { const p = []; for (let i = 0; i < v.length; i += 9) p.push([v[i], v[i + 1], v[i + 2]]); return p; };
+  // the area a set of triangles covers seen from the direction v (far away): each triangle that faces v, by how squarely it faces it
+  const covers = (list, v) => tris(list).reduce((sum, x) => sum + Math.max(0, G.dot(facing(x), v)) / 2, 0);
+  const shirt = G.hex('#0E8F83');
+  lists.forEach((list, f) => { const { sx, sz } = G.FAR_QUARTERS[f]; assert.equal(list.length, 6 * 9, 'two triangles a figure, where the whole figure sends six and holds ten');
+    const pts = corners(list); const t = tris(list);
+    // from every direction in the quarter, level or from above, it covers exactly what the whole figure covers: the same density, the same brightness
+    for (let k = 0; k < 300; k++) { const a = rnd(f * 500 + k) * Math.PI / 2, e = rnd(f * 700 + k) * Math.PI / 2; const v = [sx * Math.cos(a) * Math.cos(e), Math.sin(e), sz * Math.sin(a) * Math.cos(e)];
+      const far1 = covers(list, v), all = covers(whole, v); assert.ok(Math.abs(far1 - all) < 1e-9, `quarter ${f}, from ${v.map((n) => n.toFixed(2))}: the far face covers ${far1}, the whole figure ${all}`); }
+    // its shape is not the figure's: it leans back 0.30 m over its 0.8 m, which seen from the edge of its quarter is 0.22 m sideways at most
+    const uniq = (ps) => [...new Map(ps.map((q) => [q.join(), q])).values()]; const foot = uniq(pts.filter((q) => q[1] === Y)), head = uniq(pts.filter((q) => q[1] !== Y)); assert.equal(foot.length, 2); assert.equal(head.length, 2);
+    const mid = (ps) => [ps.reduce((s2, q) => s2 + q[0], 0) / ps.length, ps.reduce((s2, q) => s2 + q[2], 0) / ps.length]; const back = [mid(head)[0] - mid(foot)[0], mid(head)[1] - mid(foot)[1]]; const lean = Math.hypot(...back);
+    assert.ok(Math.abs(lean - (0.44 * 0.4) / Math.hypot(0.44, 0.4)) < 1e-9, `it leans back ${lean} m`); assert.ok(back[0] * sx < 0 && back[1] * sz < 0, 'away from its quarter');
+    let side = 0; for (let k = 0; k <= 90; k++) { const a = (k / 90) * Math.PI / 2; const view = [sx * Math.cos(a), sz * Math.sin(a)]; side = Math.max(side, Math.abs(back[0] * view[1] - back[1] * view[0])); } assert.ok(side < 0.225, `seen from the edge of its quarter the lean is ${side} m sideways`);
+    // from straight above it covers the area of the head
+    const area = t.reduce((s2, x) => { const c = facing(x); return s2 + Math.abs(c[1]) / 2; }, 0); assert.ok(Math.abs(area - 0.44 * 0.4) < 1e-9, `the head's area from above (${area})`);
+    // it stands on the seat and is as tall as the figure
+    assert.equal(Math.min(...pts.map((p) => p[1])), Y); assert.ok(Math.abs(Math.max(...pts.map((p) => p[1])) - (Y + 0.8)) < 1e-12);
+    // it faces every eye in its quarter that is above the seat, near or far, low or high
+    for (let k = 0; k < 200; k++) { const eye = [X + sx * (0.5 + rnd(f * 1000 + k) * 300), Y + 0.1 + rnd(f * 2000 + k) * 200, Z + sz * (0.5 + rnd(f * 3000 + k) * 300)]; for (const x of t) assert.ok(G.dot(facing(x), G.sub(eye, x[0].p)) > 0, `quarter ${f}: the face looks away from an eye in its own quarter (${eye})`); }
+    // every corner carries the shirt's colour; in place of a direction, where on the face it is: -1 at the foot, 1 at the far edge (the renderer colours and lights it from that)
+    for (const x of t) for (const q of x) { q.c.forEach((c, i) => assert.ok(Math.abs(c - shirt[i]) < 1e-6)); assert.deepEqual(q.n, [0, q.p[1] === Y ? -1 : 1, 0]); }
+  });
+  // every figure of a section is still there: as many far faces as figures, each where its figure is
+  const sec = [[], [], [], [], []], far = [[], [], [], []]; for (let i = 0; i < 40; i++) { const x = 20 + i * 2.3, z = 50 + (i % 4); G.figureFaces(x, 9, z, '#C9302C', sec); G.figureFar(x, 9, z, '#C9302C', far); }
+  assert.equal(sec[4].length / 54, 40); for (const l of far) assert.equal(l.length / 54, 40, 'no person is dropped from a far crowd');
+  // the shares the renderer lights and colours it by are the whole figure's own faces as that eye sees them: so much head, so much of each side
+  const faces = [[], [], [], [], []]; G.figureFaces(X, Y, Z, '#0E8F83', faces);
+  for (let k = 0; k < 400; k++) { const a = rnd(k + 0.11) * Math.PI * 2, e = rnd(k + 0.57) * Math.PI / 2; const v = [Math.cos(a) * Math.cos(e) * (1 + rnd(k) * 200), Math.sin(e) * (1 + rnd(k) * 200), Math.sin(a) * Math.cos(e) * (1 + rnd(k) * 200)];
+    const [pz, nz, px, nx, top] = faces.map((l) => covers(l, v)); const sideX = px + nx, sideZ = pz + nz; const sh = G.farShares(v);
+    assert.ok(Math.abs(sh.sideX - sideX / (sideX + sideZ)) < 1e-9, `from ${v.map((n) => n.toFixed(1))}: the side that looks along x is ${sideX / (sideX + sideZ)} of the sides, the far face is lit as ${sh.sideX}`);
+    assert.ok(Math.abs(sh.head - top / (sideX + sideZ + top)) < 1e-9, `the head is ${top / (sideX + sideZ + top)} of what is seen, the far face shows ${sh.head}`); }
+  assert.deepEqual(G.farShares([0, 5, 0]), { sideX: 0.5, head: 1 }, 'from straight above, all head'); assert.equal(G.farShares([3, 0, 0]).head, 0, 'from level, no head'); assert.equal(G.farShares([3, 0, 0]).sideX, 1); assert.equal(G.farShares([3, -2, 1]).head, 0, 'from below, no head');
+  const g = fs.readFileSync(path.join(repo, 'apps/demo/src/play/gl.ts'), 'utf8');
+  assert.ok(g.includes('if (vNor.y * 0.5 + 0.5 > 1.0 - uFar.y) c = shade(mix(vec3(0.78, 0.6, 0.47), uTint, uUseTint), vec3(0.0, 1.0, 0.0));'), 'the head share is the head’s colour, lit from above, dimmed with the rest when a side is dimmed');
+  assert.ok(g.includes('else c = uFar.x * shade(vCol, vec3(uFar.z, 0.0, 0.0)) + (1.0 - uFar.x) * shade(vCol, vec3(0.0, 0.0, uFar.w));'), 'the rest is each visible side lit as itself, in the shares the eye sees');
+  // the far figure has a program of its own: the shader every other thing is drawn with has no far branch to pay for (measured: with the branch in it, the stadium at full quality fell from 31 frames in five seconds to 19 for the same picture)
+  const fsMain = g.slice(g.indexOf('const FS = `'), g.indexOf('}`;', g.indexOf('const FS = `'))); assert.ok(fsMain.length > 200 && !/uFar|shade\(/.test(fsMain), 'the shared shader is as it was');
+  assert.ok(g.includes('gl.attachShader(p, mk(gl.FRAGMENT_SHADER, FS_FAR))') && g.includes('gl.useProgram(this.far.p)') && /this\.tally\.tris \+= count \/ 3;\n    gl\.useProgram\(this\.prog\);/.test(g), 'and the renderer goes back to it after every run of far figures');
+});
+
+test('RC-07 the level of detail goes by the size on the screen; what is near is drawn whole; nothing flickers on the line', () => {
+  const { pixelsTall: px, lodLevel: lod, LOD_NEAR_PX, LOD_BAND } = G; assert.equal(LOD_NEAR_PX, 6); assert.equal(LOD_BAND, 0.15);
+  const f = 684 / 2 / Math.tan(0.45);   // the stadium's lens on a canvas 684 pixels tall
+  assert.ok(Math.abs(px(0.8, 100, 0.9, 684) - 0.8 / 100 * f) < 1e-9); assert.ok(px(0.8, 200, 0.9, 684) < px(0.8, 100, 0.9, 684), 'farther is smaller'); assert.ok(Math.abs(px(0.8, 100, 0.9, 342) - px(0.8, 100, 0.9, 684) / 2) < 1e-9, 'half the pixels, half the size: the adaptive detail is counted');
+  assert.equal(px(0.8, 0, 0.9, 684), Infinity, 'at the eye, as large as can be'); assert.ok(px(0.8, 100, 1.05, 684) < px(0.8, 100, 0.9, 684), 'a wider lens makes it smaller');
+  // near: whole. A spectator 30 m away on that canvas is about 19 pixels tall
+  assert.ok(px(0.8, 30, 0.9, 684) > 15); assert.equal(lod(px(0.8, 30, 0.9, 684), 0), 0); assert.equal(lod(px(0.8, 30, 0.9, 684), 1), 0, 'and comes back whole when the camera comes near');
+  // far: simple. Across the bowl, 200 m, under 3 pixels
+  assert.ok(px(0.8, 200, 0.9, 684) < 3); assert.equal(lod(px(0.8, 200, 0.9, 684), 0), 1);
+  // the band: between 5.1 and 6.9 pixels it stays what it was
+  assert.equal(lod(5.5, 0), 0); assert.equal(lod(5.5, 1), 1); assert.equal(lod(6.5, 0), 0); assert.equal(lod(6.5, 1), 1); assert.equal(lod(5.0, 0), 1); assert.equal(lod(7.0, 1), 0);
+  let flips = 0, was = 0; for (let k = 0; k < 400; k++) { const now = lod(6 + Math.sin(k * 0.7) * 0.6, was); if (now !== was) flips += 1; was = now; } assert.equal(flips, 0, 'a size that hovers on the line changes nothing');
+  for (const bad of [NaN, undefined, -1]) assert.equal(lod(bad, 1), 0, 'with no size to go by, whole');
+  // the stadium asks through the renderer, which says whole unless the scene is slow, and uses the nearest of a section's spectators
+  const s = fs.readFileSync(path.join(repo, 'apps/demo/src/play/StadiumLive.tsx'), 'utf8'); const g = fs.readFileSync(path.join(repo, 'apps/demo/src/play/gl.ts'), 'utf8');
+  assert.ok(s.includes('r.lod(g.mesh, eye, fovy, 0.8, g.lod)') && s.includes('figureFar(') && s.includes('r.drawFar(g.mesh, model, tn, run.first, run.count, sx, sz, toEye)') && s.includes('r.gov.simplifies = true;')); assert.ok(g.includes('Math.hypot(eye[0] - m.c[0], eye[1] - m.c[1], eye[2] - m.c[2]) - m.r'), 'the distance is to the nearest edge of the section, so the nearest spectator decides');
+});

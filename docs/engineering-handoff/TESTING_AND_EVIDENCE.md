@@ -82,6 +82,12 @@ Two things follow for tests.
 
 Product pictures (`scripts/media/capture-experiences.mjs`) are taken with `?detail=full`.
 
+A drawing that is allowed to differ from full quality (the stadium's distant spectators, drawn simply on a slow machine) is judged
+by limits that were set from the quality requirements before it was measured: `tests/lib/picture-diff.mjs`, explained in
+`RENDERING_PERFORMANCE.md`. A check applies those limits and has none of its own; a limit is changed only with its reason written
+in that file, and never to fit a result. `?lod=simple` shows the simple drawing whatever the pace, so the two can be compared at
+the same resolution.
+
 ### The figures are kept, not only the verdict
 
 The regression on 87956a57 passed, and its committed record said PASS for each frame-rate check and nothing about what was measured:

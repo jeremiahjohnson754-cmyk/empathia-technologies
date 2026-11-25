@@ -56,6 +56,34 @@ void main(){
   float f = clamp((distance(uEye, vWorld) - uFogNear) / (uFogFar - uFogNear), 0.0, 1.0);
   o = vec4(mix(c, uFog, f*f), uAlpha);
 }`;
+/**
+ * The far figure's own program (figureFar; 25 Nov 2026). One face stands for three: vNor.y runs from -1 at its foot to 1 at its far
+ * edge; the far share uFar.y of it is the head, lit from above; the rest is the two sides the eye can see, each lit as itself
+ * (uFar.z and uFar.w say which way they look) and mixed by how much of each the eye sees (uFar.x). `shade` is the arithmetic of FS
+ * above, so the face is lit as the whole figure is, face by face.
+ *
+ * It is a program of its own, not a branch of FS, for a measured reason: with the branch in FS the stadium at full quality fell from
+ * 31 frames in five seconds to 19 on the test machine though it drew the same picture. A renderer without a graphics processor
+ * works out both sides of a branch for every pixel, so every pixel of every scene paid for lighting three faces.
+ */
+const FS_FAR = `#version 300 es
+precision mediump float;
+in vec3 vNor; in vec3 vCol; in vec3 vWorld; uniform vec3 uSun; uniform vec3 uEye; uniform vec3 uFog; uniform float uFogNear; uniform float uFogFar; uniform float uAlpha;
+uniform vec3 uSky; uniform vec3 uGround; uniform float uAmb; uniform vec3 uSunCol; uniform float uGlow; uniform highp vec3 uTint; uniform highp float uUseTint; uniform vec4 uFar;
+out vec4 o;
+vec3 shade(vec3 col, vec3 n){
+  float d = max(dot(n, uSun), 0.0);
+  vec3 amb = mix(uGround, uSky, n.y*0.5+0.5) * uAmb;
+  vec3 c = mix(col * (amb + uSunCol * d), col, uGlow);
+  return c + pow(1.0 - max(dot(n, normalize(uEye - vWorld)), 0.0), 3.0) * 0.08;
+}
+void main(){
+  vec3 c;
+  if (vNor.y * 0.5 + 0.5 > 1.0 - uFar.y) c = shade(mix(vec3(0.78, 0.6, 0.47), uTint, uUseTint), vec3(0.0, 1.0, 0.0));
+  else c = uFar.x * shade(vCol, vec3(uFar.z, 0.0, 0.0)) + (1.0 - uFar.x) * shade(vCol, vec3(0.0, 0.0, uFar.w));
+  float f = clamp((distance(uEye, vWorld) - uFogNear) / (uFogFar - uFogNear), 0.0, 1.0);
+  o = vec4(mix(c, uFog, f*f), uAlpha);
+}`;
 
 export interface Box { min: V3; max: V3; color: string; tag?: string }
 
@@ -104,6 +132,61 @@ export function figureFaces(x: number, y: number, z: number, color: string, out:
  * on that axis. False only when every one of them looks away, so nothing visible is ever left out.
  */
 export const facesSeen = (eye: V3, axis: 0 | 1 | 2, sign: 1 | -1, lo: number, hi: number): boolean => (sign > 0 ? eye[axis] > lo : eye[axis] < hi);
+/**
+ * Level of detail by distance (25 Nov 2026; founder: "Preserve full graphical detail for nearby spectators. Simplify distant
+ * spectators dynamically. Preserve crowd density, atmosphere and visual identity. Maintain a full-quality override.").
+ *
+ * What decides is how tall a thing is in the pixels actually drawn, not metres: that follows the camera, the lens, the size of the
+ * canvas and the adaptive detail all at once, so a figure is simplified only where it is too small on this screen for the difference
+ * to show. Any world can use these: a crowd, trees, parked cars, the furniture of a far room.
+ */
+export const pixelsTall = (size: number, dist: number, fovy: number, heightPx: number): number => (dist > 0 ? (size / dist) * (heightPx / 2) / Math.tan(fovy / 2) : Infinity);
+/** a figure at least this many drawn pixels tall is drawn whole */
+export const LOD_NEAR_PX = 6;
+/** and the change either way waits until the size is this far past the line, so a thing on the line does not flicker between the two */
+export const LOD_BAND = 0.15;
+/** 0 = drawn whole, 1 = drawn simply. Anything that is not a size (no measure yet) is drawn whole. */
+export function lodLevel(px: number, was: 0 | 1, nearPx = LOD_NEAR_PX): 0 | 1 {
+  if (!(px >= 0)) return 0;
+  return was === 1 ? (px > nearPx * (1 + LOD_BAND) ? 0 : 1) : (px < nearPx * (1 - LOD_BAND) ? 1 : 0);
+}
+/** the four quarters a far figure can be seen from, in the order `figureFar` fills them */
+export const FAR_QUARTERS: Array<{ sx: 1 | -1; sz: 1 | -1 }> = [{ sx: 1, sz: 1 }, { sx: -1, sz: 1 }, { sx: 1, sz: -1 }, { sx: -1, sz: -1 }];
+/** half the width (x), half the depth (z) and the height of a seated figure, and its head's colour: figureVerts, figureFaces and figureFar draw the same figure */
+export const FIGURE = { w: 0.22, d: 0.2, h: 0.8, skin: [0.78, 0.6, 0.47] as V3 };
+/**
+ * The same seated figure seen from far off: one face in place of the three a viewer can see, one list for each quarter it may be seen
+ * from. The face stands on the box's diagonal, corner to corner, and leans back by the depth that gives it the area of the head seen
+ * from above. That makes it cover, from any direction in its quarter at or above the seat, exactly the area the whole figure covers
+ * (its two visible sides and its head: the sums are the same, term for term), so a far crowd is as dense as the whole one. Its shape
+ * differs: seen off the diagonal it is a slanted mark, sideways by at most 0.22 m of its 0.8 m, which at the few pixels a far figure
+ * is tall is under two pixels.
+ *
+ * It is coloured and lit as the whole figure is, face by face, by the renderer (Renderer.drawFar and the far figure's program, FS_FAR):
+ * the share of the face that is head (`farShares`) is the head's colour lit from above, the rest is the shirt lit as each visible
+ * side is, mixed by how much of each side the eye sees. So the face carries the shirt's colour at every corner, and in place of a
+ * direction its second attribute says where on the face a point is: -1 at the foot, 1 at the far edge.
+ * Every person stays, in place and colour: two triangles a figure where the whole figure sends six.
+ */
+export function figureFar(x: number, y: number, z: number, color: string, out: number[][]) {
+  const c = hex(color); const { w, d, h } = FIGURE; const R = Math.hypot(2 * w, 2 * d); const lean = (2 * w * 2 * d) / R / 2;
+  FAR_QUARTERS.forEach(({ sx, sz }, f) => {
+    const a: [number, number] = [x - sx * w, z + sz * d], b: [number, number] = [x + sx * w, z - sz * d];   // the ends of the figure's outline seen from this quarter
+    let nx = b[1] - a[1], nz = -(b[0] - a[0]); if (nx * sx + nz * sz < 0) { nx = -nx; nz = -nz; } const l = Math.hypot(nx, nz); nx /= l; nz /= l;   // level, square to the diagonal, into the quarter
+    const q: V3[] = [[a[0] + nx * lean, y, a[1] + nz * lean], [b[0] + nx * lean, y, b[1] + nz * lean], [b[0] - nx * lean, y + h, b[1] - nz * lean], [a[0] - nx * lean, y + h, a[1] - nz * lean]];
+    const face: V3 = [nx * h, 2 * lean, nz * h]; const o = out[f]!;   // the way the face looks, to wind it so its front is kept
+    for (const k of dot(cross(sub(q[1]!, q[0]!), sub(q[2]!, q[0]!)), face) >= 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]) { const p = q[k]!; o.push(p[0], p[1], p[2], 0, k >= 2 ? 1 : -1, 0, c[0], c[1], c[2]); }
+  });
+}
+/**
+ * For a far figure seen along `v` (from it toward the eye; any length): how much of its visible sides is the side that looks along x
+ * (`sideX`, the rest looks along z), and how much of all the eye sees of it is its head (`head`). These are the areas of the whole
+ * figure's faces as that eye sees them, so a far face shaded with them is the whole figure's colour and light, in the same shares.
+ */
+export function farShares(v: V3): { sideX: number; head: number } {
+  const { w, d, h } = FIGURE; const ax = 2 * d * h * Math.abs(v[0]), az = 2 * w * h * Math.abs(v[2]), top = 4 * w * d * Math.max(0, v[1]); const sides = ax + az;
+  return { sideX: sides > 0 ? ax / sides : 0.5, head: sides + top > 0 ? top / (sides + top) : 0 };
+}
 /** a seated figure, as light as a crowd of thousands needs: one box of five faces (no underside), shirt on the sides, a head-coloured top */
 export function figureVerts(x: number, y: number, z: number, color: string, out: number[]) {
   const c = hex(color); const skin: V3 = [0.78, 0.6, 0.47]; const x0 = x - 0.22, x1 = x + 0.22, z0 = z - 0.2, z1 = z + 0.2, y0 = y, y1 = y + 0.8;
@@ -193,17 +276,44 @@ export const WARM_FRAMES = 5;
  * gain keeps the gain. Measured on the test machine (two cores, no graphics processor, software rendering; not a device claim):
  * campus 9 to 10 at full and 21 to 23 at half; expo 16 to 17 at full and about 30 at 64%; stadium 5 at full and 8 to 9 at half, a
  * real gain that still leaves the stadium far from smooth there.
+ *
+ * Two things can be given up for speed, and the one nobody can see goes first (25 Nov 2026). A scene that has a simpler way to draw
+ * its distant things says so (`simplifies`); when it is slow at full detail the governor first turns that on (`simple`) and only
+ * then, if it is still slow, draws fewer pixels. A machine that holds the pace gives up neither. If the pace later runs well clear of
+ * the target for SIMPLE_RETRY seconds the whole figures are tried once more, and kept if the pace holds.
+ *
+ * The override: `full` pins full resolution and whole figures whatever the pace (`?detail=full` in the address, or the page's own
+ * control), and `setFull(false)` hands the decision back and starts measuring afresh.
  */
+export const SIMPLE_RETRY = 3;
 export class DetailGovernor {
   detail = 1; notPixelBound = false; private ms = 0; private n = 0; private warm = 0; private fullFps = 0; private atMin: number[] = []; private judged = false;
-  constructor(public adaptive = true) {}
+  /** the scene has a simpler way to draw its distant things (set by the scene) */
+  simplifies = false;
+  /** draw distant things simply: true only while the scene is too slow to draw them whole */
+  simple = false;
+  /** full quality whatever the pace */
+  full: boolean;
+  private clear = 0; private retried = false;
+  constructor(public adaptive = true) { this.full = !adaptive; }
+  /** pin full quality, or hand the decision back to the pace */
+  setFull(on: boolean) {
+    this.full = on; this.detail = 1; this.simple = false; this.adaptive = !on; this.notPixelBound = false;
+    this.ms = 0; this.n = 0; this.fullFps = 0; this.atMin = []; this.judged = false; this.clear = 0; this.retried = false;
+  }
   frame(ms: number): number {
+    if (this.full) { this.detail = 1; this.simple = false; return 1; }
     if (!this.adaptive) { this.detail = 1; return 1; }
     if (!(ms > 0) || ms > 1000) return this.detail;
     if (this.warm < WARM_FRAMES) { this.warm += 1; return this.detail; }
     this.ms += ms; this.n += 1;
     if (this.ms < 1000) return this.detail;
     const fps = this.n * 1000 / this.ms; this.ms = 0; this.n = 0;
+    if (this.simplifies && this.detail >= 1) {
+      // the first thing given up is the one that cannot be seen: this second decides that, and pixels are not touched until the next
+      if (!this.simple && fps < PACE_SLOW) { this.simple = true; this.clear = 0; this.fullFps = 0; return this.detail; }
+      if (this.simple && !this.retried) { this.clear = fps > PACE_FAST ? this.clear + 1 : 0; if (this.clear >= SIMPLE_RETRY) { this.simple = false; this.retried = true; this.fullFps = 0; return this.detail; } }
+    }
     if (this.detail >= 1 && fps > this.fullFps) this.fullFps = fps;
     if (!this.judged && this.detail <= DETAIL_MIN && fps < PACE_SLOW) {
       this.atMin.push(fps);
@@ -239,6 +349,25 @@ export class Renderer {
   get detail(): number { return this.gov.detail; }
   /** tell the renderer how long the last frame took */
   pace(ms: number) { this.gov.frame(ms); }
+  /** whether full quality is pinned (the address switch or the page's control) */
+  get full(): boolean { return this.gov.full; }
+  /** pin full quality (full resolution, every distant thing drawn whole), or hand the decision back to the pace */
+  setFull(on: boolean) { this.gov.setFull(on); if (on) this.forceSimple = false; }
+  /**
+   * `?lod=simple` in the address draws distant things simply whatever the pace: for looking at the simple drawing itself, and for a test
+   * to compare it with the whole one at the same resolution (with `?detail=full` the pixels stay full; this switch decides the figures).
+   */
+  forceSimple = typeof location !== 'undefined' && /[?&]lod=simple\b/.test(location.hash);
+  /**
+   * The level to draw a mesh of things `size` metres tall at: 0 whole, 1 simply. Whole unless the scene is too slow for it (see
+   * DetailGovernor.simple) and, even then, whole wherever the nearest of them is tall enough on this canvas to show the difference.
+   */
+  lod(m: Mesh, eye: V3, fovy: number, size: number, was: 0 | 1): 0 | 1 {
+    if (!this.gov.simple && !this.forceSimple) return 0;
+    return lodLevel(this.pixels(m, eye, fovy, size), was);
+  }
+  /** how tall, in drawn pixels, the nearest thing of a mesh of things `size` metres tall can be: the distance is to the nearest edge of the mesh's sphere */
+  pixels(m: Mesh, eye: V3, fovy: number, size: number): number { return pixelsTall(size, Math.max(0.01, Math.hypot(eye[0] - m.c[0], eye[1] - m.c[1], eye[2] - m.c[2]) - m.r), fovy, this.canvas.height); }
   resize(dprFull: number) { const dpr = dprFull * this.detail; const c = this.canvas; const w = Math.max(1, Math.round(c.clientWidth * dpr)), h = Math.max(1, Math.round(c.clientHeight * dpr)); if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } this.gl.viewport(0, 0, w, h); }
   /** the light of the scene: the defaults are Campus Life's daylight */
   light: { sun: V3; sunCol: V3; sky: V3; ground: V3; amb: number } = { sun: norm([0.45, 0.8, 0.35]), sunCol: [0.72, 0.69, 0.63], sky: [0.78, 0.86, 0.95], ground: [0.45, 0.42, 0.36], amb: 0.48 };
@@ -251,14 +380,15 @@ export class Renderer {
   seen(m: Mesh, pad = 0): boolean { return !this.vp || m.r <= 0 || sphereInView(this.vp, m.c, m.r + pad); }
   begin(vp: M4, eye: V3, fog: V3, near: number, far: number) {
     const t = this.tally; if (t.draws) { const s = this.stats; if (s.draws !== t.draws || s.tris !== t.tris) { s.draws = t.draws; s.tris = t.tris; this.canvas.dataset.draws = String(t.draws); this.canvas.dataset.tris = String(t.tris); } t.draws = 0; t.tris = 0; }
-    this.vp = vp;
+    this.vp = vp; this.frame = { eye, fog, near, far }; this.farSet = false; this.glowNow = 0;
     const gl = this.gl; gl.clearColor(fog[0], fog[1], fog[2], 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); gl.useProgram(this.prog); const L = this.light;
     gl.uniformMatrix4fv(this.u['uVP']!, false, vp); gl.uniform3fv(this.u['uSun']!, L.sun); gl.uniform3fv(this.u['uEye']!, eye); gl.uniform3fv(this.u['uFog']!, fog);
     gl.uniform3fv(this.u['uSky']!, L.sky); gl.uniform3fv(this.u['uGround']!, L.ground); gl.uniform1f(this.u['uAmb']!, L.amb); gl.uniform3fv(this.u['uSunCol']!, L.sunCol); gl.uniform1f(this.u['uGlow']!, 0); gl.uniform1f(this.u['uGrad']!, 0);
     gl.uniform1f(this.u['uFogNear']!, near); gl.uniform1f(this.u['uFogFar']!, far); gl.uniform1f(this.u['uAlpha']!, 1); gl.disable(gl.BLEND);
   }
   /** draw unlit (a lamp, a screen, a board), fully or partly */
-  glow(g: number) { this.gl.uniform1f(this.u['uGlow']!, g); }
+  glow(g: number) { this.glowNow = g; this.gl.uniform1f(this.u['uGlow']!, g); }
+  private glowNow = 0;
   /** draw a mesh, or the `count` vertices of it from `first`; alpha below 1 blends it over what is behind; `add` adds its light (beams, glows) instead */
   draw(m: Mesh, model: M4 = m4.ident(), tint?: V3, alpha = 1, add = false, first = 0, count = m.n - first) {
     if (count <= 0) return;
@@ -267,6 +397,24 @@ export class Renderer {
     gl.bindVertexArray(m.vao); gl.drawArrays(gl.TRIANGLES, first, count); this.tally.draws += 1; this.tally.tris += count / 3;   // `first` and `count` draw a part of the mesh
     if (blend) { gl.disable(gl.BLEND); gl.depthMask(true); gl.enable(gl.CULL_FACE); gl.uniform1f(this.u['uAlpha']!, 1); }
   }
+  /**
+   * draw a run of far figures (figureFar) of the quarter (sx, sz), seen along `v` from them toward the eye: lit and coloured as the
+   * whole figures are, face by face (farShares; the far branch of the shader)
+   */
+  drawFar(m: Mesh, model: M4, tint: V3 | undefined, first: number, count: number, sx: number, sz: number, v: V3) {
+    if (count <= 0 || !this.vp || !this.frame) return; const gl = this.gl; const sh = farShares(v);
+    if (!this.far) { const mk = (t: number, src: string) => { const x = gl.createShader(t)!; gl.shaderSource(x, src); gl.compileShader(x); if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(x) || 'shader'); return x; };
+      const p = gl.createProgram()!; gl.attachShader(p, mk(gl.VERTEX_SHADER, VS)); gl.attachShader(p, mk(gl.FRAGMENT_SHADER, FS_FAR)); gl.linkProgram(p); if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || 'link');
+      const u: Record<string, WebGLUniformLocation | null> = {}; for (const k of ['uVP', 'uM', 'uTint', 'uUseTint', 'uSun', 'uEye', 'uFog', 'uFogNear', 'uFogFar', 'uAlpha', 'uSky', 'uGround', 'uAmb', 'uSunCol', 'uGlow', 'uFar']) u[k] = gl.getUniformLocation(p, k); this.far = { p, u }; }
+    const u = this.far.u; gl.useProgram(this.far.p);
+    if (!this.farSet) { const L = this.light, F = this.frame; this.farSet = true;   // the frame's light and view, once a frame
+      gl.uniformMatrix4fv(u['uVP']!, false, this.vp); gl.uniform3fv(u['uSun']!, L.sun); gl.uniform3fv(u['uEye']!, F.eye); gl.uniform3fv(u['uFog']!, F.fog); gl.uniform3fv(u['uSky']!, L.sky); gl.uniform3fv(u['uGround']!, L.ground); gl.uniform1f(u['uAmb']!, L.amb); gl.uniform3fv(u['uSunCol']!, L.sunCol);
+      gl.uniform1f(u['uFogNear']!, F.near); gl.uniform1f(u['uFogFar']!, F.far); gl.uniform1f(u['uAlpha']!, 1); }
+    gl.uniformMatrix4fv(u['uM']!, false, model); gl.uniform1f(u['uUseTint']!, tint ? 1 : 0); if (tint) gl.uniform3fv(u['uTint']!, tint); gl.uniform1f(u['uGlow']!, this.glowNow); gl.uniform4f(u['uFar']!, sh.sideX, sh.head, sx, sz);
+    gl.bindVertexArray(m.vao); gl.drawArrays(gl.TRIANGLES, first, count); this.tally.draws += 1; this.tally.tris += count / 3;
+    gl.useProgram(this.prog);
+  }
+  private far: { p: WebGLProgram; u: Record<string, WebGLUniformLocation | null> } | null = null; private farSet = false; private frame: { eye: V3; fog: V3; near: number; far: number } | null = null;
   /** the sky: a dome around the eye coloured from the horizon to the zenith, drawn first and behind everything */
   sky(eye: V3, horizon: V3, zenith: V3, radius = 100) {
     const gl = this.gl; if (!this.dome) { const v: number[] = []; const N = 24, M = 8; const pt = (i: number, j: number): V3 => { const a = (i / N) * Math.PI * 2, e = (j / M) * Math.PI / 2 - 0.12; return [Math.cos(a) * Math.cos(e), Math.sin(e), Math.sin(a) * Math.cos(e)]; };
