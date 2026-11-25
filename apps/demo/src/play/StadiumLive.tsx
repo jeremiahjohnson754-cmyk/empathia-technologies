@@ -64,7 +64,7 @@ export function StadiumLivePage() {
   const [zone, setZone] = useState<number | null>(null); const [device, setDevice] = useState<string | null>(null);
   const [soundOn, setSoundOn] = useState(false); const snd = useRef<Sound | null>(null); const [fps, setFps] = useState(0); const [detail, setDetail] = useState(100);
   // 25 Nov 2026: distant spectators are drawn simply when this machine cannot hold the pace (gl.ts, figureFar and DetailGovernor.simple); full quality can be pinned
-  const [simple, setSimple] = useState(false); const [fullQ, setFullQ] = useState(() => typeof location !== 'undefined' && /[?&]detail=full\b/.test(location.hash));
+  const [simple, setSimple] = useState(false); const [fullQ, setFullQ] = useState(() => typeof location !== 'undefined' && /[?&]detail=full\b/.test(location.hash) && !/[?&]lod=simple\b/.test(location.hash));   // not ticked when the address asks for the simple drawing: the box never claims what is not drawn
   const [reduced, setReduced] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches); const reducedRef = useRef(reduced); reducedRef.current = reduced;
   const [votes, setVotes] = useState<Record<string, number>>(() => { try { return JSON.parse(localStorage.getItem('empathia.stadiumlive.poll') || '{}'); } catch { return {}; } });
   const [mine, setMine] = useState<string | null>(() => { try { return localStorage.getItem('empathia.stadiumlive.mine'); } catch { return null; } });
