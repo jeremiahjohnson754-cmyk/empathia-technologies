@@ -41,7 +41,7 @@ export async function loadPages(root, scratch) {
   const esbuild = await import(path.join(root, 'node_modules/esbuild/lib/main.js')); const src = path.join(root, 'apps/demo/src');
   fs.mkdirSync(scratch, { recursive: true }); const out = path.join(scratch, `registry-${process.pid}.mjs`);
   await esbuild.build({ stdin: { contents: "export { PAGES } from './registry.pages.ts';", resolveDir: src, loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', splitting: false,
-    nodePaths: [path.join(root, 'node_modules')], alias: { '@empathia/ui': path.join(root, 'packages/ui/src/index.ts') }, define: { 'process.env.DEMO_BUILD_ID': '"preflight"' },
+    nodePaths: [path.join(root, 'node_modules')], alias: { '@empathia/ui': path.join(root, 'packages/ui/src/index.ts') }, define: { 'process.env.DEMO_BUILD_ID': '"preflight"', 'process.env.DEMO_API_URL': '"http://preflight.invalid"' },   // the server pages exist only in a build with an API (registry.ops.ts); the suites for them build one
     plugins: [{ name: 'registry', setup(b) {
       // a page's code stays a lazy import(), never executed; the three loader helpers are replaced by ones that say what they load
       b.onResolve({ filter: /\.js$/ }, (a) => (a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined));

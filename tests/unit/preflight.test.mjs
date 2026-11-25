@@ -3,7 +3,8 @@
 // one-commit checkout, and would have passed with the selector broken in each of the seven ways the review found. These checks use
 // synthetic changes, need no history, and each one fails if its rule is taken out.
 //   PRE-01  addresses: a ':param' or a run-time segment matches one segment, '*' the rest, nothing else
-//   PRE-02  every page of the registry is read, with its code (179 at the time of writing; none without code)
+//   PRE-02  every page of the registry is read, with its code, the server pages too (they exist only in a build with an API; the first
+//           rewrite left them out and called the flagship page's file one it could not place)
 //   PRE-03  every registered suite can be chosen: by a page it opens, or by the rules for the website, the server, the studio
 //   PRE-04  a change to one page's code chooses that page's suites and not the matrix (DrawingPage → demo-drawing; Dispatch → demo-dispatch)
 //   PRE-05  what the frame mounts (the tour), a page's import() (export rendering), area CSS and global CSS reach the cross-product suites
@@ -28,7 +29,7 @@ test('PRE-01 an address matches a route segment by segment', () => {
 test('PRE-02 every page of the registry is read, with its code', async () => {
   const r = await pick(); assert.ok(r.pages.length >= 170, `${r.pages.length} pages`);
   const none = r.pages.filter((p) => !p.modules.length).map((p) => p.id); assert.deepEqual(none, [], 'every page names the module it loads');
-  for (const [id, re] of [['parity.intake', /decisions\/Decisions\.tsx$/], ['policy', /pages\/Control\.tsx$/]]) { const p = r.pages.find((x) => x.id === id); assert.ok(p && p.modules.some((m) => re.test(m)), `${id}: ${p?.modules}`); }
+  for (const [id, re] of [['parity.intake', /decisions\/Decisions\.tsx$/], ['policy', /pages\/Control\.tsx$/], ['flagship.room', /pages\/Flagship\.tsx$/]]) { const p = r.pages.find((x) => x.id === id); assert.ok(p && p.modules.some((m) => re.test(m)), `${id}: ${p?.modules}`); }
   assert.ok(r.pages.some((p) => p.paths.some((x) => /^\/learn\//.test(x))), 'pages the registry generates from a list are there too');
 });
 
