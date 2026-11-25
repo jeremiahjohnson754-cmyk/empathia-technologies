@@ -3,7 +3,7 @@
 // Founder, 24 Nov 2026 21:02: "Claude should define acceptable visual differences based on your quality requirements, rather than
 // simply deriving thresholds that accommodate whatever the new implementation produces." So the limits below were written and
 // committed BEFORE the simplified crowd was built into a page or measured (commit 572fcf52 on the kept branch wip/lod, 25 Nov 2026
-// 03:06 UTC; the first build and measurement followed at 03:20, and the limits below are that commit's, unchanged), from the requirements
+// 03:06 UTC; the first build followed at 03:13 and the first measurement at 03:15, and the limits below are that commit's, unchanged), from the requirements
 // ("Preserve full graphical detail for nearby spectators… Preserve crowd density, atmosphere and visual identity… You shouldn't have
 // to sacrifice the cinematic experience") and from how well an eye tells two colours and two textures apart. If a drawing fails
 // them, the drawing changes. A limit is changed only with its reason written here, and never to fit a result.
