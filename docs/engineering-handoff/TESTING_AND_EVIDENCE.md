@@ -13,6 +13,29 @@ working run unable to overwrite the record (`tests/lib/evidence.mjs`, `scripts/t
 `.local` is not in the repository. A run of record cannot be narrowed: `--only` with `--record`, `--part` or `--merge` is refused.
 The enterprise suite's product screenshots under `media/screenshots` are re-taken only with `EMPATHIA_SCREENSHOTS=refresh`.
 
+## The engineering sequence
+
+Founder, 25 Nov 2026 07:50 CT, after the regression on 52cdd952 spent four hours finding two failures a short run would have found:
+"Keep the same strict release gates, but catch inexpensive failures earlier." Every change goes through these six steps, in order. A step
+that fails sends the change back to step 1; nothing skips ahead.
+
+| Step | What | How | What it costs |
+|---|---|---|---|
+| 1 | Implementation | the change, and the tests that would fail without it | — |
+| 2 | Preflight validation | the build (type checks of every app), then every non-browser suite: unit, security, integration, the dependency boundaries (a server page imports only the server client and the kit, `migration-ledger`; isolation of evidence; registries) | `node scripts/preflight.mjs` does 2 and 3; about 8 minutes for step 2 |
+| 3 | Cross-product impact testing | the browser suites the change reaches, chosen from the code: every suite that opens an address served by a module the change reaches (the import graph and the page registry), every suite whose own file or harness changed, and, when the change is to something many pages share (the shell, App, the kit, a module twelve or more pages reach), the suites that walk across products (route sweep, access, the return trail, search journey, phone shell, tours, role homes, the shell, offline, launches). Most directly affected first; it stops at the first failure | a page-local change: a few suites, minutes; a shared component: 80–100 suites, under an hour. `--list` says which and why without running them |
+| 4 | Independent review | an agent that did not write the change reads it and its tests, looking for wrong assumptions and for tests that cannot fail or pass for the wrong reason; each finding is corrected with its reason, or answered. When a review leads to changes, steps 2 and 3 run again | minutes |
+| 5 | Full exact-commit regression | every suite, on one committed checkout, as below. The gate: nothing is staged without it | about four hours |
+| 6 | Staging deployment | `preview/enterprise-3` moved to the passed commit; the served `BUILD_MANIFEST.json` names it; every served file matches the manifest's hash; the live check walks the changed workflows on the previews | under half an hour |
+
+Steps 2 and 3 are working runs: they write to `.local/preflight` and `.local/evidence`, never to `tests/evidence`, and they are not
+evidence. A preflight that passes does not mean the regression will: it misses a page reached only through another page's text, and an
+address a suite builds at run time from data; the regression is still the gate.
+
+How well step 3 chooses was checked against the two failed regressions it was written after: for the change from 8891a3fd to 52cdd952 it
+chooses `demo-fi-scan` (the failure the run found), `demo-replay`, `demo-return-trail` and `demo-performance-check`; for the one-commit
+correction 52cdd952 → 53ce8657 it chooses three suites (the changed check and the two suites of the flagship page), about four minutes.
+
 ## The exact-commit regression
 
 A regression is a run of record on a clean checkout of one commit, run alone (nothing else using the processor), in parts because one
