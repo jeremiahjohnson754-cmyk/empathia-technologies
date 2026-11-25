@@ -32,9 +32,12 @@ const partArg = /^--part=(\d+)\/(\d+)$/.exec(process.argv.find((a) => a.startsWi
 const mergeArg = /^--merge=(\d+)$/.exec(process.argv.find((a) => a.startsWith('--merge=')) || '');
 // --only=<text> runs just the suites whose name contains the text: for working runs. A run of record is never narrowed.
 const ONLY = (process.argv.find((a) => a.startsWith('--only=')) || '').slice(7);
+// --files=a,b runs just the suites whose command names one of these files (the preflight's step 3, 25 Nov 2026): the same runner, timeouts,
+// scoring and colour-scheme variants as the regression, for the suites a change reaches. A working run, like --only.
+const FILES = (process.argv.find((a) => a.startsWith('--files=')) || '').slice(8).split(',').filter(Boolean);
 // ---- where this run writes, and whether it is a run of record
-const RECORD = !!(PART || mergeArg || has('--record') || (process.env.CI === 'true' && !ONLY));
-if (ONLY && (PART || mergeArg || has('--record'))) { console.error('--only narrows a working run; it cannot be combined with --part, --merge or --record (a run of record runs every suite)'); process.exit(2); }
+const RECORD = !!(PART || mergeArg || has('--record') || (process.env.CI === 'true' && !ONLY && !FILES.length));
+if ((ONLY || FILES.length) && (PART || mergeArg || has('--record'))) { console.error('--only narrows a working run; it cannot be combined with --part, --merge or --record (a run of record runs every suite)'); process.exit(2); }
 const out = RECORD ? path.join(root, 'tests/evidence') : path.join(root, '.local/evidence', `run-${new Date().toISOString().replace(/[:.]/g, '-')}`);
 if (RECORD) { process.env.EMPATHIA_EVIDENCE = 'record'; delete process.env.EMPATHIA_EVIDENCE_DIR; } else { process.env.EMPATHIA_EVIDENCE = 'scratch'; process.env.EMPATHIA_EVIDENCE_DIR = out; }
 fs.mkdirSync(out, { recursive: true });
@@ -70,6 +73,7 @@ const built = (out) => { const ok = /website built:/.test(out) && !/BUDGET EXCEE
 function suite(name, kind, cmd, args, parse, opts = {}) {
   seq += 1; if (mergeArg || (PART && (seq - PART.n) % PART.of !== 0)) return;
   if (ONLY && !name.includes(ONLY)) return;
+  if (FILES.length && !args.some((a) => FILES.includes(a))) return;
   if (opts.skip) { suites.push({ suite: name, kind, result: 'NOT_RUN', why: opts.skip }); console.log(`NOT_RUN  ${name} — ${opts.skip}`); return; }
   let t0 = Date.now();
   const once = () => spawnSync(cmd, args, { cwd: opts.cwd || root, encoding: 'utf8', maxBuffer: 256 << 20, timeout: opts.timeout || 600000, env: { ...process.env, LOG_LEVEL: 'error' } });
@@ -133,6 +137,9 @@ suite('unit: training and simulation never touch the real record (SIGNAL game da
 suite('unit: export formats (every report in PDF, Word, Excel, PowerPoint, JSON and CSV, reopened by independent readers)', 'unit', node, ['scripts/verify/export-formats.mjs', `--out=${path.join(out, 'exports')}`], custom);
 for (const [n, f] of [['dispatch', 'demo-dispatch'], ['ServiceHands', 'demo-servicehands'], ['Core Replay', 'demo-replay'], ['FI scan replay', 'demo-fi-scan'], ['decisions', 'demo-decisions'], ['destructive-action safeguards', 'demo-destructive'], ['enquiry links', 'demo-enquiry'], ['Learn labs', 'learn-labs'], ['hardening', 'demo-hardening']])
   suite(`browser: investor demo ${n}`, 'browser', node, [`tests/browser/${f}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
+// 25 Nov 2026: the dead-ends crawl (90-2) was written on 20 Nov and never registered, so no regression ran it; an independent review of
+// the preflight found it. It presses every control on every fixed page, so it is given half an hour.
+suite('browser: demo-deadends (every control on every fixed page does something)', 'browser', node, ['tests/browser/demo-deadends.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1800000 } : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 // uplift/parity-areas: the fifteen V2.5.3 areas the rebuild lacked, the Control Tower, and the repo-wide no-placeholder check
 suite('browser: demo-parity-areas', 'browser', node, ['tests/browser/demo-parity-areas.test.mjs'], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? { timeout: 1200000 } : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });
 for (const s of ['demo-access', 'demo-viewas', 'demo-phoneshell', 'demo-scouter', 'demo-rolemotion', 'demo-searchparty-bar', 'demo-boundaries', 'demo-training-isolation', 'demo-fieldtools', 'demo-certs', 'demo-quizlib', 'demo-fieldcalc', 'demo-story-keys', 'demo-chal-drawings', 'demo-campus-life', 'demo-stadium-live', 'demo-performance-check', 'demo-expo-live', 'demo-return-trail', 'demo-map', 'demo-gestures', 'demo-search-journey', 'demo-voice', 'demo-modules', 'demo-journeys', 'demo-links', 'demo-route-sweep', 'demo-signal-film', 'demo-launch']) suite(`browser: ${s}`, 'browser', node, [`tests/browser/${s}.test.mjs`], custom, has('--browser') ? (fs.existsSync(path.join(root, 'apps/demo/dist/index.html')) ? {} : { skip: 'demo not built (node scripts/build.mjs)' }) : { skip: 'pass --browser' });

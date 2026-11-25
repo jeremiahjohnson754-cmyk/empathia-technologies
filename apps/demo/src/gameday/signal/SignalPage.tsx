@@ -206,7 +206,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
               <li key={p.id}>{sees(p.id) ? <><a href={estateHref('stadium', p.id, config.id)} data-node={p.id}>{p.name}</a> <span className="ui-meta">{chain.hops.find((h) => h.place.id === p.id)?.level?.name || ''} · {ACCESS_WORDS[p.access].toLowerCase()}</span></> : <span className="ui-meta">A room the {config.label} is not shown</span>}</li>))}</ol>
           </div>}
 
-          {step === 'chain' && <div data-testid="signal-chain" data-hops={chain.hops.length} data-missing={chain.missing.length}>
+          {step === 'chain' && <div data-testid="signal-chain" data-hops={chain.hops.length} data-missing-count={chain.missing.length}>
             {head('chain')}
             <p>Six equipment records of the estate, in the order the picture travels. {inc ? 'Each shows what is seen there now.' : 'No loss is on record, so nothing is marked.'}</p>
             <ol className="cs-hops">{chain.hops.map((h) => { const r = inc ? readingOf(now, h.id) : null; const seen = sees(h.place.id); return (

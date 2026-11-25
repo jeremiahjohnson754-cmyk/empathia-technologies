@@ -19,22 +19,27 @@ Founder, 25 Nov 2026 07:50 CT, after the regression on 52cdd952 spent four hours
 "Keep the same strict release gates, but catch inexpensive failures earlier." Every change goes through these six steps, in order. A step
 that fails sends the change back to step 1; nothing skips ahead.
 
-| Step | What | How | What it costs |
-|---|---|---|---|
-| 1 | Implementation | the change, and the tests that would fail without it | — |
-| 2 | Preflight validation | the build (type checks of every app), then every non-browser suite: unit, security, integration, the dependency boundaries (a server page imports only the server client and the kit, `migration-ledger`; isolation of evidence; registries) | `node scripts/preflight.mjs` does 2 and 3; about 8 minutes for step 2 |
-| 3 | Cross-product impact testing | the browser suites the change reaches, chosen from the code: every suite that opens an address served by a module the change reaches (the import graph and the page registry), every suite whose own file or harness changed, and, when the change is to something many pages share (the shell, App, the kit, a module twelve or more pages reach), the suites that walk across products (route sweep, access, the return trail, search journey, phone shell, tours, role homes, the shell, offline, launches). Most directly affected first; it stops at the first failure | a page-local change: a few suites, minutes; a shared component: 80–100 suites, under an hour. `--list` says which and why without running them |
-| 4 | Independent review | an agent that did not write the change reads it and its tests, looking for wrong assumptions and for tests that cannot fail or pass for the wrong reason; each finding is corrected with its reason, or answered. When a review leads to changes, steps 2 and 3 run again | minutes |
-| 5 | Full exact-commit regression | every suite, on one committed checkout, as below. The gate: nothing is staged without it | about four hours |
-| 6 | Staging deployment | `preview/enterprise-3` moved to the passed commit; the served `BUILD_MANIFEST.json` names it; every served file matches the manifest's hash; the live check walks the changed workflows on the previews | under half an hour |
+| Step | What | How |
+|---|---|---|
+| 1 | Implementation | the change, and the tests that would fail without it |
+| 2 | Preflight validation | the build, which type-checks the interface kit, the website, the demo and the enterprise web app, and the Founder Studio against its existing generated data (the API is not type-checked by the build; its own unit and integration suites run here), then every non-browser suite: unit, security, integration and the dependency boundaries (a server page imports only the server client and the kit, `migration-ledger`; isolation of evidence; registries). A suite left NOT RUN for any reason other than "pass --browser" or "--studio" (or the two the regression never runs here: the machine-learning dataset and the full film decode) fails this step; without a local database the security suites would be left NOT RUN, and that is not a pass |
+| 3 | Cross-product impact testing | the browser, end-to-end and site suites the change reaches, run by the regression's own runner (`scripts/test.mjs --files=…`: same timeouts, scoring, light and dark variants, prerequisites). Chosen by `scripts/lib/impact.mjs` from the code: the page registry evaluated in Node gives every address and the module behind it; the import graph (static imports and `import()`, not the registry's own) gives what a changed module reaches; every suite that opens one of those addresses is chosen. A change to something the whole app shares (the shell, App and what it mounts, the access policy, the loaders, a module twelve or more pages reach, area CSS) also chooses the suites that walk across products; global CSS, the build, the packages and the parity data choose every suite; the website, the server and sandbox, and the studio choose their own suites. A changed file it cannot place makes every suite run, and is named. Most directly affected first; it stops at the first failure |
+| 4 | Independent review | an agent that did not write the change reads it and its tests, looking for wrong assumptions and for tests that cannot fail or pass for the wrong reason; each finding is corrected with its reason, or answered. When a review leads to changes, steps 2 and 3 run again |
+| 5 | Full exact-commit regression | every suite, on one committed checkout, as below. The gate: nothing is staged without it |
+| 6 | Staging deployment | `preview/enterprise-3` moved to the passed commit; the served `BUILD_MANIFEST.json` names it; every served file matches the manifest's hash; the live check walks the changed workflows on the previews |
 
-Steps 2 and 3 are working runs: they write to `.local/preflight` and `.local/evidence`, never to `tests/evidence`, and they are not
-evidence. A preflight that passes does not mean the regression will: it misses a page reached only through another page's text, and an
-address a suite builds at run time from data; the regression is still the gate.
+`node scripts/preflight.mjs` does steps 2 and 3; `--list` says which suites step 3 would run and why, without running them. It refuses to
+start while a regression runs, and refuses to run at all if a browser suite is not registered with the regression or a cross-product
+suite it names does not exist. Steps 2 and 3 are working runs: nothing they write goes to `tests/evidence` (not even under CI), and they
+are not evidence. Step 2 takes about twelve minutes on the workstation. Step 3 depends on the change: one page's code, a handful of suites
+and a few minutes (`DrawingPage.tsx`: 5 suites); a module several products use, tens of suites (`LiteRoom.tsx`: 35); a shared component or
+area CSS, most of the matrix, one to two hours, which is less than the regression and stops at the first failure (`play.css`: 85 of 139).
 
-How well step 3 chooses was checked against the two failed regressions it was written after: for the change from 8891a3fd to 52cdd952 it
-chooses `demo-fi-scan` (the failure the run found), `demo-replay`, `demo-return-trail` and `demo-performance-check`; for the one-commit
-correction 52cdd952 → 53ce8657 it chooses three suites (the changed check and the two suites of the flagship page), about four minutes.
+What step 3 cannot know, so step 5 stays the gate: a page reached only through another page's text or a link a suite follows by
+pressing it; an address a suite builds at run time from data other than the registry; a behaviour that depends on the order suites run in.
+The first version of the selector, written the same morning, read the registry with a regular expression and lost 31 pages, matched no
+`*` route, did not see CSS, the build, data, the server or the studio, and missed modules the frame mounts and modules a page loads with
+`import()`; an independent review found each, and `tests/unit/preflight.test.mjs` now fails if any of those rules is taken out.
 
 ## The exact-commit regression
 

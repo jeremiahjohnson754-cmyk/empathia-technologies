@@ -37,7 +37,8 @@ await suite('demo-fi-scan', 4485, async ({ ok, open, goto, over, text, smallTarg
       // ("Back to Scan: Atlas 4.218 Boardroom"), and the check read that as the page's own text. It now reads the page without the chip;
       // what it asserts is unchanged: the Field Intelligence page shows nothing of the scan.
       const fiPage = await page.evaluate(() => { const m = document.querySelector('main').cloneNode(true); m.querySelectorAll('[data-testid=trail]').forEach((e) => e.remove()); return m.innerText || m.textContent || ''; });
-      ok('FS-14', 'the Field Intelligence page itself is unchanged by the scan route (still the native FI page)', !/(Scan: )/.test(fiPage) && /Field Intelligence/.test(fiPage), fiPage.slice(0, 120));
+      const native = await page.evaluate(() => ({ fi: !!document.querySelector('main [data-testid=fi-plan]'), scan: !!document.querySelector('main [data-testid=fiscan]') }));   // the review of 53ce8657: “Field Intelligence” is in both pages’ headings, so it told them apart from nothing
+      ok('FS-14', 'the Field Intelligence page itself is unchanged by the scan route (still the native FI page)', !/(Scan: )/.test(fiPage) && native.fi && !native.scan, `${JSON.stringify(native)} ${fiPage.slice(0, 120)}`);
     }
     ok(`FS-${tag}-99`, 'no page error, no console error, no request leaves the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
     await ctx.close();
