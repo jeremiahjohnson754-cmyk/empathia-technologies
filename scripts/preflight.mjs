@@ -15,6 +15,8 @@
  *   --head=<rev>   measure a committed change instead of the working tree (with --list: "what would it choose for X")
  *   --no-build     skip the build (only when nothing has changed since the last build)
  *   --keep-going   run every chosen suite even after one fails (by default step 3 stops at the first failure)
+ *   --from=<suite> resume step 3 at this suite, after steps 2 and 3 passed up to it on the same commit (a background command here is cut
+ *                  off at two hours, and a shared change can take longer); steps 2 and the suites before it are not run again
  *
  * The choice is made by scripts/lib/impact.mjs, from the evaluated page registry and the import graph; a file it cannot place makes every
  * suite run. Step 3 runs the chosen suites through scripts/test.mjs --files, so a suite runs exactly as in the regression (its timeout,
@@ -69,12 +71,13 @@ const step = (label, args, timeoutMs) => { const t0 = Date.now(); const p = spaw
   const line = `${ok ? 'PASS' : 'FAIL'}  ${label}  (${s} s)  ${p.error ? `stopped: ${p.error.message}` : summary.slice(0, 140)}`; console.log(line); report.push(`- ${line}`);
   for (const l of [...text.split('\n').filter((x) => /^FAIL\b|^not ok/.test(x)).slice(0, 8), ...notRun.map((x) => `${x} (a suite step 2 may not leave unrun)`)]) { console.log(`      ${l.slice(0, 220)}`); report.push(`    - ${l.slice(0, 220)}`); }
   return ok; };
-let ok = true;
-if (!has('--no-build')) ok = step('step 2: build, with the type checks', ['scripts/build.mjs'], 1800000);
-if (ok) ok = step('step 2: every non-browser suite (unit, security, integration, the dependency boundaries)', ['scripts/test.mjs'], 3600000);
+let ok = true; const from = arg('from'); if (from && !r.chosen.some((c) => c.name === from)) { console.error(`--from=${from}: not one of the chosen suites`); process.exit(2); }
+if (from) report.push(`Resumed at ${from}: step 2 and the suites before it passed in an earlier run on this commit (its report is beside this one).`, '');
+if (from) { /* steps 2 and the earlier suites are not repeated */ } else if (!has('--no-build')) ok = step('step 2: build, with the type checks', ['scripts/build.mjs'], 1800000);
+if (ok && !from) ok = step('step 2: every non-browser suite (unit, security, integration, the dependency boundaries)', ['scripts/test.mjs'], 3600000);
 else console.log('the build failed: nothing else is run');
 if (ok && r.chosen.length) { report.push('', `## Step 3: ${r.chosen.length} suites the change reaches`, '');
-  for (const c of r.chosen) { ok = step(`step 3: ${c.name}`, ['scripts/test.mjs', '--browser', '--studio', `--files=${c.file}`], 3600000);
+  for (const c of (from ? r.chosen.slice(r.chosen.findIndex((x) => x.name === from)) : r.chosen)) { ok = step(`step 3: ${c.name}`, ['scripts/test.mjs', '--browser', '--studio', `--files=${c.file}`], 3600000);
     if (!ok && !has('--keep-going')) { const left = r.chosen.length - r.chosen.indexOf(c) - 1; if (left) { console.log(`stopped at the first failure; ${left} suites not run (--keep-going runs them all)`); report.push(`- stopped at the first failure; ${left} not run`); } break; } } }
 const file = path.join(out, `${commit.slice(0, 8)}-${stamp}.md`); fs.writeFileSync(file, report.join('\n') + '\n');
 console.log(`\npreflight ${ok ? 'PASSED' : 'FAILED'} — ${rel(root, file)}${ok ? '\nnext: step 4, an independent review of the change and of its tests; then step 5, the exact-commit regression' : ''}`);
