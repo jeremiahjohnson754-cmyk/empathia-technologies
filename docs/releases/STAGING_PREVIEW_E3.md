@@ -22,10 +22,31 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 24 Nov 2026 02:09 | `8597d2ea` | PASS 291 · FAIL 0 · NOT_RUN 2 (evidence in `6f97ce6d`) | dep-dc2f35vlk1mc739pn81g, replaced | dep-dc2f36lg1s2s73b4o4h0, replaced |
 | 24 Nov 2026 07:48 | `9bc47b27` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `85264964`) | dep-dc2k1rdbedkc73b3jsfg, replaced | dep-dc2k1rdbedkc73b3jsc0, replaced |
 | 24 Nov 2026 10:26 | `26c81f0d` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `bd457a4d`) | dep-dc2mbte7bikc73fsvoi0, replaced | dep-dc2mbte7bikc73fsvoe0, replaced |
-| 24 Nov 2026 13:49 | `1dae3703` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `ce773198`) | dep-dc2pb38m7kps73d58vog, live | dep-dc2pb38m7kps73d58vs0, live |
+| 24 Nov 2026 13:49 | `1dae3703` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `ce773198`) | dep-dc2pb38m7kps73d58vog, replaced | dep-dc2pb38m7kps73d58vs0, replaced |
+| 25 Nov 2026 00:30 | `87956a57` | PASS 296 · FAIL 0 · NOT_RUN 2 (evidence in `bf9adfa8`) | dep-dc32ni4s728c738h7l6g, live | dep-dc32ni4s728c738h7l30, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `87956a57`, 25 Nov 2026 00:33 UTC
+
+Opened in a browser against the live addresses: 31 of 31 checks held. The 28 checks of the earlier live check (below) held again, and
+three were added for what this commit brings, the drawing detail that follows the frame rate:
+
+| Address | Result |
+|---|---|
+| demo `#/play/campus?detail=full`, then `#/play/campus` | full detail when asked (100%); left alone the scene settled at 50%; the canvas kept its size on the page and its backing size was the detail times the page size; no sideways scroll |
+| demo `#/play/stadium`, the same two ways | 100% when asked; settled at 50% |
+| demo `#/play/expo`, the same two ways | 100% when asked; settled at 64% |
+
+The level each scene settled at is the checking machine's, not a visitor's: that machine has no graphics processor and draws WebGL in
+software (it read 9, 4 and 16 frames a second at full detail and 20, 7 and 27 adapted). On a device that holds 24 frames a second the
+scenes stay at full detail. No visitor's device has been measured.
+
+Before the check, the served files were compared with the manifest, as the finding below requires: both previews' `BUILD_MANIFEST.json`
+named `sourceCommit` `87956a57…` from 00:30:40 UTC (39 seconds after Render reported the second deploy live; the two readings before
+that still named `1dae3703`), and at 00:32 every script, style and page the demonstration's manifest lists was fetched and its hash was
+the manifest's (none stale).
 
 ## Live check of `1dae3703`, 24 Nov 2026 13:57 UTC
 
@@ -112,5 +133,5 @@ local build). The website has no `/flow` page at this commit; that address retur
 
 ## What is not in the previews yet
 
-Work after `1dae3703` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. Nothing
-directed on 24 Nov beyond the design pass is built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.
+Work after `87956a57` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. Of what was
+directed on 24 Nov, the previews carry the design pass and the first piece of the rendering-performance work; the rest is not built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.
