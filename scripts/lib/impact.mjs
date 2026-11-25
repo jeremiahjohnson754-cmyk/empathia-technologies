@@ -37,7 +37,9 @@ export function matches(route, addr) {
   return a.length === r.length;
 }
 /** the addresses a suite's source names: '#/x/y', and '#/x/' where the rest is built at run time */
-export const addressesIn = (src) => [...new Set([...src.matchAll(/#(\/[\w\-./%:*]*?)(?=\$\{|[?'"`#\s)\],;]|$)/g)].map((m) => m[1]))].filter((a) => a !== '/');
+/** the addresses a suite's source names: '#/x/y'; a part built at run time ('#/campus/${b}/${f}/${id}') becomes an open segment, so the
+ *  address keeps its shape ('/campus////' matches '/campus/:building/:floor/:room'; the first version cut it at the first '${') */
+export const addressesIn = (src) => [...new Set([...src.matchAll(/#(\/(?:[\w\-./%:*]|\$\{[^}`]*\})*)/g)].map((m) => m[1].replace(/\$\{[^}`]*\}/g, '')))].filter((a) => a !== '/');
 
 // ---- the page registry, evaluated -----------------------------------------------------------------------------------------------------
 export async function loadPages(root, scratch) {
@@ -87,15 +89,17 @@ export function buildGraph(root) {
 }
 
 // ---- the suites -------------------------------------------------------------------------------------------------------------------------
-/** every browser, end-to-end and site suite the regression runs, read from scripts/test.mjs; and the browser suites it does not run */
+/** every browser, end-to-end and site suite the regression runs, read from scripts/test.mjs; and the browser and end-to-end suites it does
+ *  not run (demo-deadends was one until 25 Nov 2026; tests/e2e/checkpoint-room-lifecycle.e2e.mjs another, found by the second review) */
 export function registered(root) {
-  const t = fs.readFileSync(path.join(root, 'scripts/test.mjs'), 'utf8'); const B = path.join(root, 'tests/browser');
-  const browser = fs.readdirSync(B).filter((f) => f.endsWith('.test.mjs')).map((f) => f.replace(/\.test\.mjs$/, ''));
+  const t = fs.readFileSync(path.join(root, 'scripts/test.mjs'), 'utf8'); const B = path.join(root, 'tests/browser'); const E = path.join(root, 'tests/e2e');
+  const browser = fs.existsSync(B) ? fs.readdirSync(B).filter((f) => f.endsWith('.test.mjs')).map((f) => f.replace(/\.test\.mjs$/, '')) : [];
   const inRunner = (n) => t.includes(`tests/browser/${n}.test.mjs`) || new RegExp(`['"]${n.replace(/[-]/g, '\\-')}['"]`).test(t);
   const files = browser.filter(inRunner).map((n) => `tests/browser/${n}.test.mjs`);
   // the end-to-end suites and the two site checks the regression runs only with --browser or --studio (the other audit scripts run in step 2)
   for (const m of t.matchAll(/['"]((?:tests\/e2e\/[\w.-]+\.mjs)|(?:scripts\/audit\/site-audit\.mjs)|(?:scripts\/staging\/verify-static\.mjs))['"]/g)) if (!files.includes(m[1])) files.push(m[1]);
-  return { files, unregistered: browser.filter((n) => !inRunner(n)).map((n) => `tests/browser/${n}.test.mjs`) };
+  const e2e = fs.existsSync(E) ? fs.readdirSync(E).filter((f) => /\.e2e\.mjs$/.test(f)).map((f) => `tests/e2e/${f}`) : [];
+  return { files, unregistered: [...browser.filter((n) => !inRunner(n)).map((n) => `tests/browser/${n}.test.mjs`), ...e2e.filter((f) => !t.includes(f))] };
 }
 
 // the suites that walk across products: a change to something every product shares shows up there first (the "Back to …" chip on the
@@ -105,41 +109,71 @@ export const ACROSS = {
   'demo-return-trail': 'the "Back to …" chip on every product', 'demo-search-journey': 'search into rooms, ServiceHands, Lite and back', 'demo-phoneshell': 'the shell at phone width across products',
   'demo-tours': 'guided tours across products', 'demo-rolehome': 'each role’s home and its links', 'demo': 'the investor demo shell', 'demo-offline': 'the offline copy of every page', 'demo-launch': 'launches from one product into another',
 };
+/** the errors of the gate itself: a suite no regression runs, a cross-product suite that does not exist */
+export function gateErrors(root) {
+  const r = registered(root); const errs = [];
+  if (r.unregistered.length) errs.push(`suites scripts/test.mjs never runs, so no regression runs them either: ${r.unregistered.join(', ')}. Register them (or delete them, with the reason).`);
+  for (const n of Object.keys(ACROSS)) if (!r.files.includes(`tests/browser/${n}.test.mjs`)) errs.push(`the cross-product suite ${n} is not a registered suite; correct ACROSS in scripts/lib/impact.mjs`);
+  return errs;
+}
+/** a step's verdict from its exit and output: a run that exited 0 still fails if it left a suite NOT RUN that it may not, or (step 3) ran
+ *  nothing at all (the second review: --files matching nothing prints PASS 0 · FAIL 0 and exits 0) */
+export function judge(text, status, { mustRun = false } = {}) {
+  const lines = String(text).split('\n'); const notRun = lines.filter((l) => /^NOT_RUN\s/.test(l)).filter((l) => !MAY_NOT_RUN.test(l));
+  const counts = [...lines].reverse().map((l) => /PASS (\d+) · FAIL (\d+)/.exec(l)).find(Boolean); const passed = counts ? Number(counts[1]) : 0;
+  const why = status !== 0 ? `exit ${status}` : notRun.length ? 'a suite was left NOT RUN that may not be' : mustRun && passed < 1 ? 'nothing ran' : '';
+  return { ok: !why, why, notRun, passed };
+}
 
-// files that cannot change what a browser shows (step 2 runs every non-browser suite); everything else must be placed
-const NO_BROWSER = /^(docs\/(?!legacy-parity\.csv)|[^/]+\.md$|LICENSE|\.github\/|tests\/(unit|security|integration)\/|tests\/evidence|tests\/REGRESSION_LEDGER\.jsonl|scripts\/(test|preflight|regression[\w-]*)\.mjs$|scripts\/lib\/impact\.mjs$|scripts\/verify\/|scripts\/private\/)/;
+// files that cannot change what a browser shows (step 2 runs every non-browser suite); everything else must be placed. A test library is
+// placed by the suites that import it, directly or through other libraries; scripts/test.mjs by the suites its changed lines name.
+const NO_BROWSER = /^(docs\/(?!legacy-parity\.csv)|[^/]+\.md$|LICENSE|\.github\/|tests\/(unit|security)\/|tests\/integration\/[^/]+\.test\.mjs$|tests\/evidence|tests\/REGRESSION_LEDGER\.jsonl|scripts\/(preflight|regression[\w-]*)\.mjs$|scripts\/lib\/impact\.mjs$|scripts\/verify\/|scripts\/private\/)/;
 const SHARED = /^apps\/demo\/src\/(App\.tsx|main\.tsx|shell\/|access\/|hardening\/|registry\.(adapt|types|pages)\.ts|styles\/)/;
+// suites that are their own app: their '#/' addresses are not the demo's
+const OWN_APP = /^(enterprise-web|website|founder-|brand$|tokens$|site-audit$|verify-static$)/;
+// a suite that opens every route reads the route list from the registry files themselves
+const EVERY_ROUTE = /readdirSync\(path\.join\(repo, 'apps\/demo\/src'\)\)[^\n]*registry/;
 
-export async function select({ root, changed, scratch }) {
+/** the test libraries a suite runs, followed through their own imports */
+function closure(root, file) { const seen = new Set(); const q = [path.join(root, file)];
+  while (q.length) { const f = q.pop(); let s = ''; try { s = fs.readFileSync(f, 'utf8'); } catch { continue; }
+    for (const m of s.matchAll(/(?:\bfrom\s+|\bimport\s*\(\s*)['"](\.{1,2}\/[^'"]+)['"]/g)) { const t = path.resolve(path.dirname(f), m[1]); if (/\.(mjs|js)$/.test(t) && fs.existsSync(t) && !seen.has(t) && /\/tests\//.test(t)) { seen.add(t); q.push(t); } } }
+  return new Set([...seen].map((x) => rel(root, x))); }
+
+export async function select({ root, changed, scratch, diffOf = () => '' }) {
   const pages = await loadPages(root, scratch); const g = buildGraph(root); const { files: runnable, unregistered } = registered(root);
-  const suites = runnable.map((f) => { const src = fs.readFileSync(path.join(root, f), 'utf8'); const libs = [...src.matchAll(/from\s+['"](\.{1,2}\/[^'"]+)['"]/g)].map((m) => rel(root, path.resolve(path.dirname(path.join(root, f)), m[1])));
-    return { file: f, name: path.basename(f).replace(/\.(test\.mjs|e2e\.mjs|mjs)$/, ''), src, libs, addrs: addressesIn(src), everyRoute: /registry/.test(src) && /readdirSync/.test(src) }; });
+  const suites = runnable.map((f) => { const src = fs.readFileSync(path.join(root, f), 'utf8'); const name = path.basename(f).replace(/\.(test\.mjs|e2e\.mjs|mjs)$/, '');
+    return { file: f, name, src, libs: closure(root, f), addrs: OWN_APP.test(name) ? [] : addressesIn(src), everyRoute: EVERY_ROUTE.test(src) }; });
   const why = new Map(); const choose = (s, reason) => { if (!why.has(s.file)) why.set(s.file, []); if (why.get(s.file).length < 4) why.get(s.file).push(reason); };
   const byName = (re) => suites.filter((s) => re.test(s.name)); const all = (reason) => suites.forEach((s) => choose(s, reason));
-  const demo = () => suites.filter((s) => /^demo|^tokens$|^brand$|^site-audit$|^verify-static$/.test(s.name)); const unplaced = []; const shared = [];
+  const unplaced = []; const shared = [];
   const across = (f, n) => { shared.push(f); for (const name of Object.keys(ACROSS)) { const s = suites.find((x) => x.name === name); if (s) choose(s, `${f} is shared${n ? ` (${n} pages reach it)` : ''}: ${ACROSS[name]}`); } };
   const viaGraph = (abs, label) => {
     const r = g.reach([abs]); const served = pages.filter((p) => p.modules.some((m) => r.has(m)));
-    for (const p of served) for (const route of p.paths) for (const s of suites) if (s.everyRoute || s.addrs.some((a) => matches(route, a))) choose(s, `${label} → #${route}`);
+    for (const p of served) for (const route of p.paths) for (const s of suites) { if (s.everyRoute) choose(s, `${label} → #${route} (it opens every route)`); else if (s.addrs.some((a) => matches(route, a))) choose(s, `${label} → #${route}`); }
     const frame = [...r].some((x) => /apps\/demo\/src\/(App|main)\.tsx$/.test(x.split(path.sep).join('/')));
     if (SHARED.test(rel(root, abs)) || frame || served.length >= 12) across(label, served.length);
     return served.length || frame || SHARED.test(rel(root, abs));
   };
   for (const f of changed) {
     const abs = path.join(root, f);
-    if (NO_BROWSER.test(f)) continue;
     const own = suites.find((s) => s.file === f); if (own) { choose(own, 'the suite itself changed'); continue; }
-    if (/^tests\/(browser|lib|e2e)\/[^/]+\.mjs$/.test(f)) { const users = suites.filter((s) => s.libs.includes(f) || s.src.includes(path.basename(f))); users.forEach((s) => choose(s, `its library ${f} changed`)); if (!users.length) unplaced.push(f); continue; }
+    if (/^tests\//.test(f) && !/\.test\.mjs$|\.e2e\.mjs$/.test(f)) { const users = suites.filter((s) => s.libs.has(f)); if (users.length) { users.forEach((s) => choose(s, `its library ${f} changed`)); continue; } }
+    if (f === 'scripts/test.mjs') { const d = diffOf(f).split('\n').filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)/.test(l)).join('\n');   /* the lines it changed, not their context */ const named = suites.filter((s) => d.includes(s.file)); named.forEach((s) => choose(s, 'its registration in scripts/test.mjs changed')); if (!named.length && /tests\/(browser|e2e)\/|scripts\/(audit|staging)\//.test(d)) unplaced.push(f); continue; }
+    if (NO_BROWSER.test(f)) continue;
     if (/^(scripts\/build\.mjs|package(-lock)?\.json|packages\/|apps\/demo\/(build[\w.-]*\.mjs|server\/|public\/|index\.html)|docs\/legacy-parity\.csv|legacy\/)/.test(f) || (/^apps\/demo\/src\/styles\//.test(f))) { all(`${f} reaches every page (the build, the packages, global CSS or the data every page reads)`); continue; }
-    if (/^apps\/demo\/src\/.+\.css$/.test(f)) { const dir = path.dirname(abs); let n = 0; for (const m of g.files.filter((x) => path.dirname(x) === dir)) n += viaGraph(m, `${f} (styles ${rel(root, m)})`) ? 1 : 0; across(f); byName(/^site-audit$/).forEach((s) => choose(s, `${f}: touch targets and contrast on the sites`)); continue; }
+    if (/^apps\/demo\/src\/.+\.css$/.test(f)) { const dir = path.dirname(abs); for (const m of g.files.filter((x) => path.dirname(x) === dir)) viaGraph(m, `${f} (styles ${rel(root, m)})`); across(f); byName(/^site-audit$/).forEach((s) => choose(s, `${f}: touch targets and contrast on the sites`)); continue; }
     if (/^apps\/demo\/src\//.test(f) && (g.deps.has(abs) || g.importers.has(abs))) { if (!viaGraph(abs, f)) unplaced.push(f); continue; }
     if (/^apps\/website\//.test(f) || /^scripts\/(audit|staging)\//.test(f)) { byName(/^(website|brand|site-audit|verify-static|website-lead)/).forEach((s) => choose(s, `${f} (the public website)`)); continue; }
-    if (/^apps\/(enterprise-web|api)\/|^services\//.test(f)) { byName(/^(enterprise-web|demo-flagship|demo-connected|website-lead|founder-decisions)/).forEach((s) => choose(s, `${f} (the server and its sandbox)`)); continue; }
+    if (/^apps\/(enterprise-web|api)\/|^services\//.test(f)) { byName(/^(enterprise-web|demo-flagship|demo-connected|website-lead|founder-decisions|checkpoint-room-lifecycle)/).forEach((s) => choose(s, `${f} (the server and its sandbox)`)); continue; }
     if (/^apps\/founder-studio\//.test(f)) { byName(/^(founder-studio|founder-townhall|founder-decisions)/).forEach((s) => choose(s, `${f} (the Founder Studio)`)); continue; }
     unplaced.push(f);
   }
   if (unplaced.length) all(`not placed, so every suite runs: ${unplaced.slice(0, 3).join(', ')}${unplaced.length > 3 ? ` and ${unplaced.length - 3} more` : ''}`);
-  const rank = (f) => (why.get(f).some((w) => /suite itself|library/.test(w)) ? 0 : why.get(f).some((w) => / → #/.test(w)) ? 1 : 2);
+  // the suite itself and its libraries first; then the suites of the pages the change serves; the suites that walk every route or across
+  // products last (they are the longest: demo-deadends is given half an hour)
+  const rank = (f) => { const w = why.get(f); const s = suites.find((x) => x.file === f);
+    return w.some((x) => /^the suite itself|^its library|^its registration/.test(x)) ? 0 : (!s.everyRoute && !(s.name in ACROSS) && w.some((x) => / → #/.test(x))) ? 1 : 2; };
   const chosen = [...why.keys()].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b)).map((f) => ({ file: f, name: suites.find((s) => s.file === f).name, reasons: why.get(f) }));
   return { chosen, unplaced, shared, pages, suites, unregistered, graphSize: g.files.length };
 }

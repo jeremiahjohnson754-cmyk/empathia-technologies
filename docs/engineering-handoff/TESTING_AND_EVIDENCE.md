@@ -22,24 +22,30 @@ that fails sends the change back to step 1; nothing skips ahead.
 | Step | What | How |
 |---|---|---|
 | 1 | Implementation | the change, and the tests that would fail without it |
-| 2 | Preflight validation | the build, which type-checks the interface kit, the website, the demo and the enterprise web app, and the Founder Studio against its existing generated data (the API is not type-checked by the build; its own unit and integration suites run here), then every non-browser suite: unit, security, integration and the dependency boundaries (a server page imports only the server client and the kit, `migration-ledger`; isolation of evidence; registries). A suite left NOT RUN for any reason other than "pass --browser" or "--studio" (or the two the regression never runs here: the machine-learning dataset and the full film decode) fails this step; without a local database the security suites would be left NOT RUN, and that is not a pass |
-| 3 | Cross-product impact testing | the browser, end-to-end and site suites the change reaches, run by the regression's own runner (`scripts/test.mjs --files=…`: same timeouts, scoring, light and dark variants, prerequisites). Chosen by `scripts/lib/impact.mjs` from the code: the page registry evaluated in Node gives every address and the module behind it; the import graph (static imports and `import()`, not the registry's own) gives what a changed module reaches; every suite that opens one of those addresses is chosen. A change to something the whole app shares (the shell, App and what it mounts, the access policy, the loaders, a module twelve or more pages reach, area CSS) also chooses the suites that walk across products; global CSS, the build, the packages and the parity data choose every suite; the website, the server and sandbox, and the studio choose their own suites. A changed file it cannot place makes every suite run, and is named. Most directly affected first; it stops at the first failure |
+| 2 | Preflight validation | the build of every app, the Founder Studio included (`--studio`), which type-checks the interface kit, the website, the demo, the enterprise web app, the enterprise API and the studio; then every non-browser suite: unit, security, integration and the dependency boundaries (a server page imports only the server client and the kit, `migration-ledger`; isolation of evidence; registries). A suite left NOT RUN for any reason other than "pass --browser" or "--studio" (or the two the regression itself leaves NOT RUN here: the machine-learning prototype without its dataset, the full film decode without `--films`) fails this step; without a local database the security suites would be left NOT RUN, and that is not a pass |
+| 3 | Cross-product impact testing | the browser, end-to-end and site suites the change reaches, run one by one by the regression's own runner (`scripts/test.mjs --files=…`: the same timeouts, scoring and prerequisites); a suite that runs nothing fails. Chosen by `scripts/lib/impact.mjs`: the page registry evaluated in Node gives every address and the module behind it (184 pages, the server pages included); the import graph (static imports and `import()`, not the registry's own) gives what a changed module reaches; every suite that opens one of those addresses is chosen, and the three that read every route from the registry. A change to something the whole app shares (the shell, App and what it mounts, the access policy, the loaders, a module twelve or more pages reach, area CSS) also chooses the suites that walk across products; global CSS, the build, the packages and the parity data choose every suite; the website, the server and sandbox, and the studio choose their own suites; a test library chooses the suites that import it, directly or through other libraries; a change to the runner chooses the suites its changed lines name. A changed file it cannot place makes every suite run, and is named. The suites of the change come first, the walks across products last; it stops at the first failure |
 | 4 | Independent review | an agent that did not write the change reads it and its tests, looking for wrong assumptions and for tests that cannot fail or pass for the wrong reason; each finding is corrected with its reason, or answered. When a review leads to changes, steps 2 and 3 run again |
 | 5 | Full exact-commit regression | every suite, on one committed checkout, as below. The gate: nothing is staged without it |
 | 6 | Staging deployment | `preview/enterprise-3` moved to the passed commit; the served `BUILD_MANIFEST.json` names it; every served file matches the manifest's hash; the live check walks the changed workflows on the previews |
 
 `node scripts/preflight.mjs` does steps 2 and 3; `--list` says which suites step 3 would run and why, without running them. It refuses to
-start while a regression runs, and refuses to run at all if a browser suite is not registered with the regression or a cross-product
-suite it names does not exist. Steps 2 and 3 are working runs: nothing they write goes to `tests/evidence` (not even under CI), and they
-are not evidence. Step 2 takes about twelve minutes on the workstation. Step 3 depends on the change: one page's code, a handful of suites
-and a few minutes (`DrawingPage.tsx`: 5 suites); a module several products use, tens of suites (`LiteRoom.tsx`: 35); a shared component or
-area CSS, most of the matrix, one to two hours, which is less than the regression and stops at the first failure (`play.css`: 85 of 139).
+start while either regression runner runs, stops if one starts, and refuses to run at all if a browser or end-to-end suite is not
+registered with the regression or a cross-product suite it names does not exist. Because a background command on the workstation is cut
+off at two hours, `--from=<suite>` resumes step 3; it is refused unless the run it continues passed every step before that suite on the
+same commit, working tree, base, list and build (the run keeps that proof in `.local/preflight/state.json`). Steps 2 and 3 are working
+runs: nothing they write goes to `tests/evidence` (not even under CI), and they are not evidence. Step 2 takes about twelve minutes on the
+workstation. Step 3 depends on the change, and every page change includes the three suites that open every route (`demo-deadends` alone
+is allowed half an hour): `DrawingPage.tsx`, 6 suites; a module several products use, tens; a shared component or area CSS, most of the
+matrix, one to two hours, which is less than the regression and stops at the first failure.
 
-What step 3 cannot know, so step 5 stays the gate: a page reached only through another page's text or a link a suite follows by
-pressing it; an address a suite builds at run time from data other than the registry; a behaviour that depends on the order suites run in.
-The first version of the selector, written the same morning, read the registry with a regular expression and lost 31 pages, matched no
-`*` route, did not see CSS, the build, data, the server or the studio, and missed modules the frame mounts and modules a page loads with
-`import()`; an independent review found each, and `tests/unit/preflight.test.mjs` now fails if any of those rules is taken out.
+What step 3 cannot know, so step 5 stays the gate: a page reached only through another page's text or a link a suite follows by pressing
+it; an address a suite builds at run time from data other than the registry; a behaviour that depends on the order suites run in. The
+first selector, written the same morning, read the registry as text and lost 31 pages, matched no `*` route, did not see CSS, the build,
+data, the server or the studio, and missed modules the frame mounts and modules a page loads with `import()`. A second review found the
+studio suites of every regression since 18 Nov testing a studio bundle built on 18 Nov (the recipe built without `--studio`; a part of a
+run of record now refuses a stale build), an end-to-end suite and `demo-deadends` that no regression ran, a resume that trusted an earlier
+run without proof, and ten rules whose removal the unit checks did not notice. Each is corrected; the rules' checks were then verified by
+removing each rule in a scratch copy and seeing a check fail.
 
 ## The exact-commit regression
 
@@ -47,12 +53,12 @@ A regression is a run of record on a clean checkout of one commit, run alone (no
 background run on the workstation is limited to two hours:
 
 ```
-node scripts/build.mjs
+node scripts/build.mjs --studio
 node scripts/test.mjs --browser --studio --part=1/5      (then 2/5 … 5/5; the commit must not move between parts)
 node scripts/test.mjs --merge=5
 ```
 
-The merge refuses if a part is missing, ran another commit, or ran on a changed working tree. On a pass, the evidence is committed
+A part that runs browser or studio suites refuses to start unless the demo, the website and (with `--studio`) the Founder Studio were built from the commit under test: until 25 Nov 2026 the recipe built without `--studio`, and every regression from 18 Nov tested a studio bundle built on 18 Nov. The merge refuses if a part is missing, ran another commit, or ran on a changed working tree. On a pass, the evidence is committed
 (`git add -u tests/evidence tests/REGRESSION_LEDGER.jsonl`) in a commit that names the commit it tested. A stopped or failed run is not
 a result: the cause is fixed with its reason, committed, and the regression is run again on the new commit.
 
