@@ -17,6 +17,7 @@ import { stagesOf, reopenedBySwap, STATUS_TEXT, recordRoom, stagesFromRecord, ty
 import { roomRecord } from '../campus/design.js';
 import { CAMPUS_ROOMS, buildingByKey } from '../campus/canon.js';
 import * as S from '../workspace/store.js';
+import { NotAPlace } from '../shell/trail.js';
 
 const CAT_COLOR: Record<string, string> = { camera: 'var(--c-camera)', bar: 'var(--c-camera)', display: 'var(--c-display)', projector: 'var(--c-display)', micceil: 'var(--c-audio)', speaker: 'var(--c-speaker)', dsp: 'var(--c-audio)', amp: 'var(--c-speaker)', compute: 'var(--c-network)', switch: 'var(--c-network)', control: 'var(--c-control)', touch: 'var(--c-touch)' };
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -24,7 +25,7 @@ const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-r
 export default function Replay({ perspective, hash }: WorkspaceProps) {
   const ops = useOps(perspective); const id = opsPath(hash)[1] || ''; const room = roomOf(id) || recordRoom(id);
   if (!opsPath(hash)[1]) return <Home persona={ops.persona} w={ops.w} />;
-  if (!room) return <section className="ops"><OpsHead kicker="Core Replay" title="Room not found" persona={ops.persona} lead={<>There is no room {opsPath(hash)[1]} in this demonstration. <a href="#/replay">Choose a room</a></>} /></section>;
+  if (!room) return <section className="ops"><NotAPlace /><OpsHead kicker="Core Replay" title="Room not found" persona={ops.persona} lead={<>There is no room {opsPath(hash)[1]} in this demonstration. <a href="#/replay">Choose a room</a></>} /></section>;
   return <RoomReplay key={room.id} room={room} ops={ops} hash={hash} role={perspective} />;
 }
 

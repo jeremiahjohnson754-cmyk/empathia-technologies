@@ -19,6 +19,7 @@ import { WhoForJob } from '../connect/ContactBar.js';
 import { JobJumps } from '../rooms/JobJumps.js';
 import { ROOMS, roomOf, findingsOf, PROVENANCE_TEXT } from '../fi/rooms.js';
 import { CATEGORIES, ENTRY_POINTS, RESOLUTION_CODES, BAND_OF, ATTACH_PLACEHOLDERS, STAGES, stageOf, ROUTES, LANES, routeOf, type RouteKey, intakeErrors, submitRequest, addNote, clearBlocker, attachFinding, recordResolution, closeIncident, cancelWorkOrder, type IntakeInput } from './actions.js';
+import { NotAPlace } from '../shell/trail.js';
 /** a build that names a server has the server's queue (pages/ServiceQueue.tsx); this page then says where it is */
 const SERVER_QUEUE = !!process.env.DEMO_API_URL;
 
@@ -35,7 +36,7 @@ export default function ServiceHands({ perspective, hash }: WorkspaceProps) {
   else body = <Home ops={ops} />;
   return <section className="ops" data-testid="servicehands">{SERVER_QUEUE ? <p className="ops-note" data-testid="sh-server-note">These jobs are the demonstration’s, kept in this browser. The server’s work orders and incidents for your sandbox are worked at <a href="#/servicehands/queue">ServiceHands on the server</a>.</p> : null}{body}<WhoForJob hash={hash} role={perspective} />{undo.bar}{confirm.dialog}</section>;
 }
-function Missing({ what }: { what: string }) { return <div className="ops-card" role="alert"><h1>Not found</h1><p>There is no {what} in this demonstration workspace. It may have been reset. <a href="#/servicehands">Back to ServiceHands</a></p></div>; }
+function Missing({ what }: { what: string }) { return <div className="ops-card" role="alert"><NotAPlace /><h1>Not found</h1><p>There is no {what} in this demonstration workspace. It may have been reset. <a href="#/servicehands">Back to ServiceHands</a></p></div>; }
 
 const DONE = ['CLOSED', 'CANCELLED'];
 const hrefOf = (i: S.Incident) => (i.workOrderId ? `#/servicehands/wo/${i.workOrderId}` : `#/servicehands?id=${i.id}`);

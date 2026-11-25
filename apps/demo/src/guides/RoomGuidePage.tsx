@@ -19,6 +19,7 @@ import { whoKnows } from '../connect/directory.js';
 import { mayKnowWho, maySeeDetails } from '../connect/access.js';
 import { roomGuide, type SectionId } from './roomGuide.js';
 import { ChapterList, ChapterPage } from './ChapterPage.js';
+import { NotAPlace } from '../shell/trail.js';
 
 const ALL_LAYERS = new Set<Layer>(LAYERS.map((l) => l.key));
 
@@ -47,7 +48,7 @@ export default function RoomGuidePage({ role, params }: PageProps) {
   useEffect(() => { setActive(null); }, [id]);
   if (params['topic']) return <ChapterPage role={role} id={params['topic']} />;
   if (!id) return <Index role={role} />;
-  if (!o || !r || !g) return <div className="pa gd" data-native="" data-testid="guide-missing"><h1 className="ui-visually-hidden">Room not found</h1><EmptyState title="No room with that identifier" icon="search" action={<a className="ui-btn" href="#/guide">Choose a room</a>}>The guide is written for rooms on record.</EmptyState></div>;
+  if (!o || !r || !g) return <div className="pa gd" data-native="" data-testid="guide-missing"><NotAPlace /><h1 className="ui-visually-hidden">Room not found</h1><EmptyState title="No room with that identifier" icon="search" action={<a className="ui-btn" href="#/guide">Choose a room</a>}>The guide is written for rooms on record.</EmptyState></div>;
   const opens = (href: string) => { const x = resolve(href.split('?')[0]!); return !!x && canOpen(role, x); };
   const sec = g.sections.find((s) => s.id === active) || null; const uses = new Set((sec ? sec.steps : []).flatMap((s) => s.uses));
   const hasPanel = r.positions.some((p) => p.cat === 'touch' || p.cat === 'control');   // a room with no panel is not offered one to practise on

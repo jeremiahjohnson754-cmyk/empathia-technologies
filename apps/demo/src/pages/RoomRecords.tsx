@@ -35,6 +35,7 @@ import { LAYERS, assuranceDims, changeCards } from '../campus/asRecord.js';
 import { cxPackage } from '../export/cx.js';
 import { asPackage } from '../export/as.js';
 import { planSvg } from '../export/plan.js';
+import { NotAPlace } from '../shell/trail.js';
 type Row = ReturnType<typeof rowsOf>[number];
 function Head({ r, kind, perspective, tab }: { r: RoomRecord; kind: 'cx' | 'as'; perspective: string; tab: ReactNode }) {
   const { w } = useWorkspace(); const b = buildingByKey(r.outline.building); const cur = r.baselines.find((x) => x.state === 'CURRENT'); const pend = r.baselines.find((x) => x.state === 'PENDING_ACCEPTANCE');
@@ -57,7 +58,7 @@ function RoomTabs({ r, kind, current }: { r: RoomRecord; kind: 'cx' | 'as'; curr
 const VIEW_NAME: Array<[RegExp, string]> = [[/\/history\b/, 'baseline history'], [/\/ready\b/, 'ready check'], [/\/recommission\b/, 'recommission'], [/\/trace\b/, 'traceability'], [/\/signoff\b/, 'sign-off'], [/\/deficiencies\b/, 'deficiencies']];
 function NoRoom({ perspective, id, kind, hash = '' }: { perspective: string; id: string; kind: 'cx' | 'as'; hash?: string }) {
   const what = VIEW_NAME.find(([re]) => re.test(hash))?.[1];
-  return <section className="wk" data-testid="room-missing"><PageHero product="commissioning" icon="shield" compact eyebrow={`${kind === 'cx' ? 'Commissioning' : 'Assurance'}${what ? ` · ${what}` : ''}`} title="No such room on record" lede={`“${id}” is not one of the rooms of this demonstration. Acting as ${personaLabel(personaOf(perspective))}.`} />
+  return <section className="wk" data-testid="room-missing"><NotAPlace /><PageHero product="commissioning" icon="shield" compact eyebrow={`${kind === 'cx' ? 'Commissioning' : 'Assurance'}${what ? ` · ${what}` : ''}`} title="No such room on record" lede={`“${id}” is not one of the rooms of this demonstration. Acting as ${personaLabel(personaOf(perspective))}.`} />
     <Card icon="room" title="Rooms with a record"><List label="Rooms">{allRecords().map((r) => <ListRow key={r.outline.id} title={shortName(r.outline)} sub={r.outline.name} href={`#/${kind === 'cx' ? 'commissioning' : 'assurance'}/room/${r.outline.id}`} chevron />)}</List></Card></section>;
 }
 

@@ -58,17 +58,41 @@ export function settleScroll() {
 }
 
 // ---- 2. the trail -----------------------------------------------------------------------------------------------------------------
-/** Remember the current page if it is a place where work happens: its exact address and, once the page has drawn, its name. */
+/** Remember the current page if it is a place where work happens: its exact address and, once the page has drawn, its name.
+ *
+ *  25 Nov 2026, three corrections, found when the exact-commit regression on 5c6d698f failed RP-20 ("Back to Room not found" on a room's
+ *  replay) and the cause was followed here instead of into the check:
+ *   - The name is read from the page only while the visitor is still on it. Before, the timer read whatever heading was on screen when it
+ *     fired, so a place left within its first moments was offered under the NEXT page's name ("Back to Replay: Horizon 1.500" leading to
+ *     another room).
+ *   - The heading of the loading placeholder (aria-busy) is not the page's heading. Before, a place opened for the first time was named
+ *     after its workspace ("Back to Core Replay") rather than itself.
+ *   - A page that says its subject does not exist, or that it is not shown to this role, marks itself (NotAPlace, below) and is not a
+ *     place of work: it is not kept, and one kept earlier is forgotten. Before, "Back to Room not found", "Back to Not found" and "Back to No such room on record" were offered.
+ *  A place is therefore added to the trail when its own page has drawn, not when its address is entered; one already on the trail keeps
+ *  its exact address current at once, as before. */
+export const MISSING = '[data-missing]';
+/** Put this in a page's "there is no such room / work order / chapter" state, and in a page's own "not shown to this role" gate. It draws
+ *  nothing; it tells the trail that this address is not a place where work happens, so it is never offered as "Back to …". */
+export function NotAPlace() { return <span data-missing="" hidden />; }
 export function notePage(route: string, pageId: string | null, params: Record<string, string>) {
   const path = pathOf(route); const anchor = !!pageId && isAnchor(pageId, params);
   current = { path, anchor };
   if (!anchor) return;
   const upsert = (label: string, sub: string) => { const ms = read(); const old = ms.find((m) => m.path === path); const m: Mark = { path, hash: route, label: label || old?.label || 'where you were', sub, sy: old?.sy ?? 0, at: Date.now() };
     write([m, ...ms.filter((x) => x.path !== path)]); };
-  // name it from the page itself (its heading and the open tab), when it has drawn; keep the address current meanwhile
-  upsert('', ''); let n = 0;
-  const look = () => { const h1 = document.querySelector('main h1'); if (!h1 && n++ < 40) { setTimeout(look, 100); return; }
-    const tab = (document.querySelector('main [role=tab][aria-selected=true]')?.textContent?.trim() || '').replace(/^(.*?\D)\s*(\d+)$/, '$1 ($2)');
+  // already a place on the trail: its address (tab, device, view) is kept current at once, under the name it has
+  const known = read().find((m) => m.path === path); if (known) upsert(known.label, known.sub);
+  let n = 0;
+  const look = () => {
+    if (current.path !== path) return;   // the visitor has moved on: nothing on screen belongs to this place any more
+    const main = document.querySelector('main');
+    const h1 = Array.from(main?.querySelectorAll('h1') || []).find((h) => !h.closest('[aria-busy=true]'));   // not the loading placeholder's
+    const drawn = !!main && !main.querySelector('[aria-busy=true]');
+    if (!h1 && n++ < 40) { setTimeout(look, 100); return; }
+    if (!h1 && !drawn) return;           // still loading after four seconds: nothing was seen there, so nothing is remembered
+    if (main!.querySelector(MISSING)) { forget(path); return; }
+    const tab = (main!.querySelector('[role=tab][aria-selected=true]')?.textContent?.trim() || '').replace(/^(.*?\D)\s*(\d+)$/, '$1 ($2)');
     upsert((h1?.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80), tab.slice(0, 40)); };
   setTimeout(look, 60);
 }

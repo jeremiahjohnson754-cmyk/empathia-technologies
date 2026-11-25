@@ -12,6 +12,7 @@ import { answerTalk, chapterVerdict, choose, emptyChapter, find, load, nextOf, r
 import { buildScene, frontier, hotspotsAt, lineAt, mayPass, recap, type Shot } from './scene.js';
 import { TAKES, FOOTAGE } from './cinematic.js';
 import { Draft, Face, ItemView, getJson, loadDefs, loadIndex, notKept, useLoaded } from './StoryPage.js';
+import { NotAPlace } from '../shell/trail.js';
 
 const POS = 'empathia.signal.play.v1';
 const posOf = (id: string): number => { try { return Number((JSON.parse(localStorage.getItem(POS) || '{}') as Record<string, number>)[id]) || 0; } catch { return 0; } };
@@ -22,7 +23,7 @@ export default function PlayPage({ params }: PageProps) {
   const ix = useLoaded(loadIndex, 'ix'); const id = params.chapter || '';
   if (ix.error) return <div className="sg" data-testid="play-error"><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}).</p><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
   if (!ix.data) return <div className="sg" aria-busy="true"><h1 tabIndex={-1}>SIGNAL</h1><p className="lead">Opening the scene…</p></div>;
-  if (!ix.data.chapters.some((c) => c.id === id)) return <div className="sg" data-testid="story-unknown"><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
+  if (!ix.data.chapters.some((c) => c.id === id)) return <div className="sg" data-testid="story-unknown"><NotAPlace /><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
   return <Player key={id} ix={ix.data} id={id} />;
 }
 

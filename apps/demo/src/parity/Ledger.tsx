@@ -13,6 +13,7 @@ import { healthOf, RULES, plural, day, type Core, type Rec } from './core.js';
 import { useCore, honest, Crumbs, Pills, Zone, RecList, FactsTable, canEntity } from './ui.js';
 import { runsOf, runOf, hasAgent } from './agentModel.js';
 import { outcomeTag } from './Agent.js';
+import { NotAPlace } from '../shell/trail.js';
 
 type Strength = 'Verified' | 'Recorded' | 'Derived' | 'Inferred';
 export interface Conclusion { id: string; kind: 'Room health' | 'Commissioning' | 'Assurance' | 'Portfolio' | 'Recommendation'; text: string; about: string; strength: Strength; rule: string; evidence: Rec[]; contradiction?: string; signedBy?: string; href?: string }
@@ -108,7 +109,7 @@ function AgentLog({ room }: PageProps & { room?: string }) {
   const core = useCore();
   if (room) {
     const r = core.rooms.find((x) => x.outline.id === room);
-    if (!r || !hasAgent(r)) return <EmptyState title="This room has no health-check log" icon="room" action={<a className="ui-btn" href="#/ledger/agent">Every room’s log</a>}>{r ? `${shortName(r.outline)} has no room computer for the agent to run on.` : `No room is called ${room}.`}</EmptyState>;
+    if (!r || !hasAgent(r)) return <>{!r && <NotAPlace />}<EmptyState title="This room has no health-check log" icon="room" action={<a className="ui-btn" href="#/ledger/agent">Every room’s log</a>}>{r ? `${shortName(r.outline)} has no room computer for the agent to run on.` : `No room is called ${room}.`}</EmptyState></>;
     const run = runOf(r);
     return (
       <>

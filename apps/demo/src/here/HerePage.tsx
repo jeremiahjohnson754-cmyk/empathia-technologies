@@ -25,6 +25,7 @@ import * as S from '../workspace/store.js';
 import { SYMPTOMS, GROUP_WORD, WHAT_IT_DOES, RESULT_WORD, symptomOf, findRooms, labelFor, kindsOf, many, plainEquipment, historyOf, repeats, suspectsOf, stepsFor, jobWords, stageWord, worthAVisit, type SymptomId, type Visit, type Kind } from './model.js';
 import { loadVisits, record, outcomeProblems, type Outcome } from './store.js';
 import { WhoKnows } from '../connect/ContactBar.js';
+import { NotAPlace } from '../shell/trail.js';
 
 type StepId = 'look' | 'history' | 'wrong' | 'try' | 'record';
 type Result = 'fixed' | 'same' | 'skipped';
@@ -75,7 +76,7 @@ function DoorLabel({ roomId, name }: { roomId: string; name: string }) {
 export default function HerePage({ role, params, query, sees, can }: PageProps) {
   const outline = roomById(params['room'] || '');
   if (!outline) return params['room'] ? (
-    <section className="hr" data-native="" data-testid="here-page" data-step="unknown"><PageHero eyebrow="In this room" icon="place" product="lite" title="That label is not a room on this campus" lede="Nothing was guessed from it. Say which room you are in instead." actions={<a className="ui-btn ui-btn--primary" href="#/here">Choose the room</a>} /></section>) : <Arrive role={role} />;
+    <section className="hr" data-native="" data-testid="here-page" data-step="unknown"><NotAPlace /><PageHero eyebrow="In this room" icon="place" product="lite" title="That label is not a room on this campus" lede="Nothing was guessed from it. Say which room you are in instead." actions={<a className="ui-btn ui-btn--primary" href="#/here">Choose the room</a>} /></section>) : <Arrive role={role} />;
   return <Room key={outline.id} id={outline.id} role={role} query={query} sees={sees} can={can} />;
 }
 

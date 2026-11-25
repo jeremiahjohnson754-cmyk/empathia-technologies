@@ -13,6 +13,7 @@ import { load as loadWorkspace } from '../workspace/store.js';
 import { RoomView } from './RoomView.js';
 import { StatusDot } from '../spatial/parts.js';
 import { WhoKnows } from '../connect/ContactBar.js';
+import { NotAPlace } from '../shell/trail.js';
 
 /** The room id at a V2.5.3 room address: '/room/<id>', '/room~<id>' or none (the reference room). */
 export function roomIdOf(hash: string, params: Record<string, string>): string {
@@ -41,7 +42,7 @@ function legacyView(hash: string): { context: string; tab: string } | null {
 function UnknownRoom({ id, context }: { id: string; context?: string }) {
   let w = null; try { w = loadWorkspace(); } catch { /* none */ }
   return (
-    <section className="room" data-native="" data-testid="room-unknown">
+    <section className="room" data-native="" data-testid="room-unknown"><NotAPlace />
       <nav aria-label="Breadcrumb" className="crumbs"><ol><li><a href="#/campus">Campus</a></li><li><span aria-current="page">Room</span></li></ol></nav>
       <header className="room__hero">
         <p className="kicker">{context ? `${context} · ` : ''}Not on this campus</p>

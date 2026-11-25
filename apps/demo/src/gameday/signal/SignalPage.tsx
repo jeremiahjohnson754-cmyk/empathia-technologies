@@ -31,6 +31,7 @@ import { keep, load } from '../store.js';
 import { SIGNAL_FAULT, SIGNAL_STEPS, SIGNAL_VERIFY, SIGNAL_WHY, isSignalStep, mayOpenSignal, mayVerifySignal, mayWorkSignal, signalHref, type SignalStep } from './access.js';
 import { CAMERA, FAULT, PROVENANCE_HELP, READING_WORD, chainOf, evidenceFor, evidenceNote, evidenceProblems, failedHopOf, historyOf, hopName, hopOf, incidentOf, isolate, observe, outcomeNote, outcomeProblems, peopleOf, placesOf, procedureFor, reached, readingOf, type Hop, type HopId, type Observation, type Provenance, type Reading } from './model.js';
 import { ledgerOf, notRestored, simulateLoss, step as takeStep, type Actor, type Done } from './store.js';
+import { NotAPlace } from '../../shell/trail.js';
 
 const TITLE: Record<SignalStep, [string, string]> = {
   alert: ['Alert', 'The alert'], where: ['Where', 'Where it is'], chain: ['Signal chain', 'The signal chain'], history: ['History and people', 'History, and who is responsible'], observe: ['Observations', 'What each point shows'],
@@ -54,7 +55,7 @@ const READ_ICON: Record<Reading, 'check' | 'alert' | 'info'> = { passes: 'check'
 export default function SignalPage({ role, params, query }: PageProps) {
   const config = configFor('stadium', query.get('as')); enterContext(contextOf('stadium/gameday/incident', config.id, role));
   if (params['fault'] !== SIGNAL_FAULT) return (
-    <div className="w cs" data-world="stadium" data-testid="signal-unknown">
+    <div className="w cs" data-world="stadium" data-testid="signal-unknown"><NotAPlace />
       <Crumbs items={[{ label: 'Worlds', href: '#/worlds' }, { label: WORLDS.stadium.name, href: worldHref('stadium', config.id) }, { label: 'Game day', href: `#/gameday?as=${encodeURIComponent(config.id)}` }, { label: 'Incident' }]} />
       <h1 tabIndex={-1}>This fault has no guided incident</h1>
       <p className="lead">The camera feed is the one fault that is worked on a page of its own. Every other fault is worked on the game-day page.</p>

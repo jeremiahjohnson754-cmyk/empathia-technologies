@@ -15,6 +15,7 @@ import { enterContext, contextOf, contextKey } from './scope.js';
 import { enterpriseTarget, opens } from './enterprise.js';
 import { Crumbs, Synthetic } from './kit.js';
 import { Emblem } from './WorldsPage.js';
+import { NotAPlace } from '../shell/trail.js';
 
 type PanelKey = 'roles' | 'all' | 'what';
 /** The tour is skipped for the rest of the visit (kept in memory only: nothing about a visitor is stored). */
@@ -23,7 +24,7 @@ const KIND: Record<string, string> = { public: 'Public', student: 'Student', tea
 
 export function UnknownWorld({ what }: { what: string }) {
   return (
-    <section className="owlpage" aria-labelledby="uw-h" data-testid="world-unknown">
+    <section className="owlpage" aria-labelledby="uw-h" data-testid="world-unknown"><NotAPlace />
       <img className="owlpage__owl" src="brand/owl.svg" alt="" width="112" height="112" />
       <div className="owlpage__b"><p className="kicker">Unknown address</p><h1 id="uw-h" tabIndex={-1}>{what}</h1>
         <p>There are four worlds: Enterprise, Stadium, University and Convention.</p>

@@ -59,4 +59,49 @@ for (const [w, h, tag] of [[390, 844, 'phone'], [1440, 900, 'desktop']]) {
   ok('RT-role-01', 'viewing as a visitor: the trail offers only places the visitor may open (never a refusal page)', landed !== 'access page', `${JSON.stringify(c)} → ${landed}`);
   await t.close();
 }
+
+// 25 Nov 2026 — what the trail keeps, and under what name. Added when the exact-commit regression on 5c6d698f failed RP-20 (a room's
+// replay carried "Back to Room not found") and the cause was in the trail, not in the check: it named a place from whatever heading
+// was on screen when its timer fired, and it kept addresses whose page says the subject does not exist.
+const marks = (p) => p.evaluate(() => { try { return JSON.parse(sessionStorage.getItem('empathia.trail.v1') || '[]').map((m) => ({ path: m.path, label: m.label })); } catch { return []; } });
+{ // every address that counts as a place of work, opened with an identifier that does not exist
+  const GONE = ['#/assurance/room/R-NOPE', '#/commissioning/room/R-NOPE', '#/campus/atlas/4/R-NOPE', '#/control/R-NOPE', '#/scheduler/R-NOPE', '#/ledger/agent/R-NOPE', '#/studio/room/R-NOPE', '#/forge/room/R-NOPE', '#/guide/room/R-NOPE', '#/here/R-NOPE',
+    '#/replay/R-NOPE', '#/room/R-NOPE', '#/servicehands/wo/WO-NOPE', '#/voice/callpath/R-NOPE', '#/voice/report/R-NOPE', '#/film/nope', '#/play/nope', '#/story/nope', '#/optimizer/stadium/R-NOPE?as=stadium.av_it_engineer', '#/gameday/incident/F-NOPE?as=stadium.broadcast_engineer'];
+  const t = await open('#/families', { role: 'architect', sw: false }); const p = t.page; const bad = []; let said = 0;
+  for (const a of GONE) {
+    await p.evaluate((h) => { location.hash = h; }, a); await p.waitForFunction(() => !document.querySelector('main [aria-busy=true]') && (document.querySelector('main')?.innerText || '').trim().length > 20, null, { timeout: 8000 }).catch(() => undefined); await p.waitForTimeout(700);
+    const st = await p.evaluate(() => ({ refused: !!document.querySelector('[data-testid=access-page]'), missing: !!document.querySelector('main [data-missing]'), h1: (document.querySelector('main h1')?.textContent || '').trim().slice(0, 40) }));
+    if (st.refused) { bad.push(`${a}: refused, so its unknown state was not reached`); continue; }
+    if (st.missing) said += 1; else bad.push(`${a}: the page does not say its subject is missing (“${st.h1}”)`);
+    await p.evaluate(() => { location.hash = '#/families'; }); await p.waitForTimeout(350);
+    const path = a.split('?')[0]; const kept = (await marks(p)).find((m) => m.path === path); const c = await chip(p);
+    if (kept) bad.push(`${a}: kept as “${kept.label}”`); if (c && (c.to || '').split('?')[0] === path) bad.push(`${a}: offered as “${c.text}”`);
+  }
+  ok('RT-gone-01', `an address whose page says there is no such room, work order, chapter or fault is not a place of work: none of the ${GONE.length} is kept or offered as “Back to …”`, !bad.length && said === GONE.length, bad.slice(0, 4).join(' | ') || `${said} of ${GONE.length} said so`);
+  // a place kept earlier that no longer exists (a workspace that was reset) is forgotten when its page says so
+  await p.evaluate(() => { sessionStorage.setItem('empathia.trail.v1', JSON.stringify([{ path: '#/servicehands/wo/WO-NOPE', hash: '#/servicehands/wo/WO-NOPE', label: 'Work order WO-NOPE', sub: '', sy: 0, at: Date.now() }])); location.hash = '#/families'; }); await p.reload(); await p.waitForSelector('main h1'); await p.waitForTimeout(500);
+  const before = await chip(p); await p.getByTestId('trail-back').click().catch(() => undefined); await p.waitForTimeout(1200); await p.evaluate(() => { location.hash = '#/families'; }); await p.waitForTimeout(400);
+  ok('RT-gone-02', 'a place that was on the trail and is gone (its page now says “Not found”) is forgotten after the visit that found it gone', !!before && /WO-NOPE/.test(before.to || '') && !(await marks(p)).length && !(await chip(p)), JSON.stringify({ before, after: await marks(p) }));
+  ok('RT-gone-03', 'no console error, nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+  await t.close();
+}
+{ // a place is named from its own drawn page: not the loading placeholder, not the page the visitor went to next
+  const t = await open('#/families', { role: 'architect', sw: false }); const p = t.page;
+  await p.evaluate(() => { location.hash = '#/replay/R-ATL-4-218'; }); await p.waitForSelector('[data-testid=replay]'); await p.waitForTimeout(600);   // first visit: the replay's code is fetched now
+  const first = (await marks(p)).find((m) => m.path === '#/replay/R-ATL-4-218');
+  ok('RT-name-01', 'a place opened for the first time is named after itself (“Replay: Atlas 4.218 …”), not after the workspace that was still loading', !!first && /Atlas 4\.218/.test(first.label) && first.label !== 'Core Replay', JSON.stringify(first));
+  // left at once: two addresses entered in the same instant, the way a quick second tap does
+  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/families'; }); await p.waitForTimeout(400);
+  await p.evaluate(() => { location.hash = '#/replay/R-HZN-1-500'; setTimeout(() => { location.hash = '#/room/R-ATL-4-218'; }, 0); }); await p.waitForTimeout(1500);
+  const ms = await marks(p); const hzn = ms.find((m) => m.path === '#/replay/R-HZN-1-500'); const room = ms.find((m) => m.path === '#/room/R-ATL-4-218');
+  ok('RT-name-02', 'a place left before it had drawn is never offered under the next page’s name: it is not kept, and the page the visitor stayed on is, under its own name', !hzn && !!room && /Atlas 4\.218/.test(room.label), JSON.stringify(ms));
+  // a refused page is not a place the role worked in
+  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/gameday/incident/camera-feed?as=stadium.fan'; }); await p.waitForSelector('[data-testid=access-page]'); await p.waitForTimeout(600);
+  const refused = await marks(p);
+  // …and neither is a page's own gate (the Space Optimizer is a design tool: a fan is shown the gate, and the gate is not a place of work)
+  await p.evaluate(() => { location.hash = '#/optimizer/stadium/S-NOPE?as=stadium.fan'; }); await p.waitForSelector('[data-testid=optimizer-gate]'); await p.waitForTimeout(600);
+  ok('RT-name-03', 'a page the role is refused, by the shell or by the page’s own gate, is not kept on the trail under the refusal’s heading', !refused.length && !(await marks(p)).length, JSON.stringify([refused, await marks(p)]));
+  ok('RT-name-04', 'no console error, nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+  await t.close();
+}
 await done();

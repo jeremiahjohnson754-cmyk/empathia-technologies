@@ -16,6 +16,7 @@ import { resolve } from '../registry.pages.js';
 import { RoomPanel, useRoomSentence, type ModeKey } from '../control/Panel.js';
 import { sessionsOf, busyAt, nextOf, hhmm, SIGNAGE, plural } from './core.js';
 import { useCore, honest, Crumbs, Zone, FactsTable } from './ui.js';
+import { NotAPlace } from '../shell/trail.js';
 
 const MODES: Array<{ key: string; label: string; sub: string; who: string; icon: IconName }> = [
   { key: 'room', label: 'Room', sub: 'The room before and between sessions', who: 'Every room', icon: 'room' },
@@ -67,7 +68,7 @@ function RoomControl({ role, id, can, query }: PageProps & { id: string }) {
   const [tick, setTick] = useState(0);
   // a link to another mode of the same room (?mode=engineer) changes the mode; found by the role-matrix check, 10 Nov
   const asked = query.get('mode'); useEffect(() => { if (asked && avail.some((m) => m.key === asked)) setMode(asked); }, [asked, id]);   // eslint-disable-line react-hooks/exhaustive-deps
-  if (!o || !rec) return <EmptyState title="No room has this address" icon="room" action={<a className="ui-btn" href="#/control">Every room’s panel</a>}>Nothing in the campus records is called <code>{id}</code>.</EmptyState>;
+  if (!o || !rec) return <><NotAPlace /><EmptyState title="No room has this address" icon="room" action={<a className="ui-btn" href="#/control">Every room’s panel</a>}>Nothing in the campus records is called <code>{id}</code>.</EmptyState></>;
   return <RoomControlBody o={o} rec={rec} role={role} use={can('control.use')} eng={eng} mode={mode} setMode={setMode} avail={avail} tick={tick} bump={() => setTick((n) => n + 1)} />;
 }
 /** The room's page once the room is known: the sentence is the heading and follows every press. */
@@ -134,7 +135,7 @@ function Scheduler() {
 
 function DoorPanel({ id }: PageProps & { id: string }) {
   const o = roomById(id);
-  if (!o) return <EmptyState title="No room has this address" icon="room" action={<a className="ui-btn" href="#/scheduler">Every room</a>} />;
+  if (!o) return <><NotAPlace /><EmptyState title="No room has this address" icon="room" action={<a className="ui-btn" href="#/scheduler">Every room</a>} /></>;
   const s = busyAt(o.id); const n = nextOf(o.id);
   return (
     <>

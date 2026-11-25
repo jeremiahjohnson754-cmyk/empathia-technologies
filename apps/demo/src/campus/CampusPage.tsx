@@ -17,6 +17,7 @@ import { StatusDot, Chip, ScoreRing, StatTile, Icon, Section, MeterRow, stateOf,
 import type { RoleKey } from '../registry.types.js';
 import { resolve } from '../registry.pages.js';
 import { canOpen } from '../access/policy.js';
+import { NotAPlace } from '../shell/trail.js';
 
 export { LIFE_TONE };
 const KIND_LABEL: Record<string, string> = { reference: 'reference room', earlier: 'earlier record', designed: 'designed from archetype' };
@@ -55,7 +56,7 @@ function CampusInner({ hash, sees, role }: { hash: string; sees?: (id: string) =
 }
 
 function NotFound({ what }: { what: string }) {
-  return <section className="campus" data-native=""><header className="room__hero"><p className="kicker">Campus</p><h1>Not on this campus</h1><p className="room__intent">There is no {what} in the synthetic campus.</p><div className="room__acts"><a className="ui-btn ui-btn--primary" href="#/campus">Back to the campus</a><a className="ui-btn" href="#/rooms">Every room in a list</a></div></header><Notice tone="warn">There is no {what} in the synthetic campus. <a href="#/campus">Back to the campus</a></Notice></section>;
+  return <section className="campus" data-native=""><NotAPlace /><header className="room__hero"><p className="kicker">Campus</p><h1>Not on this campus</h1><p className="room__intent">There is no {what} in the synthetic campus.</p><div className="room__acts"><a className="ui-btn ui-btn--primary" href="#/campus">Back to the campus</a><a className="ui-btn" href="#/rooms">Every room in a list</a></div></header><Notice tone="warn">There is no {what} in the synthetic campus. <a href="#/campus">Back to the campus</a></Notice></section>;
 }
 
 function Crumbs({ items }: { items: Array<[string, string?]> }) {

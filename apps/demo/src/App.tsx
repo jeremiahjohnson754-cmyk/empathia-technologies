@@ -64,7 +64,8 @@ export function App() {
   const d = decide(role, route);
   // #223: a new page starts at its top, a revisited one where it was left; places of work are remembered for the return chip
   useEffect(() => { settleScroll(); }, [page]);
-  useEffect(() => { notePage(route, d.kind === 'page' ? d.at.page.id : null, d.kind === 'page' ? d.at.params : {}); }, [route]);   // eslint-disable-line react-hooks/exhaustive-deps
+  // a page the role is refused is not a place it worked in (25 Nov 2026: it was kept under the refusal's heading, and offered after a role change)
+  useEffect(() => { const place = d.kind === 'page' && d.allowed; notePage(route, place ? d.at.page.id : null, place ? d.at.params : {}); }, [route, role]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const switchTo = useCallback((r: RoleKey, o: { tour?: boolean } = {}) => {
     setSheet(false);

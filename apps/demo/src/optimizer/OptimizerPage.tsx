@@ -16,6 +16,7 @@ import { ESTATES, indexOf, type EstateNode } from '../estate/index.js';
 import { readerOf, seesEquipment, shown, READER_WORDS } from '../estate/reader.js';
 import { estateHref } from '../estate/EstatePage.js';
 import { CLOSE, DIMENSIONS, DIMENSION_LABEL, OPTIONS, RULE_TEXT, SAVED, compare, scoreOf, studiable, type Dimension, type Study } from './engine.js';
+import { NotAPlace } from '../shell/trail.js';
 
 type Show = 'sightlines' | 'video' | 'capture' | 'reproduction';
 const SHOWS: readonly Show[] = ['sightlines', 'video', 'capture', 'reproduction'];
@@ -118,7 +119,7 @@ function RoomPlan({ s, show, name }: { s: Study; show: Show; name: string }) {
 
 function Gate({ world, config }: { world: World; config: RoleConfig }) {
   return (
-    <section className="owlpage" aria-labelledby="sg-h" data-world={world.key} data-testid="optimizer-gate">
+    <section className="owlpage" aria-labelledby="sg-h" data-world={world.key} data-testid="optimizer-gate"><NotAPlace />
       <img className="owlpage__owl" src="brand/owl.svg" alt="" width="112" height="112" />
       <div className="owlpage__b"><p className="kicker">Not part of this role’s work <Synthetic /></p>
         <h1 id="sg-h" tabIndex={-1}>The Space Optimizer is not shown to the {config.label}</h1>

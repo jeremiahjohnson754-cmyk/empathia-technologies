@@ -14,13 +14,14 @@ import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import * as S from '../workspace/store.js';
 import { holds, personaOf } from '../hardening/kit.js';
 import { SYMPTOMS, loadReports, saveReport, type VoiceReport } from './model.js';
+import { NotAPlace } from '../shell/trail.js';
 
 export default function ReportPage({ role, params }: PageProps) {
   const room = roomById(params['room'] || ''); const { apply } = useWorkspace();
   const [symptom, setSymptom] = useState<string>(SYMPTOMS[0]); const [note, setNote] = useState(''); const [done, setDone] = useState<VoiceReport | null>(null); const [refused, setRefused] = useState<string[] | null>(null);
   const [mine, setMine] = useState<VoiceReport[]>(() => loadReports().filter((r) => r.by === role));
   const opens = (h: string) => { const r = resolve(h); return !!r && canOpen(role, r); };
-  if (!room) return (<><PageHero eyebrow="VOICE" title="This room is not in the estate" lede="The address names a room the demonstration does not hold." product="pro" icon="network" /><Notice tone="warn"><a href="#/campus">Choose a room on the campus</a></Notice></>);
+  if (!room) return (<><NotAPlace /><PageHero eyebrow="VOICE" title="This room is not in the estate" lede="The address names a room the demonstration does not hold." product="pro" icon="network" /><Notice tone="warn"><a href="#/campus">Choose a room on the campus</a></Notice></>);
   const submit = () => {
     // raised with the role's own persona when it may raise a job, otherwise as a requestor, exactly as “In this room” does (here/store.ts)
     const persona = personaOf(role); const by = ['request.submit', 'service.triage', 'work.evidence'].some((a) => holds(persona, a)) ? persona : 'requestor';

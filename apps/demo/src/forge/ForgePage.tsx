@@ -13,6 +13,7 @@ import { resolve } from '../registry.pages.js';
 import { State } from '../voice/CallPathPage.js';
 import { FORGE_APPROVE } from '../module-roles.js';
 import { CAPABILITY_PACKS, FORGE_ROOMS, STATUS_WORD, approvalOf, approve, compile, loadApprovals, mayApprove, type ArtifactStatus } from './model.js';
+import { NotAPlace } from '../shell/trail.js';
 
 const TONE: Record<ArtifactStatus, 'ok' | 'warn' | 'bad' | 'muted'> = { COMPILED: 'ok', COMPILED_WITH_GAPS: 'warn', REJECTED: 'bad', NOT_AVAILABLE: 'muted' };
 const READY: Record<ArtifactStatus, string> = { COMPILED: 'READY', COMPILED_WITH_GAPS: 'UNKNOWN', REJECTED: 'NOT_READY', NOT_AVAILABLE: 'UNKNOWN' };
@@ -36,7 +37,7 @@ export default function ForgePage({ role, params, can }: PageProps) {
     </div>);
   }
   const p = compile(roomId);
-  if (!p) return (<><PageHero eyebrow="FORGE" title="This room is not in the estate" lede="The address names a room the demonstration does not hold." product="lite" icon="layers" />
+  if (!p) return (<><NotAPlace /><PageHero eyebrow="FORGE" title="This room is not in the estate" lede="The address names a room the demonstration does not hold." product="lite" icon="layers" />
     <Connected id="forge" role={role} /><Notice tone="warn"><a href="#/forge" data-testid="forge-unknown">Open the rooms FORGE offers</a></Notice></>);
   const approval = approvalOf(approvals, p); const rule = mayApprove(role, p, FORGE_APPROVE);
   return (<div className="vc" data-testid="forge-package" data-room={p.roomId} data-revision={p.revision} data-approved={approval ? '1' : '0'}>

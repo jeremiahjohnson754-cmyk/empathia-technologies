@@ -15,6 +15,7 @@ import { UnknownWorld } from '../worlds/WorldPage.js';
 import { ESTATES, indexOf, pathOf, type Asset, type Commissioning, type Estate, type EstateNode, type Index } from './index.js';
 import { ACCESS_WORDS, READER_WORDS, find, offers, program, readerOf, seesEquipment, shown, totals } from './reader.js';
 import { studiable } from '../optimizer/engine.js';
+import { NotAPlace } from '../shell/trail.js';
 
 const LITE_STATE: Record<Commissioning, string | null> = { ACCEPTED: 'Commissioned', COMMISSIONING: 'In commissioning', DESIGNED: 'Designed, not yet built', NOT_APPLICABLE: null };
 const words = (t: string) => t.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
@@ -182,7 +183,7 @@ function Place({ world, config, ix, node }: { world: World; config: RoleConfig; 
 /** A place beyond this reader: no name, no facts. */
 function Gate({ world, config }: { world: World; config: RoleConfig }) {
   return (
-    <section className="owlpage" aria-labelledby="eg-h" data-world={world.key} data-testid="estate-gate">
+    <section className="owlpage" aria-labelledby="eg-h" data-world={world.key} data-testid="estate-gate"><NotAPlace />
       <img className="owlpage__owl" src="brand/owl.svg" alt="" width="112" height="112" />
       <div className="owlpage__b">
         <p className="kicker">Not part of this role’s work <Synthetic /></p>

@@ -17,6 +17,7 @@ import { Face, getJson, loadDefs, loadIndex, useLoaded, notKept } from '../Story
 import { buildFilm, INTERLUDES, ONLY_IF, loadFilm, saveFilm, emptyFilm, hidingPlace, objectiveState, questOf, type FilmShot, type FilmState, type PlayRecord } from './director.js';
 import { Board, Cards, FillTest, Measure, PlanConsequence } from './Interludes.js';
 import { enableSound, roomTone, silence } from './sound.js';
+import { NotAPlace } from '../../shell/trail.js';
 
 type Decision = Extract<Item, { type: 'decision' }>; type Talk = Extract<Item, { type: 'talk' }>;
 interface Line { who: string; name: string; text: string; src: string | null; face?: { pose: string; expr: string } }
@@ -26,7 +27,7 @@ export default function FilmPage({ params }: PageProps) {
   const ix = useLoaded(loadIndex, 'ix'); const id = params.chapter || 's01e01';
   if (ix.error) return <div className="sg"><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}).</p></div>;
   if (!ix.data) return <div className="sg" aria-busy="true"><h1 tabIndex={-1}>SIGNAL</h1><p className="lead">Opening the film…</p></div>;
-  if (!ix.data.chapters.some((c) => c.id === id)) return <div className="sg" data-testid="film-unknown"><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/film/s01e01">Start with Ten Seats</a></p></div>;
+  if (!ix.data.chapters.some((c) => c.id === id)) return <div className="sg" data-testid="film-unknown"><NotAPlace /><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/film/s01e01">Start with Ten Seats</a></p></div>;
   return <Film key={id} ix={ix.data} id={id} />;
 }
 

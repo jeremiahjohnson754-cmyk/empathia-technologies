@@ -15,6 +15,7 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import { jobView, apexCaseWith } from './job.js';
 import { RoomJumps, opensFor } from '../rooms/RoomJumps.js';
 import { CASES, VOICE_ROOM, LAYER_LABEL, METHOD, POLICY, SESSION, SHARED_LINK, FIXTURE_NOW, ageS, caseOf, caseView, estimate, flowFor, outsidePolicy, loadReports, type EvidenceState, type CaseId } from './model.js';
+import { NotAPlace } from '../shell/trail.js';
 
 const TONE: Record<EvidenceState, 'ok' | 'warn' | 'bad' | 'info' | 'muted' | 'accent'> = { DECLARED: 'info', MODELED: 'info', SIMULATED: 'accent', OBSERVED: 'ok', MEASURED: 'ok', VERIFIED: 'ok', UNKNOWN: 'warn', NOT_CONFIGURED: 'bad', STALE: 'warn' };
 const WORD: Record<EvidenceState, string> = { DECLARED: 'Declared', MODELED: 'Modeled', SIMULATED: 'Simulated', OBSERVED: 'Observed', MEASURED: 'Measured', VERIFIED: 'Verified', UNKNOWN: 'Unknown', NOT_CONFIGURED: 'Not configured', STALE: 'Stale' };
@@ -28,6 +29,7 @@ export default function CallPathPage({ role, params, query, sees }: PageProps) {
   const flow = room ? flowFor(room.id) : null;
   if (!room || !flow) {
     return (<>
+      {!room && <NotAPlace />}
       <PageHero eyebrow="VOICE · CallPath Digital Twin" title={room ? `No call flow is recorded for ${fullName(room)}` : 'This room is not in the estate'} lede="The demonstration holds call-flow records for two rooms. A room without a record is not shown as healthy: there is simply nothing to read." product="pro" icon="network" />
     <Connected id="voice" role={role} />
       <Notice tone="warn"><span data-testid="voice-noflow">Call flow: <b>Not configured</b> for this room.</span> <a href={`#/voice/callpath/${VOICE_ROOM}`}>Open the CallPath of Atlas 4.218</a></Notice>

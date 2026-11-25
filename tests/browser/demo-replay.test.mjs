@@ -56,6 +56,13 @@ await suite('demo-replay', 4484, async ({ ok, open, goto, over, text, smallTarge
       ok('RP-21', 'its design stage says the layout is modeled from a template, not surveyed', /Modeled/.test(await page.getByTestId('rp-card').innerText()), (await page.getByTestId('rp-card').innerText()).slice(0, 120));
       await goto(page, '#/replay', 'svcmgr'); await page.waitForSelector('[data-testid=replay-home]');
       ok('RP-22', 'the replay home offers any of the 140 campus rooms, not only the four with a deep history', (await page.locator('[data-testid=replay-any] option').count()) === 141);
+      // 25 Nov 2026 (the regression on 5c6d698f failed RP-20 once: on that run the room's page carried "Back to Room not found"). RP-20 is
+      // unchanged. It read the fault correctly, but only on a run slow enough for the unknown room to be named before the next address
+      // was entered, so it passed by timing. This check holds the page of the unknown room long enough that the fault would always show.
+      await goto(page, '#/replay/R-NOPE', 'svcmgr'); await page.waitForTimeout(600);
+      await goto(page, '#/replay/R-HZN-1-500', 'svcmgr'); await page.waitForSelector('[data-testid=replay]'); await page.waitForTimeout(300);
+      const back = await page.evaluate(() => { const a = document.querySelector('[data-testid=trail-back]'); return a ? `${(a.textContent || '').replace(/\s+/g, ' ').trim()} -> ${a.getAttribute('data-to')}` : ''; });
+      ok('RP-23', 'an unknown room is never offered as a place to go back to: after it, a room’s replay says nothing of “Room not found”', !/Room not found/.test(await text(page)) && !/R-NOPE/.test(back), back || 'no chip');
     }
     ok(`RP-${tag}-99`, 'no page error, no console error, no request leaves the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
     await ctx.close();
