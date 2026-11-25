@@ -97,7 +97,7 @@ export function CampusLifePage() {
         const s0 = st.current; let s = step(s0, inp, dt); s = { ...s, camYaw: s.camYaw + turnBy.current.yaw, camPitch: Math.max(0.08, Math.min(1.15, s.camPitch + turnBy.current.pitch)) }; turnBy.current = { yaw: 0, pitch: 0 };
         if (s.stage !== s0.stage || s.xp !== s0.xp) commit(s); else st.current = s;
       }
-      const s = st.current; r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = canvas.current!; const aspect = cv.width / Math.max(1, cv.height);
+      const s = st.current; r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = r.canvas; const aspect = cv.width / Math.max(1, cv.height);   // the renderer's own canvas: the page's reference to it is already empty in the frame between leaving the page and this loop being stopped (found by the performance check, 25 Nov 2026)
       const cam = camera(s); const vp = m4.mul(m4.persp(0.95, aspect, 0.1, 220), m4.look(cam.eye, cam.at)); const inside = inHall(s.x, s.z);
       r.begin(vp, cam.eye, inside ? [0.86, 0.84, 0.8] : [0.8, 0.87, 0.93], inside ? 30 : 60, inside ? 80 : 150);
       if (!inside) r.sky(cam.eye, [0.86, 0.9, 0.95], [0.42, 0.62, 0.9], 140);
@@ -186,7 +186,7 @@ export function CampusLifePage() {
       </div></div> : null}
       {panel ? <Panel panel={panel} s={st.current} onClose={() => { setPanel(null); canvas.current?.focus(); }} onSolved={(first) => commit(solved(st.current, first), 'solved')} /> : null}
     </div>
-    <p className="cl-foot">A first playable slice: one plaza, one building, one furnished classroom, one person to meet and one quest. The other buildings are seen from outside and open in later releases. Frame rate here: {s.fps} fps (this machine, this browser).{s.detail < 100 ? <> <span data-testid="cl-detail">Drawn at {s.detail}% of full detail to keep the motion smooth on this machine.</span></> : null}</p>
+    <p className="cl-foot">A first playable slice: one plaza, one building, one furnished classroom, one person to meet and one quest. The other buildings are seen from outside and open in later releases. Frame rate here: {s.fps} fps (this machine, this browser).{s.detail < 100 ? <> <span data-testid="cl-detail">Drawn at {s.detail}% of full detail to keep the motion smooth on this machine.</span></> : null} <a href="#/play/performance" data-testid="cl-measure">Measure this device</a></p>
   </section>;
 }
 

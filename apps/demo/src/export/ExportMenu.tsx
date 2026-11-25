@@ -18,7 +18,7 @@ function save(name: string, mime: string, bytes: Uint8Array) {
 }
 
 export interface Picture { name: string; label: string; svg: string; width: number; height: number; aggregate: string }
-export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-menu', pictures, data }: { make: () => Report | Promise<Report>; by: string; title?: string; sub?: string; testId?: string; /** drawings offered as PNG and JPEG beside the six files */ pictures?: Picture[] ; /** a data report (founder, 18 Nov 2026): PDF only, and only for the roles that answer for the figures (the server's own rule for its estate report) */ data?: { role: string; roles: string[] } }) {
+export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-menu', pictures, data, says }: { make: () => Report | Promise<Report>; by: string; title?: string; sub?: string; testId?: string; /** the closing line, where the usual one would be untrue of this report (the performance check does measure something: 25 Nov 2026) */ says?: string; /** drawings offered as PNG and JPEG beside the six files */ pictures?: Picture[] ; /** a data report (founder, 18 Nov 2026): PDF only, and only for the roles that answer for the figures (the server's own rule for its estate report) */ data?: { role: string; roles: string[] } }) {
   const { apply } = useWorkspace();
   const [busy, setBusy] = useState<Format | null>(null); const [last, setLast] = useState<Made | null>(null); const [err, setErr] = useState<string | null>(null);
   const go = async (f: Format) => {
@@ -51,6 +51,6 @@ export function ExportMenu({ make, by, title = 'Export', sub, testId = 'export-m
       <Icon name="download" size={16} /><span className="xp-btn__t"><b>{pic.label} · {k.toUpperCase()}</b><span className="ui-meta">{k === 'png' ? 'a sharp picture for a document' : 'a small picture for a message'}</span></span></button>))}</div> : null}
     {last ? <p className="wk-note" role="status" data-testid="export-last"><Tag tone="ok">Saved</Tag> {last.name} · {(last.bytes / 1024).toFixed(1)} KB · SHA-256 <code title={last.sha}>{last.sha.slice(0, 16)}…</code> · recorded in the audit trail</p> : null}
     {err ? <div role="alert"><Notice tone="bad"><b>The file was not written.</b> {err}</Notice></div> : null}
-    <p className="wk-note">Every file says what it is: synthetic records, results as recorded (nothing measured), devices as classes, connections proposed, and the role it was made as, which grants nothing.</p>
+    <p className="wk-note">{says || 'Every file says what it is: synthetic records, results as recorded (nothing measured), devices as classes, connections proposed, and the role it was made as, which grants nothing.'}</p>
   </Card>;
 }

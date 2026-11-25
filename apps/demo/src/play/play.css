@@ -170,3 +170,13 @@ html.has-full, html.has-full body { overflow: hidden; }
 .xpo-stage.is-full .mvpad { top: max(12px, env(safe-area-inset-top, 0px)); }
 .slv-stage.is-full .mvpad { top: calc(max(12px, env(safe-area-inset-top, 0px)) + 54px); }
 @media (max-width: 560px) { .mvpad { gap: 4px; } }
+
+/* The performance check (PerformanceCheck.tsx): the play pages' stage and console, with its results under them */
+.pf-stage { height: min(56vh, 520px); }
+.pf-canvas { display: block; width: 100%; height: 100%; }
+.pf-away { display: none; }
+.pf-live { display: grid; gap: 8px; }
+.pf-wait { position: absolute; inset: 0; display: grid; place-content: center; margin: 0; padding: 24px; text-align: center; color: #fff; pointer-events: none; }
+.pf-results { display: grid; gap: 8px; }
+.pf-results h2 { margin: 10px 0 0; font-size: 1.05rem; }
+.pf-scroll { overflow-x: auto; }

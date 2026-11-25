@@ -166,7 +166,7 @@ export function StadiumLivePage() {
       const k = reducedRef.current ? 1 : Math.min(1, dt * 3); S.light += ((A.night ? 1 : 0) - S.light) * k; S.lc = lerp(S.lc, hex(A.lights), k);
       const night = S.light; const day = 1 - night;
       r.light = { sun: norm([0.35, 0.85, 0.3]), sunCol: lerp([0.75, 0.72, 0.66], [0.12, 0.14, 0.2], night), sky: lerp([0.78, 0.86, 0.95], [0.25, 0.3, 0.45], night), ground: lerp([0.45, 0.42, 0.36], [0.2, 0.2, 0.22], night), amb: 0.5 * day + 0.55 * night };
-      r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = canvas.current!; const aspect = cv.width / Math.max(1, cv.height);
+      r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = r.canvas; const aspect = cv.width / Math.max(1, cv.height);   // the renderer's own canvas: the page's reference to it is already empty in the frame between leaving the page and this loop being stopped (found by the performance check, 25 Nov 2026)
       if (P.view === 'flyover' && !reducedRef.current) orbit.current.yaw += dt * 0.12;
       const o = orbit.current; let eye: V3, at: V3 = [0, 4, 0];
       { const cs = `${o.dist.toFixed(0)} ${o.yaw.toFixed(2)} ${o.pitch.toFixed(2)}`; const cvx = canvas.current; if (cvx && cvx.dataset.cam !== cs) cvx.dataset.cam = cs; }   // the orbit (distance, yaw, pitch), read by the gesture tests
@@ -294,7 +294,7 @@ export function StadiumLivePage() {
         {tab === 'people' ? <div className="slv-pane"><p className="slv-h">Poll · Fan of the match</p>{['Number 7', 'Number 10', 'The goalkeeper'].map((o) => <button key={o} type="button" className="slv-vote" disabled={!!mine} aria-pressed={mine === o} onClick={() => vote(o)} data-testid={`slv-vote-${o.replace(/\W+/g, '').toLowerCase()}`}><span>{o}</span><i style={{ width: `${total ? Math.round((votes[o] || 0) / total * 100) : 0}%` }} /><em>{votes[o] || 0}</em></button>)}
           <p className="slv-note" data-testid="slv-poll-note">{mine ? `You voted for ${mine}. ` : ''}Votes on this page are kept in this browser only; in the Experiences product a poll collects real votes from consenting attendees.</p></div> : null}
         <label className="cl-opt"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); meshes.current?.r.setFull(e.target.checked); if (e.target.checked) { setDetail(100); setSimple(false); } }} data-testid="slv-quality" /> Full quality: the whole crowd drawn in full, at full detail, whatever the frame rate</label>
-        <p className="slv-note" data-testid="slv-pace">Frame rate here: {fps} fps (this machine).{detail < 100 ? ` Drawn at ${detail}% of full detail to keep the motion smooth.` : ''}{simple ? ' The far crowd is drawn more simply; the near crowd in full.' : ''}</p>
+        <p className="slv-note" data-testid="slv-pace">Frame rate here: {fps} fps (this machine).{detail < 100 ? ` Drawn at ${detail}% of full detail to keep the motion smooth.` : ''}{simple ? ' The far crowd is drawn more simply; the near crowd in full.' : ''} <a href="#/play/performance" data-testid="slv-measure">Measure this device</a></p>
       </aside>
     </div>
   </section>;

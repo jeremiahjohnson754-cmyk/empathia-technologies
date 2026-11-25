@@ -74,7 +74,7 @@ export function ExpoLivePage() {
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop); r.pace(now - last); const dt = Math.min(0.05, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setDetail(Math.round(r.detail * 100)); frames = 0; fpsAt = now; }
       const C = cam.current; if (C.goal) { const k = Math.min(1, dt * 3); C.yaw += (C.goal.yaw - C.yaw) * k; C.pitch += (C.goal.pitch - C.pitch) * k; C.dist += (C.goal.dist - C.dist) * k; C.at = lerp(C.at, C.goal.at, k); if (Math.abs(C.dist - C.goal.dist) < 0.05) C.goal = null; }
-      r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = canvas.current!; const aspect = cv.width / Math.max(1, cv.height);
+      r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = r.canvas; const aspect = cv.width / Math.max(1, cv.height);   // the renderer's own canvas: the page's reference to it is already empty in the frame between leaving the page and this loop being stopped (found by the performance check, 25 Nov 2026)
       const eye: V3 = [C.at[0] + Math.sin(C.yaw) * Math.cos(C.pitch) * C.dist, C.at[1] + Math.sin(C.pitch) * C.dist, C.at[2] + Math.cos(C.yaw) * Math.cos(C.pitch) * C.dist];
       const vp = m4.mul(m4.persp(0.9, aspect, 0.3, 600), m4.look(eye, C.at)); vpRef.current = vp as unknown as number[];
       const cs = `${C.at[0].toFixed(1)} ${C.at[2].toFixed(1)} ${C.dist.toFixed(0)} ${C.yaw.toFixed(2)} ${C.pitch.toFixed(2)}`; if (cv.dataset.cam !== cs) cv.dataset.cam = cs;   // the camera (target x z, distance, yaw, pitch), read by the gesture tests

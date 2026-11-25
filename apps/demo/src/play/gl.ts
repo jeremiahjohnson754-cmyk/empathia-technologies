@@ -348,7 +348,12 @@ export class Renderer {
   /** the fraction of full resolution being drawn (1 = full) */
   get detail(): number { return this.gov.detail; }
   /** tell the renderer how long the last frame took */
-  pace(ms: number) { this.gov.frame(ms); }
+  pace(ms: number) { this.gov.frame(ms); Renderer.probe?.(ms); }
+  /**
+   * Set by the performance check (PerformanceCheck.tsx) while it measures: called with the length of every frame any scene reports.
+   * Null at all other times, so a scene pays nothing for it.
+   */
+  static probe: ((ms: number) => void) | null = null;
   /** whether full quality is pinned (the address switch or the page's control) */
   get full(): boolean { return this.gov.full; }
   /** pin full quality (full resolution, every distant thing drawn whole), or hand the decision back to the pace */

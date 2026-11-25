@@ -35,6 +35,13 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'play game campus life university student quad science hall walk run quest xp level classroom circuit npc', aliases: ['campus life', 'play', 'university game', 'play the campus'] },
   },
   {
+    // 25 Nov 2026 (founder, 24 and 25 Nov: benchmarks on customer hardware before more optimisation): a visitor measures their own device
+    id: 'play.performance', title: 'Performance check', purpose: 'Measure this device: how large a 3D environment it draws smoothly and how the three live scenes run on it; starts only when asked, sends nothing anywhere, and the result can be kept as files', product: 'shell',
+    path: '/play/performance', alias: ['/performance', '/benchmark'], authority: OPEN,
+    load: () => import('./play/PerformanceCheck.js'),
+    search: { keywords: 'performance benchmark frame rate fps speed device phone graphics smooth slow measure check triangles memory', aliases: ['performance check', 'benchmark', 'measure this device', 'frame rate'] },
+  },
+  {
     id: 'worlds', title: 'Choose a world', purpose: 'Four worlds — Enterprise, Stadium, University, Convention — each with a handful of everyday journeys', product: 'shell',
     path: '/worlds', authority: OPEN,
     load: () => import('./worlds/WorldsPage.js'),

@@ -161,8 +161,9 @@ expo hall 8,000 and 150. A new world gets a budget on the day it gets a scene.
 
 ## Not done
 
-- Device figures: representative desktop and phone benchmarks (rendering, navigation response, memory, a larger environment) need
-  real devices. An in-app check a visitor can run and export is planned, not built.
+- Device figures. The means to take them is built (25 Nov 2026): the performance check at `#/play/performance`, which a person runs
+  on their own desktop or phone and exports (`apps/demo/src/play/PerformanceCheck.tsx`, `perf.ts`; method and results table in
+  `docs/performance/DEVICE_RESULTS.md`). No device has been measured with it yet.
 - The campus and the expo hall are bound by pixels and have no far forms; neither needs one at its present size.
 - The "Full quality" control is on the stadium's page only; the campus and the expo hall have the address switch.
 - On the test machine the stadium now reads about 6 frames a second at full quality and 15 to 16 adapted with the simple crowd (it was
