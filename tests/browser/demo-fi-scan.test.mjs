@@ -32,7 +32,12 @@ await suite('demo-fi-scan', 4485, async ({ ok, open, goto, over, text, smallTarg
       await goto(page, '#/v25/fi/scan/R-NONE', 'syseng');
       ok('FS-13', 'an unknown room offers the rooms that can be scanned', (await page.locator('.ops-job').count()) === 4);
       await goto(page, '#/v25/fi?room=R-ATL-4-218', 'syseng');
-      ok('FS-14', 'the Field Intelligence page itself is unchanged by the scan route (still the native FI page)', !/(Scan: )/.test(await text(page)));
+      // CHANGED 25 Nov 2026, with the reason: this read all of <main>, which also holds the shell's "Back to …" chip. Since the return-trail
+      // correction (52cdd952) the unknown room R-NONE is no longer kept as a place, so the chip rightly offers the real scan opened above
+      // ("Back to Scan: Atlas 4.218 Boardroom"), and the check read that as the page's own text. It now reads the page without the chip;
+      // what it asserts is unchanged: the Field Intelligence page shows nothing of the scan.
+      const fiPage = await page.evaluate(() => { const m = document.querySelector('main').cloneNode(true); m.querySelectorAll('[data-testid=trail]').forEach((e) => e.remove()); return m.innerText || m.textContent || ''; });
+      ok('FS-14', 'the Field Intelligence page itself is unchanged by the scan route (still the native FI page)', !/(Scan: )/.test(fiPage) && /Field Intelligence/.test(fiPage), fiPage.slice(0, 120));
     }
     ok(`FS-${tag}-99`, 'no page error, no console error, no request leaves the page', !errs.length && !ext.length, [...errs, ...ext].slice(0, 3).join(' | '));
     await ctx.close();
