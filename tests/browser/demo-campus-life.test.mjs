@@ -9,6 +9,10 @@
 // graphics card, and the budget is set for it (a regression floor, not a claim about any device). The numbers are printed with the run.
 //   node tests/browser/demo-campus-life.test.mjs
 import { harness } from './demo-shell-lib.mjs';
+import { recordFrameRates, glRenderer } from '../lib/frame-rates.mjs';
+// 25 Nov 2026: the figures the frame-rate checks measure are also written beside the run's evidence (tests/lib/frame-rates.mjs), so the
+// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; CL-23 is new.
+const FR = []; let GL = ''; const detailOf = async (q) => Number(await q.getByTestId('campus-life').getAttribute('data-detail'));
 const { open, ok, done, base, browser } = await harness('demo-campus-life');
 
 const KEY_OF = { n: 'w', s: 's', e: 'd', w: 'a' };
@@ -102,7 +106,7 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
   const frozenA = await at(p); await p.keyboard.down('w'); await p.waitForTimeout(500); await p.keyboard.up('w'); const frozenB = await at(p); await p.getByTestId('cl-resume').click();
   ok('CL-12', 'pause: Esc pauses the game (movement keys do nothing), sound is off until the player turns it on, Resume returns', paused === 1 && soundOff && Math.abs(frozenA.z - frozenB.z) < 0.01 && !(await p.getByTestId('cl-paused').count()), `paused ${paused} · sound ${!soundOff} · ${frozenA.z}/${frozenB.z}`);
 
-  const fpsDesk = (await at(p)).fps;
+  const fpsDesk = (await at(p)).fps; FR.push({ check: 'CL-13', mode: 'adapted', what: 'desktop 1280 × 860, opened as a visitor opens it, read after the quest and a reload', fps: fpsDesk, detail: await detailOf(p), floor: 8 });
   ok('CL-13', `frame rate at desktop size (1280 × 860) in this machine's headless software-rendered Chromium: ${fpsDesk} fps; budget ≥ 8 (a regression floor for this machine, not a device claim)`, fpsDesk >= 8, `${fpsDesk} fps`);
   ok('CL-14', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close(); }
@@ -117,10 +121,12 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
   const fullFps = await sample(f.page); const full = await shape(f.page); await f.close();
   const a = await open('#/play/campus', { role: 'architect', sw: false, w: 1280, h: 860, init }); await a.page.waitForSelector('[data-testid=campus-life][data-ready=true]'); await a.page.waitForTimeout(6000);
   const autoFps = await sample(a.page); const auto = await shape(a.page);
+  FR.push({ check: 'CL-21', mode: 'full', what: 'desktop 1280 × 860, held at full detail, the middle of four one-second readings', fps: fullFps, detail: full.detail }, { check: 'CL-21', mode: 'adapted', what: 'desktop 1280 × 860, left to adapt, the middle of four one-second readings', fps: autoFps, detail: auto.detail });
   const slow = fullFps < 24;
   ok('CL-21', `adaptive detail on this machine: ${fullFps} fps forced to full detail, ${autoFps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the scene must draw fewer pixels and be faster for it' : 'Full detail holds 24 here, so the scene must stay at full detail'}`,
     full.detail === 100 && !full.note && (slow ? auto.detail < 100 && auto.detail >= 50 && autoFps > fullFps && /Drawn at \d+% of full detail/.test(auto.note) : auto.detail === 100 && !auto.note), JSON.stringify({ fullFps, autoFps, full, auto }));
   ok('CL-22', 'adaptive detail changes the pixels drawn, not the page: the canvas keeps its size on the page, is drawn at the device ratio times the detail, and nothing scrolls sideways', auto.cssW === full.cssW && auto.cssH === full.cssH && Math.abs(auto.w - Math.round(auto.cssW * auto.dpr * auto.detail / 100)) <= 2 && Math.abs(full.w - Math.round(full.cssW * full.dpr)) <= 2 && auto.wide <= 1 && !a.errs.length, JSON.stringify({ full, auto, e: a.errs[0] }));
+  GL = await glRenderer(a.page); // asked after every reading and check of this page, so the question costs them nothing
   await a.close(); }
 
 { // a phone: the thumb-stick moves the student; the act button acts; frame rate at phone size
@@ -134,7 +140,7 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
     await p.dispatchEvent('[data-testid=cl-stick]', 'pointermove', { pointerId: 7, clientX: cx, clientY: cy - st.height / 2, pointerType: 'touch', isPrimary: true });
     await p.waitForTimeout(1200); await p.dispatchEvent('[data-testid=cl-stick]', 'pointerup', { pointerId: 7, pointerType: 'touch' }); const b = await at(p); moved = a.z - b.z;
   }
-  await p.waitForTimeout(1500); const fpsPhone = (await at(p)).fps;
+  await p.waitForTimeout(1500); const fpsPhone = (await at(p)).fps; FR.push({ check: 'CL-16f', mode: 'adapted', what: 'phone size 390 × 844 in the same desktop browser (not a phone), opened as a visitor opens it', fps: fpsPhone, detail: await detailOf(p), floor: 8 });
   ok('CL-15', `a phone-sized screen: no sideways scroll; the HUD fits; ${coarse ? `the thumb-stick moves the student (${moved?.toFixed(2)} m)` : 'this browser reports a fine pointer, so the touch controls are hidden (they are tested with a coarse pointer in CL-16)'}`, over <= 0 && (!coarse || moved > 1), `overflow ${over} · coarse ${coarse} · moved ${moved}`);
   ok('CL-16f', `frame rate at phone size (390 × 844) in the same headless browser: ${fpsPhone} fps; budget ≥ 8 (not a phone measurement)`, fpsPhone >= 8, `${fpsPhone} fps`);
   // 18 Nov first-time-viewer pass: the game wrote its quest stage to data-stage, which the design tokens read as "a dark 3D stage", so
@@ -159,4 +165,6 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
   const hud = await p.evaluate(() => { const r = (s) => { const b = document.querySelector(s)?.getBoundingClientRect(); return b && b.width ? { s, l: b.left, t: b.top, r: b.right, b: b.bottom } : null; }; const xs = ['.cl-who', '.cl-quest', '.cl-map', '.cl-stick', '.cl-acts', '.cl-bar'].map(r).filter(Boolean); const hit = []; for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i], b = xs[j]; if (a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1) hit.push(`${a.s}×${b.s}`); } return { n: xs.length, hit }; });
   ok('CL-20', `touch phone (390 × 844): the ${hud.n} HUD pieces (player, quest, map, stick, actions, bar) do not overlap`, hud.n >= 5 && !hud.hit.length, JSON.stringify(hud));
   await ctx.close(); }
+{ let file = '', why = ''; try { file = recordFrameRates('campus', FR, { renderer: GL }); } catch (e) { why = String(e.message); }
+  ok('CL-23', 'the frame rates this run measured are written beside its evidence, each with the detail it was drawn at, as this machine’s figures and not a device’s', !!file && FR.length === 4, file ? `${FR.length} readings` : why); }
 await done();

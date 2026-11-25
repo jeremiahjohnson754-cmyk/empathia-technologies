@@ -36,6 +36,8 @@ a result: the cause is fixed with its reason, committed, and the regression is r
 - `tests/REGRESSION_LEDGER.jsonl`: one line for every finished run of record, pass or fail. A later pass does not remove an earlier
   failure.
 - `tests/evidence-failed/<commit>-<time>/`: the result files of every failed run of record.
+- The frame rates the 3D scene suites measured, since 25 Nov 2026: in the run's ledger line (`frameRates`) and in a table at the end of
+  `TEST_RESULTS.md`. See "Frame rates and pixel comparisons" below.
 
 ## Disk and temp
 
@@ -79,6 +81,23 @@ Two things follow for tests.
   been measured. The target for ordinary hardware is 30 frames a second; it is a target until a real device is measured.
 
 Product pictures (`scripts/media/capture-experiences.mjs`) are taken with `?detail=full`.
+
+### The figures are kept, not only the verdict
+
+The regression on 87956a57 passed, and its committed record said PASS for each frame-rate check and nothing about what was measured:
+a browser suite's per-check file is under `tests/evidence/demo-shell`, which git ignores. Since 25 Nov 2026:
+
+- Each scene suite hands its readings to `recordFrameRates` (`tests/lib/frame-rates.mjs`), which writes
+  `performance/<scene>.json` beside the run's other evidence: the check, whether the scene was held at full detail or left to adapt,
+  what was measured, frames a second, the detail it was drawn at, the floor if the check has one, the commit, the number of cores and
+  the WebGL renderer the browser reports. The file says in its own text that the figures are the test machine's and not a device's.
+- A reading that is not a number, or a detail outside 50 to 100, is refused, and the suite fails its own check (CL-23, SLV-16,
+  XPO-14) rather than write it.
+- The merge puts the readings written on the commit being merged into that run's line of `tests/REGRESSION_LEDGER.jsonl` and into a
+  table at the end of `TEST_RESULTS.md`. A file left by a run on another commit is not counted. Both are tracked, so the figures of
+  every finished run of record, pass or fail, can be compared with the last; the per-scene files themselves are not committed.
+- No floor changed. These are still regression figures of one machine with no graphics processor. Device figures need devices and
+  are a separate, open piece of work (roadmap A19).
 
 ## Suites not run, and why
 

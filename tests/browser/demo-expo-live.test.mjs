@@ -6,6 +6,10 @@
 //   node tests/browser/demo-expo-live.test.mjs
 import crypto from 'node:crypto';
 import { harness } from './demo-shell-lib.mjs';
+import { recordFrameRates, glRenderer } from '../lib/frame-rates.mjs';
+// 25 Nov 2026: the figures the frame-rate checks measure are also written beside the run's evidence (tests/lib/frame-rates.mjs), so the
+// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; XPO-14 is new.
+const FR = [];
 const { open, ok, done } = await harness('demo-expo-live');
 const init = () => { try { if (!sessionStorage.getItem('xpo-fresh')) { localStorage.removeItem('empathia.expolive.v1'); sessionStorage.setItem('xpo-fresh', '1'); } } catch { /* none */ } };
 // 24 Nov 2026: the scene now lowers its drawing detail on a machine that cannot hold the pace (play/gl.ts, DetailGovernor), which changes
@@ -52,12 +56,12 @@ const fps = Number(await attr('fps'));
 ok('XPO-10', `frame rate in this machine's headless software-rendered Chromium: ${fps} fps; floor ≥ 4 (not a device claim)`, fps >= 4, `${fps}`);
 ok('XPO-11', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
 const shapeOf = (q) => q.evaluate(() => { const c = document.querySelector('[data-testid=xpo-canvas]'); const r = document.querySelector('[data-testid=expo-live]'); return { cssW: c.clientWidth, cssH: c.clientHeight, w: c.width, dpr: Math.min(devicePixelRatio || 1, 2), detail: Number(r.getAttribute('data-detail')), fps: Number(r.getAttribute('data-fps')), wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
-const pinned = await shapeOf(p);
+const pinned = await shapeOf(p); FR.push({ check: 'XPO-10', mode: 'full', what: 'desktop 1440 × 900, held at full detail, reduced motion, after every control was pressed', fps, detail: pinned.detail, floor: 4 }); const GL = await glRenderer(p);
 await t.close();
 { // XPO-13: the same scene left to adapt, as a visitor opens it. Waits until the level has held for three seconds (it is decided in the first few).
   const a = await open('#/play/expo', { role: 'architect', sw: false, w: 1440, h: 900, init }); const q = a.page; await q.waitForSelector('[data-testid=expo-live][data-ready=true]');
   let held = 0, lastD = -1; for (let i = 0; i < 18 && held < 3; i += 1) { await q.waitForTimeout(1100); const d = Number(await q.getByTestId('expo-live').getAttribute('data-detail')); held = d === lastD ? held + 1 : 0; lastD = d; }
-  const auto = await shapeOf(q); const slow = pinned.fps < 24;
+  const auto = await shapeOf(q); const slow = pinned.fps < 24; FR.push({ check: 'XPO-13', mode: 'adapted', what: 'desktop 1440 × 900, left to adapt, once the level had held three seconds', fps: auto.fps, detail: auto.detail });
   ok('XPO-13', `adaptive detail on this machine: ${pinned.fps} fps held at full detail, ${auto.fps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the hall must draw fewer pixels, not fewer than half, and not be slower for it' : 'Full detail holds 24 here, so the hall must stay at full detail'}; the canvas keeps its size on the page`,
     held >= 3 && pinned.detail === 100 && Math.abs(pinned.w - Math.round(pinned.cssW * pinned.dpr)) <= 2 && auto.cssW === pinned.cssW && auto.cssH === pinned.cssH && Math.abs(auto.w - Math.round(auto.cssW * auto.dpr * auto.detail / 100)) <= 2 && auto.wide <= 1 && !a.errs.length
     && (slow ? auto.detail < 100 && auto.detail >= 50 && auto.fps >= pinned.fps : auto.detail === 100), JSON.stringify({ held, pinned, auto, e: a.errs[0] }));
@@ -65,4 +69,6 @@ await t.close();
 { const ph = await open('#/play/expo', { role: 'architect', sw: false, w: 390, h: 844, reduced: true }); await ph.page.waitForSelector('[data-testid=expo-live][data-ready=true]'); await ph.page.waitForTimeout(1000);
   const over = await ph.page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   ok('XPO-12', 'a phone-sized screen: no sideways scroll; the plan and sessions sit under the hall', over <= 0, `overflow ${over}`); await ph.close(); }
+{ let file = '', why = ''; try { file = recordFrameRates('expo', FR, { renderer: GL }); } catch (e) { why = String(e.message); }
+  ok('XPO-14', 'the frame rates this run measured are written beside its evidence, each with the detail it was drawn at, as this machine’s figures and not a device’s', !!file && FR.length === 2, file ? `${FR.length} readings` : why); }
 await done();
