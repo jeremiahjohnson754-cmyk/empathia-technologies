@@ -25,10 +25,38 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 24 Nov 2026 13:49 | `1dae3703` | PASS 293 · FAIL 0 · NOT_RUN 2 (evidence in `ce773198`) | dep-dc2pb38m7kps73d58vog, replaced | dep-dc2pb38m7kps73d58vs0, replaced |
 | 25 Nov 2026 00:30 | `87956a57` | PASS 296 · FAIL 0 · NOT_RUN 2 (evidence in `bf9adfa8`) | dep-dc32ni4s728c738h7l6g, replaced | dep-dc32ni4s728c738h7l30, replaced |
 | 25 Nov 2026 03:14 | `037b9f76` | PASS 298 · FAIL 0 · NOT_RUN 2 (evidence in `54352acd`) | dep-dc354ass728c738juaeg, replaced | dep-dc354ass728c738juab0, replaced |
-| 25 Nov 2026 06:28 | `8891a3fd` | PASS 299 · FAIL 0 · NOT_RUN 2 (evidence in `ddec71b7`) | dep-dc37v8gae00c738gh0sg, live | dep-dc37v8gae00c738gh0p0, live |
+| 25 Nov 2026 06:28 | `8891a3fd` | PASS 299 · FAIL 0 · NOT_RUN 2 (evidence in `ddec71b7`) | dep-dc37v8gae00c738gh0sg, replaced | dep-dc37v8gae00c738gh0p0, replaced |
+| 25 Nov 2026 20:04 | `642f6934` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `1a277e8e`) | dep-dc3jr0ojo6nc73ag1650, live | dep-dc3jr0ojo6nc73ag15vg, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `642f6934`, 25 Nov 2026 20:06 UTC
+
+Before the check both served manifests named `sourceCommit` `642f6934…` (from 20:04 UTC, about eight minutes after the branch moved),
+and every one of the 1,593 files in the demo manifest was served with the hash the manifest gives. The live check
+(the scratch script used for every staging, extended for this commit) passed **36 of 36** on the two previews. New for this commit:
+
+- **Stadium with the diagnostic switch** (`#/play/stadium?detail=full&lod=simple`): the Full quality box is not ticked while the far crowd
+  is drawn simply (48 sections), and the page links to the performance check (the finding of the previous live check, corrected in `5155da7b`).
+- **Performance check** (`#/play/performance?short`): it opens with nothing measured and four sentences on what it is and is not; asked,
+  it ran to the end: six sizes (13, 10.9, 7.1 and 4.7 frames a second; the two largest not run because the step before was below five),
+  and the three scenes each with a pace at the size of their own page (campus 18.5 at 1120×702, stadium 5.1 at 768×684, expo 27.3 at
+  748×666). Nothing was sent: every request was a GET of the preview's own files. These figures are of the cloud machine that ran the
+  check, drawing WebGL in software without a GPU; they are not a measurement of any customer's device.
+- **Return trail**: a room's replay opened for the first time is offered as "Back to Replay: Atlas 4.218 Boardroom", its own name (not
+  the workspace's); an unknown room (`#/replay/R-NOPE`) says so and is not kept; the next room's replay says nothing of "Room not found".
+
+The remaining 33 checks are those of the previous live checks (every product's main pages on both sites, the manifests, the security
+headers, the offline copy, the export cards, the 3D scenes, the role refusals) and passed unchanged.
+
+## How to measure a device with the performance check
+
+On the desktop or phone to be measured, open https://empathia-demo-e3-preview.onrender.com/#/play/performance and press
+**Run the check**. It takes about two minutes, sends nothing, and needs no sign-in. It draws a test scene at six sizes, then each of the
+three 3D scenes at the size of its own page, and reports what the device held against the interactive target of 30 frames a second
+(and 60 for a smooth one), with the browser's memory where it reports it. **Export** saves the result as a file; that file, with the
+device's name, is what `docs/performance/DEVICE_RESULTS.md` records. No customer device has been measured yet.
 
 ## Live check of `8891a3fd`, 25 Nov 2026 06:30 UTC
 
@@ -163,6 +191,6 @@ local build). The website has no `/flow` page at this commit; that address retur
 
 ## What is not in the previews yet
 
-Work after `8891a3fd` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. Of what was
+Work after `642f6934` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. Of what was
 directed on 24 and 25 Nov, the previews carry the design pass and four pieces of the rendering-performance work, the simpler
 drawing of distant spectators among them; the rest is not built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.
