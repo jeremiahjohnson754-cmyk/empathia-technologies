@@ -2,7 +2,7 @@
  "step": 2,
  "title": "Design it: add the devices of the Small Conference Room template, including the camera",
  "room": "R-PLN-0004",
- "at": "2026-11-14T12:19:10.709Z",
+ "at": "2026-11-25T18:12:28.979Z",
  "assertions": [
   {
    "id": "C-04",
@@ -44,7 +44,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "4baf2028-cc1b-44e2-b7b8-062b8444da14"
+   "correlationId": "0471f1e8-6568-4ad3-b518-b60c47aa8e6f"
   },
   {
    "method": "POST",
@@ -64,7 +64,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "27610e49-a6c6-4322-b89c-d5926b24e60b"
+   "correlationId": "b7a72034-016f-4c2b-9dd0-b626277a9ee4"
   },
   {
    "method": "POST",
@@ -84,7 +84,7 @@
     "openIssues": 1,
     "planChanged": true
    },
-   "correlationId": "bf65e60b-a9eb-45e6-a5a0-26177b9b5d52"
+   "correlationId": "9c4b3057-dc5d-43ef-a4bc-74bf45c4b9d0"
   },
   {
    "method": "GET",
@@ -94,7 +94,7 @@
    "body": {
     "omitted": "large body; see the step that records it in full"
    },
-   "correlationId": "92c803bd-5daf-413c-95a5-b10892b5b978"
+   "correlationId": "89c22fb3-df9c-413c-8d14-428c34ac8332"
   },
   {
    "method": "POST",
@@ -114,7 +114,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "e820c171-0edf-493f-bc7b-b62ad9ae42f1"
+   "correlationId": "cd2a3dcc-4775-48dd-ad6d-05de31a79b6d"
   },
   {
    "method": "POST",
@@ -134,7 +134,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "5d9d8898-4b38-4fb2-b903-de232049f991"
+   "correlationId": "f8d8f231-3d59-4d95-b254-6976c6f1c8d8"
   },
   {
    "method": "POST",
@@ -154,7 +154,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "c717deeb-8e85-4034-af3e-07413df290a6"
+   "correlationId": "6170c118-2227-4030-b9b6-9013c48b5993"
   },
   {
    "method": "POST",
@@ -174,7 +174,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "abc1bf3c-7625-4fe1-a803-2a6e801703ad"
+   "correlationId": "aa8f933d-ad46-4e27-ad2e-2b48df3643aa"
   },
   {
    "method": "POST",
@@ -194,7 +194,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "367a271a-8ae8-4703-8841-acc613ca80e3"
+   "correlationId": "2c9a1732-9d9c-477e-9130-32a2082ffb2f"
   },
   {
    "method": "POST",
@@ -214,7 +214,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "6e3cbd69-ef41-41b3-a006-2fbd9ee7dc96"
+   "correlationId": "4eb7a9e5-34e8-43f1-ade1-af8751761459"
   },
   {
    "method": "POST",
@@ -234,7 +234,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "3036fad8-6e3f-404a-8e53-6b71dd9f0acd"
+   "correlationId": "ad1f4faa-a272-4ee5-b5e9-27a9dafdea73"
   },
   {
    "method": "GET",
@@ -244,7 +244,8 @@
    "body": {
     "room": {
      "code": "R-PLN-0004",
-     "id": "65301c83-c164-4f61-a7a1-6e75859be390",
+     "canonicalRef": null,
+     "id": "dd509246-20d0-4bde-bb09-f2ebc61fb05c",
      "name": "Checkpoint conference room (synthetic)",
      "lifecycle": "PLANNED",
      "template": "custom",
@@ -333,6 +334,25 @@
       "props": {},
       "furniture": true,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 3.6,
+       "d": 1.2
+      },
+      "placement": {
+       "designed": {
+        "x": 2.1,
+        "y": 2.8,
+        "mount": "floor"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 2.1,
+        "y": 2.8
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0058",
       "asset": null,
@@ -358,6 +378,25 @@
       },
       "furniture": true,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 2.4,
+       "d": 1
+      },
+      "placement": {
+       "designed": {
+        "x": 2.1,
+        "y": 3.4,
+        "mount": "floor"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 2.1,
+        "y": 3.4
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0059",
       "asset": null,
@@ -383,6 +422,25 @@
       },
       "furniture": false,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 1.65,
+       "d": 0.12
+      },
+      "placement": {
+       "designed": {
+        "x": 2.1,
+        "y": 0.1,
+        "mount": "wall"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 2.1,
+        "y": 0.1
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0060",
       "asset": null,
@@ -409,6 +467,25 @@
       },
       "furniture": false,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 0.2,
+       "d": 0.2
+      },
+      "placement": {
+       "designed": {
+        "x": 2.1,
+        "y": 0.15,
+        "mount": "wall"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 2.1,
+        "y": 0.15
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0061",
       "asset": null,
@@ -435,6 +512,25 @@
       },
       "furniture": false,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 0.6,
+       "d": 0.6
+      },
+      "placement": {
+       "designed": {
+        "x": 2.1,
+        "y": 2.8,
+        "mount": "ceiling"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 2.1,
+        "y": 2.8
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0062",
       "asset": null,
@@ -460,6 +556,25 @@
       },
       "furniture": false,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 0.3,
+       "d": 0.3
+      },
+      "placement": {
+       "designed": {
+        "x": 2.1,
+        "y": 1.5,
+        "mount": "ceiling"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 2.1,
+        "y": 1.5
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0063",
       "asset": null,
@@ -486,6 +601,25 @@
       },
       "furniture": false,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 0.45,
+       "d": 0.3
+      },
+      "placement": {
+       "designed": {
+        "x": 0.3,
+        "y": 0.3,
+        "mount": "rack"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 0.3,
+        "y": 0.3
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0064",
       "asset": null,
@@ -511,6 +645,25 @@
       },
       "furniture": false,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 0.3,
+       "d": 0.2
+      },
+      "placement": {
+       "designed": {
+        "x": 0.4,
+        "y": 0.3,
+        "mount": "rack"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 0.4,
+        "y": 0.3
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0065",
       "asset": null,
@@ -534,6 +687,25 @@
       "props": {},
       "furniture": false,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 0.25,
+       "d": 0.18
+      },
+      "placement": {
+       "designed": {
+        "x": 2.1,
+        "y": 2.6,
+        "mount": "table"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 2.1,
+        "y": 2.6
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0066",
       "asset": null,
@@ -560,6 +732,25 @@
       },
       "furniture": false,
       "lifecycle": "PLANNED",
+      "footprint": {
+       "w": 0.45,
+       "d": 0.3
+      },
+      "placement": {
+       "designed": {
+        "x": 0.5,
+        "y": 0.3,
+        "mount": "rack"
+       },
+       "asBuilt": null,
+       "proposed": null,
+       "current": {
+        "x": 0.5,
+        "y": 0.3
+       },
+       "basis": "DESIGNED",
+       "history": []
+      },
       "modelHistory": [],
       "position": "PA-0067",
       "asset": null,
@@ -702,8 +893,8 @@
       "rev_no": 1,
       "reason": "created",
       "sha256": "22f5c43ec58ad7bcd65c49d11ad73932ad6c04dde8ba813ec51b39b2d67c5afd",
-      "created_by": "940d5614-d78b-49e8-a119-68e26913b4ea",
-      "created_at": "2026-11-14T12:19:00.450Z"
+      "created_by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+      "created_at": "2026-11-25T18:12:18.734Z"
      }
     ],
     "issues": [
@@ -719,8 +910,8 @@
       "state": "RESOLVED",
       "owner_role": null,
       "resolution": {
-       "at": "2026-11-14T12:19:00.726Z",
-       "by": "940d5614-d78b-49e8-a119-68e26913b4ea",
+       "at": "2026-11-25T18:12:18.954Z",
+       "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
        "how": "the design check no longer fires after: device added PA-0061",
        "byRole": "designer",
        "revision": 1,
@@ -728,12 +919,12 @@
       },
       "first_seen_rev": 1,
       "last_seen_rev": 1,
-      "created_at": "2026-11-14T12:19:00.620Z",
-      "updated_at": "2026-11-14T12:19:00.699Z"
+      "created_at": "2026-11-25T18:12:18.871Z",
+      "updated_at": "2026-11-25T18:12:18.937Z"
      }
     ],
     "commissioning": {
-     "planId": "de624fd7-dc28-4407-86b8-eb65b230235b",
+     "planId": "87edf70e-8ec7-4ac1-b749-9fdf75f9fcd7",
      "engineVersion": "2.5.4-port.1",
      "ruleVersion": "2.5.0",
      "library": 94,
@@ -752,7 +943,7 @@
        "network_switch"
       ]
      },
-     "compiledAt": "2026-11-14T12:19:00.973Z",
+     "compiledAt": "2026-11-25T18:12:19.163Z",
      "counts": {
       "applicable": 75,
       "recorded": 0,
@@ -2086,7 +2277,7 @@
        ],
        "instrument": false,
        "devices": [
-        "PA-0061"
+        "PA-0060"
        ],
        "result": "NOT_TESTED"
       },
@@ -2111,7 +2302,7 @@
        ],
        "instrument": false,
        "devices": [
-        "PA-0061"
+        "PA-0060"
        ],
        "result": "NOT_TESTED"
       },
@@ -2924,7 +3115,7 @@
      ]
     }
    },
-   "correlationId": "3d2bc6e1-ce0f-4f66-8c74-4bad0fce9ad7"
+   "correlationId": "ef0c7f6e-2cda-4f18-a28a-260bb2bc15ee"
   }
  ]
 }

@@ -1,6 +1,6 @@
 {
   "label": "audit",
-  "at": "2026-11-25T05:53:47.895Z",
+  "at": "2026-11-25T18:10:11.559Z",
   "widths": [
     320,
     390,
@@ -3083,8 +3083,7 @@
       "detail": "below the 44 px project target on phones: button \"●Northstar100\" 125×32",
       "component": "controls",
       "widths": [
-        320,
-        390
+        320
       ],
       "id": "AUD-214",
       "reproducible": "yes (deterministic, local build)"

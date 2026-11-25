@@ -1,7 +1,7 @@
 {
- "at": "2026-11-14T12:19:10.733Z",
+ "at": "2026-11-25T18:12:28.989Z",
  "database": "empathia_test_checkpoint_e2e",
- "pass": 102,
+ "pass": 103,
  "fail": 0,
  "facts": {
   "room": "R-PLN-0004",
@@ -26,9 +26,9 @@
    "qa_reviewer": 16
   },
   "v1": {
-   "id": "171a8124-e89c-43ed-9185-f4ddc239113d",
+   "id": "7093c44b-d40b-4a6d-8b5b-48f77e855b94",
    "designRevision": 2,
-   "publishedAt": "2026-11-14T12:19:07.605Z"
+   "publishedAt": "2026-11-25T18:12:25.735Z"
   },
   "requirements": [
    {
@@ -104,7 +104,7 @@
      "installer"
     ],
     "reasons": [
-     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): it is a camera and this is a Video test of the room"
     ]
    },
    {
@@ -115,7 +115,7 @@
      "installer"
     ],
     "reasons": [
-     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
+     "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): it is a camera and this is a Video test of the room"
     ]
    },
    {
@@ -191,8 +191,8 @@
     "revision 3: SYN-PTZ-12X (synthetic PTZ camera)"
    ],
    "installations": [
-    "AS-0002 installed at PA-0061 on 2026-11-14T12:19:01.514Z by 798a5055-9fd4-4918-b575-0f63551cf292 (initial); removed 2026-11-14T12:19:07.696Z by 940d5614-d78b-49e8-a119-68e26913b4ea (substituted)",
-    "AS-0009 installed at PA-0061 on 2026-11-14T12:19:07.696Z by 940d5614-d78b-49e8-a119-68e26913b4ea (substitution); still installed"
+    "AS-0002 installed at PA-0061 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); removed 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substituted)",
+    "AS-0009 installed at PA-0061 on 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substitution); still installed"
    ]
   },
   "assetHistories": [
@@ -201,7 +201,7 @@
     "model": "generic",
     "identity": "DECLARED",
     "installations": [
-     "AS-0002 installed at PA-0061 on 2026-11-14T12:19:01.514Z by 798a5055-9fd4-4918-b575-0f63551cf292 (initial); removed 2026-11-14T12:19:07.696Z by 940d5614-d78b-49e8-a119-68e26913b4ea (substituted)"
+     "AS-0002 installed at PA-0061 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); removed 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substituted)"
     ]
    },
    {
@@ -209,21 +209,21 @@
     "model": "SYN-PTZ-12X (synthetic PTZ camera)",
     "identity": "UNKNOWN",
     "installations": [
-     "AS-0009 installed at PA-0061 on 2026-11-14T12:19:07.696Z by 940d5614-d78b-49e8-a119-68e26913b4ea (substitution); still installed"
+     "AS-0009 installed at PA-0061 on 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substitution); still installed"
     ]
    }
   ],
   "integrity": {
    "verified": true,
-   "checked": 476,
+   "checked": 511,
    "head": {
-    "seq": 476,
-    "hash": "7e928675a01d6299062d4258cee49682c3363b8df59222b8ddcc5e28d3da2d9b",
-    "at": "2026-11-14T12:19:08.246Z"
+    "seq": 511,
+    "hash": "6bd508022f981ce372acafdc3adab932a7912ee156dadef92492f2d1a20080ab",
+    "at": "2026-11-25T18:12:26.640Z"
    }
   },
-  "auditEvents": 366,
-  "auditDenied": 14,
+  "auditEvents": 395,
+  "auditDenied": 19,
   "milestones": [
    {
     "action": "room.create",
@@ -255,23 +255,23 @@
    },
    {
     "action": "assurance.baseline_published",
-    "seq": 448
+    "seq": 483
    },
    {
     "action": "room.lifecycle:ACCEPTED",
-    "seq": 449
+    "seq": 484
    },
    {
     "action": "room.lifecycle:COMMISSIONING (#2)",
-    "seq": 452
+    "seq": 487
    },
    {
     "action": "commission.asset_replaced",
-    "seq": 456
+    "seq": 491
    },
    {
     "action": "room.revision.approve",
-    "seq": 462
+    "seq": 497
    }
   ],
   "outboxSample": [
@@ -480,6 +480,11 @@
   {
    "id": "C-33",
    "name": "a result is never verified twice (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-33b",
+   "name": "the documentation packet: every required document approved and signed by the integrator and the owner, two different people",
    "result": "PASS"
   },
   {
@@ -759,7 +764,7 @@
   },
   {
    "id": "C-79",
-   "name": "the room’s 366 audit events are sealed into the chain, in order (sequence, id and time agree)",
+   "name": "the room’s 395 audit events are sealed into the chain, in order (sequence, id and time agree)",
    "result": "PASS"
   },
   {

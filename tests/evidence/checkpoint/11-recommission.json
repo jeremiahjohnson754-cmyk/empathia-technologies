@@ -2,7 +2,7 @@
  "step": 11,
  "title": "An accepted room is not edited directly: it is recommissioned (ACCEPTED → COMMISSIONING, plan.compile)",
  "room": "R-PLN-0004",
- "at": "2026-11-14T12:19:10.715Z",
+ "at": "2026-11-25T18:12:28.983Z",
  "assertions": [
   {
    "id": "C-40",
@@ -43,9 +43,9 @@
     "reasons": [
      "the design is ACCEPTED: changes need a change order — an accepted room is recommissioned first (ACCEPTED → COMMISSIONING, plan.compile); a device model can then be substituted"
     ],
-    "correlationId": "312b546c-192c-4860-85f1-a273a32cffb8"
+    "correlationId": "8ff3e87f-eaca-4d23-8a96-d75147e2ac48"
    },
-   "correlationId": "312b546c-192c-4860-85f1-a273a32cffb8"
+   "correlationId": "8ff3e87f-eaca-4d23-8a96-d75147e2ac48"
   },
   {
    "method": "POST",
@@ -61,9 +61,9 @@
     "status": 403,
     "detail": "installer may not move a room to COMMISSIONING (needs plan.compile)",
     "code": "forbidden",
-    "correlationId": "60b1ca6e-3309-4d29-8ea5-fd3992f2c33c"
+    "correlationId": "9ad48b70-e9df-4c48-a4d7-49646183cdb9"
    },
-   "correlationId": "60b1ca6e-3309-4d29-8ea5-fd3992f2c33c"
+   "correlationId": "9ad48b70-e9df-4c48-a4d7-49646183cdb9"
   },
   {
    "method": "POST",
@@ -80,7 +80,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "2fe24aa5-c186-4045-b68a-098c8d23895c"
+   "correlationId": "8839427e-ff76-4657-835f-da1df3566466"
   },
   {
    "method": "GET",
@@ -90,12 +90,12 @@
    "body": {
     "room": "R-PLN-0004",
     "current": {
-     "id": "171a8124-e89c-43ed-9185-f4ddc239113d",
+     "id": "7093c44b-d40b-4a6d-8b5b-48f77e855b94",
      "version": 1,
      "state": "CURRENT",
      "design_revision": 2,
      "design_sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
-     "plan_id": "390d4116-0305-45c9-b921-90b7b399ce20",
+     "plan_id": "11679620-bd8a-49cb-9bf6-561b0c26195f",
      "results": {
       "uc_media": "PASS_VERIFIED",
       "audio_aec": "PASS_VERIFIED",
@@ -174,139 +174,245 @@
       "cyber_management_isolation": "PASS_VERIFIED"
      },
      "evidence_ids": [
-      "56724629-2253-43fb-b96f-5e9ce318a9a3",
-      "bd616e30-a9bb-4575-8e71-bfacd934ca05",
-      "7caf2085-635d-44f7-82bf-2a601fe94722",
-      "fe9d4d15-0373-4533-ace1-4892944290bb",
-      "1a196519-79fc-403e-b813-554eb58e0718",
-      "4762b5c7-a7ca-4751-840e-ea3d3173e072",
-      "7f9a406d-67b9-425c-a733-e65d8ad051dc",
-      "e8fc5488-63c8-4d80-babc-8a19211bddb9",
-      "7778bfa2-e527-4473-a389-1fd35a0d0d8c",
-      "d926280c-68f1-4583-ab47-18c0cf34d35c",
-      "eca60fb0-59ea-44e6-a5be-05e8f8272c61",
-      "3c5842e6-6fff-466b-b9c0-04ebed18d234",
-      "10a138cd-7b21-4f18-8e67-4d169dc9e654",
-      "1a235a6d-1d8b-4801-b27a-8de05b12f95a",
-      "4a94a928-b0b9-44cd-b113-eff94fdc38b8",
-      "ed95f869-a4ba-4677-9950-f1c8d62194a1",
-      "3690a663-981f-460d-b5e4-d0e65519e7f5",
-      "fe92e9f9-be7d-4fb6-bb1b-3c2ef49e03e3",
-      "a82fc928-c104-4ad8-8db7-d7713327f1c2",
-      "acbf2ee9-8673-416e-b3ad-98adae12fafb",
-      "5aef9a2c-e269-4592-bb24-21a245bf3eb5",
-      "454a7499-30d9-4fe4-ba89-56b8a09c1f98",
-      "893bc002-3784-4435-be70-5de1f8f29b57",
-      "7f98eb0c-2944-4f4a-b5b7-e48d6dbe7fb4",
-      "c572f3ee-7679-4e30-9ef4-a4a1c379a0c1",
-      "449fbc7b-5e10-4d4a-9bf5-510f06ad67aa",
-      "7c07dbb0-eaa1-4fa4-9690-43fbeaf78150",
-      "6a283f77-e095-45cc-bf95-3caca9f73bd5",
-      "66b23b89-05b0-4d06-bb24-d07cdf83be56",
-      "f6e9bfc9-d469-423a-97d4-31d5e48681cf",
-      "6e06c291-aefd-4297-a323-20562931ff3e",
-      "4c539f1d-7247-4224-b2dc-7d910014fc4c",
-      "2574e667-d26e-4cb2-85c3-613b8890119a",
-      "6192262f-78af-4e69-9091-515aa92ad6a2",
-      "f6873c36-389d-46a6-b186-d2934ec056f5",
-      "d8d78e87-a451-42d6-9a58-6f6de9b503fb",
-      "37850a12-2e39-4475-ab43-a873935f3c17",
-      "58ef2eab-b75a-4b03-a086-e87544c26ae9",
-      "d6f3e0ef-1c0d-478e-8f5a-f2793444e8f7",
-      "38686c0e-eac0-4171-b228-9ffcb709c7dc",
-      "dc497d16-310f-43df-b3bd-6bea312fcae9",
-      "74bb5fa2-a4b3-4635-a79d-76c07726cd44",
-      "b83092de-8291-4a3a-b70d-08529cb79896",
-      "1554607f-45b7-498b-a1ec-b69f3a648aa5",
-      "12a334a8-b74f-46a1-be85-8f428cc08ef4",
-      "f478a1fd-17f7-4796-bf09-67f184fc4191",
-      "c0bc61d7-b25b-4984-9712-8706700687ee",
-      "d555c2ff-ed67-41fc-a389-f8e097683049",
-      "fa624a84-4c74-427d-9bb7-dc4ffe5d5c89",
-      "38fae6bd-f58b-4c6e-9d0b-252c0a314d00",
-      "cccb1d20-559e-4e4c-9c70-8b5602aaf1f5",
-      "65387311-b24b-4ebd-ab4a-5615f80954fd",
-      "7568d658-221b-41d3-ac90-2949469cc0ca",
-      "af2b0e48-3807-40e4-beeb-e3d493d8df38",
-      "563c48d8-3392-44fd-a087-3facf29f95fa",
-      "3bdadd92-d061-4e31-b4bd-6d7195a96224",
-      "396ecbf5-ca41-40fe-8464-d7eb264f91c0",
-      "e2b52d34-3a5b-41ae-8a7e-bd2cad9f6558",
-      "77d26ae1-e6e2-4651-8ab8-05b0fbfe2a45",
-      "a84bb471-b112-4c90-b516-cdcb3becc229",
-      "ec48d3e8-7821-491d-87f7-35bc6d2b9acd",
-      "7ede3e33-267c-4641-9ea3-17dd4b808dac",
-      "da5d7b47-afd4-4e04-ae53-bfea1837e282",
-      "0d780314-5e4c-4adc-a258-3aea0ebd6f78",
-      "b2ff89c2-6c0c-45e9-82fa-e54bd75b3a38",
-      "f7477db0-8a2d-4345-ab94-6488d37fb03e",
-      "7a99138f-bf38-478b-b46f-46df28a70146",
-      "af92e09a-e1cc-41d6-a372-78c08231e925",
-      "e54f783e-8649-467c-a394-cabfcfe62332",
-      "35c4122b-1416-4e0b-a3b2-c3ecfd109fb3",
-      "803dc410-0e10-4032-9744-dda61d30f4c5",
-      "da7565b6-a4f3-4eb5-9f06-3103b92ec5d8",
-      "d893a318-a0b1-4272-a5fc-46ce47568984",
-      "12060b3f-6404-4b94-8d89-762195a38434",
-      "63ea8e66-fada-4cda-9994-943df2129f6c"
+      "c701a5be-3506-4e17-9989-e107db8e9c16",
+      "2c2ce34c-0fbd-4c09-9be3-3250ed9791d5",
+      "418afe54-f9fc-4382-ad50-7f8cf5d154dd",
+      "83b8c43f-5656-4239-aefa-b8176ec6b9b0",
+      "7db9b01a-971f-4f91-825e-d2cb243c5c13",
+      "b300fbc2-d07e-4e06-8922-ff0e786b4f5f",
+      "71879570-389a-4d2b-a3ad-db6376f95735",
+      "109af22f-0b2c-4fb2-aaf9-aa7405ccb1bf",
+      "bc4163ba-b914-4134-b256-2f76dad57a9c",
+      "8d2103ee-877b-459c-aded-daa8cb7636a6",
+      "aefc962f-0478-46f9-bce3-575bfa843997",
+      "ba07591d-fd1e-40fb-946a-d440cb5c9e5e",
+      "59e22137-80e1-4420-a0c4-ba883ebe6a53",
+      "8660cfcf-11ac-4ef2-ab33-880d0cf39a63",
+      "94c0ed09-e2d8-497a-bb79-baec17730021",
+      "7e6aca23-bdb4-4991-94cc-21e6662d75de",
+      "5202de6d-de72-4d72-83e7-45ceb22d8656",
+      "7aa40f58-6f44-410c-bcca-d3f0ecea5767",
+      "404ff260-80a7-477d-9948-78ef16980061",
+      "6e4274b4-d9a5-4493-98bf-1a5f5fb46769",
+      "a2562755-6ce7-4d8b-ac4a-474e1da30231",
+      "aeffea51-2f8e-4371-afd8-95210f489c60",
+      "92ab31bc-9ebd-4ee2-9093-d45c0b6ada46",
+      "0d822169-7683-437d-87c9-2ccf702cecfd",
+      "6ea7d5a6-cc39-4138-96ff-11296aa5e560",
+      "4362fec9-283a-4131-ba7d-6a84fadf0cc8",
+      "7a1b9124-2ad5-4c65-96b6-e8a41936c3f2",
+      "367c1c5f-4a4d-4f81-a254-054196cc1984",
+      "3ac4073a-7235-465e-8c14-910af98f9126",
+      "4fe3aa47-cc58-4458-85fe-ac585fb79aaf",
+      "1744f4f0-c6ee-4ed9-a050-170ab9cb8726",
+      "e6078d20-3527-474d-a1a3-d50fb858404c",
+      "7fc1da15-cf3b-4ca7-bdd1-1c117f28b879",
+      "84746ffa-1dd0-417d-ac53-1043ceaa2ac1",
+      "96e566a5-a8fe-4c6e-8326-061d6729a740",
+      "d3715ba7-832b-43cb-acb4-b92447620cc5",
+      "271ebfb1-fd43-4a85-9c6d-c69944959f21",
+      "fc429e0b-d892-4c0d-82a9-6f4448ee3554",
+      "f083c6b7-e39e-4dfa-b217-2f6bfedf3aad",
+      "1b0f2abb-1aa5-4a05-8c38-7253e93a0e11",
+      "24430e72-756d-467d-a0f9-f5b0923fa0b0",
+      "0cdb6d6b-c235-4a21-826a-7d6e1f08b0fd",
+      "b6e59919-9837-4d96-b2f1-c5d5692131b2",
+      "2944622b-a42e-46f1-9afc-42460f17416e",
+      "7fd96d99-9de3-4385-a13e-6b59c659ae16",
+      "d1a526f5-bf4a-471f-89a0-f0d4988df9e0",
+      "4e76f864-62e9-4259-a2b3-4aa9aa209409",
+      "86b6a362-9f9f-4fdd-b671-c643040edf96",
+      "b977bfbc-2d2c-4096-849f-47cf1e3c0244",
+      "4b89bed6-8e90-4ce1-a3d9-a99b060b4234",
+      "4c0eefbc-320f-4af5-911b-5c71729fd832",
+      "10d4a8f3-cdca-44bc-b1dc-f0d1836bee4b",
+      "16125b5d-8966-4f47-bf77-7bf351b44e60",
+      "880a0b12-63d6-49c2-ba73-cf98552da2eb",
+      "62b5402f-cb6a-4324-be3b-a5ef214f6c4d",
+      "a41525a0-f86c-4d76-b6bb-093f002cb6fe",
+      "dce2349d-1216-4914-acbf-b66c61acbecd",
+      "21baea15-5ca1-4779-8211-1a875e86a1bd",
+      "33f77d9f-63ee-48a4-8b72-9f8f96c8c7f1",
+      "8220f6fb-140b-4a10-9820-6a46b37fe01a",
+      "cc093049-8338-4b16-9ac5-51eebe4c0f1d",
+      "b7c588eb-551b-4550-a11d-699b9f9b757d",
+      "3c6291b6-80ac-446f-98e6-fd62644937ff",
+      "8b2fbaed-9056-41e7-ac46-ed4ce24b6ea4",
+      "e68053f6-b453-432c-9656-ad83824324a4",
+      "96a41145-54aa-481a-8212-304090ce083e",
+      "66fbbc01-173b-411f-9007-eb61fb9fc354",
+      "70b19a70-50b8-4db4-8d74-55d989f7c932",
+      "d285ca8e-c3f5-439c-b31a-75646ddd301d",
+      "5d8c037b-8342-4851-aad5-3ce421e975c0",
+      "a6384888-bd39-4018-b656-8e853628c0dc",
+      "b125352f-3987-4499-aae0-1ae81c2c2568",
+      "f34bca82-7d27-4d47-859c-0fcfe9b3287f",
+      "3196dcf0-b8f6-4b57-adab-12baf4a18b7d",
+      "d75ef0bc-da11-4911-a914-2a3a97e657d8"
      ],
      "devices": [
       {
        "id": "PA-0060",
        "label": "Display 1",
-       "category": "display"
+       "category": "display",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 0.1
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 0.1,
+         "mount": "wall"
+        }
+       }
       },
       {
        "id": "PA-0061",
        "label": "Camera 1",
-       "category": "camera"
+       "category": "camera",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 0.15
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 0.15,
+         "mount": "wall"
+        }
+       }
       },
       {
        "id": "PA-0062",
        "label": "Ceiling microphone 1",
-       "category": "micceil"
+       "category": "micceil",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 2.8
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 2.8,
+         "mount": "ceiling"
+        }
+       }
       },
       {
        "id": "PA-0063",
        "label": "Loudspeaker 1",
-       "category": "speaker"
+       "category": "speaker",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 1.5
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 1.5,
+         "mount": "ceiling"
+        }
+       }
       },
       {
        "id": "PA-0064",
        "label": "Audio processor (DSP) 1",
-       "category": "dsp"
+       "category": "dsp",
+       "placement": {
+        "at": {
+         "x": 0.3,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.3,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
       },
       {
        "id": "PA-0065",
        "label": "UC room compute 1",
-       "category": "compute"
+       "category": "compute",
+       "placement": {
+        "at": {
+         "x": 0.4,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.4,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
       },
       {
        "id": "PA-0066",
        "label": "Touch panel 1",
-       "category": "touch"
+       "category": "touch",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 2.6
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 2.6,
+         "mount": "table"
+        }
+       }
       },
       {
        "id": "PA-0067",
        "label": "Network switch 1",
-       "category": "switch"
+       "category": "switch",
+       "placement": {
+        "at": {
+         "x": 0.5,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.5,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
       }
      ],
+     "measurements": [],
      "reason": "accepted: first baseline (ADR-0003)",
-     "published_by": "1823b955-643f-4816-a3b7-301518127ab3",
-     "published_at": "2026-11-14T12:19:07.605Z",
+     "published_by": "c90fe27e-2c56-4934-8c30-2747b4cb631c",
+     "published_by_name": "Operations Lead (synthetic)",
+     "published_at": "2026-11-25T18:12:25.735Z",
      "supersedes": null,
      "superseded_at": null,
      "superseded_by": null
     },
     "items": [
      {
-      "id": "171a8124-e89c-43ed-9185-f4ddc239113d",
+      "id": "7093c44b-d40b-4a6d-8b5b-48f77e855b94",
       "version": 1,
       "state": "CURRENT",
       "design_revision": 2,
       "design_sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
-      "plan_id": "390d4116-0305-45c9-b921-90b7b399ce20",
+      "plan_id": "11679620-bd8a-49cb-9bf6-561b0c26195f",
       "results": {
        "uc_media": "PASS_VERIFIED",
        "audio_aec": "PASS_VERIFIED",
@@ -385,127 +491,233 @@
        "cyber_management_isolation": "PASS_VERIFIED"
       },
       "evidence_ids": [
-       "56724629-2253-43fb-b96f-5e9ce318a9a3",
-       "bd616e30-a9bb-4575-8e71-bfacd934ca05",
-       "7caf2085-635d-44f7-82bf-2a601fe94722",
-       "fe9d4d15-0373-4533-ace1-4892944290bb",
-       "1a196519-79fc-403e-b813-554eb58e0718",
-       "4762b5c7-a7ca-4751-840e-ea3d3173e072",
-       "7f9a406d-67b9-425c-a733-e65d8ad051dc",
-       "e8fc5488-63c8-4d80-babc-8a19211bddb9",
-       "7778bfa2-e527-4473-a389-1fd35a0d0d8c",
-       "d926280c-68f1-4583-ab47-18c0cf34d35c",
-       "eca60fb0-59ea-44e6-a5be-05e8f8272c61",
-       "3c5842e6-6fff-466b-b9c0-04ebed18d234",
-       "10a138cd-7b21-4f18-8e67-4d169dc9e654",
-       "1a235a6d-1d8b-4801-b27a-8de05b12f95a",
-       "4a94a928-b0b9-44cd-b113-eff94fdc38b8",
-       "ed95f869-a4ba-4677-9950-f1c8d62194a1",
-       "3690a663-981f-460d-b5e4-d0e65519e7f5",
-       "fe92e9f9-be7d-4fb6-bb1b-3c2ef49e03e3",
-       "a82fc928-c104-4ad8-8db7-d7713327f1c2",
-       "acbf2ee9-8673-416e-b3ad-98adae12fafb",
-       "5aef9a2c-e269-4592-bb24-21a245bf3eb5",
-       "454a7499-30d9-4fe4-ba89-56b8a09c1f98",
-       "893bc002-3784-4435-be70-5de1f8f29b57",
-       "7f98eb0c-2944-4f4a-b5b7-e48d6dbe7fb4",
-       "c572f3ee-7679-4e30-9ef4-a4a1c379a0c1",
-       "449fbc7b-5e10-4d4a-9bf5-510f06ad67aa",
-       "7c07dbb0-eaa1-4fa4-9690-43fbeaf78150",
-       "6a283f77-e095-45cc-bf95-3caca9f73bd5",
-       "66b23b89-05b0-4d06-bb24-d07cdf83be56",
-       "f6e9bfc9-d469-423a-97d4-31d5e48681cf",
-       "6e06c291-aefd-4297-a323-20562931ff3e",
-       "4c539f1d-7247-4224-b2dc-7d910014fc4c",
-       "2574e667-d26e-4cb2-85c3-613b8890119a",
-       "6192262f-78af-4e69-9091-515aa92ad6a2",
-       "f6873c36-389d-46a6-b186-d2934ec056f5",
-       "d8d78e87-a451-42d6-9a58-6f6de9b503fb",
-       "37850a12-2e39-4475-ab43-a873935f3c17",
-       "58ef2eab-b75a-4b03-a086-e87544c26ae9",
-       "d6f3e0ef-1c0d-478e-8f5a-f2793444e8f7",
-       "38686c0e-eac0-4171-b228-9ffcb709c7dc",
-       "dc497d16-310f-43df-b3bd-6bea312fcae9",
-       "74bb5fa2-a4b3-4635-a79d-76c07726cd44",
-       "b83092de-8291-4a3a-b70d-08529cb79896",
-       "1554607f-45b7-498b-a1ec-b69f3a648aa5",
-       "12a334a8-b74f-46a1-be85-8f428cc08ef4",
-       "f478a1fd-17f7-4796-bf09-67f184fc4191",
-       "c0bc61d7-b25b-4984-9712-8706700687ee",
-       "d555c2ff-ed67-41fc-a389-f8e097683049",
-       "fa624a84-4c74-427d-9bb7-dc4ffe5d5c89",
-       "38fae6bd-f58b-4c6e-9d0b-252c0a314d00",
-       "cccb1d20-559e-4e4c-9c70-8b5602aaf1f5",
-       "65387311-b24b-4ebd-ab4a-5615f80954fd",
-       "7568d658-221b-41d3-ac90-2949469cc0ca",
-       "af2b0e48-3807-40e4-beeb-e3d493d8df38",
-       "563c48d8-3392-44fd-a087-3facf29f95fa",
-       "3bdadd92-d061-4e31-b4bd-6d7195a96224",
-       "396ecbf5-ca41-40fe-8464-d7eb264f91c0",
-       "e2b52d34-3a5b-41ae-8a7e-bd2cad9f6558",
-       "77d26ae1-e6e2-4651-8ab8-05b0fbfe2a45",
-       "a84bb471-b112-4c90-b516-cdcb3becc229",
-       "ec48d3e8-7821-491d-87f7-35bc6d2b9acd",
-       "7ede3e33-267c-4641-9ea3-17dd4b808dac",
-       "da5d7b47-afd4-4e04-ae53-bfea1837e282",
-       "0d780314-5e4c-4adc-a258-3aea0ebd6f78",
-       "b2ff89c2-6c0c-45e9-82fa-e54bd75b3a38",
-       "f7477db0-8a2d-4345-ab94-6488d37fb03e",
-       "7a99138f-bf38-478b-b46f-46df28a70146",
-       "af92e09a-e1cc-41d6-a372-78c08231e925",
-       "e54f783e-8649-467c-a394-cabfcfe62332",
-       "35c4122b-1416-4e0b-a3b2-c3ecfd109fb3",
-       "803dc410-0e10-4032-9744-dda61d30f4c5",
-       "da7565b6-a4f3-4eb5-9f06-3103b92ec5d8",
-       "d893a318-a0b1-4272-a5fc-46ce47568984",
-       "12060b3f-6404-4b94-8d89-762195a38434",
-       "63ea8e66-fada-4cda-9994-943df2129f6c"
+       "c701a5be-3506-4e17-9989-e107db8e9c16",
+       "2c2ce34c-0fbd-4c09-9be3-3250ed9791d5",
+       "418afe54-f9fc-4382-ad50-7f8cf5d154dd",
+       "83b8c43f-5656-4239-aefa-b8176ec6b9b0",
+       "7db9b01a-971f-4f91-825e-d2cb243c5c13",
+       "b300fbc2-d07e-4e06-8922-ff0e786b4f5f",
+       "71879570-389a-4d2b-a3ad-db6376f95735",
+       "109af22f-0b2c-4fb2-aaf9-aa7405ccb1bf",
+       "bc4163ba-b914-4134-b256-2f76dad57a9c",
+       "8d2103ee-877b-459c-aded-daa8cb7636a6",
+       "aefc962f-0478-46f9-bce3-575bfa843997",
+       "ba07591d-fd1e-40fb-946a-d440cb5c9e5e",
+       "59e22137-80e1-4420-a0c4-ba883ebe6a53",
+       "8660cfcf-11ac-4ef2-ab33-880d0cf39a63",
+       "94c0ed09-e2d8-497a-bb79-baec17730021",
+       "7e6aca23-bdb4-4991-94cc-21e6662d75de",
+       "5202de6d-de72-4d72-83e7-45ceb22d8656",
+       "7aa40f58-6f44-410c-bcca-d3f0ecea5767",
+       "404ff260-80a7-477d-9948-78ef16980061",
+       "6e4274b4-d9a5-4493-98bf-1a5f5fb46769",
+       "a2562755-6ce7-4d8b-ac4a-474e1da30231",
+       "aeffea51-2f8e-4371-afd8-95210f489c60",
+       "92ab31bc-9ebd-4ee2-9093-d45c0b6ada46",
+       "0d822169-7683-437d-87c9-2ccf702cecfd",
+       "6ea7d5a6-cc39-4138-96ff-11296aa5e560",
+       "4362fec9-283a-4131-ba7d-6a84fadf0cc8",
+       "7a1b9124-2ad5-4c65-96b6-e8a41936c3f2",
+       "367c1c5f-4a4d-4f81-a254-054196cc1984",
+       "3ac4073a-7235-465e-8c14-910af98f9126",
+       "4fe3aa47-cc58-4458-85fe-ac585fb79aaf",
+       "1744f4f0-c6ee-4ed9-a050-170ab9cb8726",
+       "e6078d20-3527-474d-a1a3-d50fb858404c",
+       "7fc1da15-cf3b-4ca7-bdd1-1c117f28b879",
+       "84746ffa-1dd0-417d-ac53-1043ceaa2ac1",
+       "96e566a5-a8fe-4c6e-8326-061d6729a740",
+       "d3715ba7-832b-43cb-acb4-b92447620cc5",
+       "271ebfb1-fd43-4a85-9c6d-c69944959f21",
+       "fc429e0b-d892-4c0d-82a9-6f4448ee3554",
+       "f083c6b7-e39e-4dfa-b217-2f6bfedf3aad",
+       "1b0f2abb-1aa5-4a05-8c38-7253e93a0e11",
+       "24430e72-756d-467d-a0f9-f5b0923fa0b0",
+       "0cdb6d6b-c235-4a21-826a-7d6e1f08b0fd",
+       "b6e59919-9837-4d96-b2f1-c5d5692131b2",
+       "2944622b-a42e-46f1-9afc-42460f17416e",
+       "7fd96d99-9de3-4385-a13e-6b59c659ae16",
+       "d1a526f5-bf4a-471f-89a0-f0d4988df9e0",
+       "4e76f864-62e9-4259-a2b3-4aa9aa209409",
+       "86b6a362-9f9f-4fdd-b671-c643040edf96",
+       "b977bfbc-2d2c-4096-849f-47cf1e3c0244",
+       "4b89bed6-8e90-4ce1-a3d9-a99b060b4234",
+       "4c0eefbc-320f-4af5-911b-5c71729fd832",
+       "10d4a8f3-cdca-44bc-b1dc-f0d1836bee4b",
+       "16125b5d-8966-4f47-bf77-7bf351b44e60",
+       "880a0b12-63d6-49c2-ba73-cf98552da2eb",
+       "62b5402f-cb6a-4324-be3b-a5ef214f6c4d",
+       "a41525a0-f86c-4d76-b6bb-093f002cb6fe",
+       "dce2349d-1216-4914-acbf-b66c61acbecd",
+       "21baea15-5ca1-4779-8211-1a875e86a1bd",
+       "33f77d9f-63ee-48a4-8b72-9f8f96c8c7f1",
+       "8220f6fb-140b-4a10-9820-6a46b37fe01a",
+       "cc093049-8338-4b16-9ac5-51eebe4c0f1d",
+       "b7c588eb-551b-4550-a11d-699b9f9b757d",
+       "3c6291b6-80ac-446f-98e6-fd62644937ff",
+       "8b2fbaed-9056-41e7-ac46-ed4ce24b6ea4",
+       "e68053f6-b453-432c-9656-ad83824324a4",
+       "96a41145-54aa-481a-8212-304090ce083e",
+       "66fbbc01-173b-411f-9007-eb61fb9fc354",
+       "70b19a70-50b8-4db4-8d74-55d989f7c932",
+       "d285ca8e-c3f5-439c-b31a-75646ddd301d",
+       "5d8c037b-8342-4851-aad5-3ce421e975c0",
+       "a6384888-bd39-4018-b656-8e853628c0dc",
+       "b125352f-3987-4499-aae0-1ae81c2c2568",
+       "f34bca82-7d27-4d47-859c-0fcfe9b3287f",
+       "3196dcf0-b8f6-4b57-adab-12baf4a18b7d",
+       "d75ef0bc-da11-4911-a914-2a3a97e657d8"
       ],
       "devices": [
        {
         "id": "PA-0060",
         "label": "Display 1",
-        "category": "display"
+        "category": "display",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 0.1
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 0.1,
+          "mount": "wall"
+         }
+        }
        },
        {
         "id": "PA-0061",
         "label": "Camera 1",
-        "category": "camera"
+        "category": "camera",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 0.15
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 0.15,
+          "mount": "wall"
+         }
+        }
        },
        {
         "id": "PA-0062",
         "label": "Ceiling microphone 1",
-        "category": "micceil"
+        "category": "micceil",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 2.8
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 2.8,
+          "mount": "ceiling"
+         }
+        }
        },
        {
         "id": "PA-0063",
         "label": "Loudspeaker 1",
-        "category": "speaker"
+        "category": "speaker",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 1.5
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 1.5,
+          "mount": "ceiling"
+         }
+        }
        },
        {
         "id": "PA-0064",
         "label": "Audio processor (DSP) 1",
-        "category": "dsp"
+        "category": "dsp",
+        "placement": {
+         "at": {
+          "x": 0.3,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.3,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
        },
        {
         "id": "PA-0065",
         "label": "UC room compute 1",
-        "category": "compute"
+        "category": "compute",
+        "placement": {
+         "at": {
+          "x": 0.4,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.4,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
        },
        {
         "id": "PA-0066",
         "label": "Touch panel 1",
-        "category": "touch"
+        "category": "touch",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 2.6
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 2.6,
+          "mount": "table"
+         }
+        }
        },
        {
         "id": "PA-0067",
         "label": "Network switch 1",
-        "category": "switch"
+        "category": "switch",
+        "placement": {
+         "at": {
+          "x": 0.5,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.5,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
        }
       ],
+      "measurements": [],
       "reason": "accepted: first baseline (ADR-0003)",
-      "published_by": "1823b955-643f-4816-a3b7-301518127ab3",
-      "published_at": "2026-11-14T12:19:07.605Z",
+      "published_by": "c90fe27e-2c56-4934-8c30-2747b4cb631c",
+      "published_by_name": "Operations Lead (synthetic)",
+      "published_at": "2026-11-25T18:12:25.735Z",
       "supersedes": null,
       "superseded_at": null,
       "superseded_by": null
@@ -513,7 +725,7 @@
     ],
     "exceptions": []
    },
-   "correlationId": "40f988ca-b5ee-46d2-9417-bb14d0d0a114"
+   "correlationId": "244427f6-6128-43d4-a76a-ef8af790b224"
   }
  ]
 }
