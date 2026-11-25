@@ -12,7 +12,7 @@ import { answerTalk, chapterVerdict, choose, emptyChapter, find, load, nextOf, r
 import { buildScene, frontier, hotspotsAt, lineAt, mayPass, recap, type Shot } from './scene.js';
 import { TAKES, FOOTAGE } from './cinematic.js';
 import { Draft, Face, ItemView, getJson, loadDefs, loadIndex, notKept, useLoaded } from './StoryPage.js';
-import { NotAPlace } from '../shell/trail.js';
+import { NotAPlace, NotYet } from '../shell/trail.js';
 
 const POS = 'empathia.signal.play.v1';
 const posOf = (id: string): number => { try { return Number((JSON.parse(localStorage.getItem(POS) || '{}') as Record<string, number>)[id]) || 0; } catch { return 0; } };
@@ -21,7 +21,7 @@ const KIND_WORD: Record<string, string> = { radio: ' (radio)', phone: ' (phone)'
 
 export default function PlayPage({ params }: PageProps) {
   const ix = useLoaded(loadIndex, 'ix'); const id = params.chapter || '';
-  if (ix.error) return <div className="sg" data-testid="play-error"><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}).</p><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
+  if (ix.error) return <div className="sg" data-testid="play-error"><NotYet /><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}).</p><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
   if (!ix.data) return <div className="sg" aria-busy="true"><h1 tabIndex={-1}>SIGNAL</h1><p className="lead">Opening the scene…</p></div>;
   if (!ix.data.chapters.some((c) => c.id === id)) return <div className="sg" data-testid="story-unknown"><NotAPlace /><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
   return <Player key={id} ix={ix.data} id={id} />;
@@ -38,7 +38,7 @@ function Player({ ix, id }: { ix: StoryIndex; id: string }) {
   const last = useRef(0);
   useEffect(() => { if (!staged || !playing) return undefined; last.current = performance.now(); const h = setInterval(() => { const now = performance.now(); const d = (now - last.current) / 1000; last.current = now; setT((x) => x + d); }, 100); return () => clearInterval(h); }, [n, playing, staged]);
   useEffect(() => { if (!scene || !shot || !staged || t < shot.dur) return; if (n >= scene.shots.length - 1) { setPlaying(false); setEnded(true); if (!state.done) set({ ...state, done: true }); } else if (hotspotsAt(shot, shot.dur).some((h) => !state.found.includes(h.discovery)) && !ended) { setPlaying(false); setEnded(true); setSaid('The shot is held: something here has not been looked at. Find it, or move on.'); } else go(n + 1); });   // eslint-disable-line react-hooks/exhaustive-deps
-  if (ch.error) return <div className="sg" data-testid="play-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() && <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, play without a connection.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
+  if (ch.error) return <div className="sg" data-testid="play-error"><NotYet /><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() && <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, play without a connection.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
   if (!scene || !shot) return <div className="sg" aria-busy="true"><h1 tabIndex={-1}>{ref.title}</h1><p className="lead" data-testid="play-loading">Opening the scene…</p></div>;
   const line = lineAt(shot, t); const spots = staged ? hotspotsAt(shot, Math.min(t, shot.dur)) : []; const svg = art.data?.panels[shot.panel]; const r = recap(scene, state); const finished = n >= scene.shots.length - 1 && mayPass(shot, state) && (!staged || ended);
   const disc = open ? (items.find((x) => x.type === 'discovery' && x.id === open) as Extract<Item, { type: 'discovery' }> | undefined) : undefined; const next = nextOf(ix, id); const tl = tally(items, state);

@@ -8,6 +8,7 @@
  * A module that loaded once is kept, so going back to a workspace is instant.
  */
 import { Component, useEffect, useState, type ReactElement, type ReactNode } from 'react';
+import { NotYet } from '../shell/trail.js';
 type ComponentType<P> = (props: P) => ReactElement | null;
 
 export interface WorkspaceProps { perspective: string; hash: string }
@@ -18,7 +19,7 @@ const loaded = new Map<string, ComponentType<WorkspaceProps>>();
 /** A named failure: the workspace that failed, why in plain words, Try again, and the way back to the start. */
 export function WorkspaceFailure({ name, kind, attempts, onRetry }: { name: string; kind: 'load' | 'render'; attempts: number; onRetry: () => void }) {
   return (
-    <section className="hz-fail" data-testid="workspace-failure" data-workspace={name} data-kind={kind}>
+    <section className="hz-fail" data-testid="workspace-failure" data-workspace={name} data-kind={kind}><NotYet />
       <div role="alert" aria-labelledby="hz-fail-h">
         <h1 id="hz-fail-h">{kind === 'load' ? `${name} could not load` : `${name} stopped working`}</h1>
         <p>{kind === 'load'

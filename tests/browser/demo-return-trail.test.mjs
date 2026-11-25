@@ -61,47 +61,133 @@ for (const [w, h, tag] of [[390, 844, 'phone'], [1440, 900, 'desktop']]) {
 }
 
 // 25 Nov 2026 — what the trail keeps, and under what name. Added when the exact-commit regression on 5c6d698f failed RP-20 (a room's
-// replay carried "Back to Room not found") and the cause was in the trail, not in the check: it named a place from whatever heading
-// was on screen when its timer fired, and it kept addresses whose page says the subject does not exist.
-const marks = (p) => p.evaluate(() => { try { return JSON.parse(sessionStorage.getItem('empathia.trail.v1') || '[]').map((m) => ({ path: m.path, label: m.label })); } catch { return []; } });
+// replay carried "Back to Room not found") and the cause was in the trail, not in the check. Rewritten the same day after an independent
+// review found that some of the first version's checks passed because the visitor left before the trail looked, not because of what the
+// trail does. Each check below now fails on the faulty trail however fast or slow the run is:
+//   - "not kept" is shown by putting the address on the trail first and seeing the page take it off: only the trail's own reading of the
+//     page can do that, so leaving early cannot pass it;
+//   - "named after itself" waits until the name is there; "never named after the next page" holds the first page's code back, so the
+//     visitor really does leave a page that has not drawn.
+const marks = (p) => p.evaluate(() => { try { return JSON.parse(sessionStorage.getItem('empathia.trail.v1') || '[]').map((m) => ({ path: m.path, hash: m.hash, label: m.label })); } catch { return []; } });
+const seed = (p, list) => p.evaluate((l) => { sessionStorage.setItem('empathia.trail.v1', JSON.stringify(l.map((h, i) => ({ path: h.split('?')[0], hash: h, label: `seeded ${i}`, sub: '', sy: 0, at: Date.now() })))); }, list);
+const settled = (p) => p.waitForFunction(() => { const m = document.querySelector('main'); return !!m && !m.querySelector('[data-trail-wait], [aria-busy=true]') && m.innerText.trim().length > 20; }, null, { timeout: 15000 }).catch(() => undefined);
 { // every address that counts as a place of work, opened with an identifier that does not exist
   const GONE = ['#/assurance/room/R-NOPE', '#/commissioning/room/R-NOPE', '#/campus/atlas/4/R-NOPE', '#/control/R-NOPE', '#/scheduler/R-NOPE', '#/ledger/agent/R-NOPE', '#/studio/room/R-NOPE', '#/forge/room/R-NOPE', '#/guide/room/R-NOPE', '#/here/R-NOPE',
-    '#/replay/R-NOPE', '#/room/R-NOPE', '#/servicehands/wo/WO-NOPE', '#/voice/callpath/R-NOPE', '#/voice/report/R-NOPE', '#/film/nope', '#/play/nope', '#/story/nope', '#/optimizer/stadium/R-NOPE?as=stadium.av_it_engineer', '#/gameday/incident/F-NOPE?as=stadium.broadcast_engineer'];
+    '#/replay/R-NOPE', '#/room/R-NOPE', '#/servicehands/wo/WO-NOPE', '#/voice/callpath/R-NOPE', '#/voice/report/R-NOPE', '#/film/nope', '#/play/nope', '#/story/nope', '#/optimizer/stadium/R-NOPE?as=stadium.av_it_engineer',
+    '#/gameday/incident/F-NOPE?as=stadium.broadcast_engineer', '#/v25/fi/scan/R-NOPE', '#/learn/story/R-NOPE', '#/instant/R-NOPE', '#/labs/mix/R-NOPE'];
   const t = await open('#/families', { role: 'architect', sw: false }); const p = t.page; const bad = []; let said = 0;
   for (const a of GONE) {
-    await p.evaluate((h) => { location.hash = h; }, a); await p.waitForFunction(() => !document.querySelector('main [aria-busy=true]') && (document.querySelector('main')?.innerText || '').trim().length > 20, null, { timeout: 8000 }).catch(() => undefined); await p.waitForTimeout(700);
+    await seed(p, [a]); await p.evaluate((h) => { location.hash = h; }, a); await settled(p);
     const st = await p.evaluate(() => ({ refused: !!document.querySelector('[data-testid=access-page]'), missing: !!document.querySelector('main [data-missing]'), h1: (document.querySelector('main h1')?.textContent || '').trim().slice(0, 40) }));
     if (st.refused) { bad.push(`${a}: refused, so its unknown state was not reached`); continue; }
-    if (st.missing) said += 1; else bad.push(`${a}: the page does not say its subject is missing (“${st.h1}”)`);
-    await p.evaluate(() => { location.hash = '#/families'; }); await p.waitForTimeout(350);
+    if (st.missing) said += 1; else { bad.push(`${a}: the page does not say its subject is missing (“${st.h1}”)`); continue; }
+    // the trail takes the seeded entry off when it reads the page: wait for that (it cannot happen by leaving)
+    await p.waitForFunction((path) => !JSON.parse(sessionStorage.getItem('empathia.trail.v1') || '[]').some((m) => m.path === path), a.split('?')[0], { timeout: 6000 }).catch(() => undefined);
+    await p.evaluate(() => { location.hash = '#/families'; }); await p.waitForTimeout(300);
     const path = a.split('?')[0]; const kept = (await marks(p)).find((m) => m.path === path); const c = await chip(p);
-    if (kept) bad.push(`${a}: kept as “${kept.label}”`); if (c && (c.to || '').split('?')[0] === path) bad.push(`${a}: offered as “${c.text}”`);
+    if (kept) bad.push(`${a}: still kept as “${kept.label}”`); if (c && (c.to || '').split('?')[0] === path) bad.push(`${a}: offered as “${c.text}”`);
   }
-  ok('RT-gone-01', `an address whose page says there is no such room, work order, chapter or fault is not a place of work: none of the ${GONE.length} is kept or offered as “Back to …”`, !bad.length && said === GONE.length, bad.slice(0, 4).join(' | ') || `${said} of ${GONE.length} said so`);
+  ok('RT-gone-01', `an address whose page says there is no such room, work order, chapter or fault is not a place of work: each of the ${GONE.length} says so, and an entry for it already on the trail is taken off by the page itself`, !bad.length && said === GONE.length, bad.slice(0, 4).join(' | ') || `${said} of ${GONE.length}`);
+  // a page that refuses one view of a place (?as=…) does not take off the real view kept at the same path
+  const real = '#/optimizer/stadium/STA-PCR?as=stadium.av_it_engineer';
+  await p.evaluate(() => sessionStorage.removeItem('empathia.trail.v1')); await p.evaluate((h) => { location.hash = h; }, real); await settled(p);
+  await p.waitForFunction((h) => JSON.parse(sessionStorage.getItem('empathia.trail.v1') || '[]').some((m) => m.hash === h && !/^seeded|where you were/.test(m.label)), real, { timeout: 8000 }).catch(() => undefined);
+  const kept1 = (await marks(p)).find((m) => m.hash === real);
+  await p.evaluate(() => { location.hash = '#/optimizer/stadium/STA-PCR?as=stadium.fan'; }); await p.waitForSelector('[data-testid=optimizer-gate]').catch(() => undefined); await settled(p); await p.waitForTimeout(800);
+  await p.evaluate(() => { location.hash = '#/families'; }); await p.waitForTimeout(400); const after1 = await marks(p); const c1 = await chip(p);
+  ok('RT-gone-02', 'the same room’s optimizer opened as a fan (its gate: not shown to the fan) leaves the engineer’s view of it on the trail, at the engineer’s address', !!kept1 && after1.some((m) => m.hash === real && m.label === kept1.label) && !!c1 && c1.to === real, JSON.stringify({ kept1, after1, c1 }));
   // a place kept earlier that no longer exists (a workspace that was reset) is forgotten when its page says so
   await p.evaluate(() => { sessionStorage.setItem('empathia.trail.v1', JSON.stringify([{ path: '#/servicehands/wo/WO-NOPE', hash: '#/servicehands/wo/WO-NOPE', label: 'Work order WO-NOPE', sub: '', sy: 0, at: Date.now() }])); location.hash = '#/families'; }); await p.reload(); await p.waitForSelector('main h1'); await p.waitForTimeout(500);
-  const before = await chip(p); await p.getByTestId('trail-back').click().catch(() => undefined); await p.waitForTimeout(1200); await p.evaluate(() => { location.hash = '#/families'; }); await p.waitForTimeout(400);
-  ok('RT-gone-02', 'a place that was on the trail and is gone (its page now says “Not found”) is forgotten after the visit that found it gone', !!before && /WO-NOPE/.test(before.to || '') && !(await marks(p)).length && !(await chip(p)), JSON.stringify({ before, after: await marks(p) }));
-  ok('RT-gone-03', 'no console error, nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+  const before = await chip(p); await p.getByTestId('trail-back').click().catch(() => undefined); await settled(p); await p.waitForTimeout(600); await p.evaluate(() => { location.hash = '#/families'; }); await p.waitForTimeout(400);
+  ok('RT-gone-03', 'a place that was on the trail and is gone (its page now says “Not found”) is forgotten after the visit that found it gone', !!before && /WO-NOPE/.test(before.to || '') && !(await marks(p)).length && !(await chip(p)), JSON.stringify({ before, after: await marks(p) }));
+  ok('RT-gone-04', 'no console error, nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close();
 }
-{ // a place is named from its own drawn page: not the loading placeholder, not the page the visitor went to next
-  const t = await open('#/families', { role: 'architect', sw: false }); const p = t.page;
-  await p.evaluate(() => { location.hash = '#/replay/R-ATL-4-218'; }); await p.waitForSelector('[data-testid=replay]'); await p.waitForTimeout(600);   // first visit: the replay's code is fetched now
+{ // a place is named from its own drawn page: not the loading placeholder, not the page the visitor went to next, not a failure
+  const t = await open('#/families', { role: 'architect', sw: false }); const p = t.page; const ctx = t.ctx; const waitName = (path, re) => p.waitForFunction(([x, r]) => JSON.parse(sessionStorage.getItem('empathia.trail.v1') || '[]').some((m) => m.path === x && new RegExp(r).test(m.label)), [path, re], { timeout: 15000 }).catch(() => undefined);
+  // the replay's code held back 6 s on its first visit: slower than the four seconds the first correction gave up after
+  let held = 0; await ctx.route(/\.js(\?|$)/, async (r) => { held += 1; await new Promise((z) => setTimeout(z, 6000)); await r.continue().catch(() => undefined); });
+  await p.evaluate(() => { location.hash = '#/replay/R-ATL-4-218'; });
+  const placeholder = await p.waitForSelector('main [data-trail-wait], main [aria-busy=true]', { timeout: 4000 }).then(() => true).catch(() => false);
+  const during = await marks(p); await ctx.unroute(/\.js(\?|$)/);
+  await p.waitForSelector('[data-testid=replay]', { timeout: 20000 }).catch(() => undefined); await waitName('#/replay/R-ATL-4-218', 'Atlas 4\\.218');
   const first = (await marks(p)).find((m) => m.path === '#/replay/R-ATL-4-218');
-  ok('RT-name-01', 'a place opened for the first time is named after itself (“Replay: Atlas 4.218 …”), not after the workspace that was still loading', !!first && /Atlas 4\.218/.test(first.label) && first.label !== 'Core Replay', JSON.stringify(first));
-  // left at once: two addresses entered in the same instant, the way a quick second tap does
-  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/families'; }); await p.waitForTimeout(400);
-  await p.evaluate(() => { location.hash = '#/replay/R-HZN-1-500'; setTimeout(() => { location.hash = '#/room/R-ATL-4-218'; }, 0); }); await p.waitForTimeout(1500);
-  const ms = await marks(p); const hzn = ms.find((m) => m.path === '#/replay/R-HZN-1-500'); const room = ms.find((m) => m.path === '#/room/R-ATL-4-218');
-  ok('RT-name-02', 'a place left before it had drawn is never offered under the next page’s name: it is not kept, and the page the visitor stayed on is, under its own name', !hzn && !!room && /Atlas 4\.218/.test(room.label), JSON.stringify(ms));
-  // a refused page is not a place the role worked in
-  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/gameday/incident/camera-feed?as=stadium.fan'; }); await p.waitForSelector('[data-testid=access-page]'); await p.waitForTimeout(600);
+  ok('RT-name-01', 'a place whose code takes six seconds to arrive on its first visit is named after itself once it draws (“Replay: Atlas 4.218 …”); while it loads, nothing is named after the placeholder', placeholder && held > 0 && !during.some((m) => m.path === '#/replay/R-ATL-4-218') && !!first && /^Replay: Atlas 4\.218/.test(first.label), JSON.stringify({ placeholder, held, during, first }));
+  // left before it drew: the incident replay's code is held back, the visitor goes on to a room
+  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/families'; }); await p.waitForTimeout(300);
+  await ctx.route(/\.js(\?|$)/, async (r) => { await new Promise((z) => setTimeout(z, 3000)); await r.continue().catch(() => undefined); });
+  await p.evaluate(() => { location.hash = '#/v25/fi/scan/R-ATL-4-218'; }); const left = await p.waitForSelector('main [data-trail-wait], main [aria-busy=true]', { timeout: 4000 }).then(() => true).catch(() => false);
+  await p.evaluate(() => { location.hash = '#/room/R-ATL-4-218'; }); await ctx.unroute(/\.js(\?|$)/); await settled(p); await waitName('#/room/R-ATL-4-218', 'Atlas 4\\.218'); await p.waitForTimeout(3500);
+  const ms = await marks(p); const scan = ms.find((m) => m.path === '#/v25/fi/scan/R-ATL-4-218'); const room = ms.find((m) => m.path === '#/room/R-ATL-4-218');
+  ok('RT-name-02', 'a place left while its page was still loading is not kept, and never under the next page’s name; the page the visitor stayed on is kept under its own', left && !scan && !!room && /Atlas 4\.218/.test(room.label), JSON.stringify({ left, ms }));
+  // a page whose code could not be fetched: the failure is not a place. Control loads by a plain import(), which the browser will not
+  // fetch again in this document, so Try again fails a second time and the page then offers a reload (App.tsx, 25 Nov 2026); after the
+  // reload it is kept under its own name.
+  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/families'; }); await p.waitForTimeout(300);
+  await ctx.route(/\.js(\?|$)/, (r) => r.abort());
+  await p.evaluate(() => { location.hash = '#/control/R-ATL-4-218'; }); const failed = await p.waitForSelector('main .loadfail', { timeout: 15000 }).then(() => true).catch(() => false); await p.waitForTimeout(1500);
+  const whileFailed = await marks(p); const reload0 = await p.locator('main .loadfail button', { hasText: 'Reload the page' }).count(); await ctx.unroute(/\.js(\?|$)/);
+  await p.locator('main .loadfail button', { hasText: 'Try again' }).click().catch(() => undefined); await p.waitForTimeout(2500);
+  const again = await p.locator('main .loadfail[data-attempts="2"]').count(); const whileFailed2 = await marks(p);
+  await p.locator('main .loadfail button', { hasText: 'Reload the page' }).click().catch(() => undefined); await p.waitForLoadState('load'); await settled(p); await waitName('#/control/R-ATL-4-218', 'Atlas 4\\.218');
+  const named = (await marks(p)).find((m) => m.path === '#/control/R-ATL-4-218');
+  ok('RT-name-03', 'a page whose code failed to arrive is never kept under the failure (“… did not load”), after one failure or two; once the connection is back, a second failure offers a reload (one Try again cannot fetch that code again), and after it the page is kept under its own name', failed && reload0 === 0 && again === 1 && !whileFailed.length && !whileFailed2.length && !!named && /Atlas 4\.218/.test(named.label), JSON.stringify({ failed, reload0, again, whileFailed, whileFailed2, named }));
+  // a refused page is not a place the role worked in, whether the shell refuses it or the page's own gate does
+  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/gameday/incident/camera-feed?as=stadium.fan'; }); await p.waitForSelector('[data-testid=access-page]'); await p.waitForTimeout(1200);
   const refused = await marks(p);
-  // …and neither is a page's own gate (the Space Optimizer is a design tool: a fan is shown the gate, and the gate is not a place of work)
-  await p.evaluate(() => { location.hash = '#/optimizer/stadium/S-NOPE?as=stadium.fan'; }); await p.waitForSelector('[data-testid=optimizer-gate]'); await p.waitForTimeout(600);
-  ok('RT-name-03', 'a page the role is refused, by the shell or by the page’s own gate, is not kept on the trail under the refusal’s heading', !refused.length && !(await marks(p)).length, JSON.stringify([refused, await marks(p)]));
-  ok('RT-name-04', 'no console error, nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+  await p.evaluate(() => { location.hash = '#/optimizer/stadium/STA-PCR?as=stadium.fan'; }); await p.waitForSelector('[data-testid=optimizer-gate]'); await p.waitForTimeout(1200);
+  ok('RT-name-04', 'a page the role is refused, by the shell or by the page’s own gate, is not kept on the trail under the refusal’s heading', !refused.length && !(await marks(p)).length, JSON.stringify([refused, await marks(p)]));
+  ok('RT-name-05', 'no page error, nothing requested off the page', !t.errs.filter((e) => !/Failed to fetch|dynamically imported module|ERR_FAILED|net::/i.test(e)).length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+  await t.close();
+}
+// 25 Nov 2026 05:07 CT, the founder: the return-trail tests must cover rapid navigation between products; slow-loading pages and
+// throttled processors; role changes and restricted destinations; deleted or nonexistent entities (RT-gone-01..03 above); and the
+// preservation of legitimate navigation history; and the authorization review must verify actual access enforcement, not merely
+// whether restricted destinations appear. The checks below are the ones that were missing.
+const cdpThrottle = async (t, rate) => { const c = await t.ctx.newCDPSession(t.page); await c.send('Emulation.setCPUThrottlingRate', { rate }); return c; };
+const ownHeading = (p) => p.evaluate(() => (document.querySelector('main h1')?.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80));
+for (const rate of [1, 6]) { // rapid navigation across six products, on an ordinary and a six-times-throttled processor
+  const tag = rate === 1 ? 'fast' : 'throttled'; const t = await open('#/families', { role: 'svcmgr', sw: false }); const p = t.page; p.setDefaultTimeout(20000); if (rate > 1) await cdpThrottle(t, rate);
+  const ROUTE = ['#/room/R-ATL-4-218', '#/search?focus=Room:R-ATL-4-218', '#/servicehands/new?room=R-ATL-4-218', '#/replay/R-HZN-1-500', '#/replay/R-NOPE', '#/voice/callpath/R-ATL-4-218', '#/ledger/agent/R-ATL-4-218', '#/room/R-HZN-1-500'];
+  // each address entered 150 ms after the last, as a person tapping through quickly does: most pages are left before they have drawn
+  for (const h of ROUTE) { await p.evaluate((x) => { location.hash = x; }, h); await p.waitForTimeout(150); }
+  await settled(p); await p.waitForTimeout(rate > 1 ? 5000 : 2000);
+  const kept = await marks(p); const last = kept.find((m) => m.path === '#/room/R-HZN-1-500');
+  // every place on the trail must be named after its own page: open each and compare its heading with the name it was kept under
+  const wrong = []; for (const m of kept) { await p.evaluate((x) => { location.hash = x; }, m.hash); await settled(p); await p.waitForTimeout(rate > 1 ? 1500 : 500); const h = await ownHeading(p); if (h !== m.label) wrong.push(`${m.hash}: kept as “${m.label}”, its page says “${h}”`); }
+  ok(`RT-${tag}-01`, `tapping through eight addresses in six products, 150 ms apart${rate > 1 ? ', on a processor slowed six times' : ''}: the page the visitor stopped on is kept, the unknown room is not, and every place kept is named after its own page`, !!last && !kept.some((m) => /R-NOPE/.test(m.path)) && !wrong.length, JSON.stringify({ kept: kept.map((m) => `${m.hash} = ${m.label}`), wrong }).slice(0, 600));
+  // then the founder's own journey, at that pace: the room on a tab, scrolled; Search Party; ServiceHands intake; back to the room as it was
+  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/room/R-ATL-4-218'; }); await settled(p); await p.waitForTimeout(rate > 1 ? 2000 : 600);
+  await p.locator('main [role=tab]', { hasText: /^Devices/ }).first().click(); await p.waitForTimeout(rate > 1 ? 1500 : 500);
+  const roomHash = await p.evaluate(() => location.hash); await p.evaluate(() => scrollTo(0, Math.min(700, document.documentElement.scrollHeight - innerHeight))); await p.waitForTimeout(rate > 1 ? 1500 : 600); const y0 = await p.evaluate(() => Math.round(scrollY));
+  await p.evaluate(() => { location.hash = '#/search?focus=Room:R-ATL-4-218'; }); await p.waitForTimeout(150); await p.evaluate(() => { location.hash = '#/servicehands/new?room=R-ATL-4-218'; }); await settled(p); await p.waitForTimeout(rate > 1 ? 2500 : 800);
+  const c = await chip(p); await p.getByTestId('trail-back').click().catch(() => undefined); await settled(p); await p.waitForTimeout(rate > 1 ? 3500 : 1500);
+  const back = { hash: await p.evaluate(() => location.hash), tab: await sel(p), y: await p.evaluate(() => Math.round(scrollY)) };
+  ok(`RT-${tag}-02`, `the founder’s journey${rate > 1 ? ' on the slowed processor' : ''}, Search Party left at once: the chip still leads back to the room exactly as it was (address, Devices tab, scroll)`, !!c && c.to === roomHash && /Devices/.test(c.text) && back.hash === roomHash && /Devices/.test(back.tab) && Math.abs(back.y - y0) <= 40, JSON.stringify({ c, roomHash, y0, back }));
+  ok(`RT-${tag}-03`, 'no console error, nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
+  await t.close();
+}
+{ // role changes, and what a role is refused: kept places are offered only where the policy lets the role go, and the policy, not the chip, decides
+  const t = await open('#/families', { role: 'svcmgr', sw: false }); const p = t.page; p.setDefaultTimeout(20000);
+  // a role change while a place is still loading, to a role refused there: the place is not kept under the refusal
+  await t.ctx.route(/\.js(\?|$)/, async (r) => { await new Promise((z) => setTimeout(z, 2500)); await r.continue().catch(() => undefined); });
+  await p.evaluate(() => { location.hash = '#/replay/R-ATL-4-218'; }); const loading = await p.waitForSelector('main [data-trail-wait], main [aria-busy=true]', { timeout: 4000 }).then(() => true).catch(() => false);
+  await p.selectOption('.persp select', 'visitor'); await t.ctx.unroute(/\.js(\?|$)/); await p.waitForTimeout(3500);
+  const asVisitor = await marks(p); const visitorChip = await chip(p);
+  await p.selectOption('.persp select', 'svcmgr'); await p.waitForTimeout(1500); const svcChip = await chip(p);
+  ok('RT-role-02', 'switching role while a place is still loading: nothing is kept under a refusal or under the role’s home page, and the visitor is offered no way back into it', loading && !asVisitor.some((m) => /not open|not part/i.test(m.label)) && !(visitorChip && /replay/.test(visitorChip.to || '')) && !(svcChip && /not open|not part/i.test(svcChip.text)), JSON.stringify({ loading, asVisitor, visitorChip, svcChip }));
+  // a place kept by one role, then a role that may not open it: not offered; and if its address is opened anyway, the policy refuses it
+  // before the page's code is fetched (D44): the destination is enforced, not just left out of the interface
+  await p.evaluate(() => { sessionStorage.removeItem('empathia.trail.v1'); location.hash = '#/servicehands/wo/WO-0088'; }); await settled(p); await p.waitForTimeout(800);
+  await p.evaluate(() => { location.hash = '#/replay/R-ATL-4-218'; }); await settled(p); await p.waitForTimeout(800);
+  const keptBy = await marks(p);
+  await p.selectOption('.persp select', 'visitor'); await p.waitForTimeout(1500); const offered = await chip(p);
+  const before = t.reqs.length; const res = []; for (const m of keptBy) { await p.evaluate((x) => { location.hash = x; }, m.hash); await p.waitForTimeout(1200); res.push({ to: m.hash, refused: (await p.getByTestId('access-page').count()) === 1, h1: await ownHeading(p) }); }
+  const fetched = t.reqs.slice(before).filter((u) => /\.js(\?|$)/.test(u));
+  ok('RT-role-03', 'places kept by the service manager are not offered to the visitor; opened by address anyway, each is refused by the policy, and none of their code is fetched for the visitor', keptBy.length >= 1 && !(offered && keptBy.some((m) => m.hash === offered.to)) && res.length === keptBy.length && res.every((r) => r.refused) && !fetched.length, JSON.stringify({ keptBy, offered, res, fetched }).slice(0, 600));
+  await p.selectOption('.persp select', 'svcmgr'); await p.waitForTimeout(1500); const c2 = await chip(p);
+  ok('RT-role-04', 'back as the service manager, the places it kept are offered again, under their own names (a role change forgets nothing legitimate)', !!c2 && keptBy.some((m) => m.hash === c2.to && c2.text.includes(m.label)), JSON.stringify({ c2, keptBy }));
+  ok('RT-role-05', 'no console error, nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close();
 }
 await done();

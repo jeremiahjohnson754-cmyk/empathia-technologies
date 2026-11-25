@@ -18,6 +18,7 @@ import { OPTIONS, compare } from '../optimizer/engine.js';
 import { HOW_WORD, PLACE_WORD, SAMPLE_WIDTH, SCOPES, assess, coverage, findings, planOf, readDim, shotsFor, studyInput, type Capture, type Dim, type How, type Place, type Plan, type Quality, type RecordOf, type Scope, type Shot } from './model.js';
 import { MAX_IMAGE_CHARS, dropAll, dropPhoto, isDurable, keepPhoto, listPhotos, newKey } from './photos.js';
 import { IR_READERS, clearCapture, loadCapture, mayCapture, proposalsFor, saveCapture, savePropose, startCapture, type Proposal } from './store.js';
+import { NotAPlace } from '../shell/trail.js';
 
 type StepId = 'scope' | 'photos' | 'measure' | 'details' | 'review';
 const STEPS: ReadonlyArray<{ id: StepId; title: string }> = [{ id: 'scope', title: 'Scope' }, { id: 'photos', title: 'Photographs' }, { id: 'measure', title: 'Measurements' }, { id: 'details', title: 'What you saw' }, { id: 'review', title: 'Review and save' }];
@@ -88,6 +89,7 @@ export default function InstantPage({ role, params, query, can }: PageProps) {
 
   return (
     <div className="pa ir" data-native="" data-testid="instant" data-step={step} data-room={c.roomId || ''} data-complete={cov.complete ? 'yes' : 'no'}>
+      {params['room'] && !room ? <NotAPlace /> : null}
       <PageHero compact eyebrow="Instant Room" title={c.name ? `Capture ${c.name}` : 'Capture a space'} product="lite" icon="camera"
         lede="Guided photographs and a few measurements, turned into a plan and a proposed design. On your phone, in the room."
         meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="p" small tone="muted">Photographs stay on this device</Chip>, <Chip key="n" small tone="muted">Nothing is recognised by a machine</Chip>]} />

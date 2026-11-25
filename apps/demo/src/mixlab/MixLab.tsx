@@ -8,6 +8,7 @@ import type { PageProps } from '../registry.types.js';
 import * as M from './model.js';
 import { Fader, Knob, Meter, useClock } from './controls.js';
 import { CompGraph, EqGraph, GROUP_COLOR, RoomView, Spectrum, kindColor, srcSays, type Seat } from './views.js';
+import { NotAPlace } from '../shell/trail.js';
 
 const KEY = 'empathia.mixlab.v1';
 interface Saved { mixes: Record<string, M.Mix>; best: Record<string, Record<string, number>>; boss: Record<string, number> }
@@ -37,7 +38,7 @@ export const HELP: Record<string, [string, string]> = {
 };
 
 export default function MixLabPage({ params }: PageProps) {
-  return <section className="stack" data-native="" data-testid="mixlab-page"><MixLab initialRoom={params.room} /></section>;
+  return <section className="stack" data-native="" data-testid="mixlab-page">{params.room && !M.ROOMS.some((r) => r.key === params.room) ? <NotAPlace /> : null}<MixLab initialRoom={params.room} /></section>;
 }
 
 export function MixLab({ initialRoom, embedded, onResult }: { initialRoom?: string; embedded?: boolean; onResult?: (room: string, score: number, passed: boolean) => void }) {

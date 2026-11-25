@@ -17,7 +17,7 @@ import { Face, getJson, loadDefs, loadIndex, useLoaded, notKept } from '../Story
 import { buildFilm, INTERLUDES, ONLY_IF, loadFilm, saveFilm, emptyFilm, hidingPlace, objectiveState, questOf, type FilmShot, type FilmState, type PlayRecord } from './director.js';
 import { Board, Cards, FillTest, Measure, PlanConsequence } from './Interludes.js';
 import { enableSound, roomTone, silence } from './sound.js';
-import { NotAPlace } from '../../shell/trail.js';
+import { NotAPlace, NotYet } from '../../shell/trail.js';
 
 type Decision = Extract<Item, { type: 'decision' }>; type Talk = Extract<Item, { type: 'talk' }>;
 interface Line { who: string; name: string; text: string; src: string | null; face?: { pose: string; expr: string } }
@@ -25,7 +25,7 @@ interface Out { letter: string; result: string; consequence: string; ladder: boo
 
 export default function FilmPage({ params }: PageProps) {
   const ix = useLoaded(loadIndex, 'ix'); const id = params.chapter || 's01e01';
-  if (ix.error) return <div className="sg"><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}).</p></div>;
+  if (ix.error) return <div className="sg"><NotYet /><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}).</p></div>;
   if (!ix.data) return <div className="sg" aria-busy="true"><h1 tabIndex={-1}>SIGNAL</h1><p className="lead">Opening the film…</p></div>;
   if (!ix.data.chapters.some((c) => c.id === id)) return <div className="sg" data-testid="film-unknown"><NotAPlace /><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/film/s01e01">Start with Ten Seats</a></p></div>;
   return <Film key={id} ix={ix.data} id={id} />;
@@ -113,7 +113,7 @@ function Film({ ix, id }: { ix: StoryIndex; id: string }) {
     else if (e.key === 'ArrowRight' && !blocked) { e.preventDefault(); goTo(k + 1); } else if (e.key === 'ArrowLeft' && k > 1) { e.preventDefault(); goTo(k - 1); }
     else if (dec && /^[1-6]$/.test(e.key) && (!out || out.ladder)) { const o = dec.options[Number(e.key) - 1]; if (o) { e.preventDefault(); pick(o.letter); } }
   };
-  if (ch.error) return <div className="sg" data-testid="film-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() && <p className="lead">You are offline and this chapter is not kept on this device.</p>}</div>;
+  if (ch.error) return <div className="sg" data-testid="film-error"><NotYet /><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() && <p className="lead">You are offline and this chapter is not kept on this device.</p>}</div>;
   if (!ch.data) return <div className="sg" aria-busy="true"><h1 tabIndex={-1}>{ref.title}</h1><p className="lead">Opening the film…</p></div>;
   const svg = shot.kind === 'panel' ? art.data?.panels[panelNo.get(shot.item) ?? -1] : undefined;
   // a decision or conversation holds the last picture behind it, dimmed, so the choice stays in the scene

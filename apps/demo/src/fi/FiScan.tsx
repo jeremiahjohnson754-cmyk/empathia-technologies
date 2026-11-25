@@ -12,6 +12,7 @@ import { opsPath } from '../hardening/path.js';
 import * as S from '../workspace/store.js';
 import { ROOMS, roomOf, findingsOf, PROVENANCE_TEXT, SWAP, type RoomRec } from './rooms.js';
 import { JobJumps } from '../rooms/JobJumps.js';
+import { NotAPlace } from '../shell/trail.js';
 
 export const POLICY = { pan: [-30, 30], tilt: [-20, 10], levelDbfs: -30, windowMin: 20, maxActions: 4 } as const;
 export const MAX_STEP = 60;
@@ -39,7 +40,7 @@ export default function FiScan({ perspective, hash }: WorkspaceProps) {
   const set = (n: number) => { const k = Math.max(0, Math.min(MAX_STEP, n)); setStep(k); try { history.replaceState(history.state, '', `#/v25/fi/scan/${id}?mode=${mode}&step=${k}`); } catch { /* keep going */ } };
   useEffect(() => { if (!playing) return; const t = setTimeout(() => { if (step >= MAX_STEP) setPlaying(false); else set(step + 2); }, 250); return () => clearTimeout(t); }, [playing, step]);   // eslint-disable-line react-hooks/exhaustive-deps
   if (!room) return (
-    <section className="ops" data-testid="fiscan"><OpsHead product="field" kicker="Field Intelligence · scan replay" title="Choose a room to scan" persona={persona} />
+    <section className="ops" data-testid="fiscan"><OpsHead product="field" kicker="Field Intelligence · scan replay" title="Choose a room to scan" persona={persona} />{id ? <NotAPlace /> : null}
       <ul className="ops-list">{ROOMS.map((r) => <li key={r.id}><a className="ops-job" href={`#/v25/fi/scan/${r.id}`}><b>{r.name}</b><span className="ops-meta">{r.positions.length} device positions</span></a></li>)}</ul></section>);
   const seen = findings.filter((f) => f.step <= step); const done = actions.filter((a) => a.step <= step);
   const minutes = Math.round((step / MAX_STEP) * POLICY.windowMin);

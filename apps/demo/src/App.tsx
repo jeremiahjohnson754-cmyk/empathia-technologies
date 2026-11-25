@@ -25,7 +25,7 @@ import { ENQUIRY } from './enquiry.js';
 import { OfflineStrip } from './offline/Strip.js';
 import { LaunchStrip } from './shell/LaunchStrip.js';
 import { Shortcuts } from './start/ShortcutSheet.js';
-import { installScrollMemory, settleScroll, notePage, ReturnChip } from './shell/trail.js';
+import { installScrollMemory, settleScroll, notePage, ReturnChip, NotYet } from './shell/trail.js';
 import { useLinkGuard } from './shell/linkGuard.js';
 
 installScrollMemory();   // #223: per-entry scroll memory, installed before the router listens
@@ -144,15 +144,20 @@ function PageHost({ at, role, hash }: { at: Resolved; role: RoleKey; hash: strin
     at.page.load(n).then((m) => { if (!live) return; loaded.set(at.page.id, m.default); setC(() => m.default); }).catch((e: unknown) => { if (live) setErr(e instanceof Error ? e.message : String(e)); });
     return () => { live = false; };
   }, [at.page.id, n]);   // eslint-disable-line react-hooks/exhaustive-deps
-  if (err) return <section className="loadfail" role="alert"><h1 tabIndex={-1}>{at.page.title} did not load</h1><p>The page's code could not be fetched — the connection may have dropped. Nothing was changed.</p><Button kind="primary" onClick={() => setN(n + 1)}>Try again</Button></section>;
-  if (!C) return <Loading label={`Loading ${at.page.title}`} />;
+  // 25 Nov 2026: most pages are loaded by a plain import() of their chunk, and the browser remembers a chunk that failed to arrive, so
+  // "Try again" alone failed again every time for them (found by the return-trail check RT-name-03). After a second failure the page
+  // also offers a reload, which fetches everything afresh, as the operational workspaces' own loader already did (hardening/lazy.tsx).
+  if (err) return <section className="loadfail" role="alert" data-attempts={n + 1}><NotYet /><h1 tabIndex={-1}>{at.page.title} did not load</h1><p>The page's code could not be fetched — the connection may have dropped. Nothing was changed.</p>
+    {n > 0 ? <p className="ui-muted">Tried {n + 1} times. Reloading the page fetches the current version of the whole demonstration; your demonstration workspace is kept in this browser.</p> : null}
+    <p className="loadfail__acts"><Button kind="primary" onClick={() => setN(n + 1)}>Try again</Button>{n > 0 ? <> <Button onClick={() => location.reload()}>Reload the page</Button></> : null}</p></section>;
+  if (!C) return <><NotYet /><Loading label={`Loading ${at.page.title}`} /></>;
   const props: PageProps = { role, hash, params: at.params, query: at.query, can: (id) => canDo(role, at, id), sees: (id) => canSee(role, at, id) };
   return <AccessProvider role={role} at={at}><PageBoundary title={at.page.title}><C {...props} /></PageBoundary></AccessProvider>;
 }
 class PageBoundary extends Component<{ title: string; children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
-  render() { return this.state.failed ? <section className="loadfail" role="alert"><h1 tabIndex={-1}>{this.props.title} stopped</h1><p>Something on this page failed. The rest of the demonstration still works.</p><a className="ui-btn" href="#/investor">Back to the start</a></section> : this.props.children; }
+  render() { return this.state.failed ? <section className="loadfail" role="alert"><NotYet /><h1 tabIndex={-1}>{this.props.title} stopped</h1><p>Something on this page failed. The rest of the demonstration still works.</p><a className="ui-btn" href="#/investor">Back to the start</a></section> : this.props.children; }
 }
 
 /** A legacy address no page claims (none should remain: tests/browser/demo-parity-areas.test.mjs asserts it). It still lands on a finished screen: what the area is, the nearest pages, and the full address list. */

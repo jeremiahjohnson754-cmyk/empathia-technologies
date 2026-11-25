@@ -58,43 +58,58 @@ export function settleScroll() {
 }
 
 // ---- 2. the trail -----------------------------------------------------------------------------------------------------------------
-/** Remember the current page if it is a place where work happens: its exact address and, once the page has drawn, its name.
+/** Remember the current page if it is a place where work happens: its exact address and, once its own page has drawn, its name.
  *
- *  25 Nov 2026, three corrections, found when the exact-commit regression on 5c6d698f failed RP-20 ("Back to Room not found" on a room's
- *  replay) and the cause was followed here instead of into the check:
- *   - The name is read from the page only while the visitor is still on it. Before, the timer read whatever heading was on screen when it
- *     fired, so a place left within its first moments was offered under the NEXT page's name ("Back to Replay: Horizon 1.500" leading to
- *     another room).
- *   - The heading of the loading placeholder (aria-busy) is not the page's heading. Before, a place opened for the first time was named
- *     after its workspace ("Back to Core Replay") rather than itself.
- *   - A page that says its subject does not exist, or that it is not shown to this role, marks itself (NotAPlace, below) and is not a
- *     place of work: it is not kept, and one kept earlier is forgotten. Before, "Back to Room not found", "Back to Not found" and "Back to No such room on record" were offered.
- *  A place is therefore added to the trail when its own page has drawn, not when its address is entered; one already on the trail keeps
- *  its exact address current at once, as before. */
+ *  25 Nov 2026. Rewritten after the exact-commit regression on 5c6d698f failed RP-20 ("Back to Room not found" on a room's replay), and
+ *  corrected again the same day after an independent review of that first correction. What it does now, and why:
+ *   - Every call starts a new watch and ends the one before (`seq`). A watch belongs to one address under one role: nothing seen after
+ *     the visitor moves on, changes only the query, or changes role is credited to it. (First a place was named from whatever heading
+ *     was on screen when a timer fired: the next page's. Then the guard compared the path only, so a role change on the same address
+ *     still let an old watch read the refusal.)
+ *   - While the page is loading or has failed to load, it decides nothing: a loading placeholder (aria-busy) or a failure view (NotYet,
+ *     below) is neither the place's name nor a verdict on it. It waits for as long as the visitor stays; a failure followed by "Try
+ *     again" is named when the page draws. (First it read the placeholder's heading, "Back to Core Replay"; then it gave up after four
+ *     seconds, so a slow first visit was never remembered, and it kept "X could not load" as a place.)
+ *   - A page that says its subject does not exist, or that it is not shown to this role, carries NotAPlace: the address is not kept, and
+ *     a place kept earlier at exactly this address (a work order since reset) is forgotten. A place kept at the same path but another
+ *     address is left alone: a page may refuse one view (?as=…) of a place another view of which is real.
+ *   - The watch goes on after the place is named, so a page that learns late that its subject is missing (a sandbox room the server
+ *     does not have) still says so. It looks at most every 100 ms, and only when the page changes.
+ *   - A page that draws no heading at all is named "where you were" once it has stood drawn, not loading, for four seconds.
+ *  A place already on the trail keeps its entry meanwhile, under its old name and address, so its scroll is still recorded; a new place
+ *  takes the scroll it is at when it is named. */
 export const MISSING = '[data-missing]';
+export const WAITING = '[data-trail-wait], [aria-busy=true]';
 /** Put this in a page's "there is no such room / work order / chapter" state, and in a page's own "not shown to this role" gate. It draws
  *  nothing; it tells the trail that this address is not a place where work happens, so it is never offered as "Back to …". */
 export function NotAPlace() { return <span data-missing="" hidden />; }
+/** Put this in a loading or failed-to-load view: the page is not there yet, so the trail neither names the place after the view nor
+ *  forgets it. */
+export function NotYet() { return <span data-trail-wait="" hidden />; }
+let seq = 0; let watch: { stop: () => void } | null = null;
 export function notePage(route: string, pageId: string | null, params: Record<string, string>) {
   const path = pathOf(route); const anchor = !!pageId && isAnchor(pageId, params);
-  current = { path, anchor };
-  if (!anchor) return;
-  const upsert = (label: string, sub: string) => { const ms = read(); const old = ms.find((m) => m.path === path); const m: Mark = { path, hash: route, label: label || old?.label || 'where you were', sub, sy: old?.sy ?? 0, at: Date.now() };
+  current = { path, anchor }; const me = ++seq; watch?.stop(); watch = null;
+  if (!anchor || typeof document === 'undefined') return;
+  const upsert = (label: string, sub: string) => { const ms = read(); const old = ms.find((m) => m.path === path); const m: Mark = { path, hash: route, label: label || old?.label || 'where you were', sub, sy: old?.sy ?? Math.round(scrollY), at: Date.now() };
     write([m, ...ms.filter((x) => x.path !== path)]); };
-  // already a place on the trail: its address (tab, device, view) is kept current at once, under the name it has
-  const known = read().find((m) => m.path === path); if (known) upsert(known.label, known.sub);
-  let n = 0;
-  const look = () => {
-    if (current.path !== path) return;   // the visitor has moved on: nothing on screen belongs to this place any more
-    const main = document.querySelector('main');
-    const h1 = Array.from(main?.querySelectorAll('h1') || []).find((h) => !h.closest('[aria-busy=true]'));   // not the loading placeholder's
-    const drawn = !!main && !main.querySelector('[aria-busy=true]');
-    if (!h1 && n++ < 40) { setTimeout(look, 100); return; }
-    if (!h1 && !drawn) return;           // still loading after four seconds: nothing was seen there, so nothing is remembered
-    if (main!.querySelector(MISSING)) { forget(path); return; }
-    const tab = (main!.querySelector('[role=tab][aria-selected=true]')?.textContent?.trim() || '').replace(/^(.*?\D)\s*(\d+)$/, '$1 ($2)');
-    upsert((h1?.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80), tab.slice(0, 40)); };
-  setTimeout(look, 60);
+  let pending: ReturnType<typeof setTimeout> | undefined; let late: ReturnType<typeof setTimeout> | undefined; let named = false; let drawnSince = 0;
+  const check = () => {
+    pending = undefined; if (me !== seq) return;
+    const main = document.querySelector('main'); if (!main) return;
+    if (main.querySelector(WAITING)) { drawnSince = 0; return; }   // loading, or failed to load: nothing to decide yet
+    if (main.querySelector(MISSING)) { if (read().some((m) => m.path === path && m.hash === route)) forget(path); named = true; return; }
+    if (named) return;
+    const h1 = main.querySelector('h1'); drawnSince ||= Date.now();
+    if (!h1 && Date.now() - drawnSince < 4000) { if (!late) late = setTimeout(() => { late = undefined; check(); }, 4050 - (Date.now() - drawnSince)); return; }   // a page that draws nothing more would not wake the watch
+    named = true;
+    const tab = (main.querySelector('[role=tab][aria-selected=true]')?.textContent?.trim() || '').replace(/^(.*?\D)\s*(\d+)$/, '$1 ($2)');
+    upsert((h1?.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80), tab.slice(0, 40));
+  };
+  const soon = (ms = 100) => { if (!pending) pending = setTimeout(check, ms); };
+  const mo = new MutationObserver(() => soon()); mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-busy', 'data-missing', 'data-trail-wait'] });
+  watch = { stop: () => { mo.disconnect(); if (pending) clearTimeout(pending); if (late) clearTimeout(late); } };
+  soon(60);
 }
 export function forget(path: string) { write(read().filter((m) => m.path !== path)); }
 /** A search with something in it (founder's master directive, 20 Nov 2026: find a room in Search Party, open it in Lite, look at its devices

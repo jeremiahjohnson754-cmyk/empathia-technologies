@@ -29,6 +29,7 @@ import { JobJumps } from '../rooms/JobJumps.js';
 import { personaOf, personaLabel } from '../build/store.js';
 import { openable } from './V25Nav.js';
 import { plural, pct } from './viz.js';
+import { NotAPlace } from '../shell/trail.js';
 
 type Lib = Awaited<ReturnType<typeof loadLib>> & { labs?: Record<string, { title: string; domain: string }>; incidents?: Record<string, SignalIncident>; incidentOrder?: string[]; explorers?: Explorer[]; seasonOf?: Record<string, number>; layerColors?: Record<string, string> };
 const html = (s: string) => ({ __html: s });   // first-party content shipped with the build (V2.5.3 lesson cards, SIGNAL library), never user input
@@ -240,7 +241,7 @@ export function StoryPage({ perspective, params }: { perspective: string; params
   const cases = trainingCases(w); const c = params.room ? caseById(w, params.room) : null;
   if (!c) return (
     <section className="wk ln" data-native="workspace" data-testid="learn-story">
-      <Head role={perspective} current="#/learn/story" title="Room story" lede="A room’s history, told from its own records, with three decisions left to you." />
+      {params.room ? <NotAPlace /> : null}<Head role={perspective} current="#/learn/story" title="Room story" lede="A room’s history, told from its own records, with three decisions left to you." />
       <Card icon="room" title="Choose a room" sub={`${cases.length} rooms · eight panels each`}><List label="Rooms">{cases.map((x) => <ListRow key={x.id} title={x.short} sub={x.complaint} href={`#/learn/story/${x.roomId}`} chevron leading={<Icon name="room" />} trailing={<Chip small tone={p.story[x.roomId] && Object.keys(p.story[x.roomId]!).length === 3 ? 'ok' : 'muted'}>{p.story[x.roomId] ? `${Object.keys(p.story[x.roomId]!).length} of 3 decided` : 'New'}</Chip>} />)}</List></Card>
     </section>);
   const panels = storyPanels(c.room); const ds = storyDecisions(c); const mine = p.story[c.roomId] || {};

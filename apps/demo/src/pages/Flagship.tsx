@@ -29,6 +29,7 @@ import { Finishing, BaselineCard, type Baseline, type Person, type DocMatrix } f
 import { WhoToCall, type Support } from '../flagship/WhoToCall.js';
 import { Incidents, type Catalogue, type Incident, type IncidentData, type Intelligence } from '../flagship/Incidents.js';
 import { SubjectJumps } from '../connected/jumps.js';
+import { NotAPlace } from '../shell/trail.js';
 
 export const FLAGSHIP_REF = 'UNI-SCI-110';
 interface Point { x: number; y: number }
@@ -292,7 +293,7 @@ export function FlagshipPage({ room }: { room?: string }) {
         <p>A sandbox is a synthetic organization of your own on the server. It opens with the lecture theatre already designed, approved and installed, ready to be commissioned.</p>
         <p className="build__row"><button type="button" className="ui-btn ui-btn--primary" data-testid="fl-open" disabled={!!busy} onClick={() => void open(false)}>Open a sandbox</button> <a href="#/connected">I have a resume code</a></p>
       </Card> : null}
-      {avail?.enabled && sb && absent ? <Notice tone="warn">{flagship ? <><b>This sandbox was opened before the lecture theatre existed on the server.</b> It has no room with the identifier {FLAGSHIP_REF}.</> : <><b>This sandbox has no room “{ref}”.</b> <a href="#/flagship" data-testid="fl-back">Go to the lecture theatre</a>, or open a new sandbox: a sandbox opened before a room existed does not have it.</>} A new sandbox has it; the old one stays on the server until it expires.{' '}
+      {avail?.enabled && sb && absent ? <Notice tone="warn">{flagship ? <><b>This sandbox was opened before the lecture theatre existed on the server.</b> It has no room with the identifier {FLAGSHIP_REF}.</> : <><NotAPlace /><b>This sandbox has no room “{ref}”.</b> <a href="#/flagship" data-testid="fl-back">Go to the lecture theatre</a>, or open a new sandbox: a sandbox opened before a room existed does not have it.</>} A new sandbox has it; the old one stays on the server until it expires.{' '}
         <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-new" disabled={!!busy} onClick={() => void open(true)}>Close this one and open a new one</button></Notice> : null}
       {busy ? <p role="status" data-testid="fl-busy"><Tag tone="warn">working</Tag> {busy}</p> : null}
       {said ? <div data-testid="fl-said" data-ok={said.ok ? 'yes' : 'no'}><Notice tone={!said.ok ? 'bad' : said.warn ? 'warn' : 'ok'}><b>{said.title}</b> {said.text}{said.reasons?.length ? <ul className="fl__list" data-testid="fl-said-reasons">{said.reasons.map((r) => <li key={r}>{r}</li>)}</ul> : null}</Notice></div> : null}

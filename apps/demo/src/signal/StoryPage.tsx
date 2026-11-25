@@ -27,7 +27,7 @@ import { TITLE_PAGE, COVER_SVG } from './titlepage.gen.js';
 import { emptyProgress, BANDS, SEVERITY, TIMEOUT, answerTalk, callbacksBefore, chapterVerdict, choose, complete, echoes, emphasis, emptyChapter, find, load, nextOf, passed, prevOf, reached, replayDecision, resume, save, seconds, tally, timeOut, trustLine, weightLine, weightOf,
   type Chapter, type ChapterState, type Clock, type Item, type Option, type Outcome, type Progress, type StoryIndex, type Verdict,
   PLAYABLE, TIER_WORD, blocking, gateCleared, gateCount, gateKey, recordQuiz, recordDrillTry, recordIncidentRun, recordLabTry, recordChalTry, skip, chapterLocks, lockedBehind, type BossRecord, type Gate, type Pieces, type Quiz, type ReviewRecord, type MeltdownRecord } from './story.js';
-import { NotAPlace } from '../shell/trail.js';
+import { NotAPlace, NotYet } from '../shell/trail.js';
 
 type Flags = Record<string, { type: string; title: string; detail?: string }>;
 let ixCache: Promise<StoryIndex> | null = null; let flagCache: Promise<Flags> | null = null; let defsReady: Promise<void> | null = null;
@@ -97,7 +97,7 @@ export default function StoryPage({ params, role }: PageProps) {
   const commit = (p: Progress) => { setProgress(p); save(p); };
   /** For pieces that record more than once from one action (a boss stage records its challenge try, then the run): each change builds on the last. */
   const update = (f: (p: Progress) => Progress) => setProgress((cur) => { const n = f(cur); save(n); return n; });
-  if (ix.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}). Your progress is untouched.</p><p><a className="ui-btn ui-btn--primary" href="#/story" onClick={() => location.reload()}>Try again</a></p></div>;
+  if (ix.error) return <div className="sg" data-testid="story-error"><NotYet /><h1 tabIndex={-1}>The story did not load</h1><p className="lead">The story files could not be read ({ix.error}). Your progress is untouched.</p><p><a className="ui-btn ui-btn--primary" href="#/story" onClick={() => location.reload()}>Try again</a></p></div>;
   if (!ix.data) return <div className="sg" data-testid="story-loading" aria-busy="true"><h1 tabIndex={-1}>SIGNAL</h1><p className="lead">Opening the story…</p></div>;
   const id = params.chapter; const ref = id ? ix.data.chapters.find((c) => c.id === id) : null;
   if (id && !ref) return <div className="sg" data-testid="story-unknown"><NotAPlace /><h1 tabIndex={-1}>SIGNAL has no chapter at this address</h1><p><a className="ui-btn ui-btn--primary" href="#/story">Open the library</a></p></div>;
@@ -193,7 +193,7 @@ function Reader({ ix, id, progress, commit, update, role }: { ix: StoryIndex; id
     if (at) { at.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); at.setAttribute('tabindex', '-1'); at.focus({ preventScroll: true }); }
     else (prevFocus.current as HTMLElement | null)?.focus?.({ preventScroll: true }); };
   const said1 = (o: Outcome) => (o.kind === 'refused' ? o.why : o.verdict === 'costly' ? `Recorded: a costly call. ${o.option.fail || ''} The story goes on with it.` : o.verdict === 'canonical' ? 'Recorded: the professional call. The story continues.' : 'Recorded: it works, not the best. The story continues.');
-  if (ch.error) return <div className="sg" data-testid="story-error"><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() ? <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, open without a connection. Your progress is untouched.</p> : <p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
+  if (ch.error) return <div className="sg" data-testid="story-error"><NotYet /><h1 tabIndex={-1}>{ref.title} did not load</h1>{notKept() ? <p className="lead" data-testid="story-not-kept">You are offline and this chapter is not kept on this device. Chapters you have already opened, and seasons kept from <a href="#/offline">Offline and this device</a>, open without a connection. Your progress is untouched.</p> : <p className="lead">This chapter’s file could not be read ({ch.error}). Your progress is untouched.</p>}<p><a className="ui-btn ui-btn--primary" href="#/story">Back to the library</a></p></div>;
   let panelNo = -1;
   return (
     <article onClick={(e) => { const z = zoomFrom(e.target); if (z) setZoom(z); }} className="sg sg-read" data-testid="story-reader" data-still={still} data-chapter={id} data-reached={upTo} data-items={items.length} aria-busy={!ch.data}><FieldCalculator showWhen=".lab" />{zoom && <ArtZoom pic={zoom} onClose={() => setZoom(null)} />}
