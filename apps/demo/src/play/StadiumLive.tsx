@@ -11,14 +11,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { attach, hintText, setFull, type Hint } from '../map/gestures.js';
 import { MovePad, useMoveKeys, type Moves } from './MovePad.js';
-import { FIGURE_SIDES, Renderer, boxVerts, facesSeen, figureFaces, hex, m4, norm, prismVerts, quadVerts, stepVerts, type Mesh, type V3 } from './gl.js';
+import { FAR_QUARTERS, FIGURE_SIDES, Renderer, boxVerts, facesSeen, figureFaces, figureFar, hex, m4, norm, prismVerts, quadVerts, stepVerts, type Mesh, type V3 } from './gl.js';
 import { ATMOS, AWAY, DBA_ASSUMPTIONS, DEVICES, PITCH, SECTIONS, SEGS, TIERS, TIMELINE, modeledDba, ring, rnd, rowQuad, sectionName, sectionOf, theta, type Atmos } from './stadium.js';
 
 type View = 'orbit' | 'flyover' | 'field' | 'seat' | 'gallery';
 type Overlay = 'none' | 'dba' | 'pa' | 'rf';
 type Look = 'home' | 'away' | 'neutral';
 /** a section of the crowd: one buffer, its faces in five runs by the way they look (gl.ts, FIGURE_SIDES), each with where its faces lie on its own axis */
-interface Crowd { mesh: Mesh; section: number; upper: boolean; parts: Array<{ first: number; count: number; lo: number; hi: number }> }
+interface Crowd { mesh: Mesh; section: number; upper: boolean; parts: Array<{ first: number; count: number; lo: number; hi: number }>;
+  /** the same figures drawn simply, one run for each quarter they may be seen from (gl.ts, figureFar), and the level this section was last drawn at */
+  far: Array<{ first: number; count: number }>; lod: 0 | 1 }
 interface Prefs { atmos: Atmos; view: View; overlay: Overlay; ops: boolean; look: Look; ribbon: string; layers: { crowd: number; pa: number; commentary: number }; master: number; mix: 'spectator' | 'broadcast' }
 const PREF_KEY = 'empathia.stadiumlive.v1';
 const DEFAULTS: Prefs = { atmos: 'live', view: 'orbit', overlay: 'none', ops: false, look: 'home', ribbon: '#0E8F83', layers: { crowd: 0.7, pa: 0.4, commentary: 0.4 }, master: 0.5, mix: 'spectator' };
@@ -61,6 +63,8 @@ export function StadiumLivePage() {
   const [replay, setReplay] = useState<number | null>(null); const [board, setBoard] = useState<string | null>(null); const boardRef = useRef(board); boardRef.current = board;
   const [zone, setZone] = useState<number | null>(null); const [device, setDevice] = useState<string | null>(null);
   const [soundOn, setSoundOn] = useState(false); const snd = useRef<Sound | null>(null); const [fps, setFps] = useState(0); const [detail, setDetail] = useState(100);
+  // 25 Nov 2026: distant spectators are drawn simply when this machine cannot hold the pace (gl.ts, figureFar and DetailGovernor.simple); full quality can be pinned
+  const [simple, setSimple] = useState(false); const [fullQ, setFullQ] = useState(() => typeof location !== 'undefined' && /[?&]detail=full\b/.test(location.hash));
   const [reduced, setReduced] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches); const reducedRef = useRef(reduced); reducedRef.current = reduced;
   const [votes, setVotes] = useState<Record<string, number>>(() => { try { return JSON.parse(localStorage.getItem('empathia.stadiumlive.poll') || '{}'); } catch { return {}; } });
   const [mine, setMine] = useState<string | null>(() => { try { return localStorage.getItem('empathia.stadiumlive.mine'); } catch { return null; } });
@@ -127,6 +131,7 @@ export function StadiumLivePage() {
       prismVerts([rowQuad(t, r0, s * per).pts[0]!, rowQuad(t, r0, (s + 1) * per - 1).pts[1]!, rowQuad(t, t.rows - 1, (s + 1) * per - 1).pts[2]!, rowQuad(t, t.rows - 1, s * per).pts[3]!], t.y1 + 0.5, t.y1 + 1.2, '#FFFFFF', v);
       if (!t.upper) dba.push({ mesh: r.mesh(v), section: s }); }
     meshes.current = { r, city: r.mesh(city), windows: r.mesh(windows), water: r.mesh(water), beams: r.mesh(beams), bowl: r.mesh(bowl), pitch: r.mesh(pitch), heads: r.mesh(heads), glass: r.mesh(glass), ribbon: r.mesh(ribbon), screens: r.mesh(screens), stage: r.mesh(stage), crowd, dba, pa: r.mesh(pa), rf: r.mesh(rf) };
+    r.gov.simplifies = true;   // this scene has a simpler way to draw its distant spectators: the governor gives that up before pixels
     setDrawn((x) => x + 1);
     return () => { r.dispose(); meshes.current = null; };
   }, []);
@@ -134,17 +139,18 @@ export function StadiumLivePage() {
   const fill = replay !== null ? ATMOS[TIMELINE[replay]!.atmos].fill : atm.fill; const crowdKey = `${fill}|${p.atmos}`;
   useEffect(() => {
     const M = meshes.current; if (!M) return; const r = M.r; const out: Crowd[] = [];
-    for (const t of TIERS) for (let s = 0; s < SECTIONS; s++) { const v: number[][] = [[], [], [], [], []]; const away = AWAY.includes(s);
+    for (const t of TIERS) for (let s = 0; s < SECTIONS; s++) { const v: number[][] = [[], [], [], [], []]; const fv: number[][] = [[], [], [], []]; const away = AWAY.includes(s);
       for (let i = s * (SEGS / SECTIONS); i < (s + 1) * (SEGS / SECTIONS); i++) for (let row = 0; row < t.rows; row++) { const q = rowQuad(t, row, i);
         for (let k = 0; k < 2; k++) { const seed = i * 131 + row * 17 + k * 7 + (t.upper ? 5000 : 0); if (rnd(seed) > fill) continue;
           const f = (k + 0.5) / 2; const cx = q.pts[0]![0] + (q.pts[1]![0] - q.pts[0]![0]) * f, cz = q.pts[0]![1] + (q.pts[1]![1] - q.pts[0]![1]) * f; const mx = (q.pts[3]![0] - q.pts[0]![0]) * 0.35, mz = (q.pts[3]![1] - q.pts[0]![1]) * 0.35;
           const pal = p.atmos === 'concert' ? MIX : away ? AWAYC : rnd(seed + 1) < 0.85 ? HOME : MIX; const c = pal[Math.floor(rnd(seed + 2) * pal.length)]!;
-          figureFaces(cx + mx, q.y, cz + mz, c, v); } }
+          figureFaces(cx + mx, q.y, cz + mz, c, v); figureFar(cx + mx, q.y, cz + mz, c, fv); } }
       // one buffer for the section, its faces in five runs by the way they look, and for each run where its faces lie on their own axis
       const all: number[] = []; const parts: Crowd['parts'] = [];
       v.forEach((list, f) => { const { axis } = FIGURE_SIDES[f]!; let lo = Infinity, hi = -Infinity; for (let i = axis; i < list.length; i += 9) { const a = list[i]!; if (a < lo) lo = a; if (a > hi) hi = a; }
         parts.push({ first: all.length / 9, count: list.length / 9, lo, hi }); for (const n of list) all.push(n); });
-      out.push({ mesh: r.mesh(all), section: s, upper: t.upper, parts }); }
+      const far = fv.map((list) => { const run = { first: all.length / 9, count: list.length / 9 }; for (const n of list) all.push(n); return run; });
+      out.push({ mesh: r.mesh(all), section: s, upper: t.upper, parts, far, lod: 0 }); }
     M.crowd = out; setDrawn((x) => x + 1);
   }, [crowdKey, drawn === 0]);   // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -154,7 +160,7 @@ export function StadiumLivePage() {
     let raf = 0; let last = performance.now(); let frames = 0, fpsAt = last; let labAt = 0;
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop); const M = meshes.current; if (!M) return; const r = M.r; r.pace(now - last); const dt = Math.min(0.05, (now - last) / 1000); last = now;
-      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setDetail(Math.round(r.detail * 100)); frames = 0; fpsAt = now; }
+      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setDetail(Math.round(r.detail * 100)); setSimple(r.gov.simple); frames = 0; fpsAt = now; }
       const P = pr.current; const A = ATMOS[replayRef.current !== null ? TIMELINE[replayRef.current]!.atmos : P.atmos]; const S = state.current;
       // ease every light change over about half a second: no flash, no strobe
       const k = reducedRef.current ? 1 : Math.min(1, dt * 3); S.light += ((A.night ? 1 : 0) - S.light) * k; S.lc = lerp(S.lc, hex(A.lights), k);
@@ -167,7 +173,7 @@ export function StadiumLivePage() {
       if (P.view === 'orbit') eye = [Math.sin(o.yaw) * Math.cos(o.pitch) * o.dist, Math.sin(o.pitch) * o.dist, Math.cos(o.yaw) * Math.cos(o.pitch) * o.dist];
       else if (P.view === 'flyover') { const fy = o.yaw + 1.1, fp = 1.0, fd = 290; eye = [Math.sin(fy) * Math.cos(fp) * fd, Math.sin(fp) * fd, Math.cos(fy) * Math.cos(fp) * fd]; }   // high above the roof line; it circles unless motion is reduced
       else if (P.view === 'field') { eye = [-10, 1.7, 37]; at = [8, 3, 0]; } else if (P.view === 'seat') { eye = [24, 10.2, 54.5]; at = [-4, 1, 0]; } else { eye = [0, 17, 61]; at = [0, 0, 0]; }
-      const vp = m4.mul(m4.persp(P.view === 'field' ? 1.05 : 0.9, aspect, 0.5, 900), m4.look(eye, at));
+      const fovy = P.view === 'field' ? 1.05 : 0.9; const vp = m4.mul(m4.persp(fovy, aspect, 0.5, 900), m4.look(eye, at));
       const zen = lerp([0.36, 0.56, 0.86], A.label === 'Concert' ? [0.05, 0.02, 0.12] : [0.015, 0.025, 0.07], night); const hor = lerp([0.83, 0.89, 0.96], A.label === 'Concert' ? [0.3, 0.12, 0.32] : [0.26, 0.17, 0.2], night);
       r.begin(vp, eye, hor, 300, 880); r.sky(eye, hor, zen, 860);
       r.draw(M.city); r.draw(M.water); r.glow(night); r.draw(M.windows, m4.ident(), lerp([0.32, 0.36, 0.42], [1, 1, 1], night)); r.glow(0);
@@ -183,6 +189,7 @@ export function StadiumLivePage() {
       const boardCol: V3 = cheerNow ? hex(cheerNow.side === 'away' ? '#7A1A13' : '#0A6B62') : A.label === 'Concert' ? hex('#3A1460') : A.label === 'Technical rehearsal' ? hex('#3B3B3B') : hex('#0F2A33');
       r.draw(M.screens, m4.ident(), boardCol); r.glow(0);
       // the crowd: a cheer lifts the cheering side; a wave runs round the bowl
+      let farSections = 0, nearSections = 0;
       for (const g of M.crowd) { if (!r.seen(g.mesh, 1)) continue;   // a section wholly outside the view is not drawn (it rises 0.9 m at most in a wave)
         const away = AWAY.includes(g.section); let y = 0;
         if (!reducedRef.current) { if (cheerNow && (cheerNow.side === 'all' || (cheerNow.side === 'away') === away)) y = 0.35 * ce * Math.abs(Math.sin(now / 160 + g.section)); if (waveRef.current) { const ph = ((now / 1000) * 1.6 - g.section / SECTIONS * Math.PI * 2) % (Math.PI * 2); y = Math.max(y, Math.max(0, Math.cos(ph)) ** 6 * 0.9); } }
@@ -191,7 +198,15 @@ export function StadiumLivePage() {
         // anyway), for about six triangles a figure in place of ten. A cheer or a wave lifts a section, which can only hide tops from an eye
         // below them, so judging the tops where they were built errs toward drawing.
         const model = m4.trs([0, y, 0], 0, [1, 1, 1]); const tn = P.look !== 'neutral' && tint ? tint : undefined; r.glow(0.42 * night);
-        g.parts.forEach((part, f) => { const { axis, sign } = FIGURE_SIDES[f]!; if (part.count && facesSeen(eye, axis, sign, part.lo, part.hi)) r.draw(g.mesh, model, tn, 1, false, part.first, part.count); }); r.glow(0); }
+        // A section far enough that a figure is a few pixels tall is drawn simply, and only while this machine cannot hold the pace (never
+        // with full quality pinned): one face a figure, from the quarter the eye is in. Every person stays, in place, colour and size.
+        // From below the seats the heads cannot be seen and the sides alone are already exact, so there the whole figures are kept.
+        const P4 = g.parts; const seenPX = facesSeen(eye, 0, 1, P4[2]!.lo, P4[2]!.hi), seenNX = facesSeen(eye, 0, -1, P4[3]!.lo, P4[3]!.hi), seenPZ = facesSeen(eye, 2, 1, P4[0]!.lo, P4[0]!.hi), seenNZ = facesSeen(eye, 2, -1, P4[1]!.lo, P4[1]!.hi);
+        g.lod = facesSeen(eye, 1, 1, P4[4]!.lo, P4[4]!.hi) ? r.lod(g.mesh, eye, fovy, 0.8, g.lod) : 0;
+        if (g.lod === 1) { farSections += 1; FAR_QUARTERS.forEach(({ sx, sz }, f) => { const run = g.far[f]!; if (run.count && (sx > 0 ? seenPX : seenNX) && (sz > 0 ? seenPZ : seenNZ)) r.draw(g.mesh, model, tn, 1, false, run.first, run.count); }); }
+        else { nearSections += 1; g.parts.forEach((part, f) => { const { axis, sign } = FIGURE_SIDES[f]!; if (part.count && facesSeen(eye, axis, sign, part.lo, part.hi)) r.draw(g.mesh, model, tn, 1, false, part.first, part.count); }); }
+        r.glow(0); }
+      { const cvx = canvas.current; const fs = String(farSections), ns = String(nearSections); if (cvx && (cvx.dataset.far !== fs || cvx.dataset.near !== ns)) { cvx.dataset.far = fs; cvx.dataset.near = ns; } }   // how many sections were drawn simply and whole in this frame, read by the tests
       if (A.label === 'Concert') { r.glow(1); for (let i = 0; i < 4; i++) r.draw(r.unit, m4.trs([-30 + i * 14, 0.4, Math.sin(now / 700 * (reducedRef.current ? 0 : 1) + i) * 12], 0, [10, 0.2, 10]), S.lc, 0.35); r.glow(0); }
       // overlays
       if (P.overlay === 'dba') { r.glow(1); for (const g of M.dba) { const db = modeledDba(g.section, fill, exciteRef.current, cheerNow ? (cheerNow.side === 'all' ? 'home' : cheerNow.side) : null); const k2 = Math.max(0, Math.min(1, (db - 70) / 40)); r.draw(g.mesh, m4.ident(), lerp([0.2, 0.62, 0.9], [0.86, 0.15, 0.12], k2), 0.62); } r.glow(0); }
@@ -234,7 +249,7 @@ export function StadiumLivePage() {
   const opt = <T extends string>(cur: T, val: T, label: string, set: (v: T) => void, id: string) => <button key={val} type="button" className="slv-chip" aria-pressed={cur === val} onClick={() => set(val)} data-testid={`${id}-${val}`}>{label}</button>;
   const levels = useMemo(() => Array.from({ length: SECTIONS }, (_, s) => ({ s, name: sectionName(s, false), db: modeledDba(s, fill, excite, null), away: AWAY.includes(s) })), [fill, excite]);
 
-  return <section className="slv" data-testid="stadium-live" data-ready={!err} data-detail={detail} data-atmos={replay !== null ? TIMELINE[replay]!.atmos : p.atmos} data-view={p.view} data-overlay={p.overlay} data-ops={p.ops} data-look={p.look} data-fill={fill} data-cheer={cheer?.side || ''} data-wave={wave} data-sound={soundOn} data-fps={fps} data-replay={replay ?? ''}>
+  return <section className="slv" data-testid="stadium-live" data-ready={!err} data-detail={detail} data-atmos={replay !== null ? TIMELINE[replay]!.atmos : p.atmos} data-view={p.view} data-overlay={p.overlay} data-ops={p.ops} data-look={p.look} data-fill={fill} data-cheer={cheer?.side || ''} data-wave={wave} data-sound={soundOn} data-fps={fps} data-simple={simple} data-quality={fullQ ? 'full' : 'auto'} data-replay={replay ?? ''}>
     <header className="cl-head"><h1>Stadium LIVE</h1><p>Harborlight Stadium, a fictional venue, in 3D. The console changes the bowl itself: its light, crowd, boards, sound and overlays. Levels are modeled, device states simulated; nothing here is a live feed.</p></header>
     <div className="slv-grid">
       <div className="slv-stage" ref={stage}>
@@ -276,7 +291,8 @@ export function StadiumLivePage() {
           {dev ? <div className="slv-card" data-testid="slv-dev-card"><b>{dev.label}</b><p>{dev.info}</p><p className="slv-note">State: {dev.status === 'ok' ? 'normal' : dev.status === 'warn' ? 'attention' : 'fault'} (simulated). {dev.status === 'fault' ? <>In the product, this would open an incident: <a href="#/v25/service">ServiceHands</a>.</> : null}</p></div> : null}</div> : null}
         {tab === 'people' ? <div className="slv-pane"><p className="slv-h">Poll · Fan of the match</p>{['Number 7', 'Number 10', 'The goalkeeper'].map((o) => <button key={o} type="button" className="slv-vote" disabled={!!mine} aria-pressed={mine === o} onClick={() => vote(o)} data-testid={`slv-vote-${o.replace(/\W+/g, '').toLowerCase()}`}><span>{o}</span><i style={{ width: `${total ? Math.round((votes[o] || 0) / total * 100) : 0}%` }} /><em>{votes[o] || 0}</em></button>)}
           <p className="slv-note" data-testid="slv-poll-note">{mine ? `You voted for ${mine}. ` : ''}Votes on this page are kept in this browser only; in the Experiences product a poll collects real votes from consenting attendees.</p></div> : null}
-        <p className="slv-note">Frame rate here: {fps} fps (this machine).{detail < 100 ? ` Drawn at ${detail}% of full detail to keep the motion smooth.` : ''}</p>
+        <label className="cl-opt"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); meshes.current?.r.setFull(e.target.checked); if (e.target.checked) { setDetail(100); setSimple(false); } }} data-testid="slv-quality" /> Full quality: every spectator drawn in full and at full resolution, whatever the frame rate</label>
+        <p className="slv-note" data-testid="slv-pace">Frame rate here: {fps} fps (this machine).{detail < 100 ? ` Drawn at ${detail}% of full detail to keep the motion smooth.` : ''}{simple ? ' Distant spectators are drawn more simply; those near the camera are drawn in full.' : ''}</p>
       </aside>
     </div>
   </section>;

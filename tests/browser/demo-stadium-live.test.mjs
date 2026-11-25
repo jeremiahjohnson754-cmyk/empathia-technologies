@@ -9,7 +9,7 @@ import crypto from 'node:crypto';
 import { harness } from './demo-shell-lib.mjs';
 import { recordFrameRates, glRenderer } from '../lib/frame-rates.mjs';
 // 25 Nov 2026: the figures the frame-rate checks measure are also written beside the run's evidence (tests/lib/frame-rates.mjs), so the
-// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; SLV-16 and SLV-17 are new.
+// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; SLV-16 and SLV-17 are new, and SLV-18 to SLV-20 (distant spectators).
 const FR = [];
 const costOf = (q, id) => q.evaluate((t) => { const c = document.querySelector(`[data-testid=${t}]`); return { triangles: Number(c?.dataset.tris), draws: Number(c?.dataset.draws) }; }, id);   // what the renderer says its last frame drew (gl.ts, Renderer.stats)
 const { open, ok, done } = await harness('demo-stadium-live');
@@ -101,7 +101,45 @@ await t.close();
   ok('SLV-15', `adaptive detail on this machine: ${pinned.fps} fps held at full detail, ${auto.fps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the stadium must draw fewer pixels, not fewer than half, and not be slower for it' : 'Full detail holds 24 here, so the stadium must stay at full detail'}; the canvas keeps its size on the page`,
     held >= 3 && pinned.detail === 100 && Math.abs(pinned.w - Math.round(pinned.cssW * pinned.dpr)) <= 2 && auto.cssW === pinned.cssW && auto.cssH === pinned.cssH && Math.abs(auto.w - Math.round(auto.cssW * auto.dpr * auto.detail / 100)) <= 2 && auto.wide <= 1 && !a.errs.length
     && (slow ? auto.detail < 100 && auto.detail >= 50 && auto.fps >= pinned.fps : auto.detail === 100), JSON.stringify({ held, pinned, auto, e: a.errs[0] }));
+
+  // SLV-20 (25 Nov 2026; founder: "Maintain a full-quality override"). The page's own control, on the page as a visitor opened it. On a
+  // machine that cannot hold the pace the far sections are drawn simply and the page says so; ticking "Full quality" draws every
+  // spectator whole at full resolution at once, whatever the frame rate; unticking hands the choice back to the pace.
+  const crowd = async () => q.evaluate(() => { const c = document.querySelector('[data-testid=slv-canvas]'); const r = document.querySelector('[data-testid=stadium-live]'); return { far: Number(c.dataset.far), near: Number(c.dataset.near), tris: Number(c.dataset.tris), simple: r.dataset.simple, quality: r.dataset.quality, detail: Number(r.dataset.detail), w: c.width, cssW: c.clientWidth, dpr: Math.min(devicePixelRatio || 1, 2), note: document.querySelector('[data-testid=slv-pace]').textContent, ticked: document.querySelector('[data-testid=slv-quality]').checked }; });
+  const before = await crowd(); await q.getByTestId('slv-quality').check(); await q.waitForTimeout(1600); const fullNow = await crowd();
+  await q.getByTestId('slv-quality').uncheck(); let back = await crowd(); for (let i = 0; i < 14 && slow && !(back.simple === 'true' && back.detail < 100); i += 1) { await q.waitForTimeout(1100); back = await crowd(); }
+  ok('SLV-20', `the full-quality control: as opened here ${before.far} of ${before.far + before.near} sections in view were drawn simply at ${before.detail}% detail (${before.tris} triangles); ticked, ${fullNow.far} simply at ${fullNow.detail}% (${fullNow.tris} triangles, the pinned page’s ${cost0.triangles}); unticked, the pace decides again`,
+    !before.ticked && before.quality === 'auto' && (slow ? before.simple === 'true' && before.far > 0 && before.tris < cost0.triangles && /Distant spectators are drawn more simply/.test(before.note) : before.simple === 'false' && before.far === 0 && !/drawn more simply/.test(before.note))
+    && fullNow.ticked && fullNow.quality === 'full' && fullNow.simple === 'false' && fullNow.far === 0 && fullNow.near > 0 && fullNow.detail === 100 && fullNow.tris === cost0.triangles && Math.abs(fullNow.w - Math.round(fullNow.cssW * fullNow.dpr)) <= 2 && !/drawn more simply|% of full detail/.test(fullNow.note)
+    && !back.ticked && back.quality === 'auto' && (slow ? back.simple === 'true' && back.detail < 100 : back.simple === 'false' && back.detail === 100) && !a.errs.length, JSON.stringify({ slow, before, fullNow, back, e: a.errs[0] }));
   await a.close(); }
+
+{ // SLV-18, SLV-19 (25 Nov 2026; founder: "Preserve full graphical detail for nearby spectators. Simplify distant spectators dynamically.
+  // Preserve crowd density, atmosphere and visual identity… Ensure engineering overlays, measurements and interactive objects remain
+  // accurate"). Two pages at the same resolution and the same still moment: one whole (`?detail=full`), one with its distant spectators
+  // drawn simply whatever the pace (`&lod=simple`, the documented switch for looking at the simple drawing). The picture is compared in
+  // a grid of 192 cells, each cell's average colour, so that what is judged is density and colour where the crowd sits, not single pixels.
+  const grid = (pg) => pg.evaluate(() => { const g = document.querySelector('[data-testid=slv-canvas]'); const c = document.createElement('canvas'); c.width = g.width; c.height = g.height; const x = c.getContext('2d'); x.drawImage(g, 0, 0); const d = x.getImageData(0, 0, c.width, c.height).data; const GX = 16, GY = 12; const cells = [];
+    for (let gy = 0; gy < GY; gy++) for (let gx = 0; gx < GX; gx++) { let r = 0, gg = 0, b = 0, n = 0; for (let y = Math.floor(gy * c.height / GY); y < Math.floor((gy + 1) * c.height / GY); y++) for (let xx = Math.floor(gx * c.width / GX); xx < Math.floor((gx + 1) * c.width / GX); xx++) { const i = (y * c.width + xx) * 4; r += d[i]; gg += d[i + 1]; b += d[i + 2]; n += 1; } cells.push([r / n, gg / n, b / n]); }
+    return { cells, far: Number(g.dataset.far), near: Number(g.dataset.near), tris: Number(g.dataset.tris), w: c.width, h: c.height }; });
+  const state = (pg) => pg.evaluate(() => ({ labels: [...document.querySelectorAll('.slv-stage .cl-labels .slv-tag')].map((e) => `${e.className.replace(/.*slv-tag--/, '')}:${e.textContent}@${e.style.transform}`), table: document.querySelector('.slv-table')?.innerText || '', tris: Number(document.querySelector('[data-testid=slv-canvas]').dataset.tris) }));
+  const pair = []; for (const sw of ['?detail=full', '?detail=full&lod=simple']) { const t2 = await open('#/play/stadium' + sw, { role: 'architect', sw: false, w: 1440, h: 900, reduced: true, init }); await t2.page.waitForSelector('[data-testid=stadium-live][data-ready=true]'); await t2.page.waitForTimeout(2500); pair.push(t2); }
+  const [W, S] = pair; const gw = await grid(W.page), gs = await grid(S.page);
+  const diffs = gw.cells.map((c, i) => Math.max(...c.map((v, k) => Math.abs(v - gs.cells[i][k])))); const worst = Math.max(...diffs), mean = diffs.reduce((a2, v) => a2 + v, 0) / diffs.length;
+  // near and far in one view: from the seat in section 112 the neighbours are whole and the far side is simple
+  for (const pg of [W.page, S.page]) { await pg.getByTestId('slv-tab-view').click(); await pg.getByTestId('slv-view-seat').click(); } await S.page.waitForTimeout(1500); const seatW = await grid(W.page), seatS = await grid(S.page);
+  const sd = seatW.cells.map((c, i) => Math.max(...c.map((v, k) => Math.abs(v - seatS.cells[i][k])))); const seatWorst = Math.max(...sd);
+  ok('SLV-18', `distant spectators drawn simply, at the same resolution as the whole picture: in the overview ${gs.far} of ${gs.far + gs.near} sections simply and ${gs.tris} triangles a frame against ${gw.tris}; across 192 cells of the picture the average colour differs by ${mean.toFixed(2)} of 255 on average and ${worst.toFixed(2)} at most. From the seat in section 112, ${seatS.near} sections near the camera are whole and ${seatS.far} far ones simple (largest cell difference ${seatWorst.toFixed(2)})`,
+    gw.far === 0 && gw.near > 20 && gs.far > 20 && gs.near === 0 && gs.tris < gw.tris * 0.75 && gw.w === gs.w && gw.h === gs.h && mean <= 1.5 && worst <= 8 && seatW.far === 0 && seatS.near >= 2 && seatS.far >= 2 && seatWorst <= 8, JSON.stringify({ mean, worst, seatWorst, w: { far: gw.far, near: gw.near, tris: gw.tris }, s: { far: gs.far, near: gs.near, tris: gs.tris }, seat: { near: seatS.near, far: seatS.far } }));
+  // the overlays, the labels and the modeled levels are the same whichever way the crowd is drawn
+  for (const pg of [W.page, S.page]) { await pg.getByTestId('slv-view-orbit').click(); } await S.page.waitForTimeout(1200); const w0 = await state(W.page), s0 = await state(S.page);
+  for (const pg of [W.page, S.page]) { await pg.getByTestId('slv-tab-audio').click(); await pg.getByTestId('slv-overlay-dba').click(); } await S.page.waitForTimeout(1200); const w1 = await state(W.page), s1 = await state(S.page);
+  for (const pg of [W.page, S.page]) { await pg.getByTestId('slv-tab-ops').click(); await pg.getByTestId('slv-ops').check(); } await S.page.waitForTimeout(1200); const w2 = await state(W.page), s2 = await state(S.page);
+  const same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+  ok('SLV-19', `overlays and measurements do not depend on how the crowd is drawn: the modeled level of each of the 24 sections, the ${w2.labels.length} labels over the picture and where they stand, and what each overlay adds to the frame (the level overlay ${w1.tris - w0.tris} triangles, the devices ${w2.tris - w1.tris}) are the same with the crowd whole and with it simple`,
+    w1.table.length > 100 && same(w1.table, s1.table) && w2.labels.length >= 12 && same(w0.labels, s0.labels) && same(w1.labels, s1.labels) && same(w2.labels, s2.labels) && w1.tris - w0.tris > 0 && w1.tris - w0.tris === s1.tris - s0.tris && w2.tris - w1.tris === 11 * 12 && s2.tris - s1.tris === 11 * 12 && !W.errs.length && !S.errs.length,
+    JSON.stringify({ dba: [w1.tris - w0.tris, s1.tris - s0.tris], ops: [w2.tris - w1.tris, s2.tris - s1.tris], labels: [w2.labels.length, s2.labels.length], e: [W.errs[0], S.errs[0]] }));
+  await W.close(); await S.close(); }
 
 { const ph = await open('#/play/stadium', { role: 'architect', sw: false, w: 390, h: 844, reduced: true }); await ph.page.waitForSelector('[data-testid=stadium-live][data-ready=true]'); await ph.page.waitForTimeout(1200);
   const over = await ph.page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); const stacked = await ph.page.evaluate(() => { const a = document.querySelector('.slv-stage').getBoundingClientRect(), b = document.querySelector('.slv-console').getBoundingClientRect(); return b.top >= a.bottom - 1; });

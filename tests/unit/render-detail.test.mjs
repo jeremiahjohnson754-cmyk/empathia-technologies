@@ -76,3 +76,37 @@ test('RD-04 fewer pixels must buy speed: a scene they do not speed up gets its f
   // machine measured 16 to 17 and about 30)
   { const g = warmed(); const tr = run(g, (d) => 17 + (1 - d) * 36, 12); const end = tr[tr.length - 1]; assert.ok(end > 0.5 && end < 1, `settled between: ${end}`); assert.equal(new Set(tr.slice(-6)).size, 1); assert.equal(g.notPixelBound, false); }
 });
+
+// 25 Nov 2026 (founder: "Simplify distant spectators dynamically… Maintain a full-quality override… The engine should intelligently
+// balance fidelity and responsiveness"). A scene that can draw its distant things simply gives that up first and pixels second.
+//   RD-05  the order of what is given up, and that a machine which holds the pace gives up nothing; one retry of the whole figures
+//   RD-06  the override pins full quality whatever the pace, and handing it back starts measuring afresh
+// a pretend machine asked for its pace at every frame (the pace changes the moment the drawing does); returns the states passed through, in order, and the last
+const run2 = (gov, fpsAt, seconds) => { const seen = []; for (let sec = 0; sec < seconds; sec += 1) { let t = 0; while (t < 1000) { const ms = 1000 / fpsAt(gov.detail, gov.simple, sec); gov.frame(ms); t += ms; const st = `${gov.simple ? 'simple' : 'whole'} ${gov.detail}`; if (seen.at(-1) !== st) seen.push(st); } } return seen; };
+
+test('RD-05 a scene that can simplify gives up what cannot be seen first, pixels second, and nothing on a machine that holds the pace', () => {
+  const { DetailGovernor, SIMPLE_RETRY } = G; assert.equal(SIMPLE_RETRY, 3);
+  // a scene that does not say it can simplify is governed exactly as before (RD-01 to RD-04 above are unchanged)
+  const plain = new DetailGovernor(); assert.equal(plain.simplifies, false); run2(plain, () => 9, 6); assert.equal(plain.simple, false, 'nothing to simplify, so nothing is');
+  // a fast machine: whole figures, full resolution
+  const fast = new DetailGovernor(); fast.simplifies = true; assert.deepEqual(run2(fast, () => 58, 6), ['whole 1']);
+  // a machine that only needed the figures simplified keeps every pixel: 20 whole, 27 simple
+  const mid = new DetailGovernor(); mid.simplifies = true; assert.deepEqual(run2(mid, (d, simple) => (simple ? 27 : 20) / (d * d), 8), ['whole 1', 'simple 1'], 'the slow second turns the simple drawing on and no pixel is touched, then or later');
+  // the stadium on the test machine: 5 whole, 6 simple at full resolution, about 11 simple at half: the figures first, then the pixels, and the gain kept
+  const slow = new DetailGovernor(); slow.simplifies = true; assert.deepEqual(run2(slow, (d, simple) => (simple ? 6 : 5) * (1 + (1 - d) * 1.7), 12), ['whole 1', 'simple 1', 'simple 0.6', 'simple 0.5'], 'in that order, and it stays: half the pixels buy more than a quarter more speed here');
+  // a scene that fewer pixels do not speed up: the pixels come back (RD-04's rule) and the simple drawing stays, since it is what helps
+  const bound = new DetailGovernor(); bound.simplifies = true; const b = run2(bound, (d, simple) => (simple ? 6 : 5), 12); assert.deepEqual(b.slice(0, 2), ['whole 1', 'simple 1']); assert.equal(b.at(-1), 'simple 1'); assert.equal(bound.notPixelBound, true);
+  // a slow start on a capable machine (two seconds at 15 while the page settles, then 58): the whole figures are tried again after three clear seconds, and kept
+  const hiccup = new DetailGovernor(); hiccup.simplifies = true; assert.deepEqual(run2(hiccup, (d, simple, sec) => (sec < 2 ? 15 : 58), 12), ['whole 1', 'simple 1', 'whole 1'], 'a slow start does not cost a capable machine its whole figures for good');
+  // a machine quick only because the figures are simple: the retry shows it, the simple drawing comes back and is not tried again
+  const edge = new DetailGovernor(); edge.simplifies = true; assert.deepEqual(run2(edge, (d, simple) => (simple ? 55 : 20), 30), ['whole 1', 'simple 1', 'whole 1', 'simple 1'], 'one retry, no hunting between the two');
+});
+
+test('RD-06 full quality is pinned whatever the pace, and handing it back starts measuring afresh', () => {
+  const { DetailGovernor } = G;
+  const pinned = new DetailGovernor(false); pinned.simplifies = true; assert.equal(pinned.full, true, 'the address switch pins it from the start'); assert.deepEqual(run2(pinned, () => 4, 6), ['whole 1'], 'at four frames a second, still whole and at full resolution');
+  const g = new DetailGovernor(); g.simplifies = true; run2(g, (d, simple) => (simple ? 6 : 5) * (1 + (1 - d) * 1.7), 8); assert.equal(g.simple, true); assert.equal(g.detail, 0.5);
+  g.setFull(true); assert.equal(g.full, true); assert.equal(g.simple, false); assert.equal(g.detail, 1, 'pinning takes effect at once, not a second later'); assert.deepEqual(run2(g, () => 5, 4), ['whole 1']);
+  g.setFull(false); assert.equal(g.full, false); const again = run2(g, (d, simple) => (simple ? 6 : 5) * (1 + (1 - d) * 1.7), 8); assert.deepEqual(again, ['whole 1', 'simple 1', 'simple 0.6', 'simple 0.5'], 'handed back, it decides again from the start');
+  const src = fs.readFileSync(path.join(repo, 'apps/demo/src/play/gl.ts'), 'utf8'); assert.ok(src.includes('if (!this.gov.simple && !this.forceSimple) return 0;'), 'no level but whole unless the scene is slow (or the diagnostic switch asks)'); assert.ok(src.includes('setFull(on: boolean) { this.gov.setFull(on); if (on) this.forceSimple = false; }'), 'full quality overrides the diagnostic switch too');
+});
