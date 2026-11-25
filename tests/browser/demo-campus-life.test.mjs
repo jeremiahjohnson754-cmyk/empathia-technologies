@@ -11,7 +11,8 @@
 import { harness } from './demo-shell-lib.mjs';
 import { recordFrameRates, glRenderer } from '../lib/frame-rates.mjs';
 // 25 Nov 2026: the figures the frame-rate checks measure are also written beside the run's evidence (tests/lib/frame-rates.mjs), so the
-// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; CL-23 is new.
+// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; CL-23 and CL-24 are new.
+const costOf = (q, id) => q.evaluate((t) => { const c = document.querySelector(`[data-testid=${t}]`); return { triangles: Number(c?.dataset.tris), draws: Number(c?.dataset.draws) }; }, id);   // what the renderer says its last frame drew (gl.ts, Renderer.stats)
 const FR = []; let GL = ''; const detailOf = async (q) => Number(await q.getByTestId('campus-life').getAttribute('data-detail'));
 const { open, ok, done, base, browser } = await harness('demo-campus-life');
 
@@ -118,10 +119,12 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
   const shape = (p) => p.evaluate(() => { const c = document.querySelector('[data-testid=campus-life] canvas'); const r = document.querySelector('[data-testid=campus-life]'); return { cssW: c.clientWidth, cssH: c.clientHeight, w: c.width, h: c.height, dpr: Math.min(devicePixelRatio || 1, 2), detail: Number(r.getAttribute('data-detail')), note: document.querySelector('[data-testid=cl-detail]')?.textContent || '', wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
   const init = () => { try { localStorage.removeItem('empathia.campuslife.v1'); } catch { /* none */ } };
   const f = await open('#/play/campus?detail=full', { role: 'architect', sw: false, w: 1280, h: 860, init }); await f.page.waitForSelector('[data-testid=campus-life][data-ready=true]'); await f.page.waitForTimeout(6000);
-  const fullFps = await sample(f.page); const full = await shape(f.page); await f.close();
+  const fullFps = await sample(f.page); const full = await shape(f.page); const costFull = await costOf(f.page, 'cl-canvas'); await f.close();
   const a = await open('#/play/campus', { role: 'architect', sw: false, w: 1280, h: 860, init }); await a.page.waitForSelector('[data-testid=campus-life][data-ready=true]'); await a.page.waitForTimeout(6000);
   const autoFps = await sample(a.page); const auto = await shape(a.page);
-  FR.push({ check: 'CL-21', mode: 'full', what: 'desktop 1280 × 860, held at full detail, the middle of four one-second readings', fps: fullFps, detail: full.detail }, { check: 'CL-21', mode: 'adapted', what: 'desktop 1280 × 860, left to adapt, the middle of four one-second readings', fps: autoFps, detail: auto.detail });
+  FR.push({ check: 'CL-21', mode: 'full', what: 'desktop 1280 × 860, held at full detail, the middle of four one-second readings', fps: fullFps, detail: full.detail, ...costFull }, { check: 'CL-21', mode: 'adapted', what: 'desktop 1280 × 860, left to adapt, the middle of four one-second readings', fps: autoFps, detail: auto.detail, ...(await costOf(a.page, 'cl-canvas')) });
+  // CL-24 (25 Nov 2026): what a frame costs, counted and not timed, so the same on every machine: a budget beside the frame-rate floor.
+  ok('CL-24', `the cost of a frame, counted: the campus as the student arrives sends ${costFull.triangles} triangles in ${costFull.draws} draw calls (budget 32,000 and 120)`, costFull.triangles > 10000 && costFull.triangles <= 32000 && costFull.draws > 20 && costFull.draws <= 120, JSON.stringify(costFull));
   const slow = fullFps < 24;
   ok('CL-21', `adaptive detail on this machine: ${fullFps} fps forced to full detail, ${autoFps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the scene must draw fewer pixels and be faster for it' : 'Full detail holds 24 here, so the scene must stay at full detail'}`,
     full.detail === 100 && !full.note && (slow ? auto.detail < 100 && auto.detail >= 50 && autoFps > fullFps && /Drawn at \d+% of full detail/.test(auto.note) : auto.detail === 100 && !auto.note), JSON.stringify({ fullFps, autoFps, full, auto }));

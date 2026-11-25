@@ -9,8 +9,9 @@ import crypto from 'node:crypto';
 import { harness } from './demo-shell-lib.mjs';
 import { recordFrameRates, glRenderer } from '../lib/frame-rates.mjs';
 // 25 Nov 2026: the figures the frame-rate checks measure are also written beside the run's evidence (tests/lib/frame-rates.mjs), so the
-// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; SLV-16 is new.
+// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; SLV-16 and SLV-17 are new.
 const FR = [];
+const costOf = (q, id) => q.evaluate((t) => { const c = document.querySelector(`[data-testid=${t}]`); return { triangles: Number(c?.dataset.tris), draws: Number(c?.dataset.draws) }; }, id);   // what the renderer says its last frame drew (gl.ts, Renderer.stats)
 const { open, ok, done } = await harness('demo-stadium-live');
 const init = () => { try { if (!sessionStorage.getItem('slv-fresh')) { for (const k of ['empathia.stadiumlive.v1', 'empathia.stadiumlive.poll', 'empathia.stadiumlive.mine']) localStorage.removeItem(k); sessionStorage.setItem('slv-fresh', '1'); } } catch { /* none */ }
   const A = window.AudioContext; window.__audioMade = 0; window.AudioContext = class extends A { constructor(...a) { super(...a); window.__audioMade += 1; } }; };
@@ -30,6 +31,7 @@ const tab = (k) => p.getByTestId(`slv-tab-${k}`).click();
 
 const a0 = await shot(); const a1 = await shot();
 ok('SLV-01', 'launch: the stadium draws (WebGL2), live game, a full house; no sound and no audio context before the visitor asks', (await attr('ready')) === 'true' && (await attr('atmos')) === 'live' && Number(await attr('fill')) > 0.9 && (await attr('sound')) === 'false' && (await p.evaluate(() => window.__audioMade)) === 0 && !(await p.getByTestId('slv-err').count()), `${await attr('atmos')} ${await attr('fill')}`);
+const cost0 = await costOf(p, 'slv-canvas');   // the overview of a full house, as the page opens
 ok('SLV-02', 'a still scene between presses (reduced motion): two readings of the stadium’s pixels taken apart are the same, so a later difference is the control’s', a0 === a1, `${a0.slice(0, 8)} / ${a1.slice(0, 8)}`);
 
 // atmospheres
@@ -83,13 +85,19 @@ const fps = Number(await attr('fps'));
 ok('SLV-12', `frame rate in this machine's headless software-rendered Chromium: ${fps} fps; floor ≥ 2 (a regression floor, not a device claim)`, fps >= 2, `${fps}`);
 ok('SLV-13', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
 const shapeOf = (q) => q.evaluate(() => { const c = document.querySelector('[data-testid=slv-canvas]'); const r = document.querySelector('[data-testid=stadium-live]'); return { cssW: c.clientWidth, cssH: c.clientHeight, w: c.width, dpr: Math.min(devicePixelRatio || 1, 2), detail: Number(r.getAttribute('data-detail')), fps: Number(r.getAttribute('data-fps')), wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
-const pinned = await shapeOf(p); FR.push({ check: 'SLV-12', mode: 'full', what: 'desktop 1440 × 900, held at full detail, reduced motion, after every control was pressed', fps, detail: pinned.detail, floor: 2 }); const GL = await glRenderer(p);
+const pinned = await shapeOf(p); const costG = await costOf(p, 'slv-canvas'); FR.push({ check: 'SLV-12', mode: 'full', what: 'desktop 1440 × 900, held at full detail, reduced motion, after every control was pressed (the gallery view)', fps, detail: pinned.detail, floor: 2, ...costG });
+// SLV-17 (25 Nov 2026): what a frame costs, counted and not timed, so the same on every machine. Before this date the overview of a full
+// house sent 104,474 triangles a frame: 39,024 were window lights drawn as boxes, 46,920 the crowd with every face of every figure. A
+// window is now one face and a section sends only the faces that can look at the eye (the same picture: tests/unit/render-cost.test.mjs).
+ok('SLV-17', `the cost of a frame, counted: the overview of a full house sends ${cost0.triangles} triangles in ${cost0.draws} draw calls (budget 60,000 and 180; it was 104,474); from the gallery, where part of the bowl is out of view, ${costG.triangles}`,
+  cost0.triangles > 20000 && cost0.triangles <= 60000 && cost0.draws > 20 && cost0.draws <= 180 && costG.triangles > 5000 && costG.triangles < cost0.triangles, JSON.stringify({ cost0, costG }));
+const GL = await glRenderer(p);
 await t.close();
 
 { // SLV-15: the same scene left to adapt, as a visitor opens it. Waits until the level has held for three seconds (it is decided in the first few).
   const a = await open('#/play/stadium', { role: 'architect', sw: false, w: 1440, h: 900, init }); const q = a.page; await q.waitForSelector('[data-testid=stadium-live][data-ready=true]');
   let held = 0, lastD = -1; for (let i = 0; i < 18 && held < 3; i += 1) { await q.waitForTimeout(1100); const d = Number(await q.getByTestId('stadium-live').getAttribute('data-detail')); held = d === lastD ? held + 1 : 0; lastD = d; }
-  const auto = await shapeOf(q); const slow = pinned.fps < 24; FR.push({ check: 'SLV-15', mode: 'adapted', what: 'desktop 1440 × 900, left to adapt, once the level had held three seconds', fps: auto.fps, detail: auto.detail });
+  const auto = await shapeOf(q); const slow = pinned.fps < 24; FR.push({ check: 'SLV-15', mode: 'adapted', what: 'desktop 1440 × 900, left to adapt, once the level had held three seconds (the overview)', fps: auto.fps, detail: auto.detail, ...(await costOf(q, 'slv-canvas')) });
   ok('SLV-15', `adaptive detail on this machine: ${pinned.fps} fps held at full detail, ${auto.fps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the stadium must draw fewer pixels, not fewer than half, and not be slower for it' : 'Full detail holds 24 here, so the stadium must stay at full detail'}; the canvas keeps its size on the page`,
     held >= 3 && pinned.detail === 100 && Math.abs(pinned.w - Math.round(pinned.cssW * pinned.dpr)) <= 2 && auto.cssW === pinned.cssW && auto.cssH === pinned.cssH && Math.abs(auto.w - Math.round(auto.cssW * auto.dpr * auto.detail / 100)) <= 2 && auto.wide <= 1 && !a.errs.length
     && (slow ? auto.detail < 100 && auto.detail >= 50 && auto.fps >= pinned.fps : auto.detail === 100), JSON.stringify({ held, pinned, auto, e: a.errs[0] }));

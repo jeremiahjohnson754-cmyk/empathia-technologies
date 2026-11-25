@@ -8,8 +8,9 @@ import crypto from 'node:crypto';
 import { harness } from './demo-shell-lib.mjs';
 import { recordFrameRates, glRenderer } from '../lib/frame-rates.mjs';
 // 25 Nov 2026: the figures the frame-rate checks measure are also written beside the run's evidence (tests/lib/frame-rates.mjs), so the
-// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; XPO-14 is new.
+// record of a regression says what was measured and not only PASS. Nothing here changes a check that existed; XPO-14 and XPO-15 are new.
 const FR = [];
+const costOf = (q, id) => q.evaluate((t) => { const c = document.querySelector(`[data-testid=${t}]`); return { triangles: Number(c?.dataset.tris), draws: Number(c?.dataset.draws) }; }, id);   // what the renderer says its last frame drew (gl.ts, Renderer.stats)
 const { open, ok, done } = await harness('demo-expo-live');
 const init = () => { try { if (!sessionStorage.getItem('xpo-fresh')) { localStorage.removeItem('empathia.expolive.v1'); sessionStorage.setItem('xpo-fresh', '1'); } } catch { /* none */ } };
 // 24 Nov 2026: the scene now lowers its drawing detail on a machine that cannot hold the pace (play/gl.ts, DetailGovernor), which changes
@@ -23,6 +24,7 @@ const shot = async () => { await p.waitForTimeout(700); return crypto.createHash
 
 const a0 = await shot(); const a1 = await shot();
 const booths = await p.locator('[data-testid^=xpo-plan-]').count();
+const cost0 = await costOf(p, 'xpo-canvas');   // the whole hall, as the page opens
 ok('XPO-01', 'launch: the hall draws (WebGL2); the plan has the twenty exhibitors and the Empathia showcase; still between presses', (await attr('ready')) === 'true' && booths === 21 && a0 === a1 && !(await p.getByTestId('xpo-err').count()), `${booths} booths`);
 
 await p.getByTestId('xpo-plan-E1').click(); const b1 = await shot(); const card = await p.getByTestId('xpo-card').innerText();
@@ -56,12 +58,15 @@ const fps = Number(await attr('fps'));
 ok('XPO-10', `frame rate in this machine's headless software-rendered Chromium: ${fps} fps; floor ≥ 4 (not a device claim)`, fps >= 4, `${fps}`);
 ok('XPO-11', 'no console error; nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
 const shapeOf = (q) => q.evaluate(() => { const c = document.querySelector('[data-testid=xpo-canvas]'); const r = document.querySelector('[data-testid=expo-live]'); return { cssW: c.clientWidth, cssH: c.clientHeight, w: c.width, dpr: Math.min(devicePixelRatio || 1, 2), detail: Number(r.getAttribute('data-detail')), fps: Number(r.getAttribute('data-fps')), wide: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
-const pinned = await shapeOf(p); FR.push({ check: 'XPO-10', mode: 'full', what: 'desktop 1440 × 900, held at full detail, reduced motion, after every control was pressed', fps, detail: pinned.detail, floor: 4 }); const GL = await glRenderer(p);
+const pinned = await shapeOf(p); FR.push({ check: 'XPO-10', mode: 'full', what: 'desktop 1440 × 900, held at full detail, reduced motion, after every control was pressed', fps, detail: pinned.detail, floor: 4, ...(await costOf(p, 'xpo-canvas')) });
+// XPO-15 (25 Nov 2026): what a frame costs, counted and not timed, so the same on every machine: a budget beside the frame-rate floor.
+ok('XPO-15', `the cost of a frame, counted: the whole hall sends ${cost0.triangles} triangles in ${cost0.draws} draw calls (budget 8,000 and 150)`, cost0.triangles > 2000 && cost0.triangles <= 8000 && cost0.draws > 20 && cost0.draws <= 150, JSON.stringify(cost0));
+const GL = await glRenderer(p);
 await t.close();
 { // XPO-13: the same scene left to adapt, as a visitor opens it. Waits until the level has held for three seconds (it is decided in the first few).
   const a = await open('#/play/expo', { role: 'architect', sw: false, w: 1440, h: 900, init }); const q = a.page; await q.waitForSelector('[data-testid=expo-live][data-ready=true]');
   let held = 0, lastD = -1; for (let i = 0; i < 18 && held < 3; i += 1) { await q.waitForTimeout(1100); const d = Number(await q.getByTestId('expo-live').getAttribute('data-detail')); held = d === lastD ? held + 1 : 0; lastD = d; }
-  const auto = await shapeOf(q); const slow = pinned.fps < 24; FR.push({ check: 'XPO-13', mode: 'adapted', what: 'desktop 1440 × 900, left to adapt, once the level had held three seconds', fps: auto.fps, detail: auto.detail });
+  const auto = await shapeOf(q); const slow = pinned.fps < 24; FR.push({ check: 'XPO-13', mode: 'adapted', what: 'desktop 1440 × 900, left to adapt, once the level had held three seconds', fps: auto.fps, detail: auto.detail, ...(await costOf(q, 'xpo-canvas')) });
   ok('XPO-13', `adaptive detail on this machine: ${pinned.fps} fps held at full detail, ${auto.fps} fps left to adapt at ${auto.detail}% detail. ${slow ? 'Full detail cannot hold 24 here, so the hall must draw fewer pixels, not fewer than half, and not be slower for it' : 'Full detail holds 24 here, so the hall must stay at full detail'}; the canvas keeps its size on the page`,
     held >= 3 && pinned.detail === 100 && Math.abs(pinned.w - Math.round(pinned.cssW * pinned.dpr)) <= 2 && auto.cssW === pinned.cssW && auto.cssH === pinned.cssH && Math.abs(auto.w - Math.round(auto.cssW * auto.dpr * auto.detail / 100)) <= 2 && auto.wide <= 1 && !a.errs.length
     && (slow ? auto.detail < 100 && auto.detail >= 50 && auto.fps >= pinned.fps : auto.detail === 100), JSON.stringify({ held, pinned, auto, e: a.errs[0] }));

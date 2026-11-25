@@ -88,12 +88,37 @@ export function stepVerts(pts: Array<[number, number]>, y0: number, y1: number, 
   const a = pts[0]!, b = pts[1]!; let nx = b[1] - a[1], nz = -(b[0] - a[0]); if (nx * -a[0] + nz * -a[1] < 0) { nx = -nx; nz = -nz; } const l = Math.hypot(nx, nz) || 1; const nn: V3 = [nx / l, 0, nz / l];
   const q: V3[] = [[a[0], y0, a[1]], [b[0], y0, b[1]], [b[0], y1, b[1]], [a[0], y1, a[1]]]; for (const k of (b[0] - a[0]) * nn[2] - (b[1] - a[1]) * nn[0] > 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]) push(q[k]!, nn, rc);
 }
+/** the five ways a seated figure's faces look, in the order `figureFaces` fills them: +z, −z, +x, −x, up */
+export const FIGURE_SIDES: Array<{ axis: 0 | 1 | 2; sign: 1 | -1 }> = [{ axis: 2, sign: 1 }, { axis: 2, sign: -1 }, { axis: 0, sign: 1 }, { axis: 0, sign: -1 }, { axis: 1, sign: 1 }];
+/**
+ * The same figure as `figureVerts`, its five faces sorted by the way they look, one list each (25 Nov 2026). Every figure of a crowd
+ * stands square to the same axes, so all the faces that look, say, east are seen or hidden together: a section whose east faces all
+ * look away from the eye need not send them to be drawn at all. The graphics card would discard them anyway (back faces are culled),
+ * but only after working on every corner of them, which is most of the cost of a full house where there is no fast card.
+ */
+export function figureFaces(x: number, y: number, z: number, color: string, out: number[][]) {
+  const one: number[] = []; figureVerts(x, y, z, color, one); for (let f = 0; f < 5; f++) { const o = out[f]!; for (let i = f * 54; i < (f + 1) * 54; i++) o.push(one[i]!); }
+}
+/**
+ * whether any face of a list can be seen from `eye`: the faces look along `axis` in the direction `sign` and lie between `lo` and `hi`
+ * on that axis. False only when every one of them looks away, so nothing visible is ever left out.
+ */
+export const facesSeen = (eye: V3, axis: 0 | 1 | 2, sign: 1 | -1, lo: number, hi: number): boolean => (sign > 0 ? eye[axis] > lo : eye[axis] < hi);
 /** a seated figure, as light as a crowd of thousands needs: one box of five faces (no underside), shirt on the sides, a head-coloured top */
 export function figureVerts(x: number, y: number, z: number, color: string, out: number[]) {
   const c = hex(color); const skin: V3 = [0.78, 0.6, 0.47]; const x0 = x - 0.22, x1 = x + 0.22, z0 = z - 0.2, z1 = z + 0.2, y0 = y, y1 = y + 0.8;
   const F: Array<[V3, V3[], V3]> = [[[0, 0, 1], [[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], c], [[0, 0, -1], [[x1, y0, z0], [x0, y0, z0], [x0, y1, z0], [x1, y1, z0]], c],
     [[1, 0, 0], [[x1, y0, z1], [x1, y0, z0], [x1, y1, z0], [x1, y1, z1]], c], [[-1, 0, 0], [[x0, y0, z0], [x0, y0, z1], [x0, y1, z1], [x0, y1, z0]], c], [[0, 1, 0], [[x0, y1, z1], [x1, y1, z1], [x1, y1, z0], [x0, y1, z0]], skin]];
   for (const [n, q, col] of F) for (const i of [0, 1, 2, 0, 2, 3]) { const p = q[i]!; out.push(p[0], p[1], p[2], n[0], n[1], n[2], col[0], col[1], col[2]); }
+}
+
+/**
+ * one flat four-cornered face, seen from the side `n` points to: two triangles. For a thing that is only ever seen from one side (a lit
+ * window on a distant tower), where a thin box would spend twelve triangles, ten of them on faces nobody can see.
+ */
+export function quadVerts(q: [V3, V3, V3, V3], n: V3, color: string | V3, out: number[]) {
+  const c = typeof color === 'string' ? hex(color) : color; const f = cross(sub(q[1], q[0]), sub(q[2], q[0]));
+  for (const k of dot(f, n) >= 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]) { const p = q[k]!; out.push(p[0], p[1], p[2], n[0], n[1], n[2], c[0], c[1], c[2]); }
 }
 
 /** one triangle, wound so that its front faces the way `n` points (the back is culled) */
@@ -114,7 +139,26 @@ export function cylinderVerts(x: number, z: number, rx: number, rz: number, y0: 
     if (top) { const up: V3 = [0, 1, 0]; tri(out, [[x, y1, z], up], [[ax, y1, az], up], [[bx, y1, bz], up], col); } }
 }
 
-export interface Mesh { vao: WebGLVertexArrayObject; n: number }
+/** a mesh on the graphics card: `n` vertices, and the sphere (centre `c`, radius `r`) that holds every one of them as built */
+export interface Mesh { vao: WebGLVertexArrayObject; n: number; c: V3; r: number }
+/** the sphere that holds every vertex of a buffer of 9 numbers a vertex (the middle of its box, out to its farthest corner) */
+export function boundOf(v: ArrayLike<number>): { c: V3; r: number } {
+  if (v.length < 9) return { c: [0, 0, 0], r: 0 };
+  let x0 = Infinity, y0 = Infinity, z0 = Infinity, x1 = -Infinity, y1 = -Infinity, z1 = -Infinity;
+  for (let i = 0; i + 8 < v.length; i += 9) { const x = v[i]!, y = v[i + 1]!, z = v[i + 2]!; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; if (z < z0) z0 = z; if (z > z1) z1 = z; }
+  return { c: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], r: Math.hypot(x1 - x0, y1 - y0, z1 - z0) / 2 };
+}
+/**
+ * whether a sphere can be in the picture a view-projection matrix draws: false only when it lies wholly outside one of the view's six
+ * sides, so nothing that could be seen is ever left out (a sphere near a corner may be kept though it is outside: that costs a draw,
+ * never a hole in the picture).
+ */
+export function sphereInView(vp: ArrayLike<number>, c: V3, r: number): boolean {
+  const row = (i: number) => [vp[i]!, vp[4 + i]!, vp[8 + i]!, vp[12 + i]!]; const w = row(3);
+  for (const [i, sgn] of [[0, 1], [0, -1], [1, 1], [1, -1], [2, 1], [2, -1]] as Array<[number, number]>) { const a = row(i); const px = w[0]! + sgn * a[0]!, py = w[1]! + sgn * a[1]!, pz = w[2]! + sgn * a[2]!, pd = w[3]! + sgn * a[3]!;
+    const l = Math.hypot(px, py, pz); if (l > 0 && (px * c[0] + py * c[1] + pz * c[2] + pd) / l < -r) return false; }
+  return true;
+}
 /**
  * Adaptive detail (24 Nov 2026; the founder's stated biggest concern is spatial rendering performance, target 30 frames a second).
  *
@@ -187,7 +231,7 @@ export class Renderer {
   mesh(v: number[]): Mesh {
     const gl = this.gl; const vao = gl.createVertexArray()!; gl.bindVertexArray(vao); const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(v), gl.STATIC_DRAW);
     for (let i = 0; i < 3; i++) { gl.enableVertexAttribArray(i); gl.vertexAttribPointer(i, 3, gl.FLOAT, false, 36, i * 12); }
-    gl.bindVertexArray(null); return { vao, n: v.length / 9 };
+    gl.bindVertexArray(null); return { vao, n: v.length / 9, ...boundOf(v) };
   }
   /** decides how many pixels to draw (DetailGovernor above); `?detail=full` in the address keeps full detail */
   gov = new DetailGovernor(typeof location === 'undefined' || !/[?&]detail=full\b/.test(location.hash));
@@ -198,7 +242,16 @@ export class Renderer {
   resize(dprFull: number) { const dpr = dprFull * this.detail; const c = this.canvas; const w = Math.max(1, Math.round(c.clientWidth * dpr)), h = Math.max(1, Math.round(c.clientHeight * dpr)); if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } this.gl.viewport(0, 0, w, h); }
   /** the light of the scene: the defaults are Campus Life's daylight */
   light: { sun: V3; sunCol: V3; sky: V3; ground: V3; amb: number } = { sun: norm([0.45, 0.8, 0.35]), sunCol: [0.72, 0.69, 0.63], sky: [0.78, 0.86, 0.95], ground: [0.45, 0.42, 0.36], amb: 0.48 };
+  /**
+   * what the last whole frame drew: draw calls and triangles. A count, so the same on every machine, which a frame rate is not; the
+   * canvas carries it (data-draws, data-tris) for a test to hold each scene to a budget (25 Nov 2026, roadmap A19).
+   */
+  stats = { draws: 0, tris: 0 }; private tally = { draws: 0, tris: 0 }; private vp: M4 | null = null;
+  /** whether a mesh, drawn where it was built or moved by no more than `pad`, can be in this frame's picture (see sphereInView) */
+  seen(m: Mesh, pad = 0): boolean { return !this.vp || m.r <= 0 || sphereInView(this.vp, m.c, m.r + pad); }
   begin(vp: M4, eye: V3, fog: V3, near: number, far: number) {
+    const t = this.tally; if (t.draws) { const s = this.stats; if (s.draws !== t.draws || s.tris !== t.tris) { s.draws = t.draws; s.tris = t.tris; this.canvas.dataset.draws = String(t.draws); this.canvas.dataset.tris = String(t.tris); } t.draws = 0; t.tris = 0; }
+    this.vp = vp;
     const gl = this.gl; gl.clearColor(fog[0], fog[1], fog[2], 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); gl.useProgram(this.prog); const L = this.light;
     gl.uniformMatrix4fv(this.u['uVP']!, false, vp); gl.uniform3fv(this.u['uSun']!, L.sun); gl.uniform3fv(this.u['uEye']!, eye); gl.uniform3fv(this.u['uFog']!, fog);
     gl.uniform3fv(this.u['uSky']!, L.sky); gl.uniform3fv(this.u['uGround']!, L.ground); gl.uniform1f(this.u['uAmb']!, L.amb); gl.uniform3fv(this.u['uSunCol']!, L.sunCol); gl.uniform1f(this.u['uGlow']!, 0); gl.uniform1f(this.u['uGrad']!, 0);
@@ -206,11 +259,12 @@ export class Renderer {
   }
   /** draw unlit (a lamp, a screen, a board), fully or partly */
   glow(g: number) { this.gl.uniform1f(this.u['uGlow']!, g); }
-  /** draw a mesh; alpha below 1 blends it over what is behind; `add` adds its light (beams, glows) instead */
-  draw(m: Mesh, model: M4 = m4.ident(), tint?: V3, alpha = 1, add = false) {
+  /** draw a mesh, or the `count` vertices of it from `first`; alpha below 1 blends it over what is behind; `add` adds its light (beams, glows) instead */
+  draw(m: Mesh, model: M4 = m4.ident(), tint?: V3, alpha = 1, add = false, first = 0, count = m.n - first) {
+    if (count <= 0) return;
     const gl = this.gl; gl.uniformMatrix4fv(this.u['uM']!, false, model); gl.uniform1f(this.u['uUseTint']!, tint ? 1 : 0); if (tint) gl.uniform3fv(this.u['uTint']!, tint);
     const blend = alpha < 1 || add; if (blend) { gl.enable(gl.BLEND); if (add) gl.blendFunc(gl.SRC_ALPHA, gl.ONE); else gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); if (add) gl.disable(gl.CULL_FACE); } gl.uniform1f(this.u['uAlpha']!, alpha);
-    gl.bindVertexArray(m.vao); gl.drawArrays(gl.TRIANGLES, 0, m.n);
+    gl.bindVertexArray(m.vao); gl.drawArrays(gl.TRIANGLES, first, count); this.tally.draws += 1; this.tally.tris += count / 3;   // `first` and `count` draw a part of the mesh
     if (blend) { gl.disable(gl.BLEND); gl.depthMask(true); gl.enable(gl.CULL_FACE); gl.uniform1f(this.u['uAlpha']!, 1); }
   }
   /** the sky: a dome around the eye coloured from the horizon to the zenith, drawn first and behind everything */
@@ -220,7 +274,7 @@ export class Renderer {
       this.dome = this.mesh(v); }
     gl.depthMask(false); gl.disable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE);
     gl.uniform1f(this.u['uGrad']!, 1); gl.uniform3fv(this.u['uTint']!, horizon); gl.uniform3fv(this.u['uTint2']!, zenith); gl.uniform1f(this.u['uUseTint']!, 0);
-    gl.uniformMatrix4fv(this.u['uM']!, false, m4.trs(eye, 0, [radius, radius, radius])); gl.bindVertexArray(this.dome.vao); gl.drawArrays(gl.TRIANGLES, 0, this.dome.n);
+    gl.uniformMatrix4fv(this.u['uM']!, false, m4.trs(eye, 0, [radius, radius, radius])); gl.bindVertexArray(this.dome.vao); gl.drawArrays(gl.TRIANGLES, 0, this.dome.n); this.tally.draws += 1; this.tally.tris += this.dome.n / 3;
     gl.uniform1f(this.u['uGrad']!, 0); gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.depthMask(true);
   }
   dome: Mesh | null = null;

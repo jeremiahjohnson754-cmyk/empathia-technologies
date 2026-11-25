@@ -5,7 +5,7 @@
 // committed record of it said PASS for the frame-rate checks and nothing about what they measured: the per-check files a browser suite
 // writes are under tests/evidence/demo-shell, which git ignores. So there was no history of the figures to compare run against run.
 //
-//   a suite calls        recordFrameRates('campus', [{ check: 'CL-13', mode: 'adapted', what: '…', fps: 18, detail: 50, floor: 8 }], { renderer })
+//   a suite calls        recordFrameRates('campus', [{ check: 'CL-13', mode: 'adapted', what: '…', fps: 18, detail: 50, floor: 8, triangles: 28412, draws: 103 }], { renderer })
 //                        mode is 'full' (the scene held at full detail with ?detail=full) or 'adapted' (left alone, as a visitor opens it)
 //   which writes         <evidence>/performance/<scene>.json   (tests/evidence in a run of record; .local otherwise, as all evidence)
 //   the merge then puts  the figures of THIS commit's files in the run's line of tests/REGRESSION_LEDGER.jsonl and in TEST_RESULTS.md
@@ -33,7 +33,9 @@ export function reading(r) {
   if (!Number.isFinite(r.detail) || r.detail < 50 || r.detail > 100) bad('detail is not between 50 and 100');
   if (r.mode === 'full' && r.detail !== 100) bad('held at full detail but not drawn at 100%');
   if (r.floor !== undefined && !(Number.isFinite(r.floor) && r.floor >= 0)) bad('floor is not a number');
-  return { check: r.check, mode: r.mode, what: r.what, fps: r.fps, detail: r.detail, ...(r.floor !== undefined ? { floor: r.floor } : {}) };
+  // what the frame cost, counted: triangles and draw calls (the renderer's own count; the same on every machine, which fps is not)
+  for (const k of ['triangles', 'draws']) if (r[k] !== undefined && !(Number.isInteger(r[k]) && r[k] > 0)) bad(`${k} is not a count`);
+  return { check: r.check, mode: r.mode, what: r.what, fps: r.fps, detail: r.detail, ...(r.floor !== undefined ? { floor: r.floor } : {}), ...(r.triangles !== undefined ? { triangles: r.triangles } : {}), ...(r.draws !== undefined ? { draws: r.draws } : {}) };
 }
 
 /** write a scene's readings beside the rest of this run's evidence; returns the path */
@@ -52,7 +54,7 @@ export function collectFrameRates(dir, commit) {
   for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json')).sort()) {
     let rec; try { rec = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); } catch { continue; }
     if (!rec || rec.commit !== commit || !SCENE.test(rec.scene || '') || !Array.isArray(rec.readings)) continue; // a file left by a run on another commit is not this run's
-    try { out.scenes[rec.scene] = Object.fromEntries(rec.readings.map(reading).map((r) => [`${r.check} ${r.mode}`, { fps: r.fps, detail: r.detail, ...(r.floor !== undefined ? { floor: r.floor } : {}) }])); } catch { continue; }
+    try { out.scenes[rec.scene] = Object.fromEntries(rec.readings.map(reading).map((r) => [`${r.check} ${r.mode}`, { fps: r.fps, detail: r.detail, ...(r.floor !== undefined ? { floor: r.floor } : {}), ...(r.triangles !== undefined ? { triangles: r.triangles } : {}), ...(r.draws !== undefined ? { draws: r.draws } : {}) }])); } catch { continue; }
     out.machine ??= rec.machine || null;
   }
   return out;
@@ -63,8 +65,8 @@ export function frameRateLines(dir, commit) {
   const { scenes, machine } = collectFrameRates(dir, commit); const names = Object.keys(scenes); if (!names.length) return [];
   const what = (scene, key) => { try { return JSON.parse(fs.readFileSync(path.join(dir, `${scene}.json`), 'utf8')).readings.find((r) => `${r.check} ${r.mode}` === key)?.what || ''; } catch { return ''; } };
   return ['', '## Frame rates this run measured', '', `${NOT_A_DEVICE} Machine: ${machine?.cores ?? '?'} cores; WebGL drawn by ${machine?.renderer || 'an unreported renderer'}.`, '',
-    '| Scene | Check and mode | What | Frames a second | Drawn at | Floor |', '|---|---|---|---|---|---|',
-    ...names.flatMap((s) => Object.entries(scenes[s]).map(([c, r]) => `| ${s} | ${c} | ${what(s, c).replace(/\|/g, '/')} | ${r.fps} | ${r.detail}% | ${r.floor ?? '—'} |`))];
+    '| Scene | Check and mode | What | Frames a second | Drawn at | Floor | Triangles a frame | Draw calls |', '|---|---|---|---|---|---|---|---|',
+    ...names.flatMap((s) => Object.entries(scenes[s]).map(([c, r]) => `| ${s} | ${c} | ${what(s, c).replace(/\|/g, '/')} | ${r.fps} | ${r.detail}% | ${r.floor ?? '—'} | ${r.triangles ?? '—'} | ${r.draws ?? '—'} |`))];
 }
 
 /** what draws WebGL in this page, as the browser reports it (asked after measuring, so the question costs the measurement nothing) */

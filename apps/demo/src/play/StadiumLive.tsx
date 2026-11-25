@@ -11,12 +11,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { attach, hintText, setFull, type Hint } from '../map/gestures.js';
 import { MovePad, useMoveKeys, type Moves } from './MovePad.js';
-import { Renderer, boxVerts, figureVerts, hex, m4, norm, prismVerts, stepVerts, type Mesh, type V3 } from './gl.js';
+import { FIGURE_SIDES, Renderer, boxVerts, facesSeen, figureFaces, hex, m4, norm, prismVerts, quadVerts, stepVerts, type Mesh, type V3 } from './gl.js';
 import { ATMOS, AWAY, DBA_ASSUMPTIONS, DEVICES, PITCH, SECTIONS, SEGS, TIERS, TIMELINE, modeledDba, ring, rnd, rowQuad, sectionName, sectionOf, theta, type Atmos } from './stadium.js';
 
 type View = 'orbit' | 'flyover' | 'field' | 'seat' | 'gallery';
 type Overlay = 'none' | 'dba' | 'pa' | 'rf';
 type Look = 'home' | 'away' | 'neutral';
+/** a section of the crowd: one buffer, its faces in five runs by the way they look (gl.ts, FIGURE_SIDES), each with where its faces lie on its own axis */
+interface Crowd { mesh: Mesh; section: number; upper: boolean; parts: Array<{ first: number; count: number; lo: number; hi: number }> }
 interface Prefs { atmos: Atmos; view: View; overlay: Overlay; ops: boolean; look: Look; ribbon: string; layers: { crowd: number; pa: number; commentary: number }; master: number; mix: 'spectator' | 'broadcast' }
 const PREF_KEY = 'empathia.stadiumlive.v1';
 const DEFAULTS: Prefs = { atmos: 'live', view: 'orbit', overlay: 'none', ops: false, look: 'home', ribbon: '#0E8F83', layers: { crowd: 0.7, pa: 0.4, commentary: 0.4 }, master: 0.5, mix: 'spectator' };
@@ -72,7 +74,7 @@ export function StadiumLivePage() {
   const [drawn, setDrawn] = useState(0);
 
   // the scene: static meshes once; the crowd when the fill or the colours change
-  const meshes = useRef<{ r: Renderer; city: Mesh; windows: Mesh; water: Mesh; beams: Mesh; bowl: Mesh; pitch: Mesh; heads: Mesh; glass: Mesh; ribbon: Mesh; screens: Mesh; stage: Mesh; crowd: Array<{ mesh: Mesh; section: number; upper: boolean }>; dba: Array<{ mesh: Mesh; section: number }>; pa: Mesh; rf: Mesh } | null>(null);
+  const meshes = useRef<{ r: Renderer; city: Mesh; windows: Mesh; water: Mesh; beams: Mesh; bowl: Mesh; pitch: Mesh; heads: Mesh; glass: Mesh; ribbon: Mesh; screens: Mesh; stage: Mesh; crowd: Crowd[]; dba: Array<{ mesh: Mesh; section: number }>; pa: Mesh; rf: Mesh } | null>(null);
   useEffect(() => {
     let r: Renderer; try { r = new Renderer(canvas.current!); } catch (e) { setErr((e as Error).message); return; }
     const bowl: number[] = [], pitch: number[] = [], heads: number[] = [], glass: number[] = [], ribbon: number[] = [], screens: number[] = [], stage: number[] = [], pa: number[] = [], rf: number[] = [];
@@ -108,15 +110,19 @@ export function StadiumLivePage() {
       const w = 12 + rnd(i * 7.3) * 22, d = 12 + rnd(i * 2.9) * 22, h = 18 + Math.pow(rnd(i * 4.4), 2) * 150; const shade = 0.16 + rnd(i * 9.1) * 0.14;
       boxVerts({ min: [x - w / 2, 0, z - d / 2], max: [x + w / 2, h, z + d / 2], color: '#' + [shade, shade * 1.05, shade * 1.18].map((c) => Math.round(c * 255).toString(16).padStart(2, '0')).join('') }, city);
       for (let y = 6; y < h - 4; y += 5.5) { if (rnd(i * 13 + y) < 0.35) continue; const lit = rnd(i * 17 + y) < 0.5 ? '#FFD98A' : '#BFE3FF';
-        boxVerts({ min: [x - w / 2 + 1, y, z - d / 2 - 0.15], max: [x + w / 2 - 1, y + 1.4, z - d / 2 - 0.05], color: lit }, windows); boxVerts({ min: [x - w / 2 - 0.15, y, z - d / 2 + 1], max: [x - w / 2 - 0.05, y + 1.4, z + d / 2 - 1], color: lit }, windows);
-        boxVerts({ min: [x + w / 2 + 0.05, y, z - d / 2 + 1], max: [x + w / 2 + 0.15, y + 1.4, z + d / 2 - 1], color: lit }, windows); boxVerts({ min: [x - w / 2 + 1, y, z + d / 2 + 0.05], max: [x + w / 2 - 1, y + 1.4, z + d / 2 + 0.15], color: lit }, windows); } }
+        // 25 Nov 2026: each band of lit windows is one face, seen only from outside its tower. It was a box 0.1 m thick (twelve triangles,
+        // ten on faces nobody can see from the stadium): 39,024 of the scene's 104,474 triangles a frame, more than a third, for nothing
+        // in the picture. The face stands where the box's outer face stood.
+        const ya = y, yb = y + 1.4; const xa = x - w / 2, xb = x + w / 2, za = z - d / 2, zb = z + d / 2;
+        quadVerts([[xa + 1, ya, za - 0.15], [xb - 1, ya, za - 0.15], [xb - 1, yb, za - 0.15], [xa + 1, yb, za - 0.15]], [0, 0, -1], lit, windows); quadVerts([[xa - 0.15, ya, za + 1], [xa - 0.15, ya, zb - 1], [xa - 0.15, yb, zb - 1], [xa - 0.15, yb, za + 1]], [-1, 0, 0], lit, windows);
+        quadVerts([[xb + 0.15, ya, za + 1], [xb + 0.15, ya, zb - 1], [xb + 0.15, yb, zb - 1], [xb + 0.15, yb, za + 1]], [1, 0, 0], lit, windows); quadVerts([[xa + 1, ya, zb + 0.15], [xb - 1, ya, zb + 0.15], [xb - 1, yb, zb + 0.15], [xa + 1, yb, zb + 0.15]], [0, 0, 1], lit, windows); } }
     boxVerts({ min: [-700, -0.25, 140], max: [700, -0.05, 700], color: '#0E2A3F' }, water);
     for (let i = 0; i < 40; i++) { const x = -520 + i * 26 + rnd(i) * 10; boxVerts({ min: [x, -0.04, 150 + rnd(i * 2) * 120], max: [x + 1.2, -0.03, 230 + rnd(i * 3) * 180], color: '#2F5C78' }, water); }
     // light-tower beams: a wedge of light from each head down to the pitch, added to the night
     for (const [x, z] of [[100, 78], [-100, 78], [100, -78], [-100, -78]] as Array<[number, number]>) { const hx = x * 0.97, hz = z * 0.97; const tx = x * 0.25, tz = z * 0.22; const px = -(tz - hz), pz = tx - hx; const l = Math.hypot(px, pz); const ux = px / l * 6, uz = pz / l * 6, vx = px / l * 34, vz = pz / l * 34;
       const tri = (a: V3, b: V3, c: V3) => { for (const p2 of [a, b, c]) beams.push(p2[0], p2[1], p2[2], 0, 1, 0, 1, 1, 1); };
       const A: V3 = [hx - ux, 52, hz - uz], B: V3 = [hx + ux, 52, hz + uz], C: V3 = [tx + vx, 0.2, tz + vz], D: V3 = [tx - vx, 0.2, tz - vz]; tri(A, B, C); tri(A, C, D); }
-    const dba = []; const crowd: Array<{ mesh: Mesh; section: number; upper: boolean }> = [];
+    const dba = []; const crowd: Crowd[] = [];
     for (const t of TIERS) for (let s = 0; s < SECTIONS; s++) { const v: number[] = []; const per = SEGS / SECTIONS; const r0 = Math.floor(t.rows * 0.3);
       prismVerts([rowQuad(t, r0, s * per).pts[0]!, rowQuad(t, r0, (s + 1) * per - 1).pts[1]!, rowQuad(t, t.rows - 1, (s + 1) * per - 1).pts[2]!, rowQuad(t, t.rows - 1, s * per).pts[3]!], t.y1 + 0.5, t.y1 + 1.2, '#FFFFFF', v);
       if (!t.upper) dba.push({ mesh: r.mesh(v), section: s }); }
@@ -127,14 +133,18 @@ export function StadiumLivePage() {
   // the crowd: rebuilt when the atmosphere's fill or the look changes
   const fill = replay !== null ? ATMOS[TIMELINE[replay]!.atmos].fill : atm.fill; const crowdKey = `${fill}|${p.atmos}`;
   useEffect(() => {
-    const M = meshes.current; if (!M) return; const r = M.r; const out: Array<{ mesh: Mesh; section: number; upper: boolean }> = [];
-    for (const t of TIERS) for (let s = 0; s < SECTIONS; s++) { const v: number[] = []; const away = AWAY.includes(s);
+    const M = meshes.current; if (!M) return; const r = M.r; const out: Crowd[] = [];
+    for (const t of TIERS) for (let s = 0; s < SECTIONS; s++) { const v: number[][] = [[], [], [], [], []]; const away = AWAY.includes(s);
       for (let i = s * (SEGS / SECTIONS); i < (s + 1) * (SEGS / SECTIONS); i++) for (let row = 0; row < t.rows; row++) { const q = rowQuad(t, row, i);
         for (let k = 0; k < 2; k++) { const seed = i * 131 + row * 17 + k * 7 + (t.upper ? 5000 : 0); if (rnd(seed) > fill) continue;
           const f = (k + 0.5) / 2; const cx = q.pts[0]![0] + (q.pts[1]![0] - q.pts[0]![0]) * f, cz = q.pts[0]![1] + (q.pts[1]![1] - q.pts[0]![1]) * f; const mx = (q.pts[3]![0] - q.pts[0]![0]) * 0.35, mz = (q.pts[3]![1] - q.pts[0]![1]) * 0.35;
           const pal = p.atmos === 'concert' ? MIX : away ? AWAYC : rnd(seed + 1) < 0.85 ? HOME : MIX; const c = pal[Math.floor(rnd(seed + 2) * pal.length)]!;
-          figureVerts(cx + mx, q.y, cz + mz, c, v); } }
-      out.push({ mesh: r.mesh(v), section: s, upper: t.upper }); }
+          figureFaces(cx + mx, q.y, cz + mz, c, v); } }
+      // one buffer for the section, its faces in five runs by the way they look, and for each run where its faces lie on their own axis
+      const all: number[] = []; const parts: Crowd['parts'] = [];
+      v.forEach((list, f) => { const { axis } = FIGURE_SIDES[f]!; let lo = Infinity, hi = -Infinity; for (let i = axis; i < list.length; i += 9) { const a = list[i]!; if (a < lo) lo = a; if (a > hi) hi = a; }
+        parts.push({ first: all.length / 9, count: list.length / 9, lo, hi }); for (const n of list) all.push(n); });
+      out.push({ mesh: r.mesh(all), section: s, upper: t.upper, parts }); }
     M.crowd = out; setDrawn((x) => x + 1);
   }, [crowdKey, drawn === 0]);   // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -173,10 +183,15 @@ export function StadiumLivePage() {
       const boardCol: V3 = cheerNow ? hex(cheerNow.side === 'away' ? '#7A1A13' : '#0A6B62') : A.label === 'Concert' ? hex('#3A1460') : A.label === 'Technical rehearsal' ? hex('#3B3B3B') : hex('#0F2A33');
       r.draw(M.screens, m4.ident(), boardCol); r.glow(0);
       // the crowd: a cheer lifts the cheering side; a wave runs round the bowl
-      for (const g of M.crowd) { const away = AWAY.includes(g.section); let y = 0;
+      for (const g of M.crowd) { if (!r.seen(g.mesh, 1)) continue;   // a section wholly outside the view is not drawn (it rises 0.9 m at most in a wave)
+        const away = AWAY.includes(g.section); let y = 0;
         if (!reducedRef.current) { if (cheerNow && (cheerNow.side === 'all' || (cheerNow.side === 'away') === away)) y = 0.35 * ce * Math.abs(Math.sin(now / 160 + g.section)); if (waveRef.current) { const ph = ((now / 1000) * 1.6 - g.section / SECTIONS * Math.PI * 2) % (Math.PI * 2); y = Math.max(y, Math.max(0, Math.cos(ph)) ** 6 * 0.9); } }
         const tint = P.look === 'away' ? (away ? undefined : lerp([0.35, 0.36, 0.38], [1, 1, 1], 0.2)) : P.look === 'home' ? (away ? lerp([0.35, 0.36, 0.38], [1, 1, 1], 0.2) : undefined) : undefined;
-        r.glow(0.42 * night); r.draw(g.mesh, m4.trs([0, y, 0], 0, [1, 1, 1]), P.look !== 'neutral' && tint ? tint : undefined); r.glow(0); }
+        // only the faces that can look at the eye are sent to be drawn: the same picture (the rest are back faces, which are discarded
+        // anyway), for about six triangles a figure in place of ten. A cheer or a wave lifts a section, which can only hide tops from an eye
+        // below them, so judging the tops where they were built errs toward drawing.
+        const model = m4.trs([0, y, 0], 0, [1, 1, 1]); const tn = P.look !== 'neutral' && tint ? tint : undefined; r.glow(0.42 * night);
+        g.parts.forEach((part, f) => { const { axis, sign } = FIGURE_SIDES[f]!; if (part.count && facesSeen(eye, axis, sign, part.lo, part.hi)) r.draw(g.mesh, model, tn, 1, false, part.first, part.count); }); r.glow(0); }
       if (A.label === 'Concert') { r.glow(1); for (let i = 0; i < 4; i++) r.draw(r.unit, m4.trs([-30 + i * 14, 0.4, Math.sin(now / 700 * (reducedRef.current ? 0 : 1) + i) * 12], 0, [10, 0.2, 10]), S.lc, 0.35); r.glow(0); }
       // overlays
       if (P.overlay === 'dba') { r.glow(1); for (const g of M.dba) { const db = modeledDba(g.section, fill, exciteRef.current, cheerNow ? (cheerNow.side === 'all' ? 'home' : cheerNow.side) : null); const k2 = Math.max(0, Math.min(1, (db - 70) / 40)); r.draw(g.mesh, m4.ident(), lerp([0.2, 0.62, 0.9], [0.86, 0.15, 0.12], k2), 0.62); } r.glow(0); }

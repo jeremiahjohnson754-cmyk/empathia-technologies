@@ -96,6 +96,9 @@ a browser suite's per-check file is under `tests/evidence/demo-shell`, which git
 - The merge puts the readings written on the commit being merged into that run's line of `tests/REGRESSION_LEDGER.jsonl` and into a
   table at the end of `TEST_RESULTS.md`. A file left by a run on another commit is not counted. Both are tracked, so the figures of
   every finished run of record, pass or fail, can be compared with the last; the per-scene files themselves are not committed.
+- Beside each floor there is a budget that is counted, not timed, and so is the same on every machine: the triangles and draw calls
+  of a frame, which the renderer counts and puts on its canvas (`data-tris`, `data-draws`). Stadium overview 60,000 and 180 (SLV-17),
+  campus 32,000 and 120 (CL-24), expo hall 8,000 and 150 (XPO-15). A change that makes a scene heavier fails here whatever the machine.
 - No floor changed. These are still regression figures of one machine with no graphics processor. Device figures need devices and
   are a separate, open piece of work (roadmap A19).
 

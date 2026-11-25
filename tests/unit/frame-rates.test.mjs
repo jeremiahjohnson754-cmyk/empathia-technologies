@@ -31,10 +31,11 @@ test('FR-01 a suite run by hand writes to scratch; the file names its commit and
 });
 
 test('FR-02 a reading that is not a measurement is refused, so it cannot be written as a number', () => {
-  assert.deepEqual(reading(good), good); assert.deepEqual(reading({ ...good, floor: undefined }), { check: 'CL-13', mode: 'adapted', what: good.what, fps: 18, detail: 50 });
+  assert.deepEqual(reading(good), good); assert.deepEqual(reading({ ...good, triangles: 28412, draws: 103 }), { ...good, triangles: 28412, draws: 103 }, 'what the frame cost, counted, is kept when given'); assert.deepEqual(reading({ ...good, floor: undefined }), { check: 'CL-13', mode: 'adapted', what: good.what, fps: 18, detail: 50 });
   for (const [why, bad] of [['fps NaN', { ...good, fps: NaN }], ['fps as text', { ...good, fps: '18' }], ['fps negative', { ...good, fps: -1 }], ['fps absurd', { ...good, fps: 5000 }], ['fps missing', { ...good, fps: undefined }],
     ['detail below half', { ...good, detail: 40 }], ['detail above full', { ...good, detail: 120 }], ['detail as a fraction', { ...good, detail: 0.5 }], ['detail NaN', { ...good, detail: NaN }],
     ['full not at 100', { ...good, mode: 'full', detail: 80 }], ['no mode', { ...good, mode: undefined }], ['unknown mode', { ...good, mode: 'fast' }],
+    ['triangles as a fraction', { ...good, triangles: 28412.5 }], ['triangles zero', { ...good, triangles: 0 }], ['draws as text', { ...good, draws: '103' }],
     ['no check', { ...good, check: '' }], ['a check that is a sentence', { ...good, check: 'the frame rate' }], ['no description', { ...good, what: '' }], ['floor as text', { ...good, floor: 'eight' }], ['nothing', null]])
     assert.throws(() => reading(bad), /frame-rate reading refused/, why);
   const dir = path.join(tmp, 'refused');
@@ -45,16 +46,17 @@ test('FR-02 a reading that is not a measurement is refused, so it cannot be writ
 test('FR-03 only the files written on the commit being merged belong to the run', () => {
   const dir = path.join(tmp, 'merge');
   recordFrameRates('campus', [good, { check: 'CL-21', mode: 'full', what: 'desktop 1280 × 860, held at full detail', fps: 10, detail: 100 }, { check: 'CL-21', mode: 'adapted', what: 'desktop 1280 × 860, left to adapt', fps: 23, detail: 50 }], { dir, commit: 'this', renderer: 'software' });
-  recordFrameRates('stadium', [{ check: 'SLV-12', mode: 'full', what: 'desktop 1440 × 900, held at full detail', fps: 6, detail: 100, floor: 2 }], { dir, commit: 'another', renderer: 'software' });
+  recordFrameRates('stadium', [{ check: 'SLV-12', mode: 'full', what: 'desktop 1440 × 900, held at full detail', fps: 6, detail: 100, floor: 2, triangles: 53174, draws: 155 }], { dir, commit: 'another', renderer: 'software' });
   fs.writeFileSync(path.join(dir, 'expo.json'), '{ not json'); fs.writeFileSync(path.join(dir, 'notes.txt'), 'x');
   fs.writeFileSync(path.join(dir, 'forged.json'), JSON.stringify({ scene: 'forged', commit: 'this', readings: [{ ...good, fps: 'fast' }] }));
   const got = collectFrameRates(dir, 'this');
   assert.deepEqual(got.scenes, { campus: { 'CL-13 adapted': { fps: 18, detail: 50, floor: 8 }, 'CL-21 full': { fps: 10, detail: 100 }, 'CL-21 adapted': { fps: 23, detail: 50 } } }, 'the stadium file is another commit’s; the damaged and the forged files are left out');
   assert.equal(got.machine.renderer, 'software'); assert.equal(got.machine.cores, os.cpus().length);
-  assert.deepEqual(collectFrameRates(dir, 'another').scenes, { stadium: { 'SLV-12 full': { fps: 6, detail: 100, floor: 2 } } });
+  assert.deepEqual(collectFrameRates(dir, 'another').scenes, { stadium: { 'SLV-12 full': { fps: 6, detail: 100, floor: 2, triangles: 53174, draws: 155 } } });
+  assert.ok(frameRateLines(dir, 'another').includes('| stadium | SLV-12 full | desktop 1440 × 900, held at full detail | 6 | 100% | 2 | 53174 | 155 |'));
   assert.deepEqual(collectFrameRates(dir, 'none'), { scenes: {}, machine: null }); assert.deepEqual(collectFrameRates(path.join(tmp, 'absent'), 'this'), { scenes: {}, machine: null }); assert.deepEqual(collectFrameRates(dir, ''), { scenes: {}, machine: null });
   const lines = frameRateLines(dir, 'this'); assert.ok(lines.includes('## Frame rates this run measured')); assert.ok(lines.some((l) => l.includes(NOT_A_DEVICE)), 'the table carries the same sentence');
-  assert.ok(lines.includes('| campus | CL-21 full | desktop 1280 × 860, held at full detail | 10 | 100% | — |')); assert.ok(lines.includes('| campus | CL-13 adapted | desktop 1280 × 860, opened as a visitor opens it | 18 | 50% | 8 |'));
+  assert.ok(lines.includes('| campus | CL-21 full | desktop 1280 × 860, held at full detail | 10 | 100% | — | — | — |')); assert.ok(lines.includes('| campus | CL-13 adapted | desktop 1280 × 860, opened as a visitor opens it | 18 | 50% | 8 | — | — |'));
   assert.ok(!lines.some((l) => /stadium|forged/.test(l))); assert.deepEqual(frameRateLines(dir, 'none'), [], 'a run that measured nothing adds nothing to the table');
 });
 
