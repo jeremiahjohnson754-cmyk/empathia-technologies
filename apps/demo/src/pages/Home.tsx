@@ -167,8 +167,12 @@ function MissionControl({ role }: PageProps) {
   // the nine products the role can open, in the canonical order (D37/D40), each with one number from the records
   const pnum: Record<string, string> = {
     'mission-control': plural(decisions, 'decision') + ' to review', lite: `${c.rooms} rooms modeled`, pro: plural(c.open, 'open issue'), 'search-party': `${c.devices} device positions`,
-    servicehands: plural(liveReq.length, 'live request'), commissioning: c.verifiedPct == null ? 'no test on record' : `${c.verifiedPct}% tests verified`, apex: plural((w?.apexCases || []).length, 'diagnosis', 'diagnoses'),
-    field: plural((w?.fiSessions || []).length, 'scan'), learn: plural((w?.learnCases || []).length, 'lesson'),
+    servicehands: plural(liveReq.length, 'live request'), commissioning: c.verifiedPct == null ? 'no test on record' : `${c.verifiedPct}% tests verified`,
+    // 25 Nov 2026: a count of nothing read as an unused product ("0 scans", "0 lessons"); where nothing has been started yet the tile says
+    // what can be started instead. The number returns as soon as there is one; nothing is seeded to fill it.
+    apex: (w?.apexCases || []).length ? plural((w?.apexCases || []).length, 'diagnosis', 'diagnoses') : 'Diagnose a fault',
+    field: (w?.fiSessions || []).length ? plural((w?.fiSessions || []).length, 'scan') : 'Check a room on site',
+    learn: (w?.learnCases || []).length ? plural((w?.learnCases || []).length, 'lesson') : 'Learn from a real case',
   };
   const products = PRODUCTS.map((p) => ({ p, landing: pages.find((x) => x.product === p.id && x.landing) ?? pages.find((x) => x.product === p.id) })).filter((x) => x.landing && x.p.id !== 'mission-control');
   // V2.5.3's entries and "What can I help you do?", role-filtered
@@ -298,7 +302,7 @@ function MissionControl({ role }: PageProps) {
             {opens('#/search') && <a className="ui-btn ui-btn--primary" href="#/search"><Icon name="search" /> Open in Search Party</a>}
           </section>
         </Group>
-        <Group id="saved" title="Saved work" count={saved.filter((x) => opens(x.href)).length} sub="Work left part-way, kept until it is finished">
+        <Group id="saved" title="Saved work" count={saved.filter((x) => opens(x.href)).length || undefined} sub={saved.filter((x) => opens(x.href)).length ? 'Work left part-way, kept until it is finished' : 'Nothing left part-way: a draft, diagnosis or lesson you start waits here'}>
           <section aria-label="Saved work" data-testid="mc-saved">
             {saved.filter((x) => opens(x.href)).length ? <List label="Saved work">{saved.filter((x) => opens(x.href)).slice(0, 4).map((x) => <ListRow key={x.id} href={x.href} leading={<span className="row__ic"><Icon name={x.icon} /></span>} title={x.title} sub={`${x.sub}${x.at ? ` · ${ago(Date.parse(x.at))}` : ''}`} chevron />)}</List>
               : <EmptyState title="Nothing saved part-way" icon="inbox">A Build a Room draft, a diagnosis or a lesson you start is kept here until it is finished.{opens('#/v25/build') ? <> <a href="#/v25/build">Design a space</a>.</> : ''}</EmptyState>}
