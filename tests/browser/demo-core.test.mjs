@@ -167,9 +167,16 @@ for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 84
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(800);
   const order = await t.page.evaluate(() => { const ids = ['mc-intro', 'mc-hero', 'mc-flow', 'mc-priorities', 'home-kpis', 'mc-more']; const y = (id) => document.querySelector(`[data-testid="${id}"]`)?.getBoundingClientRect().top ?? NaN; return ids.map((id) => [id, y(id)]); });
+  // 26 Nov 2026: the longer caption under the health ring pushed the hero's figures out of their card at 390 px (seen on the preflight's
+  // screenshot; the page did not scroll sideways, so MC-05 could not see it)
+  const outside = await t.page.evaluate(() => { const a = document.querySelector('.mc-hero__aside')?.getBoundingClientRect(); return a ? [...document.querySelectorAll('.mc-hero__aside > *, .mc-hero__facts li')].filter((e) => { const x = e.getBoundingClientRect(); return x.right > a.right + 1 || x.left < a.left - 1; }).map((e) => e.textContent.slice(0, 24)) : ['no aside']; });
+  ok(`MC-${tag}-aside`, 'the health ring, its caption and the campus figures stay inside their card', !outside.length, outside.join(' | '));
   ok(`MC-${tag}-layers`, 'the page reads in layers: the introduction (first visit), the briefing, the Mission flow, your priorities, the campus numbers, then more', order.every(([, y], i) => Number.isFinite(y) && (i === 0 || y > order[i - 1][1])), JSON.stringify(order));
-  const closedGroups = await t.page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="mc-more"] details.mc-group')).map((d) => [d.getAttribute('data-group'), d.open, d.querySelector('.mc-group__body')?.getBoundingClientRect().height || 0]));
-  ok(`MC-${tag}-more-01`, 'products, help, active rooms, insight, saved work and changes are one click away: six groups, closed on a first visit, their contents not drawn', closedGroups.length === 6 && closedGroups.every(([, o, h]) => !o && h === 0), JSON.stringify(closedGroups));
+  // CHANGED 26 Nov 2026 (the preflight on 5ba4fa67, this check's first run): Chromium keeps a layout box for the contents of a closed
+  // <details> and does not draw them, so their height is not zero; whether they are drawn is checkVisibility(), and the group itself
+  // is no taller than its own summary (two lines on a phone), borders aside
+  const closedGroups = await t.page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="mc-more"] details.mc-group')).map((d) => [d.getAttribute('data-group'), d.open, d.querySelector('.mc-group__body')?.checkVisibility() ?? null, Math.round(d.getBoundingClientRect().height - (d.querySelector('summary')?.getBoundingClientRect().height || 0))]));
+  ok(`MC-${tag}-more-01`, 'products, help, active rooms, insight, saved work and changes are one click away: six groups, closed on a first visit, their contents not drawn', closedGroups.length === 6 && closedGroups.every(([, o, seen, extra]) => !o && seen === false && extra <= 4), JSON.stringify(closedGroups));
   const tall = await t.page.evaluate(() => document.documentElement.scrollHeight / innerHeight);
   ok(`MC-${tag}-short`, `the page is at most ${vp[2] === 'desktop' ? 5 : 9} screens tall (the external review measured about seven on a desktop before)`, tall <= (vp[2] === 'desktop' ? 5 : 9), tall.toFixed(2));
   // the introduction: there on a first visit, gone for good with "Not now", back with "Show the introduction again", never on a deep link

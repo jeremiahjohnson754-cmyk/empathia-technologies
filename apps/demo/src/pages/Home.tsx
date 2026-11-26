@@ -220,7 +220,7 @@ function MissionControl({ role }: PageProps) {
           {opens('#/search') && <p className="mc-hero__try ui-meta">Try {[['#/search?q=4.218', '4.218'], ['#/search?q=camera', 'camera'], ['#/search/scenarios/S1', 'if this switch fails'], ['#/search/scenarios/S2', 'who supports']].filter(([h]) => opens(h!)).map(([h, l], i) => <span key={h}>{i ? ' · ' : ''}<a href={h}>{l}</a></span>)}</p>}
         </div>
         <div className="mc-hero__aside">
-          <ScoreRing score={c.score} band={c.band} size={112} label={METRICS['health.average'].label} caption={`${BAND_LABEL[c.band]}${c.atRisk ? ` · ${plural(c.atRisk, 'room')} at risk` : ''} · average of ${c.scored} of ${c.rooms} rooms`} />
+          <ScoreRing score={c.score} band={c.band} size={112} label={METRICS['health.average'].label} caption={`${c.atRisk ? `${plural(c.atRisk, 'room')} at risk · ` : ''}average of ${c.scored} of ${c.rooms} rooms`} />
           <ul className="mc-hero__facts" aria-label="The campus in numbers">
             <li><b>{c.rooms}</b><span>rooms</span></li><li><b>{c.buildings.length + c.sites.length}</b><span>sites and buildings</span></li><li><b>{c.devices}</b><span>device positions</span></li>
           </ul>
@@ -265,7 +265,9 @@ function MissionControl({ role }: PageProps) {
       <div className="mc-row mc-row--campus">
         <Section title="Campus status" aside={opens('#/campus') ? <a href="#/campus">Open campus</a> : undefined} id="home-campus-h">
           <Stage label="Campus in 3D" testId="home-stage"><CampusMap tiles={tiles} onOpen={(b) => { if (opens(`#/campus/${b.key}`)) location.hash = `#/campus/${b.key}`; }} /></Stage>
-          <ul className="kit-meters home__brows" aria-label="Buildings by health">{[...c.buildings, ...c.sites].map((s) => <MeterRow key={s.b.key} href={opens(`#/campus/${s.b.key}`) ? `#/campus/${s.b.key}` : undefined} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${plural(s.rooms, 'room')}${s.atRisk ? ` · ${s.atRisk} at risk` : ''} · ${plural(s.open, 'open issue')}${s.lowest && s.lowest.score < 88 ? ` · lowest ${s.lowest.label}, ${s.lowest.score}` : ''} · ${s.verifiedPct ?? '—'}${s.verifiedPct == null ? '' : '%'} verified`} />)}</ul>
+          {/* 26 Nov 2026: thirteen rows made the phone page nine screens tall; the buildings with rooms at risk come first, then the lowest,
+              six shown and the rest one tap away (the map above and the campus page list them all) */}
+          <ul className="kit-meters home__brows" aria-label="Buildings by health"><More items={[...c.buildings, ...c.sites].sort((a, b) => b.atRisk - a.atRisk || (a.score ?? 101) - (b.score ?? 101))} n={6} label="buildings and sites" render={(s) => <MeterRow key={s.b.key} href={opens(`#/campus/${s.b.key}`) ? `#/campus/${s.b.key}` : undefined} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${plural(s.rooms, 'room')}${s.atRisk ? ` · ${s.atRisk} at risk` : ''} · ${plural(s.open, 'open issue')}${s.lowest && s.lowest.score < 88 ? ` · lowest ${s.lowest.label}, ${s.lowest.score}` : ''} · ${s.verifiedPct ?? '—'}${s.verifiedPct == null ? '' : '%'} verified`} />} /></ul>
         </Section>
         <div className="mc-numbers">
           <div className="mc-tiles" data-testid="home-kpis">
@@ -287,7 +289,7 @@ function MissionControl({ role }: PageProps) {
       {/* ================================================================ layer 4 · discover: one click away, each group remembered open or closed */}
       <section className="mc-more" aria-labelledby="mc-more-h" data-testid="mc-more">
         <h2 id="mc-more-h" className="mc-more__h">More from Mission Control</h2>
-        <Group id="products" title="Every product" count={products.length} sub="Nine products on one record">
+        <Group id="products" title="Every product" count={products.length} sub="Each with what it is for; Mission Control is this page">
           {products.length > 0 ? <nav className="mc-products" aria-label="Products" data-testid="mc-products">
             {products.map(({ p, landing }) => <a key={p.id} href={hrefOf(landing!.id)} className={`mc-prod kit-s--${p.id}`} data-p={p.id}><span className="mc-prod__mark" aria-hidden="true" /><b>{p.name}</b><span className="mc-prod__sub">{p.subtitle}</span><span className="mc-prod__n">{pnum[p.id]}</span><Icon name="chevron" size={16} /></a>)}
           </nav> : <p className="ui-meta">This role opens no product from here.</p>}
