@@ -175,7 +175,9 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
   // workspace service requests (the shared ServiceHands workspace, live in this browser)
   for (const i of w.incidents) {
     // the live request wins over a room record of the same id (as campus/metrics.ts roomIssues does): its state and tone replace the record's
-    const prior = out.find((x) => x.type === 'Issue' && x.id === i.id); if (prior) { prior.state = isOpenRequest(i) ? 'OPEN' : i.state === 'CANCELLED' ? 'CANCELLED' : 'RESOLVED'; prior.tone = isOpenRequest(i) ? sevTone(i.severity) : 'ok'; }
+    const prior = out.find((x) => x.type === 'Issue' && x.id === i.id); if (prior) { const was = prior.facts?.find((f) => f[0] === 'State')?.[1];
+      prior.sub = `${i.severity} · ${i.state} · ${i.roomName}`; prior.facts = (prior.facts || []).map((f) => (f[0] === 'State' ? ['State', `${i.state} in ServiceHands${was && was !== i.state ? `; the room record says ${was}` : ''}`] : f));
+      prior.state = isOpenRequest(i) ? 'OPEN' : i.state === 'CANCELLED' ? 'CANCELLED' : 'RESOLVED'; prior.tone = isOpenRequest(i) ? sevTone(i.severity) : 'ok'; }
     if (!prior) add({ type: 'Issue', id: i.id, name: i.title, sub: `${i.severity} · ${i.state} · ${i.roomName}`, roomId: i.roomId, building: i.buildingKey, state: isOpenRequest(i) ? 'OPEN' : i.state === 'CANCELLED' ? 'CANCELLED' : 'RESOLVED', tone: isOpenRequest(i) ? sevTone(i.severity) : 'ok',
       facts: [['Severity', i.severity], ['Service state', i.state], ['Opened', day(i.openedAt)], ['Work order', i.workOrderId || '—'], ['Recurrence of', i.recurrenceOf || '—']], prov: 'KNOWN', source: 'ServiceHands workspace (this browser)', href: `#/servicehands`, links: [{ type: 'Room', id: i.roomId, rel: 'in' }] });
     add({ type: 'Request', id: `RQ-${i.id}`, name: `Service request: ${i.title}`, sub: `${i.state} · ${i.roomName} · opened ${day(i.openedAt)}`, roomId: i.roomId, building: i.buildingKey, state: 'Service request', tone: i.state === 'CLOSED' ? 'ok' : 'warn', at: i.openedAt,
