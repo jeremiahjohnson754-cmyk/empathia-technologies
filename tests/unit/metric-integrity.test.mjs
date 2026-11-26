@@ -198,6 +198,12 @@ test('MI-12 a canceled request is not open or fixed anywhere; the room assurance
   const core = PC.buildCore(w3, { projects: [], decisions: [], funding: [] });
   assert.ok(!PS.setOf('iss:open').items(core).some((i) => i.id === k.id), 'a canceled request is not in Open issues');
   assert.ok(!PS.setOf('iss:resolved').items(core).some((i) => i.id === k.id), 'nor is it called resolved');
+  // the live request wins over a room record with the same id, as in roomIssues: ISS-0417 is open in the workspace (High, with an APEX
+  // case) though Atlas 4.218's earlier record calls it resolved (re-review of 446b3b30)
+  const seedCore = PC.buildCore(w, { projects: [], decisions: [], funding: [] });
+  const live = w.incidents.filter((i) => M.isOpenRequest(i) && recs.some((r) => r.issues.some((x) => x.id === i.id)));
+  assert.ok(live.length >= 1, 'the seed holds an open request whose id is also on a room record, so this check tests something');
+  for (const i of live) { assert.ok(PS.setOf('iss:open').items(seedCore).some((x) => x.id === i.id), `${i.id} is an open issue`); assert.ok(!PS.setOf('iss:resolved').items(seedCore).some((x) => x.id === i.id), `${i.id} is not resolved`); }
   // the room assurance export: the same seventeen dimensions as the room page, which reads the room's own requests
   for (const r of recs.filter((x) => w.incidents.some((i) => i.roomId === x.outline.id))) {
     const page = AR.assuranceDims(r, w.incidents.filter((i) => i.roomId === r.outline.id)).map((d) => d.state);

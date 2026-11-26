@@ -49,7 +49,7 @@ function Index({ all }: { all: Case[] }) {
         {rows.length ? <ul className="pa-queue">{rows.map((c) => { const o = roomById(c.roomId); return (
           <li key={c.id}><a className="pa-inc" href={`#/investigate/${c.id}`} data-testid="investigate-row"><span className={`pa-inc__sev kit-s--${done(c.state) ? 'ok' : c.sev === 'High' || c.sev === 'Mission critical' ? 'bad' : 'warn'}`} aria-hidden="true" />
             <span><span className="pa-inc__t">{c.title}</span><br /><span className="pa-inc__s">{c.id} · {o ? shortName(o) : c.roomId} · {c.layers.join(', ') || 'unplaced'} · {c.sev}</span></span>
-            <Tag tone={done(c.state) ? 'ok' : 'accent'}>{done(c.state) ? (c.state === 'CANCELLED' ? 'canceled' : 'resolved') : 'investigate'}</Tag></a></li>); })}</ul> : <EmptyState title="No open issue" icon="check" tone="ok">Every issue on record is resolved.</EmptyState>}
+            <Tag tone={done(c.state) ? 'ok' : 'accent'}>{done(c.state) ? (c.state === 'CANCELLED' ? 'canceled' : 'resolved') : 'investigate'}</Tag></a></li>); })}</ul> : <EmptyState title="No open issue" icon="check" tone="ok">Every issue on record is resolved or canceled.</EmptyState>}
       </Zone>
     </>
   );
