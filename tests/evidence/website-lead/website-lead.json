@@ -1,5 +1,5 @@
 {
- "at": "2026-11-25T17:37:42.091Z",
+ "at": "2026-11-26T01:48:13.014Z",
  "pass": 6,
  "fail": 0,
  "results": [
@@ -25,7 +25,7 @@
    "id": "L-04",
    "name": "the message is stored and readable in the admin inbox with its fields and the notification status",
    "result": "PASS",
-   "detail": "{\"id\":\"08447fd5-4d72-4500-9e5f-c3b021fbf06f\",\"kind\":\"demo\",\"name\":\"Synthetic Visitor\",\"organization\":\"Example Org (synthetic)\",\"email\":\"visitor@example.com\",\"audience\":\"Systems integrator\",\"scope\":null,\"message\":\"Please show the commissioning scenario.\",\"status\":\"NEW\",\"notified\":false,\"notify_note\":"
+   "detail": "{\"id\":\"8de61112-66a2-4f83-b5a6-4714d7eaeaec\",\"kind\":\"demo\",\"name\":\"Synthetic Visitor\",\"organization\":\"Example Org (synthetic)\",\"email\":\"visitor@example.com\",\"audience\":\"Systems integrator\",\"scope\":null,\"message\":\"Please show the commissioning scenario.\",\"status\":\"NEW\",\"notified\":false,\"notify_note\":"
   },
   {
    "id": "L-05",

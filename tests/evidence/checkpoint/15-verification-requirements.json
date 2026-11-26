@@ -2,7 +2,7 @@
  "step": 15,
  "title": "The new and changed verification requirements, with their reasons (readiness)",
  "room": "R-PLN-0004",
- "at": "2026-11-25T18:12:28.984Z",
+ "at": "2026-11-26T02:18:07.003Z",
  "assertions": [
   {
    "id": "C-54",
@@ -99,7 +99,7 @@
     },
     "recommissioning": {
      "baseline": {
-      "id": "7093c44b-d40b-4a6d-8b5b-48f77e855b94",
+      "id": "fe17d2c0-550f-489a-8071-99ca0f868fd8",
       "version": 1,
       "designRevision": 2
      },
@@ -110,8 +110,8 @@
        "category": "camera",
        "from": "generic",
        "to": "SYN-PTZ-12X (synthetic PTZ camera)",
-       "at": "2026-11-25T18:12:25.877Z",
-       "by": "7c8e8791-8cdf-4266-803f-bf769091822a"
+       "at": "2026-11-26T02:18:04.931Z",
+       "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1"
       }
      ],
      "changes": [
@@ -121,8 +121,8 @@
        "category": "camera",
        "from": "generic",
        "to": "SYN-PTZ-12X (synthetic PTZ camera)",
-       "at": "2026-11-25T18:12:25.877Z",
-       "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+       "at": "2026-11-26T02:18:04.931Z",
+       "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
        "kind": "SUBSTITUTED",
        "fromAsset": "AS-0002",
        "toAsset": "AS-0009"
@@ -131,7 +131,7 @@
      "design": {
       "approvedRevision": 2,
       "latestRevision": 3,
-      "latestAuthor": "7c8e8791-8cdf-4266-803f-bf769091822a",
+      "latestAuthor": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
       "approvedDescribesDesign": false,
       "latestDescribesDesign": true
      },
@@ -154,9 +154,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the asset identity is checked again after every substitution"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:21.256977+00:00",
+       "recordedAt": "2026-11-26T02:18:02.18877+00:00",
        "rerun": true
       },
       {
@@ -177,9 +177,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:21.709842+00:00",
+       "recordedAt": "2026-11-26T02:18:02.437113+00:00",
        "rerun": true
       },
       {
@@ -200,9 +200,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:21.85695+00:00",
+       "recordedAt": "2026-11-26T02:18:02.514501+00:00",
        "rerun": true
       },
       {
@@ -223,9 +223,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:21.955676+00:00",
+       "recordedAt": "2026-11-26T02:18:02.56238+00:00",
        "rerun": true
       },
       {
@@ -246,9 +246,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:22.602075+00:00",
+       "recordedAt": "2026-11-26T02:18:02.897103+00:00",
        "rerun": true
       },
       {
@@ -268,9 +268,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:22.625619+00:00",
+       "recordedAt": "2026-11-26T02:18:02.911453+00:00",
        "rerun": true
       },
       {
@@ -292,9 +292,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): it is a camera and this is a Video test of the room"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:22.660349+00:00",
+       "recordedAt": "2026-11-26T02:18:02.928095+00:00",
        "rerun": true
       },
       {
@@ -315,9 +315,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): it is a camera and this is a Video test of the room"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:22.688307+00:00",
+       "recordedAt": "2026-11-26T02:18:02.945151+00:00",
        "rerun": true
       },
       {
@@ -338,9 +338,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:22.718439+00:00",
+       "recordedAt": "2026-11-26T02:18:02.966178+00:00",
        "rerun": true
       },
       {
@@ -361,9 +361,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:22.862134+00:00",
+       "recordedAt": "2026-11-26T02:18:03.078212+00:00",
        "rerun": true
       },
       {
@@ -384,9 +384,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): it is a camera and this is a Video test of the room"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:22.944323+00:00",
+       "recordedAt": "2026-11-26T02:18:03.131622+00:00",
        "rerun": true
       },
       {
@@ -406,9 +406,9 @@
        "reasons": [
         "Camera 1 (PA-0061) was substituted after acceptance (generic → SYN-PTZ-12X (synthetic PTZ camera)): the plan names it among the devices this test covers"
        ],
-       "substitutedAt": "2026-11-25T18:12:25.877Z",
+       "substitutedAt": "2026-11-26T02:18:04.931Z",
        "result": "PASS_VERIFIED",
-       "recordedAt": "2026-11-25T18:12:22.974067+00:00",
+       "recordedAt": "2026-11-26T02:18:03.148391+00:00",
        "rerun": true
       }
      ],
@@ -464,8 +464,8 @@
        "category": "camera",
        "from": "generic",
        "to": "SYN-PTZ-12X (synthetic PTZ camera)",
-       "at": "2026-11-25T18:12:25.877Z",
-       "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+       "at": "2026-11-26T02:18:04.931Z",
+       "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
        "kind": "SUBSTITUTED",
        "fromAsset": "AS-0002",
        "toAsset": "AS-0009"
@@ -480,7 +480,7 @@
      "classification": {
       "archetype": "HUD",
       "stale": false,
-      "at": "2026-11-25T18:12:19.315Z"
+      "at": "2026-11-26T02:18:00.888Z"
      },
      "checks": 0
     },
@@ -506,7 +506,7 @@
      {
       "version": 1,
       "state": "CURRENT",
-      "publishedAt": "2026-11-25T18:12:25.735Z"
+      "publishedAt": "2026-11-26T02:18:04.850Z"
      }
     ],
     "exceptionsPending": 0,
@@ -558,7 +558,7 @@
      {
       "what": "room.lifecycle:COMMISSIONING",
       "by": "syseng",
-      "at": "2026-11-25T18:12:25.829Z",
+      "at": "2026-11-26T02:18:04.904Z",
       "detail": {
        "to": "COMMISSIONING",
        "from": "ACCEPTED"
@@ -567,7 +567,7 @@
      {
       "what": "assurance.baseline_published",
       "by": "opslead",
-      "at": "2026-11-25T18:12:25.735Z",
+      "at": "2026-11-26T02:18:04.850Z",
       "detail": {
        "version": 1,
        "evidence": 75,
@@ -578,7 +578,7 @@
      {
       "what": "room.lifecycle:ACCEPTED",
       "by": "opslead",
-      "at": "2026-11-25T18:12:25.735Z",
+      "at": "2026-11-26T02:18:04.850Z",
       "detail": {
        "to": "ACCEPTED",
        "from": "COMMISSIONING"
@@ -587,7 +587,7 @@
      {
       "what": "room.lifecycle:COMMISSIONING",
       "by": "syseng",
-      "at": "2026-11-25T18:12:20.070Z",
+      "at": "2026-11-26T02:18:01.322Z",
       "detail": {
        "to": "COMMISSIONING",
        "from": "INSTALLED_UNVERIFIED"
@@ -596,7 +596,7 @@
      {
       "what": "room.lifecycle:DESIGN_APPROVED",
       "by": "syseng",
-      "at": "2026-11-25T18:12:19.576Z",
+      "at": "2026-11-26T02:18:01.034Z",
       "detail": {
        "to": "DESIGN_APPROVED",
        "from": "PLANNED"
@@ -607,7 +607,7 @@
      {
       "what": "Move a device or substitute its model",
       "by": "installer",
-      "at": "2026-11-25T18:12:25.861Z",
+      "at": "2026-11-26T02:18:04.921Z",
       "why": {
        "need": "room.design",
        "role": "installer"
@@ -616,7 +616,7 @@
      {
       "what": "move a room to COMMISSIONING",
       "by": "installer",
-      "at": "2026-11-25T18:12:25.824Z",
+      "at": "2026-11-26T02:18:04.900Z",
       "why": {
        "need": "plan.compile",
        "role": "installer"
@@ -625,7 +625,7 @@
      {
       "what": "room.lifecycle:ACCEPTED",
       "by": "qa_reviewer",
-      "at": "2026-11-25T18:12:25.653Z",
+      "at": "2026-11-26T02:18:04.801Z",
       "why": [
        "separation of duties: the acceptance (its recorded and verified results) cannot be approved by its own author (qa_reviewer)"
       ]
@@ -633,7 +633,7 @@
      {
       "what": "move a room to ACCEPTED",
       "by": "syseng",
-      "at": "2026-11-25T18:12:25.633Z",
+      "at": "2026-11-26T02:18:04.784Z",
       "why": {
        "need": "customer.accept",
        "role": "syseng"
@@ -642,7 +642,7 @@
      {
       "what": "commission.result.verify",
       "by": "cxeng",
-      "at": "2026-11-25T18:12:25.290Z",
+      "at": "2026-11-26T02:18:04.565Z",
       "why": [
        "already verified"
       ]
@@ -650,7 +650,7 @@
      {
       "what": "Independently verify a recorded PASS",
       "by": "service",
-      "at": "2026-11-25T18:12:23.268Z",
+      "at": "2026-11-26T02:18:03.338Z",
       "why": {
        "need": "tests.verify.all or test.verify or customer.accept",
        "role": "service"
@@ -659,7 +659,7 @@
      {
       "what": "commission.result.verify",
       "by": "cxeng",
-      "at": "2026-11-25T18:12:23.261Z",
+      "at": "2026-11-26T02:18:03.333Z",
       "why": [
        "verification must be independent of the person who recorded the result"
       ]
@@ -667,7 +667,7 @@
      {
       "what": "commission.result.record",
       "by": "cxeng",
-      "at": "2026-11-25T18:12:20.882Z",
+      "at": "2026-11-26T02:18:01.985Z",
       "why": [
        "evidence kind PHOTO_INFERRED_GUESS is not accepted for compute_display_capability; accepted: ENGINEER_APPROVED"
       ]
@@ -675,7 +675,7 @@
      {
       "what": "commission.result.record",
       "by": "designer",
-      "at": "2026-11-25T18:12:20.873Z",
+      "at": "2026-11-26T02:18:01.980Z",
       "why": [
        "designer is not the responsible role for compute_display_capability (syseng)"
       ]
@@ -683,7 +683,7 @@
      {
       "what": "room.lifecycle:COMMISSIONING",
       "by": "syseng",
-      "at": "2026-11-25T18:12:19.791Z",
+      "at": "2026-11-26T02:18:01.142Z",
       "why": [
        "the device register is not complete: 8 of 8 positions still need registering before commissioning starts (PA-0060 (AS-0001): serial, hostname, IP address; PA-0061 (AS-0002): serial, hostname, IP address; PA-0062 (AS-0003): serial, hostname, IP address; PA-0063 (AS-0004): serial; …)"
       ]
@@ -707,7 +707,7 @@
     },
     "liveHealth": "NOT_MONITORED"
    },
-   "correlationId": "beb3b19c-2af8-4b86-a614-94d81543c636"
+   "correlationId": "5d0facc2-fc83-4958-a44a-7aca2c6fe55e"
   },
   {
    "method": "POST",
@@ -728,9 +728,9 @@
      "2 open issue(s): every deficiency is closed with its retest before acceptance",
      "12 test(s) were last recorded before the substitution and must be re-run on the changed design and verified independently: identity_asset, display_controls, video_signal, camera_preset, video_camera_exposure, video_content_share, video_display_calibration, video_edid_handshake, video_switching, camera_fov, video_av_sync, video_camera_tracking — acceptance counts 63 of 75 applicable tests as passed and independently verified; the 12 earlier result(s) no longer count"
     ],
-    "correlationId": "73e00bb5-1105-4e6a-b94a-03ca03081e17"
+    "correlationId": "69ac1b8a-262e-48d3-a30b-8e893c138732"
    },
-   "correlationId": "73e00bb5-1105-4e6a-b94a-03ca03081e17"
+   "correlationId": "69ac1b8a-262e-48d3-a30b-8e893c138732"
   }
  ]
 }

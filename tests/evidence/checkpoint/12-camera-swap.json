@@ -2,7 +2,7 @@
  "step": 12,
  "title": "Substitute the camera model (the asset keeps its id; the model history is kept)",
  "room": "R-PLN-0004",
- "at": "2026-11-25T18:12:28.984Z",
+ "at": "2026-11-26T02:18:07.001Z",
  "assertions": [
   {
    "id": "C-44",
@@ -55,9 +55,9 @@
     "status": 403,
     "detail": "installer may not Move a device or substitute its model (needs room.design)",
     "code": "forbidden",
-    "correlationId": "3d40395c-1362-45d7-ac85-102c1533a12f"
+    "correlationId": "c162f3d5-38ff-402a-991f-a1833b4e4f21"
    },
-   "correlationId": "3d40395c-1362-45d7-ac85-102c1533a12f"
+   "correlationId": "c162f3d5-38ff-402a-991f-a1833b4e4f21"
   },
   {
    "method": "PATCH",
@@ -76,9 +76,9 @@
     "reasons": [
      "R-PLN-0004 is being recommissioned: only a model substitution is accepted (the asset keeps its id and its position); moving a device needs a change order"
     ],
-    "correlationId": "4e3a6f0a-68a7-4137-a745-2b47dc9b6818"
+    "correlationId": "de5d44f8-93b0-4a7d-838e-bf9bc8a66e61"
    },
-   "correlationId": "4e3a6f0a-68a7-4137-a745-2b47dc9b6818"
+   "correlationId": "de5d44f8-93b0-4a7d-838e-bf9bc8a66e61"
   },
   {
    "method": "PATCH",
@@ -109,18 +109,18 @@
     ],
     "installation": {
      "closed": {
-      "installation": "fb1f8633-5307-4ffc-881c-6fbb7ffe68b9",
+      "installation": "ea46f6bc-478c-40e1-9b96-2981c7b639bd",
       "asset": "AS-0002",
       "reason": "SUBSTITUTED"
      },
      "installed": {
-      "installation": "01fd7e94-2c63-4605-804d-3429d6993744",
+      "installation": "cb9a5a92-7b46-4bd7-a378-a9e921c586f7",
       "asset": "AS-0009"
      },
      "model": "SYN-PTZ-12X (synthetic PTZ camera)"
     }
    },
-   "correlationId": "f24f69ca-68fb-4557-ac99-8347cb34bf2a"
+   "correlationId": "6ab6648d-9fd8-4d84-8abb-2ee823cc2177"
   },
   {
    "method": "GET",
@@ -131,7 +131,7 @@
     "room": {
      "code": "R-PLN-0004",
      "canonicalRef": null,
-     "id": "dd509246-20d0-4bde-bb09-f2ebc61fb05c",
+     "id": "e244ea35-5eda-4167-85d9-75ac243463f0",
      "name": "Checkpoint conference room (synthetic)",
      "lifecycle": "COMMISSIONING",
      "template": "custom",
@@ -200,8 +200,8 @@
       "capacityEstimate": 10
      },
      "approvedClassification": {
-      "at": "2026-11-25T18:12:19.315Z",
-      "by": "83af1bb0-1e58-4f44-8085-571e0d35745a",
+      "at": "2026-11-26T02:18:00.888Z",
+      "by": "f28de88a-855f-4d71-a604-d5331727fcbb",
       "byRole": "syseng",
       "reason": "suggestion accepted",
       "override": false,
@@ -342,16 +342,16 @@
       "identityState": "DECLARED",
       "installations": [
        {
-        "id": "ab98c3a3-1a6b-4f06-89ad-1cc053e624fa",
+        "id": "c35307dd-cc76-4be6-b779-14d06bfbedab",
         "asset": "AS-0001",
         "model": "generic",
         "identityState": "DECLARED",
-        "installedAt": "2026-11-25T18:12:19.711Z",
+        "installedAt": "2026-11-26T02:18:01.106Z",
         "basis": "RECORDED",
         "installReason": "INITIAL",
         "removedAt": null,
         "removalReason": null,
-        "sentence": "AS-0001 installed at PA-0060 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); still installed"
+        "sentence": "AS-0001 installed at PA-0060 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); still installed"
        }
       ]
      },
@@ -396,9 +396,9 @@
       },
       "modelHistory": [
        {
-        "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+        "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
         "model": "generic",
-        "until": "2026-11-25T18:12:25.877Z",
+        "until": "2026-11-26T02:18:04.931Z",
         "generic": true
        }
       ],
@@ -407,28 +407,28 @@
       "identityState": "UNKNOWN",
       "installations": [
        {
-        "id": "fb1f8633-5307-4ffc-881c-6fbb7ffe68b9",
+        "id": "ea46f6bc-478c-40e1-9b96-2981c7b639bd",
         "asset": "AS-0002",
         "model": "generic",
         "identityState": "DECLARED",
-        "installedAt": "2026-11-25T18:12:19.711Z",
+        "installedAt": "2026-11-26T02:18:01.106Z",
         "basis": "RECORDED",
         "installReason": "INITIAL",
-        "removedAt": "2026-11-25T18:12:25.871Z",
+        "removedAt": "2026-11-26T02:18:04.928Z",
         "removalReason": "SUBSTITUTED",
-        "sentence": "AS-0002 installed at PA-0061 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); removed 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substituted)"
+        "sentence": "AS-0002 installed at PA-0061 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); removed 2026-11-26T02:18:04.928Z by 6fb5b94e-f231-4c52-80a1-54e99c30c4c1 (substituted)"
        },
        {
-        "id": "01fd7e94-2c63-4605-804d-3429d6993744",
+        "id": "cb9a5a92-7b46-4bd7-a378-a9e921c586f7",
         "asset": "AS-0009",
         "model": "SYN-PTZ-12X (synthetic PTZ camera)",
         "identityState": "UNKNOWN",
-        "installedAt": "2026-11-25T18:12:25.871Z",
+        "installedAt": "2026-11-26T02:18:04.928Z",
         "basis": "RECORDED",
         "installReason": "SUBSTITUTION",
         "removedAt": null,
         "removalReason": null,
-        "sentence": "AS-0009 installed at PA-0061 on 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substitution); still installed"
+        "sentence": "AS-0009 installed at PA-0061 on 2026-11-26T02:18:04.928Z by 6fb5b94e-f231-4c52-80a1-54e99c30c4c1 (substitution); still installed"
        }
       ]
      },
@@ -477,16 +477,16 @@
       "identityState": "DECLARED",
       "installations": [
        {
-        "id": "da6968a7-c35b-4085-9a2e-61a3545de466",
+        "id": "78093823-da87-43b6-993d-6139b727efc1",
         "asset": "AS-0003",
         "model": "generic",
         "identityState": "DECLARED",
-        "installedAt": "2026-11-25T18:12:19.711Z",
+        "installedAt": "2026-11-26T02:18:01.106Z",
         "basis": "RECORDED",
         "installReason": "INITIAL",
         "removedAt": null,
         "removalReason": null,
-        "sentence": "AS-0003 installed at PA-0062 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); still installed"
+        "sentence": "AS-0003 installed at PA-0062 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); still installed"
        }
       ]
      },
@@ -534,16 +534,16 @@
       "identityState": "DECLARED",
       "installations": [
        {
-        "id": "0a24465e-a242-4a61-9393-d2155230782f",
+        "id": "cedcc3ad-6293-4197-8c9a-0de71b79a49c",
         "asset": "AS-0004",
         "model": "generic",
         "identityState": "DECLARED",
-        "installedAt": "2026-11-25T18:12:19.711Z",
+        "installedAt": "2026-11-26T02:18:01.106Z",
         "basis": "RECORDED",
         "installReason": "INITIAL",
         "removedAt": null,
         "removalReason": null,
-        "sentence": "AS-0004 installed at PA-0063 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); still installed"
+        "sentence": "AS-0004 installed at PA-0063 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); still installed"
        }
       ]
      },
@@ -592,16 +592,16 @@
       "identityState": "DECLARED",
       "installations": [
        {
-        "id": "58c0fb98-7f85-453b-a94f-91be90cd93ce",
+        "id": "3b070c98-62b6-487a-97c0-a863481786bb",
         "asset": "AS-0005",
         "model": "generic",
         "identityState": "DECLARED",
-        "installedAt": "2026-11-25T18:12:19.711Z",
+        "installedAt": "2026-11-26T02:18:01.106Z",
         "basis": "RECORDED",
         "installReason": "INITIAL",
         "removedAt": null,
         "removalReason": null,
-        "sentence": "AS-0005 installed at PA-0064 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); still installed"
+        "sentence": "AS-0005 installed at PA-0064 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); still installed"
        }
       ]
      },
@@ -649,16 +649,16 @@
       "identityState": "DECLARED",
       "installations": [
        {
-        "id": "5acb5c65-2c7b-48b2-8fa4-e04251883b22",
+        "id": "c90f832a-1562-4a22-899f-64138cc599b4",
         "asset": "AS-0006",
         "model": "generic",
         "identityState": "DECLARED",
-        "installedAt": "2026-11-25T18:12:19.711Z",
+        "installedAt": "2026-11-26T02:18:01.106Z",
         "basis": "RECORDED",
         "installReason": "INITIAL",
         "removedAt": null,
         "removalReason": null,
-        "sentence": "AS-0006 installed at PA-0065 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); still installed"
+        "sentence": "AS-0006 installed at PA-0065 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); still installed"
        }
       ]
      },
@@ -704,16 +704,16 @@
       "identityState": "DECLARED",
       "installations": [
        {
-        "id": "6f8c9613-5d06-4825-a459-31c3d136c5a3",
+        "id": "d9ea6aa2-2ba0-43d8-ada3-b52816c05d62",
         "asset": "AS-0007",
         "model": "generic",
         "identityState": "DECLARED",
-        "installedAt": "2026-11-25T18:12:19.711Z",
+        "installedAt": "2026-11-26T02:18:01.106Z",
         "basis": "RECORDED",
         "installReason": "INITIAL",
         "removedAt": null,
         "removalReason": null,
-        "sentence": "AS-0007 installed at PA-0066 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); still installed"
+        "sentence": "AS-0007 installed at PA-0066 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); still installed"
        }
       ]
      },
@@ -762,16 +762,16 @@
       "identityState": "DECLARED",
       "installations": [
        {
-        "id": "66070eab-1fd3-4235-a24d-c244542b71d5",
+        "id": "34d0efb5-dce4-4638-8479-1ab68b970268",
         "asset": "AS-0008",
         "model": "generic",
         "identityState": "DECLARED",
-        "installedAt": "2026-11-25T18:12:19.711Z",
+        "installedAt": "2026-11-26T02:18:01.106Z",
         "basis": "RECORDED",
         "installReason": "INITIAL",
         "removedAt": null,
         "removalReason": null,
-        "sentence": "AS-0008 installed at PA-0067 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); still installed"
+        "sentence": "AS-0008 installed at PA-0067 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); still installed"
        }
       ]
      }
@@ -867,43 +867,43 @@
       "kind": "plan",
       "state": "APPROVED",
       "revNo": 1,
-      "approvedBy": "83af1bb0-1e58-4f44-8085-571e0d35745a"
+      "approvedBy": "f28de88a-855f-4d71-a604-d5331727fcbb"
      },
      {
       "kind": "placement",
       "state": "REVIEW_REQUIRED",
       "revNo": 1,
-      "approvedBy": "83af1bb0-1e58-4f44-8085-571e0d35745a"
+      "approvedBy": "f28de88a-855f-4d71-a604-d5331727fcbb"
      },
      {
       "kind": "schedule",
       "state": "REVIEW_REQUIRED",
       "revNo": 1,
-      "approvedBy": "83af1bb0-1e58-4f44-8085-571e0d35745a"
+      "approvedBy": "f28de88a-855f-4d71-a604-d5331727fcbb"
      },
      {
       "kind": "relationships",
       "state": "REVIEW_REQUIRED",
       "revNo": 1,
-      "approvedBy": "83af1bb0-1e58-4f44-8085-571e0d35745a"
+      "approvedBy": "f28de88a-855f-4d71-a604-d5331727fcbb"
      },
      {
       "kind": "signal",
       "state": "REVIEW_REQUIRED",
       "revNo": 1,
-      "approvedBy": "83af1bb0-1e58-4f44-8085-571e0d35745a"
+      "approvedBy": "f28de88a-855f-4d71-a604-d5331727fcbb"
      },
      {
       "kind": "network",
       "state": "REVIEW_REQUIRED",
       "revNo": 1,
-      "approvedBy": "83af1bb0-1e58-4f44-8085-571e0d35745a"
+      "approvedBy": "f28de88a-855f-4d71-a604-d5331727fcbb"
      },
      {
       "kind": "summary",
       "state": "REVIEW_REQUIRED",
       "revNo": 1,
-      "approvedBy": "83af1bb0-1e58-4f44-8085-571e0d35745a"
+      "approvedBy": "f28de88a-855f-4d71-a604-d5331727fcbb"
      }
     ],
     "revisions": [
@@ -911,15 +911,15 @@
       "rev_no": 1,
       "reason": "created",
       "sha256": "22f5c43ec58ad7bcd65c49d11ad73932ad6c04dde8ba813ec51b39b2d67c5afd",
-      "created_by": "7c8e8791-8cdf-4266-803f-bf769091822a",
-      "created_at": "2026-11-25T18:12:18.734Z"
+      "created_by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
+      "created_at": "2026-11-26T02:18:00.512Z"
      },
      {
       "rev_no": 2,
       "reason": "checkpoint: the designed conference room",
       "sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
-      "created_by": "7c8e8791-8cdf-4266-803f-bf769091822a",
-      "created_at": "2026-11-25T18:12:19.227Z"
+      "created_by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
+      "created_at": "2026-11-26T02:18:00.818Z"
      }
     ],
     "issues": [
@@ -937,8 +937,8 @@
       "resolution": null,
       "first_seen_rev": 2,
       "last_seen_rev": 2,
-      "created_at": "2026-11-25T18:12:25.871Z",
-      "updated_at": "2026-11-25T18:12:25.871Z"
+      "created_at": "2026-11-26T02:18:04.928Z",
+      "updated_at": "2026-11-26T02:18:04.928Z"
      },
      {
       "code": "RISS-0004",
@@ -954,8 +954,8 @@
       "resolution": null,
       "first_seen_rev": 2,
       "last_seen_rev": 2,
-      "created_at": "2026-11-25T18:12:25.871Z",
-      "updated_at": "2026-11-25T18:12:25.871Z"
+      "created_at": "2026-11-26T02:18:04.928Z",
+      "updated_at": "2026-11-26T02:18:04.928Z"
      },
      {
       "code": "RISS-0002",
@@ -969,8 +969,8 @@
       "state": "RESOLVED",
       "owner_role": null,
       "resolution": {
-       "at": "2026-11-25T18:12:18.954Z",
-       "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+       "at": "2026-11-26T02:18:00.668Z",
+       "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
        "how": "the design check no longer fires after: device added PA-0061",
        "byRole": "designer",
        "revision": 1,
@@ -978,12 +978,12 @@
       },
       "first_seen_rev": 1,
       "last_seen_rev": 1,
-      "created_at": "2026-11-25T18:12:18.871Z",
-      "updated_at": "2026-11-25T18:12:18.937Z"
+      "created_at": "2026-11-26T02:18:00.608Z",
+      "updated_at": "2026-11-26T02:18:00.657Z"
      }
     ],
     "commissioning": {
-     "planId": "11679620-bd8a-49cb-9bf6-561b0c26195f",
+     "planId": "798c25b5-e503-49c1-be7a-ec75a66367f9",
      "engineVersion": "2.5.4-port.1",
      "ruleVersion": "2.5.0",
      "library": 94,
@@ -1002,7 +1002,7 @@
        "network_switch"
       ]
      },
-     "compiledAt": "2026-11-25T18:12:25.260Z",
+     "compiledAt": "2026-11-26T02:18:04.548Z",
      "counts": {
       "applicable": 75,
       "recorded": 75,
@@ -3174,7 +3174,7 @@
      ]
     }
    },
-   "correlationId": "0a737357-8885-4fd5-86f3-79e334342b94"
+   "correlationId": "fb197921-2763-422f-b6ec-5b60f21974e1"
   },
   {
    "method": "GET",
@@ -3197,31 +3197,31 @@
      "rot": 0,
      "lifecycle": "INSTALLED_UNVERIFIED",
      "removedAt": null,
-     "createdAt": "2026-11-25T18:12:18.937Z"
+     "createdAt": "2026-11-26T02:18:00.657Z"
     },
     "design": {
      "model": "SYN-PTZ-12X (synthetic PTZ camera)",
      "modelHistory": [
       {
-       "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+       "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
        "model": "generic",
-       "until": "2026-11-25T18:12:25.877Z",
+       "until": "2026-11-26T02:18:04.931Z",
        "generic": true
       }
      ],
      "revisions": [
       {
        "revision": 1,
-       "at": "2026-11-25T18:12:18.734Z",
-       "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+       "at": "2026-11-26T02:18:00.512Z",
+       "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
        "model": null,
        "category": null,
        "inRevision": false
       },
       {
        "revision": 2,
-       "at": "2026-11-25T18:12:19.227Z",
-       "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+       "at": "2026-11-26T02:18:00.818Z",
+       "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
        "model": "generic",
        "category": "camera",
        "inRevision": true
@@ -3230,45 +3230,45 @@
     },
     "installations": [
      {
-      "id": "fb1f8633-5307-4ffc-881c-6fbb7ffe68b9",
+      "id": "ea46f6bc-478c-40e1-9b96-2981c7b639bd",
       "position": "PA-0061",
       "room": "R-PLN-0004",
       "asset": "AS-0002",
       "model": "generic",
-      "installedAt": "2026-11-25T18:12:19.711Z",
+      "installedAt": "2026-11-26T02:18:01.106Z",
       "basis": "RECORDED",
       "installReason": "INITIAL",
-      "installedBy": "8136742f-b5ba-4091-a4b1-afe2c7836c5f",
+      "installedBy": "783c2147-92fe-459c-ae1c-9e4b6f387405",
       "installedRole": "installer",
       "note": "recorded with the room’s installation (identity not yet recorded)",
       "evidenceId": null,
-      "eventId": "5f9b68c5-daa8-4947-941c-073fde0933ec",
-      "correlationId": "f501673c-1ba5-4dff-a52f-0b4ff8c214a8",
-      "removedAt": "2026-11-25T18:12:25.871Z",
+      "eventId": "df2932a3-d1a6-4688-bc99-1206fa0970c2",
+      "correlationId": "da0ddae5-8c35-40c8-8d72-58f3d33a0724",
+      "removedAt": "2026-11-26T02:18:04.928Z",
       "removalReason": "SUBSTITUTED",
-      "removedBy": "7c8e8791-8cdf-4266-803f-bf769091822a",
+      "removedBy": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
       "removedRole": "designer",
       "removalNote": "model substitution generic → SYN-PTZ-12X (synthetic PTZ camera)",
       "removalEvidenceId": null,
-      "removalEventId": "93a6bd06-2190-4a90-a254-7ede711e72b3",
-      "removalCorrelationId": "f24f69ca-68fb-4557-ac99-8347cb34bf2a",
-      "sentence": "AS-0002 installed at PA-0061 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); removed 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substituted)"
+      "removalEventId": "46afa804-2e83-473d-a626-0992ffb1c408",
+      "removalCorrelationId": "6ab6648d-9fd8-4d84-8abb-2ee823cc2177",
+      "sentence": "AS-0002 installed at PA-0061 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); removed 2026-11-26T02:18:04.928Z by 6fb5b94e-f231-4c52-80a1-54e99c30c4c1 (substituted)"
      },
      {
-      "id": "01fd7e94-2c63-4605-804d-3429d6993744",
+      "id": "cb9a5a92-7b46-4bd7-a378-a9e921c586f7",
       "position": "PA-0061",
       "room": "R-PLN-0004",
       "asset": "AS-0009",
       "model": "SYN-PTZ-12X (synthetic PTZ camera)",
-      "installedAt": "2026-11-25T18:12:25.871Z",
+      "installedAt": "2026-11-26T02:18:04.928Z",
       "basis": "RECORDED",
       "installReason": "SUBSTITUTION",
-      "installedBy": "7c8e8791-8cdf-4266-803f-bf769091822a",
+      "installedBy": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
       "installedRole": "designer",
       "note": "model substitution generic → SYN-PTZ-12X (synthetic PTZ camera)",
       "evidenceId": null,
-      "eventId": "93a6bd06-2190-4a90-a254-7ede711e72b3",
-      "correlationId": "f24f69ca-68fb-4557-ac99-8347cb34bf2a",
+      "eventId": "46afa804-2e83-473d-a626-0992ffb1c408",
+      "correlationId": "6ab6648d-9fd8-4d84-8abb-2ee823cc2177",
       "removedAt": null,
       "removalReason": null,
       "removedBy": null,
@@ -3277,7 +3277,7 @@
       "removalEvidenceId": null,
       "removalEventId": null,
       "removalCorrelationId": null,
-      "sentence": "AS-0009 installed at PA-0061 on 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substitution); still installed"
+      "sentence": "AS-0009 installed at PA-0061 on 2026-11-26T02:18:04.928Z by 6fb5b94e-f231-4c52-80a1-54e99c30c4c1 (substitution); still installed"
      }
     ],
     "current": {
@@ -3287,7 +3287,7 @@
     },
     "note": "the design history (model substitutions) belongs to the position; the installation timeline names the physical units that occupied it — each unit keeps its own history (GET /v1/assets/{asset}/history)"
    },
-   "correlationId": "3f2bb4e9-768e-45d0-bdfa-d2950140d94c"
+   "correlationId": "54da6296-7bec-489f-ae78-f66848cd5772"
   },
   {
    "method": "GET",
@@ -3300,16 +3300,16 @@
      "category": "camera",
      "manufacturer": null,
      "model": "generic",
-     "serial": "SYN-SN-R-PLN-0004-179-2",
+     "serial": "SYN-SN-R-PLN-0004-104-2",
      "identityState": "DECLARED",
      "identityEvidenceId": null,
      "origin": "INSTALLATION_RECORD",
-     "createdAt": "2026-11-25T18:12:19.711Z",
-     "createdBy": "8136742f-b5ba-4091-a4b1-afe2c7836c5f",
+     "createdAt": "2026-11-26T02:18:01.106Z",
+     "createdBy": "783c2147-92fe-459c-ae1c-9e4b6f387405",
      "disposition": "RETIRED",
      "retired": {
-      "at": "2026-11-25T18:12:25.871Z",
-      "by": "7c8e8791-8cdf-4266-803f-bf769091822a",
+      "at": "2026-11-26T02:18:04.928Z",
+      "by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
       "byRole": "designer",
       "reason": "DISPOSED",
       "note": "model substitution generic → SYN-PTZ-12X (synthetic PTZ camera)"
@@ -3319,61 +3319,61 @@
      {
       "from": "UNKNOWN",
       "to": "DECLARED",
-      "serial": "SYN-SN-R-PLN-0004-179-2",
+      "serial": "SYN-SN-R-PLN-0004-104-2",
       "manufacturer": null,
       "evidenceId": null,
       "note": null,
-      "by": "8136742f-b5ba-4091-a4b1-afe2c7836c5f",
+      "by": "783c2147-92fe-459c-ae1c-9e4b6f387405",
       "byRole": "installer",
-      "correlationId": "cf76bf4c-6d0c-4c2e-959c-b2f54c9ded12",
-      "at": "2026-11-25T18:12:19.897Z"
+      "correlationId": "adfdcca5-178b-4c4e-a124-31d63f75efa4",
+      "at": "2026-11-26T02:18:01.209Z"
      }
     ],
     "installations": [
      {
-      "id": "fb1f8633-5307-4ffc-881c-6fbb7ffe68b9",
+      "id": "ea46f6bc-478c-40e1-9b96-2981c7b639bd",
       "position": "PA-0061",
       "room": "R-PLN-0004",
       "asset": "AS-0002",
       "model": "generic",
-      "installedAt": "2026-11-25T18:12:19.711Z",
+      "installedAt": "2026-11-26T02:18:01.106Z",
       "basis": "RECORDED",
       "installReason": "INITIAL",
-      "installedBy": "8136742f-b5ba-4091-a4b1-afe2c7836c5f",
+      "installedBy": "783c2147-92fe-459c-ae1c-9e4b6f387405",
       "installedRole": "installer",
       "note": "recorded with the room’s installation (identity not yet recorded)",
       "evidenceId": null,
-      "eventId": "5f9b68c5-daa8-4947-941c-073fde0933ec",
-      "correlationId": "f501673c-1ba5-4dff-a52f-0b4ff8c214a8",
-      "removedAt": "2026-11-25T18:12:25.871Z",
+      "eventId": "df2932a3-d1a6-4688-bc99-1206fa0970c2",
+      "correlationId": "da0ddae5-8c35-40c8-8d72-58f3d33a0724",
+      "removedAt": "2026-11-26T02:18:04.928Z",
       "removalReason": "SUBSTITUTED",
-      "removedBy": "7c8e8791-8cdf-4266-803f-bf769091822a",
+      "removedBy": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
       "removedRole": "designer",
       "removalNote": "model substitution generic → SYN-PTZ-12X (synthetic PTZ camera)",
       "removalEvidenceId": null,
-      "removalEventId": "93a6bd06-2190-4a90-a254-7ede711e72b3",
-      "removalCorrelationId": "f24f69ca-68fb-4557-ac99-8347cb34bf2a",
+      "removalEventId": "46afa804-2e83-473d-a626-0992ffb1c408",
+      "removalCorrelationId": "6ab6648d-9fd8-4d84-8abb-2ee823cc2177",
       "roomName": "Checkpoint conference room (synthetic)",
-      "sentence": "AS-0002 installed at PA-0061 on 2026-11-25T18:12:19.711Z by 8136742f-b5ba-4091-a4b1-afe2c7836c5f (initial); removed 2026-11-25T18:12:25.871Z by 7c8e8791-8cdf-4266-803f-bf769091822a (substituted)"
+      "sentence": "AS-0002 installed at PA-0061 on 2026-11-26T02:18:01.106Z by 783c2147-92fe-459c-ae1c-9e4b6f387405 (initial); removed 2026-11-26T02:18:04.928Z by 6fb5b94e-f231-4c52-80a1-54e99c30c4c1 (substituted)"
      }
     ],
     "register": [
      {
       "version": 1,
       "hostname": "syn-r-pln-0004-2",
-      "ip": "10.199.0.4",
+      "ip": "10.124.0.4",
       "mac": null,
       "firmware": null,
       "location": null,
-      "by": "8136742f-b5ba-4091-a4b1-afe2c7836c5f",
+      "by": "783c2147-92fe-459c-ae1c-9e4b6f387405",
       "byRole": "installer",
-      "at": "2026-11-25T18:12:19.883Z"
+      "at": "2026-11-26T02:18:01.200Z"
      }
     ],
     "current": null,
     "note": null
    },
-   "correlationId": "4f4a04a4-5508-4c0b-a0be-07a340ff1ce7"
+   "correlationId": "87273aff-7ad2-4ef4-bce0-46917bd7c76d"
   }
  ]
 }
