@@ -5,14 +5,15 @@ Founder decisions CR-D2 and CR-D3 (26 Nov 2026, 04:50 CT) and the American Engli
 ## What changed
 
 - **The text people read** in the demonstrator, the website and the shared interface package uses American spellings, written by
-  `scripts/content/american-english.mjs --write` and, where the tool cannot reach, by hand (237 source files in all). The names of
+  `scripts/content/american-english.mjs --write` and, where the tool cannot reach, by hand (238 files of the apps, the shared interface and the API in all). The names of
   fictional places in the United States use Center and Theater (Larkspur Exchange Convention Center, Lecture Theater SCI-110,
   Stonebridge Resilience Center and the rest); so do the source comments, the current documents and the two place names the API's
   demonstration seed shows (`services/enterprise-api/src/domain/demo.ts`, shown on the flagship page).
 - **Collabora-SING** is the one spelling people read and the current documents use, the media set's series name included.
 - **Search finds either spelling** (`apps/demo/src/search/spelling.ts`, used by the page search and the menu search): "lecture theatre"
-  finds what now says "theater", and "theater" finds text that keeps its British spelling. Checked by
-  `tests/unit/search-spellings.test.mjs`.
+  finds what now says "theater", and "theater" finds text that keeps its British spelling. The page search also ranks the two alike
+  (a building named outright leads either way). Checked by `tests/unit/search-spellings.test.mjs`. The menu search finds both, but
+  its two ranking bonuses (an alias that starts the query, a title holding the first word) still read the spelling as typed: next pass.
 - **By hand**, where the tool keeps a one-word or ALL-CAPS string because it cannot tell a label from a key: the shared status chip
   "Modeled", the bench's "WHITE IS NOT ONE COLOR" and "LIVE ANALYZER", the capture card's "Synchronize"/"Synchronized", the lighting
   lab's "Color" control and its knob labels, the color picker's accessible name, the meeting's "(organizer)", the lesson's "Practice".
@@ -36,13 +37,17 @@ Founder decisions CR-D2 and CR-D3 (26 Nov 2026, 04:50 CT) and the American Engli
 The tool's scope is the demonstrator, the website and the shared interface package. Still British, and said here so it is not
 mistaken for done: text that reaches a screen from other packages (the price book's connector catalog and room licences, the search
 engine's coverage notes, the service engine's equipment names such as "audio analyser") and from the API, apart from the two place
-names; labels made from enum values (an export's state "Cancelled"); and one-word labels the tool keeps and nobody has listed yet
-(for example a seat position "Centre", a level "Practised"). Search finds them by either spelling meanwhile.
+names; labels made from enum values; and one-word labels and short phrases the tool keeps. Found so far, for the next pass:
+`BuildRoom.tsx:109` "Corners in metres"; "modelled" in `export/cx.ts:62,121,140`, `export/plan.ts:37` and the room descriptions in
+search results (`search/find.ts:54`); `export/cx.ts:95` "Modelled"; `StiBench.tsx:20` "Centre"; `parity/core.ts:203` "Organisation";
+`BossRunner.tsx:153` "Labour"; "Cancelled" in `MeetPage.tsx:183`, `here/model.ts:99`, `intake/store.ts:207,212`; `involvement.ts:57`
+"Practised". Search finds them by either spelling meanwhile. Also for the next pass: the spelling fold maps a few derived forms to
+non-words ("centred" to "centerd"), so those find only their own spelling.
 
 ## Tests
 
 - **Changed lines** (table below): each compares text whose spelling changed, and changes that spelling only. Six are checks that a
-  word must NOT appear (a fan's view twice, the public summary three times, the manual's unit names); they use the new spelling, or either spelling,
+  word must NOT appear (two fan views, a guest's access page, two public views, the manual's unit names); they use the new spelling, or either spelling,
   so that they still test something. No condition, count, selector or check title was changed; no check was removed or loosened.
 - **Added**: `tests/unit/search-spellings.test.mjs` (above).
 - **Listed in the runner for the first time** (`scripts/test.mjs`): thirteen unit files written 12–13 Nov that no run of record had
@@ -138,7 +143,7 @@ names; labels made from enum values (an export's state "Cancelled"); and one-wor
 | `tests/unit/demo-intake.test.mjs` | 36 | modelled → modeled |
 | `tests/unit/demo-intake.test.mjs` | 169 | modelled → modeled |
 | `tests/unit/demo-intake.test.mjs` | 170 | modelled → modeled |
-| `tests/unit/demo-manual.test.mjs` | 50 | must not appear: `metres?` kept, and a number followed by `meter(s)` added ("meter" alone is the instrument) |
+| `tests/unit/demo-manual.test.mjs` | 50 | must not appear: `metres?` kept and `meters` added (the manual writes "meter" only for the instrument) |
 | `tests/unit/demo-manual.test.mjs` | 57 | practising → practicing |
 | `tests/unit/demo-manual.test.mjs` | 82 | organisation → organization |
 | `tests/unit/demo-onboard.test.mjs` | 54 | organisation → organization |

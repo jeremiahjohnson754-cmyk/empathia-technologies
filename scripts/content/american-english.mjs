@@ -79,6 +79,7 @@ function edits(file, text) {
   };
   const lines = text.split('\n'); const kept = new Set(); let region = false;
   lines.forEach((l, i) => { if (/american-english: keep-start/.test(l)) region = true; if (region || /american-english: keep\b(?!-)/.test(l)) kept.add(i); if (/american-english: keep-end/.test(l)) region = false; });
+  if (region) console.warn(`${file}: american-english: keep-start without keep-end; the rest of the file is kept`);
   const keptAt = (node) => kept.has(sf.getLineAndCharacterOfPosition(node.getStart(sf)).line);
   const visit = (node) => {
     let raw = null; let start = 0;

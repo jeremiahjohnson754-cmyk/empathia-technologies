@@ -32,3 +32,9 @@ test('the page search gives the same results for either spelling (the campus lec
   assert.deepEqual(find.find('operations centre').map((h) => h.id), find.find('operations center').map((h) => h.id));
   assert.ok(find.find('operations centre').length > 0);
 });
+
+test('either spelling ranks the same: a building named outright leads, whichever way it is spelled', () => {
+  const uk = find.find('centre', 40).map((h) => h.id), us = find.find('center', 40).map((h) => h.id);
+  assert.deepEqual(uk, us);
+  assert.equal(find.find('center', 40)[0].kind, 'building', find.find('center', 3).map((h) => h.label).join(' | '));
+});

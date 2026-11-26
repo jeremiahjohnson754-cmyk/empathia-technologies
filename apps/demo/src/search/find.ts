@@ -84,7 +84,7 @@ export function find(query: string, limit = 12): Hit[] {
     }
     // a building named outright ("atlas", "atlas hq") leads its own rooms, whose labels begin with its name too (20 Nov 2026: with 43
     // rooms in Atlas the building fell below the first forty results and was never offered)
-    if (all && score && h.kind === 'building') { const ws = label.split(/[^a-z0-9.\-]+/).filter(Boolean); if (tokens.every((t) => ws.some((w) => w.startsWith(t)))) score += 4; }
+    if (all && score && h.kind === 'building') { const ws = label.split(/[^a-z0-9.\-]+/).filter(Boolean); if (tokens.every((t) => spellings(t).some((v) => ws.some((w) => w.startsWith(v))))) score += 4; }   // either spelling, as above
     if (all && score) out.push({ ...h, score: score * 10 + KIND_WEIGHT[h.kind], why: why.join(', ') || undefined });
   }
   out.sort((a, b) => b.score! - a.score! || a.label.localeCompare(b.label));

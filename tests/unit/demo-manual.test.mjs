@@ -47,7 +47,7 @@ test('MN-02 it carries no pass mark, names nobody, reproduces no standard and te
   const text = JSON.stringify([M.CHAPTERS.map((c) => [c.title, c.aim, c.open, c.principles.map((p) => [p.say, p.why, p.check, p.noWaiver])]), M.VALUES.map((v) => [v.name, v.ask, v.from]), M.NO_NUMBERS]);
   const noIds = text.replace(/\b[A-Z]-\d\d\b/g, '');
   assert.equal(/\d/.test(noIds), false, `a digit in the manual’s text: ${(noIds.match(/.{30}\d.{30}/) || [''])[0]}`);
-  assert.equal(/\b(dBA?|dBFS|STI|ALcons|LAeq|RT60|millisecond|metres?|\d[\d.,]*\s*meters?|inch|percent|degrees?)\b/.test(text), false, 'a unit or a named metric, which belongs to the organisation’s own value');
+  assert.equal(/\b(dBA?|dBFS|STI|ALcons|LAeq|RT60|millisecond|metres?|meters|inch|percent|degrees?)\b/.test(text), false, 'a unit or a named metric, which belongs to the organisation’s own value');
   assert.equal(/\b(ISO|IEC|ANSI|AVIXA|InfoComm|ITU|EBU|SMPTE|IEEE|ADA|EN \d)/.test(text), false, 'a published standard is named or reproduced');
   assert.equal(/q-?sys|shure|crestron|biamp|extron|cisco|logitech|microsoft|webex|power ?bi|kraft|heinz|stefanini|khc/i.test(text), false, 'a maker, a product or an organisation is named');
   assert.equal(/\b(Dante|MXA|Poly|Teams|Zoom|AON|Aon)\b/.test(text), false, 'a product or an organisation is named (as a name: “digital zoom” and “the AV team” are ordinary words)');
