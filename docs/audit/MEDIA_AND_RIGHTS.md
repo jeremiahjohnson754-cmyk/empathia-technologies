@@ -45,7 +45,7 @@ confirmation before any new use. This is an inventory, not a legal opinion.
 | `booklets` | The End-User and IT Onboarding guides as PDF, with covers | `docs/media/BOOKLETS.md` |
 | `broll` | Short background clips for the website | `docs/media/WEBSITE_FILM_PLACEMENT.md`; per-clip rights: NOT STATED in a file beside the clips |
 | `fieldlink` | Concept renders of the proposed FieldLink devices | Concept images; no unit exists. Marked “concept” on the site |
-| `founder` | The founder’s portrait, in sizes | `docs/media/FOUNDER_PORTRAIT.json`. The existing photograph is kept and is never replaced |
+| `founder` | The founder’s portrait, in sizes | `docs/media/FOUNDER_PORTRAIT.json`. The photograph the founder supplied on 25 Nov 2026 replaced the earlier one at his direction (crop approved 26 Nov); both originals are kept |
 | `hero`, `product`, `keepsake` | Posters and screenshots of the demonstration | Captured from the demonstration on synthetic data |
 
 ## Demonstrator (`apps/demo/public/media`)

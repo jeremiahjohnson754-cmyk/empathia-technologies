@@ -148,7 +148,7 @@ export const PlanRecord = ({ id, title, state, cols, rows, foot }: { id: string;
 
 /** FounderPortrait: the one place the founder's photograph is rendered (the home page's founder section and the founder page).
  *  It is the photograph he supplied on 2026-11-25 to replace the earlier one (only the photograph; this component, its sizes and its
- *  alternative text are unchanged), cropped square to head and shoulders as he approved on 2026-11-26, colour as taken. The original
+ *  alternative text are unchanged), cropped square to head and shoulders as he approved on 2026-11-26, its Display P3 colours converted to sRGB, nothing retouched. The original
  *  is kept untouched at apps/website/media-src/founder/founder-2026-11-25-supplied.jpg, and the earlier one (2026-11-10) at
  *  founder-original.webp; the three sizes served here are made by apps/website/scripts/portrait.mjs (crop, hashes and history:
  *  docs/media/FOUNDER_PORTRAIT.json).

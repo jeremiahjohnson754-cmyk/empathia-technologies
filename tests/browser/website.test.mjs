@@ -461,13 +461,14 @@ for (const [w, h] of [[1440, 900], [768, 1024], [390, 844]]) {
   const rm = await prm.evaluate(() => ({ moving: Array.from(document.querySelectorAll('[data-collabora] *')).filter((e) => { const s = getComputedStyle(e); return (s.animationName && s.animationName !== 'none') || parseFloat(s.transitionDuration) > 0; }).length, paused: document.querySelector('video') ? document.querySelector('video').paused : true }));
   ok('WC-reduced-motion', 'for readers who ask for reduced motion nothing in the section animates and the film stays still until asked', rm.moving === 0 && rm.paused, JSON.stringify(rm)); await cr.close();
 
-  // the founder's picture (supplied 2026-11-10): on the home page and the founder page, whole, with its intrinsic size and a name-only alternative text
+  // the founder's picture (the photograph he supplied 2026-11-25, cropped square as he approved 2026-11-26; wording changed 26 Nov, the checks are
+  // unchanged): on the home page and the founder page, square, with its intrinsic size and a name-only alternative text
   const ALT = 'Jeremiah Johnson, founder of Empathia Technologies';
   for (const [p, sel, w] of [['/', '[data-founder=home]', 1440], ['/founder', '[data-founder=founder]', 1440], ['/founder', '[data-founder=founder]', 390]]) {
     const c = await newCtx({ viewport: { width: w, height: 900 } }); const pp = await c.newPage(); const e2 = []; const x2 = []; watch(pp, e2, x2); await pp.goto(base + p, { waitUntil: 'load' });
     await pp.locator(`${sel} .portrait img`).scrollIntoViewIfNeeded(); await pp.waitForFunction((s) => { const i = document.querySelector(`${s} .portrait img`); return i.complete && i.naturalWidth > 0; }, sel, { timeout: 8000 }).catch(() => {});
     const im = await pp.evaluate((s) => { const i = document.querySelector(`${s} .portrait img`); const b = i.getBoundingClientRect(); const src = i.closest('picture').querySelector('source'); return { n: document.querySelectorAll('main .portrait img').length, alt: i.alt, wAttr: i.getAttribute('width'), hAttr: i.getAttribute('height'), loaded: i.complete && i.naturalWidth > 0, nw: i.naturalWidth, nh: i.naturalHeight, cur: (i.currentSrc || '').replace(location.origin, ''), boxW: b.width, boxH: b.height, fit: getComputedStyle(i).objectFit, srcset: i.getAttribute('srcset'), webp: src?.getAttribute('srcset'), sizes: i.getAttribute('sizes'), over: document.documentElement.scrollWidth - document.documentElement.clientWidth }; }, sel);
-    ok(`WF-portrait-${p}-${w}`, `${p} at ${w} px shows the founder's picture once, loaded from this site, whole (square, as supplied), with its intrinsic width and height stated and the alternative text "${ALT}"`,
+    ok(`WF-portrait-${p}-${w}`, `${p} at ${w} px shows the founder's picture once, loaded from this site, square, as the founder approved it, with its intrinsic width and height stated and the alternative text "${ALT}"`,
       im.n === 1 && im.alt === ALT && im.wAttr === '960' && im.hAttr === '960' && im.loaded && im.nw > 0 && im.nw === im.nh && /^\/media\/founder\/(320|640|960)\.(webp|jpg)$/.test(im.cur) && Math.abs(im.boxW - im.boxH) <= 1 && im.boxW >= 280 && /320w.*640w.*960w/.test(im.srcset) && /320\.webp 320w.*960\.webp 960w/.test(im.webp || '') && !!im.sizes && im.over <= 0 && !e2.length && !x2.length, JSON.stringify({ ...im, e2, x2 }));
     await c.close();
   }

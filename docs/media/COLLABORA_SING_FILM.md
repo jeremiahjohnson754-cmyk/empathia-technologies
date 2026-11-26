@@ -107,22 +107,18 @@ section then publishes without a player; nothing else changes.
 
 ## 5. The founder's photograph
 
-Supplied as a 1440×1440 WebP (SHA-256 `6b63e655f3f46d7d6ead1df9520a72ce1149b7bb3b395ff5f958458fc9aa0239`). It is the founder's
-photograph, and it stays: "KEEP MY EXISTING FOUNDER PHOTOGRAPH. DO NOT REPLACE IT." (founder, 10 Nov 2026). His face, likeness and
-pose are preserved; grading, lighting, tonal balance and clarity only; no generated version. Rights basis, as recorded in
-`docs/media/FOUNDER_PORTRAIT.json`: the founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films,
-music and creative assets he supplied, for authorised use in Empathia.
+**Replaced by the founder on 25 Nov 2026.** He supplied a new photograph ("Photo for the founder picture", 16:56 CT) and directed that
+only the photograph be replaced, not the graphics or features around it (17:33 CT); he approved its crop on 26 Nov 2026 04:30 CT. The
+record of both photographs, the crop, the colour conversion and every hash is `docs/media/FOUNDER_PORTRAIT.json`. Rights basis: the
+founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films, music and creative assets he supplied,
+for authorised use in Empathia.
 
-- **The original is kept untouched** in the repository as the recoverable source:
-  `apps/website/media-src/founder/founder-original.webp` (byte-identical to the supplied file; the script refuses to run if its hash
-  changes).
-- `node apps/website/scripts/portrait.mjs` writes 320, 640 and 960 px in WebP and JPEG to `apps/website/media/founder/` and the
-  settings and hashes to `docs/media/FOUNDER_PORTRAIT.json`. The earlier 480/800/1200 files (a 4:5 crop of the same photograph,
-  enlarged) are removed.
-- The renditions carry a restrained grade applied to the whole picture alike: white balance (red × 0.965, green × 1.02, blue ×
-  1.03), exposure (gamma 1.10), tonal balance (sigmoidal contrast 2.2 at 48 %) and clarity (unsharp mask 0 × 1.4, amount 0.35,
-  threshold 0.02). No mask, no local edit, no retouching, no crop, nothing generated, background unchanged. `--no-grade` gives the
-  renditions without it.
+- **Both originals are kept untouched** in the repository as recoverable sources (the script refuses to run if either hash changes):
+  `apps/website/media-src/founder/founder-2026-11-25-supplied.jpg` (1449 × 2576, current) and `founder-original.webp` (1440 × 1440,
+  supplied 10 Nov, served until 26 Nov with a restrained whole-picture grade).
+- `node apps/website/scripts/portrait.mjs` writes 320, 640 and 960 px in WebP and JPEG to `apps/website/media/founder/`: the square
+  1449 × 1449 at (0, 380), head and shoulders, the crop he approved; colours converted from the photograph's Display P3 profile to
+  sRGB; resized; metadata stripped. No grade, no mask, no retouching, nothing generated. `--previous` remakes the earlier renditions.
 - On the site it is rendered by one component, `FounderPortrait` (`apps/website/src/ui.tsx`), on the home page's founder section and
   on the founder page: whole (square), `width="960" height="960"`, responsive sources, alternative text "Jeremiah Johnson, founder of
   Empathia Technologies". The component adds no animation.
