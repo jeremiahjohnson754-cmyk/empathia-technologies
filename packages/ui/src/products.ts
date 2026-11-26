@@ -24,6 +24,12 @@ export interface Product {
   order: number;
   /** one line on what it does (menus, rails, tooltips, product pages) */
   purpose: string;
+  /**
+   * A few plain words under the name, for a first-time reader (25 Nov 2026, commercial readiness: an external review found "Search Party,
+   * ServiceHands, APEX, Field Intelligence and SIGNAL mean nothing to a first-time viewer"; the founder kept the names and asked for
+   * subtitles). Says what the product is for, not how it works; no claim, no tier, no price.
+   */
+  subtitle: string;
   /** the colour token, e.g. "--p-lite", and a ready CSS value, e.g. "var(--p-lite)" */
   colorVar: `--p-${ProductId}`;
   color: `var(--p-${ProductId})`;
@@ -33,28 +39,28 @@ export interface Product {
   apps: ProductApp[];
 }
 
-const def = (order: number, id: ProductId, name: string, purpose: string, apps: Omit<ProductApp, 'product'>[] = []): Product => ({
-  id, name, order, purpose, colorVar: `--p-${id}`, color: `var(--p-${id})`, inkVar: `--p-${id}-ink`, apps: apps.map((a) => ({ ...a, product: id })),
+const def = (order: number, id: ProductId, name: string, subtitle: string, purpose: string, apps: Omit<ProductApp, 'product'>[] = []): Product => ({
+  id, name, order, subtitle, purpose, colorVar: `--p-${id}`, color: `var(--p-${id})`, inkVar: `--p-${id}-ink`, apps: apps.map((a) => ({ ...a, product: id })),
 });
 
 export const PRODUCTS: readonly Product[] = Object.freeze([
-  def(1, 'mission-control', 'Mission Control', 'What changed, what matters and what needs action, across every product', [
+  def(1, 'mission-control', 'Mission Control', 'Your daily operations briefing', 'What changed, what matters and what needs action, across every product', [
     { name: 'Executive intelligence', purpose: 'Every measure with its numerator, denominator, window, coverage and freshness' },
   ]),
-  def(2, 'lite', 'Lite', 'Spatial room design on the real engine, with equipment proposals from comparable rooms', [
+  def(2, 'lite', 'Lite', 'Room design and planning', 'Spatial room design on the real engine, with equipment proposals from comparable rooms', [
     { name: 'Build a Room', purpose: 'A room model from an archetype, dimensions, plans and photos, each with its provenance', featured: true },
     { name: 'Scouter', purpose: 'Equipment proposals from comparable rooms, reviewed by the discipline engineer', featured: true },
   ]),
-  def(3, 'pro', 'Pro', 'Operational intelligence: portfolio, projects and service performance'),
-  def(4, 'search-party', 'Search Party', 'Universal search and the relationships between rooms, devices, people and projects'),
-  def(5, 'servicehands', 'ServiceHands', 'Work orders closed with field evidence and a verified retest'),
-  def(6, 'commissioning', 'Commissioning & Assurance', 'Adaptive test plans, evidence, independent verification, accepted baselines and drift', [
+  def(3, 'pro', 'Pro', 'Portfolio and service operations', 'Operational intelligence: portfolio, projects and service performance'),
+  def(4, 'search-party', 'Search Party', 'Search and impact questions', 'Universal search and the relationships between rooms, devices, people and projects'),
+  def(5, 'servicehands', 'ServiceHands', 'Service requests and repairs', 'Work orders closed with field evidence and a verified retest'),
+  def(6, 'commissioning', 'Commissioning & Assurance', 'Testing, sign-off and drift', 'Adaptive test plans, evidence, independent verification, accepted baselines and drift', [
     { name: 'Universal Commissioning', purpose: 'Adaptive test plans with the reason for every test, and independent verification' },
     { name: 'Assurance', purpose: 'Accepted baselines and drift read against them' },
   ]),
-  def(7, 'apex', 'APEX', 'Diagnosis with its evidence: cited layers, ranked hypotheses, bounded action'),
-  def(8, 'field', 'Field Intelligence', 'What a collector declares, what a check observes, what is verified'),
-  def(9, 'learn', 'Learn', 'Reviewed cases and training from what actually happened', [
+  def(7, 'apex', 'APEX', 'Guided fault diagnosis', 'Diagnosis with its evidence: cited layers, ranked hypotheses, bounded action'),
+  def(8, 'field', 'Field Intelligence', 'On-site room checks', 'What a collector declares, what a check observes, what is verified'),
+  def(9, 'learn', 'Learn', 'Training from real cases', 'Reviewed cases and training from what actually happened', [
     { name: 'SIGNAL', purpose: 'The story and labs that link lessons to competencies; training never grants authority' },
   ]),
 ]);

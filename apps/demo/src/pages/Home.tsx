@@ -170,7 +170,7 @@ function MissionControl({ role }: PageProps) {
       <JumpBar s={start} />
       {/* ---------------------------------------------------------------- the products this role can open */}
       {products.length > 0 && <nav className="mc-products" aria-label="Products" data-testid="mc-products">
-        {products.map(({ p, landing }) => <a key={p.id} href={hrefOf(landing!.id)} className={`mc-prod kit-s--${p.id}`} data-p={p.id}><span className="mc-prod__mark" aria-hidden="true" /><b>{p.name}</b><span className="mc-prod__n">{pnum[p.id]}</span><Icon name="chevron" size={16} /></a>)}
+        {products.map(({ p, landing }) => <a key={p.id} href={hrefOf(landing!.id)} className={`mc-prod kit-s--${p.id}`} data-p={p.id}><span className="mc-prod__mark" aria-hidden="true" /><b>{p.name}</b><span className="mc-prod__sub">{p.subtitle}</span><span className="mc-prod__n">{pnum[p.id]}</span><Icon name="chevron" size={16} /></a>)}
       </nav>}
 
       {/* ---------------------------------------------------------------- greeting + what needs you · what can I help you do */}

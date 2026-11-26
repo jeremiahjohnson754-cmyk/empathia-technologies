@@ -76,3 +76,14 @@ test('kit.css: on the tokens, no literal colours; kit components carry no style 
   }
   for (const f of ['kit.tsx', 'icons.tsx', 'components.tsx']) assert.doesNotMatch(fs.readFileSync(path.join(repo, 'packages/ui/src', f), 'utf8'), /\bstyle=\{/, `${f} writes a style attribute`);
 });
+
+test('every product has a plain subtitle a first-time reader understands: a few words, no product name, no tier or price (25 Nov 2026)', () => {
+  const names = PRODUCTS.map((p) => p.name.toLowerCase());
+  for (const p of PRODUCTS) {
+    assert.ok(typeof p.subtitle === 'string' && p.subtitle.length >= 8, p.id);
+    const words = p.subtitle.split(/\s+/); assert.ok(words.length >= 2 && words.length <= 5, `${p.id}: "${p.subtitle}" is ${words.length} words`);
+    assert.ok(!names.some((n) => p.subtitle.toLowerCase().includes(n)), `${p.id}: the subtitle repeats a product name`);
+    assert.doesNotMatch(p.subtitle, /\b(tier|plan|price|pricing|premium|basic|\$|free)\b/i, `${p.id}: a subtitle is not packaging`);
+  }
+  assert.equal(new Set(PRODUCTS.map((p) => p.subtitle)).size, PRODUCTS.length);
+});
