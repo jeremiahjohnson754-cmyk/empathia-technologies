@@ -19,7 +19,7 @@ import { lensesFor, lensFor, ALL_SITES, roomsOf, buildingSummary, campusSummary,
 import { LiteWorldPage } from './LiteWorlds.js';
 import { LiteRoom } from './LiteRoom.js';
 import { BuildingStage, FloorStage, CampusStage, floorPlan } from './BuildingScenes.js';
-import { bandOf as metricBand } from '../campus/metrics.js';
+import { areaStatus } from '../campus/metrics.js';
 import { LitePortfolio } from './LitePortfolio.js';
 import { SpacePage, ServicesPage, GuidesPage, WayPage, VisitPage, QrPage, CommonsPage } from './LitePlaces.js';
 
@@ -113,7 +113,7 @@ function LiteHome({ role }: PageProps) {
             <p className="ui-muted">Each catalogued model checked against the room’s own record — seats, geometry, connections and power — with the source of every figure, before anyone buys it.</p>
             <a className="ui-btn ui-btn--primary lt-cta" href="#/lite/scouter">Ask Scouter</a></Card>}
           <Card title="Buildings" icon="building">
-            <ul className="lt-meters">{ALL_SITES.map((B) => { const b = buildingSummary(B.key); return <li key={B.key}><MeterRow label={B.name} sub={`${b.rooms} rooms${b.issues ? ` · ${b.issues} open issue${b.issues === 1 ? '' : 's'}` : ''}${B.source.includes('regional') ? ' · regional site' : ''}`} value={b.score} href={`#/lite/b/${B.key}`} /></li>; })}</ul>
+            <ul className="lt-meters">{ALL_SITES.map((B) => { const b = buildingSummary(B.key); return <li key={B.key}><MeterRow label={B.name} sub={`${b.rooms} rooms${b.atRisk ? ` · ${b.atRisk} with a critical issue` : ''}${b.issues ? ` · ${b.issues} open issue${b.issues === 1 ? '' : 's'}` : ''}${B.source.includes('regional') ? ' · regional site' : ''}`} value={b.score} href={`#/lite/b/${B.key}`} /></li>; })}</ul>
           </Card>
         </div>
       </div>
@@ -143,7 +143,8 @@ function LiteHome({ role }: PageProps) {
 
 /** the campus map's own six buildings (every other site is listed, not drawn), and each one's readiness band for the technical lenses */
 const CAMPUS_BLDGS = ALL_SITES.filter((b) => !REGIONAL_SITES.some((x) => x.key === b.key));
-const campusTone = (k: string) => metricBand(buildingSummary(k).score);
+// the readiness band, never green while a room of the building holds an open critical issue (the rule of campus/metrics.ts › areaStatus)
+const campusTone = (k: string) => { const b = buildingSummary(k); return areaStatus(b.score, b.atRisk); };
 function Tile({ href, icon, title, sub }: { href: string; icon: IconName; title: string; sub: string }) {
   return <li><a className="lt-tile" href={href}><span className="lt-tile__icon" aria-hidden="true"><Icon name={icon} size={20} /></span><b>{title}</b><span className="ui-muted">{sub}</span></a></li>;
 }

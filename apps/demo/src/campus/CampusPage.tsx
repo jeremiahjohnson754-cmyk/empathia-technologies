@@ -9,7 +9,7 @@ import { Tag, Notice } from '@empathia/ui';
 import { stationOf } from './mission.js';
 import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, SITE, buildingByKey, roomsIn, roomById, shortName, roomHref, fullName, ARCHETYPE_NAME, REFERENCE_ROOM_ID, type Building } from './canon.js';
 import { allRecords, roomRecord, type RoomRecord } from './design.js';
-import { campusStats, buildingStats, roomHealth, roomIssues, BAND_LABEL, type BuildingStats } from './metrics.js';
+import { campusStats, buildingStats, roomHealth, roomIssues, atRisk, needsAttention, BAND_LABEL, type BuildingStats } from './metrics.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { CampusMap, FloorPlate, Stage, type CampusTile } from '../spatial/Spatial.js';
 import { RoomView, LIFE_TONE } from '../rooms/RoomView.js';
@@ -35,6 +35,8 @@ function useWs(): Workspace | null {
   useEffect(() => { const f = () => { try { setW(loadWorkspace()); } catch { /* keep */ } }; addEventListener('storage', f); return () => removeEventListener('storage', f); }, []);
   return w;
 }
+/** The caption under an area's score: what the number is, and the rooms at risk the average would hide (campus/definitions.ts). */
+const areaCaption = (s: { score: number | null; scored: number; atRisk: number; lowest: BuildingStats['lowest'] }) => s.score == null ? (s.atRisk ? `not scored · ${s.atRisk} at risk` : 'not scored') : `average of ${s.scored} scored rooms${s.atRisk ? ` · ${s.atRisk} at risk` : ''}${s.lowest && s.lowest.score < 88 ? ` · lowest ${s.lowest.label}, ${s.lowest.score}` : ''}`;
 const tilesOf = (bs: BuildingStats[]): Record<string, CampusTile> => Object.fromEntries(bs.map((s) => [s.b.key, { score: s.score, band: s.band, issues: s.open, rooms: s.rooms }]));
 
 export function CampusPage(props: { hash: string; sees?: (id: string) => boolean; role?: RoleKey }) {
@@ -73,7 +75,7 @@ function Preview({ s }: { s: BuildingStats }) {
   return (
     <div className="cprev" aria-live="polite" data-testid="campus-preview">
       <div className="cprev__head"><ScoreRing score={s.score} band={s.band} size={72} label="Health" /><div><b>{s.b.name}</b><span className="ui-meta">{s.b.purpose}</span></div></div>
-      <dl className="cprev__facts"><div><dt>Rooms</dt><dd>{s.rooms}</dd></div><div><dt>Open issues</dt><dd>{s.open}</dd></div><div><dt>Devices</dt><dd>{s.devices}</dd></div><div><dt>Tests verified</dt><dd>{s.verifiedPct == null ? '—' : `${s.verifiedPct}%`}</dd></div></dl>
+      <dl className="cprev__facts"><div><dt>Rooms</dt><dd>{s.rooms}</dd></div><div><dt>At risk</dt><dd>{s.atRisk}</dd></div><div><dt>Open issues</dt><dd>{s.open}</dd></div><div><dt>Devices</dt><dd>{s.devices}</dd></div><div><dt>Tests verified</dt><dd>{s.verifiedPct == null ? '—' : `${s.verifiedPct}%`}</dd></div></dl>
       <p className="ui-meta">{s.b.floors} floors · opened {s.b.opened} · {s.scored} of {s.rooms} rooms scored</p>
       <A className="ui-btn ui-btn--primary" href={`#/campus/${s.b.key}`}>Open {s.b.short} <Icon name="chevron" size={14} /></A>
     </div>
@@ -81,7 +83,7 @@ function Preview({ s }: { s: BuildingStats }) {
 }
 
 function BuildingRows({ stats, testId = 'building-list' }: { stats: BuildingStats[]; testId?: string }) {
-  return <ul className="kit-meters" data-testid={testId} aria-label="Buildings by health">{stats.map((s) => <MeterRow key={s.b.key} href={`#/campus/${s.b.key}`} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${s.rooms} ${s.rooms === 1 ? 'room' : 'rooms'} · ${s.open} open issue${s.open === 1 ? '' : 's'} · ${s.verifiedPct == null ? '—' : `${s.verifiedPct}%`} tests verified · ${s.devices} devices · ${s.score == null ? 'not scored' : BAND_LABEL[s.band]}`} />)}</ul>;
+  return <ul className="kit-meters" data-testid={testId} aria-label="Buildings by health">{stats.map((s) => <MeterRow key={s.b.key} href={`#/campus/${s.b.key}`} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${s.rooms} ${s.rooms === 1 ? 'room' : 'rooms'}${s.atRisk ? ` · ${s.atRisk} at risk` : ''} · ${s.open} open issue${s.open === 1 ? '' : 's'}${s.lowest && s.lowest.score < 88 ? ` · lowest ${s.lowest.label}, ${s.lowest.score}` : ''} · ${s.verifiedPct == null ? '—' : `${s.verifiedPct}%`} tests verified · ${s.devices} devices · ${s.score == null && !s.atRisk ? 'not scored' : BAND_LABEL[s.band]}`} />)}</ul>;
 }
 
 function SitePage() {
@@ -106,11 +108,11 @@ function SitePage() {
         <Stage label="Campus in 3D" testId="campus-stage"><CampusMap tiles={tilesOf(c.buildings)} onOpen={(B) => go(`#/campus/${B.key}`)} onPreview={setPeek} /><Legend /></Stage>
         <Preview s={shown} />
       </div> : <Section title="Every building and site" aside="The list alternative to the 3D map · health, rooms, issues, tests verified" id="campus-list-h" testId="campus-list"><BuildingRows stats={[...c.buildings, ...c.sites]} testId="campus-list-rows" /></Section>}
-      <div className="campus__score campus__score--below"><ScoreRing score={c.score} band={c.band} size={104} label="Campus health" caption={`mean of ${c.scored} scored rooms`} /></div>
-      <nav className="campus__pills" aria-label="Buildings" data-testid="building-pills">{[...c.buildings, ...c.sites].map((s) => <a key={s.b.key} href={`#/campus/${s.b.key}`} className={`bpill bpill--${s.band}`}><StatusDot band={s.band} label={s.score == null ? 'not scored' : String(s.score)} /><b>{s.b.short}</b><span className="ui-meta">{s.rooms} {s.rooms === 1 ? 'room' : 'rooms'}{s.open ? ` · ${s.open} open` : ''}</span></a>)}</nav>
+      <div className="campus__score campus__score--below"><ScoreRing score={c.score} band={c.band} size={104} label="Campus health" caption={areaCaption(c)} /></div>
+      <nav className="campus__pills" aria-label="Buildings" data-testid="building-pills">{[...c.buildings, ...c.sites].map((s) => <a key={s.b.key} href={`#/campus/${s.b.key}`} className={`bpill bpill--${s.band}`}><StatusDot band={s.band} label={s.score == null ? 'not scored' : String(s.score)} /><b>{s.b.short}</b><span className="ui-meta">{s.rooms} {s.rooms === 1 ? 'room' : 'rooms'}{s.atRisk ? ` · ${s.atRisk} at risk` : ''}{s.open ? ` · ${s.open} open` : ''}</span></a>)}</nav>
       <div className="tiles">
         <StatTile label="Healthy rooms" value={c.healthy} unit={`of ${c.rooms}`} sub={`${c.monitor} to monitor · ${c.action} need action · ${c.unscored} not scored`} icon="heart" />
-        <StatTile label="Open issues" value={c.open} sub={`${c.high} High · record issues and live service requests`} tone={c.high ? 'monitor' : undefined} icon="alert" />
+        <StatTile label="Open issues" value={c.open} sub={`${c.high} critical (High) in ${c.highRooms} room${c.highRooms === 1 ? '' : 's'} · ${c.atRisk} room${c.atRisk === 1 ? '' : 's'} at risk · record issues and live service requests`} tone={c.high ? 'monitor' : undefined} icon="alert" />
         <StatTile label="Tests verified" value={c.verifiedPct ?? '—'} unit="%" sub={`${c.verified} of ${c.applicable} applicable tests passed and independently verified`} icon="check" />
         <StatTile label="Accepted rooms" value={c.accepted} unit={`of ${c.rooms}`} sub="with a current commissioning baseline" icon="cycle" />
       </div>
@@ -138,11 +140,11 @@ function BuildingPage({ b }: { b: string }) {
       <Crumbs items={[['Campus', '#/campus'], [B.name]]} />
       <header className="room__hero campus__hero">
         <div className="campus__herot"><p className="kicker">{B.short} · opened {B.opened} · {B.floors} floors</p><h1>{B.name}</h1><p className="room__intent">{B.purpose}.</p><p className="ui-meta">Source: {B.source}.</p></div>
-        <div className="campus__score"><ScoreRing score={s.score} band={s.band} size={104} label="Building health" caption={s.score == null ? 'not scored' : `mean of ${s.scored} scored rooms`} /></div>
+        <div className="campus__score"><ScoreRing score={s.score} band={s.band} size={104} label="Building health" caption={areaCaption(s)} /></div>
       </header>
       <div className="tiles">
         <StatTile label="Rooms" value={s.rooms} sub={`${s.scored} scored`} icon="room" />
-        <StatTile label="Open issues" value={s.open} sub={`${s.high} High`} tone={s.high ? 'monitor' : undefined} icon="alert" />
+        <StatTile label="Open issues" value={s.open} sub={`${s.high} critical (High) · ${s.atRisk} room${s.atRisk === 1 ? '' : 's'} at risk`} tone={s.high ? 'monitor' : undefined} icon="alert" />
         <StatTile label="Devices" value={s.devices} sub="positions across its rooms" icon="device" />
         <StatTile label="Tests verified" value={s.verifiedPct ?? '—'} unit={s.verifiedPct == null ? undefined : '%'} sub={`${s.verified} of ${s.applicable}`} icon="check" />
       </div>
@@ -174,11 +176,11 @@ function FloorPage({ b, f }: { b: string; f: number }) {
       <Crumbs items={[['Campus', '#/campus'], [B.name, `#/campus/${b}`], [`Floor ${f}`]]} />
       <header className="room__hero campus__hero">
         <div className="campus__herot"><p className="kicker">{B.name} · floor {f} of {B.floors}</p><h1>Floor {f}</h1><p className="room__intent">{rs.length ? `${rs.length} room${rs.length === 1 ? '' : 's'} of the canonical campus. Select a room to open it.` : 'No room of the canonical campus on this floor.'}</p>{step}</div>
-        {rs.length > 0 && <div className="campus__score"><ScoreRing score={s.score} band={s.band} size={104} label="Floor health" caption={s.score == null ? 'not scored' : `mean of ${s.scored} scored rooms`} /></div>}
+        {rs.length > 0 && <div className="campus__score"><ScoreRing score={s.score} band={s.band} size={104} label="Floor health" caption={areaCaption(s)} /></div>}
       </header>
       {rs.length > 0 && <div className="tiles">
         <StatTile label="Rooms" value={s.rooms} sub={`${s.scored} scored`} icon="room" />
-        <StatTile label="Open issues" value={s.open} sub={`${s.high} High`} tone={s.high ? 'monitor' : undefined} icon="alert" />
+        <StatTile label="Open issues" value={s.open} sub={`${s.high} critical (High) · ${s.atRisk} room${s.atRisk === 1 ? '' : 's'} at risk`} tone={s.high ? 'monitor' : undefined} icon="alert" />
         <StatTile label="Devices" value={s.devices} sub="positions across its rooms" icon="device" />
         <StatTile label="Tests verified" value={s.verifiedPct ?? '—'} unit={s.verifiedPct == null ? undefined : '%'} sub={`${s.verified} of ${s.applicable}`} icon="check" />
       </div>}
@@ -216,7 +218,10 @@ function RoomsInner({ hash }: { hash: string }) {
   const w = useWs();
   const q = new URLSearchParams(/\?(.*)$/.exec(hash)?.[1] || '');
   const state = q.get('state') || ''; const b = q.get('building') || ''; const band = q.get('health') || ''; const station = q.get('station') || '';
-  const all = allRecords(); const rows = all.filter((r) => (!state || r.lifecycle === state) && (!b || r.outline.building === b) && (!band || roomHealth(r, w).band === band) && (!station || stationOf(r, w) === station));
+  // attention=all: the rooms needing attention; attention=risk: the rooms at risk (campus/definitions.ts), the populations Mission Control counts
+  const att = q.get('attention') || '';
+  const attOk = (r: RoomRecord) => { if (!att) return true; const h = roomHealth(r, w); const iss = roomIssues(r, w); return att === 'risk' ? atRisk(h, iss) : needsAttention(h, iss); };
+  const all = allRecords(); const rows = all.filter((r) => (!state || r.lifecycle === state) && (!b || r.outline.building === b) && (!band || roomHealth(r, w).band === band) && (!station || stationOf(r, w) === station) && attOk(r));
   const set = (k: string, v: string) => { const n = new URLSearchParams(q); if (v) n.set(k, v); else n.delete(k); go(`#/rooms${n.toString() ? `?${n}` : ''}`); };
   return (
     <section className="campus" data-native="" data-testid="rooms-index">
@@ -225,6 +230,7 @@ function RoomsInner({ hash }: { hash: string }) {
       <div className="filters"><label>Lifecycle <select value={state} onChange={(e) => set('state', e.target.value)}><option value="">Every state</option>{[...new Set(all.map((r) => r.lifecycle))].map((s) => <option key={s} value={s}>{s}</option>)}</select></label>
         <label>Building <select value={b} onChange={(e) => set('building', e.target.value)}><option value="">Every building</option>{[...BUILDINGS, ...REGIONAL_SITES].map((x) => <option key={x.key} value={x.key}>{x.name}</option>)}</select></label>
         <label>Health <select value={band} onChange={(e) => set('health', e.target.value)}><option value="">Any</option>{(['healthy', 'monitor', 'action', 'none'] as const).map((x) => <option key={x} value={x}>{BAND_LABEL[x]}</option>)}</select></label>
+        <label>Attention <select value={att} onChange={(e) => set('attention', e.target.value)} data-testid="rooms-attention"><option value="">Every room</option><option value="all">Needing attention</option><option value="risk">At risk</option></select></label>
         {station && <Chip tone="accent" href="#/rooms">Mission flow station: {station} · clear</Chip>}<span className="ui-meta" role="status">{rows.length} of {all.length} rooms</span></div>
       {rows.length ? <RoomList rows={rows} caption="Rooms of the canonical campus" w={w} /> : <div className="empty"><b>No room matches</b><p>Clear a filter to see more rooms.</p></div>}
     </section>

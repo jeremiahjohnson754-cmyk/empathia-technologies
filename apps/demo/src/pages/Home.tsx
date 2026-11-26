@@ -8,6 +8,11 @@
  *
  * Every number and row is computed from the records (campus/metrics.ts, campus/mission.ts) and opens the record it names. Role-aware:
  * View as changes whose work comes first, and a link the role cannot open is never offered (D44). Nothing here is live monitoring.
+ *
+ * 25 Nov 2026, metric integrity (campus/definitions.ts holds what each number means). The headline is the viewer's own count, the items
+ * waiting for the viewed role; the sentence under it splits that count into parts that add up to it, then says how many rooms need
+ * attention and how many of those are at risk. The hero button opens the record the sentence names first: it used to open the newest live
+ * request (ISS-0421, a Standard request in Atlas 4.220) while the sentence named Atlas 4.218 and its High request ISS-0417.
  */
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import type { PageProps } from '../registry.types.js';
@@ -17,6 +22,7 @@ import { PRODUCTS, StatTile as KTile } from '@empathia/ui';
 import { allRecords, DEMO_NOW, PEOPLE } from '../campus/design.js';
 import { shortName, roomHref, roomById } from '../campus/canon.js';
 import { campusStats, attentionQueue, BAND_LABEL, type BuildingStats } from '../campus/metrics.js';
+import { METRICS, HOME_METRICS } from '../campus/definitions.js';
 import { series, flow, priorities, prioritiesFor, incidents, activeRooms, savedWork, insight, type Priority, type StationKey } from '../campus/mission.js';
 import { programme } from '../campus/programme.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
@@ -97,14 +103,15 @@ function MissionControl({ role }: PageProps) {
   const P = programme();
   const pages = useMemo(() => openPages(role), [role]);
   const liveReq = inc.filter((i) => i.live);
-  // DIRECTION §5: the count in the H1 is the open and triaged service requests (jobs), from the workspace
-  const jobs = (w?.incidents || []).filter((i) => i.state === 'OPEN' || i.state === 'TRIAGED').length;
-  const firstJob = inc.find((i) => i.live);
   const wos = (w?.workOrders || []).filter((x) => !['DONE', 'CANCELLED'].includes(x.state));
-  const first = queue[0];
-  const needAction = queue.filter((x) => x.h.band === 'action' || x.issues.some((i) => i.severity === 'High')).length;
-  const watch = Math.max(0, queue.length - needAction);
-  const waiting = all.filter((p) => p.verb !== 'Resume').length;
+  // the headline: the items waiting for the viewed role (METRICS['actions.yours']); its parts by verb add up to it
+  const yours = pri.mine.length; const byVerb = (v: Priority['verb']) => pri.mine.filter((p) => p.verb === v).length;
+  const toAct = byVerb('Take action'), toResume = byVerb('Resume'), decisions = byVerb('Review');
+  // the rooms: needing attention, and at risk (a part of it) — the same populations as the campus tiles and the rooms list filters
+  const first = queue[0]; const watch = Math.max(0, c.attention - c.atRisk);
+  // the record the sentence names first, and the one the hero button opens: the first room's first issue (most severe first)
+  const firstIssue = first?.issues[0];
+  const firstHref = !first ? undefined : firstIssue?.live && firstIssue.href && opens(firstIssue.href) ? firstIssue.href : opens(roomHref(first.r.outline)) ? roomHref(first.r.outline) : undefined;
   const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   const [station, setStation] = useState<StationKey | null>(null);
   const [others, setOthers] = useState(false);
@@ -113,7 +120,7 @@ function MissionControl({ role }: PageProps) {
 
   // the nine products the role can open, in the canonical order (D37/D40), each with one number from the records
   const pnum: Record<string, string> = {
-    'mission-control': plural(waiting, 'decision') + ' waiting', lite: `${c.rooms} rooms modelled`, pro: plural(c.open, 'open issue'), 'search-party': `${c.devices} device positions`,
+    'mission-control': plural(decisions, 'decision') + ' to review', lite: `${c.rooms} rooms modelled`, pro: plural(c.open, 'open issue'), 'search-party': `${c.devices} device positions`,
     servicehands: plural(liveReq.length, 'live request'), commissioning: c.verifiedPct == null ? 'no test on record' : `${c.verifiedPct}% tests verified`, apex: plural((w?.apexCases || []).length, 'diagnosis', 'diagnoses'),
     field: plural((w?.fiSessions || []).length, 'scan'), learn: plural((w?.learnCases || []).length, 'lesson'),
   };
@@ -140,18 +147,19 @@ function MissionControl({ role }: PageProps) {
       <header className="mc-hero" data-testid="mc-hero">
         <div className="mc-hero__t">
           <p className="kicker"><span className="home__live" aria-hidden="true" />Mission Control · one connected lifecycle · {R.label} · {today}</p>
-          <div className="mc-hero__h"><h1 tabIndex={-1}>{greeting()} — {jobs === 0 ? 'nothing needs you today' : `${plural(jobs, 'job')} need${jobs === 1 ? 's' : ''} you today`}</h1><span className="mc-hero__tag">Mission Control</span></div>
+          <div className="mc-hero__h"><h1 tabIndex={-1} data-testid="mc-headline" data-count={yours}>{greeting()} — {yours === 0 ? 'nothing waits for you' : `${plural(yours, 'item')} wait${yours === 1 ? 's' : ''} for you`}</h1><span className="mc-hero__tag">Mission Control</span></div>
           <p className="home__say" data-testid="home-say">
-            <b>{needAction} room{needAction === 1 ? '' : 's'} need{needAction === 1 ? 's' : ''} action</b> and {watch} more {watch === 1 ? 'is' : 'are'} worth watching.
-            {first && <> {roomLink(roomHref(first.r.outline), shortName(first.r.outline))} comes first{first.issues[0] ? <>: {first.issues[0].title.charAt(0).toLowerCase() + first.issues[0].title.slice(1)}</> : ''}.</>}
-            {' '}<b>{waiting} decision{waiting === 1 ? ' is' : 's are'} waiting for a person</b>, and {nChanges} change{nChanges === 1 ? ' was' : 's were'} recorded this week.
+            {yours ? <><b data-testid="mc-split">{toAct} to act on, {toResume} to resume and {plural(decisions, 'decision')} to review</b>.</> : <>Nothing on record waits for a {R.label}.</>}
+            {' '}Across the campus, <b data-testid="mc-attention">{plural(c.attention, 'room')} need{c.attention === 1 ? 's' : ''} attention</b>{c.atRisk ? <>; <b data-testid="mc-risk">{c.atRisk} of them {c.atRisk === 1 ? 'is' : 'are'} at risk</b>, because an open issue is critical or the room scores below 75</> : ''}{watch && c.atRisk ? <>, and {watch} {watch === 1 ? 'is' : 'are'} worth watching</> : ''}.
+            {first && <> {roomLink(roomHref(first.r.outline), shortName(first.r.outline))} comes first{firstIssue ? <>: <span data-testid="mc-first-issue">{firstIssue.id}</span>, {firstIssue.title.charAt(0).toLowerCase() + firstIssue.title.slice(1)}</> : ''}.</>}
+            {' '}{nChanges} change{nChanges === 1 ? ' was' : 's were'} recorded this week.
           </p>
           {opens('#/search') && <div className="mc-hero__search"><span className="mc-hero__sp" aria-hidden="true"><Icon name="search" size={20} /> Search Party</span><SearchBar hero role={role} answers={opens('#/find')} label="Ask Search Party" placeholder="Try “4.218”, “ISS-0417”, “switch” or a device category" /></div>}
-          <div className="mc-hero__acts">{firstJob && opens(firstJob.href) && <a className="ui-btn ui-btn--primary" href={firstJob.href} data-testid="mc-open-job"><Icon name="alert" /> Open {firstJob.id}</a>}{opens('#/replay') && <a className="ui-btn" href="#/replay/R-ATL-4-218"><Icon name="clock" /> Replay a story</a>}</div>
+          <div className="mc-hero__acts">{first && firstHref && <a className="ui-btn ui-btn--primary" href={firstHref} data-testid="mc-open-first" data-record={firstIssue?.id || first.r.outline.id} data-room={first.r.outline.id}><Icon name="alert" /> Open {firstIssue?.id || shortName(first.r.outline)}</a>}{opens('#/replay') && <a className="ui-btn" href="#/replay/R-ATL-4-218"><Icon name="clock" /> Replay a story</a>}</div>
           {opens('#/search') && <p className="mc-hero__try ui-meta">Try {[['#/search?q=4.218', '4.218'], ['#/search?q=camera', 'camera'], ['#/search/scenarios/S1', 'if this switch fails'], ['#/search/scenarios/S2', 'who supports']].filter(([h]) => opens(h!)).map(([h, l], i) => <span key={h}>{i ? ' · ' : ''}<a href={h}>{l}</a></span>)}</p>}
         </div>
         <div className="mc-hero__aside">
-          <ScoreRing score={c.score} band={c.band} size={112} label="Campus health" caption={`${BAND_LABEL[c.band]} · ${c.scored} of ${c.rooms} rooms scored`} />
+          <ScoreRing score={c.score} band={c.band} size={112} label={METRICS['health.average'].label} caption={`${BAND_LABEL[c.band]}${c.atRisk ? ` · ${plural(c.atRisk, 'room')} at risk` : ''} · average of ${c.scored} of ${c.rooms} rooms`} />
           <ul className="mc-hero__facts" aria-label="The campus in numbers">
             <li><b>{c.rooms}</b><span>rooms</span></li><li><b>{c.buildings.length + c.sites.length}</b><span>sites and buildings</span></li><li><b>{c.devices}</b><span>device positions</span></li>
           </ul>
@@ -183,15 +191,19 @@ function MissionControl({ role }: PageProps) {
 
       {/* ---------------------------------------------------------------- stat tiles with sparklines */}
       <div className="mc-tiles" data-testid="home-kpis">
-        <KTile label="Campus health" value={c.score} unit="/100" icon="pulse" tone={c.band === 'healthy' ? 'ok' : c.band === 'monitor' ? 'warn' : c.band === 'action' ? 'bad' : 'muted'} hint={`${BAND_LABEL[c.band]} · mean of ${c.scored} rooms`} href={opens('#/campus') ? '#/campus' : undefined} />
-        <KTile label="Healthy rooms" value={c.healthy} unit={` of ${c.rooms}`} icon="pulse" tone="ok" hint="health 88 or more" href={opens('#/rooms') ? '#/rooms?health=healthy' : undefined} />
-        <KTile label="Rooms needing attention" value={queue.length} icon="alert" tone={queue.length ? 'warn' : 'ok'} hint={`${needAction} need action · ${watch} to watch`} href={opens('#/rooms') ? '#/rooms?health=action' : undefined} />
-        <KTile label="Critical issues" testId="kpi-critical" value={c.high} icon="alert" tone={c.high ? 'bad' : 'ok'} hint={`${c.open} open in all`} href={first && opens(roomHref(first.r.outline)) ? roomHref(first.r.outline) : undefined} />
+        <KTile label={METRICS['health.average'].label} testId="kpi-health" value={c.score} unit="/100" icon="pulse" tone={c.band === 'healthy' ? 'ok' : c.band === 'monitor' ? 'warn' : c.band === 'action' ? 'bad' : 'muted'} hint={`${BAND_LABEL[c.band]} · average of ${c.scored} scored rooms${c.lowest ? ` · lowest ${c.lowest.label}, ${c.lowest.score}` : ''}`} href={opens('#/campus') ? '#/campus' : undefined} />
+        <KTile label={METRICS['rooms.healthy'].label} testId="kpi-healthy" value={c.healthy} unit={` of ${c.rooms}`} icon="pulse" tone="ok" hint={`${c.monitor} monitor · ${c.action} action required · ${c.unscored} not scored`} href={opens('#/rooms') ? '#/rooms?health=healthy' : undefined} />
+        <KTile label={METRICS['rooms.attention'].label} testId="kpi-attention" value={c.attention} unit={` of ${c.rooms}`} icon="alert" tone={c.atRisk ? 'bad' : c.attention ? 'warn' : 'ok'} hint={`${c.atRisk} at risk · ${watch} to watch`} href={opens('#/rooms') ? '#/rooms?attention=all' : undefined} />
+        <KTile label={METRICS['issues.critical'].label} testId="kpi-critical" value={c.high} icon="alert" tone={c.high ? 'bad' : 'ok'} hint={`severity High · in ${plural(c.highRooms, 'room')} · ${c.open} open in all`} href={opens('#/rooms') ? '#/rooms?attention=risk' : undefined} />
         <KTile label="Commissioning readiness" value={c.verifiedPct} unit="%" icon="check" tone="commissioning" spark={S.verified.values} delta={{ value: last(S.verified.values) - prev(S.verified.values), good: 'up', label: 'tests verified last month' }} href={opens('#/room') ? '#/room?tab=tests' : undefined} />
         <KTile label="Accepted rooms" value={c.accepted} unit={` of ${c.rooms}`} icon="route" tone="lite" spark={S.accepted.values} delta={{ value: last(S.accepted.values) - prev(S.accepted.values), good: 'up', label: 'since last month' }} href={opens('#/rooms') ? '#/rooms?state=ACCEPTED' : undefined} />
-        <KTile label="Open service requests" value={liveReq.length} icon="wrench" tone="servicehands" spark={S.requests.values} hint={`${plural(wos.length, 'work order')} open`} href={opens('#/v25/service') ? '#/v25/service' : undefined} />
+        <KTile label={METRICS['requests.open'].label} testId="kpi-requests" value={liveReq.length} icon="wrench" tone="servicehands" spark={S.requests.values} hint={`${plural(wos.length, 'work order')} open`} href={opens('#/v25/service') ? '#/v25/service' : undefined} />
         <KTile label="Funding authorised" value={`$${Math.round(P.funding.reduce((s, f) => s + f.amount, 0) / 1000)}k`} icon="ticket" tone="mission-control" hint={`${P.funding.length} of ${P.projects.length} projects funded · not a quote`} href={opens('#/v25/decisions') ? '#/v25/decisions' : undefined} />
       </div>
+
+      <details className="mc-defs" data-testid="mc-defs"><summary>How these numbers are counted</summary>
+        <dl>{HOME_METRICS.map((id) => { const m = METRICS[id]; return <div key={id} data-metric={id}><dt>{m.label}</dt><dd>{m.meaning} <span className="ui-meta">Counts {m.counts.charAt(0).toLowerCase() + m.counts.slice(1)} Leaves out {m.excludes.charAt(0).toLowerCase() + m.excludes.slice(1)} {m.denominator}{m.evidence === 'MODELED' ? ' Modeled from the synthetic records, not measured.' : ''}</span></dd></div>; })}</dl>
+      </details>
 
       {/* ---------------------------------------------------------------- mission flow: every room on its station */}
       <section className="mc-card mc-flow" aria-labelledby="mc-flow-h" data-testid="mc-flow" ref={flowRef}>
@@ -213,7 +225,7 @@ function MissionControl({ role }: PageProps) {
       {/* ---------------------------------------------------------------- saved work · priority actions · recent incidents */}
       <div className="mc-row mc-row--three">
         <section className="mc-card" aria-labelledby="mc-pri-h" data-testid="mc-priorities">
-          <div className="mc-card__head"><h2 id="mc-pri-h">Priority actions</h2><span className="mc-count">{pri.mine.length}</span>{pri.others.length > 0 && <button type="button" className="mc-link" aria-pressed={others} onClick={() => setOthers(!others)}>{others ? 'Only mine' : `+${pri.others.length} for other roles`}</button>}</div>
+          <div className="mc-card__head"><h2 id="mc-pri-h">Priority actions</h2><span className="mc-count" data-testid="mc-pri-count" title="Waiting for you">{pri.mine.length}</span>{pri.others.length > 0 && <button type="button" className="mc-link" aria-pressed={others} onClick={() => setOthers(!others)}>{others ? 'Only mine' : `+${pri.others.length} for other roles`}</button>}</div>
           {pri.mine.length || (others && pri.others.length) ? <ul className="mc-pris" id="mc-pri-list"><More items={[...pri.mine.map((p) => [p, true] as const), ...(others ? pri.others.map((p) => [p, false] as const) : [])]} n={4} label="actions" render={([p, m]) => <PriorityRow key={p.id} p={p} mine={m} />} /></ul>
             : <EmptyState title={`Nothing waits for a ${R.label}`} icon="check">{pri.others.length ? 'Other roles have work on record; show it above.' : 'No decision, repair or test on record waits for a person.'}</EmptyState>}
         </section>
@@ -251,7 +263,7 @@ function MissionControl({ role }: PageProps) {
       <div className="mc-row mc-row--campus">
         <Section title="Campus status" aside={opens('#/campus') ? <a href="#/campus">Open campus</a> : undefined} id="home-campus-h">
           <Stage label="Campus in 3D" testId="home-stage"><CampusMap tiles={tiles} onOpen={(b) => { if (opens(`#/campus/${b.key}`)) location.hash = `#/campus/${b.key}`; }} /></Stage>
-          <ul className="kit-meters home__brows" aria-label="Buildings by health">{[...c.buildings, ...c.sites].map((s) => <MeterRow key={s.b.key} href={opens(`#/campus/${s.b.key}`) ? `#/campus/${s.b.key}` : undefined} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${plural(s.rooms, 'room')} · ${plural(s.open, 'open issue')} · ${s.verifiedPct ?? '—'}${s.verifiedPct == null ? '' : '%'} verified`} />)}</ul>
+          <ul className="kit-meters home__brows" aria-label="Buildings by health">{[...c.buildings, ...c.sites].map((s) => <MeterRow key={s.b.key} href={opens(`#/campus/${s.b.key}`) ? `#/campus/${s.b.key}` : undefined} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${plural(s.rooms, 'room')}${s.atRisk ? ` · ${s.atRisk} at risk` : ''} · ${plural(s.open, 'open issue')}${s.lowest && s.lowest.score < 88 ? ` · lowest ${s.lowest.label}, ${s.lowest.score}` : ''} · ${s.verifiedPct ?? '—'}${s.verifiedPct == null ? '' : '%'} verified`} />)}</ul>
         </Section>
         <Section title="Recent changes" aside="Last 7 days · newest first" id="home-chg-h" testId="changes">
           {changes.length ? <List label="Recent changes"><More items={changes} n={6} label="changes" render={(x, i) => <ListRow key={i} href={x.href && opens(x.href) ? x.href : undefined} leading={<span className={`row__ic${x.denied ? ' row__ic--bad' : ''}`}><Icon name="clock" /></span>} title={`${x.title} · ${x.where}`} sub={x.detail} trailing={<span className="ui-meta">{ago(x.at)}{x.denied ? ' · refused' : ''}</span>} />} /></List>

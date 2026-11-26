@@ -145,6 +145,16 @@ for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 84
   ok(`MC-${tag}-06`, 'keyboard: Enter on a station shows its rooms, one link per room', (await cx.getAttribute('aria-pressed')) === 'true' && chips === want, `${chips} of ${want}`);
   await t.page.keyboard.press('Enter'); await t.page.waitForTimeout(100);
   ok(`MC-${tag}-07`, 'Enter again closes it', (await cx.getAttribute('aria-pressed')) === 'false');
+  // 25 Nov 2026 (metric integrity §4.5): the hero sentence names a room and its issue first, and the hero button must open that same
+  // record. It opened the newest live request (ISS-0421, Atlas 4.220) while the sentence named Atlas 4.218 and ISS-0417. Checked by
+  // identity on the page it lands on, not by the presence of text on the home page.
+  const hero = await t.page.evaluate(() => { const b = document.querySelector('[data-testid="mc-open-first"]'); const say = document.querySelector('[data-testid="home-say"]'); return { href: b?.getAttribute('href') || '', rec: b?.getAttribute('data-record') || '', room: b?.getAttribute('data-room') || '', named: say?.querySelector('[data-testid="mc-first-issue"]')?.textContent || '', roomLink: say?.querySelector('a[href^="#/campus/"]')?.getAttribute('href') || '', h1: document.querySelector('[data-testid="mc-headline"]')?.getAttribute('data-count') || '', pri: document.querySelector('[data-testid="mc-pri-count"]')?.textContent || '', split: say?.querySelector('[data-testid="mc-split"]')?.textContent || '' }; });
+  const parts = (hero.split.match(/\d+/g) || []).map(Number);
+  ok(`MC-${tag}-count`, 'the headline is the role’s own items, the same number as Priority actions, and its parts (act on, resume, review) add up to it', hero.h1 !== '' && hero.h1 === hero.pri && parts.length === 3 && parts.reduce((a, b) => a + b, 0) === Number(hero.h1), JSON.stringify(hero));
+  await t.page.click('[data-testid="mc-open-first"]'); await t.page.waitForTimeout(900);
+  const landed = await t.page.evaluate(() => ({ hash: location.hash, refused: !!document.querySelector('[data-testid="access-page"]'), text: document.querySelector('main')?.innerText || '' }));
+  ok(`MC-${tag}-first`, 'the hero button opens the record the sentence names first (ISS-0417 in Atlas 4.218), and that record is on the page it opens', hero.rec === 'ISS-0417' && hero.named === 'ISS-0417' && hero.room === 'R-ATL-4-218' && /R-ATL-4-218|4-218/.test(hero.roomLink) && hero.href === '#/v25/service?id=ISS-0417' && landed.hash === hero.href && !landed.refused && landed.text.includes('ISS-0417'), JSON.stringify({ ...hero, landed: { ...landed, text: landed.text.slice(0, 120) } }));
+  await t.go('#/home', 700);
   // the first Take action opens the record it names
   const first = t.page.locator('[data-testid="mc-greeting"] a').first(); const href = await first.getAttribute('href'); await first.click(); await t.page.waitForTimeout(700);
   ok(`MC-${tag}-08`, 'the greeting’s first item opens the record it names (not a refusal)', (await t.page.evaluate(() => location.hash)) === href && (await t.page.locator('[data-testid="access-page"]').count()) === 0, href);

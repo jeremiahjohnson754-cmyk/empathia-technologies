@@ -364,7 +364,8 @@ export const liteRoomHref = (id: string, q = '') => `#/lite/room/${id}${q ? `?${
 export function buildingSummary(b: string) {
   const recs = roomsOf(b).map((o) => roomRecord(o.id)!);
   const scores = recs.map(readiness);
-  return { rooms: recs.length, issues: recs.reduce((s, r) => s + openIssues(r).length, 0), score: scores.length ? Math.round(scores.reduce((a, b2) => a + b2, 0) / scores.length) : null, commissioning: recs.filter((r) => r.lifecycle === 'COMMISSIONING').length };
+  // atRisk (25 Nov 2026, metric integrity): rooms with an open High issue, so a building's colour is never green while one of them is open
+  return { rooms: recs.length, issues: recs.reduce((s, r) => s + openIssues(r).length, 0), atRisk: recs.filter((r) => openIssues(r).some((i) => i.severity === 'High')).length, score: scores.length ? Math.round(scores.reduce((a, b2) => a + b2, 0) / scores.length) : null, commissioning: recs.filter((r) => r.lifecycle === 'COMMISSIONING').length };
 }
 export function campusSummary() {
   const recs = campusRecords();

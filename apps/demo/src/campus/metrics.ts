@@ -6,6 +6,14 @@
  *   holds no test result is not scored ("no evidence") rather than given a number. Bands as in V2.5.3: 88 or more Healthy, 75–87
  *   Monitor, below 75 Action required. A building's and the campus's score is the mean of their scored rooms.
  *
+ *   Rooms at risk and the area status (25 Nov 2026, metric integrity, founder's commercial-readiness directive §4.3): an average of 135
+ *   rooms read 99 while six rooms held an open High issue, and every building showed green. The score stays the mean (the formula above
+ *   is unchanged: no number is lowered for effect). What changed is the status beside it. A room is AT RISK when an open issue is High
+ *   (critical) or its score is in Action required, scored or not: a room the record cannot score is never counted fine. A room NEEDS
+ *   ATTENTION when it is at risk, has any open issue, or scores below Healthy. An area (floor, building, site, campus) takes the band of its
+ *   mean, but never Healthy, and never Not scored, while one of its rooms is at risk: it is then at least Monitor, and says how many rooms
+ *   are at risk and which room is lowest. `band` is that status; `meanBand` is the band of the mean alone. Definitions: campus/definitions.ts.
+ *
  *   Open issues: the room record's issues plus the service workspace's live incidents for the room (one per id; the live record wins),
  *   so a repair closed in ServiceHands lowers the count everywhere at once.
  *
@@ -56,7 +64,24 @@ export function roomHealth(r: RoomRecord, w?: Workspace | null): Health {
 
 const mean = (xs: number[]) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null);
 
-export interface BuildingStats { b: Building; rooms: number; scored: number; score: number | null; band: Band; open: number; high: number; devices: number; applicable: number; verified: number; verifiedPct: number | null; byLife: Record<string, number> }
+/** At risk: an open High (critical) issue, or a score in Action required. A room without a score can be at risk. */
+export const atRisk = (h: Health, iss: OpenIssue[]): boolean => h.band === 'action' || iss.some((i) => i.severity === 'High');
+/** Needs attention: at risk, any open issue, or a score below Healthy. Rooms that are not scored and have nothing open are not counted. */
+export const needsAttention = (h: Health, iss: OpenIssue[]): boolean => atRisk(h, iss) || iss.length > 0 || (h.score != null && h.band !== 'healthy');
+/** An area's status: the band of its mean, raised to Monitor while any of its rooms is at risk (never Healthy, never Not scored then). */
+export const areaStatus = (score: number | null, risk: number): Band => { const b = bandOf(score); return risk > 0 && (b === 'healthy' || b === 'none') ? 'monitor' : b; };
+
+/** What every area shares: its rooms at risk and needing attention, and its lowest scored room (the range the mean hides). */
+export interface AreaRisk { atRisk: number; attention: number; highRooms: number; lowest: { id: string; label: string; score: number } | null; meanBand: Band }
+function areaRisk(recs: RoomRecord[], w: Workspace | null | undefined, score: number | null): AreaRisk {
+  let risk = 0, att = 0, highRooms = 0; let lowest: AreaRisk['lowest'] = null;
+  for (const r of recs) { const h = roomHealth(r, w); const iss = roomIssues(r, w);
+    if (atRisk(h, iss)) risk += 1; if (needsAttention(h, iss)) att += 1; if (iss.some((i) => i.severity === 'High')) highRooms += 1;
+    if (h.score != null && (!lowest || h.score < lowest.score)) lowest = { id: r.outline.id, label: shortName(r.outline), score: h.score }; }
+  return { atRisk: risk, attention: att, highRooms, lowest, meanBand: bandOf(score) };
+}
+
+export interface BuildingStats extends AreaRisk { b: Building; rooms: number; scored: number; score: number | null; band: Band; open: number; high: number; devices: number; applicable: number; verified: number; verifiedPct: number | null; byLife: Record<string, number> }
 /** a building's figures from its room records; with `floor`, the same figures for that floor's rooms only (the campus floor page) */
 export function buildingStats(key: string, w?: Workspace | null, floor?: number): BuildingStats {
   const b = BUILDINGS.find((x) => x.key === key) || REGIONAL_SITES.find((x) => x.key === key)!;
@@ -65,30 +90,34 @@ export function buildingStats(key: string, w?: Workspace | null, floor?: number)
   const iss = recs.flatMap((r) => roomIssues(r, w));
   const applicable = recs.reduce((s, r) => s + r.counts.applicable, 0); const verified = recs.reduce((s, r) => s + r.counts.verified, 0);
   const byLife: Record<string, number> = {}; for (const r of recs) byLife[r.lifecycle] = (byLife[r.lifecycle] || 0) + 1;
-  const score = mean(scores);
-  return { b, rooms: recs.length, scored: scores.length, score, band: bandOf(score), open: iss.length, high: iss.filter((i) => i.severity === 'High').length, devices: recs.reduce((s, r) => s + r.positions.filter((p) => !p.furniture).length, 0), applicable, verified, verifiedPct: applicable ? Math.round((100 * verified) / applicable) : null, byLife };
+  const score = mean(scores); const ar = areaRisk(recs, w, score);
+  return { b, ...ar, rooms: recs.length, scored: scores.length, score, band: areaStatus(score, ar.atRisk), open: iss.length, high: iss.filter((i) => i.severity === 'High').length, devices: recs.reduce((s, r) => s + r.positions.filter((p) => !p.furniture).length, 0), applicable, verified, verifiedPct: applicable ? Math.round((100 * verified) / applicable) : null, byLife };
 }
 
-export interface CampusStats { buildings: BuildingStats[]; /** the fictional regional sites of the rooms plan (not on the campus map) */ sites: BuildingStats[]; rooms: number; devices: number; score: number | null; band: Band; scored: number; healthy: number; monitor: number; action: number; unscored: number; open: number; high: number; applicable: number; verified: number; verifiedPct: number | null; accepted: number; byLife: Record<string, number> }
+export interface CampusStats extends AreaRisk { buildings: BuildingStats[]; /** the fictional regional sites of the rooms plan (not on the campus map) */ sites: BuildingStats[]; rooms: number; devices: number; score: number | null; band: Band; scored: number; healthy: number; monitor: number; action: number; unscored: number; open: number; high: number; applicable: number; verified: number; verifiedPct: number | null; accepted: number; byLife: Record<string, number> }
 export function campusStats(w?: Workspace | null): CampusStats {
   const recs = allRecords(); const hs = recs.map((r) => roomHealth(r, w));
   const scores = hs.map((h) => h.score).filter((s): s is number => s != null);
   const iss = recs.flatMap((r) => roomIssues(r, w));
   const applicable = recs.reduce((s, r) => s + r.counts.applicable, 0); const verified = recs.reduce((s, r) => s + r.counts.verified, 0);
   const byLife: Record<string, number> = {}; for (const r of recs) byLife[r.lifecycle] = (byLife[r.lifecycle] || 0) + 1;
-  const score = mean(scores);
+  const score = mean(scores); const ar = areaRisk(recs, w, score);
   return {
-    buildings: BUILDINGS.map((b) => buildingStats(b.key, w)), sites: REGIONAL_SITES.map((b) => buildingStats(b.key, w)), rooms: recs.length, devices: recs.reduce((s, r) => s + r.positions.filter((p) => !p.furniture).length, 0),
-    score, band: bandOf(score), scored: scores.length, healthy: hs.filter((h) => h.band === 'healthy').length, monitor: hs.filter((h) => h.band === 'monitor').length, action: hs.filter((h) => h.band === 'action').length, unscored: hs.filter((h) => h.band === 'none').length,
+    ...ar, buildings: BUILDINGS.map((b) => buildingStats(b.key, w)), sites: REGIONAL_SITES.map((b) => buildingStats(b.key, w)), rooms: recs.length, devices: recs.reduce((s, r) => s + r.positions.filter((p) => !p.furniture).length, 0),
+    score, band: areaStatus(score, ar.atRisk), scored: scores.length, healthy: hs.filter((h) => h.band === 'healthy').length, monitor: hs.filter((h) => h.band === 'monitor').length, action: hs.filter((h) => h.band === 'action').length, unscored: hs.filter((h) => h.band === 'none').length,
     open: iss.length, high: iss.filter((i) => i.severity === 'High').length, applicable, verified, verifiedPct: applicable ? Math.round((100 * verified) / applicable) : null,
     accepted: recs.filter((r) => r.baselines.some((x) => x.state === 'CURRENT')).length, byLife,
   };
 }
 
-/** Rooms ordered by what needs attention first: lowest score, then most open issues. */
-export function attentionQueue(w?: Workspace | null): Array<{ r: RoomRecord; h: Health; issues: OpenIssue[] }> {
-  return allRecords().map((r) => ({ r, h: roomHealth(r, w), issues: roomIssues(r, w) })).filter((x) => x.issues.length || (x.h.score != null && x.h.band !== 'healthy'))
-    .sort((a, b) => (a.h.score ?? 101) - (b.h.score ?? 101) || b.issues.length - a.issues.length);
+/**
+ * The rooms that need attention, in the order they are worked: rooms at risk first, then lowest score, then most open issues. Until 25 Nov
+ * 2026 the order was the score alone, so a room that could not be scored but held an open High design deficiency was listed after rooms
+ * with one Low issue; a room at risk now comes before every room that is not, scored or not.
+ */
+export function attentionQueue(w?: Workspace | null): Array<{ r: RoomRecord; h: Health; issues: OpenIssue[]; risk: boolean }> {
+  return allRecords().map((r) => { const h = roomHealth(r, w); const issues = roomIssues(r, w); return { r, h, issues, risk: atRisk(h, issues) }; }).filter((x) => needsAttention(x.h, x.issues))
+    .sort((a, b) => Number(b.risk) - Number(a.risk) || (a.h.score ?? 101) - (b.h.score ?? 101) || b.issues.length - a.issues.length);
 }
 
 // ------------------------------------------------------------------------------------------------------------ the delivery spine

@@ -47,7 +47,10 @@ test('RH-06 the Executive’s figures are the campus’s own: health, healthy ro
   const tile = (l) => s.tiles.find((t) => t.label === l);
   assert.equal(tile('Campus health').value, String(c.score)); assert.equal(tile('Rooms healthy').value, String(c.healthy)); assert.equal(tile('Rooms healthy').unit, ` of ${c.rooms}`);
   assert.equal(tile('Tests verified').value, String(c.verifiedPct)); assert.equal(tile('Funding authorised').value, `$${Math.round(funded / 1000)}k`);
-  assert.match(s.summary, new RegExp(`stands at ${c.score} of 100`)); assert.match(s.summary, /PRJ-NST-TH is approved and not yet funded/);
+  // 25 Nov 2026 (metric integrity): the summary says the score is an average and names the rooms at risk it would hide ("stands at"
+  // read as a verdict on the whole campus while six rooms held a critical issue); the check now also requires that count and the lowest room
+  assert.match(s.summary, new RegExp(`averages ${c.score} of 100`)); assert.match(s.summary, /PRJ-NST-TH is approved and not yet funded/);
+  assert.ok(c.atRisk > 0 && s.summary.includes(`${c.atRisk} rooms are at risk`) && s.summary.includes(`the lowest is ${c.lowest.label} at ${c.lowest.score}`), s.summary);
   const decide = s.zones.find((z) => z.id === 'decide'); assert.equal(decide.rows.length, 1); assert.match(decide.rows[0].title, /Fund PRJ-NST-TH/); assert.match(s.headline, /^1 decision waits for a sponsor/);
   assert.match(s.basis, /not live monitoring/);
 });
