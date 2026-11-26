@@ -158,9 +158,10 @@ html.has-full, html.has-full body { overflow: hidden; }
 .xpo-hint { position: absolute; z-index: 6; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; max-width: min(80%, 340px); padding: 10px 14px; border-radius: 12px; background: rgba(10, 14, 20, 0.88); color: #eef3fb; font-size: 14px; line-height: 1.35; text-align: center; pointer-events: none; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
 .slv-full { position: absolute; z-index: 5; right: 12px; top: 12px; min-height: 44px; }
 .slv-stage.is-full .slv-full { top: max(12px, env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); }
-.xpo-mini { position: absolute; z-index: 5; left: 12px; right: 12px; bottom: max(64px, calc(env(safe-area-inset-bottom, 0px) + 64px)); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
+/* the chosen booth's card in full screen: the first row of the bar (ExpoLive.tsx), not a fixed distance above it */
+.xpo-mini { flex: 1 1 100%; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
 .xpo-mini b { flex: 1 1 auto; } .xpo-mini span { color: #5b6676; font-size: 13px; } .xpo-mini .cl-btn { min-height: 44px; }
-.xpo-stage.is-full .xpo-bar { bottom: max(12px, env(safe-area-inset-bottom, 0px)); }
+.xpo-stage.is-full .xpo-bar { bottom: max(12px, env(safe-area-inset-bottom, 0px)); right: 12px; }
 
 /* the moves a drag makes, as buttons on the picture (20 Nov 2026; WCAG 2.2 2.5.7): a column at the right, under Stadium's Full screen */
 .mvpad { position: absolute; z-index: 5; right: 12px; top: 12px; display: grid; gap: 6px; }
