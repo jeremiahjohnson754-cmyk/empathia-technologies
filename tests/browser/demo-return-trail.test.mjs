@@ -190,4 +190,15 @@ for (const rate of [1, 6]) { // rapid navigation across six products, on an ordi
   ok('RT-role-05', 'no console error, nothing requested off the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].slice(0, 3).join(' | '));
   await t.close();
 }
+
+// 25 Nov 2026 (commercial readiness, an external review read "Back to Meridian 1.140" on the start page as left over from someone else):
+// on the start page the chip says what it is, this session's own last place of work; on any other page it stays the way back
+const fromRoom = async (to) => { const t = await open('#/campus/MER/1/R-MER-1-140', { role: 'architect', sw: false, w: 1440, h: 900 }); const p = t.page; p.setDefaultTimeout(15000);
+  await p.waitForSelector('main h1'); await p.waitForTimeout(900);
+  await p.evaluate((x) => { location.hash = x; }, to); await p.waitForSelector('[data-testid=trail-back]'); await p.waitForTimeout(400);
+  const c = await chip(p); const bad = [...t.errs, ...t.off]; await t.close(); return { c, bad }; };
+{ const home = await fromRoom('#/home'); const campus = await fromRoom('#/campus');
+  ok('RT-start-01', 'from Meridian 1.140, the start page’s chip reads "Continue where you left off:" and the room; another page’s reads "Back to" the same room', !!home.c && /^Continue where you left off: /.test(home.c.text) && /1\.140/.test(home.c.text) && !!campus.c && /^Back to /.test(campus.c.text) && campus.c.to === home.c.to, JSON.stringify({ home: home.c, campus: campus.c }));
+  ok('RT-start-02', 'no console error, nothing requested off the page', !home.bad.length && !campus.bad.length, [...home.bad, ...campus.bad].slice(0, 3).join(' | '));
+}
 await done();

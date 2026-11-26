@@ -131,6 +131,9 @@ export function ReturnChip({ route, allowed }: { route: string; allowed: (hash: 
   const m = ms.find((x) => !x.search && x.path !== here && allowed(x.hash));
   const sx = ms.find((x) => x.search && x.path !== here && allowed(x.hash));
   if (!m && !sx) return null;
+  // 25 Nov 2026: on the start page the chip read "Back to Meridian 1.140" as if left over from someone else (an external review took it so);
+  // it is this session's own last place of work, so there it says so. Elsewhere it stays "Back to", the way back from where you are.
+  const start = here === pathOf('#/home');
   // a fragment navigation is synchronous: the new history entry exists at once, so its scroll is written onto it before the router's
   // popstate/hashchange read it (the 18 Nov first version kept a "pending" value that the second of those two events wiped)
   const go = (to: Mark) => { if (location.hash !== to.hash) location.hash = to.hash; try { history.replaceState({ ...(history.state as object | null || {}), sy: to.sy }, ''); } catch { /* none */ } arrival = to.sy; if (location.hash === to.hash && pathOf(route) === to.path) settleScroll(); };
@@ -138,7 +141,7 @@ export function ReturnChip({ route, allowed }: { route: string; allowed: (hash: 
     <nav className="trail-row" aria-label="Where you were" data-testid="trail">
       {m && <div className="trail">
         <a className="trail__back" href={m.hash} onClick={(e) => { e.preventDefault(); go(m); }} data-testid="trail-back" data-to={m.hash}>
-          <Icon name="undo" size={18} /><span className="trail__t"><span className="trail__k">Back to</span> <b>{m.label}</b>{m.sub && <span className="trail__s"> · {m.sub}</span>}</span></a>
+          <Icon name="undo" size={18} /><span className="trail__t"><span className="trail__k">{start ? 'Continue where you left off:' : 'Back to'}</span> <b>{m.label}</b>{m.sub && <span className="trail__s"> · {m.sub}</span>}</span></a>
         <button type="button" className="trail__x" aria-label={`Forget ${m.label}`} onClick={() => forget(m.path)} data-testid="trail-forget"><Icon name="close" size={16} /></button>
       </div>}
       {sx && <div className="trail trail--search">
