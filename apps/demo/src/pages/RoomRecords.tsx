@@ -106,7 +106,7 @@ export function CxRoomPage({ perspective, params, hash }: { perspective: string;
             <div><h4 className="ui-meta">In the plan ({rows.filter((x) => x.applicable).length})</h4><ul className="plain">{rows.filter((x) => x.applicable).map((x) => <li key={x.id} data-testid="cx-plan-in"><b>{x.label}</b> <span className="ui-meta">{(x.why || []).join('; ') || 'in the base library for every room'}</span></li>)}</ul></div>
             <div><h4 className="ui-meta">Not in the plan ({rows.filter((x) => !x.applicable).length})</h4><ul className="plain">{rows.filter((x) => !x.applicable).map((x) => <li key={x.id} data-testid="cx-plan-out"><b>{x.label}</b> <span className="ui-meta">{[x.justification].flat().filter(Boolean).join('; ') || 'not named by any rule for this room'}</span></li>)}</ul></div>
           </div></details>
-        <Card icon="route" title="Delivery spine" sub="One thread from the request to service, read from the records" testId="cx-spine">
+        <Card icon="route" title="Delivery stages" sub="From the request to service, one stage after another, read from the records" testId="cx-spine">
           <ol className="cx-spine">{spine.map((s) => <li key={s.n} className={s.state === 'DONE' ? 'done' : s.state === 'BLOCKED' || s.state === 'IN PROGRESS' ? 'now' : ''}><Tag tone={s.state === 'DONE' ? 'ok' : s.state === 'BLOCKED' ? 'bad' : s.state === 'IN PROGRESS' ? 'warn' : 'muted'}>{s.n} · {s.state}</Tag><b>{s.name}</b><span className="ui-meta">{s.note}</span></li>)}</ol>
           <p className="wk-note">A stage is “done” only when its record says so: a milestone recorded, a phase that passed, a sign-off recorded. Blocked means the rule that stops it is written on this page.</p>
         </Card>

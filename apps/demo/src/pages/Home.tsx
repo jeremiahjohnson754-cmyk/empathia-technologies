@@ -54,11 +54,22 @@ export function decisionsWaiting(w: Workspace | null): Decision[] {
 }
 
 interface Change { at: number; title: string; detail: string; where: string; href?: string; denied: boolean }
+/** 25 Nov 2026: the recorded event types, read aloud in plain words (an external review met "lifecycle refused" and could not tell what it
+ *  meant). The record keeps its type; only the title changes. A type not listed falls back to its own words. */
+const EVENT_TITLE: Record<string, string> = {
+  'room.lifecycle_changed': 'Stage changed', 'room.lifecycle_refused': 'Stage change held back: a condition is not met', 'room.design_created': 'Room designed', 'room.revision_saved': 'Design revision saved', 'room.created': 'Room created', 'room.classification_approved': 'Room classification approved',
+  'commission.result_recorded': 'Test result recorded', 'commission.result_verified': 'Test result verified by a second person', 'commission.asset_replaced': 'Unit replaced',
+  'issue.opened': 'Issue opened', 'issue.assign': 'Issue assigned', 'policy.exception_requested': 'Design exception requested', 'baseline.approve': 'Baseline approved',
+  'service.raise': 'Service request raised', 'service.triage': 'Service request triaged', 'service.assign': 'Technician assigned', 'service.dispatch': 'Technician dispatched', 'service.preflight': 'Pre-dispatch checks', 'service.evidence': 'Field evidence added', 'service.verify': 'Repair verified', 'service.handoff': 'Work handed over', 'service.replan': 'Work replanned', 'service.stock': 'Parts checked',
+  'apex.open': 'Diagnosis opened', 'apex.opened': 'Diagnosis opened', 'apex.hypothesis_recorded': 'Possible cause recorded', 'apex.diagnosis_reviewed': 'Diagnosis reviewed', 'apex.act': 'Diagnosis acted on',
+  'learn.propose': 'Lesson proposed', 'learn.case_proposed': 'Lesson proposed', 'learn.sme_review': 'Lesson reviewed by a specialist',
+};
+const eventTitle = (type: string) => EVENT_TITLE[type] || type.replace(/^[a-z]+\./, '').replace(/_/g, ' ');
 /** Changes recorded in the last 7 days: room events (relative to the demonstration's fixed now) and service workspace events. */
 export function recentChanges(w: Workspace | null): Array<Change & { n: number }> {
   const out: Change[] = [];
-  for (const r of allRecords()) for (const e of r.events) { const t = Date.parse(e.at); if (DEMO_NOW - t <= 7 * DAY && e.type !== 'record.kept') out.push({ at: Date.now() - (DEMO_NOW - t), title: e.type.replace(/^[a-z]+\./, '').replace(/_/g, ' '), detail: `${e.detail} · ${who(e.by)}`, where: shortName(r.outline), href: roomHref(r.outline), denied: e.outcome === 'DENIED' }); }
-  for (const e of w?.events || []) { const t = Date.parse(e.at); if (Date.now() - t <= 7 * DAY) out.push({ at: t, title: e.type.replace(/^[a-z]+\./, '').replace(/_/g, ' '), detail: `${e.detail}${e.by ? ` · ${who(e.by)}` : ''}`, where: e.aggregate, denied: e.outcome === 'DENIED' }); }
+  for (const r of allRecords()) for (const e of r.events) { const t = Date.parse(e.at); if (DEMO_NOW - t <= 7 * DAY && e.type !== 'record.kept') out.push({ at: Date.now() - (DEMO_NOW - t), title: eventTitle(e.type), detail: `${e.detail} · ${who(e.by)}`, where: shortName(r.outline), href: roomHref(r.outline), denied: e.outcome === 'DENIED' }); }
+  for (const e of w?.events || []) { const t = Date.parse(e.at); if (Date.now() - t <= 7 * DAY) out.push({ at: t, title: eventTitle(e.type), detail: `${e.detail}${e.by ? ` · ${who(e.by)}` : ''}`, where: e.aggregate, denied: e.outcome === 'DENIED' }); }
   // the same change recorded in many rooms on the same day reads as one line naming how many rooms
   const groups = new Map<string, Change & { n: number }>();
   for (const x of out.sort((a, b) => b.at - a.at)) { const k = `${x.title}|${x.detail}|${Math.floor(x.at / DAY)}`; const g = groups.get(k); if (g) { g.n += 1; g.where = `${g.n} rooms`; g.href = undefined; } else groups.set(k, { ...x, n: 1 }); }
@@ -177,7 +188,7 @@ function MissionControl({ role }: PageProps) {
   const products = PRODUCTS.map((p) => ({ p, landing: pages.find((x) => x.product === p.id && x.landing) ?? pages.find((x) => x.product === p.id) })).filter((x) => x.landing && x.p.id !== 'mission-control');
   // V2.5.3's entries and "What can I help you do?", role-filtered
   const actions = [
-    { href: '#/room', icon: 'room', t: 'Room Assurance', s: 'Atlas 4.218: health, spine, what moved' },
+    { href: '#/room', icon: 'room', t: 'Room Assurance', s: 'Atlas 4.218: health, delivery stages, what moved' },
     { href: '#/search/scenarios/S1', icon: 'graph', t: 'Change impact', s: 'What a failing switch takes down' },
     { href: '#/room?tab=tests', icon: 'check', t: 'Commissioning', s: 'Tests, who recorded, who verified' },
     { href: '#/v25/build', icon: 'cube', t: 'Design a space', s: 'A furnished room you change by hand' },

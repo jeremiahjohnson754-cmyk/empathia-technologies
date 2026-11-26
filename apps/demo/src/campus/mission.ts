@@ -53,7 +53,7 @@ const STATIONS: Array<[StationKey, string, string]> = [
   ['procurement', 'Procurement', 'Design approved, installation not yet scheduled'],
   ['installation', 'Installation', 'Installation pending'],
   ['commissioning', 'Commissioning', 'Installed; tests being recorded and verified'],
-  ['acceptance', 'Acceptance', 'A baseline waits for a reviewer'],
+  ['acceptance', 'Acceptance', 'A baseline, the accepted record of how the room was proven to work, waits for a reviewer'],
   ['service', 'Service', 'Accepted rooms with something open'],
   ['operating', 'In operation', 'Accepted, nothing open'],
 ];
