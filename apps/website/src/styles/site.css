@@ -145,6 +145,10 @@ h1.display { font-size: clamp(44px, 4.3vw, 72px); line-height: .98; letter-spaci
 /* 90-1: the home promise and both actions sit inside a 1366×768 first screen; the spectrum and padding give up the height */
 .hero--home .spectrum { margin-bottom: clamp(28px, 3.4vw, 48px); }
 h1.display span { display: block; } h1.display span:last-child { color: var(--w-accent); }   /* DIRECTION.md frame 13: the last line in teal */
+/* 25 Nov 2026 (commercial-readiness §8.1): the proposition is the headline; the founder's five words stay under it as the brand line */
+h1.display--prop { font-size: clamp(38px, 3.9vw, 64px); line-height: 1.02; max-width: 17ch; }
+.brandline { margin: 18px 0 0; font-family: var(--w-display); font-weight: 800; font-size: clamp(17px, 1.45vw, 21px); letter-spacing: -.01em; color: var(--w-tx); }
+.brandline span:last-child { color: var(--w-accent); }
 .lede { margin: 26px 0 0; max-width: 56ch; color: var(--w-tx2); font-size: clamp(18px, 1.6vw, 21px); line-height: 1.6; text-wrap: pretty; }
 p { text-wrap: pretty; }
 
@@ -260,6 +264,8 @@ p { text-wrap: pretty; }
 .chapter__glow { position: absolute; inset: -10% -6%; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, color-mix(in srgb, var(--pc) var(--w-glow-k), transparent), transparent); }
 .chapter__text { min-width: 0; }
 .chapter__n { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 16px; color: var(--w-tx2); font-size: 14px; font-weight: 600; letter-spacing: .04em; }
+.chapter__stations { margin: -6px 0 8px; color: var(--w-accent); font-size: 14px; font-weight: 700; }
+.chapter__outcome { margin: 16px 0 0; color: var(--w-tx2); font-size: 15px; line-height: 1.5; } .chapter__outcome b { color: var(--w-tx); } .chapter__outcome span { display: block; margin-top: 2px; font-size: 13px; }
 .chapter h3 { margin: 0; font: 800 clamp(28px, 3vw, 40px)/1.08 var(--w-display); letter-spacing: -.03em; }
 .chapter__text > p:not([class]) { margin: 18px 0 0; color: var(--w-tx2); font-size: 18px; max-width: 52ch; }
 .chapter .ticks { margin-top: 24px; gap: 10px; }
@@ -844,6 +850,12 @@ p { text-wrap: pretty; }
 .world3 b { font-size: 1.15rem; } .world3:hover b { color: var(--w-accent); }
 .world3 span { color: var(--w-ink2, inherit); }
 .world3__more { margin: 18px 0 0; font-weight: 600; }
+/* the nine worlds of /experiences (25 Nov 2026): built, in development and planned, told apart in words, not only by colour */
+.worlds9 { list-style: none; margin: 0 0 18px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.world9 { display: grid; align-content: start; gap: 6px; padding: 18px 20px; border: 1px solid var(--w-line); border-radius: 16px; background: var(--w-card); min-width: 0; }
+.world9 h3 { margin: 0; font-size: 1.2rem; } .world9 p { margin: 0; } .world9 a { font-weight: 600; justify-self: start; min-height: 44px; display: inline-flex; align-items: center; }
+.world9__state { font-size: 13px; font-weight: 700; color: var(--w-tx2); } .world9[data-state="walk"] .world9__state { color: var(--w-accent); }
+.world9[data-state="plan"] { background: transparent; border-style: dashed; } .world9__note { color: var(--w-tx2); font-size: 14px; }
 @media (max-width: 720px) {
   .worlds3 { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 84%; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; gap: 14px; padding-bottom: 12px; }
   .worlds3 > li { scroll-snap-align: start; }

@@ -54,12 +54,14 @@ const ESTATES: StripItem[] = [
   { title: 'Mixed-use estates', sub: 'Rooms shared across tenants', icon: 'mixed' },
 ];
 /** The workflow strip: five moves of one record, each the product that makes it. */
+/** What the products do along the lifecycle's stations (ui.tsx › LIFECYCLE): five moves, each naming the stations it belongs to, so the
+ *  two never read as two different lifecycles (25 Nov 2026, directive §8.3). */
 const FLOW: StripItem[] = [
-  { title: 'Design', sub: 'Lite draws the room and its coverage', icon: 'lite', p: 'lite', href: '/products/lite' },
-  { title: 'Prove', sub: 'Commissioning tests, a reviewer verifies', icon: 'commissioning', p: 'commissioning', href: '/products/commissioning' },
-  { title: 'Operate', sub: 'Mission Control reads it against the baseline', icon: 'mission-control', p: 'mission-control', href: '/products/mission-control' },
-  { title: 'Repair', sub: 'ServiceHands closes on a verified retest', icon: 'servicehands', p: 'servicehands', href: '/products/servicehands' },
-  { title: 'Learn', sub: 'APEX explains, Learn teaches', icon: 'learn', p: 'learn', href: '/products/learn' },
+  { title: 'Design', sub: 'Intake and Design · Lite draws the room and its coverage', icon: 'lite', p: 'lite', href: '/products/lite' },
+  { title: 'Prove', sub: 'Commissioning and Acceptance · tests, then a reviewer verifies', icon: 'commissioning', p: 'commissioning', href: '/products/commissioning' },
+  { title: 'Operate', sub: 'Service · Mission Control reads it against the baseline', icon: 'mission-control', p: 'mission-control', href: '/products/mission-control' },
+  { title: 'Repair', sub: 'Service · ServiceHands closes on a verified retest', icon: 'servicehands', p: 'servicehands', href: '/products/servicehands' },
+  { title: 'Learn', sub: 'In operation · APEX explains, Learn teaches', icon: 'learn', p: 'learn', href: '/products/learn' },
 ];
 /** The architecture strip: only what the repository enforces and tests (the trust page says what is not claimed). */
 const ARCH: StripItem[] = [
@@ -81,13 +83,27 @@ const WORLDS3 = [
   { file: 'exp-campus', world: 'University', name: 'Campus Life', line: 'Walk the Quad and fix a lecture theatre’s circuit bench.', route: '#/play/campus' },
   { file: 'exp-expo', world: 'Convention', name: 'Expo LIVE', line: 'Fly to a booth, join a session, answer its poll.', route: '#/play/expo' },
 ] as const;
+/** The nine worlds of the Experiences page (founder: Enterprise, Stadium, University, Convention, Festival, Community, Collabora-SING,
+ *  Shelter, E-Waste). `walk`: in the demonstration today; `dev`: in development with its own page; `plan`: planned, not built. The lines
+ *  for the planned worlds say only their purpose, from the founder's directives, with no real place, brand or organization named. */
+const NINE: Array<{ key: string; name: string; state: 'walk' | 'dev' | 'plan'; line: string; href?: string; cta?: string }> = [
+  { key: 'enterprise', name: 'Enterprise', state: 'walk', line: 'Northstar Innovation Campus: a workplace estate of rooms, devices and the evidence behind them. The Living Campus.', href: '#/investor', cta: 'Open the Living Campus' },
+  { key: 'stadium', name: 'Stadium', state: 'walk', line: 'Harborlight Stadium: a match day you operate from the LIVE console, from the seat to the broadcast gallery.', href: '#/play/stadium', cta: 'Open Stadium LIVE' },
+  { key: 'university', name: 'University', state: 'walk', line: 'Kestrel Valley University: a campus day you play, and a lecture theatre’s circuit bench to fix before class.', href: '#/play/campus', cta: 'Play Campus Life' },
+  { key: 'convention', name: 'Convention', state: 'walk', line: 'Larkspur Exchange Convention Centre: a technology expo, from the hall floor to the keynote.', href: '#/play/expo', cta: 'Walk the Expo hall' },
+  { key: 'festival', name: 'Festival', state: 'plan', line: 'A multi-day music festival in a city park: attendees, artists, vendors, production crews and engineers on one record.' },
+  { key: 'community', name: 'Community', state: 'plan', line: 'A large church, a multi-campus ministry and the community programs around it, coordinated on one record.' },
+  { key: 'collabora-sing', name: 'Collabora-SING', state: 'dev', line: 'A research plan for musicians playing across a network: what if the performance were sent, not only the sound? The pilot has not been run.', href: '/collabora-sing', cta: 'Read about Collabora-SING' },
+  { key: 'shelter', name: 'Shelter', state: 'plan', line: 'Citywide coordination of shelter resources between nonprofits, outreach teams and public agencies, designed so that no sensitive location is ever shown.' },
+  { key: 'e-waste', name: 'E-Waste', state: 'plan', line: 'A living electronics-recycling facility, with SIGNAL: The Second Life for the people who work in it.' },
+];
 /** The home page's story, in lifecycle order, each chapter told with that product's own screen. Wording kept to what the
  *  demonstration shows (products.ts), so a chapter never claims more than its product page. */
 const STORY: ChapterItem[] = [
-  { p: byId('lite'), title: 'Design the room before anything is bought', body: 'Lite draws the room from an archetype and its dimensions and places every seat, display, camera and microphone. Predicted coverage is labelled modeled, and Scouter, inside Lite, proposes equipment from comparable rooms for the engineer to decide.', points: ['Geometry with its provenance, never promoted silently', 'Coverage predicted, with the assumptions stated', 'Scouter proposals reviewed before anything is adopted'] },
-  { p: byId('commissioning'), title: 'Prove it, then accept it', body: 'An adaptive plan states why each test applies and why others do not. A failed test opens a deficiency, someone other than the engineer verifies, and acceptance makes the room’s baseline.', points: ['The reason for every test', 'An approval that names every unresolved item', 'Retest, independent verification, acceptance'], shot: { file: 'room', alt: 'The room record of Atlas 4.218 in the investor demonstration: its health, devices, open issues and lifecycle stage, each computed from the room’s records.' } },
-  { p: byId('servicehands'), also: byId('mission-control'), title: 'Run it against what was accepted', body: 'Mission Control counts every room at every stage and says what changed. ServiceHands turns an issue into a work order that closes only with field evidence and a verified retest.', points: ['What changed, what matters, what needs action', 'Hard gates before dispatch', 'Closure on a verified retest, not on a checkbox'] },
-  { p: byId('apex'), also: byId('learn'), title: 'Learn from what actually happened', body: 'APEX ranks the hypotheses that could explain a change, each with its evidence and the reason it is not yet proven. Learn turns reviewed cases into lessons, and training never grants authority.', points: ['Ranked hypotheses with cited evidence', 'A person decides; a suggestion never acts by itself', 'Reviewed, de-identified cases that teach'] },
+  { p: byId('lite'), stations: 'Intake and Design', title: 'Design the room before anything is bought', body: 'Lite draws the room from an archetype and its dimensions and places every seat, display, camera and microphone. Predicted coverage is labeled modeled, and Scouter, inside Lite, proposes equipment from comparable rooms for the engineer to decide.', points: ['Every dimension says where it came from', 'Coverage predicted, with the assumptions stated', 'Scouter proposals reviewed before anything is adopted'], outcome: 'fewer surprises at installation, because the room is checked before anything is bought.' },
+  { p: byId('commissioning'), stations: 'Commissioning and Acceptance', outcome: 'fewer incomplete handoffs, and a baseline every later change can be compared with.', title: 'Prove it, then accept it', body: 'An adaptive plan states why each test applies and why others do not. A failed test opens a deficiency, someone other than the engineer verifies, and acceptance makes the room’s baseline.', points: ['The reason for every test', 'An approval that names every unresolved item', 'Retest, independent verification, acceptance'], shot: { file: 'room', alt: 'The room record of Atlas 4.218 in the product demonstration: its health, devices, open issues and lifecycle stage, each computed from the room’s records.' } },
+  { p: byId('servicehands'), also: byId('mission-control'), stations: 'Service', outcome: 'repairs that stay fixed, because a job closes only when a retest is verified.', title: 'Run it against what was accepted', body: 'Mission Control counts every room at every stage and says what changed. ServiceHands turns an issue into a work order that closes only with field evidence and a verified retest.', points: ['What changed, what matters, what needs action', 'Hard gates before dispatch', 'Closure on a verified retest, not on a checkbox'] },
+  { p: byId('apex'), also: byId('learn'), stations: 'In operation', outcome: 'less time spent finding a cause, and people prepared by what actually happened.', title: 'Learn from what actually happened', body: 'APEX ranks the hypotheses that could explain a change, each with its evidence and the reason it is not yet proven. Learn turns reviewed cases into lessons, and training never grants authority.', points: ['Ranked hypotheses with cited evidence', 'A person decides; a suggestion never acts by itself', 'Reviewed, de-identified cases that teach'] },
 ];
 
 export function buildPages(ctx: SiteContext): Page[] {
@@ -111,18 +127,21 @@ export function buildPages(ctx: SiteContext): Page[] {
         <div className="hero__grid">
           <div className="hero__copy">
             <p className="label">Empathia Technologies</p>
-            <h1 className="display"><span>Technology.</span> <span>Space.</span> <span>Intelligence.</span> <span>Experience.</span> <span>Connected.</span></h1>
-            <p className="lede">Empathia unifies engineering, AV and UC operations, physical spaces, service intelligence, people and learning in one record: every room, every device, every decision, with its evidence.</p>
+            {/* 25 Nov 2026 (commercial-readiness directive §8.1): the proposition leads; the founder's line stays as the brand line under it */}
+            <h1 className="display display--prop">From infrastructure request to verified operational readiness.</h1>
+            <p className="brandline" aria-label="Technology. Space. Intelligence. Experience. Connected."><span>Technology.</span> <span>Space.</span> <span>Intelligence.</span> <span>Experience.</span> <span>Connected.</span></p>
+            <p className="lede">One connected platform to design, commission, operate and understand the spaces your organization runs on. Engineering, AV and UC operations, service, people and learning share one record: every room, every device, every decision, with its evidence.</p>
             <Actions><a className="btn btn--primary btn--lg" href={launchHref(ctx.demoUrl, START_LAUNCH, '/')}>Experience the platform</a>{heroFilm ? <a className="btn btn--lg" href="#film-M2">Watch the film</a> : <a className="btn btn--lg" href="/request-demo">Request a demonstration</a>}</Actions>
           </div>
           <div className="hero__aside">{ctx.hero?.length ? <><Opening frames={ctx.hero} /><Counts counts={heroCounts} under /></> : heroFilm ? <>{heroFilm}<Counts counts={heroCounts} under /></> : heroArt}</div>
         </div>
-        <EvidenceLine />
         <GlassRail />
       </div></section>
       <nav className="doors wrap" aria-label="More ways in"><a href="/platform">Explore Empathia</a><a href="/fieldlink">Discover FieldLink</a></nav>
       {ctx.hero?.length && heroFilm ? <section className="section section--film"><div className="wrap">{film('M2', true, '/films#film-M2')}</div></section> : null}
-      <Section eyebrow="The lifecycle, in the product" title="From an empty room to an accepted baseline" lead="Four moments of one record, each shown on the product’s own screen in the public demonstration. Every screen runs on synthetic data.">
+      {/* 25 Nov 2026: the lifecycle is told once on this page, as the product's eight stations; the four chapters are parts of it */}
+      <Section id="lifecycle" eyebrow="The lifecycle" title="Eight stations, one record of every room" lead="From the first request to a room in operation, each station adds evidence to the same record. Four of them follow, each on the product’s own screen in the public demonstration, on synthetic data.">
+        <EvidenceLine />
         <Chapters items={STORY} captures={ctx.captures} />
       </Section>
       {/* 24 Nov 2026 (founder, 23 Nov 19:22): the positioning leads the list of products: seventeen capabilities are six families of one
@@ -134,20 +153,21 @@ export function buildPages(ctx: SiteContext): Page[] {
       </Section>
       {/* a buyer meets who it is for third, not tenth (20 Nov 2026, the four-perspective pass) */}
       <Section eyebrow="Who it is for" title="Read by every team that touches a room"><Cards cols={4} items={AUDIENCES} /></Section>
-      <Section id="worlds" eyebrow="Three more worlds" title="The same Core, in venues you can walk" lead="In 3D, in the browser. Fictional venues, synthetic data, first versions.">
+      {/* 25 Nov 2026 (directive §10): the market-entry position, a layer beside what an estate already runs; nothing claimed connected */}
+      <Section id="alongside" eyebrow="Alongside what you run" title="Keep your monitoring. Add the record behind every room." lead="Empathia does not ask you to replace the room-monitoring or management tools you already use. It adds what they do not keep: the lifecycle of each room from the request to acceptance, the evidence of how it was commissioned, and the work that keeps it that way. Where a connector to one of your tools has been verified, Empathia reads from it; in the public demonstration nothing is connected." />
+      <Section id="worlds" eyebrow="Experiences" title="The same Core, in venues you can walk" lead="In 3D, in the browser. Fictional venues, synthetic data, first versions.">
         <p className="rail-hint" aria-hidden="true">Swipe through the three worlds →</p>
         <ul className="worlds3">{WORLDS3.map((w) => { const cap = ctx.captures[w.file]; return (
           <li key={w.file} data-exp={w.file}><a className="world3" href={demo(w.route)}>{cap ? <img src={`/media/product/${w.file}-640.webp`} width={640} height={Math.round(640 * cap.h / cap.w)} loading="lazy" alt="" /> : null}<i>{w.world}</i><b>{w.name}</b><span>{w.line}</span></a></li>); })}</ul>
-        <p className="world3__more"><a href="/experiences">What each world shows, and what it does not →</a></p>
+        <p className="world3__more"><a href="/experiences">All nine worlds, built, in development and planned →</a></p>
       </Section>
-      <Strip id="flow" eyebrow="The workflow" title="From request to a proven room" items={FLOW} flow />
       <Section eyebrow="The demonstration campus" title={`${ROOM_TOTAL} rooms, each with its record`}><Campus /></Section>
       <Strip id="estates" eyebrow="Where it fits" title="Built for the rooms of every estate" items={ESTATES} foot={estatesFoot} />
       <Section eyebrow="Evidence" title="Six words the product will not blur" lead="Every value on every screen carries one of these labels. Most tools collapse them; Empathia keeps them apart so a decision can be traced to what was actually known." tone="deep">
         <dl className="states">{(Object.keys(EVIDENCE) as Evidence[]).map((s) => <div key={s} data-s={s}><dt><Tag s={s} /></dt><dd>{EVIDENCE[s].meaning}</dd></div>)}</dl>
       </Section>
       <Strip id="architecture" eyebrow="The architecture" title="Built to be checked" items={ARCH} foot={archFoot} />
-      <Section eyebrow="Proof" title="One claim, the same on both sites" lead="Each thing we say about the product is a record with a state. This one is read from the same registry the demonstration reads."><LeadClaim asOf={ctx.asOf || new Date().toISOString()} demoUrl={ctx.demoUrl} /></Section>
+      <Section eyebrow="Proof" title="Every claim is a record you can check" lead="Each thing we say about the product is a record with a state, the same on this site and in the demonstration. This one is read from the registry the demonstration reads."><LeadClaim asOf={ctx.asOf || new Date().toISOString()} demoUrl={ctx.demoUrl} /></Section>
       <section className="section section--deep"><div className="wrap"><FounderBlock page="home" /></div></section>
       <CtaBand title="See it on your own rooms." body="A guided walk through the scenarios on synthetic data, or a bounded pilot with your rooms and your people."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href="/pilot-partners">Pilots and partnerships</a></Actions></CtaBand>
       <div className="wrap"><Note>What you can see today is a demonstration on synthetic data. No customer, partner or device is named or connected, and every measurement shown is labelled modeled, simulated, declared, observed or verified.</Note></div>
@@ -199,7 +219,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Section title="The lifecycle"><EvidenceLine /></Section>
         <Follow demoUrl={ctx.demoUrl} captures={ctx.captures} />
         {film('F-FOLLOW') ? <Section id="follow-film" title="The same five views, as one film" lead="Recorded from the demonstration, opened the way this page opens it: each view switches to its own perspective and says so.">{film('F-FOLLOW')}</Section> : null}
-        <Strip id="flow" eyebrow="The workflow" title="Five moves of one record" items={FLOW} flow />
+        <Strip id="flow" eyebrow="Along the stations" title="Five moves of one record" items={FLOW} flow />
         <Section title="The nine core products"><ProductTiles captures={ctx.captures} /></Section>
         <Section title="The demonstration campus" tone="deep"><Campus /></Section>
         <Section id="executive" title="Executive Intelligence" lead="Projects started and funded, commissioning conformance, open issues, standards alignment and room usage, each measure with its source, its period, its denominator and its coverage. Missing data shows as missing, never as success." />
@@ -239,10 +259,21 @@ export function buildPages(ctx: SiteContext): Page[] {
         <CtaBand title="Bring your team’s questions." body="A guided demonstration on synthetic data, or a bounded pilot with your rooms."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href="/pilot-partners">Pilots and partnerships</a></Actions></CtaBand>
       </>
     ) },
-    { path: '/experiences', title: 'Experiences — Empathia Technologies', description: 'Three worlds you can walk through in the browser: Campus Life at a university, Stadium LIVE and the Expo hall. Fictional venues, synthetic data, first versions.', nav: 'Experiences', body: (
+    { path: '/experiences', title: 'Experiences — Empathia Technologies', description: 'Nine worlds on one Core: the Enterprise campus, a stadium, a university and a convention hall you can walk in the browser today; Collabora-SING in development; a festival, a community network, shelter coordination and an e-waste facility planned. Fictional venues, synthetic data.', nav: 'Experiences', body: (
       <>
-        <Hero label="Experiences" title="Walk into the rooms the platform runs" lead="Three worlds in 3D, in the browser: a university you play, a stadium you operate and an expo hall you explore. Every venue is fictional and every figure synthetic; each is a first version, and each says so."
+        <Hero label="Experiences" title="Walk into the rooms the platform runs" lead="Nine worlds on one Core. Four can be walked in the browser today, Collabora-SING is in development and four more are planned. Every venue is fictional and every figure synthetic; each world says what it is and what it is not."
           action={{ href: demo('#/play/campus'), label: 'Play Campus Life' }} />
+        {/* 25 Nov 2026 (commercial-readiness directive §9): every one of the nine worlds, with what exists today. A planned world shows no
+            picture and no detail beyond its purpose: nothing unfinished is shown as built. Venues and places are fictional. */}
+        <Section id="nine" eyebrow="Nine worlds" title="One Core, nine places it runs" lead="Each world uses the same record, evidence labels and engineering as the Enterprise campus.">
+          <ul className="worlds9" data-worlds={NINE.length}>{NINE.map((x) => (
+            <li key={x.key} className="world9" data-world={x.key} data-state={x.state}>
+              <p className="world9__state">{x.state === 'walk' ? 'In the demonstration' : x.state === 'dev' ? 'In development' : 'Planned'}</p>
+              <h3>{x.name}</h3><p>{x.line}</p>
+              {x.href ? <a href={x.href.startsWith('#') ? demo(x.href) : x.href}>{x.cta}<span aria-hidden="true"> →</span></a> : <p className="world9__note">Not built yet. No date is given.</p>}
+            </li>))}</ul>
+          <p>The SIGNAL series in Learn tells stories set in these worlds; <a href="/products/learn">see Learn</a>.</p>
+        </Section>
         {([
           ['exp-campus', 'Campus Life', 'A university you play', 'Walk and run across the Quad of Kestrel Valley University, meet Professor Calder, open Science Hall and fix the circuit bench in the SCI-110 lecture theatre before her 09:00 lecture. Three circuits, worked out with Ohm’s law, light the board; fact cards, experience and levels along the way; progress kept in your browser.', '#/play/campus', 'Play Campus Life', 'The SCI-110 lecture theatre in Campus Life, with the circuit bench, the desks and the projection screen'],
           ['exp-stadium', 'Stadium LIVE', 'A stadium you operate', 'Harborlight Stadium under the lights. The console changes the bowl itself: seven atmospheres from pregame to concert, five cameras, cheers and a wave, a replayable match, the ribbon and the boards, a modeled crowd-level map that states its assumptions, PA and wireless coverage, the venue’s AV devices and their (simulated) state. Sound only when you turn it on.', '#/play/stadium', 'Open Stadium LIVE', 'Harborlight Stadium at night in Stadium LIVE, with the LIVE console beside the bowl'],
@@ -259,7 +290,7 @@ export function buildPages(ctx: SiteContext): Page[] {
     { path: '/how-it-works', title: 'How it works — Empathia Technologies', description: 'The governed lifecycle from request to assurance baseline.', nav: 'How it works', body: (
       <>
         <Hero label="How it works" action={{ href: demo(), label: 'Walk the lifecycle in the live demo' }} title="From request to accepted baseline" lead="The governed lifecycle the platform is built around, as the demonstration shows it: every transition with an authorized role, the required evidence, a guard, an event and an audit record." />
-        <Strip id="flow" eyebrow="In five moves" title="Design, prove, operate, repair, learn" items={FLOW} flow />
+        <Strip id="flow" eyebrow="Along the stations" title="Design, prove, operate, repair, learn" items={FLOW} flow />
         {film('F-LIFE') ? <Section id="life" title="One room’s whole life" lead="Core Replay plays a room’s life back from its records, recorded here from the demonstration: the request, the design, the build, the tests, the first baseline, a camera change that reopens only the tests it touches, and the second baseline.">{film('F-LIFE')}</Section> : null}
         <Section title="Nine steps, one record"><Steps steps={[
           { title: 'Request', body: 'A requestor describes the room, with photos, plans, known dimensions and constraints. Photos follow a stated privacy policy.' },

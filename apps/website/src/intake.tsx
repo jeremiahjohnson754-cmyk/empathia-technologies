@@ -47,7 +47,7 @@ export function intakePage(demo: (href?: string) => string, captures: Record<str
           <li>Asking grants no access to a room, a system or a site.</li>
           <li>No size is read from a photograph. A size the person gives is labelled as theirs until it is surveyed.</li>
           <li>Every request has an owner for its next step: a team, never an invented name or a promised date.</li></ul>
-        <Note>Everything shown is the investor demonstration on synthetic data. Requests there are kept in the browser that made them; Teams, Outlook and SharePoint are not connected.</Note>
+        <Note>Everything shown is the product demonstration on synthetic data. Requests there are kept in the browser that made them; Teams, Outlook and SharePoint are not connected.</Note>
         <Actions><a className="btn btn--primary" href={demo('#/request')}>Open Intake in the demonstration</a><a className="btn" href="/how-it-works">How a request becomes a room</a></Actions>
       </Section>
     </>

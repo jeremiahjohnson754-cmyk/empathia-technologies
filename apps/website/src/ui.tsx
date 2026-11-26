@@ -49,16 +49,23 @@ export const Steps = ({ steps }: { steps: { title: string; body: string }[] }) =
 export const Note = ({ children }: { children: React.ReactNode }) => <p className="note">{children}</p>;
 export const Actions = ({ children }: { children: React.ReactNode }) => <div className="actions">{children}</div>;
 
-/** The lifecycle as one continuous evidence line: each stage with the kind of evidence it adds to the room's record. */
+/**
+ * The lifecycle as one continuous evidence line: each station with the kind of evidence it adds to the room's record.
+ * 25 Nov 2026 (commercial-readiness directive §8.3, after an external review found the lifecycle told three ways on the home page and a
+ * fourth in the demo): the stations are the product's own, the Mission flow of the demonstration (apps/demo/src/campus/mission.ts ›
+ * STATIONS), which places every room by its lifecycle state (RoomLifecycle: PLANNED … OPERATIONAL), its baselines and its open issues.
+ * Until then this line said Request, Design, Authorize, Commission, Verify, Baseline, Operate, Learn: the same steps under other names
+ * (Request is Intake, Authorize is Procurement, Commission and Verify are Commissioning, Baseline is Acceptance, Operate is Service).
+ */
 export const LIFECYCLE: { stage: string; adds: string; s: Evidence }[] = [
-  { stage: 'Request', adds: 'needs, photos, known dimensions', s: 'declared' },
-  { stage: 'Design', adds: 'geometry with its provenance', s: 'modeled' },
-  { stage: 'Authorize', adds: 'approval and funding, by different people', s: 'verified' },
-  { stage: 'Commission', adds: 'an adaptive plan, results as recorded', s: 'observed' },
-  { stage: 'Verify', adds: 'an independent reviewer signs', s: 'verified' },
-  { stage: 'Baseline', adds: 'the accepted state, versioned', s: 'verified' },
-  { stage: 'Operate', adds: 'drift read against the baseline', s: 'observed' },
-  { stage: 'Learn', adds: 'reviewed cases from what happened', s: 'declared' },
+  { stage: 'Intake', adds: 'needs, photos, known dimensions', s: 'declared' },
+  { stage: 'Design', adds: 'geometry and coverage, with their sources', s: 'modeled' },
+  { stage: 'Procurement', adds: 'approval and funding, by different people', s: 'verified' },
+  { stage: 'Installation', adds: 'each unit where the design placed it', s: 'declared' },
+  { stage: 'Commissioning', adds: 'results recorded, then checked by someone else', s: 'observed' },
+  { stage: 'Acceptance', adds: 'the accepted baseline, versioned', s: 'verified' },
+  { stage: 'Service', adds: 'changes read against the baseline; repairs closed on a verified retest', s: 'observed' },
+  { stage: 'In operation', adds: 'reviewed cases and lessons from what happened', s: 'declared' },
 ];
 export const EvidenceLine = () => (
   <ol className="eline" aria-label="The Empathia lifecycle">{LIFECYCLE.map((l) => (
@@ -163,14 +170,14 @@ export const FOUNDER_QUOTE = 'Empathia grew from a simple conviction: the techno
 export const Spectrum = () => <div className="spectrum" aria-hidden="true">{CANON.map((p) => <i key={p.id} data-p={p.id} />)}</div>;
 
 export interface Capture { w: number; h: number; route: string }
-/** A dark capture of the investor demonstration (D43), with its provenance stated. */
+/** A dark capture of the product demonstration (D43), with its provenance stated. */
 export const Shot = ({ p, cap, eager, file, alt, cta }: { p: Product; cap?: Capture; eager?: boolean; file?: string; alt?: string; cta?: { href: string; label: string } }) => { const f = file || p.id; return cap ? (
   <figure className="shot" data-p={p.id}>
     <div className="shot__frame">
       <img src={`/media/product/${f}-1280.webp`} srcSet={`/media/product/${f}-640.webp 640w, /media/product/${f}-1280.webp 1280w`} sizes="(max-width: 1100px) 92vw, 620px" width={cap.w} height={cap.h} loading={eager ? 'eager' : 'lazy'} decoding="async" alt={alt || p.shotAlt || `${p.name} in the investor demonstration: ${p.purpose.charAt(0).toLowerCase() + p.purpose.slice(1)}.`} />
     <span className="shot__badge" aria-hidden="true">Synthetic demonstration data</span>{cta ? <a className="shot__cta btn btn--primary" href={cta.href}>{cta.label}<span aria-hidden="true"> →</span></a> : null}
     </div>
-    <figcaption><b>Synthetic demonstration data</b><span>Captured from the investor demonstration</span></figcaption>
+    <figcaption><b>Synthetic demonstration data</b><span>Captured from the product demonstration</span></figcaption>
   </figure>
 ) : null; };
 
@@ -256,7 +263,9 @@ export const Counts = ({ counts, under }: { counts: { n: number; label: string }
 );
 
 /** shot: another capture than the product's own (the room record), with its own description */
-export interface ChapterItem { p: Product; title: string; body: string; points: string[]; also?: Product; shot?: { file: string; alt: string } }
+/** `stations`: the lifecycle stations the chapter covers (LIFECYCLE above), so the four chapters read as parts of the one line;
+ *  `outcome`: what a buyer could expect to see change, stated as expected and never as a measured result (directive §8.5). */
+export interface ChapterItem { p: Product; title: string; body: string; points: string[]; stations: string; outcome: string; also?: Product; shot?: { file: string; alt: string } }
 /** The home page's story: each stage of the lifecycle told with the product's own screen (a dark capture, D43), in lifecycle order. */
 export const Chapters = ({ items, captures }: { items: ChapterItem[]; captures: Record<string, Capture> }) => (
   <><p className="rail-hint" aria-hidden="true">Swipe through the four stages →</p><ol className="chapters">{items.map((c, i) => (
@@ -264,8 +273,10 @@ export const Chapters = ({ items, captures }: { items: ChapterItem[]; captures: 
       <div className="chapter__media"><span className="chapter__glow" aria-hidden="true" /><Shot p={c.p} cap={captures[c.shot && captures[c.shot.file] ? c.shot.file : c.p.id]} file={c.shot && captures[c.shot.file] ? c.shot.file : undefined} alt={c.shot && captures[c.shot.file] ? c.shot.alt : undefined} /></div>
       <div className="chapter__text">
         <p className="chapter__n"><span className="dot" aria-hidden="true" />{String(i + 1).padStart(2, '0')} · {c.p.name}{c.also ? ` and ${c.also.name}` : ''}</p>
+        <p className="chapter__stations">{c.stations}</p>
         <h3>{c.title}</h3><p>{c.body}</p>
         <ul className="ticks">{c.points.map((t) => <li key={t}>{t}</li>)}</ul>
+        <p className="chapter__outcome"><b>What it should change:</b> {c.outcome} <span>Expected, not yet measured in a pilot.</span></p>
         <p className="chapter__go"><a href={`/products/${c.p.slug}`}>{c.p.name}<span className="sr">: the product page</span><span aria-hidden="true"> →</span></a>{c.also ? <a href={`/products/${c.also.slug}`} data-p={c.also.id}>{c.also.name}<span className="sr">: the product page</span><span aria-hidden="true"> →</span></a> : null}</p>
       </div>
     </li>
