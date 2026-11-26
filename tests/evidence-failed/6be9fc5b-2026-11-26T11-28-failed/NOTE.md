@@ -18,7 +18,7 @@ finished runs); its part-1 file is kept in `evidence/`. Nothing here is evidence
 - The correction is in the product, not the test: Expo LIVE, Stadium LIVE and Campus Life set their reported detail in the frame it
   changes and write it to the page synchronously in that frame (see the commit after `03c33d13`). Every condition of XPO-13, SLV-15,
   CL-21 and CL-22 is unchanged. An independent review approved `03c33d13` and then `bf0eebd8`, each with nits;
-  all of them are applied in the commit after `bf0eebd8`.
+  the first set is applied in `bf0eebd8`, the second in the commit after it.
 - The NOT_RUN in part 1 is the Python research prototype (no generated dataset), not run in every run of record since it was added.
 - `logs/`: the build log and the part 1 log (committed with `git add -f`; `*.log` is otherwise ignored). `evidence/`: the tracked
   result files this run changed in `tests/evidence`, plus three git-ignored ones copied before the next run overwrites them:
