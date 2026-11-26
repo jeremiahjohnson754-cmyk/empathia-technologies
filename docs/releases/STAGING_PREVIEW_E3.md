@@ -27,10 +27,19 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 25 Nov 2026 03:14 | `037b9f76` | PASS 298 · FAIL 0 · NOT_RUN 2 (evidence in `54352acd`) | dep-dc354ass728c738juaeg, replaced | dep-dc354ass728c738juab0, replaced |
 | 25 Nov 2026 06:28 | `8891a3fd` | PASS 299 · FAIL 0 · NOT_RUN 2 (evidence in `ddec71b7`) | dep-dc37v8gae00c738gh0sg, replaced | dep-dc37v8gae00c738gh0p0, replaced |
 | 25 Nov 2026 20:04 | `642f6934` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `1a277e8e`) | dep-dc3jr0ojo6nc73ag1650, replaced | dep-dc3jr0ojo6nc73ag15vg, replaced |
-| 26 Nov 2026 03:47 | `1fa2a07e` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `008083a2`) | dep-dc3qnaa9lscs73degqa0, live | dep-dc3qnaa9lscs73degqdg, live |
+| 26 Nov 2026 03:47 | `1fa2a07e` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `008083a2`) | dep-dc3qnaa9lscs73degqa0, replaced | dep-dc3qnaa9lscs73degqdg, replaced |
+| 26 Nov 2026 10:29 | `6e0d7877` | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `a173355b`) | dep-dc40jk59el5s73ark5qg, live | dep-dc40jk59el5s73ark5n0, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `6e0d7877`, 26 Nov 2026 10:36 UTC
+
+Both served manifests named `6e0d7877…` from 10:30 UTC, about two minutes after the branch moved; none of the 1,593 files in the demo
+manifest was served stale. The live check passed **43 of 43** on the two previews. This build carries the first slices of the 25 Nov
+commercial-readiness directive (metric integrity, the demo home hierarchy, the website's Experiences page with nine worlds) and the
+phone-shell test correction. The regression before it, on `60393384`, failed in part 1 on a timing race in that test and was stopped
+(`tests/evidence-failed/60393384-2026-11-26T02-07-stopped/`); `6e0d7877` corrects the test and nothing in the product.
 
 ## Live check of `1fa2a07e`, 26 Nov 2026 03:50 UTC
 
