@@ -29,9 +29,9 @@ function cases(core: ReturnType<typeof useCore>): Case[] {
   core.rooms.forEach((r) => r.issues.forEach((i) => out.push({ id: i.id, title: i.title, roomId: r.outline.id, sev: i.severity, state: i.state, source: i.source, positions: i.positions, layers: [...new Set(i.positions.map((c) => r.positions.find((p) => p.code === c)?.layer).filter(Boolean) as Layer[])], workspace: false, age: 0 })));
   loadWorkspace().incidents.forEach((i) => { if (out.some((x) => x.id === i.id)) { const c = out.find((x) => x.id === i.id)!; c.workspace = true; c.state = i.state; return; } const t = i.title.toLowerCase(); out.push({ id: i.id, title: i.title, roomId: i.roomId, sev: i.severity, state: i.state, source: 'ServiceHands workspace (this browser)', positions: [], layers: /audio|echo|hear/.test(t) ? ['audio'] : /camera|video/.test(t) ? ['video'] : /projector|display|blank/.test(t) ? ['display'] : /switch|network|dropped/.test(t) ? ['network'] : ['control'], workspace: true, age: Math.round((Date.now() - Date.parse(i.openedAt)) / 864e5) }); });
   const rank = (s: string) => (s === 'Mission critical' ? 0 : s === 'High' ? 1 : s === 'Medium' ? 2 : 3);
-  return out.sort((a, b) => Number(a.state === 'RESOLVED' || a.state === 'CLOSED') - Number(b.state === 'RESOLVED' || b.state === 'CLOSED') || rank(a.sev) - rank(b.sev));
+  return out.sort((a, b) => Number(done(a.state)) - Number(done(b.state)) || rank(a.sev) - rank(b.sev));
 }
-const done = (s: string) => s === 'RESOLVED' || s === 'CLOSED';
+const done = (s: string) => s === 'RESOLVED' || s === 'CLOSED' || s === 'CANCELLED';   // record issues end RESOLVED; a canceled request is not open either
 
 export default function InvestigatePage({ params, role }: PageProps) {
   const core = useCore(); const all = cases(core); const id = params['issue'];
@@ -49,7 +49,7 @@ function Index({ all }: { all: Case[] }) {
         {rows.length ? <ul className="pa-queue">{rows.map((c) => { const o = roomById(c.roomId); return (
           <li key={c.id}><a className="pa-inc" href={`#/investigate/${c.id}`} data-testid="investigate-row"><span className={`pa-inc__sev kit-s--${done(c.state) ? 'ok' : c.sev === 'High' || c.sev === 'Mission critical' ? 'bad' : 'warn'}`} aria-hidden="true" />
             <span><span className="pa-inc__t">{c.title}</span><br /><span className="pa-inc__s">{c.id} · {o ? shortName(o) : c.roomId} · {c.layers.join(', ') || 'unplaced'} · {c.sev}</span></span>
-            <Tag tone={done(c.state) ? 'ok' : 'accent'}>{done(c.state) ? 'resolved' : 'investigate'}</Tag></a></li>); })}</ul> : <EmptyState title="No open issue" icon="check" tone="ok">Every issue on record is resolved.</EmptyState>}
+            <Tag tone={done(c.state) ? 'ok' : 'accent'}>{done(c.state) ? (c.state === 'CANCELLED' ? 'canceled' : 'resolved') : 'investigate'}</Tag></a></li>); })}</ul> : <EmptyState title="No open issue" icon="check" tone="ok">Every issue on record is resolved.</EmptyState>}
       </Zone>
     </>
   );

@@ -14,6 +14,7 @@ import { plural, hhmm, day, SIGNAGE } from './core.js';
 import { useCore, honest, Crumbs, Pills, Zone, FactsTable, Bars } from './ui.js';
 import { V14_DEPLOY, EV, PHASES, PILLS, CAPS, SCHEMA, DIAG, OPS_STATES, IC_KINDS, IC_STATES, SCH_STATES, CM_TESTS, RB_SAFETY, fixtures, indicators, readiness, tz, demoClock, roomLabel, type Ev } from './v14Model.js';
 import { CATS } from './Fabric.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 export const EvBadge = ({ k }: { k: Ev }) => <span className={`pa-ev kit-s--${EV[k][1]}`}>{EV[k][0]}</span>;
 const Banner = () => <p className="pa-tower__banner" role="note"><EvBadge k="DEMO" /><span><b>Nothing here is live.</b> This build holds no credentials, calls no vendor API and reaches no device. Every V1.4 record is a deterministic fixture built from the demonstration’s Core and labeled with its evidence kind. Mode {V14_DEPLOY.mode}, fixed at build time.</span></p>;
@@ -171,7 +172,7 @@ function Signage({ role }: { role: string }) {
 function Itsm({ sub }: { sub?: string }) {
   const w = loadWorkspace(); const tabs: Array<[string, string]> = [['', 'Current incidents'], ['recurring', 'Recurring issues'], ['resolved', 'Resolved history'], ['unmatched', 'Unmatched'], ['setup', 'Connector and privacy']];
   const tab = tabs.some((t) => t[0] === sub) ? sub! : ''; const [synced, setSynced] = useState(false);
-  const inc = w.incidents; const cur = inc.filter((i) => i.state !== 'CLOSED' && i.state !== 'RESOLVED'); const rec = inc.filter((i) => i.recurrenceOf); const res = inc.filter((i) => i.state === 'CLOSED' || i.state === 'RESOLVED');
+  const inc = w.incidents; const cur = inc.filter(isOpenRequest); const rec = inc.filter((i) => i.recurrenceOf); const res = inc.filter((i) => i.state === 'CLOSED' || i.state === 'RESOLVED');
   const list = tab === 'recurring' ? rec : tab === 'resolved' ? res : tab === 'unmatched' ? [] : cur;
   return (<><Head title="Service workspace" sub="Incidents, recurring issues, pending change and the unmatched queue, read from an ITSM instance the customer authorized. Here the ServiceHands workspace of this browser stands in for it." phase={6} /><Banner />
     <p className="pa-tower__banner"><EvBadge k={synced ? 'SIMULATED' : 'NOT_MEASURED'} /><span>{synced ? `${inc.length} incidents read · ${inc.length} matched to a room · 0 duplicates refused · 0 withheld by the source’s ACL (callers withheld)` : 'The source has not been read in this page: no room is called incident-free on that basis.'}</span><Button small onClick={() => setSynced(true)} testId="itsm-sync">Sync now (read-only, mock)</Button></p>

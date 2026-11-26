@@ -10,6 +10,7 @@ import { ROOMS, BUILDINGS, buildingByKey, shortName, fullName, roomHref, roomByI
 import { allRecords, roomRecord, DEMO_NOW, openIssues, type RoomRecord, type Position } from '../campus/design.js';
 import type { Workspace } from '../workspace/store.js';
 import type { DecisionState, Project } from '../decisions/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 export type Prov = 'KNOWN' | 'INFERRED' | 'SIMULATED';
 export const PROV_TEXT: Record<Prov, string> = {
@@ -173,7 +174,7 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
   add({ type: 'PowerNode', id: 'PDU-ATL-4', name: 'Power panel ATL-4', sub: 'IDF 4 · UPS-backed', building: 'ATL', state: 'Estate', tone: 'info', facts: [['Where', 'IDF 4'], ['Backed by', 'UPS']], prov: 'KNOWN', source: 'estate record (Search Party)', href: '#/search', links: [] });
   // workspace service requests (the shared ServiceHands workspace, live in this browser)
   for (const i of w.incidents) {
-    if (!out.some((x) => x.type === 'Issue' && x.id === i.id)) add({ type: 'Issue', id: i.id, name: i.title, sub: `${i.severity} · ${i.state} · ${i.roomName}`, roomId: i.roomId, building: i.buildingKey, state: i.state === 'CLOSED' || i.state === 'RESOLVED' ? 'RESOLVED' : 'OPEN', tone: i.state === 'CLOSED' || i.state === 'RESOLVED' ? 'ok' : sevTone(i.severity),
+    if (!out.some((x) => x.type === 'Issue' && x.id === i.id)) add({ type: 'Issue', id: i.id, name: i.title, sub: `${i.severity} · ${i.state} · ${i.roomName}`, roomId: i.roomId, building: i.buildingKey, state: isOpenRequest(i) ? 'OPEN' : i.state === 'CANCELLED' ? 'CANCELLED' : 'RESOLVED', tone: isOpenRequest(i) ? sevTone(i.severity) : 'ok',
       facts: [['Severity', i.severity], ['Service state', i.state], ['Opened', day(i.openedAt)], ['Work order', i.workOrderId || '—'], ['Recurrence of', i.recurrenceOf || '—']], prov: 'KNOWN', source: 'ServiceHands workspace (this browser)', href: `#/servicehands`, links: [{ type: 'Room', id: i.roomId, rel: 'in' }] });
     add({ type: 'Request', id: `RQ-${i.id}`, name: `Service request: ${i.title}`, sub: `${i.state} · ${i.roomName} · opened ${day(i.openedAt)}`, roomId: i.roomId, building: i.buildingKey, state: 'Service request', tone: i.state === 'CLOSED' ? 'ok' : 'warn', at: i.openedAt,
       facts: [['Kind', 'Service request'], ['State', i.state], ['Summary', i.summary], ['Issue', i.id]], prov: 'KNOWN', source: 'ServiceHands workspace (this browser)', href: '#/servicehands', links: [{ type: 'Issue', id: i.id, rel: 'raised' }] });

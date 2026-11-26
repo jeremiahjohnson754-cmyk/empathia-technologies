@@ -8,11 +8,11 @@ import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
-const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts';`;
+const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts';`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'metric-integrity-')); const out = path.join(dir, 'm.mjs');
 await esbuild.build({ stdin: { contents: entry, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', splitting: false, nodePaths: [path.join(repo, 'node_modules')],
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined); } }] });
-const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN } = await import(pathToFileURL(out).href);
+const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR } = await import(pathToFileURL(out).href);
 process.on('exit', () => fs.rmSync(dir, { recursive: true, force: true }));
 
 const w = W.seed(); const recs = D.allRecords();
@@ -166,20 +166,49 @@ test('MI-11 service analytics counts "not closed", and says so; a canceled reque
   assert.doesNotMatch(src, /open at the end|Open at the end|Open at end|<th scope="col">Open<\/th>|label: 'Open', kind: 'number'/, 'the analytics count of jobs not closed is never labelled open');
 });
 
-// What MI-10 cannot see: a rule written as an object map or an === chain, and a list of fixed states (resolved, closed) used to mean
-// closed; the review of dd83dfe7 found four such rules by reading, and they are fixed (Shell's bell, the Control Tower, the analytics).
+// What MI-10 cannot see: a rule written as an object map, a positive === chain, a list split over lines, a rule on closed dates, and a
+// trend over another variable than w.incidents. The reviews of dd83dfe7 and 98606e71 found such rules by reading; they are fixed (the
+// bell, the Control Tower, analytics, the parity views, the room assurance export, Investigate).
 test('MI-10 no page or export keeps its own list of open service states, or counts "open" as "not closed"', () => {
   const src = path.join(repo, 'apps/demo/src'); const own = path.join(src, 'workspace/requests.ts'); const hits = [];
   const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = path.join(d, e.name); if (e.isDirectory()) walk(f); else if (/\.tsx?$/.test(e.name) && f !== own) {
     fs.readFileSync(f, 'utf8').split('\n').forEach((l, k) => { const where = `${path.relative(repo, f)}:${k + 1}`;
       if (/!\s*\(?\s*DONE\.includes\(/.test(l)) hits.push(`${where} counts open as not closed`);
       // any list of service states, in any order, that is the open rule, a copy of part of it, or its complement
-      for (const m of l.matchAll(/\[\s*('[A-Z_]+'(?:\s*,\s*'[A-Z_]+')*)\s*\]/g)) { const set = new Set(m[1].match(/[A-Z_]+/g));
+      for (const m of l.matchAll(/\[\s*(['"][A-Z_]+['"](?:\s*,\s*['"][A-Z_]+['"])*)\s*\]/g)) { const set = new Set(m[1].match(/[A-Z_]+/g));
         const eq = (xs) => xs.length === set.size && xs.every((x) => set.has(x));
-        if (eq(OPEN_STATES) || eq(['RESOLVED', 'CLOSED', 'CANCELLED']) || eq(['CLOSED', 'CANCELLED']) || (set.size >= 4 && [...set].every((x) => OPEN_STATES.includes(x)))) hits.push(`${where} ${m[0]}`); }
-      // a backlog trend of service requests ends a request when it was fixed (requestFixedAt) or restored, never at its close alone
+        const partial = set.size >= 4 && [...set].every((x) => OPEN_STATES.includes(x)) && ['TRIAGED', 'VERIFYING', 'REOPENED'].some((x) => set.has(x));   // work orders have no triaged, verifying or reopened
+        if (eq(OPEN_STATES) || eq(['RESOLVED', 'CLOSED', 'CANCELLED']) || eq(['CLOSED', 'CANCELLED']) || partial) hits.push(`${where} ${m[0]}`); }
+      // "not resolved and not closed" means open but forgets canceled: a negated list of the fixed states, or the same as a chain
+      if (/!\s*\[\s*['"](CLOSED|RESOLVED)['"]\s*,\s*['"](CLOSED|RESOLVED)['"]\s*\]\.includes\(/.test(l) || /state\s*!==\s*['"](CLOSED|RESOLVED)['"]\s*&&\s*[\w.]*state\s*!==\s*['"](CLOSED|RESOLVED)['"]/.test(l)) hits.push(`${where} open as not fixed`);
+      // a backlog trend of service requests ends a request when it was fixed or canceled (requestFixedAt, alone or after a restore), never at its close alone
       if (/weekBacklog\(\s*w\.incidents/.test(l) && !/requestFixedAt/.test(l)) hits.push(`${where} a request trend that ends at the close`); });
   } } };
   walk(src);
   assert.deepEqual(hits, [], 'use isOpenRequest or isUnclosedRequest from workspace/requests.ts');
+});
+
+// MI-12 (re-review of 98606e71): a canceled request is neither open nor fixed, and the room assurance export reads its own room only.
+test('MI-12 a canceled request is not open or fixed anywhere; the room assurance export reads only its own room; analytics does not count a cancel as a close', () => {
+  const cancel = (ws) => { const x = structuredClone(ws); const k = x.incidents.find((i) => i.state === 'TRIAGED'); k.state = 'CANCELLED'; k.history.push({ to: 'CANCELLED', at: new Date().toISOString(), by: 't' }); return { x, k }; };
+  const { x: w3, k } = cancel(w);
+  // fixed (resolved or closed) is its own rule: the Control Tower's "resolved incidents" and the time to restore read it
+  for (const [st, want] of [['RESOLVED', true], ['CLOSED', true], ['CANCELLED', false], ['OPEN', false], ['VERIFYING', false]]) assert.equal(M.isFixedRequest({ state: st }), want, st);
+  // the parity views: a canceled request is not an open issue
+  const core = PC.buildCore(w3, { projects: [], decisions: [], funding: [] });
+  assert.ok(!PS.setOf('iss:open').items(core).some((i) => i.id === k.id), 'a canceled request is not in Open issues');
+  assert.ok(!PS.setOf('iss:resolved').items(core).some((i) => i.id === k.id), 'nor is it called resolved');
+  // the room assurance export: the same seventeen dimensions as the room page, which reads the room's own requests
+  for (const r of recs.filter((x) => w.incidents.some((i) => i.roomId === x.outline.id))) {
+    const page = AR.assuranceDims(r, w.incidents.filter((i) => i.roomId === r.outline.id)).map((d) => d.state);
+    const rows = XA.asPackage(r, w.incidents, by).sections.find((s) => s.id === 'dims').table.rows.map((x) => x.state.toLowerCase());
+    assert.deepEqual(rows, page, r.outline.id);
+  }
+  const nst = recs.find((x) => x.outline.id === 'R-NST-2-101');
+  assert.deepEqual(AR.assuranceDims(nst, w.incidents).filter((d) => d.state !== 'match').map((d) => d.name), AR.assuranceDims(nst, w.incidents.filter((i) => i.roomId === nst.outline.id)).filter((d) => d.state !== 'match').map((d) => d.name), 'other rooms’ requests never reach a room’s dimensions');
+  // service analytics: a canceled job leaves the backlog but is not counted closed, and is no first-time fix
+  const jobs = H.workspaceJobs(w3); const t = Date.now() + 1000;
+  const closedIds = jobs.filter((j) => j.closedAt && !j.canceled).map((j) => j.id);
+  assert.ok(jobs.find((j) => j.id === k.id).canceled, 'the history marks a canceled job');
+  assert.equal(AN.stats(jobs, 0, t).closed, closedIds.length, 'closed counts closes, not cancels');
 });

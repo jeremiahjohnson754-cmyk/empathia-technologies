@@ -18,7 +18,7 @@ import type { RoomRecord } from '../campus/design.js';
 import { deficiencyOf, keyOf } from '../assurance/deficiencyStore.js';
 import { readField, fieldStats } from '../install/fieldRecord.js';
 import type { Workspace, Incident, WorkOrder, ApexCase } from '../workspace/store.js';
-import { isOpenRequest } from '../workspace/requests.js';
+import { isOpenRequest, isFixedRequest } from '../workspace/requests.js';
 
 export type StageKey = 'lite' | 'engineering' | 'commissioning' | 'service' | 'assurance' | 'apex';
 export type Tone = 'ok' | 'warn' | 'bad' | 'info' | 'muted';
@@ -70,7 +70,7 @@ export function threadOf(r: RoomRecord, w: Workspace): Thread {
     facts: incs.length ? [['Incidents', incs.map((i) => `${i.id} ${i.state}`).join(' · ')], ['From a deficiency', handed.length ? handed.map((i) => `${i.id} ← ${i.source!.issue}`).join(' · ') : 'none'],
       ['Field evidence', String(incs.reduce((s, i) => s + (wos(i)?.evidence.length || 0), 0))], ['Verified by', incs.filter((i) => i.verifiedBy).map((i) => `${i.id}: ${i.verifiedBy}`).join(' · ') || 'not yet']] : [['Incidents', 'none']],
     rows: incs.map((i) => { const wo = wos(i); return { id: i.id, text: `${i.title}${wo ? ` · ${wo.id}${wo.evidence.length ? ` · ${wo.evidence.length} evidence` : ''}` : ''}${i.source ? ` · from ${i.source.issue}` : ''}`, tag: i.state, tone: (['RESOLVED', 'CLOSED'].includes(i.state) ? 'ok' : 'info') as Tone, href: `#/v25/service?id=${i.id}` }; }),
-    href: handed[0] ? `#/v25/service?id=${handed[0].id}` : '#/v25/service', open: 'Open ServiceHands', next: handed.length && !['RESOLVED', 'CLOSED'].includes(handed[0]!.state) ? `Work ${handed[0]!.id} to RESOLVED: triage, assign, accept, start, evidence, independent verification` : null });
+    href: handed[0] ? `#/v25/service?id=${handed[0].id}` : '#/v25/service', open: 'Open ServiceHands', next: handed.length && !isFixedRequest(handed[0]!) ? `Work ${handed[0]!.id} to RESOLVED: triage, assign, accept, start, evidence, independent verification` : null });
 
   const holds = r.nextStep?.blockers || [];
   stages.push({ key: 'assurance', n: 5, title: 'Acceptance and the baseline', product: 'Assurance', status: base ? `baseline v${base.version} accepted · ${openDefs.length} open deficienc${openDefs.length === 1 ? 'y' : 'ies'}` : openDefs.length ? `not accepted: ${openDefs.length} deficienc${openDefs.length === 1 ? 'y holds' : 'ies hold'} acceptance` : 'not accepted yet: no deficiency holds it',

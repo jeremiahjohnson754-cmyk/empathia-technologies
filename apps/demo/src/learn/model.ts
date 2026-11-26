@@ -12,6 +12,7 @@ import L from '@empathia/domain-data/data/LEARN_V253.json' with { type: 'json' }
 import { allRecords, roomRecord, type RoomRecord, type Issue, type Position } from '../campus/design.js';
 import { shortName } from '../campus/canon.js';
 import * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 export const V = L as unknown as {
   EVIDENCE_LADDER: Array<[string, string, number]>; SERVICE_VERBS: Array<[string, string, string]>; VERB_MIN: Record<string, number>;
@@ -65,7 +66,7 @@ export function trainingCases(w: S.Workspace): TrainingCase[] {
   const out: TrainingCase[] = [];
   for (const r of allRecords()) {
     const open = r.issues.filter((i) => i.state !== 'RESOLVED'); const inc = w.incidents.filter((i) => i.roomId === r.outline.id);
-    const pick: (Issue & { from: 'room' }) | (S.Incident & { from: 'incident' }) | undefined = open.find((i) => i.severity === 'High') ? { ...open.find((i) => i.severity === 'High')!, from: 'room' } : inc.find((i) => !['CLOSED', 'RESOLVED'].includes(i.state)) ? { ...inc.find((i) => !['CLOSED', 'RESOLVED'].includes(i.state))!, from: 'incident' } : open[0] ? { ...open[0], from: 'room' } : inc[0] ? { ...inc[0], from: 'incident' } : undefined;
+    const pick: (Issue & { from: 'room' }) | (S.Incident & { from: 'incident' }) | undefined = open.find((i) => i.severity === 'High') ? { ...open.find((i) => i.severity === 'High')!, from: 'room' } : inc.find(isOpenRequest) ? { ...inc.find(isOpenRequest)!, from: 'incident' } : open[0] ? { ...open[0], from: 'room' } : inc[0] ? { ...inc[0], from: 'incident' } : undefined;
     if (!pick) continue;
     const positions = pick.from === 'room' ? pick.positions : r.positions.filter((p) => !p.furniture && w.workOrders.some((o) => o.incidentId === pick.id && o.parts.some((x) => x.part === p.cat || (x.part === 'processor' && p.cat === 'dsp')))).map((p) => p.code);
     const domain = domainOf(r, positions, pick.title);

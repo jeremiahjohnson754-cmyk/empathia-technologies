@@ -9,6 +9,7 @@ import { SERVICE_TRANSITIONS, WORK_NEEDS, candidates, preflight, serviceBlockers
 import { openCase, act, type Hypothesis, type Outcome, type Layer } from '@empathia/apex-engine';
 import * as FI from '@empathia/field-intelligence';
 import { holds, personaLabel } from '../build/store.js';
+import { isFixedRequest } from './requests.js';
 
 export interface Evt { at: string; by: string; type: string; aggregate: string; detail: string; outcome: 'ALLOWED' | 'DENIED' }
 export interface Incident { id: string; roomId: string; roomName: string; buildingKey: string; title: string; summary: string; severity: 'Mission critical' | 'High' | 'Standard'; state: ServiceState; openedAt: string; restoredAt: string | null; closedAt: string | null; recurrenceOf: string | null; reopened: boolean; workOrderId: string | null; apexId: string | null; learnCaseId: string | null; history: Array<{ to: ServiceState; at: string; by: string }>; requesterConfirmed: boolean; verifiedBy: string | null;
@@ -297,7 +298,7 @@ export function proposeCase(w: Workspace, persona: string, incidentId: string, i
   const inc = incidentOf(w, incidentId); if (!inc) return refused(['no such incident']);
   const n = need(w, persona, LEARN_PROPOSE, 'learn.propose', inc.id); if (n) return n;
   const why: string[] = [];
-  if (!['RESOLVED', 'CLOSED'].includes(inc.state)) why.push('a case is written from what actually happened: the incident must be RESOLVED or CLOSED');
+  if (!isFixedRequest(inc)) why.push('a case is written from what actually happened: the incident must be RESOLVED or CLOSED');
   if (!input.permission) why.push('customer permission to reuse the incident is required');
   if (!input.deidentified) why.push('the case must be de-identified (no room, person or tenant names)');
   if (/atlas|northstar|\d+\.\d+|reyes|okafor|lind|shah/i.test(`${input.title} ${input.lesson}`)) why.push('the text still names a building, room or person');

@@ -7,10 +7,13 @@
  *   fixed and checked, so it is not open (campus/definitions.ts, requests.open). Every number labelled "open" counts these.
  *   NOT CLOSED: still on the service board. Every state but closed and cancelled, so a resolved job stays on the board until someone
  *   closes it. Work boards and queues show these; a count of them is never labelled "open".
+ *   FIXED: resolved or closed. A canceled request is neither open nor fixed.
  */
 export const OPEN_REQUEST_STATES: ReadonlySet<string> = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'REOPENED']);
 export const isOpenRequest = (i: { state: string }): boolean => OPEN_REQUEST_STATES.has(i.state);
 export const isUnclosedRequest = (i: { state: string }): boolean => i.state !== 'CLOSED' && i.state !== 'CANCELLED';
+/** FIXED: resolved or closed. A canceled request is neither open nor fixed; times to restore and "resolved" counts read this. */
+export const isFixedRequest = (i: { state: string }): boolean => i.state === 'RESOLVED' || i.state === 'CLOSED';
 /** When a request that is not open stopped being open: its first move out of the open states after the last time it was open (the
  *  fix, or the cancel; a later close does not move it), or null while it is open. A trend of open requests ends on the open count
  *  only if a request leaves it when it was fixed, not when it was closed. */

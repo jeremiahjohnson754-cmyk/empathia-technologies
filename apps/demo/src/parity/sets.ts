@@ -25,8 +25,8 @@ export const FAMILIES: Family[] = [
     { key: 'room:commissioning', title: 'Rooms in commissioning', how: 'Lifecycle COMMISSIONING or INSTALLED_UNVERIFIED: installed, not yet accepted.', items: (c) => c.byType.Room.filter((r) => r.state === 'COMMISSIONING' || r.state === 'INSTALLED_UNVERIFIED') },
   ] },
   { key: 'iss', label: 'Issues', blurb: 'Issues behind a number', sets: [
-    { key: 'iss:open', title: 'Open issues', how: 'Every issue not resolved: room records and the ServiceHands workspace of this browser.', items: (c) => c.byType.Issue.filter((i) => i.state !== 'RESOLVED') },
-    { key: 'iss:high', title: 'Open high-severity issues', how: 'Open, and High or Mission critical.', items: (c) => c.byType.Issue.filter((i) => i.state !== 'RESOLVED' && i.tone === 'bad') },
+    { key: 'iss:open', title: 'Open issues', how: 'Every issue not resolved or canceled: room records and the ServiceHands workspace of this browser.', items: (c) => c.byType.Issue.filter((i) => i.state !== 'RESOLVED' && i.state !== 'CANCELLED') },
+    { key: 'iss:high', title: 'Open high-severity issues', how: 'Open, and High or Mission critical.', items: (c) => c.byType.Issue.filter((i) => i.state !== 'RESOLVED' && i.state !== 'CANCELLED' && i.tone === 'bad') },
     { key: 'iss:resolved', title: 'Resolved issues', how: 'Issues whose state is RESOLVED.', items: (c) => c.byType.Issue.filter((i) => i.state === 'RESOLVED') },
   ] },
   { key: 'doc', label: 'Documents', blurb: 'Documents behind a number', sets: [

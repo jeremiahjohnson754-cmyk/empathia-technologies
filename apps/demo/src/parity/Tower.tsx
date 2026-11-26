@@ -12,7 +12,7 @@ import { openIssues, type RoomRecord } from '../campus/design.js';
 import { load as loadWorkspace, type Incident, type Workspace } from '../workspace/store.js';
 import { healthOf, AGREEMENTS, VENDORS, plural, day, hhmm } from './core.js';
 import { useCore, honest, Zone, FactsTable } from './ui.js';
-import { isOpenRequest } from '../workspace/requests.js';
+import { isOpenRequest, isFixedRequest } from '../workspace/requests.js';
 
 type View = 'executive' | 'incident' | 'operations';
 interface Item { id: string; title: string; roomId: string; building: string; sev: 'Mission critical' | 'High' | 'Medium' | 'Standard' | 'Low'; state: string; at: string; source: 'workspace' | 'room record'; inc?: Incident }
@@ -58,7 +58,7 @@ function SiteGrid({ sites }: { sites: Site[] }) {
 
 function Executive({ q, sites, w }: { q: Item[]; sites: Site[]; w: Workspace }) {
   const seg: Segment[] = (['Mission critical', 'High', 'Medium', 'Standard', 'Low'] as const).map((s) => ({ key: s, label: s, value: q.filter((x) => x.sev === s).length, tone: sevTone(s) as Segment['tone'] })).filter((s) => s.value);
-  const resolved = w.incidents.filter((i) => !isOpenRequest(i));
+  const resolved = w.incidents.filter(isFixedRequest);
   const ttr = resolved.filter((i) => i.restoredAt).map((i) => (Date.parse(i.restoredAt!) - Date.parse(i.openedAt)) / 36e5);
   const worst = [...sites].filter((s) => s.items.length).sort((a, b) => b.items.length - a.items.length)[0];
   return (

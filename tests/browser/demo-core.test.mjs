@@ -10,7 +10,6 @@ import { harness, SCHEMES, repo } from './demo-spaces-lib.mjs';
 // the room count comes from the campus data (the thirty R(...) rows and the plan's P(row, ...) rows 31–45), never a literal
 const NROOMS = [...fs.readFileSync(path.join(repo, 'apps/demo/src/campus/canon.ts'), 'utf8').matchAll(/^ {2}(?:R\(|[PX]\(\d+, )'(R-[A-Z]+-\d+-\d+)'/gm)].length;   // X(...) rows: rooms 46–90 of the 90-room estate (10 Nov 2026)
 const { ok, open, done, out } = await harness('demo-core');
-const NREQ = (fs.readFileSync(path.join(repo, 'apps/demo/src/workspace/store.ts'), 'utf8').match(/\binc\('ISS-\d+'/g) || []).length;   // the seed's service requests, from the seed
 const VPS = [[320, 640, 'p320'], [390, 844, 'phone'], [768, 1024, 'tablet'], [1440, 900, 'desktop']];
 const ROUTES = ['#/investor', '#/home', '#/campus', '#/room', '#/search'];
 
@@ -133,14 +132,15 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   const val = async (hash, id) => { if (hash) await t.go(hash, 1800); await t.page.waitForSelector(`[data-testid="${id}"] .kit-tile__value`, { timeout: 8000 }).catch(() => {});
     return parseInt(await t.page.locator(`[data-testid="${id}"] .kit-tile__value`).first().textContent().catch(() => '') || '', 10); };
   const home = await val('', 'kpi-requests'); await setRole(t, 'svcmgr'); await t.page.reload(); await t.page.waitForTimeout(900);
-  const n = { home, pro: await val('#/pro/issues', 'pro-jobs-open'), sh: await val('#/servicehands', 'sh-open-jobs'), v25: await val('#/v25', 'v25-open-jobs') };
+  const n = { home, pro: await val('#/pro/issues', 'pro-jobs-open'), sh: await val('#/servicehands', 'sh-open-jobs'), total: parseInt((await t.page.locator('#all').first().textContent().catch(() => '') || '').match(/(\d+) jobs? · open first/)?.[1] || '', 10), v25: await val('#/v25', 'v25-open-jobs') };
   ok('MC-open-01', 'every tile labelled open counts the same service requests: Mission Control, Pro Issue Intelligence, ServiceHands and the V2.5.3 control room (a resolved request is not open)', Number.isFinite(n.home) && n.home > 0 && n.pro === n.home && n.sh === n.home && n.v25 === n.home, JSON.stringify(n));
-  // MC-open-02 (review of dd83dfe7): the Service page's tabs count what they list; Queue and Closed hold every request once; its tag says the open count
+  // MC-open-02 (review of dd83dfe7): the Service page's tabs count what they list; Queue and Closed hold every request once (the total is
+  // ServiceHands' own "All service jobs" count); its tag says the open count
   await t.go('#/v25/service', 1800);
   const tabs = async () => t.page.evaluate(() => { const n = (id) => parseInt((document.getElementById(id)?.textContent || '').match(/(\d+)\s*$/)?.[1] || '', 10);
     return { queue: n('tab-queue'), closed: n('tab-closed'), listed: document.querySelectorAll('[data-testid="incidents"] > li').length, tag: parseInt([...document.querySelectorAll('.build__state .ui-tag')].map((x) => x.textContent).find((x) => / open$/.test(x)) || '', 10) }; });
   const q = await tabs(); await t.page.click('#tab-closed'); await t.page.waitForTimeout(400); const c = await tabs();
-  ok('MC-open-02', 'Service: the Queue and Closed tabs count the requests they list, together every request once, and the tag says the open count', q.listed === q.queue && c.listed === c.closed && q.queue + q.closed === NREQ && q.tag === n.home, JSON.stringify({ q, c }));
+  ok('MC-open-02', 'Service: the Queue and Closed tabs count the requests they list, together every request once, and the tag says the open count', q.listed === q.queue && c.listed === c.closed && Number.isFinite(n.total) && q.queue + q.closed === n.total && q.tag === n.home, JSON.stringify({ q, c }));
   await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);

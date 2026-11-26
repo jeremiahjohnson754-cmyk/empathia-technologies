@@ -32,7 +32,7 @@ export const BAND_LABEL: Record<Band, string> = { healthy: 'Healthy', monitor: '
 export const bandOf = (score: number | null): Band => (score == null ? 'none' : score >= 88 ? 'healthy' : score >= 75 ? 'monitor' : 'action');
 export const BAND_TONE: Record<Band, 'ok' | 'warn' | 'bad' | 'muted'> = { healthy: 'ok', monitor: 'warn', action: 'bad', none: 'muted' };
 
-export { isOpenRequest, isUnclosedRequest, requestFixedAt, OPEN_REQUEST_STATES } from '../workspace/requests.js';
+export { isOpenRequest, isUnclosedRequest, isFixedRequest, requestFixedAt, OPEN_REQUEST_STATES } from '../workspace/requests.js';
 const SEV: Record<string, Issue['severity']> = { 'Mission critical': 'High', High: 'High', Standard: 'Medium' };
 export interface OpenIssue { id: string; title: string; severity: Issue['severity']; state: string; source: string; positions: string[]; live: boolean; openedAt?: string; href?: string }
 

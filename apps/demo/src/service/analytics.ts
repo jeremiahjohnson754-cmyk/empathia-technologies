@@ -4,7 +4,7 @@
  * nothing is estimated or smoothed.
  *
  * Definitions (stated on the page and in every export):
- *   opened / closed      jobs opened, or closed, in the period
+ *   opened / closed      jobs opened, or closed, in the period (a canceled job is not counted as closed)
  *   backlog              jobs not closed at the end of the period (opened before its end, not closed or canceled by then)
  *   response within SLA  of the jobs opened in the period that were responded to: responded within the severity's response target
  *   restore within SLA   of the jobs opened in the period that were restored: restored within the severity's restore target
@@ -25,7 +25,7 @@ export interface Stats { opened: number; closed: number; backlog: number; respon
 /** the measures of one set of jobs over [from, to) */
 export function stats(jobs: ServiceJob[], from: number, to: number): Stats {
   const opened = jobs.filter((j) => { const t = Date.parse(j.openedAt); return t >= from && t < to; });
-  const closed = jobs.filter((j) => j.closedAt && Date.parse(j.closedAt) >= from && Date.parse(j.closedAt) < to);
+  const closed = jobs.filter((j) => j.closedAt && !j.canceled && Date.parse(j.closedAt) >= from && Date.parse(j.closedAt) < to);
   const backlog = jobs.filter((j) => Date.parse(j.openedAt) < to && (!j.closedAt || Date.parse(j.closedAt) >= to)).length;
   const resp = opened.filter((j) => j.respondedAt); const rest = opened.filter((j) => j.restoredAt);
   return { opened: opened.length, closed: closed.length, backlog, respondSla: pctOf(resp.filter(respondedInSla).length, resp.length), restoreSla: pctOf(rest.filter(restoredInSla).length, rest.length),
@@ -69,7 +69,7 @@ export function byKey<K extends string>(jobs: ServiceJob[], key: (j: ServiceJob)
 }
 export const LAYER_LABEL: Record<Layer, string> = { audio: 'Audio', video: 'Video', display: 'Display', control: 'Control', network: 'Network', power: 'Power' };
 export const DEFINITIONS: Array<[string, string]> = [
-  ['Opened / closed', 'jobs opened, or closed, in the period'], ['Backlog', 'jobs not closed at the end of the period (a canceled job counts as closed)'],
+  ['Opened / closed', 'jobs opened, or closed, in the period (a canceled job is not counted as closed)'], ['Backlog', 'jobs not closed at the end of the period (a canceled job leaves it when it is canceled)'],
   ['Response within SLA', 'of the jobs opened in the period and responded to: within the severity’s response target (2 h, 24 h, 48 h)'],
   ['Restore within SLA', 'of the jobs opened in the period and restored: within the severity’s restore target (8 h, 48 h, 120 h; business days counted as 24 h)'],
   ['Time to restore', 'median hours from opened to restored'], ['First-time fix', 'of the jobs closed: fixed at the first visit'], ['Reopen rate', 'of the jobs closed: reopened after closure'],
