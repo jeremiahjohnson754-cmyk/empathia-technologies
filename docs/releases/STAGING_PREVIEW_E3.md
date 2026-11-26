@@ -28,10 +28,25 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 25 Nov 2026 06:28 | `8891a3fd` | PASS 299 · FAIL 0 · NOT_RUN 2 (evidence in `ddec71b7`) | dep-dc37v8gae00c738gh0sg, replaced | dep-dc37v8gae00c738gh0p0, replaced |
 | 25 Nov 2026 20:04 | `642f6934` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `1a277e8e`) | dep-dc3jr0ojo6nc73ag1650, replaced | dep-dc3jr0ojo6nc73ag15vg, replaced |
 | 26 Nov 2026 03:47 | `1fa2a07e` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `008083a2`) | dep-dc3qnaa9lscs73degqa0, replaced | dep-dc3qnaa9lscs73degqdg, replaced |
-| 26 Nov 2026 10:29 | `6e0d7877` | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `a173355b`) | dep-dc40jk59el5s73ark5qg, live | dep-dc40jk59el5s73ark5n0, live |
+| 26 Nov 2026 10:29 | `6e0d7877` | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `a173355b`) | dep-dc40jk59el5s73ark5qg, replaced | dep-dc40jk59el5s73ark5n0, replaced |
+| 26 Nov 2026 16:20 | `68ea38ea` (served as `018302f7`) | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `018302f7`) | dep-dc45nk8ae00c73d8moug, replaced by dep-dc45no1aekrs73chenj0, live | dep-dc45nk8ae00c73d8mor0, replaced by dep-dc45no28ghsc73fbcn20, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `68ea38ea` (served as `018302f7`), 26 Nov 2026 16:22 UTC
+
+The tested commit `68ea38ea` was pushed to the preview branch first and went live at 16:19 UTC; its evidence commit `018302f7`
+followed by mistake a minute later (the evidence was meant to stay off the preview branch, as before) and replaced it at 16:20 UTC.
+The two differ only in `tests/` (the evidence and the ledger), which no build reads, so the served product is the tested one; the
+preview branch was not moved back, since that would rewrite its history. Both served manifests named `018302f7…` from 16:21 UTC;
+none of the 1,595 files in the demo manifest was served stale. The live check passed **43 of 43** on the two previews.
+
+New for this build: the founder photograph supplied 25 Nov 2026, with the square crop he approved on 26 Nov (04:30 CT), colours
+converted from its Display P3 profile to sRGB, nothing retouched (`docs/media/FOUNDER_PORTRAIT.json`). Checked on the website
+preview's founder page: the page shows the portrait, and all six served renditions (320, 640 and 960 pixels, WebP and JPEG) are byte
+for byte the recorded files. Also: Expo LIVE, Stadium LIVE and Campus Life report their level of detail in the frame it changes. The
+regression before it, on `6be9fc5b`, failed in part 1 on that report and was stopped (`tests/evidence-failed/6be9fc5b-2026-11-26T11-28-failed/`).
 
 ## Live check of `6e0d7877`, 26 Nov 2026 10:36 UTC
 
