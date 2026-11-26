@@ -49,6 +49,10 @@ declare module 'react/jsx-runtime' {
 declare module 'react-dom/client' {
   export function createRoot(el: Element): { render(node: unknown): void };
 }
+declare module 'react-dom' {
+  /** writes the state set inside `fn` to the page before returning (play/*: the drawing detail, in the frame it changes) */
+  export function flushSync<R>(fn: () => R): R;
+}
 declare module '*.css';
 declare namespace JSX {
   type Element = import('react').ReactElement;

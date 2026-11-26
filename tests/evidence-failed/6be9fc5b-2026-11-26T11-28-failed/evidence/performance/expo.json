@@ -1,0 +1,31 @@
+{
+ "scene": "expo",
+ "at": "2026-11-26T11:13:01.365Z",
+ "commit": "6be9fc5b4178da40d3fbc6851132bd480c711965",
+ "machine": {
+  "cores": 2,
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+ },
+ "note": "Measured on the machine that ran the tests, in headless Chromium. Not a measurement of any visitor’s device. The target for ordinary hardware is 30 frames a second; no device has been measured.",
+ "readings": [
+  {
+   "check": "XPO-10",
+   "mode": "full",
+   "what": "desktop 1440 × 900, held at full detail, reduced motion, after every control was pressed",
+   "fps": 15,
+   "detail": 100,
+   "floor": 4,
+   "triangles": 6720,
+   "draws": 133
+  },
+  {
+   "check": "XPO-13",
+   "mode": "adapted",
+   "what": "desktop 1440 × 900, left to adapt, once the level had held three seconds",
+   "fps": 25,
+   "detail": 80,
+   "triangles": 6708,
+   "draws": 132
+  }
+ ]
+}

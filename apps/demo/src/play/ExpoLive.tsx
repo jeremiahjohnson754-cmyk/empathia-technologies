@@ -7,6 +7,7 @@
  * fault with where it would go. Everything is fictional; agenda, details, votes and questions stay in this browser and say so.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Renderer, boxVerts, figureVerts, hex, m4, norm, type Mesh, type V3 } from './gl.js';
 import { BOOTHS, FOOD, FOOTFALL_NOTE, HALL, LOUNGE, REG, SESSIONS, STAGE, ZONES, footfall, type Booth } from './expo.js';
 
@@ -75,9 +76,10 @@ export function ExpoLivePage() {
     const audience = r.mesh(figs);
     let raf = 0, last = performance.now(), frames = 0, fpsAt = last, labAt = 0, shown = -1;
     const loop = (now: number) => {
-      // the detail is reported in the frame it changes, the frame rate once a second (26 Nov 2026: reported once a second on its own clock,
-      // the page's detail could lag what the canvas drew by up to a second; found by XPO-13 in the regression on 6be9fc5b)
-      raf = requestAnimationFrame(loop); r.pace(now - last); const dNow = Math.round(r.detail * 100); if (dNow !== shown) { shown = dNow; setDetail(dNow); } const dt = Math.min(0.05, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); frames = 0; fpsAt = now; }
+      // the detail is written to the page in the frame it changes (flushSync: a state set from this callback would otherwise reach the page
+      // a task later), the frame rate once a second. 26 Nov 2026: reported once a second on its own clock, the page's detail could lag what
+      // the canvas drew by up to a second; found by XPO-13 in the regression on 6be9fc5b. It changes rarely, so the synchronous write is cheap.
+      raf = requestAnimationFrame(loop); r.pace(now - last); const dNow = Math.round(r.detail * 100); if (dNow !== shown) { shown = dNow; flushSync(() => setDetail(dNow)); } const dt = Math.min(0.05, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); frames = 0; fpsAt = now; }
       const C = cam.current; if (C.goal) { const k = Math.min(1, dt * 3); C.yaw += (C.goal.yaw - C.yaw) * k; C.pitch += (C.goal.pitch - C.pitch) * k; C.dist += (C.goal.dist - C.dist) * k; C.at = lerp(C.at, C.goal.at, k); if (Math.abs(C.dist - C.goal.dist) < 0.05) C.goal = null; }
       r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = r.canvas; const aspect = cv.width / Math.max(1, cv.height);   // the renderer's own canvas: the page's reference to it is already empty in the frame between leaving the page and this loop being stopped (found by the performance check, 25 Nov 2026)
       const eye: V3 = [C.at[0] + Math.sin(C.yaw) * Math.cos(C.pitch) * C.dist, C.at[1] + Math.sin(C.pitch) * C.dist, C.at[2] + Math.cos(C.yaw) * Math.cos(C.pitch) * C.dist];
@@ -146,7 +148,7 @@ export function ExpoLivePage() {
           <button type="button" className="cl-btn" onClick={() => flyTo(null)} data-testid="xpo-overview">Whole hall</button>
           <button type="button" className="cl-btn" aria-pressed={full} onClick={() => toggleFull(!full)} data-testid="xpo-full">{full ? 'Done' : 'Full screen'}</button>
           <label className="cl-btn xpo-org"><input type="checkbox" checked={organiser} onChange={(e) => setOrganiser(e.target.checked)} data-testid="xpo-organiser" /> Organiser view</label>
-          <label className="cl-btn xpo-org"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); rRef.current?.setFull(e.target.checked); if (e.target.checked) setDetail(100); }} data-testid="xpo-quality" /> Full quality</label><span className="xpo-fps" data-testid="xpo-pace">{fps} fps here{fullQ ? ', held at full detail' : detail < 100 ? `, drawn at ${detail}% of full detail` : ''} · <a href="#/play/performance" data-testid="xpo-measure">Measure this device</a></span></div>
+          <label className="cl-btn xpo-org"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); rRef.current?.setFull(e.target.checked); }} data-testid="xpo-quality" /> Full quality</label><span className="xpo-fps" data-testid="xpo-pace">{fps} fps here{fullQ ? ', held at full detail' : detail < 100 ? `, drawn at ${detail}% of full detail` : ''} · <a href="#/play/performance" data-testid="xpo-measure">Measure this device</a></span></div>
       </div>
       <aside className="xpo-side" aria-label="Plan, booths and sessions">
         <svg className="xpo-plan" viewBox={`${HALL.x0 - 2} ${HALL.z0 - 2} ${HALL.x1 - HALL.x0 + 4} ${HALL.z1 - HALL.z0 + 4}`} role="group" aria-label="Plan of Hall A" data-testid="xpo-plan">

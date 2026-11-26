@@ -10,5 +10,5 @@ no ledger line (the ledger records finished runs). Nothing here is evidence of a
   characters). Run alone, the suite passed 49/49 three times. The test now waits up to 5 s for the loading state to give way, and
   counts a page still loading after that as missed (see the commit that changes `tests/browser/demo-phoneshell.test.mjs`).
 - The NOT_RUN in part 1 is the Python research prototype (no generated dataset), not run in every run of record since it was added.
-- `logs/`: the three part logs. `evidence/`: the suite result files this run wrote into `tests/evidence`, set aside here before
+- `logs/`: the three part logs (committed with `git add -f` on 26 Nov; `*.log` is otherwise ignored). `evidence/`: the suite result files this run wrote into `tests/evidence`, set aside here before
   `tests/evidence` was restored to the last pass (`1fa2a07e`).

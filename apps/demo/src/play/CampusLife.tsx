@@ -9,6 +9,7 @@
  * run. Sound is off until the player turns it on, and is quiet.
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as RPE, type ReactElement } from 'react';
+import { flushSync } from 'react-dom';
 import { attach, hintText, setFull, type Hint } from '../map/gestures.js';
 import { Renderer, boxVerts, hex, m4, type M4, type V3 } from './gl.js';
 import { boxes, round, CARDS, DOOR, HALL, NPC, BENCH, signs, WORLD, inHall } from './world.js';
@@ -94,7 +95,7 @@ export function CampusLifePage() {
     let r: Renderer; try { r = new Renderer(canvas.current!); } catch (e) { setErr((e as Error).message); return; }
     rRef.current = r; if (fullQRef.current) r.setFull(true);
     const world: number[] = [], roof: number[] = []; for (const b of boxes) boxVerts(b, b.tag === 'roof' ? roof : world); for (const v of round) world.push(v);
-    const W = r.mesh(world), RF = r.mesh(roof); let raf = 0; let last = performance.now(); let hudAt = 0; let frames = 0, fpsAt = last, fps = 0;
+    const W = r.mesh(world), RF = r.mesh(roof); let raf = 0; let last = performance.now(); let hudAt = 0; let hudDetail = -1; let frames = 0, fpsAt = last, fps = 0;
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop); r.pace(now - last); const dt = Math.min(0.1, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { fps = Math.round(frames * 1000 / (now - fpsAt)); frames = 0; fpsAt = now; }
       const k = keys.current; const inp: Input = { fwd: 0, right: 0, run: k.has('Shift') || runToggle.current, turn: 0, tilt: 0 };
@@ -122,13 +123,15 @@ export function CampusLifePage() {
       for (const c of CARDS) if (!s.cards.includes(c.id)) r.draw(r.unit, m4.trs([c.at[0], 1.0 + bobT, c.at[1]], reducedRef.current ? 0.6 : now / 700, [0.45, 0.6, 0.06]), [0.98, 0.78, 0.22]);
       const target: V3 | null = s.stage === 'start' || s.stage === 'solved' ? [NPC.x, 2.35, NPC.z] : s.stage === 'met' ? [0, 3.8, DOOR.z + 0.6] : s.stage === 'inside' || s.stage === 'bench' ? [BENCH.x, 2.1, BENCH.z] : null;
       if (target) { r.glow(0.6); r.draw(r.ball, m4.trs([target[0], target[1] + bobT, target[2]], reducedRef.current ? 0.78 : now / 500, [0.26, 0.42, 0.26]), [0.06, 0.72, 0.62]); r.glow(0); }
-      if (now - hudAt > 100) { hudAt = now;
+      // the HUD every 100 ms, and at once when the drawing detail changes (26 Nov 2026, as Expo and Stadium: written in the frame it changes)
+      const dNow = Math.round(r.detail * 100); const dChanged = dNow !== hudDetail;
+      if (now - hudAt > 100 || dChanged) { hudAt = now; hudDetail = dNow;
         const proj = (p: V3) => { const v = [p[0], p[1], p[2], 1]; const o = [0, 0, 0, 0]; for (let i = 0; i < 4; i++) o[i] = vp[i]! * v[0]! + vp[4 + i]! * v[1]! + vp[8 + i]! * v[2]! + vp[12 + i]! * v[3]!; if (o[3]! <= 0.1) return null; const x = (o[0]! / o[3]! + 1) / 2 * cv.clientWidth, y = (1 - o[1]! / o[3]!) / 2 * cv.clientHeight; return x < -50 || x > cv.clientWidth + 50 || y < -20 || y > cv.clientHeight + 20 ? null : { x, y, d: Math.hypot(p[0] - cam.eye[0], p[2] - cam.eye[2]) }; };
         const L: Array<{ x: number; y: number; text: string; sub?: string; kind: string }> = [];
         if (!inside) for (const g of signs) { const q = proj(g.at); if (q && q.d < 70) L.push({ x: q.x, y: q.y, text: g.text, sub: g.sub, kind: 'sign' }); }
         const qn = proj([NPC.x, 2.15, NPC.z]); if (qn && qn.d < 25) L.push({ x: qn.x, y: qn.y, text: NPC.name, sub: NPC.role, kind: 'npc' });
         if (inside) { const qb = proj([BENCH.x, 1.6, BENCH.z]); if (qb) L.push({ x: qb.x, y: qb.y, text: BENCH.label, kind: 'thing' }); const qs = proj([0, 4.8, -41.4]); if (qs) L.push({ x: qs.x, y: qs.y, text: 'SCI-110 · Lecture theatre', kind: 'thing' }); }
-        setLabels(L); setHud({ ...s, reach: reach(s), fps, detail: Math.round(r.detail * 100), inside, eyeZ: cam.eye[2] });
+        const write = () => { setLabels(L); setHud({ ...s, reach: reach(s), fps, detail: dNow, inside, eyeZ: cam.eye[2] }); }; if (dChanged) flushSync(write); else write();
       }
       r.draw(r.unit, m4.ident(), undefined, 0);   // keep the program bound for the next frame's begin
     };

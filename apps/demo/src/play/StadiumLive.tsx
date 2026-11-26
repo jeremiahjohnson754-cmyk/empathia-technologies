@@ -9,6 +9,7 @@
  * strobing (light changes ease over half a second or more, and reduced motion removes movement); votes are kept in this browser.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { attach, hintText, setFull, type Hint } from '../map/gestures.js';
 import { MovePad, useMoveKeys, type Moves } from './MovePad.js';
 import { FAR_QUARTERS, FIGURE_SIDES, Renderer, boxVerts, facesSeen, figureFaces, figureFar, hex, m4, norm, prismVerts, quadVerts, stepVerts, type Mesh, type V3 } from './gl.js';
@@ -157,11 +158,12 @@ export function StadiumLivePage() {
   // the loop
   const state = useRef({ light: 0, lc: hex(ATMOS[p.atmos].lights), fade: 1 });
   useEffect(() => {
-    let raf = 0; let last = performance.now(); let frames = 0, fpsAt = last; let labAt = 0; let farLast = 0; let shown = -1;   // farLast: sections drawn simply in the last frame; shown: the detail last reported
+    let raf = 0; let last = performance.now(); let frames = 0, fpsAt = last; let labAt = 0; let farLast = 0; let shown = -1; let shownSimple = false;   // farLast: sections drawn simply in the last frame; shown, shownSimple: what the page last reported
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop); const M = meshes.current; if (!M) return; const r = M.r; r.pace(now - last); const dt = Math.min(0.05, (now - last) / 1000); last = now;
-      const dNow = Math.round(r.detail * 100); if (dNow !== shown) { shown = dNow; setDetail(dNow); }   // in the frame it changes (26 Nov 2026; it was once a second, up to a second behind the canvas: XPO-13 on 6be9fc5b)
-      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setSimple(farLast > 0); frames = 0; fpsAt = now; }   // the page says the far crowd is drawn simply only while some of it is
+      const dNow = Math.round(r.detail * 100); if (dNow !== shown) { shown = dNow; flushSync(() => setDetail(dNow)); }   // written in the frame it changes (26 Nov 2026; it was once a second, up to a second behind the canvas: XPO-13 on 6be9fc5b)
+      const simNow = farLast > 0; if (simNow !== shownSimple) { shownSimple = simNow; flushSync(() => setSimple(simNow)); }   // likewise whether the far crowd was drawn simply (in the last frame)
+      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); frames = 0; fpsAt = now; }   // the page says the far crowd is drawn simply only while some of it is
       const P = pr.current; const A = ATMOS[replayRef.current !== null ? TIMELINE[replayRef.current]!.atmos : P.atmos]; const S = state.current;
       // ease every light change over about half a second: no flash, no strobe
       const k = reducedRef.current ? 1 : Math.min(1, dt * 3); S.light += ((A.night ? 1 : 0) - S.light) * k; S.lc = lerp(S.lc, hex(A.lights), k);
@@ -294,7 +296,7 @@ export function StadiumLivePage() {
           {dev ? <div className="slv-card" data-testid="slv-dev-card"><b>{dev.label}</b><p>{dev.info}</p><p className="slv-note">State: {dev.status === 'ok' ? 'normal' : dev.status === 'warn' ? 'attention' : 'fault'} (simulated). {dev.status === 'fault' ? <>In the product, this would open an incident: <a href="#/v25/service">ServiceHands</a>.</> : null}</p></div> : null}</div> : null}
         {tab === 'people' ? <div className="slv-pane"><p className="slv-h">Poll · Fan of the match</p>{['Number 7', 'Number 10', 'The goalkeeper'].map((o) => <button key={o} type="button" className="slv-vote" disabled={!!mine} aria-pressed={mine === o} onClick={() => vote(o)} data-testid={`slv-vote-${o.replace(/\W+/g, '').toLowerCase()}`}><span>{o}</span><i style={{ width: `${total ? Math.round((votes[o] || 0) / total * 100) : 0}%` }} /><em>{votes[o] || 0}</em></button>)}
           <p className="slv-note" data-testid="slv-poll-note">{mine ? `You voted for ${mine}. ` : ''}Votes on this page are kept in this browser only; in the Experiences product a poll collects real votes from consenting attendees.</p></div> : null}
-        <label className="cl-opt"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); meshes.current?.r.setFull(e.target.checked); if (e.target.checked) { setDetail(100); setSimple(false); } }} data-testid="slv-quality" /> Full quality: the whole crowd drawn in full, at full detail, whatever the frame rate</label>
+        <label className="cl-opt"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); meshes.current?.r.setFull(e.target.checked); }} data-testid="slv-quality" /> Full quality: the whole crowd drawn in full, at full detail, whatever the frame rate</label>
         <p className="slv-note" data-testid="slv-pace">Frame rate here: {fps} fps (this machine).{detail < 100 ? ` Drawn at ${detail}% of full detail to keep the motion smooth.` : ''}{simple ? ' The far crowd is drawn more simply; the near crowd in full.' : ''} <a href="#/play/performance" data-testid="slv-measure">Measure this device</a></p>
       </aside>
     </div>
