@@ -13,7 +13,10 @@ Founder decisions CR-D2 and CR-D3 (26 Nov 2026, 04:50 CT) and the American Engli
 - **Search finds either spelling** (`apps/demo/src/search/spelling.ts`, used by the page search and the menu search): "lecture theatre"
   finds what now says "theater", and "theater" finds text that keeps its British spelling. The page search also ranks the two alike
   (a building named outright leads either way). Checked by `tests/unit/search-spellings.test.mjs`. The menu search finds both, but
-  its two ranking bonuses (an alias that starts the query, a title holding the first word) still read the spelling as typed: next pass.
+  its two ranking bonuses (an alias that starts the query, a title holding the first word) and its two building checks (places lead,
+  `apps/demo/src/shell/Shell.tsx:220`; buildings before rooms, `:224`) still read the spelling as typed, as the page search did
+  before: next pass. No effect today for "centre", which the query reader rewrites to "center" before the menu searches; it would
+  show for a British word the reader leaves alone.
 - **By hand**, where the tool keeps a one-word or ALL-CAPS string because it cannot tell a label from a key: the shared status chip
   "Modeled", the bench's "WHITE IS NOT ONE COLOR" and "LIVE ANALYZER", the capture card's "Synchronize"/"Synchronized", the lighting
   lab's "Color" control and its knob labels, the color picker's accessible name, the meeting's "(organizer)", the lesson's "Practice".
@@ -42,12 +45,13 @@ names; labels made from enum values; and one-word labels and short phrases the t
 search results (`search/find.ts:54`); `export/cx.ts:95` "Modelled"; `StiBench.tsx:20` "Centre"; `parity/core.ts:203` "Organisation";
 `BossRunner.tsx:153` "Labour"; "Cancelled" in `MeetPage.tsx:183`, `here/model.ts:99`, `intake/store.ts:207,212`; `involvement.ts:57`
 "Practised". Search finds them by either spelling meanwhile. Also for the next pass: the spelling fold maps a few derived forms to
-non-words ("centred" to "centerd"), so those find only their own spelling.
+non-words ("centred" to "centerd"), so those find only their own spelling; and the tool's warning for an unclosed keep block
+(`scripts/content/american-english.mjs:82`) prints a full file path where its report uses paths from the repository root.
 
 ## Tests
 
-- **Changed lines** (table below): each compares text whose spelling changed, and changes that spelling only. Six are checks that a
-  word must NOT appear (two fan views, a guest's access page, two public views, the manual's unit names); they use the new spelling, or either spelling,
+- **Changed lines** (table below): each compares text whose spelling changed, and changes that spelling only. Five are checks that a
+  word must NOT appear (two fan views, a guest's access page, a public view, the manual's unit names); they use the new spelling, or either spelling,
   so that they still test something. No condition, count, selector or check title was changed; no check was removed or loosened.
 - **Added**: `tests/unit/search-spellings.test.mjs` (above).
 - **Listed in the runner for the first time** (`scripts/test.mjs`): thirteen unit files written 12–13 Nov that no run of record had
@@ -95,7 +99,7 @@ non-words ("centred" to "centerd"), so those find only their own spelling.
 | `tests/browser/demo-flagship.test.mjs` | 390 | Theatre → Theater |
 | `tests/browser/demo-flagship.test.mjs` | 624 | Theatre → Theater |
 | `tests/browser/demo-gameday.test.mjs` | 28 | Programme → Program |
-| `tests/browser/demo-gameday.test.mjs` | 34 | programme → program |
+| `tests/browser/demo-gameday.test.mjs` | 34 | must not appear: programme → program |
 | `tests/browser/demo-guides.test.mjs` | 56 | organisation → organization |
 | `tests/browser/demo-guides.test.mjs` | 59 | organisation → organization |
 | `tests/browser/demo-instant.test.mjs` | 24 | recognised → recognized |
@@ -136,7 +140,7 @@ non-words ("centred" to "centerd"), so those find only their own spelling.
 | `tests/unit/demo-drawing.test.mjs` | 103 | metres → meters |
 | `tests/unit/demo-estates.test.mjs` | 92 | Theatre' → Theater' |
 | `tests/unit/demo-estates.test.mjs` | 106 | theatre → theater |
-| `tests/unit/demo-gameday.test.mjs` | 42 | programme → program |
+| `tests/unit/demo-gameday.test.mjs` | 42 | must not appear: programme → program |
 | `tests/unit/demo-gameday.test.mjs` | 54 | programme → program |
 | `tests/unit/demo-guide-chapters.test.mjs` | 46 | organisation → organization |
 | `tests/unit/demo-instant.test.mjs` | 47 | centimetres → centimeters, metres → meters |
