@@ -26,10 +26,24 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 25 Nov 2026 00:30 | `87956a57` | PASS 296 · FAIL 0 · NOT_RUN 2 (evidence in `bf9adfa8`) | dep-dc32ni4s728c738h7l6g, replaced | dep-dc32ni4s728c738h7l30, replaced |
 | 25 Nov 2026 03:14 | `037b9f76` | PASS 298 · FAIL 0 · NOT_RUN 2 (evidence in `54352acd`) | dep-dc354ass728c738juaeg, replaced | dep-dc354ass728c738juab0, replaced |
 | 25 Nov 2026 06:28 | `8891a3fd` | PASS 299 · FAIL 0 · NOT_RUN 2 (evidence in `ddec71b7`) | dep-dc37v8gae00c738gh0sg, replaced | dep-dc37v8gae00c738gh0p0, replaced |
-| 25 Nov 2026 20:04 | `642f6934` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `1a277e8e`) | dep-dc3jr0ojo6nc73ag1650, live | dep-dc3jr0ojo6nc73ag15vg, live |
+| 25 Nov 2026 20:04 | `642f6934` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `1a277e8e`) | dep-dc3jr0ojo6nc73ag1650, replaced | dep-dc3jr0ojo6nc73ag15vg, replaced |
+| 26 Nov 2026 03:47 | `1fa2a07e` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `008083a2`) | dep-dc3qnaa9lscs73degqa0, live | dep-dc3qnaa9lscs73degqdg, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `1fa2a07e`, 26 Nov 2026 03:50 UTC
+
+Both served manifests named `1fa2a07e…` from 03:48 UTC, about a minute after the branch moved; none of the 1,593 files in the demo
+manifest was served stale. The live check passed **38 of 38** on the two previews. New for this commit:
+
+- **Expo LIVE** (`#/play/expo?detail=full`): the Full quality box is ticked by the address, the hall reads "held at full detail" and
+  links "Measure this device" to the performance check.
+- **Campus Life**: the pause sheet offers Full quality, and turning Sound on keeps the scene drawing. On `642f6934` turning Sound on
+  stopped the scene (the renderer was rebuilt on a lost context); that was live on the previews until this deploy.
+
+The preflight (build, every non-browser suite, the 82 browser suites the change reaches) passed before the regression; on the first try
+it caught the Expo booth card covering Done on a phone, fixed in `1fa2a07e`.
 
 ## Live check of `642f6934`, 25 Nov 2026 20:06 UTC
 
@@ -191,6 +205,7 @@ local build). The website has no `/flow` page at this commit; that address retur
 
 ## What is not in the previews yet
 
-Work after `642f6934` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. Of what was
+Work after `1fa2a07e` is on `v18/continuation` and reaches the previews only after its own exact-commit regression. That now includes the first slices of the 25 Nov commercial-readiness directive (metric integrity, the layered
+Mission Control, product subtitles, the website's proposition headline and nine worlds), waiting for their preflight. Of what was
 directed on 24 and 25 Nov, the previews carry the design pass and four pieces of the rendering-performance work, the simpler
 drawing of distant spectators among them; the rest is not built yet; the plan is `docs/operations/ENGINEERING_COMPLETION_ROADMAP.md`.
