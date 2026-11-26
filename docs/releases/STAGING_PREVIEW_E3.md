@@ -29,10 +29,28 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 25 Nov 2026 20:04 | `642f6934` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `1a277e8e`) | dep-dc3jr0ojo6nc73ag1650, replaced | dep-dc3jr0ojo6nc73ag15vg, replaced |
 | 26 Nov 2026 03:47 | `1fa2a07e` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `008083a2`) | dep-dc3qnaa9lscs73degqa0, replaced | dep-dc3qnaa9lscs73degqdg, replaced |
 | 26 Nov 2026 10:29 | `6e0d7877` | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `a173355b`) | dep-dc40jk59el5s73ark5qg, replaced | dep-dc40jk59el5s73ark5n0, replaced |
-| 26 Nov 2026 16:20 | `68ea38ea` (served as `018302f7`) | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `018302f7`) | dep-dc45nk8ae00c73d8moug, replaced by dep-dc45no1aekrs73chenj0, live | dep-dc45nk8ae00c73d8mor0, replaced by dep-dc45no28ghsc73fbcn20, live |
+| 26 Nov 2026 16:20 | `68ea38ea` (served as `018302f7`) | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `018302f7`) | dep-dc45nk8ae00c73d8moug, replaced by dep-dc45no1aekrs73chenj0, replaced | dep-dc45nk8ae00c73d8mor0, replaced by dep-dc45no28ghsc73fbcn20, replaced |
+| 26 Nov 2026 21:37 | `4231f6a2` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `b915d54a`) | dep-dc4achrbc2fs739id8p0, live | dep-dc4achrbc2fs739id8lg, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `4231f6a2`, 26 Nov 2026 21:38 UTC
+
+Only the tested commit was pushed to the preview branch; its evidence commit `b915d54a` stays on `v18/continuation`. Both deploys
+went live at 21:37 UTC and both served manifests named `4231f6a2…` from 21:37:52 UTC. None of the 1,596 files in the demo manifest
+was served stale. The live check passed **43 of 43** on the two previews, and the six founder portrait files served are byte for
+byte the recorded renditions, as before.
+
+New for this build, over `68ea38ea`: the wording pass (founder decisions CR-D2, CR-D3 and CR-D4 of 26 Nov 04:50 CT;
+`docs/qa/WORDING_CHECKPOINT_2026-11-26.md`). The text people read in the demonstrator, the website and the shared interface package
+is American English; fictional American places say Center and Theater; Collabora-SING is the one spelling shown; the two comparison
+documents are in the private store and neither site names a competitor. Search finds either spelling: on the demo preview,
+"lecture theatre" and "lecture theater" both return one result, Highfield 1.110, the first with the note that "theatre" was read as
+"theater". The run counts 319 suites, not 305: it runs thirteen unit files written 12–13 Nov that no run of record had listed,
+and the new spelling search check.
+Not yet changed, and said so in the checkpoint: text from other packages and the API, labels made from enum values, and some
+one-word labels.
 
 ## Live check of `68ea38ea` (served as `018302f7`), 26 Nov 2026 16:22 UTC
 
