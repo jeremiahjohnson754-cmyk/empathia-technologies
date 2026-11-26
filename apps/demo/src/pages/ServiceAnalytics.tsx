@@ -62,15 +62,15 @@ export function ServiceAnalyticsPage({ perspective, hash }: { perspective: strin
         <Segmented label="Group by" value={d.g} onChange={(v) => go(href(d, { g: v as Drill['g'], at: null }))} options={[{ value: 'month', label: 'Month' }, { value: 'quarter', label: 'Quarter' }]} />
       </div>
       <div className="kit-grid kit-grid--tiles wk-tiles5" data-testid="san-kpis">
-        <StatTile label="Jobs opened" value={total.opened} hint={`${total.closed} closed · ${total.backlog} open at the end`} />
+        <StatTile label="Jobs opened" value={total.opened} hint={`${total.closed} closed · ${total.backlog} not closed at the end`} />
         <StatTile label="Response within SLA" value={total.respondSla ?? '—'} unit={total.respondSla === null ? undefined : '%'} tone={(total.respondSla ?? 100) < 90 ? 'warn' : 'ok'} hint={deltaText(delta(last3.respondSla, prev3.respondSla, true), ' pts')} />
         <StatTile label="Restore within SLA" value={total.restoreSla ?? '—'} unit={total.restoreSla === null ? undefined : '%'} tone={(total.restoreSla ?? 100) < 85 ? 'warn' : 'ok'} hint={deltaText(delta(last3.restoreSla, prev3.restoreSla, true), ' pts')} />
         <StatTile label="Median time to restore" value={total.mttrH ?? '—'} unit={total.mttrH === null ? undefined : 'h'} hint={deltaText(delta(last3.mttrH, prev3.mttrH, false), ' h')} />
         <StatTile label="First-time fix" value={total.ftf ?? '—'} unit={total.ftf === null ? undefined : '%'} hint={`reopen rate ${f1(total.reopen, '%')}`} />
       </div>
       <div className="san__charts">
-        <TrendChart testId="san-volume" title={`Jobs by ${d.g}: opened, closed and open at the end (synthetic history)`} labels={ser.map((x) => x.period.label)} unit=""
-          series={[{ name: 'Opened', tone: 'info', values: ser.map((x) => x.s.opened) }, { name: 'Closed', tone: 'ok', values: ser.map((x) => x.s.closed) }, { name: 'Open at the end', tone: 'warn', dashed: true, values: ser.map((x) => x.s.backlog) }]}
+        <TrendChart testId="san-volume" title={`Jobs by ${d.g}: opened, closed and not closed at the end (synthetic history)`} labels={ser.map((x) => x.period.label)} unit=""
+          series={[{ name: 'Opened', tone: 'info', values: ser.map((x) => x.s.opened) }, { name: 'Closed', tone: 'ok', values: ser.map((x) => x.s.closed) }, { name: 'Not closed at the end', tone: 'warn', dashed: true, values: ser.map((x) => x.s.backlog) }]}
           onPick={(i) => go(href(d, { at: ser[i]!.period.key }))} />
         <TrendChart testId="san-sla" title={`SLA attainment by ${d.g} (synthetic history)`} labels={ser.map((x) => x.period.label)} unit="%" max={100} band={{ at: 90, label: 'target 90%' }}
           series={[{ name: 'Response within SLA', tone: 'info', values: ser.map((x) => x.s.respondSla) }, { name: 'Restore within SLA', tone: 'violet', values: ser.map((x) => x.s.restoreSla) }]}
@@ -80,7 +80,7 @@ export function ServiceAnalyticsPage({ perspective, hash }: { perspective: strin
       </div>
       {vendorRow ? <div data-testid="san-vendor-note"><Notice tone={vendorRow.flags.length ? 'warn' : 'ok'}><b>{vendorRow.name}</b>{vendorRow.flags.length ? `: ${vendorRow.flags.join('; ')}.` : ': within every target over this period.'} Last three months against the three before: response within SLA {f1(vendorRow.recent.respondSla, '%')} (was {f1(vendorRow.earlier.respondSla, '%')}), median time to restore {f1(vendorRow.recent.mttrH, ' h')} (was {f1(vendorRow.earlier.mttrH, ' h')}).</Notice></div> : null}
       <Card icon="users" title="Vendor scorecard" sub="Each vendor against its agreement: targets 90% response and 85% restore within SLA. Click a vendor to drill in." testId="san-vendors">
-        <div className="san__scroll"><table className="pa-table san__table"><thead><tr><th scope="col">Vendor</th><th scope="col">Jobs</th><th scope="col">Open</th><th scope="col">Response in SLA</th><th scope="col">Restore in SLA</th><th scope="col">Median restore</th><th scope="col">First-time fix</th><th scope="col">Reopened</th><th scope="col">Needs attention</th></tr></thead>
+        <div className="san__scroll"><table className="pa-table san__table"><thead><tr><th scope="col">Vendor</th><th scope="col">Jobs</th><th scope="col">Not closed</th><th scope="col">Response in SLA</th><th scope="col">Restore in SLA</th><th scope="col">Median restore</th><th scope="col">First-time fix</th><th scope="col">Reopened</th><th scope="col">Needs attention</th></tr></thead>
           <tbody>{card.map((x) => <tr key={x.vendor} data-testid="san-vendor" data-vendor={x.vendor} data-flags={x.flags.length} className={d.v === x.vendor ? 'on' : ''}>
             <th scope="row"><a href={href(d, { v: d.v === x.vendor ? null : x.vendor, at: null })}>{x.name}</a>{x.vendor === INTERNAL ? <div className="ui-meta">no agreement covers it</div> : null}</th>
             <td className="num">{x.jobs}</td><td className="num">{x.open}</td><td className="num">{f1(x.s.respondSla, '%')}</td><td className="num">{f1(x.s.restoreSla, '%')}</td><td className="num">{f1(x.s.mttrH, ' h')}</td><td className="num">{f1(x.s.ftf, '%')}</td><td className="num">{f1(x.s.reopen, '%')}</td>

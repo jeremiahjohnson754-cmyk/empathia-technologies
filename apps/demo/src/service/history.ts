@@ -12,6 +12,7 @@ import { campusRecords, DEMO_NOW } from '../campus/design.js';
 import { seeded } from '../campus/canon.js';
 import { VENDORS, AGREEMENTS } from '../parity/core.js';
 import type * as S from '../workspace/store.js';
+import { requestFixedAt } from '../workspace/requests.js';
 
 export type Severity = 'Mission critical' | 'High' | 'Standard';
 export type Layer = 'audio' | 'video' | 'display' | 'control' | 'network' | 'power';
@@ -99,7 +100,7 @@ export function workspaceJobs(w: S.Workspace, projectOfRoom: (roomId: string) =>
     const vendor = tech && !tech.internal ? VENDORS.find((v) => v[1] === tech.orgName)?.[0] || INTERNAL : INTERNAL;
     const resp = i.history.find((h) => ['ASSIGNED', 'ACCEPTED', 'IN_PROGRESS'].includes(h.to))?.at ?? null;
     return { id: i.id, roomId: i.roomId, roomName: i.roomName, building: i.buildingKey, layer: layerOfText(`${i.title} ${i.summary}`), severity: i.severity, kind: 'break-fix' as const,
-      vendor, vendorName: vendorName(vendor), agreement: null, asset: null, projectId: projectOfRoom(i.roomId), openedAt: i.openedAt, respondedAt: resp, restoredAt: i.restoredAt, closedAt: i.closedAt,
+      vendor, vendorName: vendorName(vendor), agreement: null, asset: null, projectId: projectOfRoom(i.roomId), openedAt: i.openedAt, respondedAt: resp, restoredAt: i.restoredAt, closedAt: i.closedAt || (i.state === 'CANCELLED' ? requestFixedAt(i) : null),
       firstTimeFix: !i.reopened, reopened: i.reopened, source: 'workspace' as const, tech: wo?.techId ?? null };
   });
 }

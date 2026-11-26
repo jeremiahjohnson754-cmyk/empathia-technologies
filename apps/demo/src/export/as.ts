@@ -13,12 +13,11 @@ import { assuranceDims, changeCards, asState, AS_LABEL, DIM_LABEL, LAYERS } from
 import { readyCheckOf, criticalityOf, READY_OUT } from '../assurance/model.js';
 import { ymd } from '../campus/cxRecord.js';
 import type * as S from '../workspace/store.js';
-import { isOpenRequest } from '../workspace/requests.js';
+import { isOpenRequest, isUnclosedRequest } from '../workspace/requests.js';
 import type { Report } from './model.js';
 import type { MadeBy } from './cx.js';
 
 const who = (k?: string | null) => (k ? PEOPLE[k] || k.replace(/_/g, ' ') : '—');
-const DONE = ['CLOSED', 'CANCELLED'];
 
 export function asPackage(r: RoomRecord, incidents: S.Incident[], by: MadeBy): Report {
   const o = r.outline; const b = buildingByKey(o.building); const dims = assuranceDims(r, incidents); const cards = changeCards(r);
@@ -59,7 +58,7 @@ export function asPackage(r: RoomRecord, incidents: S.Incident[], by: MadeBy): R
       { id: 'ready', heading: 'Ready for the next session', text: [`${READY_OUT[rc.out].label}: ${READY_OUT[rc.out].rule}`],
         table: { title: 'Ready check', cols: [{ key: 'label', label: 'Check' }, { key: 'out', label: 'Result', kind: 'status' }, { key: 'why', label: 'Why' }], rows: rc.checks.map((c) => ({ label: c.label, out: c.out === 'na' ? 'Not applicable' : READY_OUT[c.out].label, why: c.why })) } },
       { id: 'requests', heading: 'Service requests about this room', table: { title: 'Service requests', cols: [{ key: 'id', label: 'Request' }, { key: 'title', label: 'Title' }, { key: 'sev', label: 'Severity' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'opened', label: 'Opened', kind: 'date' }, { key: 'apex', label: 'APEX case' }],
-        rows: inc.map((i) => ({ id: i.id, title: i.title, sev: i.severity, state: DONE.includes(i.state) ? 'Closed' : i.state.replace(/_/g, ' ').toLowerCase(), opened: ymd(i.openedAt), apex: i.apexId || '' })) } },
+        rows: inc.map((i) => ({ id: i.id, title: i.title, sev: i.severity, state: !isUnclosedRequest(i) ? 'Closed' : i.state.replace(/_/g, ' ').toLowerCase(), opened: ymd(i.openedAt), apex: i.apexId || '' })) } },
       { id: 'issues', heading: 'Open issues on the record', table: { title: 'Open issues', cols: [{ key: 'id', label: 'ID' }, { key: 'title', label: 'Issue' }, { key: 'sev', label: 'Severity' }, { key: 'src', label: 'Source' }], rows: openIssues(r).map((i) => ({ id: i.id, title: i.title, sev: i.severity, src: i.source })) } },
       { id: 'history', heading: 'Baseline history', table: { title: 'Baselines', cols: [{ key: 'v', label: 'Version', kind: 'number' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'rev', label: 'Design revision', kind: 'number' }, { key: 'at', label: 'Date', kind: 'date' }, { key: 'by', label: 'By' }, { key: 'note', label: 'Note' }], rows: r.baselines.map((x) => ({ v: x.version, state: x.state === 'CURRENT' ? 'Current' : x.state === 'SUPERSEDED' ? 'Superseded' : 'Pending acceptance', rev: x.revision, at: ymd(x.at), by: who(x.by), note: x.note })) } },
     ],

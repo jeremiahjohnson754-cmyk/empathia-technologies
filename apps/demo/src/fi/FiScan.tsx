@@ -13,6 +13,7 @@ import * as S from '../workspace/store.js';
 import { ROOMS, roomOf, findingsOf, PROVENANCE_TEXT, SWAP, type RoomRec } from './rooms.js';
 import { JobJumps } from '../rooms/JobJumps.js';
 import { NotAPlace } from '../shell/trail.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 export const POLICY = { pan: [-30, 30], tilt: [-20, 10], levelDbfs: -30, windowMin: 20, maxActions: 4 } as const;
 export const MAX_STEP = 60;
@@ -44,7 +45,7 @@ export default function FiScan({ perspective, hash }: WorkspaceProps) {
       <ul className="ops-list">{ROOMS.map((r) => <li key={r.id}><a className="ops-job" href={`#/v25/fi/scan/${r.id}`}><b>{r.name}</b><span className="ops-meta">{r.positions.length} device positions</span></a></li>)}</ul></section>);
   const seen = findings.filter((f) => f.step <= step); const done = actions.filter((a) => a.step <= step);
   const minutes = Math.round((step / MAX_STEP) * POLICY.windowMin);
-  const open = S.load().incidents.filter((i) => i.roomId === room.id && i.workOrderId && !['CLOSED', 'CANCELLED', 'RESOLVED'].includes(i.state));
+  const open = S.load().incidents.filter((i) => i.roomId === room.id && i.workOrderId && isOpenRequest(i));
   return (
     <section className="ops" data-testid="fiscan">
       <OpsHead product="field" kicker="Field Intelligence · scan replay" title={`Scan: ${room.name}`} persona={persona}

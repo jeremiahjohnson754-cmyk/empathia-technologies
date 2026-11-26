@@ -5,7 +5,7 @@
  *
  * Definitions (stated on the page and in every export):
  *   opened / closed      jobs opened, or closed, in the period
- *   backlog              jobs open at the end of the period (opened before its end, not closed by then)
+ *   backlog              jobs not closed at the end of the period (opened before its end, not closed or canceled by then)
  *   response within SLA  of the jobs opened in the period that were responded to: responded within the severity's response target
  *   restore within SLA   of the jobs opened in the period that were restored: restored within the severity's restore target
  *   time to restore      the median hours from opened to restored, over the jobs restored
@@ -69,7 +69,7 @@ export function byKey<K extends string>(jobs: ServiceJob[], key: (j: ServiceJob)
 }
 export const LAYER_LABEL: Record<Layer, string> = { audio: 'Audio', video: 'Video', display: 'Display', control: 'Control', network: 'Network', power: 'Power' };
 export const DEFINITIONS: Array<[string, string]> = [
-  ['Opened / closed', 'jobs opened, or closed, in the period'], ['Backlog', 'jobs open at the end of the period'],
+  ['Opened / closed', 'jobs opened, or closed, in the period'], ['Backlog', 'jobs not closed at the end of the period (a canceled job counts as closed)'],
   ['Response within SLA', 'of the jobs opened in the period and responded to: within the severity’s response target (2 h, 24 h, 48 h)'],
   ['Restore within SLA', 'of the jobs opened in the period and restored: within the severity’s restore target (8 h, 48 h, 120 h; business days counted as 24 h)'],
   ['Time to restore', 'median hours from opened to restored'], ['First-time fix', 'of the jobs closed: fixed at the first visit'], ['Reopen rate', 'of the jobs closed: reopened after closure'],

@@ -10,12 +10,11 @@
 import { SLA } from '@empathia/service-engine';
 import { SITE, buildingByKey } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
-import { isOpenRequest } from '../workspace/requests.js';
+import { isOpenRequest, isUnclosedRequest } from '../workspace/requests.js';
 import type { Report, Section } from './model.js';
 import type { MadeBy } from './cx.js';
 import { servicePhases } from '../service/phases.js';
 
-const DONE = ['CLOSED', 'CANCELLED'];
 const STATES = ['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'RESOLVED', 'REOPENED', 'CLOSED', 'CANCELLED'];
 const SEVS = ['Mission critical', 'High', 'Standard'] as const;
 const word = (s: string) => s.replace(/_/g, ' ').toLowerCase().replace(/^./, (c) => c.toUpperCase());
@@ -39,7 +38,7 @@ export function serviceQueuePackage(w: S.Workspace, by: MadeBy): Report {
     { id: 'standing', heading: 'Where the queue stands', text: [`${plural(open.length, 'open request')}, ${crit.length} mission critical; ${unassigned.length} without a person assigned; ${verifying.length} awaiting independent verification.`],
       bullets: crit.length ? crit.map((i) => `${i.id} · ${i.roomName}: ${i.title} (${word(i.state)}${tech(i).who ? `, ${tech(i).who}` : ', nobody assigned'})`) : ['No mission-critical request is open.'] },
     { id: 'by-building', heading: 'By building', text: ['Drilled up: the open requests of each building, by severity.'],
-      table: { title: 'By building', cols: [{ key: 'b', label: 'Building' }, { key: 'open', label: 'Open', kind: 'number' }, ...SEVS.map((s) => ({ key: s, label: s, kind: 'number' as const })), { key: 'closed', label: 'Resolved or closed', kind: 'number' }],
+      table: { title: 'By building', cols: [{ key: 'b', label: 'Building' }, { key: 'open', label: 'Open', kind: 'number' }, ...SEVS.map((s) => ({ key: s, label: s, kind: 'number' as const })), { key: 'closed', label: 'Resolved, closed or canceled', kind: 'number' }],
         rows: buildings.map((k) => { const mine = all.filter((i) => i.buildingKey === k); const o = mine.filter(isOpenRequest); return { b: buildingByKey(k)?.name || k, open: o.length, ...Object.fromEntries(SEVS.map((s) => [s, o.filter((i) => i.severity === s).length])), closed: mine.length - o.length }; }) } },
     { id: 'queue', heading: 'Every request', text: ['Drilled down: one row per request, open first.'],
       table: { title: 'Requests', cols: [{ key: 'id', label: 'Request' }, { key: 'room', label: 'Room' }, { key: 'title', label: 'Title' }, { key: 'sev', label: 'Severity' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'sla', label: 'Held to (respond · restore)' }, { key: 'wo', label: 'Work order' }, { key: 'who', label: 'Assigned to' }, { key: 'opened', label: 'Opened', kind: 'date' }, { key: 'apex', label: 'APEX case' }],
@@ -50,9 +49,9 @@ export function serviceQueuePackage(w: S.Workspace, by: MadeBy): Report {
   return {
     schema: 'empathia.report/1', id: 'SH-QUEUE', kind: 'service-queue', title: 'Service queue', subtitle: `${SITE.name} · ServiceHands`,
     scope: { tenant: SITE.enterprise, site: SITE.name, building: 'All buildings', floor: 'All floors', room: 'All rooms', roomId: '' },
-    status: { label: crit.length ? 'Mission critical open' : open.length ? 'Requests open' : 'Queue clear', tone: crit.length ? 'bad' : open.length ? 'warn' : 'ok', why: `${plural(open.length, 'open request')}, ${crit.length} mission critical` },
+    status: { label: crit.length ? 'Mission critical open' : open.length ? 'Requests open' : all.some(isUnclosedRequest) ? 'Waiting to be closed' : 'Queue clear', tone: crit.length ? 'bad' : open.length ? 'warn' : 'ok', why: `${plural(open.length, 'open request')}, ${crit.length} mission critical` },
     generatedAt: by.at, role: by.role, build: by.build, primary: 'Requests', provenance: PROV(by),
-    headline: `${plural(open.length, 'open request')} across ${plural(buildings.length, 'building')}; ${crit.length} mission critical, ${unassigned.length} unassigned, ${verifying.length} awaiting verification. ${all.length - open.length} closed or canceled.`,
+    headline: `${plural(open.length, 'open request')} across ${plural(buildings.length, 'building')}; ${crit.length} mission critical, ${unassigned.length} unassigned, ${verifying.length} awaiting verification. ${all.filter(isUnclosedRequest).length - open.length} resolved, waiting to be closed; ${all.filter((i) => !isUnclosedRequest(i)).length} closed or canceled.`,
     kpis: [
       { label: 'Open requests', value: String(open.length), note: `${all.length} on record` },
       { label: 'Mission critical open', value: String(crit.length), note: `held to ${SLA['Mission critical'].respond}` },
@@ -76,7 +75,7 @@ export function serviceRecordPackage(w: S.Workspace, incId: string, by: MadeBy):
   const who = (id: string | null | undefined) => (id ? w.staff.find((s) => s.id === id)?.name || id.replace(/_/g, ' ') : '');
   const b = buildingByKey(i.buildingKey); const apex = i.apexId ? w.apexCases.find((c) => c.id === i.apexId) : undefined;
   const learn = i.learnCaseId ? w.learnCases.find((c) => c.id === i.learnCaseId) : undefined;
-  const closed = DONE.includes(i.state);
+  const closed = !isUnclosedRequest(i);
   const sections: Section[] = [
     { id: 'request', heading: 'The request', text: [i.summary || i.title],
       facts: [['Request', i.id], ['Room', `${i.roomName} (${i.roomId})`], ['Building', b?.name || i.buildingKey], ['Severity', i.severity], ['Held to', `respond ${SLA[i.severity].respond}, restore ${SLA[i.severity].restore}`], ['State', word(i.state)], ['Opened', stamp(i.openedAt)], ['Restored', stamp(i.restoredAt) || 'Not yet'], ['Closed', stamp(i.closedAt) || 'Not yet'], ['Recurrence of', i.recurrenceOf || 'None'], ['Requester confirmed', i.requesterConfirmed ? 'Yes' : 'No'], ['Verified by', who(i.verifiedBy) || 'Not yet verified']] },

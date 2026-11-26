@@ -11,10 +11,12 @@
 export const OPEN_REQUEST_STATES: ReadonlySet<string> = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'REOPENED']);
 export const isOpenRequest = (i: { state: string }): boolean => OPEN_REQUEST_STATES.has(i.state);
 export const isUnclosedRequest = (i: { state: string }): boolean => i.state !== 'CLOSED' && i.state !== 'CANCELLED';
-/** When an open request stopped being open (its last move to resolved, closed or cancelled), or null while it is open: a trend of
- *  open requests ends on the open count only if a request leaves it when it was fixed, not when it was closed. */
+/** When a request that is not open stopped being open: its first move out of the open states after the last time it was open (the
+ *  fix, or the cancel; a later close does not move it), or null while it is open. A trend of open requests ends on the open count
+ *  only if a request leaves it when it was fixed, not when it was closed. */
 export function requestFixedAt(i: { state: string; openedAt: string; closedAt?: string | null; history?: ReadonlyArray<{ to: string; at: string }> }): string | null {
   if (isOpenRequest(i)) return null;
-  const last = [...(i.history || [])].reverse().find((h) => !OPEN_REQUEST_STATES.has(h.to));
-  return last?.at || i.closedAt || i.openedAt;
+  const hs = i.history || []; let k = hs.length - 1;
+  while (k >= 0 && !OPEN_REQUEST_STATES.has(hs[k]!.to)) k -= 1;
+  return hs[k + 1]?.at || i.closedAt || i.openedAt;
 }

@@ -82,7 +82,7 @@ function Board({ w, live, sel, pick, nowMs }: { w: WX; live: S.Incident[]; sel: 
 function List({ w, live, sel, pick, nowMs }: { w: WX; live: S.Incident[]; sel: string | null; pick: (id: string) => void; nowMs: number }) {
   const rows = [...live].sort((a, b) => slaOf(a.severity, a.openedAt, a.restoredAt, nowMs).hoursLeft - slaOf(b.severity, b.openedAt, b.restoredAt, nowMs).hoursLeft);
   return (
-    <div className="ops-table-wrap" data-testid="list"><table className="ops-table"><caption className="ui-sr">Open jobs, soonest restore deadline first</caption>
+    <div className="ops-table-wrap" data-testid="list"><table className="ops-table"><caption className="ui-sr">Jobs not yet closed, soonest restore deadline first</caption>
       <thead><tr><th scope="col">Job</th><th scope="col">State</th><th scope="col">Severity</th><th scope="col">Restore by</th><th scope="col">Technician</th></tr></thead>
       <tbody>{rows.map((i) => { const s = slaOf(i.severity, i.openedAt, i.restoredAt, nowMs); const wo = i.workOrderId ? S.workOrderOf(w, i.workOrderId) : undefined; return (
         <tr key={i.id} className={sel === i.id ? 'on' : ''}><td><a href={`#/service?view=list&id=${i.id}`} onClick={(e) => { e.preventDefault(); pick(i.id); }}>{i.id} · {i.title}</a><div className="ops-meta">{i.roomName}</div></td>

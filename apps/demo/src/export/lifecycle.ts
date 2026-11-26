@@ -14,12 +14,11 @@
 import { allRecords, openIssues, PEOPLE, type RoomRecord } from '../campus/design.js';
 import { ymd } from '../campus/cxRecord.js';
 import type * as S from '../workspace/store.js';
-import { isOpenRequest } from '../workspace/requests.js';
+import { isOpenRequest, isUnclosedRequest } from '../workspace/requests.js';
 import type { Section, Link } from './model.js';
 
 const who = (k?: string | null) => (k ? PEOPLE[k] || k.replace(/_/g, ' ') : '—');
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
-const DONE = ['CLOSED', 'CANCELLED'];
 const DAY = 864e5;
 
 export interface IntakeRequest { id: string; kind: string; at: string; role: string; need?: string | null; title: string; summary: string; size?: { w: number; l: number; h: number; basis: string } | null; equipment: Array<{ label: string; count: number; added: number }>; tests: number; goes: string; where: string; standing: string }
@@ -82,7 +81,7 @@ export function lifecycleSections(r: RoomRecord, x: LifecycleInput, abs: (h: str
       ...(peers.length ? [`Against the ${peers.length} other ${r.archetypeName.toLowerCase()} rooms: tests verified ${pct(r.counts.verified, r.counts.applicable)}% here, ${peerTests}% on average; open issues ${openIssues(r).length} here, ${peerOpen!.toFixed(1)} on average${peerInc != null ? `; service requests ${inc.length} here, ${peerInc.toFixed(1)} on average` : ''}.`] : ['No other room of this type to compare with.']),
     ],
     table: { title: 'Service requests', cols: [{ key: 'id', label: 'Request' }, { key: 'title', label: 'Title' }, { key: 'sev', label: 'Severity' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'opened', label: 'Opened', kind: 'date' }, { key: 'ttr', label: 'Hours to restore', kind: 'number' }, { key: 'again', label: 'Recurrence' }, { key: 'apex', label: 'APEX' }, { key: 'learn', label: 'Lesson' }],
-      rows: inc.map((i) => ({ id: i.id, title: i.title, sev: i.severity, state: DONE.includes(i.state) ? 'Closed' : i.state.replace(/_/g, ' ').toLowerCase(), opened: ymd(i.openedAt), ttr: i.restoredAt ? Math.round((Date.parse(i.restoredAt) - Date.parse(i.openedAt)) / 36e5) : null, again: i.recurrenceOf ? `again after ${i.recurrenceOf}` : i.reopened ? 'reopened' : '', apex: i.apexId || '', learn: i.learnCaseId || '' })) } });
+      rows: inc.map((i) => ({ id: i.id, title: i.title, sev: i.severity, state: !isUnclosedRequest(i) ? 'Closed' : i.state.replace(/_/g, ' ').toLowerCase(), opened: ymd(i.openedAt), ttr: i.restoredAt ? Math.round((Date.parse(i.restoredAt) - Date.parse(i.openedAt)) / 36e5) : null, again: i.recurrenceOf ? `again after ${i.recurrenceOf}` : i.reopened ? 'reopened' : '', apex: i.apexId || '', learn: i.learnCaseId || '' })) } });
   for (const i of inc) links.push({ label: `ServiceHands ${i.id}`, url: abs(`#/v25/service?id=${i.id}`) });
   for (const c of apex) links.push({ label: `APEX ${c.id}`, url: abs(`#/v25/apex?case=${c.id}`) });
   const kpis = [{ label: 'Service requests', value: String(inc.length), note: ttr.length ? `restored in ${Math.round(ttr.reduce((a, b) => a + b, 0) / ttr.length)} h on average` : 'none restored yet' }];

@@ -9,7 +9,7 @@
  * come with it. What an import never does:
  *   - run a spreadsheet formula: a value starting = + - @ is refused (one exported by Empathia starts with an apostrophe, which is removed);
  *   - decide severity: a requested severity is written into the summary and the request is raised as Standard, for triage to decide;
- *   - raise a duplicate: a row matching an open request in the same room by title is skipped and said so.
+ *   - raise a duplicate: a row matching a request not yet closed in the same room by title is skipped and said so.
  */
 import { roomById, fullName } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
@@ -53,7 +53,7 @@ function check(line: number, raw: { room?: string; title?: string; summary?: str
   const dup = !why.length && (w.incidents.some((i) => i.roomId === o!.id && isUnclosedRequest(i) && i.title.toLowerCase() === title.toLowerCase()) || seen.has(key));
   if (!why.length) seen.add(key);
   const closed = !why.length && !dup && /^(closed|cancelled|canceled)\b/i.test((raw.state ?? '').trim());   // an exported closed request is not raised again
-  return { line, roomId: o?.id || roomText, roomName: o ? fullName(o) : roomText, building: o?.building || '', title, summary, severity, state: why.length ? 'refused' : dup ? 'duplicate' : closed ? 'closed' : 'ready', why: dup ? ['an open request in this room already has this title'] : closed ? ['the file says this request is closed: it is not raised again'] : why };
+  return { line, roomId: o?.id || roomText, roomName: o ? fullName(o) : roomText, building: o?.building || '', title, summary, severity, state: why.length ? 'refused' : dup ? 'duplicate' : closed ? 'closed' : 'ready', why: dup ? ['a request not yet closed in this room already has this title'] : closed ? ['the file says this request is closed: it is not raised again'] : why };
 }
 
 /** Read a file and check every row; nothing is written. */

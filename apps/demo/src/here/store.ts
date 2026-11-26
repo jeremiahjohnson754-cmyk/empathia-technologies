@@ -16,6 +16,7 @@ import { fullName, roomById } from '../campus/canon.js';
 import { roomRecord } from '../campus/design.js';
 import type { RoleKey } from '../registry.types.js';
 import { RESULT_WORD, repeats, stepsFor, suspectsOf, symptomOf, type SymptomId, type Visit } from './model.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 const KEY = 'empathia.demo.here.v1';
 export type Refusal = { why: string[] };
@@ -55,7 +56,7 @@ export function record(w: S.Workspace, role: RoleKey, o: Outcome): Refusal | Vis
   } else if (o.outcome === 'joined') {
     const inc = S.incidentOf(w, o.joinId || '');
     if (!inc || inc.roomId !== room.id) return { why: ['That report is not for this room.'] };
-    if (['RESOLVED', 'CLOSED', 'CANCELLED'].includes(inc.state)) return { why: [`${inc.id} is ${inc.state.toLowerCase()}. Report it as a new problem so it is looked at again.`] };
+    if (!isOpenRequest(inc)) return { why: [`${inc.id} is ${inc.state.toLowerCase()}. Report it as a new problem so it is looked at again.`] };
     (hr(w as WX).seen[inc.id] ||= []).push({ at: v.at, by: persona, who, note, tried: pairs });
     log(w, persona, 'service.seen_again', inc.id, `${who} saw it again${note ? `: ${note.slice(0, 120)}` : ''} · ${tried.length} step(s) tried (${v.id})`); v.incidentId = inc.id;
   } else {

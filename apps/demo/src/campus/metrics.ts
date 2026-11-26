@@ -25,13 +25,13 @@ import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, roomById, shortName, 
 import { roomRecord, allRecords, PEOPLE, C, type RoomRecord, type Issue, type Position } from './design.js';
 import { programme } from './programme.js';
 import type { Workspace, Incident, WorkOrder } from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 export type Band = 'healthy' | 'monitor' | 'action' | 'none';
 export const BAND_LABEL: Record<Band, string> = { healthy: 'Healthy', monitor: 'Monitor', action: 'Action required', none: 'Not scored' };
 export const bandOf = (score: number | null): Band => (score == null ? 'none' : score >= 88 ? 'healthy' : score >= 75 ? 'monitor' : 'action');
 export const BAND_TONE: Record<Band, 'ok' | 'warn' | 'bad' | 'muted'> = { healthy: 'ok', monitor: 'warn', action: 'bad', none: 'muted' };
 
-import { isOpenRequest } from '../workspace/requests.js';
 export { isOpenRequest, isUnclosedRequest, requestFixedAt, OPEN_REQUEST_STATES } from '../workspace/requests.js';
 const SEV: Record<string, Issue['severity']> = { 'Mission critical': 'High', High: 'High', Standard: 'Medium' };
 export interface OpenIssue { id: string; title: string; severity: Issue['severity']; state: string; source: string; positions: string[]; live: boolean; openedAt?: string; href?: string }

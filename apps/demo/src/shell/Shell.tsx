@@ -18,6 +18,7 @@ import { useDialog } from '../viewas/ViewAsSheet.js';
 import { Coachmarks } from './Coachmarks.js';
 import { openPages } from '../viewas/scope.js';
 import { spellings } from '../search/spelling.js';
+import { isOpenRequest } from '../workspace/requests.js';
 export { openPages };
 
 /** Can the role open this address through a registered page? (Tabs and links never lead to a refusal.) */
@@ -114,7 +115,7 @@ function Drawer({ open, onClose, products, current, at, onViewAs, role }: { open
 interface Note { id: string; text: string; sub: string; href?: string; tone: 'bad' | 'warn' | 'info' }
 type Inc = { id: string; title: string; roomName: string; severity: string; state: string; history?: Array<{ by: string }> };
 const WS_KEY = 'empathia.demo.workspace.v1';
-const STEP: Record<string, string> = { OPEN: 'needs triage', TRIAGED: 'needs a technician', ASSIGNED: 'assigned, not yet accepted', ACCEPTED: 'accepted', IN_PROGRESS: 'being repaired', VERIFYING: 'awaiting verification' };
+const STEP: Record<string, string> = { OPEN: 'needs triage', TRIAGED: 'needs a technician', ASSIGNED: 'assigned, not yet accepted', ACCEPTED: 'accepted', IN_PROGRESS: 'being repaired', VERIFYING: 'awaiting verification', REOPENED: 'reopened, needs a look again' };
 /** The open service incidents of the demo's own workspace (read only: the stored workspace, or the seed it starts from — never written). */
 async function readIncidents(): Promise<Inc[]> {
   try { const s = localStorage.getItem(WS_KEY); if (s) { const w = JSON.parse(s) as { v?: number; incidents?: Inc[] }; if (w.v === 1 && Array.isArray(w.incidents)) return w.incidents; } } catch { /* storage blocked: fall back to the seed */ }
@@ -128,7 +129,7 @@ function Notifications({ role }: { role: RoleKey }) {
   // Everyone else — an employee, a visitor, an executive — is told only about what they reported themselves.
   const all = ['#/v25/service', '#/service', '#/servicehands', '#/pro/issues'].some((h) => opensNative(role, h));
   const refresh = () => {
-    readIncidents().then((xs) => setItems(xs.filter((i) => STEP[i.state]).filter((i) => all || i.history?.[0]?.by === 'requestor').sort((a, b) => (a.severity === 'Mission critical' ? -1 : 0) - (b.severity === 'Mission critical' ? -1 : 0))
+    readIncidents().then((xs) => setItems(xs.filter(isOpenRequest).filter((i) => all || i.history?.[0]?.by === 'requestor').sort((a, b) => (a.severity === 'Mission critical' ? -1 : 0) - (b.severity === 'Mission critical' ? -1 : 0))
       .map((i) => { const href = `#/v25/service?id=${encodeURIComponent(i.id)}`; return { id: i.id, text: `${i.id} · ${i.title}`, sub: `${i.roomName} · ${i.severity} · ${STEP[i.state]}`, href: opensNative(role, href) ? href : undefined, tone: i.severity === 'Mission critical' ? 'bad' : i.severity === 'High' ? 'warn' : 'info' } as Note; })))
       .catch(() => setItems([]));
   };

@@ -88,7 +88,7 @@ export function MissionControl({ perspective }: { perspective: string }) {
         <StatTile label="Rooms without a baseline" value={R.rooms.length - based} icon="shield" tone="commissioning" hint="Commissioning not accepted yet" />
         <StatTile label="Ledger events" value={allEvents.length} icon="book" tone="mission-control" spark={evWeeks} delta={deltaOf(evWeeks, 'none', 'vs prior 4 wk')} href="#/v25/ledger" />
       </div>
-      <Card icon="route" tone="mission-control" title="Where every record is" sub="The lifecycle, station by station · each count is the live records at that station; open one where it lives">
+      <Card icon="route" tone="mission-control" title="Where every record is" sub="The lifecycle, station by station · each count is the records at that station, not yet closed; open one where it lives">
         <div className="mc__stations" data-testid="stations">{stations.map((s) => <a key={s.key} className="mc__station" href={s.href}><span className="mc__top"><span className="kit-card__icon" aria-hidden="true"><Icon name={ICON[s.key] || 'info'} size={16} /></span><span className="mc__n">{s.count}</span></span><b>{s.label}</b><ul>{s.items.slice(0, 3).map((x) => <li key={x}>{x}</li>)}{s.items.length > 3 && <li className="ui-meta">+{s.items.length - 3} more</li>}{!s.items.length && <li className="ui-meta">nothing pending</li>}</ul></a>)}</div>
       </Card>
       <div className="wk-g2">

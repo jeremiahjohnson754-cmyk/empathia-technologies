@@ -17,7 +17,7 @@ import { BUILDINGS, shortName, roomHref, buildingByKey } from '../campus/canon.j
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaLabel, personaOf } from '../build/store.js';
 import type * as S from '../workspace/store.js';
-import { isOpenRequest } from '../workspace/requests.js';
+import { isOpenRequest, requestFixedAt } from '../workspace/requests.js';
 import { Foot, Stack, plural, pct, weekCounts, weekBacklog, deltaOf } from './viz.js';
 import { V25Nav } from './V25Nav.js';
 import { ProTabs } from './ProViews.js';
@@ -184,7 +184,7 @@ export function ProPage({ perspective, hash = '' }: { perspective: string; hash?
   const sevSegs = [['High', 'bad'], ['Medium', 'warn'], ['Low', 'info']].map(([s, t]) => ({ key: s!, label: s!, value: roomIssues.filter((x) => x.i.severity === s).length + inc.filter((i) => (s === 'High' ? i.severity !== 'Standard' : s === 'Medium' ? i.severity === 'Standard' : false)).length, tone: t as Series }));
   const needRooms = new Set([...roomIssues.map((x) => x.r.outline.id), ...inc.map((i) => i.roomId), ...recs.filter((r) => cxState(r).state === 'blocked').map((r) => r.outline.id)]);
   const devices = recs.reduce((a, r) => a + r.positions.filter((p) => !p.furniture).length, 0);
-  const backlog = weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.restoredAt || i.closedAt);
+  const backlog = weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.restoredAt || requestFixedAt(i));
   const working = [...inc.map((i) => ({ key: i.id, title: i.title, sub: `${i.roomName} · ${i.severity} · opened ${Math.round((now - Date.parse(i.openedAt)) / DAY)} d ago${late(i) ? ` · past its ${TARGET_DAYS[i.severity] ?? 5}-day target` : ''}`, href: i.workOrderId ? `#/servicehands/wo/${i.workOrderId}` : `#/servicehands?id=${i.id}`, tone: (i.severity === 'Standard' ? 'warn' : 'bad') as Series, chip: late(i) ? 'Past target' : i.state, rank: late(i) ? 0 : 1 })),
     ...roomIssues.map(({ r, i }) => ({ key: `${r.outline.id}:${i.id}`, title: i.title, sub: `${roomName(r)} · ${i.severity} · ${i.source}`, href: roomHref(r.outline), tone: (i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'info') as Series, chip: i.severity, rank: i.severity === 'High' ? 1 : i.severity === 'Medium' ? 2 : 3 }))].sort((a, b) => a.rank - b.rank);
   return (

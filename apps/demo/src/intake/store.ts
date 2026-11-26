@@ -16,6 +16,7 @@ import { fullName, roomById } from '../campus/canon.js';
 import type { RoleKey } from '../registry.types.js';
 import { ROLES } from '../access/policy.js';
 import { blank, cardOf, kindOf, problems, propose, siteName, summarise, KINDS, OTHER_BUILDING, type CardId, type Draft, type Goes, type KindId } from './model.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 export type RecordState = 'DRAFT' | 'SUBMITTED' | 'WITHDRAWN';
 /** The owner policy for photographs (directive §04 step 4), with why it applies. */
@@ -150,7 +151,7 @@ export function alreadyOpen(w: Workspace | null, roomId: string, exceptId: strin
   const mine = loadRequests().filter((r) => r.roomId === roomId && r.id !== exceptId).map((r) => ({ id: r.id, title: r.title, where: 'Asked for from this browser', href: `#/requests/${r.id}` }));
   const linked = new Set(loadRequests().flatMap((r) => [r.projectId, r.incidentId]).filter(Boolean) as string[]);
   const projects = desk.projects.filter((p) => p.roomId === roomId && !['REJECTED', 'SUSPENDED'].includes(p.state) && !linked.has(p.id)).map((p) => ({ id: p.id, title: p.name, where: 'A project on the decision desk', href: null }));
-  const jobs = w ? w.incidents.filter((i) => i.roomId === roomId && !['RESOLVED', 'CLOSED', 'CANCELLED'].includes(i.state) && !linked.has(i.id)).map((i) => ({ id: i.id, title: i.title, where: 'A job in ServiceHands', href: null })) : [];
+  const jobs = w ? w.incidents.filter((i) => i.roomId === roomId && isOpenRequest(i) && !linked.has(i.id)).map((i) => ({ id: i.id, title: i.title, where: 'A job in ServiceHands', href: null })) : [];
   return [...mine, ...projects, ...jobs].slice(0, 6);
 }
 

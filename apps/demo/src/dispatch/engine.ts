@@ -12,6 +12,7 @@
  * Pure: the clock is passed in.
  */
 import { candidates, hardGates, CERTS, SLA, WORK_NEEDS, type Staff, type WorkNeed, type WorkOrderFacts } from '@empathia/service-engine';
+import { isOpenRequest } from '../workspace/requests.js';
 
 export const NO_TRAVEL = 'Travel time is not estimated: there is no authorized routing source.';
 export const OVERRIDE_MIN = 12;
@@ -149,7 +150,7 @@ export const COLUMNS: Array<{ key: string; label: string; states: string[] }> = 
 interface IncLike { id: string; state: string; severity: string; openedAt: string; restoredAt: string | null; history: Array<{ to: string; at: string }>; reopened: boolean; closedAt: string | null }
 /** Board metrics, each from the records with its numerator and denominator. */
 export function metrics(incs: IncLike[], nowMs: number) {
-  const open = incs.filter((i) => !['CLOSED', 'CANCELLED', 'RESOLVED'].includes(i.state));
+  const open = incs.filter(isOpenRequest);
   const waiting = open.filter((i) => ['OPEN', 'REOPENED', 'TRIAGED'].includes(i.state));
   const risk = open.filter((i) => ['at risk', 'breached'].includes(slaOf(i.severity, i.openedAt, i.restoredAt, nowMs).state));
   const assignTimes = incs.map((i) => { const o = i.history.find((h) => h.to === 'OPEN'); const a = i.history.find((h) => h.to === 'ASSIGNED'); return o && a ? (Date.parse(a.at) - Date.parse(o.at)) / 36e5 : null; }).filter((x): x is number => x !== null && x >= 0);

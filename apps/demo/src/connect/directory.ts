@@ -24,6 +24,7 @@ import { seed, techForPersona, type Workspace } from '../workspace/store.js';
 import type { Busy, Hours, Shift } from './calendar.js';
 import { bindingHours, workingIn } from './calendar.js';
 import { DAY, fmtDay, fmtTime, overlaps, utcOffset, zoneCity } from './time.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 // ------------------------------------------------------------------------------------------------------------ the estate, as the directory reads it
 export const ALL_BUILDINGS: readonly Building[] = [...BUILDINGS, ...REGIONAL_SITES];
@@ -284,7 +285,7 @@ export function contactsFor(s: Subject, at: number, w: Workspace | null, busyOf:
   const champReason = champ ? `Site champion for ${bName}${room ? `; ${familiarity(champ, room, w)?.why || ''}` : ''}` : '';
   const techs = holdersOf('service' as RoleKey, b);
   const onShift = techs.find((t) => availabilityAt(t, at, busyOf(t)).available) || techs[0] || null;
-  const job = s.kind === 'issue' ? w?.incidents.find((i) => i.id === s.id) : room ? w?.incidents.find((i) => i.roomId === room.id && !['RESOLVED', 'CLOSED', 'CANCELLED'].includes(i.state) && w.workOrders.find((x) => x.id === i.workOrderId)?.techId) : undefined;
+  const job = s.kind === 'issue' ? w?.incidents.find((i) => i.id === s.id) : room ? w?.incidents.find((i) => i.roomId === room.id && isOpenRequest(i) && w.workOrders.find((x) => x.id === i.workOrderId)?.techId) : undefined;
   const wo = job?.workOrderId ? w?.workOrders.find((x) => x.id === job.workOrderId) : undefined; const assigned = wo?.techId ? personById(`p-${wo.techId}`) : null;
   const techReason = (t: Person) => (assigned && t.id === assigned.id ? `Assigned to ${wo!.id}${s.kind === 'issue' ? '' : ' in this room'}` : `${t.title} for ${bName}${t.shift ? `, ${t.shift.name.toLowerCase()}` : ''}${techs.length > 1 && onShift && t.id === onShift.id && onShift.id !== techs[0]!.id ? '; the first technician for the building is not on shift' : ''}`);
   const tech = assigned || onShift; const mgr = holdersOf('svcmgr' as RoleKey, b)[0] || null;

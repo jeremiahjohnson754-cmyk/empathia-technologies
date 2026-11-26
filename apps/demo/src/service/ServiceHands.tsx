@@ -39,14 +39,13 @@ export default function ServiceHands({ perspective, hash }: WorkspaceProps) {
 }
 function Missing({ what }: { what: string }) { return <div className="ops-card" role="alert"><NotAPlace /><h1>Not found</h1><p>There is no {what} in this demonstration workspace. It may have been reset. <a href="#/servicehands">Back to ServiceHands</a></p></div>; }
 
-const DONE = ['CLOSED', 'CANCELLED'];
 const hrefOf = (i: S.Incident) => (i.workOrderId ? `#/servicehands/wo/${i.workOrderId}` : `#/servicehands?id=${i.id}`);
 function Home({ ops }: { ops: Ops }) {
   const { w, persona } = ops; const me = S.techForPersona(persona);
   const mineOf = (i: S.Incident) => !!me && !!i.workOrderId && S.workOrderOf(w, i.workOrderId)?.techId === me;
   const mine = w.incidents.filter((i) => mineOf(i) && isUnclosedRequest(i));
   const board = w.incidents.filter(isUnclosedRequest); const open = board.filter(isOpenRequest);
-  const list = [...w.incidents].sort((a, b) => (DONE.includes(a.state) ? 1 : 0) - (DONE.includes(b.state) ? 1 : 0) || b.openedAt.localeCompare(a.openedAt));
+  const list = [...w.incidents].sort((a, b) => (isOpenRequest(a) ? 0 : 1) - (isOpenRequest(b) ? 0 : 1) || b.openedAt.localeCompare(a.openedAt));
   const canReport = ['request.submit', 'service.triage', 'work.evidence'].some((a) => holds(persona, a));
   const st = (i: S.Incident) => stageOf(w, i);
   const inStages = (xs: S.Incident[], a: number, b: number) => xs.filter((i) => st(i) >= a && st(i) <= b);
@@ -61,7 +60,7 @@ function Home({ ops }: { ops: Ops }) {
     return <a key={i.id} href={hrefOf(i)} className={`wk-card${m ? ' mine' : ''}`} data-card={i.id}>
       <span className="wk-card__t"><b>{i.id}</b><Chip small tone={ROUTES[r.key].tone as Series}>{ROUTES[r.key].label}</Chip>{m ? <Chip small tone="accent">Your job</Chip> : null}</span>
       <span className="wk-card__n">{i.title}</span><span className="wk-card__p">{i.roomName} · {i.severity}</span>
-      <span className="wk-card__x"><Tag tone={TONE[i.state]}>{i.state}</Tag> next: {DONE.includes(i.state) ? 'nothing — the record is kept' : STAGES[Math.min(11, st(i) + (i.state === 'RESOLVED' ? 1 : 0))]}</span></a>; };
+      <span className="wk-card__x"><Tag tone={TONE[i.state]}>{i.state}</Tag> next: {!isUnclosedRequest(i) ? 'nothing — the record is kept' : STAGES[Math.min(11, st(i) + (i.state === 'RESOLVED' ? 1 : 0))]}</span></a>; };
   return (<>
     <PageHero product="servicehands" plain icon="wrench" eyebrow="ServiceHands · incident to service" title="ServiceHands"
       lede={<>Every job moves through twelve stages, one governed step at a time; the person who did the work never verifies it. <b>{plural(open.length, 'job')}</b> open{mine.filter(isOpenRequest).length ? <>, <b>{mine.filter(isOpenRequest).length}</b> assigned to you</> : null}. Acting as <b>{personaLabel(persona)}</b>.</>}
@@ -86,7 +85,7 @@ function Home({ ops }: { ops: Ops }) {
     </div>
     {me && <Card id="mine" icon="user" tone="accent" title={`My jobs · ${S.techOf(w, me)?.name}`} testId="my-jobs">
       {mine.length ? <div className="wk-lanes">{mine.map(card)}</div> : <EmptyState title="Nothing is assigned to you right now" icon="check" />}</Card>}
-    <Card id="board" icon="grid" title="The board" sub="Open jobs by where they are in the twelve stages">
+    <Card id="board" icon="grid" title="The board" sub="Every job not yet closed, by where it is in the twelve stages">
       <Lanes label="Jobs on the board by lane" lanes={LANES.map((l) => ({ key: l.key, title: l.title, items: board.filter((i) => l.stages.includes(st(i))).map(card) }))} />
     </Card>
     <Card id="all" icon="inbox" title="All service jobs" sub={`${plural(w.incidents.length, 'job')} · open first, newest first`}>

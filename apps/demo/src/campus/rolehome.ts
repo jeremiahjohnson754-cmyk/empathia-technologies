@@ -203,7 +203,7 @@ function startCore(i: Inputs): Start {
         primary: primaryOf(triRows, 'Triage', 'Severity first, then who may do the work') || (open('#/service') ? { label: 'Open the dispatch board', href: '#/service', why: 'Nothing waits for triage' } : null),
         strip: stripFor(i, mine, ['changed', 'matters', 'decide']),
         tiles: [
-          { label: 'Live requests', value: String(live.length), hint: `${incidents.length - live.length} closed on record`, tone: live.length ? 'warn' : 'ok', href: link('#/service') },
+          { label: 'Live requests', value: String(live.length), hint: `${incidents.length - live.length} resolved, closed or canceled on record`, tone: live.length ? 'warn' : 'ok', href: link('#/service') },
           { label: 'To triage', value: String(triage.length), hint: 'opened, no severity decision yet', tone: triage.length ? 'bad' : 'ok', href: link('#/service') },
           { label: 'Open work orders', value: String(wos.length), hint: `${unassigned.length} unassigned`, tone: unassigned.length ? 'warn' : 'info', href: link('#/servicehands') },
           { label: 'Technicians', value: String(staff.length), hint: `${staff.filter((s) => !s.internal).length} vendor`, tone: 'muted', href: link('#/search/coverage') },

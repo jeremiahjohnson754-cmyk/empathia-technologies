@@ -276,7 +276,7 @@ export function KnownFixesPage({ perspective }: { perspective: string }) {
   const closed = w.incidents.filter((i) => ['RESOLVED', 'CLOSED'].includes(i.state));
   const fixOf = (i: S.Incident) => { const t = i.title.toLowerCase(); const k = /firmware/.test(t) ? 0 : /wireless|microphone/.test(t) ? 1 : /cable|projector|blank/.test(t) ? 2 : /drift|config|echo/.test(t) ? 3 : /switch|network|call|drop/.test(t) ? 4 : /power|outlet|storm/.test(t) ? 5 : /restart|warm|heat/.test(t) ? 6 : /booking|schedul/.test(t) ? 9 : /display|standby|camera|video/.test(t) ? 8 : 7; return V.KNOWN_FIXES[Math.min(k, V.KNOWN_FIXES.length - 1)]!; };
   const applied = closed.map((i) => ({ i, f: fixOf(i) }));
-  const byFix = V.KNOWN_FIXES.map((f, k) => ({ k, f, n: applied.filter((a) => a.f === f).length, open: w.incidents.filter((i) => !['RESOLVED', 'CLOSED', 'CANCELLED'].includes(i.state) && fixOf(i) === f).length, hours: applied.filter((a) => a.f === f && a.i.restoredAt).map((a) => (Date.parse(a.i.restoredAt!) - Date.parse(a.i.openedAt)) / 36e5) })).sort((a, b) => b.n - a.n);
+  const byFix = V.KNOWN_FIXES.map((f, k) => ({ k, f, n: applied.filter((a) => a.f === f).length, open: w.incidents.filter((i) => isOpenRequest(i) && fixOf(i) === f).length, hours: applied.filter((a) => a.f === f && a.i.restoredAt).map((a) => (Date.parse(a.i.restoredAt!) - Date.parse(a.i.openedAt)) / 36e5) })).sort((a, b) => b.n - a.n);
   const doms = [...new Set(applied.map((a) => V.ROOT_CAUSES[a.f[1]]?.[0] || 'Other'))].map((d) => ({ d, n: applied.filter((a) => (V.ROOT_CAUSES[a.f[1]]?.[0] || 'Other') === d).length }));
   const wk = weekCounts(closed, (i) => i.closedAt || i.restoredAt);
   return (
@@ -285,7 +285,7 @@ export function KnownFixesPage({ perspective }: { perspective: string }) {
       <div className="kit-grid kit-grid--tiles wk-tiles4">
         <StatTile label="Known fixes" value={V.KNOWN_FIXES.length} icon="book" tone="servicehands" hint="From V2.5.3’s library, unchanged" />
         <StatTile label="Times applied" value={applied.length} icon="check" tone="ok" spark={wk} hint="Closed issues matched to a fix" />
-        <StatTile label="Open now" value={w.incidents.filter((i) => !['RESOLVED', 'CLOSED', 'CANCELLED'].includes(i.state)).length} icon="ticket" tone="warn" hint="Issues a fix may still close" />
+        <StatTile label="Open now" value={w.incidents.filter(isOpenRequest).length} icon="ticket" tone="warn" hint="Issues a fix may still close" />
         <StatTile label="Median time to restore" value={(() => { const h = applied.filter((a) => a.i.restoredAt).map((a) => (Date.parse(a.i.restoredAt!) - Date.parse(a.i.openedAt)) / 36e5).sort((x, y) => x - y); return h.length ? Math.round(h[Math.floor((h.length - 1) / 2)]!) : null; })()} unit="h" icon="clock" tone="muted" hint="Of the issues a fix closed" />
       </div>
       <div className="wk-g2">

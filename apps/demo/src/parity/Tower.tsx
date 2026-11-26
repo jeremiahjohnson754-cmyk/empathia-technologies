@@ -12,15 +12,15 @@ import { openIssues, type RoomRecord } from '../campus/design.js';
 import { load as loadWorkspace, type Incident, type Workspace } from '../workspace/store.js';
 import { healthOf, AGREEMENTS, VENDORS, plural, day, hhmm } from './core.js';
 import { useCore, honest, Zone, FactsTable } from './ui.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 type View = 'executive' | 'incident' | 'operations';
 interface Item { id: string; title: string; roomId: string; building: string; sev: 'Mission critical' | 'High' | 'Medium' | 'Standard' | 'Low'; state: string; at: string; source: 'workspace' | 'room record'; inc?: Incident }
 const SEV_RANK = { 'Mission critical': 0, High: 1, Medium: 2, Standard: 3, Low: 4 } as const;
 const sevTone = (s: Item['sev']) => (s === 'Mission critical' || s === 'High' ? 'bad' : s === 'Medium' ? 'warn' : 'info');
-const closed = (s: string) => s === 'CLOSED' || s === 'RESOLVED';
 
 export function queueOf(rooms: RoomRecord[], w: Workspace): Item[] {
-  const out: Item[] = w.incidents.filter((i) => !closed(i.state)).map((i) => ({ id: i.id, title: i.title, roomId: i.roomId, building: i.buildingKey, sev: i.severity, state: i.state, at: i.openedAt, source: 'workspace' as const, inc: i }));
+  const out: Item[] = w.incidents.filter(isOpenRequest).map((i) => ({ id: i.id, title: i.title, roomId: i.roomId, building: i.buildingKey, sev: i.severity, state: i.state, at: i.openedAt, source: 'workspace' as const, inc: i }));
   rooms.forEach((r) => openIssues(r).forEach((i) => { if (!out.some((x) => x.id === i.id)) out.push({ id: i.id, title: i.title, roomId: r.outline.id, building: r.outline.building, sev: i.severity, state: i.state, at: r.events[0]?.at || '', source: 'room record' }); }));
   return out.sort((a, b) => SEV_RANK[a.sev] - SEV_RANK[b.sev] || Date.parse(b.at || '0') - Date.parse(a.at || '0'));
 }
@@ -58,7 +58,7 @@ function SiteGrid({ sites }: { sites: Site[] }) {
 
 function Executive({ q, sites, w }: { q: Item[]; sites: Site[]; w: Workspace }) {
   const seg: Segment[] = (['Mission critical', 'High', 'Medium', 'Standard', 'Low'] as const).map((s) => ({ key: s, label: s, value: q.filter((x) => x.sev === s).length, tone: sevTone(s) as Segment['tone'] })).filter((s) => s.value);
-  const resolved = w.incidents.filter((i) => closed(i.state));
+  const resolved = w.incidents.filter((i) => !isOpenRequest(i));
   const ttr = resolved.filter((i) => i.restoredAt).map((i) => (Date.parse(i.restoredAt!) - Date.parse(i.openedAt)) / 36e5);
   const worst = [...sites].filter((s) => s.items.length).sort((a, b) => b.items.length - a.items.length)[0];
   return (

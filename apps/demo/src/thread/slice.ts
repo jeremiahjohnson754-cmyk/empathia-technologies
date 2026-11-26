@@ -18,6 +18,7 @@ import type { RoomRecord } from '../campus/design.js';
 import { deficiencyOf, keyOf } from '../assurance/deficiencyStore.js';
 import { readField, fieldStats } from '../install/fieldRecord.js';
 import type { Workspace, Incident, WorkOrder, ApexCase } from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 export type StageKey = 'lite' | 'engineering' | 'commissioning' | 'service' | 'assurance' | 'apex';
 export type Tone = 'ok' | 'warn' | 'bad' | 'info' | 'muted';
@@ -65,7 +66,7 @@ export function threadOf(r: RoomRecord, w: Workspace): Thread {
       ...(blocksAcceptance(d) && !w.incidents.some((i) => i.source?.id === d.id) && !['PLANNED', 'DESIGN_APPROVED', 'INSTALLATION_PENDING'].includes(r.lifecycle) ? { handoff: { deficiencyId: d.id, issueId: issue, state: d.state, title: d.title, severity: d.severity } } : {}) })),
     href: `#/commissioning/room/${id}`, open: 'Open the commissioning record', next: openDefs.length && !handed.length ? 'Hand the field deficiency to ServiceHands (the Service Manager or the Operations Lead)' : openDefs.some((x) => x.d.state === 'PENDING_RETEST') ? 'Record the retest, then have someone else verify it' : null });
 
-  stages.push({ key: 'service', n: 4, title: 'The work order', product: 'ServiceHands', status: incs.length ? `${incs.length} incident${incs.length === 1 ? '' : 's'} · ${handed.length ? `${handed[0]!.id} from the deficiency: ${handed[0]!.state}` : 'none from a deficiency'}` : 'nothing raised on this room', tone: incs.some((i) => !['RESOLVED', 'CLOSED', 'CANCELLED'].includes(i.state)) ? 'warn' : incs.length ? 'ok' : 'muted',
+  stages.push({ key: 'service', n: 4, title: 'The work order', product: 'ServiceHands', status: incs.length ? `${incs.length} incident${incs.length === 1 ? '' : 's'} · ${handed.length ? `${handed[0]!.id} from the deficiency: ${handed[0]!.state}` : 'none from a deficiency'}` : 'nothing raised on this room', tone: incs.some(isOpenRequest) ? 'warn' : incs.length ? 'ok' : 'muted',
     facts: incs.length ? [['Incidents', incs.map((i) => `${i.id} ${i.state}`).join(' · ')], ['From a deficiency', handed.length ? handed.map((i) => `${i.id} ← ${i.source!.issue}`).join(' · ') : 'none'],
       ['Field evidence', String(incs.reduce((s, i) => s + (wos(i)?.evidence.length || 0), 0))], ['Verified by', incs.filter((i) => i.verifiedBy).map((i) => `${i.id}: ${i.verifiedBy}`).join(' · ') || 'not yet']] : [['Incidents', 'none']],
     rows: incs.map((i) => { const wo = wos(i); return { id: i.id, text: `${i.title}${wo ? ` · ${wo.id}${wo.evidence.length ? ` · ${wo.evidence.length} evidence` : ''}` : ''}${i.source ? ` · from ${i.source.issue}` : ''}`, tag: i.state, tone: (['RESOLVED', 'CLOSED'].includes(i.state) ? 'ok' : 'info') as Tone, href: `#/v25/service?id=${i.id}` }; }),
