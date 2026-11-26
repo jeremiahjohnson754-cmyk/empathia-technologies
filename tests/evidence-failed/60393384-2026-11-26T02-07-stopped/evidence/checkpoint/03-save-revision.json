@@ -1,0 +1,58 @@
+{
+ "step": 3,
+ "title": "Save an immutable design revision",
+ "room": "R-PLN-0004",
+ "at": "2026-11-26T07:03:47.628Z",
+ "assertions": [
+  {
+   "id": "C-08",
+   "name": "the designer saves revision 2 with its SHA-256",
+   "result": "PASS"
+  },
+  {
+   "id": "C-09",
+   "name": "a revision with nothing changed is refused (422)",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/revisions",
+   "persona": "designer",
+   "status": 201,
+   "request": {
+    "reason": "checkpoint: the designed conference room"
+   },
+   "body": {
+    "revision": 2,
+    "sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
+    "applicable": 75,
+    "openIssues": 0,
+    "planChanged": false
+   },
+   "correlationId": "f203a55e-51be-403b-8f21-7f9650229e77"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/revisions",
+   "persona": "designer",
+   "status": 422,
+   "request": {
+    "reason": "again"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/rule_refused",
+    "title": "Refused by a business rule",
+    "status": 422,
+    "detail": "nothing changed since revision 2",
+    "code": "rule_refused",
+    "reasons": [
+     "nothing changed since revision 2"
+    ],
+    "correlationId": "f3f47e81-84cb-4715-a45e-b13139438f45"
+   },
+   "correlationId": "f3f47e81-84cb-4715-a45e-b13139438f45"
+  }
+ ]
+}

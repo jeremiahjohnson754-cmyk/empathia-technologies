@@ -1,0 +1,668 @@
+{
+ "at": "2026-11-26T07:06:02.831Z",
+ "pass": 110,
+ "fail": 0,
+ "tests": 110,
+ "results": [
+  {
+   "id": "D-desktop-01",
+   "name": "lands on the investor start with the synthetic banner and three start actions",
+   "result": "PASS",
+   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":159.734375},{\"text\":\"What each workflow solves\",\"h\":159.734375}],\"note\":\"Everything here is invented and connected to no real system; viewing as a role grants nothing.\",\"over\":0}"
+  },
+  {
+   "id": "D-desktop-02",
+   "name": "the launch action comes first and, on a phone, is the tallest",
+   "result": "PASS",
+   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":159.734375},{\"text\":\"What each workflow solves\",\"h\":159.734375}]"
+  },
+  {
+   "id": "D-desktop-03",
+   "name": "the perspective picker says it grants nothing",
+   "result": "PASS",
+   "detail": "Everything here is invented and connected to no real system; viewing as a role grants nothing."
+  },
+  {
+   "id": "D-04",
+   "name": "every one of the 105 legacy areas resolves to a native page or one that states its migration status",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "D-05",
+   "name": "a deep legacy address resolves to its area (assurance.history)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "D-06",
+   "name": "the seven scenarios each state the customer problem",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-01",
+   "name": "the launch address is refused to the visitor with the owl access page, which names the designer among the roles whose work it is",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-02",
+   "name": "an unreadable dimension is refused, never substituted",
+   "result": "PASS",
+   "detail": "Refused.\nlength: not readable — use metres, feet, or feet and inches like 24' 6\" (nothing is substituted for a value you typed)"
+  },
+  {
+   "id": "B-03",
+   "name": "the room is created from the template with declared and modeled dimensions labelled, devices placed and connections proposed",
+   "result": "PASS",
+   "detail": "Back to Report a problem\n\nBuild a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActing as Designer / CAD / Revit (perspective designer). The rules are the product's own engine; a refus"
+  },
+  {
+   "id": "B-03b",
+   "name": "the designer selects a device, moves it 25 cm and duplicates it; undo walks both back",
+   "result": "PASS",
+   "detail": "[\"Table 1 PA-0001 at 1.98, 3.30 m\\n\\n←\\n→\\n↑\\n↓\\nDuplicate\\nSwap for\\n\",\"Table 1 PA-0001 at 2.23, 3.30 m\\n\\n←\\n→\\n↑\\n↓\\nDuplicate\\nSwap for\\n\",7,8,7]"
+  },
+  {
+   "id": "B-03c",
+   "name": "an outline that crosses itself is refused; a valid one is drawn, its length and width DECLARED; undo puts the template outline back",
+   "result": "PASS",
+   "detail": "Refused. outline refused: edges 1 and 3 cross: an outline goes round the room once | 2.13 × 1.83 × 2.7 m · length DECLAREDwidth DECLAREDceiling MODELEDoutline DECLARED"
+  },
+  {
+   "id": "B-04",
+   "name": "the designer cannot approve the classification (authority)",
+   "result": "PASS",
+   "detail": "Refused.\nDesigner / CAD / Revit does not hold room.classify.approve: a systems engineer approves the classification"
+  },
+  {
+   "id": "B-05",
+   "name": "the systems engineer approves the classification",
+   "result": "PASS",
+   "detail": "Back to Report a problem\n\nBuild a Room · interactive demonstration\n\nHarbour Huddle (synthetic)\n\nActi"
+  },
+  {
+   "id": "B-06",
+   "name": "the author of the latest revision cannot approve the design (separation of duties)",
+   "result": "PASS",
+   "detail": "Refused.\nSystems Engineer saved the design revision and does not approve it (separation of duties)"
+  },
+  {
+   "id": "B-07",
+   "name": "the systems engineer approves the design (DESIGN_APPROVED)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-08",
+   "name": "the systems engineer cannot approve the installation window (window.approve)",
+   "result": "PASS",
+   "detail": "Refused.\nSystems Engineer may not move a room to INSTALLATION_PENDING (needs window.approve)"
+  },
+  {
+   "id": "B-09",
+   "name": "nothing passes from a design: recording before COMMISSIONING is refused",
+   "result": "PASS",
+   "detail": "Refused.\nresults are recorded on an installed room in COMMISSIONING (this one is INSTALLED_UNVERIFIED): nothing passes from a design"
+  },
+  {
+   "id": "B-09R",
+   "name": "commissioning is held until the device register is complete; the refusal names the register",
+   "result": "PASS",
+   "detail": "Refused.\nthe device register is not complete: 7 of 7 positions still need registering before commissioning starts (PA-0003: serial, hostname, IP address; PA-0004: serial, hostname, IP address; PA-0005: serial, hostname, IP address; PA-0006: serial, hostname, IP address; …)"
+  },
+  {
+   "id": "B-09G",
+   "name": "the installer registers every device (serial; hostname and IP for networked units)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-09b",
+   "name": "a failed test opens a commissioning deficiency, OPEN and unassigned",
+   "result": "PASS",
+   "detail": "Commissioning deficiencies (1 open)\n\nA failed test opens one; failing again reopens it; only a retest that passes and is verified by someone else resolves it. T"
+  },
+  {
+   "id": "B-10",
+   "name": "every applicable test is recorded as PASS_UNVERIFIED by the commissioning engineer",
+   "result": "PASS",
+   "detail": "compute_display_capability PASS_UNVERIFIED recorded by Commissioning Engineer · ENGINEER_APPROVED: photo 7\npower_budget "
+  },
+  {
+   "id": "B-11",
+   "name": "the recorder cannot verify their own results",
+   "result": "PASS",
+   "detail": "Refused.\n0 verified; 73 refused — first: compute_display_capability: verification must be independent of the person who recorded the result"
+  },
+  {
+   "id": "B-12",
+   "name": "a different person verifies every PASS",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-12b",
+   "name": "the deficiency is resolved by the retest once someone else verified it",
+   "result": "PASS",
+   "detail": "Commissioning deficiencies (0 open)\n\nA failed test opens one; failing again reopens it; only a retest that passes and is verified by someone else resolves it. The Service Manager or Operations Lead as"
+  },
+  {
+   "id": "B-13",
+   "name": "the verifier cannot accept the room (separation of duties)",
+   "result": "PASS",
+   "detail": "Refused.\nProduct Architect recorded or verified results of this room and does not accept it (separation of duties)"
+  },
+  {
+   "id": "B-14",
+   "name": "the recorder cannot accept the room either",
+   "result": "PASS",
+   "detail": "Refused.\nCommissioning Engineer may not move a room to ACCEPTED (needs customer.accept)"
+  },
+  {
+   "id": "B-15",
+   "name": "an executive does not hold customer.accept",
+   "result": "PASS",
+   "detail": "Refused.\nExecutive / Sponsor may not move a room to ACCEPTED (needs customer.accept)"
+  },
+  {
+   "id": "B-15b",
+   "name": "the QA reviewer, who neither recorded nor verified, accepts the room and baseline v1 is published",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-15c",
+   "name": "the room can be recommissioned (back to COMMISSIONING) while baseline v1 stays",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-15d",
+   "name": "lighting control can be added during recommissioning by whoever holds room.design (a new family, so new tests apply)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-15e",
+   "name": "the changed room cannot be re-accepted until the new tests are recorded and verified",
+   "result": "PASS",
+   "detail": "Refused.\nacceptance needs every applicable test executed, passed and independently verified with evidence: 73 of 76 passed and independently verified (73 recorded: 0 passed awaiting verification, 0 failed; 3 not tested)"
+  },
+  {
+   "id": "B-15f",
+   "name": "re-acceptance publishes baseline v2 (v1 superseded) and the lineage lists both",
+   "result": "PASS",
+   "detail": "ACCEPTED\nbaseline v2\nReset demonstration"
+  },
+  {
+   "id": "B-15g",
+   "name": "the comparison between v1 and v2 names the added device and the results that changed",
+   "result": "PASS",
+   "detail": "What changed between v1 and v2\nDesign revision\nunchanged (3)\nDevices\n1 added (Lighting control 1), 0 removed (—)\nResult labels\n3 of 76 changed\ninteg_lighting_shades — → PASS_VERIFIED\nlighting_scenes —"
+  },
+  {
+   "id": "B-15h",
+   "name": "a redline needs text; it is recorded OPEN against the revision and resolved with what was done",
+   "result": "PASS",
+   "detail": "Refused.\na redline needs text | RL-1 OPEN Dimensioned 2D plan · rev 3 · Designer / CAD / Revit: the camera bracket is drawn on the wrong wall  Resolve R"
+  },
+  {
+   "id": "B-15i",
+   "name": "the commissioning workbook downloads as an .xlsx (a zip) with its sheets; nothing leaves the page",
+   "result": "PASS",
+   "detail": "harbour-huddle-synthetic--workbook.xlsx 114719"
+  },
+  {
+   "id": "B-16",
+   "name": "the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes",
+   "result": "PASS",
+   "detail": "77 denied"
+  },
+  {
+   "id": "B-17",
+   "name": "the draft survives a reload on this computer and can be reset",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "B-18",
+   "name": "reset returns to the description form",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "S-01",
+   "name": "Search Party opens on the access switch with its neighbourhood graph and the downstream impact: three rooms and their networked devices",
+   "result": "PASS",
+   "detail": "Back to Report a problem\nSearch\nRelationships\nPeople and expertise\nProject map\nOrganizations\nActivity\nEvidence and artifacts\n\nSearch Party · relationship intelligence\n\nAccess switch ATL-4A\n\nNetwork node · IDF 4 · 48 ports · PoE\n\nSearch\nEvery type\nAsset (1512)\nBuilding (20)\nCommissioning baseline (1)"
+  },
+  {
+   "id": "S-02",
+   "name": "the dependency question is ANSWERED from recorded edges (DERIVED) and states that an unrecorded link is invisible",
+   "result": "PASS",
+   "detail": "ANSWERED DERIVED depends\n\n7 downstream devices and 3 rooms depend on Access switch ATL-4A.\n\nUC room compute (4.218) downstream graph traversal (FEEDS/CONNECTS_TO/UPLINKS_TO/POWERED_BY/CONTROLS)\nAudio processor (4.218) downstream graph trave"
+  },
+  {
+   "id": "S-03",
+   "name": "an unmodelled question is UNKNOWN with the reason",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "S-04",
+   "name": "every edge of an inspected node names its provenance (DECLARED / OBSERVED / MODELED / DERIVED)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "S-05",
+   "name": "search finds the open issue by code",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "T-01",
+   "name": "scenario 1 opens its first step natively on Search Party as the service technician with its evidence label",
+   "result": "PASS",
+   "detail": "Scenario 1 of 7 · step 1 of 17\nVERIFIED_DEMO\nas service\n1 · If this switch fails, what is affected?\n\nSearch Party starts from a room and walks its dependencies: the access switch, its uplink, the othe"
+  },
+  {
+   "id": "T-02",
+   "name": "the perspective follows the step persona",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "T-03",
+   "name": "every one of the 17 steps opens a page with no page error; only the three Field Intelligence steps still say \"not migrated yet\"",
+   "result": "PASS",
+   "detail": "16 visited, 0 honest, errors 0"
+  },
+  {
+   "id": "T-04",
+   "name": "the last step is the steward on the ledger",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "T-05",
+   "name": "jumping to scenario 4 opens the commissioning plan step natively as the commissioning engineer",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "T-06",
+   "name": "the panel closes and stays closed on reload",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-01",
+   "name": "ServiceHands: the queue lists the seeded incidents with state, room, severity and recurrence",
+   "result": "PASS",
+   "detail": "OPEN\nFar-end audio drops out during long calls\nISS-0417 · Atlas 4.218 Boardroom · High · recurrence of ISS-0380\nTRIAGED\nCamera shows no video in meetings\nISS-04"
+  },
+  {
+   "id": "V-02",
+   "name": "the service manager triages (OPEN → TRIAGED, guard scope_and_risk)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-03",
+   "name": "candidates are hard-gated before ranking: Ana eligible and first (based in ATL, experience, past jobs), Ben fails site access, Dev fails an expired certification, the vendor is eligible under her agreement",
+   "result": "PASS",
+   "detail": "Needs: cert.av_field, cert.audio; experience SK-AUD-2 Working; tools audio analyser, laptop with the DSP tool.\n\n1. Ana Reyes (synthetic)\neligible · 63\nbased in ATL · experience depth 13/30 · 2 resolved job(s) in this room · 22 h capacity this week · internal team\nrecord: Audio experience 3.4 · Practised overall\nAssign\n2. Cara Lind — Brightwater AV (synthetic)\neligible · 36\nworks at ATL · experienc"
+  },
+  {
+   "id": "V-04",
+   "name": "assigning an ineligible person is refused by the engine and the refusal names the hard gate",
+   "result": "PASS",
+   "detail": "Refused.\nthe chosen technician fails a hard gate"
+  },
+  {
+   "id": "V-05",
+   "name": "the eligible technician is assigned (TRIAGED → ASSIGNED)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-06",
+   "name": "an installer holds no work.accept: the step is shown as not theirs, with no button",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-06b",
+   "name": "the technician sees the context packet read from the model: the switch, its uplink, the rooms sharing it and the power",
+   "result": "PASS",
+   "detail": "Context packet — read from the model, not polled\nDevices\nDisplay 1 (4.218), UC room compute (4.218), Audio processor (4.218), Ceiling microphone (4.218), Touch panel (4.218), Camera 1 (4.218), Ceiling microphone 2 (4.218), Loudspeaker 1 (4.218), Loudspeaker 2 (4.218), Control processor 1 (4.218), Network switch 1 (4.218)\nAccess switch\nAccess switch ATL-4A\nUplink\nCore switch ATL-CORE\nRooms sharing "
+  },
+  {
+   "id": "V-07",
+   "name": "dispatch preflight on the record: the room is booked in the proposed window, the processor stock check is stale, tools unconfirmed — each named",
+   "result": "PASS",
+   "detail": "Site access confirmed by facilities / the site champion\nSafety brief acknowledged\nTools: \naudio analyser\nlaptop with the DSP tool\nblocked Room booking window the room is booked: 2026-11-27T05:04 → 2026-11-27T07:04\nblocked Parts on hand and stock fresh processor: stock check is 33 days old — recheck\n"
+  },
+  {
+   "id": "V-08",
+   "name": "a failed preflight blocks IN_PROGRESS (guard preflight_passed) and the refusal is in the ledger",
+   "result": "PASS",
+   "detail": "Refused.\ndispatch preflight has a failed check"
+  },
+  {
+   "id": "V-08b",
+   "name": "the service manager re-plans the window clear of the room’s bookings and rechecks the stale stock on the page; the plan card then goes away",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-09",
+   "name": "with every check clear the technician starts the work (ACCEPTED → IN_PROGRESS)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-10",
+   "name": "handing over without field evidence is refused (guard record_work_and_evidence)",
+   "result": "PASS",
+   "detail": "Refused.\nno field evidence recorded"
+  },
+  {
+   "id": "V-11",
+   "name": "with evidence recorded the job goes to VERIFYING",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-12",
+   "name": "the technician cannot verify their own work (service.verify is not theirs)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-13",
+   "name": "the commissioning engineer verifies independently (VERIFYING → RESOLVED)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "V-14",
+   "name": "closure follows the customer policy: a High incident needs the requester’s confirmation",
+   "result": "PASS",
+   "detail": "Refused.\nthe customer policy requires the requester’s confirmation before closure"
+  },
+  {
+   "id": "V-15",
+   "name": "with the confirmation the incident closes",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-01",
+   "name": "a case opens on the camera branch: seven layers with what is recorded and what the estate cites; hypotheses ranked, the PoE port first (medium) with the signed runbook",
+   "result": "PASS",
+   "detail": "medium The PoE port stopped delivering power (port error-disabled) network · A4 · RB-POE-CYCLE\nlow The camera cable or injector failed physical · A3\nlow The camera needs a home preset recall after a b"
+  },
+  {
+   "id": "A-02",
+   "name": "the hypothesis says why it is not proven and what is against it",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-03",
+   "name": "A2 is a read-only comparison, honest when there is no accepted baseline for the room",
+   "result": "PASS",
+   "detail": "COMPARED A2 H1 2026-11-26 07:05 · Commissioning Engineer\nread-only: no accepted baseline for this room — nothing to compare, NOT_VERIFIED"
+  },
+  {
+   "id": "A-04",
+   "name": "A4 preflight is BLOCKED first on owner approval",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-05",
+   "name": "with approval and a window, the real adapter state blocks it: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)",
+   "result": "PASS",
+   "detail": "BLOCKED A4 H1 · Bounce the PoE port feeding the camera 2026-11-26 07:05 · Commissioning Engineer\nunsupported vendor adapter: no SUPPORTED_VERIFIED adapter for network (NOT_CONFIGURED in this build)"
+  },
+  {
+   "id": "A-06",
+   "name": "a simulated adapter yields a DRY RUN first, labelled SIMULATED",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-07",
+   "name": "an operator emergency stop aborts the simulation with rollback and requests compensation; everything stays in the log",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-08",
+   "name": "A3 stages a draft work order that stays OPEN until the service manager triages it",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "A-09",
+   "name": "a visitor cannot act on a case: the screen is not shown to the visitor (owl access page), so no tier button exists",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-01",
+   "name": "a case needs permission, de-identification and no names: the refusal names all three",
+   "result": "PASS",
+   "detail": "Refused.\ncustomer permission to reuse the incident is required\nthe case must be de-identified (no room, person or tenant names)\nthe text still names a building, room or person"
+  },
+  {
+   "id": "L-02",
+   "name": "the case is PROPOSED from the resolved incident",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-03",
+   "name": "the proposer cannot be the SME reviewer of their own case: the review is not offered to them, and the page says why",
+   "result": "PASS",
+   "detail": "You proposed this case, so another subject-matter reviewer reviews it (separation of duties)."
+  },
+  {
+   "id": "L-04",
+   "name": "a different subject-matter reviewer records the SME review",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-05",
+   "name": "the data steward approves it for Learn (training.case_approved); it grants nobody any authority",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-06",
+   "name": "the SIGNAL library loads on demand: an Audio lesson with its cards and its check",
+   "result": "PASS",
+   "detail": "Signal flow and gain staging\n\nWhere sound travels, and why the first stage decides everything after it.\n\nEvery audio sys"
+  },
+  {
+   "id": "L-07",
+   "name": "a check answers with its why",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "L-08",
+   "name": "a first-failure drill (No picture on input 3) is interactive and scores the tap; the completion is recorded as training only",
+   "result": "PASS",
+   "detail": "No picture on input 3 Video · First failure point\n\nCamera 3 shows black on the switcher. You carry a small field monitor and check each point.\n\nUntimed here (the drill’s own clock is 0:55).\n\nTap the e"
+  },
+  {
+   "id": "L-09",
+   "name": "the ledger carries the training completion with the note that it never grants authorization",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "M-01",
+   "name": "Mission Control counts live records at every station (service shows the two still-open incidents; field shows the APEX draft work order)",
+   "result": "PASS",
+   "detail": "2\nIntake\nREQ-0031 → PRJ-ATLAS-AV\nREQ-0034 → PRJ-NST-TH\n3\nDecision\nPRJ-ATLAS-AV APPROVED (scope 1)\nPRJ-NST-TH HELD (scope 1)\nPRJ-NST-TH APPROVED (scope 2)\n1\nFunding\nPRJ-ATLAS-AV 184,000 USD\n1\nDesign\nPRJ-NST-TH DESIGN_DRAFT\n1\nCommissioning\nR-NST-2-101 no accepted baseline yet\n1\nField\nWO-0089 OPEN · AP"
+  },
+  {
+   "id": "M-02",
+   "name": "27 KPI passports; the person-level whiteboarding passport is NOT MEASURABLE, never 0%",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "M-03",
+   "name": "a passport shows numerator, denominator, window, coverage, freshness, confidence with reasons, source, exclusions and drill-down",
+   "result": "PASS",
+   "detail": "KPI passport · Median restoration time MEASURED\n\nMedian hours from incident opening to verified service restoration, over closed incidents with both timestamps\n\nValue\n21.5 hours (median)\nNumerator / denominator\n4 / 4\nWindow\n90 days · 2026-08-28 07:05 → 2026-11-26 07:05\nCoverage\n4 of 4 eligible recor"
+  },
+  {
+   "id": "M-04",
+   "name": "a technician does not see executive passports: the screen is not shown (owl access page)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "M-05",
+   "name": "the ledger filters to the refusals, each with actor, UTC and local time and the reason",
+   "result": "PASS",
+   "detail": " · ALLOWED×0 · 902 chars"
+  },
+  {
+   "id": "M-06",
+   "name": "the policy page shows what each native page checks and the demonstrator’s role × area matrix verbatim (86 areas × 14 roles)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-01",
+   "name": "v1.3: the collector’s facts (version, ten modes, exit codes, 15-minute schedule, limitations); the plan is PLAN_ONLY with DECLARED capabilities, a downgraded OBSERVED claim, HardwareTested false, and monitoring NOT_RUN",
+   "result": "PASS",
+   "detail": "The released collector, as integrated\nScript\n1.3.0-universal-preview · plan schema empathia.universal-assurance.plan.v1 · config empathia.collector.config.v1.1\nModes\nInit · Monitor · Plan · Readiness · SelfTest · Install · Uninstall · Export · ExecuteApproved · UniversalPlan\nExit codes\n0 plan writte"
+  },
+  {
+   "id": "F-02",
+   "name": "v1.4: the boardroom archetype is licensed at this site; three adapters are NOT_CONFIGURED in this build",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-03",
+   "name": "eligibility: the two acoustic tests on READ_ONLY adapters are ELIGIBLE, the camera scan is NOT_CONFIGURED; the session reaches SAFETY_PREFLIGHT",
+   "result": "PASS",
+   "detail": "FIS-001 SAFETY_PREFLIGHTSIMULATION\nProposal\nEligibility\nSafety preflight\nDry run\nAuthorization\nArmed\nRunning\nAcquired\nQA\nIndependent review\nApproved\nRetest required\nRejected\nRoom · archetype\nR-ATL-4-218 · BRD\nProtocol\nLAeq at seats + STIPA (declared) · max 45 min · cooldown 5 min\nTests\nLAEQ (ADP-SLM"
+  },
+  {
+   "id": "F-04",
+   "name": "the systems engineer cannot reserve the window (Operations / Facilities)",
+   "result": "PASS",
+   "detail": "Refused.\nsyseng cannot reserve the window (Operations / Facilities)"
+  },
+  {
+   "id": "F-05",
+   "name": "a past calibration date ends the session OUT_OF_CALIBRATION (a blocked branch, not a warning)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-06",
+   "name": "five approvals by three different people complete the preflight: DRY_RUN",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-07",
+   "name": "the dry run emits nothing and the session awaits authorization",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-08",
+   "name": "the technician cannot authorize (Commissioning Lead)",
+   "result": "PASS",
+   "detail": "Refused.\nservice cannot authorize sessions (Commissioning Lead)"
+  },
+  {
+   "id": "F-09",
+   "name": "only the consenting local operator can arm — the commissioning lead is refused",
+   "result": "PASS",
+   "detail": "Refused.\nonly the consenting local operator can arm"
+  },
+  {
+   "id": "F-10",
+   "name": "arming needs two explicit confirmations",
+   "result": "PASS",
+   "detail": "Refused.\narming needs two explicit confirmations"
+  },
+  {
+   "id": "F-11",
+   "name": "armed as a labelled SIMULATION (no adapter, no hardware)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-12",
+   "name": "a simulated point records no level: the value is null, a value only exists in the instrument export",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "F-13",
+   "name": "the E-stop aborts: output terminated, restore requested, the session ended; nothing can be stepped afterwards",
+   "result": "PASS",
+   "detail": "FIS-002 ABORTEDendedSIMULATION\nProposal\nEligibility\nSafety preflight\nDry run\nAuthorization\nArmed\nRunning\nAcquired\nQA\nIndependent review\nApproved\nRetest required\nRejected\nRoom · archetype\nR-ATL-4-218 ·"
+  },
+  {
+   "id": "F-14",
+   "name": "a visitor cannot change the town hall licence: Physical Validation is not shown to the visitor (owl access page)",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "M-07",
+   "name": "Reset returns the workspace to its seed: ISS-0417 is OPEN again and the cases are gone",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "D-desktop-07",
+   "name": "no page error, no console error, no request outside the page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "D-phone-01",
+   "name": "lands on the investor start with the synthetic banner and three start actions",
+   "result": "PASS",
+   "detail": "{\"hash\":\"#/investor\",\"banner\":true,\"actions\":[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":138.8125},{\"text\":\"What each workflow solves\",\"h\":138.8125}],\"note\":\"Everything here is invented and connected to no real system; viewing as a role grants nothing.\",\"over\":0}"
+  },
+  {
+   "id": "D-phone-02",
+   "name": "the launch action comes first and, on a phone, is the tallest",
+   "result": "PASS",
+   "detail": "[{\"text\":\"Launch interactive room builder\",\"h\":159.734375},{\"text\":\"Watch a guided scenario\",\"h\":138.8125},{\"text\":\"What each workflow solves\",\"h\":138.8125}]"
+  },
+  {
+   "id": "D-phone-03",
+   "name": "the perspective picker says it grants nothing",
+   "result": "PASS",
+   "detail": "Everything here is invented and connected to no real system; viewing as a role grants nothing."
+  },
+  {
+   "id": "D-phone-07",
+   "name": "no page error, no console error, no request outside the page",
+   "result": "PASS",
+   "detail": ""
+  }
+ ]
+}

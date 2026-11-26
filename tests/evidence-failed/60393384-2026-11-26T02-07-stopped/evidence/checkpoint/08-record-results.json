@@ -1,0 +1,1497 @@
+{
+ "step": 8,
+ "title": "Record every applicable test: the responsible role, the evidence kind it accepts, the instrument where measured",
+ "room": "R-PLN-0004",
+ "at": "2026-11-26T07:03:47.629Z",
+ "assertions": [
+  {
+   "id": "C-27",
+   "name": "the designer is not a responsible role for a commissioning test (403)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-28",
+   "name": "an evidence kind the test does not accept is refused (422)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-29",
+   "name": "every applicable test is recorded by its responsible role and is PASS_UNVERIFIED (syseng 17, service 34, cxeng 16, dsp_eng 5, video_eng 2, control_eng 1)",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "designer",
+   "status": 403,
+   "request": {
+    "testId": "compute_display_capability",
+    "state": "PASS",
+    "evidenceId": "9309920b-bb2c-4f13-9e01-9e3374d4447e",
+    "evidenceKind": "ENGINEER_APPROVED"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "designer is not the responsible role for compute_display_capability (syseng)",
+    "code": "forbidden",
+    "correlationId": "4e033ef4-10ae-44c2-a333-b5e47fdfc258"
+   },
+   "correlationId": "4e033ef4-10ae-44c2-a333-b5e47fdfc258"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 422,
+   "request": {
+    "testId": "compute_display_capability",
+    "state": "PASS",
+    "evidenceId": "9309920b-bb2c-4f13-9e01-9e3374d4447e",
+    "evidenceKind": "PHOTO_INFERRED_GUESS"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/rule_refused",
+    "title": "Refused by a business rule",
+    "status": 422,
+    "detail": "evidence kind PHOTO_INFERRED_GUESS is not accepted for compute_display_capability; accepted: ENGINEER_APPROVED",
+    "code": "rule_refused",
+    "reasons": [
+     "evidence kind PHOTO_INFERRED_GUESS is not accepted for compute_display_capability; accepted: ENGINEER_APPROVED"
+    ],
+    "correlationId": "9ae47189-91e1-4b17-ac97-51f91280d4ee"
+   },
+   "correlationId": "9ae47189-91e1-4b17-ac97-51f91280d4ee"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "compute_display_capability",
+    "state": "PASS",
+    "evidenceId": "9309920b-bb2c-4f13-9e01-9e3374d4447e",
+    "evidenceKind": "ENGINEER_APPROVED"
+   },
+   "body": {
+    "resultId": "3a28bffe-9a2d-4bf7-a0f7-da0e0a8619ef",
+    "testId": "compute_display_capability",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "304eddf2-5193-4003-add5-20e7f81219ba"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "poe_budget",
+    "state": "PASS",
+    "evidenceId": "8dd4c284-f8e2-4003-a322-75fc1cc7dd50",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "bd247c63-35e6-4d16-883d-15ddb7c452ab",
+    "testId": "poe_budget",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "b149b9f0-e917-44ed-b176-e10647032967"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "power_budget",
+    "state": "PASS",
+    "evidenceId": "dd918af0-7f15-4f7b-9ced-44f005c31817",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "6b046869-d86f-4c61-9a1c-ecb8538585d5",
+    "testId": "power_budget",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "f79d1af4-3824-4af4-b39d-9164fdf606d2"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "power_circuit_load",
+    "state": "PASS",
+    "evidenceId": "9c50fbc9-2c80-40f5-a5e6-1e59a668c30f",
+    "evidenceKind": "ENGINEER_APPROVED"
+   },
+   "body": {
+    "resultId": "71b13340-cb53-4f3d-b45f-ea62ffa1892a",
+    "testId": "power_circuit_load",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "6c5e8ca4-2d57-43a5-bdbc-93ee3ed67b5d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "access_reach",
+    "state": "PASS",
+    "evidenceId": "478dc4db-540c-479e-86a6-8ee5ac11c7a5",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "792539c4-2fb1-4052-9b62-6900032da0f4",
+    "testId": "access_reach",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "1780d03f-ec0c-4677-9dda-41b3c91868fd"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "audio_dsp_firmware",
+    "state": "PASS",
+    "evidenceId": "a0b018e2-501a-42ac-9edc-86b7dbc88b81",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "59ad3523-4f68-4ab3-afc4-e806c9bfda75",
+    "testId": "audio_dsp_firmware",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "df0e452d-32ff-4b92-afa7-1a1e1369369a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "compute_patch_baseline",
+    "state": "PASS",
+    "evidenceId": "8ac95d8c-6d67-4d9c-9f73-4029705fa3ee",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "c1405be8-ced2-49cd-8930-21954ff35d99",
+    "testId": "compute_patch_baseline",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "9c069e6a-ad7e-40e4-aba9-88283cde6768"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "control_program_version",
+    "state": "PASS",
+    "evidenceId": "9cb827a8-dbf7-4721-adc1-2ab127093cc4",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "819a20ae-eaca-4575-bf22-786cbb658f05",
+    "testId": "control_program_version",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "1d7cb265-37fa-4d13-8f95-4df354f21061"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "control_time_sync",
+    "state": "PASS",
+    "evidenceId": "51d61f38-f378-4f45-880f-23c1dfbcb55e",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "c747140f-06fb-48dd-9fc5-ea199d2fb123",
+    "testId": "control_time_sync",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "e896f62a-a5d5-409e-bac3-098fdd149109"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "cyber_default_credentials",
+    "state": "PASS",
+    "evidenceId": "423cdc38-6d96-42f7-a951-9c229a1cf319",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "4f1aa9a0-a2bf-4684-8f47-9d53b8cd085c",
+    "testId": "cyber_default_credentials",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "35deaaff-f1d4-4cc6-b2ef-5dcf5ba3578c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "cyber_firmware_signed",
+    "state": "PASS",
+    "evidenceId": "21b16ae6-7f8a-43c5-9291-a9fd444e143f",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "4c60de0b-bfc6-488e-8c32-2c32e5e0b344",
+    "testId": "cyber_firmware_signed",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "283d68e1-8302-48ba-98d7-c66f7595e55f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "identity_asset",
+    "state": "PASS",
+    "evidenceId": "daf23d07-2a95-48c3-af9a-273a20161005",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "ca0c54a6-6a28-42c7-a397-28bc88ef5182",
+    "testId": "identity_asset",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "c7b65275-b45c-45b1-8016-db1db8855b06"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "infra_labeling",
+    "state": "PASS",
+    "evidenceId": "9406940f-c91f-42e9-9ebe-c9319d0e3b6e",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "62b835ae-b262-433f-90b6-0fa5e7a76cf8",
+    "testId": "infra_labeling",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "b08e7e38-dfd3-4972-92dd-15c2aed9707b"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "infra_rack_match",
+    "state": "PASS",
+    "evidenceId": "03974fc0-d449-4799-943e-d9ad2c2fd1c7",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "21565d16-607a-44c0-a204-8e414d33ccf1",
+    "testId": "infra_rack_match",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "248afd89-d810-4d47-893b-0486621808c9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "network_addressing",
+    "state": "PASS",
+    "evidenceId": "f0dc15ba-7875-471f-8ae6-611e933e23f8",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "710c00fe-efe9-47e9-b9b2-711dc32e6119",
+    "testId": "network_addressing",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "dd3be41c-edc4-4d86-bb8e-b0ff539f076f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "network_firmware_baseline",
+    "state": "PASS",
+    "evidenceId": "46c405b3-a42a-43e5-883c-4349cf28d280",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "f80330bc-b1ba-4799-b0ff-31bc8f55722f",
+    "testId": "network_firmware_baseline",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "ce7b82a3-cfd2-40ba-aeeb-c7747ec29d12"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "safety_install",
+    "state": "PASS",
+    "evidenceId": "3121fd2d-7586-4d06-aa4b-332ee446906c",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "0620d990-07bf-436f-90dd-03444281d0eb",
+    "testId": "safety_install",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "81c54a63-06c0-4785-aa5d-70db19fe5f3f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "compute_certified_config",
+    "state": "PASS",
+    "evidenceId": "c131c24d-a27d-434c-b604-3e71c63b20f3",
+    "evidenceKind": "ENGINEER_APPROVED"
+   },
+   "body": {
+    "resultId": "2e15cba2-1588-48d6-91cf-2be73a95fb01",
+    "testId": "compute_certified_config",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "a3589fe0-523a-4215-9ff4-4832ef589a4e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "design_conformance",
+    "state": "PASS",
+    "evidenceId": "9b478f65-4b30-4525-ac71-c4dd5e6ab2af",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "291ce4b0-fffa-4ea6-aa9a-1a07def915c0",
+    "testId": "design_conformance",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "7d972776-801c-43d7-98a1-2f69f2d960a0"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "infra_cable_certification",
+    "state": "PASS",
+    "evidenceId": "39b97f09-0220-4b96-bda8-cf466e2122e2",
+    "evidenceKind": "INSTRUMENT_MEASURED"
+   },
+   "body": {
+    "resultId": "e4482f4f-0148-465a-bbeb-699fcda56ebb",
+    "testId": "infra_cable_certification",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "59df1b42-ba29-43c9-aa84-f59687bc0aa1"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "interop_firmware_matrix",
+    "state": "PASS",
+    "evidenceId": "bc11c2d1-a5a3-4bb2-b08b-2152762bf644",
+    "evidenceKind": "ENGINEER_APPROVED"
+   },
+   "body": {
+    "resultId": "d7ff7855-e171-4a27-a84f-31522141986c",
+    "testId": "interop_firmware_matrix",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "9e2c4e5f-fc8b-4bf6-a205-429f843d5857"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "network_port_profile",
+    "state": "PASS",
+    "evidenceId": "b4182449-360e-49e1-83d7-d2e24c491516",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "ae8f2a9c-0488-40dc-91f1-99af5472b450",
+    "testId": "network_port_profile",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "da946a04-259d-49a0-95a7-435eae90e6be"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "access_captions",
+    "state": "PASS",
+    "evidenceId": "b1579ed8-aa59-41e1-9ecc-884f90dea2fc",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "1b371647-d6ad-454c-b55e-74f623280dbb",
+    "testId": "access_captions",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "0d180ed7-8453-4da2-9405-26071c554d60"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "access_contrast",
+    "state": "PASS",
+    "evidenceId": "4c3fb15e-3a20-4ec1-9c7d-4a7ff8b3b7bb",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "1e16ff51-a74d-4f74-8eb0-7def11b760e7",
+    "testId": "access_contrast",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "30030169-7964-4cbf-92ca-d55bb4ddd6ed"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "display_controls",
+    "state": "PASS",
+    "evidenceId": "c1abd9ed-04c8-45f9-9ed3-ba496f4b3eb0",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "c90fa8d4-4e79-4c3c-b035-cfbd3b588efe",
+    "testId": "display_controls",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "cd35073c-1416-4046-a43e-7130d93ef1f6"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "network_management_reach",
+    "state": "PASS",
+    "evidenceId": "cc6a511b-9df4-43b6-bd4b-0aa1e93663e4",
+    "evidenceKind": "OBSERVED_NETWORK"
+   },
+   "body": {
+    "resultId": "26c56f21-8461-42f9-96c5-3a403b0ea7f6",
+    "testId": "network_management_reach",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "1a1ea7b8-c8fc-4b38-aee4-a1bf9932db51"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "network_reachability",
+    "state": "PASS",
+    "evidenceId": "2cc01c34-2a1e-42c6-831c-e085c8de36fe",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "04d7400c-100f-4c92-b009-fb973133fcfb",
+    "testId": "network_reachability",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "5bf826c4-1043-4efe-a5cc-a005d0c55d8f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "uc_peripherals",
+    "state": "PASS",
+    "evidenceId": "71fc6fe5-0a93-4a58-a73f-34d4c798090e",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "5193f746-dfb6-4a06-abf6-fdc99999e3cb",
+    "testId": "uc_peripherals",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "620c0bf6-b6dc-4d02-8d48-45f8fb2d2131"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "user_function",
+    "state": "PASS",
+    "evidenceId": "0b96300f-7ade-442a-bb0a-30cc11121cd4",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "11ef672c-490a-4b6b-83ff-7f6e314b8567",
+    "testId": "user_function",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "827605a8-0d56-4ccc-891b-25c3f81bc94a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "video_signal",
+    "state": "PASS",
+    "evidenceId": "64710b0b-88f6-4fa6-864b-01e5b49c4724",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "dc7d6120-c355-4a5d-b0b7-217916a884b8",
+    "testId": "video_signal",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "79407800-5f08-4418-8cd9-fb11bfb08ebc"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "audio_mic_pickup",
+    "state": "PASS",
+    "evidenceId": "d690a872-eba1-4f05-b1f9-a50b2268dc39",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "f03ea801-724d-4e63-9bfc-540df3018061",
+    "testId": "audio_mic_pickup",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "7394bd07-7144-4bf0-903b-0abbcfa1cdf0"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "audio_zone_routing",
+    "state": "PASS",
+    "evidenceId": "e9637749-22ec-4658-9bba-bb93034b99f0",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "223b1414-d1cc-41fd-afe4-982444f74bb1",
+    "testId": "audio_zone_routing",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "1b461306-df01-43fc-965e-d4a5e6a8ca31"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "camera_preset",
+    "state": "PASS",
+    "evidenceId": "384966c0-a831-40d8-87c4-fd7fce0639be",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "d790ab32-b12a-4b60-8d5b-4da8b9e815da",
+    "testId": "camera_preset",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "98ae9430-0ec7-4ea4-8188-b647d9df181e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "control_audio",
+    "state": "PASS",
+    "evidenceId": "0288cd4b-9dbf-4961-a0bc-0802f7b80738",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "290555c9-6e06-4b68-a593-829076de7094",
+    "testId": "control_audio",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "df761c08-83d8-478a-b776-bf9610d83112"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "control_camera",
+    "state": "PASS",
+    "evidenceId": "ac4ec1a6-a02a-4e9b-a603-545f42980704",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "91813434-47a4-4aa0-99ff-2113b0e3f9fa",
+    "testId": "control_camera",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "32f300da-89e2-4d07-aff4-dae6a806463e"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "control_error_states",
+    "state": "PASS",
+    "evidenceId": "4bfe58f0-4a8c-4b15-bcca-3513bcb3b421",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "0ec438b0-4440-476b-8406-51e8a9e3827b",
+    "testId": "control_error_states",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "17a2dd13-3e38-4547-a82d-b0f23e9433e9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "control_macros",
+    "state": "PASS",
+    "evidenceId": "00aeb75f-4067-4f1b-bed6-10eb66a13bfd",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "f7ce302f-332d-4592-89ed-f0ccb5e4e9cc",
+    "testId": "control_macros",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "45d32e5a-4757-4626-889e-289bdf4b7852"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "control_source_switching",
+    "state": "PASS",
+    "evidenceId": "f18162ad-8f79-4e45-9f0d-2baf980a9d39",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "016df722-37b7-406e-8d1f-4c8d969e13be",
+    "testId": "control_source_switching",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "b511bbf2-5120-4a06-83a3-3572d65af023"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "control_third_party",
+    "state": "PASS",
+    "evidenceId": "54edec24-a882-494b-a062-d6a321d0714a",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "282ccf4c-d1f0-4db6-bc49-4db91b551846",
+    "testId": "control_third_party",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "b23c50d6-a081-4b9b-89ef-f27ecc7d14f9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "control_ui",
+    "state": "PASS",
+    "evidenceId": "bc5afec7-a4f5-4c32-85a9-647e1027c612",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "98e80966-0f15-4a83-a4f4-9bb84bce5908",
+    "testId": "control_ui",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "7c2e37b4-066f-40c4-acac-947aa0bf9508"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "control_ups",
+    "state": "PASS",
+    "evidenceId": "dd020452-79d1-491a-983b-0e494eac61b6",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "5052fe5a-ddc3-413b-a219-315cc099eecf",
+    "testId": "control_ups",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "22edabb9-df1b-46fe-8d03-10a143328178"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "cyber_logging",
+    "state": "PASS",
+    "evidenceId": "19eb464b-b0be-49b7-87d5-3881229a0a8d",
+    "evidenceKind": "OBSERVED_NETWORK"
+   },
+   "body": {
+    "resultId": "69368c20-8b76-4717-82fd-4355aa75adf9",
+    "testId": "cyber_logging",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "e58812b8-130c-4fab-85e1-dbc7f3f7aef0"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "cyber_management_isolation",
+    "state": "PASS",
+    "evidenceId": "5f9b669c-e467-4231-8ad8-c52c5390b642",
+    "evidenceKind": "OBSERVED_NETWORK"
+   },
+   "body": {
+    "resultId": "f157d491-fdee-48be-9e9b-68957e691c4e",
+    "testId": "cyber_management_isolation",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "2945082e-3799-41cc-8370-dc830c92a31c"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "cyber_tls",
+    "state": "PASS",
+    "evidenceId": "e4b48312-11d2-497f-8d03-bdcf907d7684",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "9b1b383b-a573-4a40-9337-73ed67b2d89c",
+    "testId": "cyber_tls",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "4d2970a0-ee5e-4090-a7b7-a4adc897c525"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "env_lighting_levels",
+    "state": "PASS",
+    "evidenceId": "8b890f12-cae7-4114-8952-1c5baba4ef20",
+    "evidenceKind": "INSTRUMENT_MEASURED"
+   },
+   "body": {
+    "resultId": "d421a929-e01e-4005-9428-dc8595dabf41",
+    "testId": "env_lighting_levels",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "4cd90a11-e5da-40ae-afb8-1b3ff24d97ca"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "integ_bms",
+    "state": "PASS",
+    "evidenceId": "9a138a0a-c43b-4480-91bc-efa6c279cdf1",
+    "evidenceKind": "ENGINEER_APPROVED"
+   },
+   "body": {
+    "resultId": "7fa75869-920e-4cb6-9b53-52244752aa1d",
+    "testId": "integ_bms",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "88b18e9c-fee0-4183-9f30-4244961a9e41"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "interop_mixed_vendor",
+    "state": "PASS",
+    "evidenceId": "f4c5268f-b7ac-49e0-9dd4-a2c4df197c5b",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "29d7e4d5-f123-418c-b173-cd3a4cbf079a",
+    "testId": "interop_mixed_vendor",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "4772d8b1-9c08-40a9-9ace-1d0535f2be93"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "network_qos",
+    "state": "PASS",
+    "evidenceId": "884d94cb-59d1-4c83-91f8-985592d3c631",
+    "evidenceKind": "OBSERVED_NETWORK"
+   },
+   "body": {
+    "resultId": "88adbc01-ded0-4bec-8a03-413c0a50eb15",
+    "testId": "network_qos",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "c7943785-0508-4e1a-8510-00cca3499f65"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "network_vlan",
+    "state": "PASS",
+    "evidenceId": "70b9dec9-9211-441d-b58c-54496faa30e3",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "40d9ea99-8b77-4a65-a046-cfc78083f31b",
+    "testId": "network_vlan",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "d5e9d462-bb45-41cd-b413-33cb24749d42"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "power_ups_runtime",
+    "state": "PASS",
+    "evidenceId": "900b94d9-1a62-41bb-a593-664df4d451f8",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "09f0d536-932e-4a0d-bf51-3ffbdef619de",
+    "testId": "power_ups_runtime",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "c9b5a84f-17be-45fd-b370-3af421f493b9"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "uc_calendar",
+    "state": "PASS",
+    "evidenceId": "7939dba6-3708-46d3-aadb-1ce5aa408a7f",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "6bcf8afe-6543-47e1-8982-fbd40ff0153c",
+    "testId": "uc_calendar",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "a8623fd7-9178-4c2b-9546-31aa9340ea01"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "uc_media",
+    "state": "PASS",
+    "evidenceId": "affb3290-1a33-46a5-a039-669ed23a10d9",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "b6d8a176-5ebb-47ea-8591-c8d8926ca013",
+    "testId": "uc_media",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "5023aa4c-b9e2-4103-8832-b8c2948a0c8b"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "video_camera_exposure",
+    "state": "PASS",
+    "evidenceId": "600f96e6-c5ff-44ba-8fb2-a1b912406e6c",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "3d52460c-52b3-4cfb-b4dc-004e94f0fbae",
+    "testId": "video_camera_exposure",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "fd1f9d43-7d44-450c-9740-8325e5bcbbc5"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "video_content_share",
+    "state": "PASS",
+    "evidenceId": "87b1467e-062e-4f1f-a3f1-d93fad294b00",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "9199e633-0714-448e-8f61-1cda29282efe",
+    "testId": "video_content_share",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "02bfa634-0b67-4d33-b21c-27f6a2f75bac"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "video_display_calibration",
+    "state": "PASS",
+    "evidenceId": "56ae3c0a-251c-4f3e-a1bb-e30368b75fc9",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "9d68a698-bd2d-407d-bb18-f2dbfeb2746d",
+    "testId": "video_display_calibration",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "1fff0708-0367-4cc5-aae1-9e4f3aaa6dcf"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "video_edid_handshake",
+    "state": "PASS",
+    "evidenceId": "b5fcb4de-d38b-4201-a22b-752cdd7c89e1",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "02a45dd7-7c31-4477-b6cf-fc8b39cf83ca",
+    "testId": "video_edid_handshake",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "123ea6c5-621b-43eb-b2a7-aa1415184470"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "video_switching",
+    "state": "PASS",
+    "evidenceId": "bcc95ce0-c7b6-49e4-b589-534c3e398f8e",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "4826efbe-9799-4710-8e05-f478a010e78c",
+    "testId": "video_switching",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "8e9ff421-2f77-4dbf-a42c-ab7190f37d81"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "testId": "audio_aec",
+    "state": "PASS",
+    "evidenceId": "2496dcf9-fbcc-43ec-aa47-8f5f4457cf2b",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "19ae6b3a-23ca-4572-bc5c-4d5e7d22464f",
+    "testId": "audio_aec",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "1c6957f1-1376-4e82-a2ea-3633c241dee0"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "testId": "audio_gain",
+    "state": "PASS",
+    "evidenceId": "de443538-6119-403a-9013-96521bcd4d7f",
+    "evidenceKind": "INSTRUMENT_MEASURED"
+   },
+   "body": {
+    "resultId": "b53e5467-8edb-4b6d-a6fd-80057465a825",
+    "testId": "audio_gain",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "d082e904-459a-457b-9d64-9027825f16bc"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "testId": "audio_limiter_levels",
+    "state": "PASS",
+    "evidenceId": "0ae6c006-2fbb-4ff2-b816-90ebb5e207bd",
+    "evidenceKind": "INSTRUMENT_MEASURED",
+    "instrument": "SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09"
+   },
+   "body": {
+    "resultId": "ca71d2c1-09af-4e0b-83a2-a8b7be7bce79",
+    "testId": "audio_limiter_levels",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "f29e10f5-95f5-4380-8e29-d09c67deb803"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "testId": "audio_noise_floor",
+    "state": "PASS",
+    "evidenceId": "6e6946a2-ead3-4dfd-93ec-dfa145b3a8d8",
+    "evidenceKind": "INSTRUMENT_MEASURED",
+    "instrument": "SYN-METER-01 (synthetic), calibration record SYN-CAL-2026-09"
+   },
+   "body": {
+    "resultId": "3b607640-4546-47a3-9613-7e04b8c0de63",
+    "testId": "audio_noise_floor",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "d5290640-681c-49fc-be36-393f255ce30d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "video_eng",
+   "status": 201,
+   "request": {
+    "testId": "camera_fov",
+    "state": "PASS",
+    "evidenceId": "4ba57f91-eee3-48be-b11e-e43fd30a9512",
+    "evidenceKind": "INSTRUMENT_MEASURED"
+   },
+   "body": {
+    "resultId": "c4b6e995-49c0-41df-acf4-ec96168b416b",
+    "testId": "camera_fov",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "00b4e6a5-dc12-461b-9a9c-d28187355044"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "control_eng",
+   "status": 201,
+   "request": {
+    "testId": "control_latency",
+    "state": "PASS",
+    "evidenceId": "ce5efbd5-c3f2-4dde-8756-b04a6d857138",
+    "evidenceKind": "INSTRUMENT_MEASURED"
+   },
+   "body": {
+    "resultId": "e6ecaf94-985c-459e-acba-c35213b7319e",
+    "testId": "control_latency",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "787a72fc-3d21-46fd-b423-03ee08a50048"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "network_media_clock",
+    "state": "PASS",
+    "evidenceId": "a8334683-dd2f-4ce3-bd9c-ed4dd28b6b36",
+    "evidenceKind": "OBSERVED_NETWORK"
+   },
+   "body": {
+    "resultId": "fdd01977-2741-420e-83ff-1360cce3fc5c",
+    "testId": "network_media_clock",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "f7d6a112-d3fb-421d-a61e-0781cb65676d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "dsp_eng",
+   "status": 201,
+   "request": {
+    "testId": "video_av_sync",
+    "state": "PASS",
+    "evidenceId": "18aef83b-ebb0-45f9-b006-bb9c8d05a961",
+    "evidenceKind": "INSTRUMENT_MEASURED"
+   },
+   "body": {
+    "resultId": "a1cedf53-4364-4903-a50a-03e2eac28824",
+    "testId": "video_av_sync",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "4ba554a8-180b-4a44-86fc-15d09b84861d"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "video_eng",
+   "status": 201,
+   "request": {
+    "testId": "video_camera_tracking",
+    "state": "PASS",
+    "evidenceId": "5d35fc45-8525-473b-a45e-12e46fe7280c",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "ae29ded0-2b1d-4cd6-b07e-c0b90e6f386b",
+    "testId": "video_camera_tracking",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "2cfb6209-c9fd-4f7d-8b4d-add9ca3a8350"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "integ_itsm",
+    "state": "PASS",
+    "evidenceId": "92d4b0d4-1200-4782-89ae-206b00ad6bce",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "0d254e6b-e4c9-4ee1-bad6-d034234e6ff7",
+    "testId": "integ_itsm",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "8a77b249-1d40-4490-9196-50f81f6a6a33"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "integ_monitoring_enrol",
+    "state": "PASS",
+    "evidenceId": "c86c670f-c7aa-413a-83e8-a7137bdd3940",
+    "evidenceKind": "OBSERVED_NETWORK"
+   },
+   "body": {
+    "resultId": "04889997-942f-43ef-9d5e-c87e0987d555",
+    "testId": "integ_monitoring_enrol",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "ad1e5efe-9d60-4981-8441-df49f15c1100"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "network_config_backup",
+    "state": "PASS",
+    "evidenceId": "07557b12-fa39-47df-8607-6f6d2b88846d",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "d796fddf-7b10-4221-802f-fd70cae67362",
+    "testId": "network_config_backup",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "1d7a3a64-ba58-4ef7-9261-75278edd9c7a"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "cyber_accounts",
+    "state": "PASS",
+    "evidenceId": "91f20e55-e964-4c45-8285-e6789dac1d64",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "e9e7b129-381e-48b8-8d29-c57afdf27f51",
+    "testId": "cyber_accounts",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "5b75c745-b0ee-4de0-a85f-ffa8a25988ea"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "handover_runbook",
+    "state": "PASS",
+    "evidenceId": "01e7bf78-bbf9-461f-babc-3fd027d6710f",
+    "evidenceKind": "ENGINEER_APPROVED"
+   },
+   "body": {
+    "resultId": "17eee509-9a66-4519-b08f-7b06468ba4d2",
+    "testId": "handover_runbook",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "ddb33732-e455-4886-b8f2-a3fc64e45a3f"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "service",
+   "status": 201,
+   "request": {
+    "testId": "handover_spares",
+    "state": "PASS",
+    "evidenceId": "fd661aeb-0655-44fb-9a9d-f7e94128254d",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "9a1e21ca-1689-4369-a20a-aa7a541db044",
+    "testId": "handover_spares",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "2ae2223f-6381-4333-bb88-196bc2a1d747"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "handover_support_path",
+    "state": "PASS",
+    "evidenceId": "577df78e-11b4-43e1-a837-f67e5e8cea54",
+    "evidenceKind": "ENGINEER_APPROVED"
+   },
+   "body": {
+    "resultId": "e0e105c8-7310-4ca4-9061-5e9e27b637f2",
+    "testId": "handover_support_path",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "5ef5882c-f670-4280-a6df-b0979054f403"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "cxeng",
+   "status": 201,
+   "request": {
+    "testId": "handover_training",
+    "state": "PASS",
+    "evidenceId": "fa16cee5-fb56-487e-bf20-6517deee97b3",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "0f360133-0cdc-4732-8269-cd7437e642c6",
+    "testId": "handover_training",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "5cf998db-725c-43dd-8fde-210e1580a766"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/results",
+   "persona": "syseng",
+   "status": 201,
+   "request": {
+    "testId": "handover_warranty",
+    "state": "PASS",
+    "evidenceId": "ecbc6661-2e6a-402d-8605-104237eb4d37",
+    "evidenceKind": "FIELD_OBSERVED"
+   },
+   "body": {
+    "resultId": "7e9892a2-e48e-4828-bcb8-9b73eec3bfa5",
+    "testId": "handover_warranty",
+    "state": "PASS",
+    "resultLabel": "PASS_UNVERIFIED"
+   },
+   "correlationId": "dea8129b-600b-4750-8c78-54c23375561f"
+  }
+ ]
+}

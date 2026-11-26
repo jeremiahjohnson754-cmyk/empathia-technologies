@@ -1,0 +1,1095 @@
+{
+ "step": 14,
+ "title": "The accepted baseline is unchanged; Assurance reports the difference from it",
+ "room": "R-PLN-0004",
+ "at": "2026-11-26T07:03:47.630Z",
+ "assertions": [
+  {
+   "id": "C-51",
+   "name": "baseline v1 is byte-for-byte unchanged (same JSON before and after the change) and still CURRENT",
+   "result": "PASS"
+  },
+  {
+   "id": "C-52",
+   "name": "Assurance assesses the room against baseline v1 and reports the substitution on the register as drift (recorded, not measured)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-53",
+   "name": "the remedy proposed is a fix that needs an engineer’s approval, and live health stays NOT_MONITORED",
+   "result": "PASS"
+  },
+  {
+   "id": "C-92",
+   "name": "Assurance labels the change a model substitution with both units named (not an installation change), against the unit accepted in v1; baseline v1 and the accepted revision 2 are byte-for-byte unchanged",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004/baselines",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "room": "R-PLN-0004",
+    "current": {
+     "id": "bb9cb22f-eea7-454a-bcd6-821e5d0aa0e2",
+     "version": 1,
+     "state": "CURRENT",
+     "design_revision": 2,
+     "design_sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
+     "plan_id": "a0dc677b-e081-4d89-bbd7-d9a9c182f9ca",
+     "results": {
+      "uc_media": "PASS_VERIFIED",
+      "audio_aec": "PASS_VERIFIED",
+      "cyber_tls": "PASS_VERIFIED",
+      "integ_bms": "PASS_VERIFIED",
+      "audio_gain": "PASS_VERIFIED",
+      "camera_fov": "PASS_VERIFIED",
+      "control_ui": "PASS_VERIFIED",
+      "integ_itsm": "PASS_VERIFIED",
+      "poe_budget": "PASS_VERIFIED",
+      "control_ups": "PASS_VERIFIED",
+      "network_qos": "PASS_VERIFIED",
+      "uc_calendar": "PASS_VERIFIED",
+      "access_reach": "PASS_VERIFIED",
+      "network_vlan": "PASS_VERIFIED",
+      "power_budget": "PASS_VERIFIED",
+      "video_signal": "PASS_VERIFIED",
+      "camera_preset": "PASS_VERIFIED",
+      "control_audio": "PASS_VERIFIED",
+      "cyber_logging": "PASS_VERIFIED",
+      "user_function": "PASS_VERIFIED",
+      "video_av_sync": "PASS_VERIFIED",
+      "control_camera": "PASS_VERIFIED",
+      "control_macros": "PASS_VERIFIED",
+      "cyber_accounts": "PASS_VERIFIED",
+      "identity_asset": "PASS_VERIFIED",
+      "infra_labeling": "PASS_VERIFIED",
+      "safety_install": "PASS_VERIFIED",
+      "uc_peripherals": "PASS_VERIFIED",
+      "access_captions": "PASS_VERIFIED",
+      "access_contrast": "PASS_VERIFIED",
+      "control_latency": "PASS_VERIFIED",
+      "handover_spares": "PASS_VERIFIED",
+      "video_switching": "PASS_VERIFIED",
+      "audio_mic_pickup": "PASS_VERIFIED",
+      "display_controls": "PASS_VERIFIED",
+      "handover_runbook": "PASS_VERIFIED",
+      "infra_rack_match": "PASS_VERIFIED",
+      "audio_noise_floor": "PASS_VERIFIED",
+      "control_time_sync": "PASS_VERIFIED",
+      "handover_training": "PASS_VERIFIED",
+      "handover_warranty": "PASS_VERIFIED",
+      "power_ups_runtime": "PASS_VERIFIED",
+      "audio_dsp_firmware": "PASS_VERIFIED",
+      "audio_zone_routing": "PASS_VERIFIED",
+      "design_conformance": "PASS_VERIFIED",
+      "network_addressing": "PASS_VERIFIED",
+      "power_circuit_load": "PASS_VERIFIED",
+      "control_third_party": "PASS_VERIFIED",
+      "env_lighting_levels": "PASS_VERIFIED",
+      "network_media_clock": "PASS_VERIFIED",
+      "video_content_share": "PASS_VERIFIED",
+      "audio_limiter_levels": "PASS_VERIFIED",
+      "control_error_states": "PASS_VERIFIED",
+      "interop_mixed_vendor": "PASS_VERIFIED",
+      "network_port_profile": "PASS_VERIFIED",
+      "network_reachability": "PASS_VERIFIED",
+      "video_edid_handshake": "PASS_VERIFIED",
+      "cyber_firmware_signed": "PASS_VERIFIED",
+      "handover_support_path": "PASS_VERIFIED",
+      "network_config_backup": "PASS_VERIFIED",
+      "video_camera_exposure": "PASS_VERIFIED",
+      "video_camera_tracking": "PASS_VERIFIED",
+      "compute_patch_baseline": "PASS_VERIFIED",
+      "integ_monitoring_enrol": "PASS_VERIFIED",
+      "control_program_version": "PASS_VERIFIED",
+      "interop_firmware_matrix": "PASS_VERIFIED",
+      "compute_certified_config": "PASS_VERIFIED",
+      "control_source_switching": "PASS_VERIFIED",
+      "network_management_reach": "PASS_VERIFIED",
+      "cyber_default_credentials": "PASS_VERIFIED",
+      "infra_cable_certification": "PASS_VERIFIED",
+      "network_firmware_baseline": "PASS_VERIFIED",
+      "video_display_calibration": "PASS_VERIFIED",
+      "compute_display_capability": "PASS_VERIFIED",
+      "cyber_management_isolation": "PASS_VERIFIED"
+     },
+     "evidence_ids": [
+      "b1579ed8-aa59-41e1-9ecc-884f90dea2fc",
+      "4c3fb15e-3a20-4ec1-9c7d-4a7ff8b3b7bb",
+      "478dc4db-540c-479e-86a6-8ee5ac11c7a5",
+      "2496dcf9-fbcc-43ec-aa47-8f5f4457cf2b",
+      "a0b018e2-501a-42ac-9edc-86b7dbc88b81",
+      "de443538-6119-403a-9013-96521bcd4d7f",
+      "0ae6c006-2fbb-4ff2-b816-90ebb5e207bd",
+      "d690a872-eba1-4f05-b1f9-a50b2268dc39",
+      "6e6946a2-ead3-4dfd-93ec-dfa145b3a8d8",
+      "e9637749-22ec-4658-9bba-bb93034b99f0",
+      "4ba57f91-eee3-48be-b11e-e43fd30a9512",
+      "384966c0-a831-40d8-87c4-fd7fce0639be",
+      "c131c24d-a27d-434c-b604-3e71c63b20f3",
+      "9309920b-bb2c-4f13-9e01-9e3374d4447e",
+      "8ac95d8c-6d67-4d9c-9f73-4029705fa3ee",
+      "0288cd4b-9dbf-4961-a0bc-0802f7b80738",
+      "ac4ec1a6-a02a-4e9b-a603-545f42980704",
+      "4bfe58f0-4a8c-4b15-bcca-3513bcb3b421",
+      "ce5efbd5-c3f2-4dde-8756-b04a6d857138",
+      "00aeb75f-4067-4f1b-bed6-10eb66a13bfd",
+      "9cb827a8-dbf7-4721-adc1-2ab127093cc4",
+      "f18162ad-8f79-4e45-9f0d-2baf980a9d39",
+      "54edec24-a882-494b-a062-d6a321d0714a",
+      "51d61f38-f378-4f45-880f-23c1dfbcb55e",
+      "bc5afec7-a4f5-4c32-85a9-647e1027c612",
+      "dd020452-79d1-491a-983b-0e494eac61b6",
+      "91f20e55-e964-4c45-8285-e6789dac1d64",
+      "423cdc38-6d96-42f7-a951-9c229a1cf319",
+      "21b16ae6-7f8a-43c5-9291-a9fd444e143f",
+      "19eb464b-b0be-49b7-87d5-3881229a0a8d",
+      "5f9b669c-e467-4231-8ad8-c52c5390b642",
+      "e4b48312-11d2-497f-8d03-bdcf907d7684",
+      "9b478f65-4b30-4525-ac71-c4dd5e6ab2af",
+      "c1abd9ed-04c8-45f9-9ed3-ba496f4b3eb0",
+      "8b890f12-cae7-4114-8952-1c5baba4ef20",
+      "01e7bf78-bbf9-461f-babc-3fd027d6710f",
+      "fd661aeb-0655-44fb-9a9d-f7e94128254d",
+      "577df78e-11b4-43e1-a837-f67e5e8cea54",
+      "fa16cee5-fb56-487e-bf20-6517deee97b3",
+      "ecbc6661-2e6a-402d-8605-104237eb4d37",
+      "daf23d07-2a95-48c3-af9a-273a20161005",
+      "39b97f09-0220-4b96-bda8-cf466e2122e2",
+      "9406940f-c91f-42e9-9ebe-c9319d0e3b6e",
+      "03974fc0-d449-4799-943e-d9ad2c2fd1c7",
+      "9a138a0a-c43b-4480-91bc-efa6c279cdf1",
+      "92d4b0d4-1200-4782-89ae-206b00ad6bce",
+      "c86c670f-c7aa-413a-83e8-a7137bdd3940",
+      "bc11c2d1-a5a3-4bb2-b08b-2152762bf644",
+      "f4c5268f-b7ac-49e0-9dd4-a2c4df197c5b",
+      "f0dc15ba-7875-471f-8ae6-611e933e23f8",
+      "07557b12-fa39-47df-8607-6f6d2b88846d",
+      "46c405b3-a42a-43e5-883c-4349cf28d280",
+      "cc6a511b-9df4-43b6-bd4b-0aa1e93663e4",
+      "a8334683-dd2f-4ce3-bd9c-ed4dd28b6b36",
+      "b4182449-360e-49e1-83d7-d2e24c491516",
+      "884d94cb-59d1-4c83-91f8-985592d3c631",
+      "2cc01c34-2a1e-42c6-831c-e085c8de36fe",
+      "70b9dec9-9211-441d-b58c-54496faa30e3",
+      "8dd4c284-f8e2-4003-a322-75fc1cc7dd50",
+      "dd918af0-7f15-4f7b-9ced-44f005c31817",
+      "9c50fbc9-2c80-40f5-a5e6-1e59a668c30f",
+      "900b94d9-1a62-41bb-a593-664df4d451f8",
+      "3121fd2d-7586-4d06-aa4b-332ee446906c",
+      "7939dba6-3708-46d3-aadb-1ce5aa408a7f",
+      "affb3290-1a33-46a5-a039-669ed23a10d9",
+      "71fc6fe5-0a93-4a58-a73f-34d4c798090e",
+      "0b96300f-7ade-442a-bb0a-30cc11121cd4",
+      "18aef83b-ebb0-45f9-b006-bb9c8d05a961",
+      "600f96e6-c5ff-44ba-8fb2-a1b912406e6c",
+      "5d35fc45-8525-473b-a45e-12e46fe7280c",
+      "87b1467e-062e-4f1f-a3f1-d93fad294b00",
+      "56ae3c0a-251c-4f3e-a1bb-e30368b75fc9",
+      "b5fcb4de-d38b-4201-a22b-752cdd7c89e1",
+      "64710b0b-88f6-4fa6-864b-01e5b49c4724",
+      "bcc95ce0-c7b6-49e4-b589-534c3e398f8e"
+     ],
+     "devices": [
+      {
+       "id": "PA-0060",
+       "label": "Display 1",
+       "category": "display",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 0.1
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 0.1,
+         "mount": "wall"
+        }
+       }
+      },
+      {
+       "id": "PA-0061",
+       "label": "Camera 1",
+       "category": "camera",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 0.15
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 0.15,
+         "mount": "wall"
+        }
+       }
+      },
+      {
+       "id": "PA-0062",
+       "label": "Ceiling microphone 1",
+       "category": "micceil",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 2.8
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 2.8,
+         "mount": "ceiling"
+        }
+       }
+      },
+      {
+       "id": "PA-0063",
+       "label": "Loudspeaker 1",
+       "category": "speaker",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 1.5
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 1.5,
+         "mount": "ceiling"
+        }
+       }
+      },
+      {
+       "id": "PA-0064",
+       "label": "Audio processor (DSP) 1",
+       "category": "dsp",
+       "placement": {
+        "at": {
+         "x": 0.3,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.3,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
+      },
+      {
+       "id": "PA-0065",
+       "label": "UC room compute 1",
+       "category": "compute",
+       "placement": {
+        "at": {
+         "x": 0.4,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.4,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
+      },
+      {
+       "id": "PA-0066",
+       "label": "Touch panel 1",
+       "category": "touch",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 2.6
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 2.6,
+         "mount": "table"
+        }
+       }
+      },
+      {
+       "id": "PA-0067",
+       "label": "Network switch 1",
+       "category": "switch",
+       "placement": {
+        "at": {
+         "x": 0.5,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.5,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
+      }
+     ],
+     "measurements": [],
+     "reason": "accepted: first baseline (ADR-0003)",
+     "published_by": "f31565f6-e994-4975-93e8-6123702261e1",
+     "published_by_name": "Operations Lead (synthetic)",
+     "published_at": "2026-11-26T07:03:44.559Z",
+     "supersedes": null,
+     "superseded_at": null,
+     "superseded_by": null
+    },
+    "items": [
+     {
+      "id": "bb9cb22f-eea7-454a-bcd6-821e5d0aa0e2",
+      "version": 1,
+      "state": "CURRENT",
+      "design_revision": 2,
+      "design_sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
+      "plan_id": "a0dc677b-e081-4d89-bbd7-d9a9c182f9ca",
+      "results": {
+       "uc_media": "PASS_VERIFIED",
+       "audio_aec": "PASS_VERIFIED",
+       "cyber_tls": "PASS_VERIFIED",
+       "integ_bms": "PASS_VERIFIED",
+       "audio_gain": "PASS_VERIFIED",
+       "camera_fov": "PASS_VERIFIED",
+       "control_ui": "PASS_VERIFIED",
+       "integ_itsm": "PASS_VERIFIED",
+       "poe_budget": "PASS_VERIFIED",
+       "control_ups": "PASS_VERIFIED",
+       "network_qos": "PASS_VERIFIED",
+       "uc_calendar": "PASS_VERIFIED",
+       "access_reach": "PASS_VERIFIED",
+       "network_vlan": "PASS_VERIFIED",
+       "power_budget": "PASS_VERIFIED",
+       "video_signal": "PASS_VERIFIED",
+       "camera_preset": "PASS_VERIFIED",
+       "control_audio": "PASS_VERIFIED",
+       "cyber_logging": "PASS_VERIFIED",
+       "user_function": "PASS_VERIFIED",
+       "video_av_sync": "PASS_VERIFIED",
+       "control_camera": "PASS_VERIFIED",
+       "control_macros": "PASS_VERIFIED",
+       "cyber_accounts": "PASS_VERIFIED",
+       "identity_asset": "PASS_VERIFIED",
+       "infra_labeling": "PASS_VERIFIED",
+       "safety_install": "PASS_VERIFIED",
+       "uc_peripherals": "PASS_VERIFIED",
+       "access_captions": "PASS_VERIFIED",
+       "access_contrast": "PASS_VERIFIED",
+       "control_latency": "PASS_VERIFIED",
+       "handover_spares": "PASS_VERIFIED",
+       "video_switching": "PASS_VERIFIED",
+       "audio_mic_pickup": "PASS_VERIFIED",
+       "display_controls": "PASS_VERIFIED",
+       "handover_runbook": "PASS_VERIFIED",
+       "infra_rack_match": "PASS_VERIFIED",
+       "audio_noise_floor": "PASS_VERIFIED",
+       "control_time_sync": "PASS_VERIFIED",
+       "handover_training": "PASS_VERIFIED",
+       "handover_warranty": "PASS_VERIFIED",
+       "power_ups_runtime": "PASS_VERIFIED",
+       "audio_dsp_firmware": "PASS_VERIFIED",
+       "audio_zone_routing": "PASS_VERIFIED",
+       "design_conformance": "PASS_VERIFIED",
+       "network_addressing": "PASS_VERIFIED",
+       "power_circuit_load": "PASS_VERIFIED",
+       "control_third_party": "PASS_VERIFIED",
+       "env_lighting_levels": "PASS_VERIFIED",
+       "network_media_clock": "PASS_VERIFIED",
+       "video_content_share": "PASS_VERIFIED",
+       "audio_limiter_levels": "PASS_VERIFIED",
+       "control_error_states": "PASS_VERIFIED",
+       "interop_mixed_vendor": "PASS_VERIFIED",
+       "network_port_profile": "PASS_VERIFIED",
+       "network_reachability": "PASS_VERIFIED",
+       "video_edid_handshake": "PASS_VERIFIED",
+       "cyber_firmware_signed": "PASS_VERIFIED",
+       "handover_support_path": "PASS_VERIFIED",
+       "network_config_backup": "PASS_VERIFIED",
+       "video_camera_exposure": "PASS_VERIFIED",
+       "video_camera_tracking": "PASS_VERIFIED",
+       "compute_patch_baseline": "PASS_VERIFIED",
+       "integ_monitoring_enrol": "PASS_VERIFIED",
+       "control_program_version": "PASS_VERIFIED",
+       "interop_firmware_matrix": "PASS_VERIFIED",
+       "compute_certified_config": "PASS_VERIFIED",
+       "control_source_switching": "PASS_VERIFIED",
+       "network_management_reach": "PASS_VERIFIED",
+       "cyber_default_credentials": "PASS_VERIFIED",
+       "infra_cable_certification": "PASS_VERIFIED",
+       "network_firmware_baseline": "PASS_VERIFIED",
+       "video_display_calibration": "PASS_VERIFIED",
+       "compute_display_capability": "PASS_VERIFIED",
+       "cyber_management_isolation": "PASS_VERIFIED"
+      },
+      "evidence_ids": [
+       "b1579ed8-aa59-41e1-9ecc-884f90dea2fc",
+       "4c3fb15e-3a20-4ec1-9c7d-4a7ff8b3b7bb",
+       "478dc4db-540c-479e-86a6-8ee5ac11c7a5",
+       "2496dcf9-fbcc-43ec-aa47-8f5f4457cf2b",
+       "a0b018e2-501a-42ac-9edc-86b7dbc88b81",
+       "de443538-6119-403a-9013-96521bcd4d7f",
+       "0ae6c006-2fbb-4ff2-b816-90ebb5e207bd",
+       "d690a872-eba1-4f05-b1f9-a50b2268dc39",
+       "6e6946a2-ead3-4dfd-93ec-dfa145b3a8d8",
+       "e9637749-22ec-4658-9bba-bb93034b99f0",
+       "4ba57f91-eee3-48be-b11e-e43fd30a9512",
+       "384966c0-a831-40d8-87c4-fd7fce0639be",
+       "c131c24d-a27d-434c-b604-3e71c63b20f3",
+       "9309920b-bb2c-4f13-9e01-9e3374d4447e",
+       "8ac95d8c-6d67-4d9c-9f73-4029705fa3ee",
+       "0288cd4b-9dbf-4961-a0bc-0802f7b80738",
+       "ac4ec1a6-a02a-4e9b-a603-545f42980704",
+       "4bfe58f0-4a8c-4b15-bcca-3513bcb3b421",
+       "ce5efbd5-c3f2-4dde-8756-b04a6d857138",
+       "00aeb75f-4067-4f1b-bed6-10eb66a13bfd",
+       "9cb827a8-dbf7-4721-adc1-2ab127093cc4",
+       "f18162ad-8f79-4e45-9f0d-2baf980a9d39",
+       "54edec24-a882-494b-a062-d6a321d0714a",
+       "51d61f38-f378-4f45-880f-23c1dfbcb55e",
+       "bc5afec7-a4f5-4c32-85a9-647e1027c612",
+       "dd020452-79d1-491a-983b-0e494eac61b6",
+       "91f20e55-e964-4c45-8285-e6789dac1d64",
+       "423cdc38-6d96-42f7-a951-9c229a1cf319",
+       "21b16ae6-7f8a-43c5-9291-a9fd444e143f",
+       "19eb464b-b0be-49b7-87d5-3881229a0a8d",
+       "5f9b669c-e467-4231-8ad8-c52c5390b642",
+       "e4b48312-11d2-497f-8d03-bdcf907d7684",
+       "9b478f65-4b30-4525-ac71-c4dd5e6ab2af",
+       "c1abd9ed-04c8-45f9-9ed3-ba496f4b3eb0",
+       "8b890f12-cae7-4114-8952-1c5baba4ef20",
+       "01e7bf78-bbf9-461f-babc-3fd027d6710f",
+       "fd661aeb-0655-44fb-9a9d-f7e94128254d",
+       "577df78e-11b4-43e1-a837-f67e5e8cea54",
+       "fa16cee5-fb56-487e-bf20-6517deee97b3",
+       "ecbc6661-2e6a-402d-8605-104237eb4d37",
+       "daf23d07-2a95-48c3-af9a-273a20161005",
+       "39b97f09-0220-4b96-bda8-cf466e2122e2",
+       "9406940f-c91f-42e9-9ebe-c9319d0e3b6e",
+       "03974fc0-d449-4799-943e-d9ad2c2fd1c7",
+       "9a138a0a-c43b-4480-91bc-efa6c279cdf1",
+       "92d4b0d4-1200-4782-89ae-206b00ad6bce",
+       "c86c670f-c7aa-413a-83e8-a7137bdd3940",
+       "bc11c2d1-a5a3-4bb2-b08b-2152762bf644",
+       "f4c5268f-b7ac-49e0-9dd4-a2c4df197c5b",
+       "f0dc15ba-7875-471f-8ae6-611e933e23f8",
+       "07557b12-fa39-47df-8607-6f6d2b88846d",
+       "46c405b3-a42a-43e5-883c-4349cf28d280",
+       "cc6a511b-9df4-43b6-bd4b-0aa1e93663e4",
+       "a8334683-dd2f-4ce3-bd9c-ed4dd28b6b36",
+       "b4182449-360e-49e1-83d7-d2e24c491516",
+       "884d94cb-59d1-4c83-91f8-985592d3c631",
+       "2cc01c34-2a1e-42c6-831c-e085c8de36fe",
+       "70b9dec9-9211-441d-b58c-54496faa30e3",
+       "8dd4c284-f8e2-4003-a322-75fc1cc7dd50",
+       "dd918af0-7f15-4f7b-9ced-44f005c31817",
+       "9c50fbc9-2c80-40f5-a5e6-1e59a668c30f",
+       "900b94d9-1a62-41bb-a593-664df4d451f8",
+       "3121fd2d-7586-4d06-aa4b-332ee446906c",
+       "7939dba6-3708-46d3-aadb-1ce5aa408a7f",
+       "affb3290-1a33-46a5-a039-669ed23a10d9",
+       "71fc6fe5-0a93-4a58-a73f-34d4c798090e",
+       "0b96300f-7ade-442a-bb0a-30cc11121cd4",
+       "18aef83b-ebb0-45f9-b006-bb9c8d05a961",
+       "600f96e6-c5ff-44ba-8fb2-a1b912406e6c",
+       "5d35fc45-8525-473b-a45e-12e46fe7280c",
+       "87b1467e-062e-4f1f-a3f1-d93fad294b00",
+       "56ae3c0a-251c-4f3e-a1bb-e30368b75fc9",
+       "b5fcb4de-d38b-4201-a22b-752cdd7c89e1",
+       "64710b0b-88f6-4fa6-864b-01e5b49c4724",
+       "bcc95ce0-c7b6-49e4-b589-534c3e398f8e"
+      ],
+      "devices": [
+       {
+        "id": "PA-0060",
+        "label": "Display 1",
+        "category": "display",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 0.1
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 0.1,
+          "mount": "wall"
+         }
+        }
+       },
+       {
+        "id": "PA-0061",
+        "label": "Camera 1",
+        "category": "camera",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 0.15
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 0.15,
+          "mount": "wall"
+         }
+        }
+       },
+       {
+        "id": "PA-0062",
+        "label": "Ceiling microphone 1",
+        "category": "micceil",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 2.8
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 2.8,
+          "mount": "ceiling"
+         }
+        }
+       },
+       {
+        "id": "PA-0063",
+        "label": "Loudspeaker 1",
+        "category": "speaker",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 1.5
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 1.5,
+          "mount": "ceiling"
+         }
+        }
+       },
+       {
+        "id": "PA-0064",
+        "label": "Audio processor (DSP) 1",
+        "category": "dsp",
+        "placement": {
+         "at": {
+          "x": 0.3,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.3,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
+       },
+       {
+        "id": "PA-0065",
+        "label": "UC room compute 1",
+        "category": "compute",
+        "placement": {
+         "at": {
+          "x": 0.4,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.4,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
+       },
+       {
+        "id": "PA-0066",
+        "label": "Touch panel 1",
+        "category": "touch",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 2.6
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 2.6,
+          "mount": "table"
+         }
+        }
+       },
+       {
+        "id": "PA-0067",
+        "label": "Network switch 1",
+        "category": "switch",
+        "placement": {
+         "at": {
+          "x": 0.5,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.5,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
+       }
+      ],
+      "measurements": [],
+      "reason": "accepted: first baseline (ADR-0003)",
+      "published_by": "f31565f6-e994-4975-93e8-6123702261e1",
+      "published_by_name": "Operations Lead (synthetic)",
+      "published_at": "2026-11-26T07:03:44.559Z",
+      "supersedes": null,
+      "superseded_at": null,
+      "superseded_by": null
+     }
+    ],
+    "exceptions": []
+   },
+   "correlationId": "dbf62a87-474b-4d26-954f-9407e99dc0d5"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004/assurance",
+   "persona": "opslead",
+   "status": 200,
+   "body": {
+    "room": "R-PLN-0004",
+    "state": "ASSESSED",
+    "engineVersion": "0.5-port.1",
+    "baseline": {
+     "id": "bb9cb22f-eea7-454a-bcd6-821e5d0aa0e2",
+     "version": 1,
+     "signedAt": "2026-11-26T07:03:44.559Z",
+     "revision": 2
+    },
+    "liveHealth": "NOT_MONITORED",
+    "note": "No monitoring feed, discovery agent or field survey is connected: dimensions without evidence are NOT ASSESSED, never assumed to match.",
+    "baselineId": "bb9cb22f-eea7-454a-bcd6-821e5d0aa0e2",
+    "baselineVersion": 1,
+    "rows": [
+     {
+      "k": "presence",
+      "label": "Device presence",
+      "layer": "physical",
+      "status": "drift",
+      "type": "DEVICE",
+      "ev": "INFERRED",
+      "commissioned": "8 devices on the register at handover",
+      "current": "1 device on the register substituted since handover: Camera 1 generic → SYN-PTZ-12X (synthetic PTZ camera)",
+      "ids": [
+       "PA-0061"
+      ],
+      "note": "A substitution keeps the asset id. Run the checks it affects and recommission to bring the new model into the baseline.",
+      "gap": "",
+      "fix": {
+       "label": "Recommission the room",
+       "kind": "recom",
+       "requiresApproval": true,
+       "approverAuthority": "baseline.approve"
+      },
+      "changes": [
+       {
+        "id": "PA-0061",
+        "kind": "MODEL_SUBSTITUTED",
+        "fromModel": "generic",
+        "toModel": "SYN-PTZ-12X (synthetic PTZ camera)",
+        "fromUnit": "AS-0002",
+        "toUnit": "AS-0009"
+       }
+      ]
+     },
+     {
+      "k": "network",
+      "label": "Network",
+      "layer": "infrastructure",
+      "status": "na",
+      "type": null,
+      "ev": "MEASURED",
+      "commissioned": "0 networked devices",
+      "current": "Not assessed: no network check or discovery",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "power",
+      "label": "Power",
+      "layer": "infrastructure",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "The floor panel",
+      "current": "No power record",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "firmware",
+      "label": "Firmware",
+      "layer": "configuration",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "Every device on the versions validated at handover",
+      "current": "Not assessed: no firmware inventory",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "configuration",
+      "label": "Configuration",
+      "layer": "configuration",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "No signature taken at handover",
+      "current": "Not read",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "signal",
+      "label": "Signal path",
+      "layer": "functional",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "As commissioned",
+      "current": "Not assessed: no device state or measured check",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "application",
+      "label": "Application",
+      "layer": "functional",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "As commissioned",
+      "current": "Not assessed: no device state or measured check",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "camera",
+      "label": "Camera",
+      "layer": "functional",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "As commissioned",
+      "current": "Not assessed: no device state or measured check",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "audio",
+      "label": "Audio",
+      "layer": "functional",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "As commissioned",
+      "current": "Not assessed: no device state or measured check",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "display",
+      "label": "Display",
+      "layer": "functional",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "As commissioned",
+      "current": "Not assessed: no device state or measured check",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "control",
+      "label": "Control",
+      "layer": "functional",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "As commissioned",
+      "current": "Not assessed: no device state or measured check",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "scheduling",
+      "label": "Scheduling",
+      "layer": "operational",
+      "status": "na",
+      "type": null,
+      "ev": "MEASURED",
+      "commissioned": "As commissioned",
+      "current": "As commissioned",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "documentation",
+      "label": "Documentation",
+      "layer": "operational",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "0 documents on record",
+      "current": "Not assessed",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "spatial",
+      "label": "Spatial layout",
+      "layer": "spatial",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "Seat map: 0 seats",
+      "current": "Not discoverable over the network, and no survey since commissioning",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "purpose",
+      "label": "Room purpose",
+      "layer": "spatial",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "Designed for 6",
+      "current": "Seat count not known",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "environment",
+      "label": "Environment",
+      "layer": "physical",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "Not measured at handover",
+      "current": "No sensor in this room",
+      "ids": [],
+      "note": "No sensor and no measurement: Assurance does not guess.",
+      "gap": "",
+      "fix": null
+     },
+     {
+      "k": "experience",
+      "label": "User experience readiness",
+      "layer": "experience",
+      "status": "unknown",
+      "type": null,
+      "ev": "UNKNOWN",
+      "commissioned": "Passed the operational walk-through",
+      "current": "No reporting channel connected",
+      "ids": [],
+      "note": "",
+      "gap": "",
+      "fix": null
+     }
+    ],
+    "counts": {
+     "match": 0,
+     "drift": 1,
+     "fail": 0,
+     "na": 2,
+     "unknown": 14,
+     "observed": 0,
+     "gap": 0
+    },
+    "worst": "drift",
+    "findings": [
+     {
+      "k": "presence",
+      "label": "Device presence",
+      "layer": "physical",
+      "status": "drift",
+      "type": "DEVICE",
+      "ev": "INFERRED",
+      "commissioned": "8 devices on the register at handover",
+      "current": "1 device on the register substituted since handover: Camera 1 generic → SYN-PTZ-12X (synthetic PTZ camera)",
+      "ids": [
+       "PA-0061"
+      ],
+      "note": "A substitution keeps the asset id. Run the checks it affects and recommission to bring the new model into the baseline.",
+      "gap": "",
+      "fix": {
+       "label": "Recommission the room",
+       "kind": "recom",
+       "requiresApproval": true,
+       "approverAuthority": "baseline.approve"
+      },
+      "changes": [
+       {
+        "id": "PA-0061",
+        "kind": "MODEL_SUBSTITUTED",
+        "fromModel": "generic",
+        "toModel": "SYN-PTZ-12X (synthetic PTZ camera)",
+        "fromUnit": "AS-0002",
+        "toUnit": "AS-0009"
+       }
+      ]
+     }
+    ],
+    "types": [
+     "DEVICE"
+    ],
+    "remedy": "minor",
+    "coverage": {
+     "assessed": 1,
+     "applicable": 15,
+     "unknown": [
+      "power",
+      "firmware",
+      "configuration",
+      "signal",
+      "application",
+      "camera",
+      "audio",
+      "display",
+      "control",
+      "documentation",
+      "spatial",
+      "purpose",
+      "environment",
+      "experience"
+     ]
+    },
+    "diff": null,
+    "installation": {
+     "devices": [
+      {
+       "position": "PA-0060",
+       "asset": "AS-0001",
+       "identityState": "DECLARED",
+       "assetAtBaseline": "AS-0001"
+      },
+      {
+       "position": "PA-0061",
+       "asset": "AS-0009",
+       "identityState": "UNKNOWN",
+       "assetAtBaseline": "AS-0002"
+      },
+      {
+       "position": "PA-0062",
+       "asset": "AS-0003",
+       "identityState": "DECLARED",
+       "assetAtBaseline": "AS-0003"
+      },
+      {
+       "position": "PA-0063",
+       "asset": "AS-0004",
+       "identityState": "DECLARED",
+       "assetAtBaseline": "AS-0004"
+      },
+      {
+       "position": "PA-0064",
+       "asset": "AS-0005",
+       "identityState": "DECLARED",
+       "assetAtBaseline": "AS-0005"
+      },
+      {
+       "position": "PA-0065",
+       "asset": "AS-0006",
+       "identityState": "DECLARED",
+       "assetAtBaseline": "AS-0006"
+      },
+      {
+       "position": "PA-0066",
+       "asset": "AS-0007",
+       "identityState": "DECLARED",
+       "assetAtBaseline": "AS-0007"
+      },
+      {
+       "position": "PA-0067",
+       "asset": "AS-0008",
+       "identityState": "DECLARED",
+       "assetAtBaseline": "AS-0008"
+      }
+     ],
+     "changes": [
+      {
+       "id": "PA-0061",
+       "kind": "MODEL_SUBSTITUTED",
+       "fromModel": "generic",
+       "toModel": "SYN-PTZ-12X (synthetic PTZ camera)",
+       "fromUnit": "AS-0002",
+       "toUnit": "AS-0009"
+      }
+     ],
+     "basis": "the unit at each position when the baseline was published (append-only installation records) against the unit there now; assetAtBaseline null = not on record at publication (e.g. a room migrated after its acceptance)"
+    }
+   },
+   "correlationId": "44a115b5-af85-400a-8b81-7255d9aa8dec"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "omitted": "large body; see the step that records it in full"
+   },
+   "correlationId": "80ac12b9-7176-4ac2-9590-1febb00ca2c8"
+  }
+ ]
+}

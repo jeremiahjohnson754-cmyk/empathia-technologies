@@ -29,8 +29,14 @@ for (const w of [360, 390, 768]) {
   let reached = 0; const missed = [];
   for (let i = 0; i < menu.products.length; i++) {
     await p.click('[data-testid=menu-open]'); await p.locator('.drawer__product > a').nth(i).click(); await p.waitForTimeout(350);
-    const why = { refused: await p.locator('[data-testid=access-page], [data-testid=not-found]').count(), text: (await main(p)).length, menu: await p.locator('[data-testid=menu]').count() };   // 18 Nov: the failure now says which condition failed
-    if (!why.refused && why.text > 20 && !why.menu) reached += 1; else missed.push(`${menu.products[i].n} ${JSON.stringify(why)}`);
+    // Changed 26 Nov 2026 (the regression on 60393384, part 1): a page loaded on demand first shows the router's own loading state
+    // ("Loading Campus…", 15 characters), and under a full regression's load the Campus chunk was still arriving at 350 ms, so a page
+    // that was reached was counted as missed. The test now waits, up to 5 s, for that loading state to give way; every condition below is
+    // unchanged, and a page still in its loading state after the wait is counted as missed (why.loading), whatever its title's length.
+    await p.waitForFunction(() => !/^Loading .*…$/.test((document.querySelector('main')?.innerText || '').trim()), undefined, { timeout: 5000 }).catch(() => undefined);
+    const txt = (await main(p)).trim();
+    const why = { refused: await p.locator('[data-testid=access-page], [data-testid=not-found]').count(), text: txt.length, loading: /^Loading .*…$/.test(txt), menu: await p.locator('[data-testid=menu]').count() };   // 18 Nov: the failure now says which condition failed
+    if (!why.refused && why.text > 20 && !why.loading && !why.menu) reached += 1; else missed.push(`${menu.products[i].n} ${JSON.stringify(why)}`);
   }
   ok(`P-${w}-08`, `${w} px: every product is reached in two taps (menu, product)`, reached === menu.products.length, missed.join(','));
   await p.click('[data-testid=menu-open]'); await p.click('[data-testid=menu] [data-theme-choice=light]'); await p.waitForTimeout(100);
