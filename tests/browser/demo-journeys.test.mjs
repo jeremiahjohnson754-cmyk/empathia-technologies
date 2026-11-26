@@ -70,7 +70,7 @@ await journey('J1', 'J1 Discover, explain, act', 'architect', '#/v25', [
   ['one camera of the answer', { click: 'main a[href*="focus=Asset%3AAS-2503"]' }, { at: /focus=Asset:AS-2503/, see: '[data-testid=sp-asset-acts]', id: 'AS-2503' }],
   ['what the camera is related to is on the page', { run: async () => undefined }, { see: /tracks|involves|installed|located/i }],
   ['the camera’s room, at the position it is installed in', { click: '[data-testid=sp-asset-room]' }, { at: /R-ATL-1-150.*device=PA-0011|R-ATL-1-150/, id: 'R-ATL-1-150' }],
-  ['an allowed next step: the room’s assurance', { click: '[data-testid=room-jump-assurance]' }, { at: /^#\/assurance\/room\/R-ATL-1-150/, see: /Verified|Measured|Modelled|Declared|Not tested|baseline/i, id: 'R-ATL-1-150' }],
+  ['an allowed next step: the room’s assurance', { click: '[data-testid=room-jump-assurance]' }, { at: /^#\/assurance\/room\/R-ATL-1-150/, see: /Verified|Measured|Modeled|Declared|Not tested|baseline/i, id: 'R-ATL-1-150' }],
   ['and back to the room by the room row', { click: '[data-testid=room-jump-campus]' }, { at: /R-ATL-1-150/, id: 'R-ATL-1-150' }],
   ['the browser’s Back returns to assurance', { back: true }, { at: /^#\/assurance\/room\/R-ATL-1-150/ }],
   ['the asset’s own record is one link from Search Party', { run: async (p) => { await p.goto(`${base}#/search?focus=Asset:AS-2503`); await settle(p); await p.locator('[data-testid=sp-asset-open]').click(); } }, { at: /^#\/v25\/asset\?a=AS-2503/, id: 'AS-2503' }],

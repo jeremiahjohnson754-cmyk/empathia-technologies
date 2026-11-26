@@ -198,12 +198,12 @@ test('CS-17 the whole workflow, end to end, on the engine’s own state: degrade
   g = must(T.step(w, g, ENG, id, 'DISPATCHED', `procedure: ${proc.title}`)); assert.equal(G.systems(g).broadcast, 'DEGRADED');
   const no = T.notRestored(w, g, ENG, id, 'the backup path shows no link either'); assert.ok(no.ok); assert.equal(no.state, g, 'an attempt that did not work moves nothing'); assert.equal(G.advance(g).ok, false);
   g = must(T.step(w, g, ENG, id, 'FIXED', M.outcomeNote(proc, { restored: true, done: proc.steps.map((s) => s.id), note: 'primary path tagged' })));
-  assert.equal(G.systems(g).broadcast, 'AWAITING_CHECK'); assert.deepEqual(G.holds(g), [], 'the fix releases kick-off'); assert.match(M.incidentOf(g).notes.FIXED, /backup fibre path; 4 of 4 procedure steps done; note: primary path tagged/);
+  assert.equal(G.systems(g).broadcast, 'AWAITING_CHECK'); assert.deepEqual(G.holds(g), [], 'the fix releases kick-off'); assert.match(M.incidentOf(g).notes.FIXED, /backup fiber path; 4 of 4 procedure steps done; note: primary path tagged/);
   const self = T.step(w, g, ENG, id, 'VERIFIED', 'evidence: none'); assert.equal(self.ok, false); assert.match(self.why.join(' '), /someone other than the person who made it/); assert.equal(M.incidentOf(g).step, 'FIXED');
   const ev = M.evidenceFor(chain, iso.hop); g = must(T.step(w, g, PROD, id, 'VERIFIED', M.evidenceNote(ev, ['wall', 'tap'])));
   assert.equal(G.systems(g).broadcast, 'OK'); assert.deepEqual(G.holds(g), []); assert.equal(G.numbers(g).openIncidents, 0); assert.equal(G.report(g).held, false);
   const i = M.incidentOf(g); assert.deepEqual(i.by, { OPEN: 'simulation', ACKNOWLEDGED: 'Broadcast Engineer', DISPATCHED: 'Broadcast Engineer', FIXED: 'Broadcast Engineer', VERIFIED: 'Event Producer / Show Caller' }); assert.match(i.notes.VERIFIED, /^evidence: The camera 3 tile on the multiviewer wall shows a picture \(STA-BCR-A03\)/);
-  assert.ok(G.report(g).lines.some((l) => l === 'Broadcast programme chain: working')); assert.ok(G.report(g).lines.some((l) => l.startsWith(`${id} ${title}`) && l.endsWith('verified')));
+  assert.ok(G.report(g).lines.some((l) => l === 'Broadcast program chain: working')); assert.ok(G.report(g).lines.some((l) => l.startsWith(`${id} ${title}`) && l.endsWith('verified')));
   g = must(G.advance(g)); assert.equal(g.phase, 'first-half', 'kick-off goes ahead');
   const lines = T.ledgerOf(w, id); assert.deepEqual(lines.filter((e) => e.outcome === 'ALLOWED').map((e) => e.type).reverse(), ['gameday.incident.opened', 'gameday.incident.acknowledged', 'gameday.incident.dispatched', 'gameday.incident.not_restored', 'gameday.incident.fixed', 'gameday.incident.verified']);
   assert.equal(lines.filter((e) => e.outcome === 'DENIED').length, 1); assert.equal(lines.find((e) => e.type === 'gameday.incident.verified').by, 'Event Producer / Show Caller'); assert.match(lines.find((e) => e.type === 'gameday.incident.verified').detail, /STA-BCR-A03/);
@@ -222,7 +222,7 @@ test('CS-18 the workflow restores the system for every scenario: whichever hop f
 });
 
 // ------------------------------------------------------------------------------------------------------------ invariants over random action sequences
-const PUBLIC_LEAK = /STA-|GD-\d|camera|fibre|incident|broadcast|router|switcher|multiviewer|gallery|platform|rack|network|equipment|control room|fault/i;
+const PUBLIC_LEAK = /STA-|GD-\d|camera|fiber|incident|broadcast|router|switcher|multiviewer|gallery|platform|rack|network|equipment|control room|fault/i;
 function invariants(g, label) {
   for (const i of g.incidents) {
     const at = G.STEPS.indexOf(i.step); assert.ok(at >= 0, label);
@@ -268,7 +268,7 @@ test('CS-21 history and people are read from records: every earlier incident sit
   for (const p of M.PRIOR) { assert.ok(assetIds.has(p.asset), p.id); assert.ok(chain.hops.some((h) => h.asset.id === p.asset), `${p.id} is on this chain`); assert.equal(p.provenance, 'SYNTHETIC'); assert.match(p.day, /^Simulated event day/); assert.match(p.id, /^HLS-INC-\d{4}$/); }
   assert.equal(new Set(M.PRIOR.map((p) => p.id)).size, M.PRIOR.length);
   let g = run(G.start(), 2); g = must(G.inject(g, 'program-return')); g = must(G.inject(g, 'camera-feed')); g = must(G.inject(g, 'ribbon-east')); const cur = M.incidentOf(g); const h = M.historyOf(chain, g, cur);
-  assert.equal(h.prior.length, M.PRIOR.length); assert.equal(h.prior.filter((p) => p.hop === 'fibre').length, 2); assert.ok(h.summary.includes('Camera fibre, primary path: 2 earlier incidents on record.'));
+  assert.equal(h.prior.length, M.PRIOR.length); assert.equal(h.prior.filter((p) => p.hop === 'fibre').length, 2); assert.ok(h.summary.includes('Camera fiber, primary path: 2 earlier incidents on record.'));
   assert.deepEqual(h.thisEvent.map((x) => x.id), ['GD-001'], 'the other broadcast incident of this event, and not the ribbon board'); assert.ok(h.summary.includes('One other broadcast incident in this event.'));
   const people = M.peopleOf(chain, g); assert.deepEqual(people.map((t) => t.team), ['broadcast', 'technology']); assert.equal(people[0].owner, true); assert.equal(G.FAULTS['camera-feed'].owner, 'broadcast');
   for (const t of people) assert.equal(t.onPost, G.PHASE[g.phase].staff[t.team]); assert.deepEqual(people.flatMap((t) => t.posts.flatMap((p) => p.hops)).sort(), [...M.HOP_IDS].sort(), 'every hop has someone responsible');

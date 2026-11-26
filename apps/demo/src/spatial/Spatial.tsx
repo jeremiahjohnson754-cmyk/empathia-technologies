@@ -124,7 +124,7 @@ export function PlanView({ w, l, positions, connections, layers, selected, onSel
   const S = 60; const pad = 30; const vis = positions.filter((p) => layers.has(p.layer));
   const at = new Map(positions.map((p) => [p.code, p]));
   return (
-    <svg className="stage__svg" viewBox={`${-pad} ${-pad} ${w * S + 2 * pad} ${l * S + 2 * pad + 24}`} role="group" aria-label={`Plan of the room, ${w} by ${l} metres`} data-testid="room-plan">
+    <svg className="stage__svg" viewBox={`${-pad} ${-pad} ${w * S + 2 * pad} ${l * S + 2 * pad + 24}`} role="group" aria-label={`Plan of the room, ${w} by ${l} meters`} data-testid="room-plan">
       {Array.from({ length: Math.floor(w) + 1 }, (_, i) => <line key={`v${i}`} x1={i * S} y1={0} x2={i * S} y2={l * S} className="stage__gridline" />)}
       {Array.from({ length: Math.floor(l) + 1 }, (_, i) => <line key={`h${i}`} x1={0} y1={i * S} x2={w * S} y2={i * S} className="stage__gridline" />)}
       <rect x={0} y={0} width={w * S} height={l * S} className="rv__wall" />

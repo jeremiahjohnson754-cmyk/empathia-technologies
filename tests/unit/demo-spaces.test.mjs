@@ -106,7 +106,7 @@ test('Search Party scenarios: accurate counts, synthetic labels, never “certif
   }
   const s2 = sc.scenario('S2', 'R-ATL-4-218');
   for (const g of s2.groups.filter((g) => ['agreements', 'people', 'installer'].includes(g.key))) for (const i of g.items) assert.match(i.provenance, /synthetic demonstration fixture/);
-  assert.ok(s2.groups.find((g) => g.key === 'installer').items[0].label.includes('Brightwater AV Integration (fictional organisation)'));
+  assert.ok(s2.groups.find((g) => g.key === 'installer').items[0].label.includes('Brightwater AV Integration (fictional organization)'));
   const s3 = sc.scenario('S3', 'R-ATL-4-218'); assert.ok(s3.groups.find((g) => g.key === 'gated').items.length > 0, 'hard gates refuse someone');
   assert.equal(sc.scenario('S4').groups.find((g) => g.key === 'reopened').items.length, design.roomRecord('R-ATL-4-218').reopened.length);
   const s5 = sc.scenario('S5'); assert.equal(sc.scenarioCount(s5), recs.reduce((n, r) => n + design.openIssues(r).length, 0));

@@ -367,7 +367,7 @@ test('DS-16 storage is bounded: a ceiling on a sandbox’s recorded actions and 
 // ---- 50/10 flagship, slice 1 (docs/directives/50-10/FIRST_EXECUTION_ASSESSMENT.md §G): the university's lecture theatre, once, on the server
 test('DS-17 (F-01) every sandbox holds the flagship room: the canon’s identifier, name, campus, building, seats and dimensions, in its own tenant, reachable by that identifier', async () => {
   const F = await open(); const des = await as(F, 'designer');
-  assert.deepEqual(F.raw.scenario.flagship, { room: F.hall, canonicalRef: 'UNI-SCI-110', name: 'Lecture Theatre SCI-110 (synthetic)' });
+  assert.deepEqual(F.raw.scenario.flagship, { room: F.hall, canonicalRef: 'UNI-SCI-110', name: 'Lecture Theater SCI-110 (synthetic)' });
   const byCode = await call(des, 'GET', `/v1/rooms/${F.hall}`); const byRef = await call(des, 'GET', '/v1/rooms/UNI-SCI-110');
   assert.equal(byCode.status, 200, J(byCode.body)); assert.equal(byRef.status, 200, J(byRef.body)); assert.equal(byRef.body.room.id, byCode.body.room.id, 'one room, two ways to name it');
   const r = byRef.body.room; assert.equal(r.canonicalRef, 'UNI-SCI-110'); assert.equal(r.template, 'auditorium'); assert.equal(r.occupancy, 180); assert.equal(r.lifecycle, 'INSTALLED_UNVERIFIED');

@@ -41,7 +41,7 @@ for (const [world, as, room] of [['university', 'university.av_it_engineer', 'UN
 { const t = await open('#/estate/university/UNI-ENG-110?as=university.av_it_engineer'); const p = t.page;
   await p.click('[data-testid=open-optimizer]'); await p.waitForSelector('[data-testid=optimizer]');
   ok('O-15', 'a room record opens its own study, as the same role', await p.locator('[data-testid=optimizer]').getAttribute('data-room') === 'UNI-ENG-110' && /as=university\.av_it_engineer/.test(p.url()), p.url());
-  await p.click('text=Back to Engineering Centre 1.10'); await p.waitForSelector('[data-testid=estate-place]');
+  await p.click('text=Back to Engineering Center 1.10'); await p.waitForSelector('[data-testid=estate-place]');
   ok('O-16', 'and returns to the same record', await p.locator('[data-testid=estate-place]').getAttribute('data-node') === 'UNI-ENG-110'); await t.close(); }
 
 { const t = await open('#/optimizer/university?as=university.student'); const p = t.page; const text = await main(p);

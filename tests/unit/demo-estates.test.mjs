@@ -103,7 +103,7 @@ test('ES-16 all 52 role configurations resolve to a reader level; walk-in roles 
   assert.equal(RD.readerOf(cfg('university.student')), 'members'); assert.equal(RD.readerOf(cfg('stadium.guest_services')), 'staff'); assert.equal(RD.readerOf(cfg('stadium.av_it_engineer')), 'restricted');
 });
 test('ES-17 a place found by words is the record browsed to: same identifier, one record', () => {
-  const ix = M.indexOf(U.UNIVERSITY); const hits = RD.find(ix, 'members', 'lecture theatre sci-110');
+  const ix = M.indexOf(U.UNIVERSITY); const hits = RD.find(ix, 'members', 'lecture theater sci-110');
   assert.equal(hits[0].node, 'UNI-SCI-110'); assert.equal(hits[0].id, ix.byId.get('UNI-SCI-110').id); assert.equal(hits[0].kind, 'place');
 });
 test('ES-18 search never returns what the reader is not shown: no locker room for a fan, no equipment below staff', () => {

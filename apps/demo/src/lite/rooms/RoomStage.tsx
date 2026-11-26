@@ -43,7 +43,7 @@ export function EmpathiaRoomStage({ P, label, initialEye, onEye, engineer = fals
   const says = pieceSays(P, sel);
   return <div className="rm-room" data-testid="rm-room-3d" data-program={P.key} data-objects={P.pieces.length} data-view={plan ? 'plan' : spot ? 'eye' : 'overview'} data-eye={eyeKey || ''} data-eye-at={spot ? `${fmt(spot.x)},${fmt(spot.y)},${spot.z}` : ''} data-room-wd={`${fmt(P.w)},${fmt(P.d)}`} data-sel={sel || ''} data-equip={equip ? '1' : ''}>
     <div className={`rm-stage${spot ? ' rm-stage--eye' : ''}${plan ? ' rm-stage--plan' : ''}`}>
-      {plan ? <div className="l3-stage rm-planbox"><PlanView P={PP} sel={sel} onSel={pick} names={names} eyes={P.eyes} onEye={(k) => go(k)} runs={equip ? P.runs : null} label={`${label} The plan, to scale: ${fmt(P.w)} by ${fmt(P.d)} metres.`} /></div>
+      {plan ? <div className="l3-stage rm-planbox"><PlanView P={PP} sel={sel} onSel={pick} names={names} eyes={P.eyes} onEye={(k) => go(k)} runs={equip ? P.runs : null} label={`${label} The plan, to scale: ${fmt(P.w)} by ${fmt(P.d)} meters.`} /></div>
         : <L3View sc={sc!} c={c} label={spot ? `${label} Seen from ${spot.label.toLowerCase()}: ${spot.says}.` : label} onNav={() => undefined} S={60} defs={DEFS} eye={eye} eyePri bg={spot ? 'url(#rm-sky)' : undefined} tidy sel={sel} onObj={pick} tall />}
     </div>
     <div className="lt-eyes" role="radiogroup" aria-label="View" data-testid="rm-eyes"><span className="lt-eyes__l">View</span>

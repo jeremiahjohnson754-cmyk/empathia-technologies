@@ -33,7 +33,7 @@ test('IN-02 a new room is drawn by the design engine: its template, its devices,
     assert.deepEqual(p.positions.map((x) => [x.code, x.cat, x.x, x.y]), want.map((x) => [x.id, x.cat, x.x, x.y]), 'the positions are the engine template’s, unchanged');
     assert.equal(p.marked.length, 0); assert.equal(p.tests.added, p.tests.total); assert.ok(p.tests.total > 10, String(p.tests.total));
     const same = K.CAMPUS_ROOMS.filter((r) => r.archetype === archetype); const areas = same.map((r) => (r.dims[0] * r.dims[1]) / r.capacity).sort((a, b) => a - b); const med = areas.length % 2 ? areas[(areas.length - 1) / 2] : (areas[areas.length / 2 - 1] + areas[areas.length / 2]) / 2;
-    assert.ok(p.w * p.l >= people * med * 0.9, `${use}: floor ${p.w * p.l} m² for ${people} at ${med} m² a seat`); assert.match(p.basis[0], /modelled from the \d+ rooms? of this kind/); assert.match(p.basis[0], /Not surveyed/);
+    assert.ok(p.w * p.l >= people * med * 0.9, `${use}: floor ${p.w * p.l} m² for ${people} at ${med} m² a seat`); assert.match(p.basis[0], /modeled from the \d+ rooms? of this kind/); assert.match(p.basis[0], /Not surveyed/);
     assert.match(p.title, new RegExp(`for ${people} at Atlas HQ$`)); assert.equal(p.equipment.reduce((s, e) => s + e.count, 0), hw(p).length);
   }
   const extra = I.propose(I.blank('new-room', { use: 'teach', people: 40, adds: [{ cat: 'camera', qty: 2 }] })); assert.equal(extra.marked.length, 2); assert.equal(extra.equipment.find((e) => e.cat === 'camera').added, 2);
@@ -166,7 +166,7 @@ test('IN-14 a request in the person’s own words goes to the AV operations team
 
 test('IN-15 a size the person gives is used and labelled as theirs; half a size or a nonsense one is refused, never guessed', () => {
   const base = { use: 'meet', people: 8, need: 'A room for eight' };
-  const g = I.propose(I.blank('new-room', { ...base, dims: { w: 5, l: 7.5, h: null } })); assert.equal(g.w, 5); assert.equal(g.l, 7.5); assert.match(g.basis[0], /Size as you gave it: 5 × 7.5 m; ceiling modelled/);
+  const g = I.propose(I.blank('new-room', { ...base, dims: { w: 5, l: 7.5, h: null } })); assert.equal(g.w, 5); assert.equal(g.l, 7.5); assert.match(g.basis[0], /Size as you gave it: 5 × 7.5 m; ceiling modeled/);
   const m = I.propose(I.blank('new-room', base)); assert.match(m.basis[0], /^Size modeled from/);
   assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 5, l: null, h: null } })).dims, 'one side only'); assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 500, l: 7, h: null } })).dims, 'out of range');
   assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 5, l: 7, h: 1 } })).dims, 'a ceiling of 1 m');

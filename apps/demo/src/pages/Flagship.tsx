@@ -108,7 +108,7 @@ function Plan({ room, devices, connections, selected, onSelect, showLinks, showF
   const drop = (e: { clientX: number; clientY: number }) => { const p = toRoom(e); if (p) onDraft(p); };
   const mover = moving ? byId.get(moving) : undefined; const from = mover ? placeOf(mover) : null;
   return (
-    <svg ref={svg} className="fl__plan" viewBox={`${-pad} ${-pad} ${U(W) + 2 * pad} ${U(L) + 2 * pad}`} data-scale={u} role="group" aria-label={`Plan of ${room.name}: ${W} by ${L} metres, ${shown.length} positions`} data-testid="fl-plan" data-width={W} data-length={L} data-moving={moving || ''}
+    <svg ref={svg} className="fl__plan" viewBox={`${-pad} ${-pad} ${U(W) + 2 * pad} ${U(L) + 2 * pad}`} data-scale={u} role="group" aria-label={`Plan of ${room.name}: ${W} by ${L} meters, ${shown.length} positions`} data-testid="fl-plan" data-width={W} data-length={L} data-moving={moving || ''}
       onPointerMove={(e: { clientX: number; clientY: number }) => { if (moving && dragging.current) drop(e); }} onPointerUp={() => { dragging.current = false; }} onPointerLeave={() => { dragging.current = false; }}>
       <g className="fl__grid" aria-hidden="true">{ticks.map((x) => <line key={`x${x}`} x1={U(x)} y1={0} x2={U(x)} y2={U(L)} />)}{rows.map((y) => <line key={`y${y}`} x1={0} y1={U(y)} x2={U(W)} y2={U(y)} />)}</g>
       <polygon className="fl__outline" points={g.points.map((p) => `${U(p[0]!)},${U(p[1]!)}`).join(' ')} onClick={(e: { clientX: number; clientY: number }) => { if (moving) drop(e); else onSelect(null); }} />

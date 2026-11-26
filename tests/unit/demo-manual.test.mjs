@@ -79,7 +79,7 @@ test('MN-04 a room’s set is the room’s own record judged by the engine: desi
     assert.equal('result' in t, false); for (const p of t.principles) assert.ok(M.principleById(p).tests.includes(t.id)); for (const c of t.criteria) assert.equal(c.value, null); }
   assert.ok(g.requirements.length >= 30); assert.ok(g.requirements.every((r) => r.origin === 'manual' && M.principleById(r.id).stage === 'design'));
   for (const r of g.requirements) { const p = M.principleById(r.id); assert.ok(!p.families || p.families.some((f) => g.families.includes(f)), `${r.id} concerns equipment the room does not have`); assert.equal(r.text, p.say); assert.ok(r.tests.every((t) => g.template.some((x) => x.id === t))); assert.ok(r.values.every((v) => v.value === null && v.source === null)); assert.equal(r.noWaiver, F.neverExcepted(p)); }
-  assert.match(g.gaps[0], /^\d+ values this room depends on are not set by the organisation: .*Until one is set, its test records a reading and has no pass mark\.$/);
+  assert.match(g.gaps[0], /^\d+ values this room depends on are not set by the organization: .*Until one is set, its test records a reading and has no pass mark\.$/);
   assert.ok(g.equipment.length >= 8 && g.equipment.every((e) => e.device && e.code)); assert.ok(g.equipment.some((e) => e.profile === 'media') && g.equipment.some((e) => e.profile === null));
   assert.ok(g.roles.length >= 4 && g.roles.every((r) => r.approved.length >= 1)); assert.deepEqual(F.generate(REF, NONE), g, 'the same record gives the same set');
   // a room with no camera gets no camera rule

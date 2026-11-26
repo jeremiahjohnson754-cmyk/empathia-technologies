@@ -97,7 +97,7 @@ export interface Scenario { room: string; flagship: { room: string; canonicalRef
  * as the canonical estate has it (apps/demo/src/estate/university.ts): its identifier, its campus and building, its seats and its
  * dimensions. Fictional, like the institution. Here it is a server room like any other, made through the same routes.
  */
-export const FLAGSHIP = { criterion: { test: 'reverberation_rt60', metric: 't30_mid', upper: 1, source: 'Acoustic brief for SCI-110, speech use (synthetic)' }, canonicalRef: 'UNI-SCI-110', name: 'Lecture Theatre SCI-110 (synthetic)', template: 'auditorium', site: { code: 'UNI-N', name: 'Kestrel Valley University, North Campus (synthetic)' }, building: { code: 'UNI-SCI', name: 'Science Hall (synthetic)', floors: 4 },
+export const FLAGSHIP = { criterion: { test: 'reverberation_rt60', metric: 't30_mid', upper: 1, source: 'Acoustic brief for SCI-110, speech use (synthetic)' }, canonicalRef: 'UNI-SCI-110', name: 'Lecture Theater SCI-110 (synthetic)', template: 'auditorium', site: { code: 'UNI-N', name: 'Kestrel Valley University, North Campus (synthetic)' }, building: { code: 'UNI-SCI', name: 'Science Hall (synthetic)', floors: 4 },
   floor: 0, length: '20', width: '16', ceiling: '6.5', occupancy: 180, intendedUse: 'Lectures with capture and reinforcement: a raked theatre, 180 seats, six wheelchair positions at the rear cross-aisle' } as const;
 
 /**
@@ -150,7 +150,7 @@ export const FLAGSHIP_MODEL: { heights: Record<string, number>; add: Add[]; seat
  * Everything after "installed" is the visitor's to do, with the same page and the same rules as the lecture theatre.
  */
 export const SECOND = { criterion: { test: 'reverberation_rt60', metric: 't30_mid', upper: 0.8, source: 'Acoustic brief for Harbor 201, speech and presentation use (synthetic)' }, canonicalRef: 'CNV-MR-H201', name: 'Harbor 201 (synthetic)', template: 'townhall',
-  site: { code: 'CNV', name: 'Larkspur Exchange Convention Centre (synthetic)' }, building: { code: 'CNV-V', name: 'Larkspur Exchange (synthetic)', floors: 2 },
+  site: { code: 'CNV', name: 'Larkspur Exchange Convention Center (synthetic)' }, building: { code: 'CNV-V', name: 'Larkspur Exchange (synthetic)', floors: 2 },
   floor: 2, length: '22', width: '16', ceiling: '5', occupancy: 220, intendedUse: 'Conference sessions with capture and reinforcement: theatre seating for 220' } as const;
 
 async function seedScenario(pool: PgPool, router: Router, tenantId: string, people: Persona[], correlationId: string): Promise<Scenario> {

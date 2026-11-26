@@ -25,13 +25,13 @@ const phase = (p) => p.locator('[data-testid=gameday]').getAttribute('data-phase
   ok('GDB-08', 'worked in order, the fix restores the system pending an independent check', (await p.locator('[data-system=pa]').getAttribute('data-state')) === 'AWAITING_CHECK');
   await p.click('[data-respond=VERIFIED]');
   ok('GDB-09', 'the engineer who fixed it cannot verify it', (await p.locator('[data-incident]').getAttribute('data-step')) === 'FIXED' && /someone other than the person who made it/.test(await p.locator('[data-testid=gameday-said]').innerText()));
-  await p.click('[data-testid=gameday-advance]'); ok('GDB-10', 'with the fault fixed, kick-off goes ahead and the feed is live', await phase(p) === 'first-half' && /Programme feed live/.test(await nums(p)));
+  await p.click('[data-testid=gameday-advance]'); ok('GDB-10', 'with the fault fixed, kick-off goes ahead and the feed is live', await phase(p) === 'first-half' && /Program feed live/.test(await nums(p)));
   await p.goto(p.url().replace(/#.*/, '#/gameday?as=stadium.venue_ops_lead')); await p.waitForSelector('[data-respond=VERIFIED]'); await p.click('[data-respond=VERIFIED]'); await p.waitForSelector('[data-incident][data-step=VERIFIED]');
   ok('GDB-11', 'another venue role verifies it, and the system reads working', (await p.locator('[data-system=pa]').getAttribute('data-state')) === 'OK' && /0 open incidents/.test(await nums(p)) && /Venue Operations Lead|operations/i.test(await p.locator('[data-incident] .gd-steps').innerText()));
   ok('GDB-12', 'the readiness report is on the page and computed', /Readiness at first half \(T\+0 min\)/.test(await p.locator('[data-testid=gameday-report]').innerText()) && /GD-001/.test(await p.locator('[data-testid=gameday-report]').innerText()));
   await p.click('[data-fault=gate-c-scanners]');
   await p.goto(p.url().replace(/#.*/, '#/gameday?as=stadium.fan')); await p.waitForSelector('[data-testid=gameday-public]'); const pub = await main(p);
-  ok('GDB-13', 'a fan sees gates, queues and advice only: no control room, systems, incidents or room identifiers', await p.locator('[data-testid=gameday-advance], [data-testid=gameday-systems], [data-testid=gameday-incidents], [data-fault]').count() === 0 && /Gate D/.test(pub) && !/STA-|GD-0|ribbon|rack|programme return/i.test(pub), pub.slice(0, 160));
+  ok('GDB-13', 'a fan sees gates, queues and advice only: no control room, systems, incidents or room identifiers', await p.locator('[data-testid=gameday-advance], [data-testid=gameday-systems], [data-testid=gameday-incidents], [data-fault]').count() === 0 && /Gate D/.test(pub) && !/STA-|GD-0|ribbon|rack|program return/i.test(pub), pub.slice(0, 160));
   ok('GDB-14', 'the fan is steered away from the slow gate', (await p.locator('[data-gate=C]').getAttribute('data-best')) === 'false' && await p.locator('[data-best=true]').count() === 1);
   ok('GDB-15', 'no console error, no request leaving the page', !t.errs.length && !t.off.length, [...t.errs, ...t.off].join(' | ')); await t.close(); }
 

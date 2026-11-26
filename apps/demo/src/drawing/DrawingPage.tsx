@@ -78,7 +78,7 @@ export default function DrawingPage({ role, can }: PageProps) {
 
       {plan ? <Card title="What was read from the plan" icon="search" sub={u ? `Scale: ${Math.round(u * 100) / 100} drawing units to a meter (${clsShort(plan.scaleCls!).toLowerCase()}).` : 'Not to scale: the scale is unknown, so nothing is given in meters.'} testId="dr-plan-card">
         {b ? <figure className="dr-plan" data-testid="dr-plan" data-scale={plan.scaleCls || 'none'} data-devices={ex.devices.length}>
-          <svg viewBox={`0 0 ${460 + 100} ${Math.round(b.h * k) + 80}`} role="img" aria-label={`The room as read: ${ex.room ? `${ex.room.width} meters by ${ex.room.length} metres` : 'size unknown'}, with ${plural(ex.devices.length, 'device')}`} preserveAspectRatio="xMidYMid meet">
+          <svg viewBox={`0 0 ${460 + 100} ${Math.round(b.h * k) + 80}`} role="img" aria-label={`The room as read: ${ex.room ? `${ex.room.width} meters by ${ex.room.length} meters` : 'size unknown'}, with ${plural(ex.devices.length, 'device')}`} preserveAspectRatio="xMidYMid meet">
             <rect className="dr-room" x={X(b.x)} y={Y(b.y)} width={b.w * k} height={b.h * k} />
             <text className="dr-lab" x={X(b.x + b.w / 2)} y={24} textAnchor="middle">{ex.room ? `${ex.room.width} m` : `${Math.round(b.w)} units`}</text>
             {plan.ports.map((p) => <rect key={p.tag} className="dr-port" x={X(p.px) - 4} y={Y(p.py) - 4} width="8" height="8" />)}

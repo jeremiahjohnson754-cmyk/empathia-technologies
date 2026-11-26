@@ -39,7 +39,7 @@ test('GD-06 a gate fault changes what the public is told, and the public view ca
   let g = run(G.start(), 1); const before = G.publicView(g); g = must(G.inject(g, 'gate-c-scanners')); const after = G.publicView(g);
   assert.ok(after.gates.find((x) => x.gate === 'C').queueMin > before.gates.find((x) => x.gate === 'C').queueMin + 10); assert.match(after.notes.join(' '), /Gate D/); assert.notEqual(after.best.gate, 'C');
   g = must(G.inject(g, 'program-return')); g = must(G.inject(g, 'ribbon-east')); const text = JSON.stringify(G.publicView(g));
-  assert.ok(!/STA-|GD-0|ribbon|programme return|commentary|broadcast|incident|rack|network/i.test(text), text);
+  assert.ok(!/STA-|GD-0|ribbon|program return|commentary|broadcast|incident|rack|network/i.test(text), text);
 });
 test('GD-07 the same fault cannot be opened twice, nothing fails after strike, and the crew cannot stand down with work unverified', () => {
   let g = must(G.inject(run(G.start(), 5), 'suite-9-display')); assert.equal(G.inject(g, 'suite-9-display').ok, false); g = must(G.advance(g)); assert.equal(g.phase, 'exit');
@@ -51,7 +51,7 @@ test('GD-08 the engine is deterministic and never mutates the state it is given'
   assert.deepEqual(must(G.inject(must(G.advance(G.start())), 'pa-upper')), b);
 });
 test('GD-09 the readiness report is computed from the state and says when the next phase is held', () => {
-  let g = must(G.inject(run(G.start(), 2), 'program-return')); const r = G.report(g); assert.match(r.title, /warm-up \(T-45 min\)/); assert.ok(r.lines.some((l) => /Broadcast programme chain: degraded/.test(l))); assert.ok(r.lines.some((l) => /^Next phase held/.test(l)));
+  let g = must(G.inject(run(G.start(), 2), 'program-return')); const r = G.report(g); assert.match(r.title, /warm-up \(T-45 min\)/); assert.ok(r.lines.some((l) => /Broadcast program chain: degraded/.test(l))); assert.ok(r.lines.some((l) => /^Next phase held/.test(l)));
   assert.ok(G.report(G.start()).lines.every((l) => !/held/.test(l)));
 });
 // Added 10 Nov 2026 with the camera feed incident (gameday/signal). Additive: every check above is unchanged.

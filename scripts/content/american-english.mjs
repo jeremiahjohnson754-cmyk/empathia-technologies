@@ -44,8 +44,10 @@ const WORD = /[A-Za-z]+/g;
 const caseLike = (src, to) => src === src.toLowerCase() ? to : src[0] === src[0].toUpperCase() && src.slice(1) === src.slice(1).toLowerCase() ? to[0].toUpperCase() + to.slice(1) : null;
 function fix(text) {
   let n = 0;
-  const out = text.replace(WORD, (w) => {
+  const out = text.replace(WORD, (w, at) => {
     if (w.length > 1 && w === w.toUpperCase()) return w;   // an enum value or an acronym
+    const before = text.slice(Math.max(0, at - 2), at), after = text.slice(at + w.length, at + w.length + 2);
+    if (before.endsWith('_') || after.startsWith('_') || before === '--' || after === '--') return w;   // a class name (block__element, block--modifier)
     const low = w.toLowerCase(); const to = MAP.get(low); if (!to) return w;
     const r = caseLike(w, to); if (!r) return w; n += 1; return r;
   });
@@ -74,7 +76,12 @@ function edits(file, text) {
     else if (ts.isJsxText(node)) { raw = node.getText(sf); start = node.getStart(sf); }
     if (raw != null && raw.trim()) {
       const isJsxText = ts.isJsxText(node);
-      const sentence = isJsxText || /\s/.test(raw.trim());
+      // a piece of a template literal is judged by the whole template: in `${w} meters by ${l} metres` the last piece is one word,
+      // but it is a sentence (26 Nov 2026: the first sweep left that piece in British spelling)
+      const whole = ts.isTemplateHead(node) || ts.isTemplateMiddle(node) || ts.isTemplateTail(node)
+        ? (() => { let p = node.parent; while (p && !ts.isTemplateExpression(p)) p = p.parent; return p ? [p.head.text, ...p.templateSpans.map((x) => x.literal.text)].join(' ') : raw; })()
+        : raw;
+      const sentence = isJsxText || /\s/.test(raw.trim()) || (whole !== raw && /\S\s+\S/.test(whole.trim()) && /[a-z]{2,} [a-z]{2,}/i.test(whole));
       if (sentence && !skip(node)) { const { out: fixed, n } = fix(raw); if (n) out.push({ start, end: start + raw.length, from: raw, to: fixed, n }); }
     }
     ts.forEachChild(node, visit);

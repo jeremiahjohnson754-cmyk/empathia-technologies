@@ -109,7 +109,7 @@ const sRows = S.commissioning.rows.filter((r) => r.applicable);
 
 { const bar = await text(p, 'fl-bar');
   ok('FL-02', 'the page opens a sandbox and shows the lecture theatre by its canonical identifier, with its name, place, seats and dimensions as the server holds them',
-    (await text(p, 'fl-ref')) === 'UNI-SCI-110' && (await text(p, 'fl-name')) === 'Lecture Theatre SCI-110 (synthetic)' && (await text(p, 'fl-place')) === 'Science Hall (synthetic) · Kestrel Valley University, North Campus (synthetic)'
+    (await text(p, 'fl-ref')) === 'UNI-SCI-110' && (await text(p, 'fl-name')) === 'Lecture Theater SCI-110 (synthetic)' && (await text(p, 'fl-place')) === 'Science Hall (synthetic) · Kestrel Valley University, North Campus (synthetic)'
     && (await text(p, 'fl-seats')) === '180' && /^20 × 16 × 6\.5 m/.test(await text(p, 'fl-size')) && /installed unverified/i.test(bar) && (await text(p, 'fl-code')) === S.room.code, bar.replace(/\s+/g, ' ').slice(0, 200)); }
 
 { const allTests = (pg) => pg.locator('[data-testid=fl-phases] button').first().click();   // the plan opens on its first phase; "All" shows every applicable test
@@ -621,7 +621,7 @@ let INC1 = '', INC2 = '', SPK = '';
     options.length === 3 && options.includes(OTHER) && options.includes('UNI-SCI-110') && picked === OTHER && /Harbor 201/.test(title) && room.room.canonicalRef === OTHER && JSON.stringify(onPlan) === JSON.stringify(room.devices.map((d) => d.id).sort()) && upper === '0.8'
       && planCard.includes(`${seats} seats drawn of ${room.room.occupancy}`) && seats < room.room.occupancy && early === 1 && earlyServer.status === 422 && proposed.ok === 'yes' && approved.ok === 'yes' && after.basis === 'AS_BUILT' && after.asBuilt.x === to.x && after.designed.x === cam2.x && shownAt.x === to.x
       && JSON.stringify(hallAfter.devices.map((d) => d.placement)) === JSON.stringify(hallBefore.devices.map((d) => d.placement)) && hallAfter.room.lifecycle === 'ACCEPTED' && hallAfter.room.rev === hallBefore.room.rev
-      && kept === '22' && keptAt.x === to.x && backV === '1' && /Lecture Theatre SCI-110/.test(backTitle) && noPlan === 0 && /has no room “NOPE-123”/.test(says) && markedMissing === 1 && clean && only404,
+      && kept === '22' && keptAt.x === to.x && backV === '1' && /Lecture Theater SCI-110/.test(backTitle) && noPlan === 0 && /has no room “NOPE-123”/.test(says) && markedMissing === 1 && clean && only404,
     `rooms offered ${options.join(', ')} · “${title}” ${room.devices.length} positions, limit ${upper} s, ${planCard.slice(0, 110)} · camera ${cam2.id} (${cam2.x}, ${cam2.y}) → as built (${after.asBuilt?.x}, ${after.asBuilt?.y}) ${after.basis} · theatre ${hallAfter.room.lifecycle}, placements unchanged · after refresh ${kept} m long · back: “${backTitle}” baseline ${backV} · unknown: ${says.slice(-120)}`); }
 
 await h.app.stop();

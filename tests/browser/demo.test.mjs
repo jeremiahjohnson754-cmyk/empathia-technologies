@@ -70,10 +70,10 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await page.fill('[aria-label="Revision reason"]', 'initial layout'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
     await persp('syseng'); await page.click('button:has-text("Approve the suggestion")'); await page.waitForTimeout(150);
     ok('B-05', 'the systems engineer approves the classification', /approved HUD by Systems Engineer/.test(await main()), (await main()).slice(0, 100));
-    await page.click('button:has-text("Place at the centre")'); await page.waitForTimeout(150); await page.fill('[aria-label="Revision reason"]', 'ceiling mic'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
+    await page.click('button:has-text("Place at the center")'); await page.waitForTimeout(150); await page.fill('[aria-label="Revision reason"]', 'ceiling mic'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
     await page.click('#tab-lifecycle'); await page.waitForTimeout(150); await page.click('button:has-text("Move to DESIGN_APPROVED")'); await page.waitForTimeout(150);
     ok('B-06', 'the author of the latest revision cannot approve the design (separation of duties)', /separation of duties/.test(await refusal()), await refusal());
-    await page.click('#tab-design'); await page.waitForTimeout(100); await persp('designer'); await page.click('button:has-text("Place at the centre")'); await page.waitForTimeout(100); await page.fill('[aria-label="Revision reason"]', 'designer confirms'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
+    await page.click('#tab-design'); await page.waitForTimeout(100); await persp('designer'); await page.click('button:has-text("Place at the center")'); await page.waitForTimeout(100); await page.fill('[aria-label="Revision reason"]', 'designer confirms'); await page.click('button:has-text("Save revision")'); await page.waitForTimeout(150);
     await persp('syseng'); await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
     // a High/Critical design deficiency may block approval: remove the offending device first if the engine reports one
     await page.click('button:has-text("Move to DESIGN_APPROVED")'); await page.waitForTimeout(150);
@@ -115,7 +115,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     await persp('syseng'); await page.click('button:has-text("Recommission")'); await page.waitForTimeout(150);
     ok('B-15c', 'the room can be recommissioned (back to COMMISSIONING) while baseline v1 stays', /COMMISSIONING/.test(await page.locator('.build__state').innerText()) && /baseline v1/.test(await page.locator('.build__state').innerText()), await refusal());
     // the complete journey continues: a change during recommissioning → record → independent verification → re-acceptance → baseline v2 → compare
-    await page.click('#tab-design'); await page.waitForTimeout(100); await persp('designer'); await page.selectOption('#b-cat', 'lighting'); await page.click('button:has-text("Place at the centre")'); await page.waitForTimeout(150);
+    await page.click('#tab-design'); await page.waitForTimeout(100); await persp('designer'); await page.selectOption('#b-cat', 'lighting'); await page.click('button:has-text("Place at the center")'); await page.waitForTimeout(150);
     ok('B-15d', 'lighting control can be added during recommissioning by whoever holds room.design (a new family, so new tests apply)', !/Refused/.test(await refusal()) && (await page.locator('.build__list').first().innerText()).split('\n').length >= 2, await refusal());
     await persp('syseng'); await page.click('#tab-lifecycle'); await page.waitForTimeout(150);
     await persp('qa'); await page.click('button:has-text("Move to ACCEPTED")'); await page.waitForTimeout(200);
@@ -139,7 +139,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
     ok('B-16', 'the ledger records every refusal with its actor (DENIED rows) alongside the allowed changes', (led.match(/DENIED/g) || []).length >= 5 && (led.match(/ALLOWED/g) || []).length >= 10, `${(led.match(/DENIED/g) || []).length} denied`);
     await page.screenshot({ path: path.join(out, 'build-a-room.png'), fullPage: true });
     await page.reload(); await page.waitForTimeout(400);
-    ok('B-17', 'the draft survives a reload on this computer and can be reset', /Harbour Huddle/.test(await main()));
+    ok('B-17', 'the draft survives a reload on this computer and can be reset', /Harbor Huddle/.test(await main()));
     await page.click('button:has-text("Reset demonstration")'); await page.waitForTimeout(200);
     ok('B-18', 'reset returns to the description form', !!(await page.locator('#b-name').count()));
   }

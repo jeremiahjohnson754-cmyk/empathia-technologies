@@ -110,7 +110,7 @@ test('OB-09 publishing is the administrator’s: a revision with a note and a re
   assert.ok(O.publish(w, 'steward', 'short').why); assert.ok(O.publish(w, 'steward', 'Added the vendor section.', 10).why); assert.ok(O.publish(w, 'steward', 'Added the vendor section.', 400).why);
   assert.deepEqual(O.publish(w, 'steward', 'Added the vendor section for this site.', 90), { ok: true, rev: 2 }); const revs = O.obView(w).revisions; assert.deepEqual(revs.map((r) => `${r.rev}:${r.state}`), ['1:ARCHIVED', '2:PUBLISHED']); assert.equal(revs[1].by, 'steward');
   const now = Date.parse(revs[1].at); assert.equal(O.freshnessOf(O.obView(w), now).state, 'CURRENT'); assert.equal(O.freshnessOf(O.obView(w), now + 70 * 864e5).state, 'DUE'); assert.equal(O.freshnessOf(O.obView(w), now + 91 * 864e5).state, 'STALE'); assert.equal(O.freshnessOf(O.obView(w), now).rev.rev, 2);
-  assert.match(lines(w, 'onboard.published')[0].detail, /Revision 2 .* published for this organisation; to be reviewed within 90 days/);
+  assert.match(lines(w, 'onboard.published')[0].detail, /Revision 2 .* published for this organization; to be reviewed within 90 days/);
 });
 
 test('OB-10 stored state is untrusted: unknown items, a tick by the wrong role, a forged pass, a half-rated review and a revision by a non-administrator all read as nothing', () => {

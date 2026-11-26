@@ -32,7 +32,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   } else ok(`SS-${tag}-03`, '“+N more” exists for a group of more than three', false, 'no +N more button on S1');
   await t.go('#/search/scenarios/S2?room=R-HZN-1-400', 300);
   const s2 = await t.text();
-  ok(`SS-${tag}-04`, 'the room picker re-answers for another room; fixtures are labelled synthetic and organisations fictional', /Horizon 1\.400/.test(s2) && /synthetic demonstration fixture/.test(s2) && /fictional organisation/.test(s2) && /Saffron Hill Broadcast/.test(s2));
+  ok(`SS-${tag}-04`, 'the room picker re-answers for another room; fixtures are labelled synthetic and organisations fictional', /Horizon 1\.400/.test(s2) && /synthetic demonstration fixture/.test(s2) && /fictional organization/.test(s2) && /Saffron Hill Broadcast/.test(s2));
   await t.page.selectOption('.sp__pick select', 'R-ATL-4-218'); await t.page.waitForTimeout(300);
   ok(`SS-${tag}-05`, 'changing the room in the picker updates the address and the answer', /room=R-ATL-4-218/.test(await t.page.evaluate(() => location.hash)) && /Atlas 4\.218/.test(await t.text()));
   await t.go('#/search/scenarios/S3', 300);

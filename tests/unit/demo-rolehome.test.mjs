@@ -93,7 +93,7 @@ test('RH-11 the engineer and the designer see the build pipeline from the same s
 test('RH-12 the two project managers see the same projects from their own side: the business need and money, or delivery and movement', () => {
   const b = start('bpm'); const i = start('ipm'); const P0 = PR.programme();
   assert.equal(b.zones[0].rows.length, P0.projects.length); assert.equal(i.zones[0].rows.length, P0.projects.length);
-  assert.ok(b.zones[0].rows.some((r) => /Refresh the Atlas executive boardroom/.test(r.title) && /\$184k authorised/.test(r.sub))); assert.ok(i.zones[0].rows.some((r) => /PRJ-ATLAS-AV · field active/.test(r.title)));
+  assert.ok(b.zones[0].rows.some((r) => /Refresh the Atlas executive boardroom/.test(r.title) && /\$184k authorized/.test(r.sub))); assert.ok(i.zones[0].rows.some((r) => /PRJ-ATLAS-AV · field active/.test(r.title)));
   assert.deepEqual(b.tiles, []); assert.deepEqual(i.tiles.map((t) => t.label), ['Installation', 'Commissioning', 'Acceptance']);
 });
 test('RH-13 "What needs my decision" holds only reviews that are this role’s; "What changed" holds only the last day', () => {

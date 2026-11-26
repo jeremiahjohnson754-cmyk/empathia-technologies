@@ -106,7 +106,7 @@ export function PrecisionPlan({ ar, roomId, sel, onSel }: { ar: Arrange; roomId:
     ar.move(o, k === 'x' ? round(t - o.x) : 0, k === 'y' ? round(t - o.y) : 0, k === 'rot' ? Math.round(t - angleOf(o)) : 0, k === 'rot' ? `Turned to ${Math.round(t)}°.` : `Placed at ${t.toFixed(2)} m.`); };
   return <section className="lt-plan2" aria-label="Precision plan" data-testid="lite-arr-plan">
     <h3 className="lt-h3">Precision plan <span className="ui-meta">the same arrangement from above · the front wall at the top</span></h3>
-    <svg viewBox={`-6 -6 ${L.w * sc + 12} ${L.d * sc + 12}`} role="group" aria-label={`Plan of the room, ${L.w} by ${L.d} metres`} className="lt-plan2__svg">
+    <svg viewBox={`-6 -6 ${L.w * sc + 12} ${L.d * sc + 12}`} role="group" aria-label={`Plan of the room, ${L.w} by ${L.d} meters`} className="lt-plan2__svg">
       <rect x="0" y="0" width={L.w * sc} height={L.d * sc} className="lt-plan2__room" onClick={() => onSel(null)} />
       {show.map((x) => { const on = x.id === sel; const w = Math.max(0.12, x.w) * sc, d = Math.max(0.12, x.d) * sc;
         return <g key={x.id} transform={`translate(${x.x * sc} ${x.y * sc}) rotate(${-(x.rot || 0)})`} className={`lt-plan2__o lt-plan2__o--${x.kind}${on ? ' on' : ''}${x.added ? ' added' : ''}`} data-obj={x.id}

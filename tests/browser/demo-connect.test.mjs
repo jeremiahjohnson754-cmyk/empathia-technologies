@@ -130,7 +130,7 @@ const refused = (p) => p.evaluate(() => !!document.querySelector('[data-testid=a
   await p.goto(`${base}#/meet?step=done&id=MTG-0001`); await p.reload(); await p.waitForSelector('[data-testid=meet-cancel]'); await wait(p, 400);
   await p.fill('[data-testid=meet-cancel-reason]', 'The room is being refitted'); await p.click('[data-testid=meet-cancel]'); await wait(p);
   const s5 = await state(p); const can = await p.evaluate(() => ({ h: document.querySelector('[data-testid=meet-done] h2').textContent, st: document.querySelector('[data-testid=meet-statement]').textContent, btn: !!document.querySelector('[data-testid=meet-cancel]') }));
-  ok('CB-38', 'cancelling: the meeting is kept as cancelled, the booking leaves the workspace, it is logged, and the page says nothing left this browser', s5.meetings.length === 1 && s5.meetings[0].state === 'CANCELLED' && s5.booked.length === 0 && s5.events[0].type === 'meeting.cancelled' && /The room is being refitted/.test(s5.events[0].detail) && /MTG-0001 is cancelled/.test(can.h) && /No cancellation left this browser/.test(can.st) && !can.btn, JSON.stringify(can));
+  ok('CB-38', 'cancelling: the meeting is kept as cancelled, the booking leaves the workspace, it is logged, and the page says nothing left this browser', s5.meetings.length === 1 && s5.meetings[0].state === 'CANCELLED' && s5.booked.length === 0 && s5.events[0].type === 'meeting.cancelled' && /The room is being refitted/.test(s5.events[0].detail) && /MTG-0001 is canceled/.test(can.h) && /No cancellation left this browser/.test(can.st) && !can.btn, JSON.stringify(can));
   ok('CB-39', 'no console error in the whole journey', t.errs.length === 0, t.errs.join(' | '));
   await t.close(); }
 
