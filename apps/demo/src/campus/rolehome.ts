@@ -27,6 +27,7 @@ import { vendorScorecard, months } from '../service/analytics.js';
 import { deviceRegister, registerStats } from './registers.js';
 import { readRegister } from './registerStore.js';
 import { worked } from '../assurance/deficiencyStore.js';
+import { OPEN_REQUEST_STATES as LIVE } from '../workspace/requests.js';
 
 export type Tone = 'ok' | 'warn' | 'bad' | 'info' | 'muted';
 export interface Link { label: string; href: string }
@@ -58,7 +59,6 @@ export const MISSION_ROLES: readonly RoleKey[] = ['ops', 'architect'];
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 const lower1 = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 const who = (p: string | null | undefined) => (p ? (PEOPLE[p] || p).replace(' (synthetic)', '') : 'nobody yet');
-const LIVE = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'RESTORED', 'PENDING_VERIFICATION']);
 const DAY = 864e5;
 const fromPriority = (p: Priority): Row => ({ id: p.id, title: p.title, sub: `${p.where} · ${p.decides}`, href: p.href, tone: p.tone, tag: p.verb });
 

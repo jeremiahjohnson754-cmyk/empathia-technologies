@@ -17,6 +17,7 @@ import { allRecords, roomRecord, openIssues, type RoomRecord } from '../campus/d
 import { shortName, fullName, roomHref, buildingByKey } from '../campus/canon.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
 import { openable } from './V25Nav.js';
 import { AssuranceTabs, CxTabs } from './AssuranceViews.js';
@@ -65,7 +66,7 @@ function NoRoom({ perspective, id, kind, hash = '' }: { perspective: string; id:
 // ------------------------------------------------------------------------------------------------------------ commissioning record
 const SPINE = (r: RoomRecord, inc: S.Incident[]) => {
   const ev = (re: RegExp) => r.events.some((e) => re.test(`${e.type} ${e.detail}`) && e.outcome !== 'DENIED');
-  const ph = phaseStats(r); const passed = ph.filter((p) => p.verdict === 'pass').length; const bl = blockers(r); const open = inc.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state));
+  const ph = phaseStats(r); const passed = ph.filter((p) => p.verdict === 'pass').length; const bl = blockers(r); const open = inc.filter(isOpenRequest);
   const acc = r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL';
   return [
     { n: 1, name: 'Intake', state: 'DONE', note: r.outline.intent.slice(0, 60) + '…' }, { n: 2, name: 'Design', state: ev(/design_created/) ? 'DONE' : 'NOT STARTED', note: ev(/design_created/) ? 'Design created and classified' : 'No design record' },

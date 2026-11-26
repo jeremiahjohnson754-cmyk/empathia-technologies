@@ -7,11 +7,11 @@ import { Card, Chip, Icon, List, ListRow, EmptyState, StatTile, type Series } fr
 import { allRecords, openIssues } from '../campus/design.js';
 import { roomHref, shortName } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import { Stack, plural, pct } from './viz.js';
 import { openable } from './V25Nav.js';
 import { REMEDY, BUDGET_COMPONENTS, assuranceEstate, assuranceTrend, readyList, plannedChanges, maintenanceSignals, designReviews, costScope, scopeOf, usdRange, isLayoutIssue, incidentCat, roomLabel, REVIEW_RULE, CRIT_RULE, type Remedy } from '../assurance/model.js';
 
-const DONE = ['CLOSED', 'CANCELLED'];
 
 export function AssuranceInsights({ role, w }: { role: string; w: S.Workspace }) {
   const recs = allRecords(); const E = assuranceEstate(w.incidents, recs); const tr = assuranceTrend(w.incidents, recs);
@@ -20,7 +20,7 @@ export function AssuranceInsights({ role, w }: { role: string; w: S.Workspace })
   const waiting = plannedChanges(recs, w.incidents); const sig = maintenanceSignals(w.incidents, recs); const reviews = designReviews(recs);
   const max = Math.max(...tr.map((x) => x.total));
   // the room health check: devices with a fault on record, and the seats they reach
-  const faulty = recs.map((r) => { const iss = openIssues(r).filter((i) => !isLayoutIssue(i)); const jobs = w.incidents.filter((i) => i.roomId === r.outline.id && !DONE.includes(i.state));
+  const faulty = recs.map((r) => { const iss = openIssues(r).filter((i) => !isLayoutIssue(i)); const jobs = w.incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i));
     return { r, devices: new Set([...iss.flatMap((i) => i.positions), ...jobs.map((j) => incidentCat(j))]).size, layout: openIssues(r).some(isLayoutIssue) }; });
   const devFault = faulty.filter((x) => x.devices); const layout = faulty.filter((x) => x.layout);
   const step = (href: string, icon: Parameters<typeof Icon>[0]['name'], tone: Series, t: string, s: string, n: number | '', id: string) => openable(role, href) ? <ListRow key={id} testId={`as-next-${id}`} title={t} sub={s} href={href} chevron leading={<Icon name={icon} />} trailing={n !== '' ? <Chip small tone={tone}>{String(n)}</Chip> : undefined} /> : null;

@@ -16,6 +16,7 @@ import type { RoomRecord, Position } from '../campus/design.js';
 import type { Workspace } from '../workspace/store.js';
 import { roomIssues, moves, type OpenIssue } from '../campus/metrics.js';
 import { CAMPUS_ROOMS, buildingByKey, fullName, shortName, type RoomOutline } from '../campus/canon.js';
+import { OPEN_REQUEST_STATES as LIVE } from '../workspace/requests.js';
 
 export type Group = 'audio' | 'video' | 'display' | 'control' | 'network' | 'other';
 export type SymptomId = 'far-cant-hear' | 'room-cant-hear' | 'echo' | 'no-camera' | 'framing' | 'blank' | 'laptop' | 'frozen' | 'join' | 'other';
@@ -93,7 +94,6 @@ export function plainEquipment(r: RoomRecord): string {
 
 // ------------------------------------------------------------------------------------------------------------ its history
 export interface HistoryRow { at: string; kind: 'job' | 'issue' | 'unit' | 'baseline' | 'lifecycle' | 'exception' | 'visit'; title: string; detail: string; state: string; tone: 'ok' | 'warn' | 'bad' | 'info' | 'muted'; id: string; group: Group | null; live: boolean; href: string | null }
-const LIVE = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'REOPENED']);
 const JOB_WORD: Record<string, [string, HistoryRow['tone']]> = {
   OPEN: ['Reported, waiting to be looked at', 'warn'], TRIAGED: ['Reviewed, waiting for a technician', 'warn'], ASSIGNED: ['A technician is assigned', 'info'], ACCEPTED: ['The technician has accepted the job', 'info'], IN_PROGRESS: ['Being worked on', 'info'], VERIFYING: ['Fixed, being checked', 'info'],
   RESOLVED: ['Fixed and checked', 'ok'], CLOSED: ['Closed', 'ok'], REOPENED: ['Came back, reopened', 'bad'], CANCELLED: ['Cancelled', 'muted'],

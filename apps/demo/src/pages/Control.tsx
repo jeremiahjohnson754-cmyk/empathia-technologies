@@ -17,6 +17,7 @@ import { passports, type Passport, type Records } from '@empathia/kpi-engine';
 import { TIERS } from '@empathia/apex-engine';
 import areaRoles from '../generated/area-roles.json';
 import * as S from '../workspace/store.js';
+import { isOpenRequest, isUnclosedRequest, requestFixedAt } from '../workspace/requests.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { loadDraft, personaOf, personaLabel, holds, type Draft } from '../build/store.js';
 import { NATIVE } from '../registry.js';
@@ -67,11 +68,11 @@ export function MissionControl({ perspective }: { perspective: string }) {
     { key: 'documents', label: 'Documents', count: R.documents.filter((x) => x.state !== 'APPROVED').length, href: '#/v25/build?tab=drawings', items: R.documents.filter((x) => x.state !== 'APPROVED').map((x) => `${x.roomId} ${x.state}`) },
     { key: 'handoff', label: 'Handoff', count: R.projects.filter((p) => p.delivery === 'CUSTOMER_ACCEPTED').length, href: '#/v25/build?tab=lifecycle', items: R.projects.filter((p) => p.delivery === 'CUSTOMER_ACCEPTED').map((p) => `${p.id} accepted, handoff pending`) },
     { key: 'assurance', label: 'Assurance', count: R.rooms.filter((r) => r.baseline).length, href: '#/v25/build?tab=lifecycle', items: R.rooms.filter((r) => r.baseline).map((r) => `${r.id} baseline v${r.baseline!.version}`) },
-    { key: 'service', label: 'Service', count: w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state)).length, href: '#/v25/service', items: w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state)).map((i) => `${i.id} ${i.state} · ${i.title}`) },
+    { key: 'service', label: 'Service', count: w.incidents.filter(isUnclosedRequest).length, href: '#/v25/service', items: w.incidents.filter(isUnclosedRequest).map((i) => `${i.id} ${i.state} · ${i.title}`) },
   ];
   const latest = [...w.events, ...(d?.events.map((e) => ({ ...e, aggregate: d.code })) || [])].sort((a, b) => (a.at < b.at ? 1 : -1)).slice(0, 12);
   const todo = needsAction(w, d, persona);
-  const based = R.rooms.filter((r) => r.baseline).length; const openJobs = w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state));
+  const based = R.rooms.filter((r) => r.baseline).length; const openJobs = w.incidents.filter(isOpenRequest);
   const allEvents = [...w.events, ...(d?.events || [])]; const evWeeks = weekCounts(allEvents, (e) => e.at); const denied = allEvents.filter((e) => e.outcome === 'DENIED').length;
   const ICON: Record<string, IconName> = { intake: 'inbox', decision: 'check', funding: 'ticket', design: 'layers', commissioning: 'shield', field: 'wrench', documents: 'book', handoff: 'link', assurance: 'pulse', service: 'route' };
   return (
@@ -83,7 +84,7 @@ export function MissionControl({ perspective }: { perspective: string }) {
       <V25Nav role={perspective} current="#/v25" />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
         <StatTile label="Waiting on you" value={todo.length} icon="bell" tone={todo.length ? 'warn' : 'ok'} hint={todo[0]?.text || 'Nothing waits on this perspective'} />
-        <StatTile label="Open service jobs" value={openJobs.length} icon="route" tone="servicehands" href="#/servicehands" spark={weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.closedAt)} delta={deltaOf(weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.closedAt), 'down', 'vs 4 wk ago', { level: true })} />
+        <StatTile label="Open service jobs" testId="v25-open-jobs" value={openJobs.length} icon="route" tone="servicehands" href="#/servicehands" spark={weekBacklog(w.incidents, (i) => i.openedAt, requestFixedAt)} delta={deltaOf(weekBacklog(w.incidents, (i) => i.openedAt, requestFixedAt), 'down', 'vs 4 wk ago', { level: true })} />
         <StatTile label="Rooms without a baseline" value={R.rooms.length - based} icon="shield" tone="commissioning" hint="Commissioning not accepted yet" />
         <StatTile label="Ledger events" value={allEvents.length} icon="book" tone="mission-control" spark={evWeeks} delta={deltaOf(evWeeks, 'none', 'vs prior 4 wk')} href="#/v25/ledger" />
       </div>

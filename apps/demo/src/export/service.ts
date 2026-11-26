@@ -10,6 +10,7 @@
 import { SLA } from '@empathia/service-engine';
 import { SITE, buildingByKey } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import type { Report, Section } from './model.js';
 import type { MadeBy } from './cx.js';
 import { servicePhases } from '../service/phases.js';
@@ -28,7 +29,7 @@ const PROV = (by: MadeBy) => [
 ];
 
 export function serviceQueuePackage(w: S.Workspace, by: MadeBy): Report {
-  const all = w.incidents; const open = all.filter((i) => !DONE.includes(i.state));
+  const all = w.incidents; const open = all.filter(isOpenRequest);
   const tech = (i: S.Incident) => { const wo = i.workOrderId ? w.workOrders.find((x) => x.id === i.workOrderId) : undefined; return { wo, who: wo?.techId ? w.staff.find((s) => s.id === wo.techId)?.name || wo.techId : '' }; };
   const buildings = [...new Set(all.map((i) => i.buildingKey))].sort();
   const crit = open.filter((i) => i.severity === 'Mission critical');
@@ -38,11 +39,11 @@ export function serviceQueuePackage(w: S.Workspace, by: MadeBy): Report {
     { id: 'standing', heading: 'Where the queue stands', text: [`${plural(open.length, 'open request')}, ${crit.length} mission critical; ${unassigned.length} without a person assigned; ${verifying.length} awaiting independent verification.`],
       bullets: crit.length ? crit.map((i) => `${i.id} · ${i.roomName}: ${i.title} (${word(i.state)}${tech(i).who ? `, ${tech(i).who}` : ', nobody assigned'})`) : ['No mission-critical request is open.'] },
     { id: 'by-building', heading: 'By building', text: ['Drilled up: the open requests of each building, by severity.'],
-      table: { title: 'By building', cols: [{ key: 'b', label: 'Building' }, { key: 'open', label: 'Open', kind: 'number' }, ...SEVS.map((s) => ({ key: s, label: s, kind: 'number' as const })), { key: 'closed', label: 'Closed', kind: 'number' }],
-        rows: buildings.map((k) => { const mine = all.filter((i) => i.buildingKey === k); const o = mine.filter((i) => !DONE.includes(i.state)); return { b: buildingByKey(k)?.name || k, open: o.length, ...Object.fromEntries(SEVS.map((s) => [s, o.filter((i) => i.severity === s).length])), closed: mine.length - o.length }; }) } },
+      table: { title: 'By building', cols: [{ key: 'b', label: 'Building' }, { key: 'open', label: 'Open', kind: 'number' }, ...SEVS.map((s) => ({ key: s, label: s, kind: 'number' as const })), { key: 'closed', label: 'Resolved or closed', kind: 'number' }],
+        rows: buildings.map((k) => { const mine = all.filter((i) => i.buildingKey === k); const o = mine.filter(isOpenRequest); return { b: buildingByKey(k)?.name || k, open: o.length, ...Object.fromEntries(SEVS.map((s) => [s, o.filter((i) => i.severity === s).length])), closed: mine.length - o.length }; }) } },
     { id: 'queue', heading: 'Every request', text: ['Drilled down: one row per request, open first.'],
       table: { title: 'Requests', cols: [{ key: 'id', label: 'Request' }, { key: 'room', label: 'Room' }, { key: 'title', label: 'Title' }, { key: 'sev', label: 'Severity' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'sla', label: 'Held to (respond · restore)' }, { key: 'wo', label: 'Work order' }, { key: 'who', label: 'Assigned to' }, { key: 'opened', label: 'Opened', kind: 'date' }, { key: 'apex', label: 'APEX case' }],
-        rows: [...open, ...all.filter((i) => DONE.includes(i.state))].map((i) => { const t = tech(i); return { id: i.id, room: `${i.roomName} (${i.roomId})`, title: i.title, sev: i.severity, state: word(i.state), sla: `${SLA[i.severity].respond} · ${SLA[i.severity].restore}`, wo: t.wo ? `${t.wo.id} · ${word(t.wo.workType)}` : '', who: t.who, opened: ymd(i.openedAt), apex: i.apexId || '' }; }) } },
+        rows: [...open, ...all.filter((i) => !isOpenRequest(i))].map((i) => { const t = tech(i); return { id: i.id, room: `${i.roomName} (${i.roomId})`, title: i.title, sev: i.severity, state: word(i.state), sla: `${SLA[i.severity].respond} · ${SLA[i.severity].restore}`, wo: t.wo ? `${t.wo.id} · ${word(t.wo.workType)}` : '', who: t.who, opened: ymd(i.openedAt), apex: i.apexId || '' }; }) } },
     { id: 'work', heading: 'Work orders', table: { title: 'Work orders', cols: [{ key: 'id', label: 'Work order' }, { key: 'inc', label: 'Request' }, { key: 'type', label: 'Work' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'who', label: 'Assigned to' }, { key: 'window', label: 'Window' }, { key: 'ev', label: 'Evidence', kind: 'number' }, { key: 'pf', label: 'Preflight' }],
       rows: w.workOrders.map((x) => ({ id: x.id, inc: x.incidentId, type: word(x.workType), state: word(x.state), who: x.techId ? w.staff.find((s) => s.id === x.techId)?.name || x.techId : '', window: x.window ? `${stamp(x.window.from)} → ${stamp(x.window.to)}` : '', ev: x.evidence.length, pf: x.preflight ? (x.preflight.every((c) => c.ok) ? 'Passed' : `Blocked: ${x.preflight.filter((c) => !c.ok).map((c) => c.label).join(', ')}`) : 'Not run' })) } },
   ];

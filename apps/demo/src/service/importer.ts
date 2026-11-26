@@ -13,6 +13,7 @@
  */
 import { roomById, fullName } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
+import { isUnclosedRequest } from '../workspace/requests.js';
 
 export type RowState = 'ready' | 'refused' | 'duplicate' | 'closed';
 export interface ImportRow { line: number; roomId: string; roomName: string; building: string; title: string; summary: string; severity: string | null; state: RowState; why: string[] }
@@ -49,7 +50,7 @@ function check(line: number, raw: { room?: string; title?: string; summary?: str
   const severity = sev ? SEVERITIES.find((s) => s.toLowerCase() === sev.toLowerCase()) || null : null;
   if (sev && !severity) why.push(`severity “${sev.slice(0, 30)}” is not one of ${SEVERITIES.join(', ')}`);
   const key = `${o?.id}|${title.toLowerCase()}`;
-  const dup = !why.length && (w.incidents.some((i) => i.roomId === o!.id && !['CLOSED', 'CANCELLED'].includes(i.state) && i.title.toLowerCase() === title.toLowerCase()) || seen.has(key));
+  const dup = !why.length && (w.incidents.some((i) => i.roomId === o!.id && isUnclosedRequest(i) && i.title.toLowerCase() === title.toLowerCase()) || seen.has(key));
   if (!why.length) seen.add(key);
   const closed = !why.length && !dup && /^(closed|cancelled|canceled)\b/i.test((raw.state ?? '').trim());   // an exported closed request is not raised again
   return { line, roomId: o?.id || roomText, roomName: o ? fullName(o) : roomText, building: o?.building || '', title, summary, severity, state: why.length ? 'refused' : dup ? 'duplicate' : closed ? 'closed' : 'ready', why: dup ? ['an open request in this room already has this title'] : closed ? ['the file says this request is closed: it is not raised again'] : why };

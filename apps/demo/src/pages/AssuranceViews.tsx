@@ -10,13 +10,13 @@ import { shortName, roomHref } from '../campus/canon.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaLabel, personaOf } from '../build/store.js';
 import type * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import { Foot, plural, pct } from './viz.js';
 import { openable } from './V25Nav.js';
 import { asState, cxState, AS, CX } from './Estate.js';
 import { DeficiencyBench } from './DeficiencyBench.js';
 export { AssurancePage } from './Estate.js';
 
-const DONE = ['CLOSED', 'CANCELLED'];
 const roomName = (r: RoomRecord) => `${shortName(r.outline)} — ${r.outline.name}`;
 const AS_TABS = [['#/assurance', 'Command center', 'pulse'], ['#/assurance?view=analysis', 'Analysis', 'chart'], ['#/assurance/ready', 'Ready checks', 'check'], ['#/assurance/change', 'Change impact', 'route'], ['#/assurance/signals', 'Signals', 'bell']] as const;
 export function AssuranceTabs({ role, current }: { role: string; current: string }) {
@@ -30,7 +30,7 @@ const accepted = (r: RoomRecord) => r.lifecycle === 'ACCEPTED' || r.lifecycle ==
 
 /** The checks a room must pass before its next session, each with its reason (V2.5.3 "Ready checks before sessions"). */
 export function readyChecks(r: RoomRecord, incidents: S.Incident[]): Array<{ id: string; label: string; ok: boolean; why: string }> {
-  const cur = r.baselines.find((b) => b.state === 'CURRENT'); const high = openIssues(r).filter((i) => i.severity === 'High'); const jobs = incidents.filter((i) => i.roomId === r.outline.id && !DONE.includes(i.state));
+  const cur = r.baselines.find((b) => b.state === 'CURRENT'); const high = openIssues(r).filter((i) => i.severity === 'High'); const jobs = incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i));
   return [
     { id: 'accepted', label: 'Accepted for use', ok: accepted(r), why: accepted(r) ? r.lifecycle.toLowerCase() : `lifecycle is ${r.lifecycle.replace(/_/g, ' ').toLowerCase()}` },
     { id: 'baseline', label: 'A current baseline', ok: !!cur, why: cur ? `v${cur.version} since ${cur.at.slice(0, 10)}` : 'none on record' },

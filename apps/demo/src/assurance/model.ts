@@ -7,9 +7,9 @@
 import { allRecords, openIssues, DEMO_NOW, type RoomRecord, type Issue } from '../campus/design.js';
 import { BUILDINGS, shortName, seeded } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 
 const DAY = 864e5;
-const DONE = ['CLOSED', 'CANCELLED'];
 const accepted = (r: RoomRecord) => r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL';
 const current = (r: RoomRecord) => r.baselines.find((b) => b.state === 'CURRENT') || null;
 const pendingB = (r: RoomRecord) => r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE') || null;
@@ -32,7 +32,7 @@ export function issueCats(r: RoomRecord, i: Issue): string[] {
 }
 const LAYOUT_RX = /furniture moved|layout|no longer cover every seat|beyond the planning viewing distance|seat count|too crowded/i;
 export const isLayoutIssue = (i: Issue) => LAYOUT_RX.test(i.title);
-const roomIncidents = (r: RoomRecord, incidents: S.Incident[]) => incidents.filter((i) => i.roomId === r.outline.id && !DONE.includes(i.state));
+const roomIncidents = (r: RoomRecord, incidents: S.Incident[]) => incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i));
 /** an incident's text, read for the kind of equipment it is about */
 const INC_CAT: Array<[RegExp, string]> = [[/camera|video|framing/i, 'camera'], [/display|screen|projector|wake/i, 'display'], [/microphone|speech|hear/i, 'micceil'], [/audio|echo|sound|dsp/i, 'dsp'], [/touch|panel|control/i, 'touch'], [/network|switch|port/i, 'switch'], [/booking|schedul/i, 'scheduler'], [/join|meeting|call|sign/i, 'compute']];
 export const incidentCat = (i: S.Incident) => INC_CAT.find(([rx]) => rx.test(`${i.title} ${i.summary}`))?.[1] || 'compute';
@@ -272,7 +272,7 @@ export function maintenanceSignals(incidents: S.Incident[], recs = allRecords())
       const inst = r.installations.find((i) => i.position === p.code && !i.removedAt); const life = CAT_COST[p.cat]?.life;
       const age = inst ? (DEMO_NOW - Date.parse(inst.installedAt)) / (365 * DAY) : 0;
       const ev = [
-        jobs.length ? `${jobs.length} service job${jobs.length === 1 ? '' : 's'} on this part of the room${jobs.some((j) => !DONE.includes(j.state)) ? ', one still open' : ''}` : '',
+        jobs.length ? `${jobs.length} service job${jobs.length === 1 ? '' : 's'} on this part of the room${jobs.some(isOpenRequest) ? ', one still open' : ''}` : '',
         rec.length ? `${rec.length} recurrence${rec.length === 1 ? '' : 's'} of an earlier job` : '',
         iss.length ? `Open issue on the device: ${iss[0]!.title}` : '',
         swapped.length ? `The unit at this position was replaced ${swapped[0]!.removedAt!.slice(0, 10)}` : '',

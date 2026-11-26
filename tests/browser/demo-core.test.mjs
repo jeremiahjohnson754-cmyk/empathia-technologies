@@ -123,6 +123,18 @@ for (const scheme of SCHEMES) for (const vp of VPS) {
 // "What can I help you do?", eight stat tiles with sparklines, the mission flow over every room, priorities with their verbs, incidents,
 // active rooms, the Search Party insight — computed from the records, role-aware (D44), keyboard complete; then destructive QA.
 const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.demo.perspective', x), r);
+// MC-open (26 Nov 2026, metric integrity): one rule for an open service request (apps/demo/src/workspace/requests.ts). On the live
+// preview of 4231f6a2 Mission Control said 2 open requests while Pro's Issue Intelligence and ServiceHands said 3: they counted the
+// seed's RESOLVED request (fixed and checked) as open. Every tile labelled open now reads the same number; the unit check is MI-09/MI-10.
+// Mission Control is read as the first visitor sees it (its number is the same for every role, campus/definitions.ts); the three
+// service pages as the service manager, who may open all of them.
+{ const t = await open([1440, 900], 'light', { hash: '#/home' }); await t.page.waitForTimeout(900);
+  const val = async (hash, id) => { if (hash) await t.go(hash, 1800); await t.page.waitForSelector(`[data-testid="${id}"] .kit-tile__value`, { timeout: 8000 }).catch(() => {});
+    return parseInt(await t.page.locator(`[data-testid="${id}"] .kit-tile__value`).first().textContent().catch(() => '') || '', 10); };
+  const home = await val('', 'kpi-requests'); await setRole(t, 'svcmgr'); await t.page.reload(); await t.page.waitForTimeout(900);
+  const n = { home, pro: await val('#/pro/issues', 'pro-jobs-open'), sh: await val('#/servicehands', 'sh-open-jobs'), v25: await val('#/v25', 'v25-open-jobs') };
+  ok('MC-open-01', 'every tile labelled open counts the same service requests: Mission Control, Pro Issue Intelligence, ServiceHands and the V2.5.3 control room (a resolved request is not open)', Number.isFinite(n.home) && n.home > 0 && n.pro === n.home && n.sh === n.home && n.v25 === n.home, JSON.stringify(n));
+  await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);
   const v = await t.page.evaluate(() => {

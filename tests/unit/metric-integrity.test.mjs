@@ -8,11 +8,11 @@ import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
-const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts';`;
+const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx';`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'metric-integrity-')); const out = path.join(dir, 'm.mjs');
 await esbuild.build({ stdin: { contents: entry, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', splitting: false, nodePaths: [path.join(repo, 'node_modules')],
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined); } }] });
-const { M, MI, DEF, D, W, P, R } = await import(pathToFileURL(out).href);
+const { M, MI, DEF, D, W, P, R, XS, XA, REC, V } = await import(pathToFileURL(out).href);
 process.on('exit', () => fs.rmSync(dir, { recursive: true, force: true }));
 
 const w = W.seed(); const recs = D.allRecords();
@@ -111,4 +111,42 @@ test('MI-08 every number on the home page has a definition with a meaning, popul
   }
   assert.equal(new Set(DEF.HOME_METRICS.map((id) => DEF.METRICS[id].label)).size, DEF.HOME_METRICS.length, 'one label for one number');
   assert.equal(DEF.METRICS['actions.overdue'].evidence, 'NOT_AVAILABLE', 'no record carries a due date: overdue is not computed, and says so');
+});
+
+// MI-09 and MI-10 (26 Nov 2026, found during the 4231f6a2 regression): "open service request" had three rules. The campus and
+// Mission Control counted OPEN to VERIFYING and REOPENED; Pro's Issue Intelligence, the commissioning and assurance pages and three
+// exports counted anything not CLOSED or CANCELLED, so the RESOLVED request in the seed (ISS-0402, "fixed and checked") was open there
+// and not on Mission Control; the role home and the champion's site pages listed two states that do not exist and left VERIFYING and
+// REOPENED out. Two rules now live in workspace/requests.ts: open (not fixed yet;
+// definitions.ts, requests.open) and not closed (still on the service board, never labelled open). Every page reads one of them.
+const OPEN_STATES = ['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'REOPENED'];
+const by = { role: 'svcmgr', at: '2026-11-26T00:00:00Z', build: 'test' };
+test('MI-09 one rule for an open service request: resolved is not open, and Mission Control, the service queue, the room report and the site handover agree', () => {
+  assert.ok(w.incidents.some((i) => i.state === 'RESOLVED'), 'the seed holds a request resolved but not closed, so this check tests something');
+  assert.equal(typeof M.isOpenRequest, 'function', 'campus/metrics.ts exports the rule');
+  for (const s of ['RESOLVED', 'OPEN', 'VERIFYING']) assert.equal(M.isUnclosedRequest({ state: s }), true, s);
+  for (const s of ['CLOSED', 'CANCELLED']) assert.equal(M.isUnclosedRequest({ state: s }), false, s);
+  for (const s of ['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'RESOLVED', 'CLOSED', 'REOPENED', 'CANCELLED']) assert.equal(M.isOpenRequest({ state: s }), OPEN_STATES.includes(s), s);
+  const mc = MI.incidents(w).filter((i) => i.live).length;   // Mission Control's "Open service requests"
+  assert.equal(w.incidents.filter(M.isOpenRequest).length, mc);
+  assert.match(XS.serviceQueuePackage(w, by).sections.find((s) => s.id === 'standing').text[0], new RegExp(`^${mc} open request`), 'the service queue export');
+  const room = w.incidents.find((i) => i.state === 'RESOLVED').roomId; const r = recs.find((x) => x.outline.id === room);
+  const kpi = XA.asPackage(r, w.incidents, by).kpis.find((k) => k.label === 'Open service requests');
+  assert.equal(kpi.value, String(w.incidents.filter((i) => i.roomId === room && M.isOpenRequest(i)).length), 'the room assurance report');
+  // the trend beside an "open" tile ends on the tile's number: a request leaves the backlog when it was fixed, not when it was closed
+  assert.equal(typeof M.requestFixedAt, 'function');
+  assert.equal(V.weekBacklog(w.incidents, (i) => i.openedAt, M.requestFixedAt).at(-1), mc, 'the open-jobs trend ends on the open count');
+  for (const i of w.incidents) assert.equal(M.requestFixedAt(i) == null, M.isOpenRequest(i), i.id);
+  const w2 = structuredClone(w); const j = w2.incidents.find((i) => i.state === 'TRIAGED'); j.state = 'VERIFYING';
+  assert.ok(REC.handover(w2, j.buildingKey, 0).open.some((x) => x.startsWith(`${j.id}:`)), 'a request awaiting verification is still open at its site');
+  j.state = 'REOPENED'; assert.ok(REC.handover(w2, j.buildingKey, 0).open.some((x) => x.startsWith(`${j.id}:`)), 'a reopened request is open at its site');
+});
+
+test('MI-10 no page or export keeps its own list of open service states, or counts "open" as "not closed"', () => {
+  const src = path.join(repo, 'apps/demo/src'); const own = path.join(src, 'workspace/requests.ts'); const hits = [];
+  const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = path.join(d, e.name); if (e.isDirectory()) walk(f); else if (/\.tsx?$/.test(e.name) && f !== own) {
+    fs.readFileSync(f, 'utf8').split('\n').forEach((l, k) => { if (/new Set\(\[\s*'OPEN',\s*'TRIAGED'/.test(l) || /!\s*DONE\.includes\(/.test(l) || /!\s*\[\s*'CLOSED',\s*'CANCELLED'\s*\]\.includes\(/.test(l)) hits.push(`${path.relative(repo, f)}:${k + 1}`); });
+  } } };
+  walk(src);
+  assert.deepEqual(hits, [], 'use isOpenRequest or isUnclosedRequest from workspace/requests.ts');
 });

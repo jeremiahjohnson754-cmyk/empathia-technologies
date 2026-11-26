@@ -16,9 +16,9 @@ import { roomById, roomHref, shortName, fullName } from './canon.js';
 import { roomHealth, roomIssues, attentionQueue } from './metrics.js';
 import { programme } from './programme.js';
 import type { Workspace } from '../workspace/store.js';
+import { OPEN_REQUEST_STATES as LIVE } from '../workspace/requests.js';
 
 const DAY = 864e5;
-const LIVE = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'REOPENED']);
 
 // ------------------------------------------------------------------------------------------------------------ month-end series
 export interface Series { label: string; values: number[]; months: string[] }

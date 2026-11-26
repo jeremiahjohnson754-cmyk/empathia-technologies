@@ -10,6 +10,7 @@ import { TIERS, RUNBOOKS, type Tier, type Layer } from '@empathia/apex-engine';
 import { nodeKey } from '@empathia/search-party';
 import { buildEstate } from '../search/estate.js';
 import * as S from '../workspace/store.js';
+import { isUnclosedRequest } from '../workspace/requests.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds, loadDraft } from '../build/store.js';
 import { ExportMenu } from '../export/ExportMenu.js';
@@ -29,7 +30,7 @@ export function ApexPage({ perspective, hash }: { perspective: string; hash: str
   const wantInc = /[?&]incident=([A-Z0-9-]+)/.exec(hash)?.[1]; const wantCase = /[?&]case=([A-Z0-9-]+)/.exec(hash)?.[1];
   const [sel, setSel] = useState<string | null>(wantCase || (wantInc ? w.incidents.find((i) => i.id === wantInc)?.apexId || null : w.apexCases[0]?.id || null))   // an incident asked for without a case opens on its button, not on another case;
   const H = w.apexCases.find((c) => c.id === sel) || null;
-  const open = w.incidents.filter((i) => !i.apexId && !['CLOSED', 'CANCELLED'].includes(i.state));
+  const open = w.incidents.filter((i) => !i.apexId && isUnclosedRequest(i));
   const cite = (roomId: string) => (layer: Layer) => {
     const room = { type: 'Room', id: roomId }; const devs = est.edges.filter((e) => e.rel === 'PLANS_DEVICE' && nodeKey(e.from) === nodeKey(room)).map((e) => e.to);
     if (layer === 'physical') return devs.slice(0, 2).map((d) => d.id);

@@ -10,6 +10,7 @@ import { Lanes, Foot, weekCounts, weekBacklog, deltaOf, plural, type Series } fr
 import { WORK_NEEDS } from '@empathia/service-engine';
 import { Tag, PageHero, StatTile, Donut, Card, Chip, EmptyState } from '@empathia/ui';
 import * as S from '../workspace/store.js';
+import { isOpenRequest, isUnclosedRequest, requestFixedAt } from '../workspace/requests.js';
 import type { WorkspaceProps } from '../hardening/lazy.js';
 import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, shView, hrView, type WX } from '../hardening/kit.js';
 import { useOps } from '../hardening/useOps.js';
@@ -43,8 +44,8 @@ const hrefOf = (i: S.Incident) => (i.workOrderId ? `#/servicehands/wo/${i.workOr
 function Home({ ops }: { ops: Ops }) {
   const { w, persona } = ops; const me = S.techForPersona(persona);
   const mineOf = (i: S.Incident) => !!me && !!i.workOrderId && S.workOrderOf(w, i.workOrderId)?.techId === me;
-  const mine = w.incidents.filter((i) => mineOf(i) && !DONE.includes(i.state));
-  const open = w.incidents.filter((i) => !DONE.includes(i.state));
+  const mine = w.incidents.filter((i) => mineOf(i) && isUnclosedRequest(i));
+  const board = w.incidents.filter(isUnclosedRequest); const open = board.filter(isOpenRequest);
   const list = [...w.incidents].sort((a, b) => (DONE.includes(a.state) ? 1 : 0) - (DONE.includes(b.state) ? 1 : 0) || b.openedAt.localeCompare(a.openedAt));
   const canReport = ['request.submit', 'service.triage', 'work.evidence'].some((a) => holds(persona, a));
   const st = (i: S.Incident) => stageOf(w, i);
@@ -52,23 +53,23 @@ function Home({ ops }: { ops: Ops }) {
   const restored = w.incidents.filter((i) => i.restoredAt);
   const hours = restored.map((i) => (Date.parse(i.restoredAt!) - Date.parse(i.openedAt)) / 36e5).sort((a, b) => a - b);
   const median = hours.length ? Math.round(hours[Math.floor((hours.length - 1) / 2)]!) : null;
-  const opened = weekCounts(w.incidents, (i) => i.openedAt); const backlog = weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.closedAt || (i.state === 'CANCELLED' ? i.openedAt : null));
+  const opened = weekCounts(w.incidents, (i) => i.openedAt); const backlog = weekBacklog(w.incidents, (i) => i.openedAt, requestFixedAt);
   const routes = (Object.keys(ROUTES) as RouteKey[]).map((k) => ({ key: k, label: ROUTES[k].label, value: w.incidents.filter((i) => routeOf(w, i).key === k).length, tone: ROUTES[k].tone as Series }));
-  const byStage = STAGES.map((_, k) => open.filter((i) => st(i) === k).length);
+  const byStage = STAGES.map((_, k) => board.filter((i) => st(i) === k).length);
   const restoredWk = weekCounts(restored, (i) => i.restoredAt);
-  const card = (i: S.Incident) => { const r = routeOf(w, i); const m = mineOf(i) && !DONE.includes(i.state);
+  const card = (i: S.Incident) => { const r = routeOf(w, i); const m = mineOf(i) && isUnclosedRequest(i);
     return <a key={i.id} href={hrefOf(i)} className={`wk-card${m ? ' mine' : ''}`} data-card={i.id}>
       <span className="wk-card__t"><b>{i.id}</b><Chip small tone={ROUTES[r.key].tone as Series}>{ROUTES[r.key].label}</Chip>{m ? <Chip small tone="accent">Your job</Chip> : null}</span>
       <span className="wk-card__n">{i.title}</span><span className="wk-card__p">{i.roomName} · {i.severity}</span>
       <span className="wk-card__x"><Tag tone={TONE[i.state]}>{i.state}</Tag> next: {DONE.includes(i.state) ? 'nothing — the record is kept' : STAGES[Math.min(11, st(i) + (i.state === 'RESOLVED' ? 1 : 0))]}</span></a>; };
   return (<>
     <PageHero product="servicehands" plain icon="wrench" eyebrow="ServiceHands · incident to service" title="ServiceHands"
-      lede={<>Every job moves through twelve stages, one governed step at a time; the person who did the work never verifies it. <b>{plural(open.length, 'job')}</b> open{mine.length ? <>, <b>{mine.length}</b> assigned to you</> : null}. Acting as <b>{personaLabel(persona)}</b>.</>}
+      lede={<>Every job moves through twelve stages, one governed step at a time; the person who did the work never verifies it. <b>{plural(open.length, 'job')}</b> open{mine.filter(isOpenRequest).length ? <>, <b>{mine.filter(isOpenRequest).length}</b> assigned to you</> : null}. Acting as <b>{personaLabel(persona)}</b>.</>}
       meta={[<Chip key="sim" small tone="muted">Simulated service · synthetic people</Chip>, <Chip key="r" small tone="accent">{plural(w.incidents.length, 'job')} on record</Chip>]}
       actions={<>{canReport && <a className="ui-btn ui-btn--primary" href="#/servicehands/new" data-testid="report">Report a problem</a>}{holds(persona, 'service.assign') && <a className="ui-btn" href="#/service">Dispatch board</a>}</>} />
-    <ol className="ops-strip wk-strip" aria-label="The twelve stages of a service job, with the open jobs at each">{STAGES.map((s, k) => <li key={s} className={byStage[k] ? 'on' : ''}>{s}{byStage[k] ? ` · ${byStage[k]}` : ''}</li>)}</ol>
+    <ol className="ops-strip wk-strip" aria-label="The twelve stages of a service job, with the jobs on the board at each">{STAGES.map((s, k) => <li key={s} className={byStage[k] ? 'on' : ''}>{s}{byStage[k] ? ` · ${byStage[k]}` : ''}</li>)}</ol>
     <div className="kit-grid kit-grid--tiles wk-tiles5" data-testid="tiles">
-      <StatTile label="Open jobs" value={open.length} icon="ticket" tone="servicehands" delta={deltaOf(backlog, 'down', 'vs 4 wk ago', { level: true })} spark={backlog} />
+      <StatTile label="Open jobs" testId="sh-open-jobs" value={open.length} icon="ticket" tone="servicehands" delta={deltaOf(backlog, 'down', 'vs 4 wk ago', { level: true })} spark={backlog} />
       <StatTile label="Waiting for dispatch" value={inStages(open, 0, 4).length} icon="users" tone="info" href={holds(persona, 'service.assign') ? '#/service' : undefined} hint="Triage, matching or assignment" />
       <StatTile label="In the field" value={inStages(open, 5, 7).length} icon="wrench" tone="ok" hint="Dispatched, working or recording evidence" />
       <StatTile label="Awaiting verification" value={open.filter((i) => i.state === 'VERIFYING').length} icon="shield" tone="warn" hint="By someone other than the technician" />
@@ -86,7 +87,7 @@ function Home({ ops }: { ops: Ops }) {
     {me && <Card id="mine" icon="user" tone="accent" title={`My jobs · ${S.techOf(w, me)?.name}`} testId="my-jobs">
       {mine.length ? <div className="wk-lanes">{mine.map(card)}</div> : <EmptyState title="Nothing is assigned to you right now" icon="check" />}</Card>}
     <Card id="board" icon="grid" title="The board" sub="Open jobs by where they are in the twelve stages">
-      <Lanes label="Open jobs by lane" lanes={LANES.map((l) => ({ key: l.key, title: l.title, items: open.filter((i) => l.stages.includes(st(i))).map(card) }))} />
+      <Lanes label="Jobs on the board by lane" lanes={LANES.map((l) => ({ key: l.key, title: l.title, items: board.filter((i) => l.stages.includes(st(i))).map(card) }))} />
     </Card>
     <Card id="all" icon="inbox" title="All service jobs" sub={`${plural(w.incidents.length, 'job')} · open first, newest first`}>
       <ul className="wk-rows" data-testid="jobs">{list.map((i) => { const r = routeOf(w, i); return <li key={i.id}><a href={hrefOf(i)} data-job={i.id}><b>{i.title}</b><span className="wk-r__m">{i.id}{i.workOrderId ? ` · ${i.workOrderId}` : ''} · {i.roomName} · {ROUTES[r.key].label}: {r.why}</span></a><span className="ops-row"><Tag tone={TONE[i.state]}>{i.state}</Tag><span className="ops-meta">{STAGES[st(i)]}</span></span></li>; })}</ul>

@@ -25,9 +25,9 @@ import { contributions } from './recognition.js';
 import { approvedSiteNotes } from './approved.js';
 import { readDocs } from '../docs5/store.js';
 import { TRACKED_REPORT, TRACKED_ROOM } from '../docs5/model.js';
+import { OPEN_REQUEST_STATES as LIVE } from '../workspace/requests.js';
 
 const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-const LIVE = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'RESTORED', 'PENDING_VERIFICATION']);
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
 /** The requests at the champion's site, and the new spaces there whose location is waiting to be confirmed. */

@@ -19,6 +19,7 @@ import { allRecords, PEOPLE, DEMO_NOW } from '../campus/design.js';
 import { campusStats } from '../campus/metrics.js';
 import { programme } from '../campus/programme.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import { scenario, ORGS } from './scenarios.js';
 import { recentChanges } from '../pages/Home.js';
 import { CampusMap, Stage } from '../spatial/Spatial.js';
@@ -75,7 +76,7 @@ export function MapTab({ opens }: { opens: (h: string) => boolean }) {
   const P = programme(); const recs = allRecords(); const c = useMemo(() => campusStats(w), [w]);
   const items = (b: string): Array<{ id: string; t: string; s: string; href?: string }> => {
     if (lens === 'projects') return P.projects.filter((p) => p.roomIds.some((r) => roomById(r)?.building === b)).map((p) => ({ id: p.id, t: p.id, s: `${p.roomIds.map((r) => shortName(roomById(r)!)).join(', ')} · ${p.governance.toLowerCase()} · ${p.delivery.replace(/_/g, ' ').toLowerCase()}`, href: roomHref(roomById(p.roomIds[0]!)!) }));
-    if (lens === 'work') return [...(w?.incidents || []).filter((i) => i.buildingKey === b && !['CLOSED', 'CANCELLED'].includes(i.state)).map((i) => ({ id: i.id, t: `${i.id} · ${i.title}`, s: `${i.roomName} · ${i.state.toLowerCase()}`, href: `#/v25/service?id=${i.id}` })), ...(w?.workOrders || []).filter((x) => x.buildingKey === b && !['DONE', 'CANCELLED'].includes(x.state)).map((x) => ({ id: x.id, t: `${x.id} · ${x.title}`, s: x.state.toLowerCase() }))];
+    if (lens === 'work') return [...(w?.incidents || []).filter((i) => i.buildingKey === b && isOpenRequest(i)).map((i) => ({ id: i.id, t: `${i.id} · ${i.title}`, s: `${i.roomName} · ${i.state.toLowerCase()}`, href: `#/v25/service?id=${i.id}` })), ...(w?.workOrders || []).filter((x) => x.buildingKey === b && !['DONE', 'CANCELLED'].includes(x.state)).map((x) => ({ id: x.id, t: `${x.id} · ${x.title}`, s: x.state.toLowerCase() }))];
     if (lens === 'commissioning') return recs.filter((r) => r.outline.building === b && (r.lifecycle === 'COMMISSIONING' || r.baselines.some((x) => x.state === 'PENDING_ACCEPTANCE'))).map((r) => ({ id: r.outline.id, t: fullName(r.outline), s: `${r.counts.verified} of ${r.counts.applicable} verified${r.nextStep?.blockers.length ? ` · held: ${r.nextStep.blockers[0]}` : ''}`, href: roomHref(r.outline) }));
     if (lens === 'issues') return recs.filter((r) => r.outline.building === b).flatMap((r) => r.issues.filter((i) => i.state !== 'RESOLVED').map((i) => ({ id: i.id, t: i.title, s: `${shortName(r.outline)} · ${i.severity} · ${i.source}`, href: roomHref(r.outline) })));
     return recs.filter((r) => r.outline.building === b).map((r) => ({ id: r.outline.id, t: fullName(r.outline), s: `${r.positions.filter((p) => !p.furniture).length} device positions`, href: roomHref(r.outline) }));

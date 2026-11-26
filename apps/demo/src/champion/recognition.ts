@@ -9,9 +9,9 @@ import type * as S from '../workspace/store.js';
 import type { WX } from '../hardening/kit.js';
 import { roomById, shortName } from '../campus/canon.js';
 import { championView, inSite } from './store.js';
+import { OPEN_REQUEST_STATES as LIVE } from '../workspace/requests.js';
 
 export interface Contribution { id: 'checked' | 'access' | 'reports' | 'notes' | 'approved'; label: string; n: number; from: string }
-const LIVE = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'RESTORED', 'PENDING_VERIFICATION']);
 const byChampion = (s: string | undefined | null) => /site champion/i.test(s || '');
 
 /** `approvedNotes` is how many of the champion's notes a reviewer has approved (the Knowledge Ledger knows; the caller asks it). */

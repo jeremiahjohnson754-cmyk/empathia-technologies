@@ -12,6 +12,7 @@ import { BUILDINGS, shortName, roomHref, ARCHETYPE_NAME, TEMPLATE_FOR } from '..
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaLabel, personaOf } from '../build/store.js';
 import * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import { Foot, Stack, plural, pct } from './viz.js';
 import { openable } from './V25Nav.js';
 import { TrendChart } from './TrendChart.js';
@@ -22,8 +23,7 @@ import { CampusMap, Stage } from '../spatial/Spatial.js';
 import { readRegister } from '../campus/registerStore.js';
 import { deviceRegister, retiredRegister } from '../campus/registers.js';
 
-const DAY = 864e5; const DONE = ['CLOSED', 'CANCELLED'];
-const roomName = (r: RoomRecord) => `${shortName(r.outline)} — ${r.outline.name}`;
+const DAY = 864e5; const roomName = (r: RoomRecord) => `${shortName(r.outline)} — ${r.outline.name}`;
 const PRO_TABS = [['#/pro', 'Command center', 'pulse'], ['#/pro/assets', 'Assets', 'device'], ['#/pro/issues', 'Issues', 'alert'], ['#/pro/ops', 'Operations', 'wrench'], ['#/pro/eng', 'Standards', 'book'], ['#/v25/exec', 'Executive', 'chart']] as const;
 export function ProTabs({ role, current }: { role: string; current: string }) {
   return <nav className="wk-v25nav pro-tabs" aria-label="Pro pages">{PRO_TABS.filter(([h]) => openable(role, h)).map(([h, l, i]) => <Chip key={h} href={h} icon={i} selected={h === current}>{l}</Chip>)}</nav>;
@@ -113,12 +113,12 @@ export function IssuesPage({ perspective, hash }: { perspective: string; hash?: 
     <section className="wk" data-native="workspace" data-testid="pro-issues" data-building={only || ''}>
       <ProTabs role={perspective} current="#/pro/issues" />
       <PageHero product="pro" plain icon="alert" eyebrow="Pro · how and where it fails" title="Issue Intelligence"
-        lede={<><b>{plural(open.length, 'room issue')}</b> open in <b>{plural(rooms, 'room')}</b>, beside <b>{plural(inc.filter((i) => !DONE.includes(i.state)).length, 'service job')}</b>; <b>{rec.length}</b> {rec.length === 1 ? 'job is a recurrence' : 'jobs are recurrences'} of an earlier one in the same room.</>}
+        lede={<><b>{plural(open.length, 'room issue')}</b> open in <b>{plural(rooms, 'room')}</b>, beside <b>{plural(inc.filter((i) => isOpenRequest(i)).length, 'service job')}</b>; <b>{rec.length}</b> {rec.length === 1 ? 'job is a recurrence' : 'jobs are recurrences'} of an earlier one in the same room.</>}
         meta={[<OnlyChip key="o" only={only} base="#/pro/issues" />, <Chip key="m" small tone="muted">Synthetic records</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
       <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Open room issues" value={open.length} unit={`of ${room.length}`} icon="alert" tone="pro" />
         <StatTile label="High severity open" value={sev[0]!.value} icon="alert" tone="bad" />
-        <StatTile label="Service jobs open" value={inc.filter((i) => !DONE.includes(i.state)).length} icon="ticket" tone="servicehands" href="#/servicehands" />
+        <StatTile label="Service jobs open" testId="pro-jobs-open" value={inc.filter((i) => isOpenRequest(i)).length} icon="ticket" tone="servicehands" href="#/servicehands" />
         <StatTile label="Recurrences" value={rec.length} icon="undo" tone="apex" href="#/v25/apex" hint="Diagnosed by APEX before another visit" />
       </div>
       {/* #234 (founder 13:42, 14:00): the failure map — the same campus map with the Issues lens, counts and rates per 10 rooms, the source and
@@ -142,8 +142,8 @@ export function IssuesPage({ perspective, hash }: { perspective: string; hash?: 
           </Card>
         </div>; })()}
       <Card icon="building" title="Open issues by building">
-        <ul className="wk-bars">{BUILDINGS.map((b) => { const xs = open.filter((x) => x.r.outline.building === b.key); const svc = w.incidents.filter((i) => i.buildingKey === b.key && !DONE.includes(i.state)).length;
-          return <li key={b.key}><span>{b.short}</span><Stack label={b.name} total={Math.max(1, ...BUILDINGS.map((bb) => open.filter((x) => x.r.outline.building === bb.key).length + w.incidents.filter((i) => i.buildingKey === bb.key && !DONE.includes(i.state)).length))} parts={[{ key: 'h', label: 'high', value: xs.filter((x) => x.i.severity === 'High').length, tone: 'bad' }, { key: 'm', label: 'medium', value: xs.filter((x) => x.i.severity === 'Medium').length, tone: 'warn' }, { key: 'l', label: 'low', value: xs.filter((x) => x.i.severity === 'Low').length, tone: 'info' }, { key: 's', label: 'service jobs', value: svc, tone: 'servicehands' }]} /><b>{xs.length + svc}</b></li>; })}</ul>
+        <ul className="wk-bars">{BUILDINGS.map((b) => { const xs = open.filter((x) => x.r.outline.building === b.key); const svc = w.incidents.filter((i) => i.buildingKey === b.key && isOpenRequest(i)).length;
+          return <li key={b.key}><span>{b.short}</span><Stack label={b.name} total={Math.max(1, ...BUILDINGS.map((bb) => open.filter((x) => x.r.outline.building === bb.key).length + w.incidents.filter((i) => i.buildingKey === bb.key && isOpenRequest(i)).length))} parts={[{ key: 'h', label: 'high', value: xs.filter((x) => x.i.severity === 'High').length, tone: 'bad' }, { key: 'm', label: 'medium', value: xs.filter((x) => x.i.severity === 'Medium').length, tone: 'warn' }, { key: 'l', label: 'low', value: xs.filter((x) => x.i.severity === 'Low').length, tone: 'info' }, { key: 's', label: 'service jobs', value: svc, tone: 'servicehands' }]} /><b>{xs.length + svc}</b></li>; })}</ul>
       </Card>
       <div className="wk-g2">
         <Card icon="inbox" title="Open room issues" sub="Most serious first">

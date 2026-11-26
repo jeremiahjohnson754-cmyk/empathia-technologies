@@ -68,7 +68,7 @@ export const METRICS = {
     id: 'requests.open', label: 'Open service requests',
     meaning: 'Requests in the service workspace that are not closed or resolved, across the campus, whoever is working them.',
     counts: 'ServiceHands requests in any live state: open, triaged, assigned, accepted, in progress, verifying or reopened.',
-    excludes: 'Closed and resolved requests; work orders (counted separately).',
+    excludes: 'Closed and resolved requests; work orders (counted separately). A resolved request is fixed and checked: it stays on the ServiceHands board until it is closed, and no page counts it as open.',
     denominator: 'Each is also an open issue of its room, and one item waiting for the service roles.',
     evidence: 'MODELED', freshness: NOW, roles: 'The same for every role.',
   },

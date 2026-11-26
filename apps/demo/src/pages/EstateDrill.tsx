@@ -12,6 +12,7 @@ import { buildingByKey, shortName } from '../campus/canon.js';
 import { cxState } from '../campus/cxRecord.js';
 import { asState } from '../campus/asRecord.js';
 import type * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import { Stack, plural, pct } from './viz.js';
 
 export interface Drill { b: string | null; f: number | null; s: string | null }
@@ -28,7 +29,6 @@ export const drillHref = (base: string, d: Partial<Drill>) => { const q = new UR
 export const inScope = (recs: RoomRecord[], d: Drill) => recs.filter((r) => (!d.b || r.outline.building === d.b) && (d.f == null || r.outline.floor === d.f));
 
 type Kind = 'cx' | 'as' | 'pro';
-const DONE = ['CLOSED', 'CANCELLED'];
 /** Pro's two states: a room needs action when commissioning is blocked, a deficiency is open or a service job is open (the command centre's own rule) */
 export const PRO_STATES = { action: { label: 'Needs action', tone: 'warn' as Series }, good: { label: 'Good standing', tone: 'ok' as Series } };
 interface StateDef { label: string; tone: Series }
@@ -36,7 +36,7 @@ export function EstateDrill({ kind, recs, incidents, hash, base, states, roomBas
   const d = drillOf(hash, recs); const keys = Object.keys(states);
   const stateOf = (r: RoomRecord): { state: string; why: string } => {
     if (kind === 'cx') return cxState(r); if (kind === 'as') return asState(r, incidents);
-    const jobs = incidents.filter((i) => i.roomId === r.outline.id && !DONE.includes(i.state)); const iss = openIssues(r); const cx = cxState(r);
+    const jobs = incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i)); const iss = openIssues(r); const cx = cxState(r);
     return jobs.length || iss.length || cx.state === 'blocked' ? { state: 'action', why: [jobs[0] ? `${jobs[0].id} open: ${jobs[0].title}` : '', iss[0] ? iss[0].title : '', cx.state === 'blocked' ? `commissioning blocked: ${cx.why}` : ''].filter(Boolean).join(' · ') } : { state: 'good', why: 'no open job or issue' };
   };
   const scope = inScope(recs, d); const s = d.s && keys.includes(d.s) ? d.s : null;
@@ -65,7 +65,7 @@ export function EstateDrill({ kind, recs, incidents, hash, base, states, roomBas
           <th scope="row"><a href={g.href} data-testid="drill-in">{g.name}</a></th><td className="num">{g.rooms.length}</td>
           <td className="dr-bar"><Stack label={g.name} parts={keys.map((k) => ({ key: k, label: states[k]!.label, value: count(g.rooms, k), tone: states[k]!.tone }))} /></td>
           {keys.map((k) => { const n = count(g.rooms, k); return <td key={k} className="num">{n ? <a href={drillHref(base, level === 'building' ? { b: g.key, s: k } : { b: d.b, f: Number(g.key), s: k })} aria-label={`${n} ${states[k]!.label.toLowerCase()} in ${g.name}`}>{n}</a> : <span className="ui-meta">0</span>}</td>; })}
-          <td className="num">{kind === 'cx' ? `${pct(v, ap)}%` : g.rooms.reduce((a, r) => a + openIssues(r).length + (kind === 'pro' ? incidents.filter((i) => i.roomId === r.outline.id && !DONE.includes(i.state)).length : 0), 0)}</td>
+          <td className="num">{kind === 'cx' ? `${pct(v, ap)}%` : g.rooms.reduce((a, r) => a + openIssues(r).length + (kind === 'pro' ? incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i)).length : 0), 0)}</td>
         </tr>; })}</tbody></table></div>
       : rows.length ? <ul className="dr-rooms" data-testid="drill-rooms">{rows.map((x) => <li key={x.r.outline.id}>
           <a href={`${roomBase}/${x.r.outline.id}`}><Icon name="room" size={16} /> <b>{shortName(x.r.outline)}</b> <span className="ui-meta">{x.r.outline.name}</span></a>

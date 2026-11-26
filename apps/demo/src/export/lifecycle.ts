@@ -14,6 +14,7 @@
 import { allRecords, openIssues, PEOPLE, type RoomRecord } from '../campus/design.js';
 import { ymd } from '../campus/cxRecord.js';
 import type * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import type { Section, Link } from './model.js';
 
 const who = (k?: string | null) => (k ? PEOPLE[k] || k.replace(/_/g, ' ') : '—');
@@ -73,7 +74,7 @@ export function lifecycleSections(r: RoomRecord, x: LifecycleInput, abs: (h: str
   const bySource = [...new Set(r.issues.map((i) => i.source))].map((s) => `${s}: ${r.issues.filter((i) => i.source === s).length}`);
   sections.push({ id: 'intelligence', heading: 'Service and issue intelligence', text: ['What happened to the room after commissioning, and how it compares with the rooms of its type. Counts over the records; nothing is monitored live.'],
     bullets: [
-      `${plural(inc.length, 'service request')} about this room${inc.length ? ` (${inc.filter((i) => !DONE.includes(i.state)).length} open)` : ''}${ttr.length ? `; restored in ${Math.round(ttr.reduce((a, b) => a + b, 0) / ttr.length)} hours on average` : ''}.`,
+      `${plural(inc.length, 'service request')} about this room${inc.length ? ` (${inc.filter(isOpenRequest).length} open)` : ''}${ttr.length ? `; restored in ${Math.round(ttr.reduce((a, b) => a + b, 0) / ttr.length)} hours on average` : ''}.`,
       `${plural(recurring.length, 'request')} came back or reopened${recurring.length ? `: ${recurring.map((i) => i.id).join(', ')}` : ''}.`,
       `${plural(r.issues.length, 'deficiency', 'deficiencies')} on the record (${openIssues(r).length} open)${bySource.length ? `; by source: ${bySource.join('; ')}` : ''}.`,
       `${plural(apex.length, 'APEX case')}${apex.length ? `: ${apex.map((c) => `${c.id}, leading hypothesis “${c.hypotheses[0]?.text || '—'}” (${c.hypotheses[0]?.confidence || 'none'} confidence)`).join('; ')}` : ''}.`,

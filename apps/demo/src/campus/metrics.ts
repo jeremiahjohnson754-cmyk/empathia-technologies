@@ -31,7 +31,8 @@ export const BAND_LABEL: Record<Band, string> = { healthy: 'Healthy', monitor: '
 export const bandOf = (score: number | null): Band => (score == null ? 'none' : score >= 88 ? 'healthy' : score >= 75 ? 'monitor' : 'action');
 export const BAND_TONE: Record<Band, 'ok' | 'warn' | 'bad' | 'muted'> = { healthy: 'ok', monitor: 'warn', action: 'bad', none: 'muted' };
 
-const LIVE = new Set(['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'REOPENED']);
+import { isOpenRequest } from '../workspace/requests.js';
+export { isOpenRequest, isUnclosedRequest, requestFixedAt, OPEN_REQUEST_STATES } from '../workspace/requests.js';
 const SEV: Record<string, Issue['severity']> = { 'Mission critical': 'High', High: 'High', Standard: 'Medium' };
 export interface OpenIssue { id: string; title: string; severity: Issue['severity']; state: string; source: string; positions: string[]; live: boolean; openedAt?: string; href?: string }
 
@@ -40,7 +41,7 @@ export function roomIssues(r: RoomRecord, w?: Workspace | null): OpenIssue[] {
   const live = (w?.incidents || []).filter((i) => i.roomId === r.outline.id);
   const liveIds = new Set(live.map((i) => i.id));
   const out: OpenIssue[] = r.issues.filter((i) => i.state !== 'RESOLVED' && !liveIds.has(i.id)).map((i) => ({ id: i.id, title: i.title, severity: i.severity, state: i.state, source: i.source, positions: i.positions, live: false }));
-  for (const i of live) if (LIVE.has(i.state)) out.push({ id: i.id, title: i.title, severity: SEV[i.severity] || 'Medium', state: i.state, source: 'ServiceHands request', positions: [], live: true, openedAt: i.openedAt, href: `#/v25/service?id=${i.id}` });
+  for (const i of live) if (isOpenRequest(i)) out.push({ id: i.id, title: i.title, severity: SEV[i.severity] || 'Medium', state: i.state, source: 'ServiceHands request', positions: [], live: true, openedAt: i.openedAt, href: `#/v25/service?id=${i.id}` });
   const rank = { High: 0, Medium: 1, Low: 2 } as const;
   return out.sort((a, b) => rank[a.severity] - rank[b.severity] || a.id.localeCompare(b.id));
 }
@@ -133,7 +134,7 @@ export function spine(r: RoomRecord, w?: Workspace | null): Stage[] {
   const hw = r.positions.filter((p) => !p.furniture);
   const designIssues = r.issues.filter((i) => i.state !== 'RESOLVED' && i.id.startsWith('DD-'));
   const cur = r.baselines.find((b) => b.state === 'CURRENT'); const pend = r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE');
-  const incidents = (w?.incidents || []).filter((i: Incident) => i.roomId === id && LIVE.has(i.state)); const wos = (w?.workOrders || []).filter((x: WorkOrder) => x.roomId === id && !['DONE', 'CANCELLED'].includes(x.state));
+  const incidents = (w?.incidents || []).filter((i: Incident) => i.roomId === id && isOpenRequest(i)); const wos = (w?.workOrders || []).filter((x: WorkOrder) => x.roomId === id && !['DONE', 'CANCELLED'].includes(x.state));
   const issues = roomIssues(r, w); const c = r.counts;
   const designed = r.events.some((e) => e.type === 'room.design_created') || r.outline.kind === 'earlier';
   const st: Stage[] = [

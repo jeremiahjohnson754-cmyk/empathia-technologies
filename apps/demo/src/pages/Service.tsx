@@ -10,6 +10,7 @@ import { SERVICE_TRANSITIONS, WORK_NEEDS, SLA } from '@empathia/service-engine';
 import { neighbourhood, nodeKey, type NodeRef } from '@empathia/search-party';
 import { buildEstate } from '../search/estate.js';
 import * as S from '../workspace/store.js';
+import { isOpenRequest, isUnclosedRequest } from '../workspace/requests.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
 import { ExportMenu } from '../export/ExportMenu.js';
@@ -36,9 +37,9 @@ export function ServicePage({ perspective, hash }: { perspective: string; hash: 
   const me = S.techForPersona(persona);
   const isTech = !!me;
   const [tab, setTab] = useState<string>(isTech ? 'mine' : 'queue');
-  const open = w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state));
-  const mine = open.filter((i) => i.workOrderId && S.workOrderOf(w, i.workOrderId)?.techId === me);
-  const list = tab === 'mine' ? mine : tab === 'closed' ? w.incidents.filter((i) => ['CLOSED', 'CANCELLED'].includes(i.state)) : open;
+  const board = w.incidents.filter(isUnclosedRequest); const open = board.filter(isOpenRequest);
+  const mine = board.filter((i) => i.workOrderId && S.workOrderOf(w, i.workOrderId)?.techId === me);
+  const list = tab === 'mine' ? mine : tab === 'closed' ? w.incidents.filter((i) => ['CLOSED', 'CANCELLED'].includes(i.state)) : board;
   return (
     <section className="svc">
       <header className="build__head">
@@ -50,7 +51,7 @@ export function ServicePage({ perspective, hash }: { perspective: string; hash: 
       {openable(perspective as never, '#/v25/service/analytics') ? <p className="svc__practice" data-testid="svc-analytics-link"><a href="#/v25/service/analytics">Service analytics</a>: the trend by month and quarter, by building and project, and the vendor scorecard.</p> : null}
       <p className="svc__practice" data-testid="svc-practice">Practice before the call: <a href="#/labs/mix">Mix the Stream</a>, SIGNAL’s flagship mixing lab (a 32-channel console, five church rooms, wedges, fills and a live stream). Practice only: it records nothing on a job.</p>
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.why.map((x) => <li key={x}>{x}</li>)}</ul></Notice></div>}
-      <Tabs label="Service views" active={tab} onChange={setTab} tabs={[...(isTech ? [{ key: 'mine', label: 'Assigned to me', count: mine.length }] : []), { key: 'queue', label: 'Queue', count: open.length }, { key: 'closed', label: 'Closed', count: w.incidents.length - open.length }]} />
+      <Tabs label="Service views" active={tab} onChange={setTab} tabs={[...(isTech ? [{ key: 'mine', label: 'Assigned to me', count: mine.length }] : []), { key: 'queue', label: 'Queue', count: board.length }, { key: 'closed', label: 'Closed', count: w.incidents.length - open.length }]} />
       <div className="svc__grid">
         <ul className="svc__list" data-testid="incidents">
           {list.map((i) => <li key={i.id} className={i.id === sel ? 'on' : ''}><a href={`#/v25/service?id=${i.id}`} onClick={(e) => { e.preventDefault(); setSel(i.id); }}><Tag tone={TONE[i.state]}>{i.state}</Tag> <b>{i.title}</b><span className="ui-meta">{i.id} · {i.roomName} · <Tag tone={TONE[i.severity]}>{i.severity}</Tag>{i.recurrenceOf ? ` · recurrence of ${i.recurrenceOf}` : ''}</span></a></li>)}

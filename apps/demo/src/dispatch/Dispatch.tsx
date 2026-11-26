@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import { SLA } from '@empathia/service-engine';
 import { Tag } from '@empathia/ui';
 import * as S from '../workspace/store.js';
+import { isUnclosedRequest } from '../workspace/requests.js';
 import type { WorkspaceProps } from '../hardening/lazy.js';
 import { OpsHead, Refused, NotYours, holds, param, when, personaLabel, dxView, type WX } from '../hardening/kit.js';
 import { useOps } from '../hardening/useOps.js';
@@ -22,7 +23,7 @@ export default function Dispatch({ perspective, hash }: WorkspaceProps) {
   const ops = useOps(perspective); const { w, persona } = ops;
   const confirm = useConfirm(); const undo = useUndo();
   const p = opsPath(hash); const view = p[1] === 'coverage' ? 'coverage' : param(hash, 'view') === 'list' ? 'list' : 'board';
-  const live = w.incidents.filter((i) => !['CLOSED', 'CANCELLED'].includes(i.state));
+  const live = w.incidents.filter(isUnclosedRequest);
   const sel = param(hash, 'id'); const inc = sel ? S.incidentOf(w, sel) || null : null;
   const nowMs = Date.now(); const M = metrics(w.incidents, nowMs);
   const go = (q: string) => { location.hash = `#/service${q}`; };

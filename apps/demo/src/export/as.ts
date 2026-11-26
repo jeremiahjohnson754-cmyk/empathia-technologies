@@ -13,6 +13,7 @@ import { assuranceDims, changeCards, asState, AS_LABEL, DIM_LABEL, LAYERS } from
 import { readyCheckOf, criticalityOf, READY_OUT } from '../assurance/model.js';
 import { ymd } from '../campus/cxRecord.js';
 import type * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import type { Report } from './model.js';
 import type { MadeBy } from './cx.js';
 
@@ -22,7 +23,7 @@ const DONE = ['CLOSED', 'CANCELLED'];
 export function asPackage(r: RoomRecord, incidents: S.Incident[], by: MadeBy): Report {
   const o = r.outline; const b = buildingByKey(o.building); const dims = assuranceDims(r, incidents); const cards = changeCards(r);
   const st = asState(r, incidents); const L = AS_LABEL[st.state]; const rc = readyCheckOf(r, incidents);
-  const inc = incidents.filter((i) => i.roomId === o.id); const openInc = inc.filter((i) => !DONE.includes(i.state));
+  const inc = incidents.filter((i) => i.roomId === o.id); const openInc = inc.filter(isOpenRequest);
   const cur = r.baselines.find((x) => x.state === 'CURRENT'); const fw = r.positions.filter((p) => !p.furniture);
   const n = { match: dims.filter((d) => d.state === 'match').length, drift: dims.filter((d) => d.state === 'drift').length, failed: dims.filter((d) => d.state === 'failed').length, reported: dims.filter((d) => d.state === 'reported').length };
   const off = dims.filter((d) => d.state !== 'match');

@@ -17,6 +17,7 @@ import { BUILDINGS, shortName, roomHref, buildingByKey } from '../campus/canon.j
 import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaLabel, personaOf } from '../build/store.js';
 import type * as S from '../workspace/store.js';
+import { isOpenRequest } from '../workspace/requests.js';
 import { Foot, Stack, plural, pct, weekCounts, weekBacklog, deltaOf } from './viz.js';
 import { V25Nav } from './V25Nav.js';
 import { ProTabs } from './ProViews.js';
@@ -24,7 +25,6 @@ import { AssuranceTabs, CxTabs } from './AssuranceViews.js';
 import { AssuranceInsights } from './AssuranceHome.js';
 import { readyList } from '../assurance/model.js';
 
-const DONE = ['CLOSED', 'CANCELLED'];
 const DAY = 864e5;
 const roomName = (r: RoomRecord) => `${shortName(r.outline)} — ${r.outline.name}`;
 const accepted = (r: RoomRecord) => r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL';
@@ -50,7 +50,7 @@ export const AS: Record<AsState, { label: string; tone: Series; rule: string }> 
 };
 export { asState };
 /** Ready for its next session: matches (or drifted without a high issue), accepted, and no service job open in the room. */
-const ready = (r: RoomRecord, incidents: S.Incident[]) => accepted(r) && !!current(r) && !openIssues(r).some((i) => i.severity === 'High') && !incidents.some((i) => i.roomId === r.outline.id && !DONE.includes(i.state));
+const ready = (r: RoomRecord, incidents: S.Incident[]) => accepted(r) && !!current(r) && !openIssues(r).some((i) => i.severity === 'High') && !incidents.some((i) => i.roomId === r.outline.id && isOpenRequest(i));
 
 function useEstate() {
   const { w } = useWorkspace();
@@ -178,7 +178,7 @@ export function ProPage({ perspective, hash = '' }: { perspective: string; hash?
   const persona = personaOf(perspective); const { w, recs: all } = useEstate(); const drill = drillOf(hash, all); const recs = inScope(all, drill);
   const inScopeRoom = (id: string) => !drill.b || recs.some((r) => r.outline.id === id);
   const now = Date.now();
-  const inc = w.incidents.filter((i) => !DONE.includes(i.state) && !i.restoredAt && inScopeRoom(i.roomId));
+  const inc = w.incidents.filter((i) => isOpenRequest(i) && !i.restoredAt && inScopeRoom(i.roomId));
   const late = (i: S.Incident) => (now - Date.parse(i.openedAt)) / DAY > (TARGET_DAYS[i.severity] ?? 5);
   const roomIssues = recs.flatMap((r) => openIssues(r).map((i) => ({ r, i })));
   const sevSegs = [['High', 'bad'], ['Medium', 'warn'], ['Low', 'info']].map(([s, t]) => ({ key: s!, label: s!, value: roomIssues.filter((x) => x.i.severity === s).length + inc.filter((i) => (s === 'High' ? i.severity !== 'Standard' : s === 'Medium' ? i.severity === 'Standard' : false)).length, tone: t as Series }));
@@ -212,7 +212,7 @@ export function ProPage({ perspective, hash = '' }: { perspective: string; hash?
       </div>
       <EstateDrill kind="pro" recs={all} incidents={w.incidents} hash={hash} base="#/pro" states={PRO_STATES} roomBase="#/assurance/room" />
       <Card icon="building" title="Buildings in good standing" sub="Share of each building's rooms accepted with no open issue">
-        <ul className="kit-meters">{byBuilding(recs, (r) => cxState(r).state === 'accepted' && !w.incidents.some((i) => i.roomId === r.outline.id && !DONE.includes(i.state))).map(({ b, vals }) => <MeterRow key={b.key} label={b.name} sub={`${vals.filter(Boolean).length} of ${plural(vals.length, 'room')}`} value={pct(vals.filter(Boolean).length, vals.length)} href={`#/campus/${b.key}`} />)}</ul>
+        <ul className="kit-meters">{byBuilding(recs, (r) => cxState(r).state === 'accepted' && !w.incidents.some((i) => i.roomId === r.outline.id && isOpenRequest(i))).map(({ b, vals }) => <MeterRow key={b.key} label={b.name} sub={`${vals.filter(Boolean).length} of ${plural(vals.length, 'room')}`} value={pct(vals.filter(Boolean).length, vals.length)} href={`#/campus/${b.key}`} />)}</ul>
       </Card>
       <Card icon="book" title="Lifecycle at a glance" sub="Rooms by where they are, from planned to operational">
         <div className="wk-lifebars">{(['PLANNED', 'DESIGN_APPROVED', 'INSTALLATION_PENDING', 'INSTALLED_UNVERIFIED', 'COMMISSIONING', 'ACCEPTED', 'OPERATIONAL'] as const).map((l) => { const k = recs.filter((r) => r.lifecycle === l).length; return <ProgressBar key={l} small label={l.replace(/_/g, ' ').toLowerCase()} value={k} max={recs.length} valueText={String(k)} tone={l === 'ACCEPTED' || l === 'OPERATIONAL' ? 'ok' : l === 'COMMISSIONING' ? 'info' : 'muted'} />; })}</div>
