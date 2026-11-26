@@ -1,5 +1,5 @@
 {
- "at": "2026-11-26T14:07:28.951Z",
+ "at": "2026-11-26T19:38:33.292Z",
  "scheme": "light",
  "pass": 299,
  "fail": 0,
@@ -1030,7 +1030,7 @@
    "id": "W-founder-1440",
    "name": "founder section at 1440: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:42837/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41339/media/founder/640.jpg\",\"imgW\":480.65625,\"nameSize\":72,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-click",
@@ -1048,13 +1048,13 @@
    "id": "W-founder-768",
    "name": "founder section at 768: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:42837/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41339/media/founder/640.jpg\",\"imgW\":340,\"nameSize\":40,\"stacked\":false,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-founder-390",
    "name": "founder section at 390: two distinct CTAs (About → /founder same tab; Connect → the hosted form, new tab, source=founder), only CTS/CAPM/Network+, the supplied portrait, a prominent name, the philosophy as focal point, stacked",
    "result": "PASS",
-   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:42837/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
+   "detail": "{\"about\":{\"href\":\"/founder\",\"target\":\"\"},\"conn\":{\"href\":\"https://tally.so/r/VpG0Vy?source=founder\",\"target\":\"_blank\",\"text\":\"Connect with the founder (opens the enquiry form on tally.so in a new tab)\"},\"creds\":[\"CTS\",\"CAPM\",\"Network+\"],\"quote\":225,\"img\":\"http://127.0.0.1:41339/media/founder/640.jpg\",\"imgW\":300,\"nameSize\":40,\"stacked\":true,\"overflow\":false,\"private\":false}"
   },
   {
    "id": "W-rooms-/",
@@ -1432,7 +1432,7 @@
    "id": "WC-play",
    "name": "pressing play plays the 1280 × 776, 35-second film from this site, with no sound decoded, and it can be sought to its last scene",
    "result": "PASS",
-   "detail": "{\"can\":true,\"t\":1.803987,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.230598}"
+   "detail": "{\"can\":true,\"t\":1.807259,\"paused\":false,\"w\":1280,\"h\":776,\"d\":35,\"audio\":0,\"video\":192336,\"muted\":false,\"sought\":32.28165}"
   },
   {
    "id": "WC-label",
@@ -1492,7 +1492,7 @@
    "id": "WF-portrait-/founder-1440",
    "name": "/founder at 1440 px shows the founder's picture once, loaded from this site, square, as the founder approved it, with its intrinsic width and height stated and the alternative text \"Jeremiah Johnson, founder of Empathia Technologies\"",
    "result": "PASS",
-   "detail": "{\"n\":1,\"alt\":\"Jeremiah Johnson, founder of Empathia Technologies\",\"wAttr\":\"960\",\"hAttr\":\"960\",\"loaded\":true,\"nw\":480,\"nh\":480,\"cur\":\"/media/founder/640.webp\",\"boxW\":432.578125,\"boxH\":432.578125,\"fit\":\"cover\",\"srcset\":\"/media/founder/320.jpg 320w, /media/founder/640.jpg 640w, /media/founder/960.jpg 960w\",\"webp\":\"/media/founder/320.webp 320w, /media/founder/640.webp 640w, /media/founder/960.webp 960"
+   "detail": "{\"n\":1,\"alt\":\"Jeremiah Johnson, founder of Empathia Technologies\",\"wAttr\":\"960\",\"hAttr\":\"960\",\"loaded\":true,\"nw\":480,\"nh\":480,\"cur\":\"/media/founder/640.webp\",\"boxW\":432.578125,\"boxH\":432.5780944824219,\"fit\":\"cover\",\"srcset\":\"/media/founder/320.jpg 320w, /media/founder/640.jpg 640w, /media/founder/960.jpg 960w\",\"webp\":\"/media/founder/320.webp 320w, /media/founder/640.webp 640w, /media/founder/960.w"
   },
   {
    "id": "WF-portrait-/founder-390",
@@ -1654,7 +1654,7 @@
    "id": "WR-ten-seconds",
    "name": "the sequence lasts ten seconds (9.6 to 10.6 s measured) and then settles to the resting composition by itself: no attribute, no animation left, only Replay offered",
    "result": "PASS",
-   "detail": "{\"ms\":10145,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
+   "detail": "{\"ms\":10109,\"endUi\":{\"state\":\"rest\",\"ctl\":true,\"toggle\":false,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44],\"anims\":0,\"styled\":0,\"played\":\"1\"}}"
   },
   {
    "id": "WR-no-shift",
@@ -1672,13 +1672,13 @@
    "id": "WR-replay",
    "name": "Replay starts the sequence again from its beginning",
    "result": "PASS",
-   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1433.3500000006102}"
+   "detail": "{\"re\":{\"state\":\"run\",\"ctl\":true,\"toggle\":true,\"toggleName\":\"Pause the introduction\",\"replay\":true,\"replayName\":\"Replay the introduction\",\"h\":[44,44],\"anims\":41,\"styled\":0,\"played\":\"1\"},\"reT\":1433.3620000041965}"
   },
   {
    "id": "WR-pause",
    "name": "Pause freezes it (the clock stands still and two screenshots half a second apart are identical) and the button becomes Play; Play, from the keyboard, carries on from the same moment",
    "result": "PASS",
-   "detail": "{\"pa\":\"paused\",\"t1\":1483.3180000006098,\"t2\":1483.3180000006098,\"t3\":1750.0500000010693,\"same\":true}"
+   "detail": "{\"pa\":\"paused\",\"t1\":1483.296000004195,\"t2\":1483.296000004195,\"t3\":1766.7020000035568,\"same\":true}"
   },
   {
    "id": "WR-once",
@@ -1708,7 +1708,7 @@
    "id": "W-budgets",
    "name": "home ≤ 50 KB, site.js ≤ 8 KB, theme-init.js ≤ 512 B, three preloaded Inter faces ≤ 88 KB (D38), captures ≤ 1.4 MB and each ≤ 80 KB, Intake’s screenshots ≤ 640 KB",
    "result": "PASS",
-   "detail": "{\"home\":50180,\"js\":6213,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":1322364,\"maxCapture\":70974,\"intake\":513438}"
+   "detail": "{\"home\":50175,\"js\":6213,\"theme\":249,\"faces\":3,\"fonts\":79012,\"captures\":1322364,\"maxCapture\":70974,\"intake\":513438}"
   },
   {
    "id": "W-rails-390",

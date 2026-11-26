@@ -1,5 +1,5 @@
 {
- "at": "2026-11-26T14:28:51.036Z",
+ "at": "2026-11-26T20:18:24.264Z",
  "database": "empathia_test_checkpoint_e2e",
  "pass": 103,
  "fail": 0,
@@ -26,9 +26,9 @@
    "qa_reviewer": 16
   },
   "v1": {
-   "id": "973e13f2-4120-46dc-83c2-eb6ecc6d37f0",
+   "id": "fc9eaece-fe84-4bf5-9390-b34249fb94a9",
    "designRevision": 2,
-   "publishedAt": "2026-11-26T14:28:47.678Z"
+   "publishedAt": "2026-11-26T20:18:22.234Z"
   },
   "requirements": [
    {
@@ -191,8 +191,8 @@
     "revision 3: SYN-PTZ-12X (synthetic PTZ camera)"
    ],
    "installations": [
-    "AS-0002 installed at PA-0061 on 2026-11-26T14:28:41.729Z by 3b98930d-1119-4b17-acff-cd9adc4479c3 (initial); removed 2026-11-26T14:28:47.822Z by 05b94c33-b18d-4068-af4f-a8d7e0905ec3 (substituted)",
-    "AS-0009 installed at PA-0061 on 2026-11-26T14:28:47.822Z by 05b94c33-b18d-4068-af4f-a8d7e0905ec3 (substitution); still installed"
+    "AS-0002 installed at PA-0061 on 2026-11-26T20:18:18.642Z by 83afb29a-1be3-45e7-9d7c-94f7e61682db (initial); removed 2026-11-26T20:18:22.318Z by 605b7ee8-dc9f-421d-b1ca-fabc5f173816 (substituted)",
+    "AS-0009 installed at PA-0061 on 2026-11-26T20:18:22.318Z by 605b7ee8-dc9f-421d-b1ca-fabc5f173816 (substitution); still installed"
    ]
   },
   "assetHistories": [
@@ -201,7 +201,7 @@
     "model": "generic",
     "identity": "DECLARED",
     "installations": [
-     "AS-0002 installed at PA-0061 on 2026-11-26T14:28:41.729Z by 3b98930d-1119-4b17-acff-cd9adc4479c3 (initial); removed 2026-11-26T14:28:47.822Z by 05b94c33-b18d-4068-af4f-a8d7e0905ec3 (substituted)"
+     "AS-0002 installed at PA-0061 on 2026-11-26T20:18:18.642Z by 83afb29a-1be3-45e7-9d7c-94f7e61682db (initial); removed 2026-11-26T20:18:22.318Z by 605b7ee8-dc9f-421d-b1ca-fabc5f173816 (substituted)"
     ]
    },
    {
@@ -209,7 +209,7 @@
     "model": "SYN-PTZ-12X (synthetic PTZ camera)",
     "identity": "UNKNOWN",
     "installations": [
-     "AS-0009 installed at PA-0061 on 2026-11-26T14:28:47.822Z by 05b94c33-b18d-4068-af4f-a8d7e0905ec3 (substitution); still installed"
+     "AS-0009 installed at PA-0061 on 2026-11-26T20:18:22.318Z by 605b7ee8-dc9f-421d-b1ca-fabc5f173816 (substitution); still installed"
     ]
    }
   ],
@@ -218,8 +218,8 @@
    "checked": 511,
    "head": {
     "seq": 511,
-    "hash": "1ef479a94010f048994022cd5339b6070b7e068f298742964eccf8b6b74ee6c5",
-    "at": "2026-11-26T14:28:48.559Z"
+    "hash": "881a6f5676fd362d3f52648d2571d917c28bafc88a2130fa837a98f5c1a640aa",
+    "at": "2026-11-26T20:18:22.757Z"
    }
   },
   "auditEvents": 395,
