@@ -27,7 +27,7 @@ export const HEALTH: Record<HealthState, { label: string; tone: Tone; help: stri
   healthy: { label: 'Healthy', tone: 'ok', help: 'Everything measured is within its baseline' },
   monitor: { label: 'Monitor', tone: 'warn', help: 'Drifting from its baseline; nothing has failed yet' },
   action: { label: 'Action needed', tone: 'bad', help: 'Something has failed or is blocked and needs a person' },
-  modelled: { label: 'Modelled', tone: 'info', help: 'Synthetic or forecast: computed by the model, not measured' },
+  modelled: { label: 'Modeled', tone: 'info', help: 'Synthetic or forecast: computed by the model, not measured' },
   offline: { label: 'No data', tone: 'muted', help: 'Nothing has reported, so nothing is claimed' },
 };
 /** The health band a 0–100 score falls in (V2.5.3 bands: 85 and over healthy, 70 and over monitor). */

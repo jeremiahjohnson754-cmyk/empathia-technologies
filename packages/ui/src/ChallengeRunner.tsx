@@ -97,7 +97,7 @@ function Controls({ C, st, lv, disabled, set }: { C: Challenge; st: CState; lv: 
       case 'slots': return <div key={k} className="ch__slots" role="group" aria-label={c.label} data-key={c.key}><p className="lab__k">{c.label}</p>
         <div className="dr__grid">{c.options.map((o) => <button key={o.id} type="button" className="dr__btn" data-opt={o.id} aria-pressed={st[c.key] === o.id} disabled={disabled} onClick={() => set({ [c.key]: o.id })}>{o.label}</button>)}</div></div>;
       case 'color': return <div key={k} className="ch__field ch__color" data-key={c.key}><span>{c.label}</span>
-        <input type="color" aria-label={`${c.label} colour`} value={String(st[c.key]).toLowerCase()} disabled={disabled} onChange={(e) => set({ [c.key]: e.target.value })} />
+        <input type="color" aria-label={`${c.label} color`} value={String(st[c.key]).toLowerCase()} disabled={disabled} onChange={(e) => set({ [c.key]: e.target.value })} />
         <div className="ch__sw">{CH.See.SWATCHES.map((hx) =>  <button key={hx} type="button" className="ch__chip" data-hex={hx} aria-label={`${c.label} ${hx}`} title={hx} disabled={disabled} aria-pressed={String(st[c.key]).toLowerCase() === hx.toLowerCase()} onClick={() => set({ [c.key]: hx })}><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10" fill={hx} /></svg></button>)}</div></div>;
       case 'action': return <p key={k}><Button disabled={disabled} onClick={() => set(c.set, !!c.finish)}>{c.label}</Button></p>;
       default: return null;

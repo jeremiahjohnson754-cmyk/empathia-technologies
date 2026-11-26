@@ -86,7 +86,7 @@ function Eq() {
       {[-24, -12, 0, 12].map((v) => <g key={v}><line x1={x0} x2={x1} y1={Y(v)} y2={Y(v)} stroke={v === 0 ? '#475569' : '#1F2A3D'} /><T x={x0 - 8} y={Y(v) + 5} s={`${v > 0 ? '+' : ''}${v}`} size={13} fill="#94A3B8" anchor="end" /></g>)}
       {[31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000].map((f) => <T key={f} x={logX(f, x0, x1)} y={y1 + 34} s={fmtHz(f)} size={13} fill="#94A3B8" anchor="middle" />)}
       {THIRDS.map((f, i) => { const v = bars ? bars[i]! : SOURCES[s.src]!.f(f) + eq(f); return <rect key={f} x={logX(f, x0, x1) - bw / 2} y={Y(v)} width={bw} height={Math.max(0, y1 - Y(v))} fill={REG_C[regionOf(f).name]} opacity={0.85} />; })}
-      <path d={curve} fill="none" stroke="#F4F1E8" strokeWidth={3.5} /><T x={x1} y={20} s={bars ? 'LIVE ANALYSER · what you are hearing' : 'bars = source + EQ · white line = EQ alone'} size={14} anchor="end" weight={800} />
+      <path d={curve} fill="none" stroke="#F4F1E8" strokeWidth={3.5} /><T x={x1} y={20} s={bars ? 'LIVE ANALYZER · what you are hearing' : 'bars = source + EQ · white line = EQ alone'} size={14} anchor="end" weight={800} />
       <T x={10} y={374} s="dB re: flat · ⅓-octave bands · ILLUSTRATIVE sources (FB-05)" size={12} fill="#94A3B8" />
     </Stage>
     <Read rows={[['loudest band', `${fmtHz(worst[0])} Hz · ${regionOf(worst[0]).name}`], ['what lives there', REG_FEEL[regionOf(worst[0]).name]!], ['high-pass', `${s.hp} Hz · 12 dB/octave`], ['rule of thumb', 'cut narrow, boost wide — and sweep with your ears, confirm with the analyzer']]} />
@@ -204,7 +204,7 @@ function Colour() {
   const [s, setS] = useState({ k: 3200, k2: 5600, r: 255, g: 180, b: 60 }); const set = (k: string) => (v: number) => setS({ ...s, [k]: v }); const shift = Math.round(1e6 / s.k2 - 1e6 / s.k), cx = 660, cy = 205, rr = 62;
   return <>
     <Stage w={800} h={360} label="Color temperature swatches with their mired values, and three colored lights overlapping to show additive mixing.">
-      <T x={20} y={26} s="WHITE IS NOT ONE COLOUR · color temperature (kelvin)" size={14} weight={800} />
+      <T x={20} y={26} s="WHITE IS NOT ONE COLOR · color temperature (kelvin)" size={14} weight={800} />
       {Array.from({ length: 40 }, (_x, i) => <rect key={i} x={20 + i * 19} y={40} width={19} height={40} fill={`rgb(${cctRGB(1800 + i * 210).join(',')})`} />)}
       {[2000, 3200, 4300, 5600, 6500, 9000].map((K) => <T key={K} x={20 + ((K - 1800) / 210) * 19} y={98} s={`${K} K`} size={12} anchor="middle" />)}
       {([['A', s.k, 30], ['B', s.k2, 280]] as const).map(([n, K, x]) => <g key={n}><rect x={x} y={120} width={220} height={90} rx={10} fill={`rgb(${cctRGB(K).join(',')})`} /><T x={x + 110} y={234} s={`${n} · ${K} K · ${Math.round(1e6 / K)} mired`} size={14} fill="#E2E8F0" anchor="middle" weight={800} /></g>)}
