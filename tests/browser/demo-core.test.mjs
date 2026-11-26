@@ -129,11 +129,13 @@ for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 84
     const q = (s) => document.querySelector(s); const qa = (s) => Array.from(document.querySelectorAll(s));
     const st = qa('[data-testid="mc-flow"] .mc-st'); const n = (el) => parseInt(el.querySelector('.mc-st__dot')?.textContent || '0', 10) || 0;
     return { hero: !!q('[data-testid="mc-hero"] h1') && !!q('[data-testid="hero-search"] input'), prods: qa('[data-testid="mc-products"] a').length, tiles: qa('[data-testid="home-kpis"] .kit-tile').length, sparks: qa('[data-testid="home-kpis"] svg[role="img"]').length,
-      stations: st.length, rooms: st.filter((e) => e.getAttribute('data-station') !== 'intake').reduce((s, e) => s + n(e), 0), greet: q('[data-testid="mc-greeting"] h2')?.textContent || '', acts: qa('[data-testid="mc-actions"] a').length,
+      stations: st.length, rooms: st.filter((e) => e.getAttribute('data-station') !== 'intake').reduce((s, e) => s + n(e), 0), greet: q('[data-testid="mc-headline"]')?.textContent || '', acts: qa('[data-testid="mc-actions"] a').length,
       pri: qa('[data-testid="mc-priority"] a').length, inc: qa('[data-testid="mc-incidents"] li').length, active: qa('[data-testid="mc-active"] .mc-room').length, ins: q('[data-testid="mc-insight"]')?.textContent || '',
       small: qa('main .mc-st button, main .mc-pri a, main .mc-act, main .mc-prod, main .mc-ask').filter((e) => { const b = e.getBoundingClientRect(); return b.width > 0 && (b.height < 43.5 || b.width < 43.5); }).map((e) => e.textContent.slice(0, 20)) };
   });
-  ok(`MC-${tag}-01`, 'Mission Control: hero with the Search Party bar, products, greeting, help actions, eight tiles with sparklines', v.hero && v.prods >= 6 && v.tiles === 8 && v.sparks >= 3 && /Good (morning|afternoon|evening), Product Architect/.test(v.greet) && v.acts >= 5, JSON.stringify(v));
+  // 25 Nov 2026 (commercial readiness §5): the greeting card is gone; its greeting is the headline's, the one greeting on the page,
+  // and the products and help actions sit one click away under "More from Mission Control" (still in the page, so still counted)
+  ok(`MC-${tag}-01`, 'Mission Control: hero with the Search Party bar and the one greeting, products, help actions, eight tiles with sparklines', v.hero && v.prods >= 6 && v.tiles === 8 && v.sparks >= 3 && /Good (morning|afternoon|evening), Product Architect/.test(v.greet) && v.acts >= 5, JSON.stringify(v));
   ok(`MC-${tag}-02`, `mission flow: eight stations and every one of the ${NROOMS} rooms on exactly one`, v.stations === 8 && v.rooms === NROOMS, `${v.stations} stations, ${v.rooms} rooms`);
   ok(`MC-${tag}-03`, 'priorities with their verbs, recent incidents, active rooms and the insight are computed and present', v.pri >= 3 && v.inc >= 3 && v.active >= 3 && /live service request/.test(v.ins), JSON.stringify(v).slice(0, 300));
   ok(`MC-${tag}-04`, 'every control is a 44 px target', !v.small.length, v.small.join(' | '));
@@ -155,11 +157,39 @@ for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 84
   const landed = await t.page.evaluate(() => ({ hash: location.hash, refused: !!document.querySelector('[data-testid="access-page"]'), text: document.querySelector('main')?.innerText || '' }));
   ok(`MC-${tag}-first`, 'the hero button opens the record the sentence names first (ISS-0417 in Atlas 4.218), and that record is on the page it opens', hero.rec === 'ISS-0417' && hero.named === 'ISS-0417' && hero.room === 'R-ATL-4-218' && /R-ATL-4-218|4-218/.test(hero.roomLink) && hero.href === '#/v25/service?id=ISS-0417' && landed.hash === hero.href && !landed.refused && landed.text.includes('ISS-0417'), JSON.stringify({ ...hero, landed: { ...landed, text: landed.text.slice(0, 120) } }));
   await t.go('#/home', 700);
-  // the first Take action opens the record it names
-  const first = t.page.locator('[data-testid="mc-greeting"] a').first(); const href = await first.getAttribute('href'); await first.click(); await t.page.waitForTimeout(700);
-  ok(`MC-${tag}-08`, 'the greeting’s first item opens the record it names (not a refusal)', (await t.page.evaluate(() => location.hash)) === href && (await t.page.locator('[data-testid="access-page"]').count()) === 0, href);
+  // the first priority opens the record it names (25 Nov 2026: read from Priority actions; the greeting card that listed it is gone)
+  const first = t.page.locator('[data-testid="mc-priorities"] .mc-pri a').first(); const href = await first.getAttribute('href'); await first.click(); await t.page.waitForTimeout(700);
+  ok(`MC-${tag}-08`, 'the first priority opens the record it names (not a refusal)', (await t.page.evaluate(() => location.hash)) === href && (await t.page.locator('[data-testid="access-page"]').count()) === 0, href);
   if (vp[2] === 'desktop') await t.page.goto(t.page.url().split('#')[0] + '#/home').catch(() => {});
   await t.close();
+}
+// 25 Nov 2026 (commercial readiness §5 and §7): the layered home and the first-visit introduction
+for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
+  const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(800);
+  const order = await t.page.evaluate(() => { const ids = ['mc-intro', 'mc-hero', 'mc-flow', 'mc-priorities', 'home-kpis', 'mc-more']; const y = (id) => document.querySelector(`[data-testid="${id}"]`)?.getBoundingClientRect().top ?? NaN; return ids.map((id) => [id, y(id)]); });
+  ok(`MC-${tag}-layers`, 'the page reads in layers: the introduction (first visit), the briefing, the Mission flow, your priorities, the campus numbers, then more', order.every(([, y], i) => Number.isFinite(y) && (i === 0 || y > order[i - 1][1])), JSON.stringify(order));
+  const closedGroups = await t.page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="mc-more"] details.mc-group')).map((d) => [d.getAttribute('data-group'), d.open, d.querySelector('.mc-group__body')?.getBoundingClientRect().height || 0]));
+  ok(`MC-${tag}-more-01`, 'products, help, active rooms, insight, saved work and changes are one click away: six groups, closed on a first visit, their contents not drawn', closedGroups.length === 6 && closedGroups.every(([, o, h]) => !o && h === 0), JSON.stringify(closedGroups));
+  const tall = await t.page.evaluate(() => document.documentElement.scrollHeight / innerHeight);
+  ok(`MC-${tag}-short`, `the page is at most ${vp[2] === 'desktop' ? 5 : 9} screens tall (the external review measured about seven on a desktop before)`, tall <= (vp[2] === 'desktop' ? 5 : 9), tall.toFixed(2));
+  // the introduction: there on a first visit, gone for good with "Not now", back with "Show the introduction again", never on a deep link
+  const intro = await t.page.evaluate(() => ({ on: !!document.querySelector('[data-testid="mc-intro"]'), paths: Array.from(document.querySelectorAll('[data-testid="mc-intro"] a')).map((a) => a.getAttribute('href')), dialog: !!document.querySelector('[role="dialog"][aria-modal="true"]') }));
+  ok(`MC-${tag}-intro-01`, 'a first visit shows the introduction in the page (not a dialog over it) with the guided tours, one room’s story and the welcome', intro.on && !intro.dialog && intro.paths.includes('#/tours') && intro.paths.includes('#/replay/R-ATL-4-218') && intro.paths.includes('#/investor'), JSON.stringify(intro));
+  await t.page.click('[data-testid="mc-intro-close"]'); await t.page.waitForTimeout(200); await t.page.reload(); await t.page.waitForTimeout(800);
+  ok(`MC-${tag}-intro-02`, '"Not now" dismisses it for good: a reload does not bring it back', (await t.page.locator('[data-testid="mc-intro"]').count()) === 0);
+  await t.page.click('[data-testid="mc-intro-again"]'); await t.page.waitForTimeout(300);
+  ok(`MC-${tag}-intro-03`, '"Show the introduction again" at the foot of the page brings it back', (await t.page.locator('[data-testid="mc-intro"]').count()) === 1);
+  // a group left open is open next time (experienced users keep what they use)
+  await t.page.click('[data-group="products"] > summary'); await t.page.waitForTimeout(200);
+  const prodVisible = await t.page.evaluate(() => (document.querySelector('[data-testid="mc-products"] a')?.getBoundingClientRect().height || 0) >= 44);
+  await t.page.reload(); await t.page.waitForTimeout(800);
+  const kept = await t.page.evaluate(() => ({ products: document.querySelector('[data-group="products"]')?.open, start: document.querySelector('[data-group="start"]')?.open }));
+  ok(`MC-${tag}-more-02`, 'opening "Every product" shows the nine product tiles, and it is still open after a reload while the others stay closed', prodVisible && kept.products === true && kept.start === false, JSON.stringify(kept));
+  // a first visit that arrives by a deep link sees no introduction there
+  const t2 = await open(vp, scheme, { hash: '#/campus' }); await t2.page.waitForTimeout(800);
+  ok(`MC-${tag}-intro-04`, 'a deep link (#/campus) on a first visit opens its page with no introduction in the way', (await t2.page.locator('[data-testid="mc-intro"]').count()) === 0 && (await t2.page.locator('main h1').count()) === 1);
+  ok(`MC-${tag}-layers-clean`, 'no page error and no request leaves the page', !t.errs.length && !t.ext.length && !t2.errs.length, [...t.errs, ...t.ext, ...t2.errs].join(' | '));
+  await t2.close(); await t.close();
 }
 for (const scheme of SCHEMES) { // View as changes the work; D44; destructive input
   const t = await open([1440, 900], scheme, { hash: '#/investor' });

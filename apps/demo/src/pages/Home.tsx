@@ -70,6 +70,52 @@ function More<T>({ items, n, render, label }: { items: T[]; n: number; render: (
   return <>{(all ? items : items.slice(0, n)).map(render)}{items.length > n && <li className="kit-row-li row--more"><button type="button" className="sp__more" aria-expanded={all} onClick={() => setAll(!all)}>{all ? 'Show fewer' : `Show ${items.length - n} more of ${items.length} ${label}`}</button></li>}</>;
 }
 
+/* ------------------------------------------------------------------------------------------------ progressive disclosure (25 Nov 2026)
+ * Commercial-readiness directive §5: the briefing, the Mission flow, your priorities and the campus stay open; the rest is one click away,
+ * each group a native disclosure that remembers, per viewer, whether it was left open (§5.3: an experienced user who keeps "Every product"
+ * open finds it open next time). Browser storage only for that convenience; every read and write may fail and the page works without it. */
+const GROUPS_KEY = 'empathia.mc.open.v1';
+const readOpen = (): Record<string, boolean> => { try { return JSON.parse(localStorage.getItem(GROUPS_KEY) || '{}') || {}; } catch { return {}; } };
+function Group({ id, title, sub, count, children }: { id: string; title: string; sub: string; count?: number; children: ReactElement }) {
+  const [open, setOpen] = useState(() => !!readOpen()[id]);
+  return (
+    <details className="mc-group" data-group={id} open={open} onToggle={(e: { currentTarget: HTMLDetailsElement }) => { const o = e.currentTarget.open; setOpen(o); try { localStorage.setItem(GROUPS_KEY, JSON.stringify({ ...readOpen(), [id]: o })); } catch { /* the choice lasts the page */ } }}>
+      <summary><span className="mc-group__t"><b>{title}</b>{count != null && <span className="mc-count">{count}</span>}</span><span className="ui-meta">{sub}</span></summary>
+      <div className="mc-group__body">{children}</div>
+    </details>
+  );
+}
+
+/* ------------------------------------------------------------------------------------------------ first visit (25 Nov 2026)
+ * Directive §7: an optional introduction, built on what exists (the guided tours at #/tours, the investor welcome at #/investor, Core
+ * Replay), shown once in a card above the briefing — never a dialog over the page, never on a deep link (it is part of #/home only) — dismissed
+ * for good with "Not now" or by taking a path, and brought back with "Show the introduction again" at the foot of the page. */
+const INTRO_KEY = 'empathia.intro.v1'; const INTRO_EVENT = 'empathia:intro';
+const introSeen = () => { try { return localStorage.getItem(INTRO_KEY) === 'seen'; } catch { return true; } };
+const markIntro = () => { try { localStorage.setItem(INTRO_KEY, 'seen'); } catch { /* shown again next visit */ } };
+const forgetIntro = () => { try { localStorage.removeItem(INTRO_KEY); } catch { /* nothing kept */ } };
+function FirstVisit({ opens }: { opens: (href: string) => boolean }) {
+  const [show, setShow] = useState(() => !introSeen());
+  useEffect(() => { const f = () => setShow(true); addEventListener(INTRO_EVENT, f); return () => removeEventListener(INTRO_EVENT, f); }, []);
+  if (!show) return null;
+  const paths = [
+    { href: '#/tours', t: 'Take a guided tour', s: 'Seven short scenarios, narrated, step by step', primary: true },
+    { href: '#/replay/R-ATL-4-218', t: 'Follow one room’s whole story', s: 'From the request to an accepted room in service' },
+    { href: '#/investor', t: 'Choose what to see first', s: 'Rooms, the campus, Search Party, SIGNAL or Replay' },
+  ].filter((x) => opens(x.href));
+  const close = () => { markIntro(); setShow(false); };
+  return (
+    <aside className="mc-intro" aria-labelledby="mc-intro-h" data-testid="mc-intro">
+      <div className="mc-intro__t">
+        <h2 id="mc-intro-h">New to Empathia? Start here.</h2>
+        <p>Empathia follows every room from the request to an engineered, commissioned and accepted space in operation, and keeps the evidence of each step. This is Mission Control, where the people who run the estate start. Every record in this demonstration is synthetic.</p>
+      </div>
+      <ul className="mc-intro__paths">{paths.map((x) => <li key={x.href}><a className={`mc-intro__path${x.primary ? ' is-primary' : ''}`} href={x.href} onClick={markIntro}><b>{x.t}</b><span className="ui-meta">{x.s}</span></a></li>)}</ul>
+      <button type="button" className="ui-btn mc-intro__close" onClick={close} data-testid="mc-intro-close">Not now</button>
+    </aside>
+  );
+}
+
 /** One priority row: the verb is the row's one button and opens the record (Take action / Resume / Review). */
 function PriorityRow({ p, mine }: { p: Priority; mine: boolean }) {
   return (
@@ -112,7 +158,7 @@ function MissionControl({ role }: PageProps) {
   // the record the sentence names first, and the one the hero button opens: the first room's first issue (most severe first)
   const firstIssue = first?.issues[0];
   const firstHref = !first ? undefined : firstIssue?.live && firstIssue.href && opens(firstIssue.href) ? firstIssue.href : opens(roomHref(first.r.outline)) ? roomHref(first.r.outline) : undefined;
-  const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
   const [station, setStation] = useState<StationKey | null>(null);
   const [others, setOthers] = useState(false);
   const flowRef = useRef<HTMLDivElement>(null);
@@ -120,7 +166,7 @@ function MissionControl({ role }: PageProps) {
 
   // the nine products the role can open, in the canonical order (D37/D40), each with one number from the records
   const pnum: Record<string, string> = {
-    'mission-control': plural(decisions, 'decision') + ' to review', lite: `${c.rooms} rooms modelled`, pro: plural(c.open, 'open issue'), 'search-party': `${c.devices} device positions`,
+    'mission-control': plural(decisions, 'decision') + ' to review', lite: `${c.rooms} rooms modeled`, pro: plural(c.open, 'open issue'), 'search-party': `${c.devices} device positions`,
     servicehands: plural(liveReq.length, 'live request'), commissioning: c.verifiedPct == null ? 'no test on record' : `${c.verifiedPct}% tests verified`, apex: plural((w?.apexCases || []).length, 'diagnosis', 'diagnoses'),
     field: plural((w?.fiSessions || []).length, 'scan'), learn: plural((w?.learnCases || []).length, 'lesson'),
   };
@@ -138,18 +184,18 @@ function MissionControl({ role }: PageProps) {
   ].filter((a) => opens(a.href)).slice(0, 6);
   const tiles = Object.fromEntries(c.buildings.map((s: BuildingStats) => [s.b.key, { score: s.score, band: s.band, issues: s.open, rooms: s.rooms }]));
   const sel = stations.find((s) => s.key === station) || null;
-  const mineTop = pri.mine.slice(0, 1);
   const roomLink = (href: string | undefined, label: string) => (href && opens(href) ? <a href={href}>{label}</a> : <>{label}</>);
 
   return (
     <section className="home mc" data-native="" data-testid="home" data-r={role}>
-      {/* ---------------------------------------------------------------- hero: the sentence that matters, the Search Party bar, campus health */}
+      {/* ================================================================ layer 1 · understand: the briefing (the one greeting on the page) */}
+      <FirstVisit opens={opens} />
       <header className="mc-hero" data-testid="mc-hero">
         <div className="mc-hero__t">
           <p className="kicker"><span className="home__live" aria-hidden="true" />Mission Control · one connected lifecycle · {R.label} · {today}</p>
-          <div className="mc-hero__h"><h1 tabIndex={-1} data-testid="mc-headline" data-count={yours}>{greeting()} — {yours === 0 ? 'nothing waits for you' : `${plural(yours, 'item')} wait${yours === 1 ? 's' : ''} for you`}</h1><span className="mc-hero__tag">Mission Control</span></div>
+          <div className="mc-hero__h"><h1 tabIndex={-1} data-testid="mc-headline" data-count={yours}>{greeting()}, {R.label} — {yours === 0 ? 'nothing waits for you' : `${plural(yours, 'item')} wait${yours === 1 ? 's' : ''} for you`}</h1><span className="mc-hero__tag">Mission Control</span></div>
           <p className="home__say" data-testid="home-say">
-            {yours ? <><b data-testid="mc-split">{toAct} to act on, {toResume} to resume and {plural(decisions, 'decision')} to review</b>.</> : <>Nothing on record waits for a {R.label}.</>}
+            {yours ? <><b data-testid="mc-split">{toAct} to act on, {toResume} to resume and {plural(decisions, 'decision')} to review</b>.</> : <>Nothing on record waits for a {R.label}{pri.others.length ? `; ${plural(pri.others.length, 'item')} wait${pri.others.length === 1 ? 's' : ''} for other roles` : ''}.</>}
             {' '}Across the campus, <b data-testid="mc-attention">{plural(c.attention, 'room')} need{c.attention === 1 ? 's' : ''} attention</b>{c.atRisk ? <>; <b data-testid="mc-risk">{c.atRisk} of them {c.atRisk === 1 ? 'is' : 'are'} at risk</b>, because an open issue is critical or the room scores below 75</> : ''}{watch && c.atRisk ? <>, and {watch} {watch === 1 ? 'is' : 'are'} worth watching</> : ''}.
             {first && <> {roomLink(roomHref(first.r.outline), shortName(first.r.outline))} comes first{firstIssue ? <>: <span data-testid="mc-first-issue">{firstIssue.id}</span>, {firstIssue.title.charAt(0).toLowerCase() + firstIssue.title.slice(1)}</> : ''}.</>}
             {' '}{nChanges} change{nChanges === 1 ? ' was' : 's were'} recorded this week.
@@ -168,44 +214,8 @@ function MissionControl({ role }: PageProps) {
       </header>
 
       <JumpBar s={start} />
-      {/* ---------------------------------------------------------------- the products this role can open */}
-      {products.length > 0 && <nav className="mc-products" aria-label="Products" data-testid="mc-products">
-        {products.map(({ p, landing }) => <a key={p.id} href={hrefOf(landing!.id)} className={`mc-prod kit-s--${p.id}`} data-p={p.id}><span className="mc-prod__mark" aria-hidden="true" /><b>{p.name}</b><span className="mc-prod__sub">{p.subtitle}</span><span className="mc-prod__n">{pnum[p.id]}</span><Icon name="chevron" size={16} /></a>)}
-      </nav>}
 
-      {/* ---------------------------------------------------------------- greeting + what needs you · what can I help you do */}
-      <div className="mc-row mc-row--greet">
-        <section className="mc-card mc-greet" aria-labelledby="mc-greet-h" data-testid="mc-greeting" data-r={role}>
-          <div className="mc-greet__head"><span className="ava" aria-hidden="true">{R.initials}</span><div><h2 id="mc-greet-h">{greeting()}, {R.label}</h2><p className="ui-meta">{R.domain === R.home ? R.home : `${R.domain} · ${R.home}`}</p></div><Chip tone="accent">View as · grants nothing</Chip></div>
-          {pri.mine.length ? <>
-            <p className="mc-greet__lead">Here is what needs your attention today: <b>{plural(pri.mine.length, 'item')}</b> on record {pri.mine.length === 1 ? 'is' : 'are'} yours{mineTop[0] ? <>, starting with <a href={mineTop[0].href}>{mineTop[0].title.charAt(0).toLowerCase() + mineTop[0].title.slice(1)}</a> ({mineTop[0].where})</> : ''}.</p>
-            <ul className="mc-chips" aria-label="Your work by kind">{(['Take action', 'Resume', 'Review'] as const).map((v) => { const n = pri.mine.filter((p) => p.verb === v).length; return n ? <li key={v}><Chip tone={v === 'Take action' ? 'bad' : v === 'Resume' ? 'info' : 'warn'}>{n} to {v === 'Take action' ? 'act on' : v.toLowerCase()}</Chip></li> : null; })}</ul></>
-            : <p className="mc-greet__lead" data-testid="mc-nothing-mine">Nothing on record waits for a {R.label} right now.{pri.others.length ? ` ${plural(pri.others.length, 'item')} wait${pri.others.length === 1 ? 's' : ''} for other roles.` : ''}</p>}
-        </section>
-        <section className="mc-card mc-help" aria-labelledby="mc-help-h" data-testid="mc-actions">
-          <h2 id="mc-help-h"><Icon name="spark" /> What can I help you do?</h2>
-          {actions.length ? <ul className="mc-help__list">{actions.map((a) => <li key={a.href}><a href={a.href} className="mc-act"><span className="mc-act__ic" aria-hidden="true"><Icon name={a.icon} /></span><span><b>{a.t}</b><span className="ui-meta">{a.s}</span></span></a></li>)}</ul>
-            : <EmptyState title="Nothing to start here" icon="inbox">This role’s work starts elsewhere.</EmptyState>}
-        </section>
-      </div>
-
-      {/* ---------------------------------------------------------------- stat tiles with sparklines */}
-      <div className="mc-tiles" data-testid="home-kpis">
-        <KTile label={METRICS['health.average'].label} testId="kpi-health" value={c.score} unit="/100" icon="pulse" tone={c.band === 'healthy' ? 'ok' : c.band === 'monitor' ? 'warn' : c.band === 'action' ? 'bad' : 'muted'} hint={`${BAND_LABEL[c.band]} · average of ${c.scored} scored rooms${c.lowest ? ` · lowest ${c.lowest.label}, ${c.lowest.score}` : ''}`} href={opens('#/campus') ? '#/campus' : undefined} />
-        <KTile label={METRICS['rooms.healthy'].label} testId="kpi-healthy" value={c.healthy} unit={` of ${c.rooms}`} icon="pulse" tone="ok" hint={`${c.monitor} monitor · ${c.action} action required · ${c.unscored} not scored`} href={opens('#/rooms') ? '#/rooms?health=healthy' : undefined} />
-        <KTile label={METRICS['rooms.attention'].label} testId="kpi-attention" value={c.attention} unit={` of ${c.rooms}`} icon="alert" tone={c.atRisk ? 'bad' : c.attention ? 'warn' : 'ok'} hint={`${c.atRisk} at risk · ${watch} to watch`} href={opens('#/rooms') ? '#/rooms?attention=all' : undefined} />
-        <KTile label={METRICS['issues.critical'].label} testId="kpi-critical" value={c.high} icon="alert" tone={c.high ? 'bad' : 'ok'} hint={`severity High · in ${plural(c.highRooms, 'room')} · ${c.open} open in all`} href={opens('#/rooms') ? '#/rooms?attention=risk' : undefined} />
-        <KTile label="Commissioning readiness" value={c.verifiedPct} unit="%" icon="check" tone="commissioning" spark={S.verified.values} delta={{ value: last(S.verified.values) - prev(S.verified.values), good: 'up', label: 'tests verified last month' }} href={opens('#/room') ? '#/room?tab=tests' : undefined} />
-        <KTile label="Accepted rooms" value={c.accepted} unit={` of ${c.rooms}`} icon="route" tone="lite" spark={S.accepted.values} delta={{ value: last(S.accepted.values) - prev(S.accepted.values), good: 'up', label: 'since last month' }} href={opens('#/rooms') ? '#/rooms?state=ACCEPTED' : undefined} />
-        <KTile label={METRICS['requests.open'].label} testId="kpi-requests" value={liveReq.length} icon="wrench" tone="servicehands" spark={S.requests.values} hint={`${plural(wos.length, 'work order')} open`} href={opens('#/v25/service') ? '#/v25/service' : undefined} />
-        <KTile label="Funding authorised" value={`$${Math.round(P.funding.reduce((s, f) => s + f.amount, 0) / 1000)}k`} icon="ticket" tone="mission-control" hint={`${P.funding.length} of ${P.projects.length} projects funded · not a quote`} href={opens('#/v25/decisions') ? '#/v25/decisions' : undefined} />
-      </div>
-
-      <details className="mc-defs" data-testid="mc-defs"><summary>How these numbers are counted</summary>
-        <dl>{HOME_METRICS.map((id) => { const m = METRICS[id]; return <div key={id} data-metric={id}><dt>{m.label}</dt><dd>{m.meaning} <span className="ui-meta">Counts {m.counts.charAt(0).toLowerCase() + m.counts.slice(1)} Leaves out {m.excludes.charAt(0).toLowerCase() + m.excludes.slice(1)} {m.denominator}{m.evidence === 'MODELED' ? ' Modeled from the synthetic records, not measured.' : ''}</span></dd></div>; })}</dl>
-      </details>
-
-      {/* ---------------------------------------------------------------- mission flow: every room on its station */}
+      {/* ================================================================ the centerpiece: every room on its station of the Mission flow */}
       <section className="mc-card mc-flow" aria-labelledby="mc-flow-h" data-testid="mc-flow" ref={flowRef}>
         <div className="mc-card__head"><h2 id="mc-flow-h">Mission flow</h2><span className="ui-meta">Every room on its station, from the request to service · read from lifecycles, baselines and open issues</span>{opens('#/v25') && <a className="mc-link" href="#/v25">Lifecycle stations <Icon name="chevron" size={14} /></a>}</div>
         <ol className="mc-stations" aria-label="Stations">{stations.map((s, i) => (
@@ -222,55 +232,86 @@ function MissionControl({ role }: PageProps) {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- saved work · priority actions · recent incidents */}
-      <div className="mc-row mc-row--three">
+      {/* ================================================================ layer 2 · act: your work, and the live requests */}
+      <div className="mc-row mc-row--act">
         <section className="mc-card" aria-labelledby="mc-pri-h" data-testid="mc-priorities">
           <div className="mc-card__head"><h2 id="mc-pri-h">Priority actions</h2><span className="mc-count" data-testid="mc-pri-count" title="Waiting for you">{pri.mine.length}</span>{pri.others.length > 0 && <button type="button" className="mc-link" aria-pressed={others} onClick={() => setOthers(!others)}>{others ? 'Only mine' : `+${pri.others.length} for other roles`}</button>}</div>
-          {pri.mine.length || (others && pri.others.length) ? <ul className="mc-pris" id="mc-pri-list"><More items={[...pri.mine.map((p) => [p, true] as const), ...(others ? pri.others.map((p) => [p, false] as const) : [])]} n={4} label="actions" render={([p, m]) => <PriorityRow key={p.id} p={p} mine={m} />} /></ul>
+          {pri.mine.length || (others && pri.others.length) ? <ul className="mc-pris" id="mc-pri-list"><More items={[...pri.mine.map((p) => [p, true] as const), ...(others ? pri.others.map((p) => [p, false] as const) : [])]} n={5} label="actions" render={([p, m]) => <PriorityRow key={p.id} p={p} mine={m} />} /></ul>
             : <EmptyState title={`Nothing waits for a ${R.label}`} icon="check">{pri.others.length ? 'Other roles have work on record; show it above.' : 'No decision, repair or test on record waits for a person.'}</EmptyState>}
         </section>
-        <div className="mc-stack">
         <section className="mc-card" aria-labelledby="mc-inc-h" data-testid="mc-incidents">
           <div className="mc-card__head"><h2 id="mc-inc-h">Recent incidents</h2><span className="mc-count">{plural(liveReq.length, 'live', 'live')}</span>{opens('#/v25/service') && <a className="mc-link" href="#/v25/service">All <Icon name="chevron" size={14} /></a>}</div>
           {inc.length ? <List label="Recent incidents">{inc.slice(0, 4).map((i) => <ListRow key={i.id} href={opens(i.href) ? i.href : (i.roomHref && opens(i.roomHref) ? i.roomHref : undefined)} leading={<span className={`row__ic row__ic--${i.live ? SEV_TONE[i.severity] : 'muted'}`}><Icon name={i.live ? 'alert' : 'check'} /></span>} title={i.title} sub={`${i.id} · ${i.room} · ${ago(Date.parse(i.at))}`} trailing={<Chip tone={i.live ? SEV_TONE[i.severity] : 'muted'}>{i.live ? i.severity : i.state.toLowerCase()}</Chip>} />)}</List>
             : <EmptyState title="No incident on record" icon="check">The service workspace holds no request.</EmptyState>}
         </section>
-        <section className="mc-card" aria-labelledby="mc-saved-h" data-testid="mc-saved">
-          <div className="mc-card__head"><h2 id="mc-saved-h">Saved work</h2><span className="mc-count">{saved.length}</span></div>
-          {saved.filter((x) => opens(x.href)).length ? <List label="Saved work">{saved.filter((x) => opens(x.href)).slice(0, 4).map((x) => <ListRow key={x.id} href={x.href} leading={<span className="row__ic"><Icon name={x.icon} /></span>} title={x.title} sub={`${x.sub}${x.at ? ` · ${ago(Date.parse(x.at))}` : ''}`} chevron />)}</List>
-            : <EmptyState title="Nothing saved part-way" icon="inbox">A Build a Room draft, a diagnosis or a lesson you start is kept here until it is finished.{opens('#/v25/build') ? <> <a href="#/v25/build">Design a space</a>.</> : ''}</EmptyState>}
-        </section>
-        </div>
       </div>
 
-      {/* ---------------------------------------------------------------- active rooms · Search Party insight */}
-      <div className="mc-row mc-row--active">
-        <section className="mc-card" aria-labelledby="mc-act-h" data-testid="mc-active">
-          <div className="mc-card__head"><h2 id="mc-act-h">Active rooms</h2><span className="mc-count">{active.length}</span>{opens('#/rooms') && <a className="mc-link" href="#/rooms">Every room <Icon name="chevron" size={14} /></a>}</div>
-          {active.length ? <ul className="mc-rooms">{active.slice(0, 6).map((a) => { const body = <><span className="mc-room__top"><b>{a.label}</b><StatusDot band={a.score == null ? 'none' : a.score >= 88 ? 'healthy' : a.score >= 75 ? 'monitor' : 'action'} label={a.score == null ? 'not scored' : String(a.score)} /></span><span className="mc-room__n">{a.name}</span><span className="ui-meta">{a.why}</span></>; return <li key={a.id} className={`mc-room kit-s--${a.tone}`}>{opens(a.href) ? <a href={a.href}>{body}</a> : <div>{body}</div>}</li>; })}</ul>
-            : <EmptyState title="No room is active" icon="check">No live request, commissioning or pending baseline on record.</EmptyState>}
-        </section>
-        <section className="mc-card mc-insight" aria-labelledby="mc-ins-h" data-testid="mc-insight">
-          <h2 id="mc-ins-h"><Icon name="spark" /> Search Party insight</h2>
-          <p>{ins.text}</p>
-          <p className="ui-meta">Computed from the records just now; each question below is answered from recorded relationships, with their sources.</p>
-          <ul className="mc-asks">{ins.asks.filter((a) => opens(a.href)).map((a) => <li key={a.q}><a href={a.href} className="mc-ask"><Icon name="graph" size={16} /> {a.q}</a></li>)}</ul>
-          {opens('#/search') && <a className="ui-btn ui-btn--primary" href="#/search"><Icon name="search" /> Open in Search Party</a>}
-        </section>
-      </div>
-
-      {/* ---------------------------------------------------------------- campus status · recent changes */}
+      {/* ================================================================ layer 3 · the environment: the campus, its health and its numbers */}
       <div className="mc-row mc-row--campus">
         <Section title="Campus status" aside={opens('#/campus') ? <a href="#/campus">Open campus</a> : undefined} id="home-campus-h">
           <Stage label="Campus in 3D" testId="home-stage"><CampusMap tiles={tiles} onOpen={(b) => { if (opens(`#/campus/${b.key}`)) location.hash = `#/campus/${b.key}`; }} /></Stage>
           <ul className="kit-meters home__brows" aria-label="Buildings by health">{[...c.buildings, ...c.sites].map((s) => <MeterRow key={s.b.key} href={opens(`#/campus/${s.b.key}`) ? `#/campus/${s.b.key}` : undefined} label={s.b.name} value={s.score} state={stateOf(s.band)} sub={`${plural(s.rooms, 'room')}${s.atRisk ? ` · ${s.atRisk} at risk` : ''} · ${plural(s.open, 'open issue')}${s.lowest && s.lowest.score < 88 ? ` · lowest ${s.lowest.label}, ${s.lowest.score}` : ''} · ${s.verifiedPct ?? '—'}${s.verifiedPct == null ? '' : '%'} verified`} />)}</ul>
         </Section>
-        <Section title="Recent changes" aside="Last 7 days · newest first" id="home-chg-h" testId="changes">
-          {changes.length ? <List label="Recent changes"><More items={changes} n={6} label="changes" render={(x, i) => <ListRow key={i} href={x.href && opens(x.href) ? x.href : undefined} leading={<span className={`row__ic${x.denied ? ' row__ic--bad' : ''}`}><Icon name="clock" /></span>} title={`${x.title} · ${x.where}`} sub={x.detail} trailing={<span className="ui-meta">{ago(x.at)}{x.denied ? ' · refused' : ''}</span>} />} /></List>
-            : <EmptyState title="No change this week" icon="clock">Nothing was recorded in the last seven days.</EmptyState>}
-        </Section>
+        <div className="mc-numbers">
+          <div className="mc-tiles" data-testid="home-kpis">
+            <KTile label={METRICS['health.average'].label} testId="kpi-health" value={c.score} unit="/100" icon="pulse" tone={c.band === 'healthy' ? 'ok' : c.band === 'monitor' ? 'warn' : c.band === 'action' ? 'bad' : 'muted'} hint={`${BAND_LABEL[c.band]} · average of ${c.scored} scored rooms${c.lowest ? ` · lowest ${c.lowest.label}, ${c.lowest.score}` : ''}`} href={opens('#/campus') ? '#/campus' : undefined} />
+            <KTile label={METRICS['rooms.healthy'].label} testId="kpi-healthy" value={c.healthy} unit={` of ${c.rooms}`} icon="pulse" tone="ok" hint={`${c.monitor} monitor · ${c.action} action required · ${c.unscored} not scored`} href={opens('#/rooms') ? '#/rooms?health=healthy' : undefined} />
+            <KTile label={METRICS['rooms.attention'].label} testId="kpi-attention" value={c.attention} unit={` of ${c.rooms}`} icon="alert" tone={c.atRisk ? 'bad' : c.attention ? 'warn' : 'ok'} hint={`${c.atRisk} at risk · ${watch} to watch`} href={opens('#/rooms') ? '#/rooms?attention=all' : undefined} />
+            <KTile label={METRICS['issues.critical'].label} testId="kpi-critical" value={c.high} icon="alert" tone={c.high ? 'bad' : 'ok'} hint={`severity High · in ${plural(c.highRooms, 'room')} · ${c.open} open in all`} href={opens('#/rooms') ? '#/rooms?attention=risk' : undefined} />
+            <KTile label="Commissioning readiness" value={c.verifiedPct} unit="%" icon="check" tone="commissioning" spark={S.verified.values} delta={{ value: last(S.verified.values) - prev(S.verified.values), good: 'up', label: 'tests verified last month' }} href={opens('#/room') ? '#/room?tab=tests' : undefined} />
+            <KTile label="Accepted rooms" value={c.accepted} unit={` of ${c.rooms}`} icon="route" tone="lite" spark={S.accepted.values} delta={{ value: last(S.accepted.values) - prev(S.accepted.values), good: 'up', label: 'since last month' }} href={opens('#/rooms') ? '#/rooms?state=ACCEPTED' : undefined} />
+            <KTile label={METRICS['requests.open'].label} testId="kpi-requests" value={liveReq.length} icon="wrench" tone="servicehands" spark={S.requests.values} hint={`${plural(wos.length, 'work order')} open`} href={opens('#/v25/service') ? '#/v25/service' : undefined} />
+            <KTile label="Funding authorized" value={`$${Math.round(P.funding.reduce((s, f) => s + f.amount, 0) / 1000)}k`} icon="ticket" tone="mission-control" hint={`${P.funding.length} of ${P.projects.length} projects funded · not a quote`} href={opens('#/v25/decisions') ? '#/v25/decisions' : undefined} />
+          </div>
+          <details className="mc-defs" data-testid="mc-defs"><summary>How these numbers are counted</summary>
+            <dl>{HOME_METRICS.map((id) => { const m = METRICS[id]; return <div key={id} data-metric={id}><dt>{m.label}</dt><dd>{m.meaning} <span className="ui-meta">Counts {m.counts.charAt(0).toLowerCase() + m.counts.slice(1)} Leaves out {m.excludes.charAt(0).toLowerCase() + m.excludes.slice(1)} {m.denominator}{m.evidence === 'MODELED' ? ' Modeled from the synthetic records, not measured.' : ''}</span></dd></div>; })}</dl>
+          </details>
+        </div>
       </div>
-      <p className="ui-meta mc-foot">Every figure on this page is computed from the demonstration’s synthetic records ({c.rooms} room records, the programme, the service workspace) when the page opens; nothing is measured or monitored. {roomById('R-ATL-4-218') ? 'Atlas 4.218 is the complete reference record.' : ''}</p>
+
+      {/* ================================================================ layer 4 · discover: one click away, each group remembered open or closed */}
+      <section className="mc-more" aria-labelledby="mc-more-h" data-testid="mc-more">
+        <h2 id="mc-more-h" className="mc-more__h">More from Mission Control</h2>
+        <Group id="products" title="Every product" count={products.length} sub="Nine products on one record">
+          {products.length > 0 ? <nav className="mc-products" aria-label="Products" data-testid="mc-products">
+            {products.map(({ p, landing }) => <a key={p.id} href={hrefOf(landing!.id)} className={`mc-prod kit-s--${p.id}`} data-p={p.id}><span className="mc-prod__mark" aria-hidden="true" /><b>{p.name}</b><span className="mc-prod__sub">{p.subtitle}</span><span className="mc-prod__n">{pnum[p.id]}</span><Icon name="chevron" size={16} /></a>)}
+          </nav> : <p className="ui-meta">This role opens no product from here.</p>}
+        </Group>
+        <Group id="start" title="Start something" count={actions.length} sub="What can I help you do?">
+          <section className="mc-help" aria-label="What can I help you do?" data-testid="mc-actions">
+            {actions.length ? <ul className="mc-help__list">{actions.map((a) => <li key={a.href}><a href={a.href} className="mc-act"><span className="mc-act__ic" aria-hidden="true"><Icon name={a.icon} /></span><span><b>{a.t}</b><span className="ui-meta">{a.s}</span></span></a></li>)}</ul>
+              : <EmptyState title="Nothing to start here" icon="inbox">This role’s work starts elsewhere.</EmptyState>}
+          </section>
+        </Group>
+        <Group id="active" title="Active rooms" count={active.length} sub="A live request, commissioning or a baseline pending">
+          <section aria-label="Active rooms" data-testid="mc-active">
+            {active.length ? <ul className="mc-rooms">{active.slice(0, 6).map((a) => { const body = <><span className="mc-room__top"><b>{a.label}</b><StatusDot band={a.score == null ? 'none' : a.score >= 88 ? 'healthy' : a.score >= 75 ? 'monitor' : 'action'} label={a.score == null ? 'not scored' : String(a.score)} /></span><span className="mc-room__n">{a.name}</span><span className="ui-meta">{a.why}</span></>; return <li key={a.id} className={`mc-room kit-s--${a.tone}`}>{opens(a.href) ? <a href={a.href}>{body}</a> : <div>{body}</div>}</li>; })}</ul>
+              : <EmptyState title="No room is active" icon="check">No live request, commissioning or pending baseline on record.</EmptyState>}
+            {opens('#/rooms') && <a className="mc-link" href="#/rooms">Every room <Icon name="chevron" size={14} /></a>}
+          </section>
+        </Group>
+        <Group id="insight" title="Search Party insight" sub="Questions answered from recorded relationships">
+          <section className="mc-insight" aria-label="Search Party insight" data-testid="mc-insight">
+            <p>{ins.text}</p>
+            <p className="ui-meta">Computed from the records just now; each question below is answered from recorded relationships, with their sources.</p>
+            <ul className="mc-asks">{ins.asks.filter((a) => opens(a.href)).map((a) => <li key={a.q}><a href={a.href} className="mc-ask"><Icon name="graph" size={16} /> {a.q}</a></li>)}</ul>
+            {opens('#/search') && <a className="ui-btn ui-btn--primary" href="#/search"><Icon name="search" /> Open in Search Party</a>}
+          </section>
+        </Group>
+        <Group id="saved" title="Saved work" count={saved.filter((x) => opens(x.href)).length} sub="Work left part-way, kept until it is finished">
+          <section aria-label="Saved work" data-testid="mc-saved">
+            {saved.filter((x) => opens(x.href)).length ? <List label="Saved work">{saved.filter((x) => opens(x.href)).slice(0, 4).map((x) => <ListRow key={x.id} href={x.href} leading={<span className="row__ic"><Icon name={x.icon} /></span>} title={x.title} sub={`${x.sub}${x.at ? ` · ${ago(Date.parse(x.at))}` : ''}`} chevron />)}</List>
+              : <EmptyState title="Nothing saved part-way" icon="inbox">A Build a Room draft, a diagnosis or a lesson you start is kept here until it is finished.{opens('#/v25/build') ? <> <a href="#/v25/build">Design a space</a>.</> : ''}</EmptyState>}
+          </section>
+        </Group>
+        <Group id="changes" title="Recent changes" count={nChanges} sub="Last 7 days · newest first">
+          <section aria-label="Recent changes" data-testid="changes">
+            {changes.length ? <List label="Recent changes"><More items={changes} n={6} label="changes" render={(x, i) => <ListRow key={i} href={x.href && opens(x.href) ? x.href : undefined} leading={<span className={`row__ic${x.denied ? ' row__ic--bad' : ''}`}><Icon name="clock" /></span>} title={`${x.title} · ${x.where}`} sub={x.detail} trailing={<span className="ui-meta">{ago(x.at)}{x.denied ? ' · refused' : ''}</span>} />} /></List>
+              : <EmptyState title="No change this week" icon="clock">Nothing was recorded in the last seven days.</EmptyState>}
+          </section>
+        </Group>
+      </section>
+      <p className="ui-meta mc-foot">Every figure on this page is computed from the demonstration’s synthetic records ({c.rooms} room records, the programme, the service workspace) when the page opens; nothing is measured or monitored. {roomById('R-ATL-4-218') ? 'Atlas 4.218 is the complete reference record.' : ''} <button type="button" className="mc-link" data-testid="mc-intro-again" onClick={() => { forgetIntro(); dispatchEvent(new Event(INTRO_EVENT)); scrollTo({ top: 0 }); }}>Show the introduction again</button></p>
     </section>
   );
 }
