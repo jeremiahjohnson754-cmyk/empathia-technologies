@@ -158,12 +158,11 @@ export function StadiumLivePage() {
   // the loop
   const state = useRef({ light: 0, lc: hex(ATMOS[p.atmos].lights), fade: 1 });
   useEffect(() => {
-    let raf = 0; let last = performance.now(); let frames = 0, fpsAt = last; let labAt = 0; let farLast = 0; let shown = -1; let shownSimple = false;   // farLast: sections drawn simply in the last frame; shown, shownSimple: what the page last reported
+    let raf = 0; let last = performance.now(); let frames = 0, fpsAt = last; let labAt = 0; let shown = -1; let shownSimple: boolean | null = null;   // shown, shownSimple: what the page last reported (null: nothing yet, so the first frame writes it)
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop); const M = meshes.current; if (!M) return; const r = M.r; r.pace(now - last); const dt = Math.min(0.05, (now - last) / 1000); last = now;
       const dNow = Math.round(r.detail * 100); if (dNow !== shown) { shown = dNow; flushSync(() => setDetail(dNow)); }   // written in the frame it changes (26 Nov 2026; it was once a second, up to a second behind the canvas: XPO-13 on 6be9fc5b)
-      const simNow = farLast > 0; if (simNow !== shownSimple) { shownSimple = simNow; flushSync(() => setSimple(simNow)); }   // likewise whether the far crowd was drawn simply (in the last frame)
-      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); frames = 0; fpsAt = now; }   // the page says the far crowd is drawn simply only while some of it is
+      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); frames = 0; fpsAt = now; }
       const P = pr.current; const A = ATMOS[replayRef.current !== null ? TIMELINE[replayRef.current]!.atmos : P.atmos]; const S = state.current;
       // ease every light change over about half a second: no flash, no strobe
       const k = reducedRef.current ? 1 : Math.min(1, dt * 3); S.light += ((A.night ? 1 : 0) - S.light) * k; S.lc = lerp(S.lc, hex(A.lights), k);
@@ -210,7 +209,7 @@ export function StadiumLivePage() {
           FAR_QUARTERS.forEach(({ sx, sz }, f) => { const run = g.far[f]!; if (run.count && (sx > 0 ? seenPX : seenNX) && (sz > 0 ? seenPZ : seenNZ)) r.drawFar(g.mesh, model, tn, run.first, run.count, sx, sz, toEye); }); }
         else { nearSections += 1; g.parts.forEach((part, f) => { const { axis, sign } = FIGURE_SIDES[f]!; if (part.count && facesSeen(eye, axis, sign, part.lo, part.hi)) r.draw(g.mesh, model, tn, 1, false, part.first, part.count); }); }
         r.glow(0); }
-      farLast = farSections;
+      { const simNow = farSections > 0; if (simNow !== shownSimple) { shownSimple = simNow; flushSync(() => setSimple(simNow)); } }   // the page says the far crowd is drawn simply only while some of it is, written in the frame it is drawn
       { const cvx = canvas.current; const fs = String(farSections), ns = String(nearSections); const fp = farPx.toFixed(2); if (cvx && (cvx.dataset.far !== fs || cvx.dataset.near !== ns || cvx.dataset.farPx !== fp)) { cvx.dataset.far = fs; cvx.dataset.near = ns; cvx.dataset.farPx = fp; } }   // how many sections were drawn simply and whole in this frame, read by the tests
       if (A.label === 'Concert') { r.glow(1); for (let i = 0; i < 4; i++) r.draw(r.unit, m4.trs([-30 + i * 14, 0.4, Math.sin(now / 700 * (reducedRef.current ? 0 : 1) + i) * 12], 0, [10, 0.2, 10]), S.lc, 0.35); r.glow(0); }
       // overlays

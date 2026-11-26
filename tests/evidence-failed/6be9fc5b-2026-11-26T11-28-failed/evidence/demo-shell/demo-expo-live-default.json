@@ -1,0 +1,103 @@
+{
+ "suite": "demo-expo-live",
+ "scheme": "default",
+ "at": "2026-11-26T11:13:01.398Z",
+ "results": [
+  {
+   "id": "XPO-01",
+   "title": "launch: the hall draws (WebGL2); the plan has the twenty exhibitors and the Empathia showcase; still between presses",
+   "result": "PASS",
+   "detail": "21 booths"
+  },
+  {
+   "id": "XPO-02",
+   "title": "choosing a booth on the plan flies the camera to it, outlines it, and opens its card: what the exhibitor does and what is on the stand",
+   "result": "PASS",
+   "detail": "E1 · Showcase\nEmpathia\n\nRooms that explain themselves: design, commissioning pro"
+  },
+  {
+   "id": "XPO-03",
+   "title": "choosing from the list goes to that booth instead",
+   "result": "PASS",
+   "detail": "C3 · Collaboration\nTeasel Conferencing\n\nHuddle and boardroom"
+  },
+  {
+   "id": "XPO-04",
+   "title": "the agenda keeps the booth; details cannot be left without a name and the consent box; with both, they are kept in this browser and the page says nothing was sent",
+   "result": "PASS",
+   "detail": "1 · true/true · You left your details for Teasel Conferencing (kept in this browser; nothing was sent)."
+  },
+  {
+   "id": "XPO-05",
+   "title": "the organiser view lays the modeled footfall over the hall (stated as modeled, not counted) and shows this stand’s simulated display fault with where it would go",
+   "result": "PASS",
+   "detail": "Footfall here: 126 people an hour. MODELED, not counted: peo"
+  },
+  {
+   "id": "XPO-06",
+   "title": "joining the keynote lights the session screens and changes the modeled footfall; its poll takes one answer; a question waits for the moderator",
+   "result": "PASS",
+   "detail": "Footfall here: 126 people an h → Footfall here: 160 people an h"
+  },
+  {
+   "id": "XPO-07",
+   "title": "kept in this browser across a reload: the agenda, the details left, the vote",
+   "result": "PASS",
+   "detail": "C3 · Collaboration\nTeasel Conferencing\n\nHuddle and boardroom"
+  },
+  {
+   "id": "XPO-08",
+   "title": "“Whole hall” returns the camera to the overview",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "XPO-09",
+   "title": "the plan is keyboard-reachable: Enter on a booth chooses it",
+   "result": "PASS",
+   "detail": "B2"
+  },
+  {
+   "id": "XPO-10",
+   "title": "frame rate in this machine's headless software-rendered Chromium: 15 fps; floor ≥ 4 (not a device claim)",
+   "result": "PASS",
+   "detail": "15"
+  },
+  {
+   "id": "XPO-11",
+   "title": "no console error; nothing requested off the page",
+   "result": "PASS",
+   "detail": ""
+  },
+  {
+   "id": "XPO-15",
+   "title": "the cost of a frame, counted: the whole hall sends 6708 triangles in 132 draw calls (budget 8,000 and 150)",
+   "result": "PASS",
+   "detail": "{\"triangles\":6708,\"draws\":132}"
+  },
+  {
+   "id": "XPO-13",
+   "title": "adaptive detail on this machine: 15 fps held at full detail, 25 fps left to adapt at 80% detail. Full detail cannot hold 24 here, so the hall must draw fewer pixels, not fewer than half, and not be slower for it; the canvas keeps its size on the page",
+   "result": "FAIL",
+   "detail": "{\"held\":3,\"pinned\":{\"cssW\":748,\"cssH\":666,\"w\":748,\"dpr\":1,\"detail\":100,\"fps\":15,\"wide\":0},\"auto\":{\"cssW\":748,\"cssH\":666,\"w\":479,\"dpr\":1,\"detail\":80,\"fps\":25,\"wide\":0}}"
+  },
+  {
+   "id": "XPO-12",
+   "title": "a phone-sized screen: no sideways scroll; the plan and sessions sit under the hall",
+   "result": "PASS",
+   "detail": "overflow 0"
+  },
+  {
+   "id": "XPO-16",
+   "title": "Full quality: off as a visitor opens the hall; ticked, the hall is held at 100% detail and the frame-rate text says so; ticked already with ?detail=full; the text links to the performance check",
+   "result": "PASS",
+   "detail": "{\"before\":{\"ticked\":false,\"quality\":\"auto\"},\"after\":{\"quality\":\"full\",\"detail\":100,\"pace\":\"20 fps here, held at full detail · Measure this device\",\"href\":\"#/play/performance\"},\"pinned\":true,\"errs\":[]}"
+  },
+  {
+   "id": "XPO-14",
+   "title": "the frame rates this run measured are written beside its evidence, each with the detail it was drawn at, as this machine’s figures and not a device’s",
+   "result": "PASS",
+   "detail": "2 readings"
+  }
+ ]
+}

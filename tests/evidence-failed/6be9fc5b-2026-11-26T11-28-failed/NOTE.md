@@ -12,13 +12,16 @@ finished runs); its part-1 file is kept in `evidence/`. Nothing here is evidence
   the end of its own one-second measurement and resizes the canvas in that frame; the page copied the detail into `data-detail` only
   once a second on a separate clock, so what the page reported could be up to a second behind what it drew. Here the hall ran at
   about 25 frames a second at 80 %, at the edge of the 24 it holds itself to, and the governor stepped down to 64 % after the page's
-  last report (from full detail at 15 frames a second the first step lands on 80 %; one slower second at 80 % lands on 64 %, as in
+  last report (from full detail at 15.4 frames a second or more the first step lands on 80 %; one slower second at 80 % lands on 64 %, as in
   earlier passing runs). The photograph change does not touch this code; the once-a-second report dates from `87956a57`, and the race
   showed because the pace sat at the threshold.
 - The correction is in the product, not the test: Expo LIVE, Stadium LIVE and Campus Life set their reported detail in the frame it
   changes and write it to the page synchronously in that frame (see the commit after `03c33d13`). Every condition of XPO-13, SLV-15,
-  CL-21 and CL-22 is unchanged. An independent review approved the diagnosis and the correction.
+  CL-21 and CL-22 is unchanged. An independent review approved `03c33d13` and then `bf0eebd8`, each with nits;
+  all of them are applied in the commit after `bf0eebd8`.
 - The NOT_RUN in part 1 is the Python research prototype (no generated dataset), not run in every run of record since it was added.
-- `logs/`: the build log and the part 1 log (committed with `git add -f`; `*.log` is otherwise ignored). `evidence/`: the result
-  files this run wrote into `tests/evidence`, including `TEST_RESULTS.part-1-of-5.json` and `performance/expo.json` (XPO-10 at 15 fps and
-  100 %, XPO-13 at 25 fps and 80 %), set aside here before `tests/evidence` was restored to the last pass (`6e0d7877`).
+- `logs/`: the build log and the part 1 log (committed with `git add -f`; `*.log` is otherwise ignored). `evidence/`: the tracked
+  result files this run changed in `tests/evidence`, plus three git-ignored ones copied before the next run overwrites them:
+  `TEST_RESULTS.part-1-of-5.json`, `performance/expo.json` (XPO-10 at 15 fps and 100 %, XPO-13 at 25 fps and 80 %) and
+  `demo-shell/demo-expo-live-default.json` (the failing suite's sixteen check results). The roughly hundred other ignored files part 1
+  wrote are not kept; `tests/evidence` was restored to the last pass (`6e0d7877`).
