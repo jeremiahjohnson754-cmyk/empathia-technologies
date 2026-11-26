@@ -2,7 +2,7 @@
  "step": 3,
  "title": "Save an immutable design revision",
  "room": "R-PLN-0004",
- "at": "2026-11-26T02:18:07.000Z",
+ "at": "2026-11-26T08:40:07.833Z",
  "assertions": [
   {
    "id": "C-08",
@@ -31,7 +31,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "f18a9ae0-0cac-4a36-a37d-cfdbffd32c32"
+   "correlationId": "039e20a1-f299-4081-9ae2-6837e6380a30"
   },
   {
    "method": "POST",
@@ -50,9 +50,9 @@
     "reasons": [
      "nothing changed since revision 2"
     ],
-    "correlationId": "082e287d-270f-409d-b3b0-29895a2c9396"
+    "correlationId": "2faf4c81-9bdc-42a6-a6ca-8b7e452ee0d7"
    },
-   "correlationId": "082e287d-270f-409d-b3b0-29895a2c9396"
+   "correlationId": "2faf4c81-9bdc-42a6-a6ca-8b7e452ee0d7"
   }
  ]
 }

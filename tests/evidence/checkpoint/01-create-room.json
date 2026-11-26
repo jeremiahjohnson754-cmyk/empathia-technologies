@@ -2,7 +2,7 @@
  "step": 1,
  "title": "Create the room (Lite: a custom outline with declared dimensions, use and occupancy)",
  "room": "R-PLN-0004",
- "at": "2026-11-26T02:18:06.999Z",
+ "at": "2026-11-26T08:40:07.832Z",
  "assertions": [
   {
    "id": "C-01",
@@ -44,9 +44,9 @@
     "status": 403,
     "detail": "installer may not Create a planned room from a template (needs room.design)",
     "code": "forbidden",
-    "correlationId": "6bfa42bb-151e-440e-80cb-1eacae9b2336"
+    "correlationId": "9a20bf5e-029b-4640-b63f-d64932ed5a03"
    },
-   "correlationId": "6bfa42bb-151e-440e-80cb-1eacae9b2336"
+   "correlationId": "9a20bf5e-029b-4640-b63f-d64932ed5a03"
   },
   {
    "method": "POST",
@@ -67,9 +67,9 @@
    },
    "body": {
     "code": "R-PLN-0004",
-    "id": "e244ea35-5eda-4167-85d9-75ac243463f0"
+    "id": "2cb378eb-be79-4888-acf4-29534c314828"
    },
-   "correlationId": "f9c4939d-ad56-42e6-94b8-c1d4988d7014"
+   "correlationId": "7c3a91c2-b2fa-4d1e-83a6-02c2e9ad5cad"
   },
   {
    "method": "GET",
@@ -80,7 +80,7 @@
     "room": {
      "code": "R-PLN-0004",
      "canonicalRef": null,
-     "id": "e244ea35-5eda-4167-85d9-75ac243463f0",
+     "id": "2cb378eb-be79-4888-acf4-29534c314828",
      "name": "Checkpoint conference room (synthetic)",
      "lifecycle": "PLANNED",
      "template": "custom",
@@ -195,13 +195,13 @@
       "rev_no": 1,
       "reason": "created",
       "sha256": "22f5c43ec58ad7bcd65c49d11ad73932ad6c04dde8ba813ec51b39b2d67c5afd",
-      "created_by": "6fb5b94e-f231-4c52-80a1-54e99c30c4c1",
-      "created_at": "2026-11-26T02:18:00.512Z"
+      "created_by": "7e28573c-8e9f-4505-8db5-420cb552383d",
+      "created_at": "2026-11-26T08:39:59.747Z"
      }
     ],
     "issues": [],
     "commissioning": {
-     "planId": "2bd63131-e80f-4685-93bf-63a589e83cb8",
+     "planId": "87b9c528-99b8-4d41-929f-93c7af8d8999",
      "engineVersion": "2.5.4-port.1",
      "ruleVersion": "2.5.0",
      "library": 94,
@@ -213,7 +213,7 @@
       "type": "new_install",
       "families": []
      },
-     "compiledAt": "2026-11-26T02:18:00.512Z",
+     "compiledAt": "2026-11-26T08:39:59.747Z",
      "counts": {
       "applicable": 20,
       "recorded": 0,
@@ -2019,7 +2019,7 @@
      ]
     }
    },
-   "correlationId": "e2ddf5f5-11c1-4f89-bb38-7af040982fbc"
+   "correlationId": "cf58fcb6-499b-4ff1-a5bd-59bee75ca62b"
   }
  ]
 }
