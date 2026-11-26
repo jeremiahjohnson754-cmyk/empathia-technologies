@@ -71,7 +71,7 @@ export default function OfflinePage(_: PageProps) {
       </Block>
       <Block title="What works without a connection" sub="once the app is saved" testId="offline-works">
         <ul className="of-works">{WORKS.map((w) => <li key={w.name}><a href={w.href}>{w.name}</a><span>{w.what}</span></li>)}</ul>
-        <p className="ui-muted">What you do in these pages is written to this browser as you do it and is still there after a reload, connected or not. This demonstration sends nothing to a server, so there is nothing to synchronise. In the product, results recorded in the field without a connection wait in a queue and are sent when it returns. The rules of that queue are demonstrated below against a simulated server; no screen of this demonstration sends its work through it.</p>
+        <p className="ui-muted">What you do in these pages is written to this browser as you do it and is still there after a reload, connected or not. This demonstration sends nothing to a server, so there is nothing to synchronize. In the product, results recorded in the field without a connection wait in a queue and are sent when it returns. The rules of that queue are demonstrated below against a simulated server; no screen of this demonstration sends its work through it.</p>
       </Block>
       <FieldQueueDemo online={s.online} />
       <Block title="Keep more on this device" sub="optional" testId="offline-packs">

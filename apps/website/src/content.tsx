@@ -68,11 +68,11 @@ const ARCH: StripItem[] = [
   { title: 'Deny by default', sub: 'The server and the database decide every read', icon: 'key' },
   { title: 'Append-only evidence', sub: 'Never edited, never overwritten', icon: 'history' },
   { title: 'Typed contracts', sub: 'OpenAPI and JSON Schemas, generated', icon: 'code' },
-  { title: 'Every value labelled', sub: 'Six evidence words, kept apart', icon: 'label' },
+  { title: 'Every value labeled', sub: 'Six evidence words, kept apart', icon: 'label' },
   { title: 'Synthetic in public', sub: 'Nothing connected, nothing live', icon: 'flask' },
 ];
 const archFoot = <p><a href="/trust">What is in place, and what we do not claim<span aria-hidden="true"> →</span></a></p>;
-const estatesFoot = <p>The demonstration’s rooms are modelled on these estates. No customer is named and no deployment in any of them is claimed.</p>;
+const estatesFoot = <p>The demonstration’s rooms are modeled on these estates. No customer is named and no deployment in any of them is claimed.</p>;
 const CtaBand = ({ title, body, children }: { title: string; body: string; children: React.ReactNode }) => (
   <section className="band band--drawn"><div className="wrap"><div className="band__copy"><h2>{title}</h2><p>{body}</p>{children}</div><RoomDrawing /></div></section>
 );
@@ -80,7 +80,7 @@ const CtaBand = ({ title, body, children }: { title: string; body: string; child
  *  each the frame captured from the demonstration's own 3D world, opening that world; wording kept to the Experiences page. */
 const WORLDS3 = [
   { file: 'exp-stadium', world: 'Stadium', name: 'Stadium LIVE', line: 'Run the bowl under the lights from the LIVE console.', route: '#/play/stadium' },
-  { file: 'exp-campus', world: 'University', name: 'Campus Life', line: 'Walk the Quad and fix a lecture theatre’s circuit bench.', route: '#/play/campus' },
+  { file: 'exp-campus', world: 'University', name: 'Campus Life', line: 'Walk the Quad and fix a lecture theater’s circuit bench.', route: '#/play/campus' },
   { file: 'exp-expo', world: 'Convention', name: 'Expo LIVE', line: 'Fly to a booth, join a session, answer its poll.', route: '#/play/expo' },
 ] as const;
 /** The nine worlds of the Experiences page (founder: Enterprise, Stadium, University, Convention, Festival, Community, Collabora-SING,
@@ -89,8 +89,8 @@ const WORLDS3 = [
 const NINE: Array<{ key: string; name: string; state: 'walk' | 'dev' | 'plan'; line: string; href?: string; cta?: string }> = [
   { key: 'enterprise', name: 'Enterprise', state: 'walk', line: 'Northstar Innovation Campus: a workplace estate of rooms, devices and the evidence behind them. The Living Campus.', href: '#/investor', cta: 'Open the Living Campus' },
   { key: 'stadium', name: 'Stadium', state: 'walk', line: 'Harborlight Stadium: a match day you operate from the LIVE console, from the seat to the broadcast gallery.', href: '#/play/stadium', cta: 'Open Stadium LIVE' },
-  { key: 'university', name: 'University', state: 'walk', line: 'Kestrel Valley University: a campus day you play, and a lecture theatre’s circuit bench to fix before class.', href: '#/play/campus', cta: 'Play Campus Life' },
-  { key: 'convention', name: 'Convention', state: 'walk', line: 'Larkspur Exchange Convention Centre: a technology expo, from the hall floor to the keynote.', href: '#/play/expo', cta: 'Walk the Expo hall' },
+  { key: 'university', name: 'University', state: 'walk', line: 'Kestrel Valley University: a campus day you play, and a lecture theater’s circuit bench to fix before class.', href: '#/play/campus', cta: 'Play Campus Life' },
+  { key: 'convention', name: 'Convention', state: 'walk', line: 'Larkspur Exchange Convention Center: a technology expo, from the hall floor to the keynote.', href: '#/play/expo', cta: 'Walk the Expo hall' },
   { key: 'festival', name: 'Festival', state: 'plan', line: 'A multi-day music festival in a city park: attendees, artists, vendors, production crews and engineers on one record.' },
   { key: 'community', name: 'Community', state: 'plan', line: 'A large church, a multi-campus ministry and the community programs around it, coordinated on one record.' },
   { key: 'collabora-sing', name: 'Collabora-SING', state: 'dev', line: 'A research plan for musicians playing across a network: what if the performance were sent, not only the sound? The pilot has not been run.', href: '/collabora-sing', cta: 'Read about Collabora-SING' },
@@ -170,7 +170,7 @@ export function buildPages(ctx: SiteContext): Page[] {
       <Section eyebrow="Proof" title="Every claim is a record you can check" lead="Each thing we say about the product is a record with a state, the same on this site and in the demonstration. This one is read from the registry the demonstration reads."><LeadClaim asOf={ctx.asOf || new Date().toISOString()} demoUrl={ctx.demoUrl} /></Section>
       <section className="section section--deep"><div className="wrap"><FounderBlock page="home" /></div></section>
       <CtaBand title="See it on your own rooms." body="A guided walk through the scenarios on synthetic data, or a bounded pilot with your rooms and your people."><Actions><a className="btn btn--primary btn--lg" href="/request-demo">Request a demonstration</a><a className="btn btn--lg" href="/pilot-partners">Pilots and partnerships</a></Actions></CtaBand>
-      <div className="wrap"><Note>What you can see today is a demonstration on synthetic data. No customer, partner or device is named or connected, and every measurement shown is labelled modeled, simulated, declared, observed or verified.</Note></div>
+      <div className="wrap"><Note>What you can see today is a demonstration on synthetic data. No customer, partner or device is named or connected, and every measurement shown is labeled modeled, simulated, declared, observed or verified.</Note></div>
     </>
   ) };
 
@@ -210,7 +210,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         <Section id="families" eyebrow="Six product families" title="Six questions an estate has to answer" lead="Each family answers one of them, and hands what it records to the next.">
           <FamilyQuestions />
         </Section>
-        <Section id="shared" eyebrow="Shared engineering intelligence" title="What all seventeen share" lead="This is the product. The families are six views of it, not six products that were integrated afterwards." tone="deep"><SharedIntelligence /></Section>
+        <Section id="shared" eyebrow="Shared engineering intelligence" title="What all seventeen share" lead="This is the product. The families are six views of it, not six products that were integrated afterward." tone="deep"><SharedIntelligence /></Section>
         <Section id="thread" eyebrow="See it connect" title="One issue, followed through the families" lead="A calling problem in one synthetic room, Atlas 4.218. Each step opens the demonstration at that same room, as the person who does that work, with the way back to this page.">
           <Thread demoUrl={ctx.demoUrl} back="/platform#thread" />
           <Note>The demonstration runs on synthetic data in your browser. The eight further capabilities are simulations; nothing is connected to a live system.</Note>
@@ -239,7 +239,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         </Section>
         <Section id="voice" eyebrow="Infrastructure and communications · simulation" title="VOICE: calling you can explain" lead="Telephony and unified-communications intelligence on the same record. The CallPath Digital Twin keeps what is configured apart from what was observed and what is not known. In the demonstration as a simulation; no calling platform is connected."><Actions><a className="btn btn--primary" href="/voice">Discover VOICE</a></Actions></Section>
         <Section id="fieldlink" eyebrow="Optional hardware · concept" title="FieldLink extends what Empathia can observe" lead="Three proposed devices — Nano, Edge and Pulse — for sites that want local, hardware-attributed evidence. None of the nine products needs them; no unit has been built yet."><Actions><a className="btn btn--primary" href="/fieldlink">Discover FieldLink</a><a className="btn" href="/fieldlink#optional">Do I need FieldLink? No.</a></Actions></Section>
-        {ctx.booklets?.length ? <Section id="guides" title="Guides for the people who use the rooms" lead="The End-User Success Guide and the IT Onboarding Success Guide as printed booklets, set from the demonstration’s own content and screenshots. Both are drafts on synthetic data, not yet reviewed by a practising specialist.">
+        {ctx.booklets?.length ? <Section id="guides" title="Guides for the people who use the rooms" lead="The End-User Success Guide and the IT Onboarding Success Guide as printed booklets, set from the demonstration’s own content and screenshots. Both are drafts on synthetic data, not yet reviewed by a practicing specialist.">
           <ul className="booklets" data-booklets={ctx.booklets.length}>{ctx.booklets.map((b) => <li key={b.file} className="booklet">
             <a href={`/media/booklets/${b.file}`} className="booklet__cover" aria-label={`${b.title} (PDF, ${b.pages} pages)`}><img src={`/media/booklets/${b.cover}`} alt="" width={600} height={776} loading="lazy" /></a>
             <div className="booklet__t"><h3>{b.title}</h3><p>{b.blurb}</p><p className="booklet__meta">PDF · {b.pages} pages · {(b.bytes / 1048576).toFixed(1)} MB · draft</p><a className="btn" href={`/media/booklets/${b.file}`} download>Download the booklet</a></div>
@@ -275,9 +275,9 @@ export function buildPages(ctx: SiteContext): Page[] {
           <p>The SIGNAL series in Learn tells stories set in these worlds; <a href="/products/learn">see Learn</a>.</p>
         </Section>
         {([
-          ['exp-campus', 'Campus Life', 'A university you play', 'Walk and run across the Quad of Kestrel Valley University, meet Professor Calder, open Science Hall and fix the circuit bench in the SCI-110 lecture theatre before her 09:00 lecture. Three circuits, worked out with Ohm’s law, light the board; fact cards, experience and levels along the way; progress kept in your browser.', '#/play/campus', 'Play Campus Life', 'The SCI-110 lecture theatre in Campus Life, with the circuit bench, the desks and the projection screen'],
+          ['exp-campus', 'Campus Life', 'A university you play', 'Walk and run across the Quad of Kestrel Valley University, meet Professor Calder, open Science Hall and fix the circuit bench in the SCI-110 lecture theater before her 09:00 lecture. Three circuits, worked out with Ohm’s law, light the board; fact cards, experience and levels along the way; progress kept in your browser.', '#/play/campus', 'Play Campus Life', 'The SCI-110 lecture theater in Campus Life, with the circuit bench, the desks and the projection screen'],
           ['exp-stadium', 'Stadium LIVE', 'A stadium you operate', 'Harborlight Stadium under the lights. The console changes the bowl itself: seven atmospheres from pregame to concert, five cameras, cheers and a wave, a replayable match, the ribbon and the boards, a modeled crowd-level map that states its assumptions, PA and wireless coverage, the venue’s AV devices and their (simulated) state. Sound only when you turn it on.', '#/play/stadium', 'Open Stadium LIVE', 'Harborlight Stadium at night in Stadium LIVE, with the LIVE console beside the bowl'],
-          ['exp-expo', 'Expo LIVE', 'An expo hall you explore', 'Hall A of the Larkspur Exchange Convention Centre: twenty fictional exhibitors and the Empathia showcase, the plan beside the hall. Fly to a booth, save it to your agenda, leave your details only with consent, join a session and answer its poll, ask a question that waits for the moderator; the organiser’s view adds modeled footfall.', '#/play/expo', 'Walk the Expo hall', 'The Empathia stand in Expo LIVE, with the hall plan and the stand’s card'],
+          ['exp-expo', 'Expo LIVE', 'An expo hall you explore', 'Hall A of the Larkspur Exchange Convention Center: twenty fictional exhibitors and the Empathia showcase, the plan beside the hall. Fly to a booth, save it to your agenda, leave your details only with consent, join a session and answer its poll, ask a question that waits for the moderator; the organizer’s view adds modeled footfall.', '#/play/expo', 'Walk the Expo hall', 'The Empathia stand in Expo LIVE, with the hall plan and the stand’s card'],
         ] as Array<[string, string, string, string, string, string, string]>).map(([file, name, kicker, body, route, cta, alt], i) => (
           <Section key={file} id={file} eyebrow={kicker} title={name} tone={i === 1 ? 'deep' : undefined} lead={body}>
             <ExpShot file={file} cap={ctx.captures[file]} alt={alt} eager={i === 0} />
@@ -294,7 +294,7 @@ export function buildPages(ctx: SiteContext): Page[] {
         {film('F-LIFE') ? <Section id="life" title="One room’s whole life" lead="Core Replay plays a room’s life back from its records, recorded here from the demonstration: the request, the design, the build, the tests, the first baseline, a camera change that reopens only the tests it touches, and the second baseline.">{film('F-LIFE')}</Section> : null}
         <Section title="Nine steps, one record"><Steps steps={[
           { title: 'Request', body: 'A requestor describes the room, with photos, plans, known dimensions and constraints. Photos follow a stated privacy policy.' },
-          { title: 'Acknowledgement and pitch', body: 'The assigned supplier acknowledges; the operations lead assembles a revisioned business case.' },
+          { title: 'Acknowledgment and pitch', body: 'The assigned supplier acknowledges; the operations lead assembles a revisioned business case.' },
           { title: 'Approval, then funding', body: 'An eligible executive approves, holds or rejects with rationale. Funding is a separate authority with an amount and an expiry. Neither can be given by the author.' },
           { title: 'Engineering brief and design', body: 'The operations lead and the systems engineer sign off scope; design revisions carry geometry provenance and change impact.' },
           { title: 'Equipment and standards', body: 'Scouter, inside Lite, proposes compatible equipment against reviewed configuration standards; a discipline engineer decides.' },
@@ -386,7 +386,7 @@ export function buildPages(ctx: SiteContext): Page[] {
           { title: 'Network', body: 'Five network conditions are planned, one stage at a time: wired LAN, church Wi-Fi, hotspot or internet, a remote site, and controlled degradation.' },
           { title: 'Musician', body: 'The plan puts a real player at a real keyboard, on wired headphones with the keyboard’s own sound off, so that the player hears only what crossed the network.' },
           { title: 'Blind test', body: 'Twenty trials are planned with the transport hidden, so that nobody in the room knows which is which. In each one the player is to be asked how immediate it feels, from 1 to 5.' },
-          { title: 'Telemetry', body: 'Every note is to be stamped at five moments: device event, captured, sent, received and triggered. What one clock times will be labelled measured; what takes two clocks will be labelled estimated.' },
+          { title: 'Telemetry', body: 'Every note is to be stamped at five moments: device event, captured, sent, received and triggered. What one clock times will be labeled measured; what takes two clocks will be labeled estimated.' },
           { title: 'Analyzer', body: 'Exports, ratings and worksheets are to flow into one place, each with its label: exports measured, ratings subjective, worksheets observed. Thresholds are to be fixed before the first session.' },
           { title: 'Evidence', body: 'From “not yet measured” to evidence. This is the plan. The pilot has not been run yet.' },
         ]} /></Section>
@@ -439,12 +439,12 @@ export function buildPages(ctx: SiteContext): Page[] {
     { path: '/privacy', title: 'Privacy notice — Empathia Technologies', description: 'How Empathia Technologies handles personal data on this site.', body: (
       <>
         <Hero label="Privacy" title="Privacy notice" lead="What this website collects, and what it does with it." />
-        <Section title="This website" lead="The site itself sets no cookies and loads nothing from third parties. Films on this site load only when you press play, from this site. Your colour theme choice, if you make one, is kept in your own browser and never sent anywhere." />
+        <Section title="This website" lead="The site itself sets no cookies and loads nothing from third parties. Films on this site load only when you press play, from this site. Your color theme choice, if you make one, is kept in your own browser and never sent anywhere." />
         {ctx.api
           ? <Section id="enquiries" title="Enquiries" lead="The forms on this build send what you type (your name, organization, email and message) to Empathia's own service, where it is stored for the purpose of answering you." />
           : <section id="enquiries" className="section"><div className="wrap"><div className="section__head"><h2>Enquiries</h2><p className="section__lead">Enquiries use a form hosted by Tally (tally.so), opened in a new tab. Nothing you type in it passes through this site.</p></div>
             <ul className="ticks">
-              <li>The form collects your name, business email, organization, job title (optional), area of interest, timeline (optional), your message and your acknowledgement.</li>
+              <li>The form collects your name, business email, organization, job title (optional), area of interest, timeline (optional), your message and your acknowledgment.</li>
               <li>Empathia Technologies is the controller of every enquiry; Tally is the processor. Tally states that form data is encrypted and stored in Europe (Google Cloud, Belgium).</li>
               <li>Tally’s sub-processors include a US email provider, used when Tally notifies Empathia of a new enquiry.</li>
               <li>The link tells Tally which button you used (for example “founder”), so we can route your enquiry; it carries nothing about you.</li>

@@ -17,7 +17,7 @@ const DEVICES: Device[] = [
     specs: [['Form', 'USB-C dongle; envelope 75 × 20 × 13 mm', 'T'], ['Power', 'USB 5 V; at most 0.5 A, and only after the host has enumerated it and advertised the allowance', 'V'],
       ['Power budget', 'Design peak 1.70 W with a 20 % contingency, against 2.50 W available (5.00 V × 0.500 A)', 'C'], ['Regulated rail', '3.3 V, 0.33 A total peak load assumed', 'C'],
       ['Compute', 'Low-power microcontroller with secure boot and signed application updates', 'T'], ['Sensors', 'Optional temperature and humidity; low-power accelerometer; optional MEMS microphone with privacy controls', 'T'],
-      ['USB behaviour', 'A vendor-specific authorized interface. No keyboard injection and no hidden human-interface behaviour', 'T'],
+      ['USB behavior', 'A vendor-specific authorized interface. No keyboard injection and no hidden human-interface behavior', 'T'],
       ['Hosts', 'Supported managed computers only. Modifying a certified, locked-down meeting-room host is not assumed', 'V'],
       ['Data integrity', 'Monotonic sequence numbers, time synchronized through an approved host or the backend, local buffering', 'T']] },
   { id: 'edge', name: 'FieldLink Edge', tag: 'Local intelligence gateway', where: 'An equipment rack, a collaboration room, or a multiroom site', price: '$1,499', img: { w: 720, h: 504 },
@@ -28,7 +28,7 @@ const DEVICES: Device[] = [
       ['Network', 'One 1 GbE port for management and ingest; a second port only through a scoped VLAN and security design', 'T'],
       ['Collectors', 'Read-only HTTPS interfaces, SNMPv3, syslog, supported vendor adapters and probes the site has authorized', 'T'],
       ['Buffer', 'Encrypted durable store; batched retry with de-duplication and quotas', 'T'], ['Management', 'Signed over-the-air updates with anti-rollback, a local watchdog, remote revocation, diagnostics', 'T']] },
-  { id: 'pulse', name: 'FieldLink Pulse', tag: 'Distributed environmental sensing', where: 'Zones of larger rooms: town halls, lecture theatres, venues', price: '$499', img: { w: 720, h: 582 },
+  { id: 'pulse', name: 'FieldLink Pulse', tag: 'Distributed environmental sensing', where: 'Zones of larger rooms: town halls, lecture theaters, venues', price: '$499', img: { w: 720, h: 582 },
     benefits: ['Environmental observations placed where people sit', 'Spatially referenced readings across a room’s zones', 'Optional acoustic measurement as a design target, once a calibrated chain is validated'],
     specs: [['Form', 'About 86 mm across and 28 mm high; mounting orientation and acoustic vent still to verify', 'T'], ['Power', '5 V, 1 A from an approved external supply; a PoE variant only after a redesign', 'T'],
       ['Power budget', 'Design peak 2.43 W with a 20 % contingency, against 5.00 W available', 'C'], ['Sensors', 'Temperature and humidity; a calibrated microphone candidate; optional light and occupancy', 'T'],
@@ -63,7 +63,7 @@ const LIFE: { step: string; body: string; kind: string }[] = [
   { step: 'An observation is made', body: 'Signed, time-stamped, with its method and calibration — or marked uncalibrated.', kind: 'a real observation, once hardware exists; simulated until then' },
   { step: 'Field Intelligence receives it', body: 'Normalized, with its source and freshness; a candidate alert, never an automatic action.', kind: 'proposed interface' },
   { step: 'Lite shows where', body: 'The sensor’s position in the room’s 3D model; the approved geometry is not edited.', kind: 'proposed interface' },
-  { step: 'Assurance compares', body: 'Against the accepted baseline: a difference is drift against something known, labelled modeled or verified as it really is.', kind: 'modeled, or verified with a validated method' },
+  { step: 'Assurance compares', body: 'Against the accepted baseline: a difference is drift against something known, labeled modeled or verified as it really is.', kind: 'modeled, or verified with a validated method' },
   { step: 'Core Replay keeps it', body: 'In the room’s history, with its provenance, beside every earlier baseline.', kind: 'proposed interface' },
   { step: 'ServiceHands and Search Party', body: 'An authorized person links it to a work order; Search Party finds who is responsible for that room.', kind: 'an authorized action by a person' },
 ];
@@ -240,7 +240,7 @@ export const fieldlinkPage = (demo: (href?: string) => string) => ({
           <li>No FieldLink unit has been built. There is no prototype, bench power trace, circuit board layout, regulatory certification or supplier quotation.</li>
           <li>The images are AI-generated concept renders of the industrial design, not photographs and not engineering drawings.</li>
           <li>Interfaces, event names and the database design in the dossier are proposals, not deployed services.</li>
-          <li>Being able to name a device or a vendor is not proof that its interface, scope or licence is available to FieldLink.</li>
+          <li>Being able to name a device or a vendor is not proof that its interface, scope or license is available to FieldLink.</li>
           <li>The engineering dossier, blueprints and financial model are not published. Qualified reviewers can ask for them.</li>
         </ul>
       </div></section>

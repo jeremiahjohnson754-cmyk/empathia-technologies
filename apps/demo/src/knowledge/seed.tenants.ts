@@ -50,7 +50,7 @@ export const ZONE3: readonly LedgerObject[] = [
       'What is established: the fault has come back, and it goes with long calls and many open microphones. What is not established: the cause. No measurement has yet separated the echo canceller from the automatic mixer or from the room.',
       'Until it is diagnosed, board meetings in this room are given the fifteen-minute check, and Atlas 4.220 is held as a fallback.'],
     related: ['R-ATL-4-218', 'ISS-0417', 'ISS-0380', 'symptom:echo', 'symptom:room-cant-hear', 'cat:dsp', 'cat:micceil', 'k2.aec.failure', 'k2.gain.nom'], tags: ['echo', 'recurrence', 'boardroom'] }),
-  t({ id: 'cd.inc.iss-0402', tenant: HOME_TENANT, title: 'Incident review: calls dropped on the annex switch (ISS-0402)', domain: 'Incidents', type: 'case-study', goal: 'Know what happened on the annex switch and what changed afterwards.',
+  t({ id: 'cd.inc.iss-0402', tenant: HOME_TENANT, title: 'Incident review: calls dropped on the annex switch (ISS-0402)', domain: 'Incidents', type: 'case-study', goal: 'Know what happened on the annex switch and what changed afterward.',
     authority: 7, doc: 'Incident review ISS-0402', version: 'final', reviewer: NS_SVC, reviewedOn: '2026-10-22', reviewBy: '2027-04-22', readers: TECHNICAL,
     body: ['Three rooms on the same access switch reported dropped calls on the same afternoon. Service was restored and verified.',
       'The review found no record of the switch’s configuration having been compared with the network standard after it was last replaced. The standard now requires that comparison before rooms are returned to service.'],
@@ -65,7 +65,7 @@ export const ZONE3: readonly LedgerObject[] = [
     body: ['Done from the room by the person supporting the meeting. It uses the room exactly as the board will.'],
     steps: ['Thirty minutes before, confirm the meeting is on the room’s panel.', 'Place a test call from the panel to the service desk and ask them what they hear and see.',
       'Speak from the chair’s seat and from the farthest seat. The far end confirms both are clear.', 'Share a page of figures from the room’s own input and read it from the farthest seat.',
-      'Check that the camera’s wide view shows every chair.', 'If anything fails, tell the meeting’s organiser at once, offer Atlas 4.220 as the fallback, and report it from the room’s page.'],
+      'Check that the camera’s wide view shows every chair.', 'If anything fails, tell the meeting’s organizer at once, offer Atlas 4.220 as the fallback, and report it from the room’s page.'],
     related: ['R-ATL-4-218', 'R-ATL-4-220', 'cat:camera', 'cat:display', 'k2.cam.framing'], tags: ['board meeting', 'pre-flight'] }),
   t({ id: 'cd.contacts.atlas', tenant: HOME_TENANT, title: 'Northstar contacts: who supports the rooms in the Atlas building', domain: 'Contacts', type: 'reference-card', goal: 'Reach the right team for a room in Atlas.',
     authority: 6, doc: 'Support directory, Atlas', version: '2026-10', reviewer: NS_SVC, reviewedOn: '2026-10-05', reviewBy: '2027-01-05', readers: SUPPORT,
@@ -102,10 +102,10 @@ export const ZONE4: readonly LedgerObject[] = [
     body: ['A boardroom that had been free of echo for a year began returning echo to remote participants. Nothing in the equipment had been changed. The table had been replaced with a longer one, and two ceiling microphones were now above its glass end.',
       'The echo canceller’s settings were right for the old layout. Commissioning the microphone coverage again and verifying echo cancellation on a test call resolved it.',
       'The lesson: a furniture change is a change to the room’s audio system. The room’s record should say so, and the people who move furniture should know to tell the AV team.'], related: ['symptom:echo', 'cat:micceil', 'k2.aec.failure', 'k2.chg.procedure'], tags: ['echo', 'furniture', 'lesson'] }),
-  shared({ id: 'sh.lapsed-licence', tenant: OTHER_TENANT, title: 'Shared lesson: a lapsed room licence that looked like a hardware fault', domain: 'UC compute', goal: 'Check the room’s account before its hardware.', by: 'Operations lead of the contributing customer (synthetic record)', on: '2026-08-03',
+  shared({ id: 'sh.lapsed-licence', tenant: OTHER_TENANT, title: 'Shared lesson: a lapsed room license that looked like a hardware fault', domain: 'UC compute', goal: 'Check the room’s account before its hardware.', by: 'Operations lead of the contributing customer (synthetic record)', on: '2026-08-03',
     anonymised: 'The customer, the site, the room, the dates and every person were removed. No product or service is named.',
-    body: ['A room stopped joining meetings. Its compute was replaced, and the new one did the same. The room’s account had lost its licence when a subscription was renewed without it.',
-      'The lesson: a room’s account, licence and calendar are checked before its hardware. A failure that survives a hardware swap was never in the hardware.'], related: ['symptom:join', 'cat:compute', 'k2.uc.join-failure'], tags: ['licence', 'join', 'lesson'] }),
+    body: ['A room stopped joining meetings. Its compute was replaced, and the new one did the same. The room’s account had lost its license when a subscription was renewed without it.',
+      'The lesson: a room’s account, license and calendar are checked before its hardware. A failure that survives a hardware swap was never in the hardware.'], related: ['symptom:join', 'cat:compute', 'k2.uc.join-failure'], tags: ['licence', 'join', 'lesson'] }),
 ];
 
 // ---------------------------------------------------------------------------------------------- zone 5: unverified
@@ -122,6 +122,6 @@ export const ZONE5: readonly LedgerObject[] = [
     body: ['Candidate, not a finding. The pattern in ISS-0417, long calls with more than six microphones open, would fit the automatic mixer’s limit on open microphones, or the echo canceller adapting again.', 'No measurement supports either. A reviewer decides whether it is worth testing.'], related: ['R-ATL-4-218', 'ISS-0417', 'cat:dsp', 'k2.gain.nom'], tags: ['hypothesis'] }),
   cand({ id: 'cd.cand.ai-display', tenant: HOME_TENANT, ai: true, confidence: 0.3, title: 'AI-generated candidate: a proposed display rule for Northstar huddle rooms', domain: 'Customer standards', topic: DISPLAY_QUESTION,
     body: ['Candidate, not a standard. It proposes that in huddle rooms the farthest seat be no more than four times the image height from the display.', 'It has no source and no review.'], related: ['cat:display'], tags: ['display'] }),
-  cand({ id: 'bw.cand.obs-cast', tenant: OTHER_TENANT, ai: false, confidence: 0.5, title: 'Observation (Brindlewick): the Long Gallery projector shows a colour cast after warming up', domain: 'Displays',
+  cand({ id: 'bw.cand.obs-cast', tenant: OTHER_TENANT, ai: false, confidence: 0.5, title: 'Observation (Brindlewick): the Long Gallery projector shows a color cast after warming up', domain: 'Displays',
     body: ['Seen by the studio bench on three mornings. Not measured.'], related: ['cat:projector'], tags: ['projector'] }),
 ];

@@ -43,12 +43,12 @@ export function ServicePage({ perspective, hash }: { perspective: string; hash: 
     <section className="svc">
       <header className="build__head">
         <div><p className="kicker">ServiceHands · incident to service</p><h1>{isTech ? 'Assigned jobs and the sites you cover' : 'Service queue'}</h1>
-          <p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>{me ? <> ({S.techOf(w, me)?.name})</> : null}. {isTech ? 'Field evidence is yours to record; acceptance is someone else’s.' : 'People are hard-gated (certifications valid, experience, licences, site access, availability, capacity, vendor coverage) before any ranking, and the ranking explains itself.'}</p></div>
+          <p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>{me ? <> ({S.techOf(w, me)?.name})</> : null}. {isTech ? 'Field evidence is yours to record; acceptance is someone else’s.' : 'People are hard-gated (certifications valid, experience, licenses, site access, availability, capacity, vendor coverage) before any ranking, and the ranking explains itself.'}</p></div>
         <div className="build__state"><Tag tone="muted">{open.length} open</Tag><Button small kind="quiet" onClick={reset} title="Returns every incident, job and case of this browser to the seed">Reset workspace</Button></div>
       </header>
       {process.env.DEMO_API_URL ? <p className="svc__practice" data-testid="sh-server-note">These incidents are the demonstration’s, kept in this browser. The server’s work orders and incidents for your sandbox are worked at <a href="#/servicehands/queue">ServiceHands on the server</a>.</p> : null}
       {openable(perspective as never, '#/v25/service/analytics') ? <p className="svc__practice" data-testid="svc-analytics-link"><a href="#/v25/service/analytics">Service analytics</a>: the trend by month and quarter, by building and project, and the vendor scorecard.</p> : null}
-      <p className="svc__practice" data-testid="svc-practice">Practise before the call: <a href="#/labs/mix">Mix the Stream</a>, SIGNAL’s flagship mixing lab (a 32-channel console, five church rooms, wedges, fills and a live stream). Practice only: it records nothing on a job.</p>
+      <p className="svc__practice" data-testid="svc-practice">Practice before the call: <a href="#/labs/mix">Mix the Stream</a>, SIGNAL’s flagship mixing lab (a 32-channel console, five church rooms, wedges, fills and a live stream). Practice only: it records nothing on a job.</p>
       {refusal && <div role="alert"><Notice tone="bad"><b>Refused.</b><ul className="build__why">{refusal.why.map((x) => <li key={x}>{x}</li>)}</ul></Notice></div>}
       <Tabs label="Service views" active={tab} onChange={setTab} tabs={[...(isTech ? [{ key: 'mine', label: 'Assigned to me', count: mine.length }] : []), { key: 'queue', label: 'Queue', count: open.length }, { key: 'closed', label: 'Closed', count: w.incidents.length - open.length }]} />
       <div className="svc__grid">
@@ -87,7 +87,7 @@ function Incident({ inc, w, apply, persona, me, est }: { inc: S.Incident; w: S.W
         ['Work order', wo ? <span key="wo"><a href={`#/servicehands/wo/${wo.id}`} data-testid="svc-wo-link">{wo.id}</a> · {wo.workType.replace(/_/g, ' ')} · {wo.state}</span> : 'none yet'], ['Technician', tech?.name || '—'], ['Verified by', inc.verifiedBy ? personaLabel(inc.verifiedBy) : '—']]} />
       <details className="svc__packet" open={!!me}><summary>Context packet — read from the model, not polled</summary>
         <Facts items={[['Devices', packet.devices.length ? packet.devices.join(', ') : 'none recorded'], ['Access switch', packet.switch || 'none recorded'], ['Uplink', packet.uplink || 'none recorded'], ['Rooms sharing the switch', packet.sharing.length ? packet.sharing.join(', ') : 'none'], ['Power', packet.power || 'none recorded'], ['Evidence freshness', 'edges carry their provenance and date (synthetic collector export 2026-10-28)']]} />
-        {me && <p className="ui-meta">Devices are listed minimised for a technician: no cost, no finance.</p>}
+        {me && <p className="ui-meta">Devices are listed minimized for a technician: no cost, no finance.</p>}
       </details>
       {wo && (inc.state === 'ASSIGNED' || inc.state === 'ACCEPTED') && needs && (() => {
         const pv = S.preflightFor(w, wo.id, pf); const booking = pv?.checks.find((c) => c.id === 'booking');

@@ -45,7 +45,7 @@ export const FOLLOW: readonly Launch[] = [
  *  shown as the role that uses it (founder, 19 Nov 2026 09:09: "exact that screen with the role selected best looking screen"). */
 export const PRODUCT_LAUNCHES: Readonly<Record<string, Launch>> = {
   'mission-control': { id: 'product-mission-control', title: 'Mission Control', shows: 'The campus at a glance and the products that read it.', route: '/v25', perspective: 'architect', perspectiveLabel: 'Product Architect' },
-  lite: { id: 'product-lite', title: 'Lite, a furnished room in 3D', shows: 'Atlas 4.218 drawn in 3D with its seats, displays, cameras and microphones, and its modelled coverage labelled as a model.', route: `/lite/room/${FOLLOW_ROOM}`, perspective: 'designer', perspectiveLabel: 'Designer' },
+  lite: { id: 'product-lite', title: 'Lite, a furnished room in 3D', shows: 'Atlas 4.218 drawn in 3D with its seats, displays, cameras and microphones, and its modeled coverage labeled as a model.', route: `/lite/room/${FOLLOW_ROOM}`, perspective: 'designer', perspectiveLabel: 'Designer' },
   pro: { id: 'product-pro', title: 'Pro, the executive measures', shows: 'Estate measures that trace to the rooms and jobs they came from.', route: '/v25/exec', perspective: 'exec', perspectiveLabel: 'Executive' },
   'search-party': { id: 'product-search-party', title: 'Search Party', shows: 'One search across rooms, devices, people and their relationships.', route: '/search', perspective: 'service', perspectiveLabel: 'Service Engineer' },
   servicehands: { id: 'product-servicehands', title: 'ServiceHands', shows: 'Jobs tied to the room and the device, from report to resolution.', route: '/servicehands', perspective: 'service', perspectiveLabel: 'Service Engineer' },

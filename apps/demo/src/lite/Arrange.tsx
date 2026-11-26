@@ -89,7 +89,7 @@ export function ArrangeBar({ ar, L, sel, onAdded }: { ar: Arrange; L: { w: numbe
       <button type="button" className="ui-btn ui-btn--small" disabled={!ar.canUndo} onClick={ar.undo} data-testid="lite-arr-undo"><Icon name="undo" size={16} /> Undo</button>
       <button type="button" className="ui-btn ui-btn--small" disabled={!ar.canRedo} onClick={ar.redo} data-testid="lite-arr-redo">Redo</button>
       <button type="button" className="ui-btn ui-btn--small ui-btn--quiet" disabled={!ar.n} onClick={ar.reset} data-testid="lite-arr-reset">Back to the room as recorded</button>
-      <span className="ui-meta" data-testid="lite-arr-count">{ar.n ? `${ar.n} change${ar.n === 1 ? '' : 's'} · kept in this browser · modelled` : 'No change yet'}</span>
+      <span className="ui-meta" data-testid="lite-arr-count">{ar.n ? `${ar.n} change${ar.n === 1 ? '' : 's'} · kept in this browser · modeled` : 'No change yet'}</span>
     </div>
     <p className="ui-sr" role="status" aria-live="polite" data-testid="lite-arr-said">{ar.said}</p>
     <p className="ui-meta lt-arr__keys">With the toolbar focused: arrow keys move 25 cm, R turns 15° (Shift+R the other way), Delete removes.</p>
@@ -117,7 +117,7 @@ export function PrecisionPlan({ ar, roomId, sel, onSel }: { ar: Arrange; roomId:
       <label>Across (m)<input type="number" step="0.05" value={o.x.toFixed(2)} onChange={(e) => setAbs('x', Number(e.target.value))} data-testid="lite-arr-x" /></label>
       <label>From the front wall (m)<input type="number" step="0.05" value={o.y.toFixed(2)} onChange={(e) => setAbs('y', Number(e.target.value))} data-testid="lite-arr-y" /></label>
       <label>Turned (°)<input type="number" step="5" value={angleOf(o)} onChange={(e) => setAbs('rot', Number(e.target.value))} data-testid="lite-arr-rot" /></label>
-    </div> : <p className="ui-meta">Select something here or in the 3D room to place it to the centimetre.</p>}
-    <p className="ui-meta" data-testid="lite-arr-cover">{A.seats} seats: {A.cam} in a camera view, {A.mic} in primary microphone pickup with this arrangement · modelled from the layout, not measured</p>
+    </div> : <p className="ui-meta">Select something here or in the 3D room to place it to the centimeter.</p>}
+    <p className="ui-meta" data-testid="lite-arr-cover">{A.seats} seats: {A.cam} in a camera view, {A.mic} in primary microphone pickup with this arrangement · modeled from the layout, not measured</p>
   </section>;
 }

@@ -48,7 +48,7 @@ export function AssuranceAnalysisPage({ perspective }: { perspective: string }) 
     <section className="wk" data-native="workspace" data-testid="assurance-analysis">
       <PageHero product="commissioning" icon="chart" eyebrow="Assurance · engineering analysis" title="Drift, test by test"
         lede={<>The engineering view behind the summary: for each room, how many of its applicable tests are verified, failed or still untested, and why it sits where it does. <b>{tot.v.toLocaleString('en-GB')}</b> of {tot.ap.toLocaleString('en-GB')} applicable tests verified; <b>{tot.f}</b> failed.</>}
-        meta={[<Chip key="m" small tone="muted">Modelled · not live monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
+        meta={[<Chip key="m" small tone="muted">Modeled · not live monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
       <AssuranceTabs role={perspective} current="#/assurance?view=analysis" />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="tiles">
         <StatTile label="Tests verified" value={pct(tot.v, tot.ap)} unit="%" icon="check" tone="ok" hint={`${tot.v} of ${tot.ap}`} />
@@ -163,7 +163,7 @@ function Plan({ kind, target }: { kind: ChangeKind; target: string }) {
   const back = kind === 'network' || kind === 'firmware' || kind === 'control' ? 'Keep the previous version ready to reload. Go back if a mission-critical room fails or more than one room in ten is degraded.' : 'Keep what was removed until the checks pass.';
   return <div className="stack" data-testid="change-plan">
     <ol className="as-plan">
-      <li><b>Before.</b> Run the {i.kind.dims.length} affected assurance dimensions in every room and keep the result: that is what “unchanged” will mean afterwards.</li>
+      <li><b>Before.</b> Run the {i.kind.dims.length} affected assurance dimensions in every room and keep the result: that is what “unchanged” will mean afterward.</li>
       <li><b>Window.</b> Outside booked hours. {i.crit.length ? `${plural(i.crit.length, 'mission-critical room')} checked first; a fallback room is named for each.` : 'No mission-critical room is reached.'}</li>
       <li><b>After.</b> Run the same {i.tests} checks across {plural(i.rooms.length, 'room')}, in {plural(i.waves.length, 'wave')}: {i.waves.map((x) => `${x.crit.toLowerCase()} (${x.rooms.length})`).join(', then ')}. A room passes when every check still matches its baseline. About {plural(i.hours, 'hour')} of checking.</li>
       <li><b>Go back.</b> {back}</li>

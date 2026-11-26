@@ -115,7 +115,7 @@ export const STREAM_SLOTS: GearSlot[] = [
     { id: 'ctrl', t: 'A second controller', icon: '🕹', v: 'fail', joke: 'Player two has joined. The stream has not.', why: 'A controller sends button presses into the console; nothing comes back out of it. Video has to be captured from the console’s HDMI output.' }] },
   { key: 'mic', label: 'Microphone', opts: [
     { id: 'usbdyn', t: 'Dynamic mic on a boom arm, close to your mouth', icon: '🎤', v: 'ok' }, { id: 'head', t: 'Gaming headset mic', icon: '🎧', v: 'ok' },
-    { id: 'desk', t: 'Condenser mic on the desk, a metre away', icon: '🎙', v: 'soft', why: 'At a metre it hears the keyboard, the fans and the room more than you.' },
+    { id: 'desk', t: 'Condenser mic on the desk, a meter away', icon: '🎙', v: 'soft', why: 'At a meter it hears the keyboard, the fans and the room more than you.' },
     { id: 'walkie', t: 'A walkie-talkie', icon: '📻', v: 'fail', joke: '“Welcome to the stream. Over.”', why: 'Two-way radios are narrow-band voice links with push-to-talk. The stream needs a microphone into the computer.' }] },
   { key: 'cam', label: 'Camera', opts: [
     { id: 'web', t: '1080p webcam', icon: '📷', v: 'ok', lat: 70 }, { id: 'mirror', t: 'Mirrorless camera with clean HDMI into a second capture', icon: '📸', v: 'ok', lat: 110 },
@@ -197,12 +197,12 @@ export const BUILD_RF: Challenge = {
   controls: (lv) => [{ kind: 'action', key: 'same', label: 'Put every mic on 530.000 MHz “to keep it simple”', set: Object.fromEntries(Array.from({ length: RF_N[lv]! }, (_x, i) => [`f${i}`, 530])) },
     ...Array.from({ length: RF_N[lv]! }, (_x, i) => ({ kind: 'slider' as const, key: `f${i}`, label: `Mic ${i + 1}`, min: 518, max: 542, step: 0.025, unit: 'MHz' }))],
   readout: (st, lv) => { const A = rf(st, lv); if (!A.conf.length) return [['plan', '✓ No conflicts in this model']]; const r: Readout = A.conf.slice(0, 8).map((c) => ['conflict', `✗ ${c.why}`, 'bad']); if (A.conf.length > 8) r.push(['conflict', `… and ${A.conf.length - 8} more`, 'bad']); return r; },
-  note: 'Coordinators avoid even spacing, keep carriers apart, and check every pair’s products. Real plans also check the TV channels in your area, the rules for your country and an on-site scan — this model shows the arithmetic, not a licence.',
+  note: 'Coordinators avoid even spacing, keep carriers apart, and check every pair’s products. Real plans also check the TV channels in your area, the rules for your country and an on-site scan — this model shows the arithmetic, not a license.',
   evaluate: (st, lv) => {
     const A = rf(st, lv), F = A.F, c: CheckItem[] = [];
     if (F.every((f) => Math.abs(f - F[0]!) < 1e-9)) return { instant: { title: 'Every mic on one frequency', joke: 'Eight mics, one channel: the receivers pick whichever transmitter is loudest this second.', why: 'Each wireless system needs its own carrier frequency. Two transmitters on one frequency don’t share — they fight, and the receiver swaps between them with bursts of noise.' } };
     const count = (k: RfConflict['k']) => A.conf.filter((x) => x.k === k).length;
-    c.push({ ok: !count('space'), w: 2.5, must: true, label: 'Carriers spaced apart', got: `${count('space')} pair(s) too close`, want: '≥ 400 kHz between mics', why: 'Receivers need room either side of their carrier; closer than this they hear their neighbours.' });
+    c.push({ ok: !count('space'), w: 2.5, must: true, label: 'Carriers spaced apart', got: `${count('space')} pair(s) too close`, want: '≥ 400 kHz between mics', why: 'Receivers need room either side of their carrier; closer than this they hear their neighbors.' });
     c.push({ ok: !count('im3'), w: 3, must: true, label: 'Clear of third-order intermod', got: `${count('im3')} hit(s)`, want: 'none within 100 kHz of a carrier', why: 'The strongest product is 2f₁ − f₂. Nudge one mic by a few hundred kHz and the products move twice as far.' });
     if (A.tv) c.push({ ok: !count('tv'), w: 2.5, must: true, label: 'Out of the occupied TV channel', got: `${count('tv')} mic(s) in it`, want: 'none in 524–530 MHz (with a 250 kHz guard)', why: 'A TV transmitter is far more powerful than a bodypack. Inside its channel, it wins.' });
     if (A.ifb) c.push({ ok: !count('ifb'), w: 2, must: true, label: 'Clear of the in-ear transmitter', got: count('ifb') ? 'too close' : 'clear', want: '≥ 400 kHz away', why: 'The in-ear system is a transmitter in the same room; it also makes intermod with every mic.' });

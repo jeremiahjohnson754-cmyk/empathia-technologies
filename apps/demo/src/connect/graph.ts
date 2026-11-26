@@ -54,7 +54,7 @@ export const GRAPH_CALLS: readonly GraphCall[] = [
   { id: 'create', what: 'Create the event (this is what sends invitations)', method: 'POST', delegatedPath: '/me/events', applicationPath: '/users/{id | userPrincipalName}/events', delegated: 'Calendars.ReadWrite', application: 'Calendars.ReadWrite', higher: [], success: 201,
     source: 'https://learn.microsoft.com/en-us/graph/api/user-post-events', pageUpdated: null, validated: GRAPH_VALIDATED,
     notes: ['A meeting without a room is created online: isOnlineMeeting true and onlineMeetingProvider “teamsForBusiness”. The event resource page (https://learn.microsoft.com/en-us/graph/api/resources/event, last updated 2025-05-15, read 2026-11-11): “After you set isOnlineMeeting to true, Microsoft Graph initializes onlineMeeting”; the provider’s possible values are “unknown, teamsForBusiness, skypeForBusiness, and skypeForConsumer”. Whether the event comes back with a join link is to observe in real validation', 'transactionId: “A custom identifier specified by a client app for the server to avoid redundant POST operations in case of client retries to create the same event” (https://learn.microsoft.com/en-us/graph/api/resources/event)', 'A room is invited as an attendee of type resource, with its mailbox address', 'NOT STATED on the pages read: what the server answers to a second POST with the same transactionId. The mock assumes the first event is returned; to observe in real validation'] },
-  { id: 'cancel', what: 'Cancel the event (the organiser only; sends a cancellation)', method: 'POST', delegatedPath: '/me/events/{id}/cancel', applicationPath: '/users/{id | userPrincipalName}/events/{id}/cancel', delegated: 'Calendars.ReadWrite', application: 'Calendars.ReadWrite', higher: [], success: 202,
+  { id: 'cancel', what: 'Cancel the event (the organizer only; sends a cancellation)', method: 'POST', delegatedPath: '/me/events/{id}/cancel', applicationPath: '/users/{id | userPrincipalName}/events/{id}/cancel', delegated: 'Calendars.ReadWrite', application: 'Calendars.ReadWrite', higher: [], success: 202,
     source: 'https://learn.microsoft.com/en-us/graph/api/event-cancel', pageUpdated: '2024-06-21', validated: GRAPH_VALIDATED,
     notes: ['An attendee who calls it gets HTTP 400: “You need to be an organizer to cancel a meeting.”', 'Returns 202 Accepted and no body'] },
   { id: 'shifts', what: 'Shifts of a Teams team (who is on shift when)', method: 'GET', delegatedPath: '/teams/{teamId}/schedule/shifts', applicationPath: '/teams/{teamId}/schedule/shifts', delegated: 'Schedule.Read.All', application: 'Schedule.Read.All', higher: ['Schedule.ReadWrite.All', 'Group.Read.All', 'Group.ReadWrite.All'], success: 200,
@@ -81,7 +81,7 @@ export const GRAPH_PERMISSIONS: readonly GraphPermission[] = [
 /** Pages read on 2026-11-11 that are not one call: how throttling and errors are answered. */
 export const GRAPH_GUIDANCE = {
   throttling: { source: 'https://learn.microsoft.com/graph/throttling', pageUpdated: '2025-01-15', validated: GRAPH_VALIDATED, rule: 'HTTP 429 with a Retry-After header: wait that many seconds, retry the request; without the header, back off exponentially' },
-  errors: { source: 'https://learn.microsoft.com/en-us/graph/errors', pageUpdated: '2025-08-06', validated: GRAPH_VALIDATED, rule: '401: authentication missing or not valid. 403: the user does not have enough permission or a required licence. The body is { error: { code, message, innerError } }; the message is not shown to people' },
+  errors: { source: 'https://learn.microsoft.com/en-us/graph/errors', pageUpdated: '2025-08-06', validated: GRAPH_VALIDATED, rule: '401: authentication missing or not valid. 403: the user does not have enough permission or a required license. The body is { error: { code, message, innerError } }; the message is not shown to people' },
 } as const;
 
 /**
@@ -198,8 +198,8 @@ export function graphAdapter(cfg: GraphConfig): GraphAdapter {
         if (attempt >= max) return { ok: false, out: fail('throttled', [`The calendar asked this app to slow down ${attempt + 1} times in a row. Nothing was created; try again in a few minutes.`]) };
         const ra = Number(header(res.headers, 'Retry-After')); const ms = Number.isFinite(ra) && ra > 0 ? ra * 1000 : 1000 * 2 ** attempt; waits.push(ms); await sleep(ms); continue;
       }
-      if (res.status === 401) return { ok: false, out: fail('not-authorised', [`Not authorised: the sign-in is missing or has expired. Sign in again; if it still fails, ask your administrator for ${perm} (${kind} permission, Microsoft Graph).`]) };
-      if (res.status === 403) return { ok: false, out: fail('not-authorised', [`Not authorised; ask your administrator for ${perm} (${kind} permission, Microsoft Graph) so that this app may ${call.what.split(' (')[0]!.toLowerCase()}.`]) };
+      if (res.status === 401) return { ok: false, out: fail('not-authorised', [`Not authorized: the sign-in is missing or has expired. Sign in again; if it still fails, ask your administrator for ${perm} (${kind} permission, Microsoft Graph).`]) };
+      if (res.status === 403) return { ok: false, out: fail('not-authorised', [`Not authorized; ask your administrator for ${perm} (${kind} permission, Microsoft Graph) so that this app may ${call.what.split(' (')[0]!.toLowerCase()}.`]) };
       return { ok: true, res };
     }
   }
@@ -258,7 +258,7 @@ export function graphAdapter(cfg: GraphConfig): GraphAdapter {
       const known = [...done.values()].find((e) => e.id === eventId) || null; if (known?.state === 'CANCELLED') return ok(known);
       const r = await send<CalEvent>(graphCall('cancel'), reqCancel(cfg, eventId, comment), false); if (!r.ok) return r.out;
       if (r.res.status === 404) return fail('not-found', [`No meeting ${eventId} is in the calendar.`]);
-      if (r.res.status === 400) return fail('invalid', ['Only the organiser of a meeting can cancel it.']);
+      if (r.res.status === 400) return fail('invalid', ['Only the organizer of a meeting can cancel it.']);
       if (r.res.status !== 202) return fail('unavailable', [`The calendar answered ${r.res.status} and did not cancel the event.`]);
       const e: CalEvent = known || { id: eventId, transactionId: '', subject: '', body: '', from: 0, to: 0, parties: [], room: null, state: 'RECORDED', createdAt: '' };
       e.state = 'CANCELLED'; e.cancelledAt = new Date(now()).toISOString(); e.cancelReason = comment.slice(0, 300); return ok(e);

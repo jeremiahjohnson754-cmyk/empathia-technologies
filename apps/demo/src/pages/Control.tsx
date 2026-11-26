@@ -226,7 +226,7 @@ function PassportView({ p, perspective, w }: { p: Passport; perspective: string;
 // ------------------------------------------------------------------------------------------------------------ Ledger and policy
 export const PAGE_AUTHORITIES: Array<{ page: string; href: string; gates: string[] }> = [
   { page: 'Build a Room (Lite · commissioning · acceptance)', href: '#/v25/build', gates: ['room.design', 'room.classify.approve', 'room.design.approve', 'window.approve', 'work.evidence', 'tests.verify.all', 'test.verify', 'customer.accept', 'plan.compile'] },
-  { page: 'Search Party', href: '#/search', gates: ['(read within the visible catalogue)'] },
+  { page: 'Search Party', href: '#/search', gates: ['(read within the visible catalog)'] },
   { page: 'ServiceHands', href: '#/v25/service', gates: ['service.triage', 'service.assign', 'work.accept', 'work.start', 'work.evidence', 'service.verify', 'service.close', 'service.reopen', 'request.submit'] },
   { page: 'APEX', href: '#/v25/apex', gates: S.APEX_ACT_AUTHORITIES },
   { page: 'Learn cases', href: '#/v25/learn', gates: [...new Set([...S.LEARN_PROPOSE, ...S.LEARN_SME, 'case.approve'])] },
@@ -241,7 +241,7 @@ export function LedgerPage({ perspective, policy }: { perspective: string; polic
   const tab = policy ? 'policy' : 'ledger';
   return (
     <section className="ledger">
-      <header className="build__head"><div><p className="kicker">Evidence ledger</p><h1>{policy ? 'The role × area matrix the dispatcher uses' : 'The ledger behind every state'}</h1><p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>. Every transition emitted a validated event with its actor, time and local time. This is a demonstration of authorisation, not security.</p></div></header>
+      <header className="build__head"><div><p className="kicker">Evidence ledger</p><h1>{policy ? 'The role × area matrix the dispatcher uses' : 'The ledger behind every state'}</h1><p className="ui-muted">Acting as <b>{personaLabel(persona)}</b>. Every transition emitted a validated event with its actor, time and local time. This is a demonstration of authorization, not security.</p></div></header>
       <Tabs label="Ledger" active={tab} onChange={(k) => { location.hash = k === 'policy' ? '#/v25/policy' : '#/v25/ledger'; }} tabs={[{ key: 'ledger', label: 'Events', count: events.length }, { key: 'policy', label: 'Policy' }]} />
       {!policy ? <div className="stack">
         <div className="build__row"><input className="sp__input" aria-label="Filter events" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter by type, record, actor or detail" /><Segmented small label="Which decisions" value={only} onChange={setOnly} options={[{ value: 'all', label: 'All' }, { value: 'ALLOWED', label: 'Allowed' }, { value: 'DENIED', label: 'Denied' }]} /></div>

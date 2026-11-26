@@ -96,7 +96,7 @@ export function createDraft(input: CreateInput, persona: string): Draft | Refusa
   const val = (k: 'length' | 'width' | 'ceiling', i: 0 | 1 | 2) => { const v = input[k]; if (v != null && v.trim() !== '') { const m = parseLength(v, input.unit); if (!m) { prov[k] = 'UNREADABLE'; return null; } prov[k] = 'DECLARED'; return m; } prov[k] = 'MODELED'; return T.dims![i]; };
   const L = val('length', 0), W = val('width', 1), H = val('ceiling', 2);
   const bad = (['length', 'width', 'ceiling'] as const).filter((k) => prov[k] === 'UNREADABLE');
-  if (bad.length) return refused([`${bad.join(', ')}: not readable — use metres, feet, or feet and inches like 24' 6" (nothing is substituted for a value you typed)`]);
+  if (bad.length) return refused([`${bad.join(', ')}: not readable — use meters, feet, or feet and inches like 24' 6" (nothing is substituted for a value you typed)`]);
   if (!(L! > 0.5 && W! > 0.5 && H! > 1.8 && L! < 200 && W! < 200 && H! < 30)) return refused([`dimensions out of range (length ${L} m, width ${W} m, ceiling ${H} m)`]);
   const points = outlineFor(input.shape, W!, L!);
   const seq = { pa: 0, cn: 0 }; const nextId = () => `PA-${String(++seq.pa).padStart(4, '0')}`;
@@ -223,7 +223,7 @@ function cross(a: [number, number], b: [number, number], c: [number, number], d:
 /** Check an outline (V2.5.3 v25RoomPolyCheck): 3 to 24 corners, no edge crossing another, an area of at least 2 m²; moved to start at 0, 0. */
 export function checkOutline(points: Array<[number, number]>): { points: Array<[number, number]>; shift: [number, number]; area: number; w: number; l: number } | { why: string } {
   if (points.length < 3 || points.length > 24) return { why: `an outline has 3 to 24 corners (this one has ${points.length})` };
-  if (points.some((p) => !p.every((v) => Number.isFinite(v) && Math.abs(v) < 200))) return { why: 'every corner is two numbers in metres, within 200 m' };
+  if (points.some((p) => !p.every((v) => Number.isFinite(v) && Math.abs(v) < 200))) return { why: 'every corner is two numbers in meters, within 200 m' };
   const n = points.length; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { if (j === i + 1 || (i === 0 && j === n - 1)) continue; if (cross(points[i]!, points[(i + 1) % n]!, points[j]!, points[(j + 1) % n]!)) return { why: `edges ${i + 1} and ${j + 1} cross: an outline goes round the room once` }; }
   const minX = Math.min(...points.map((p) => p[0])), minY = Math.min(...points.map((p) => p[1]));
   const pts = points.map(([x, y]) => [Math.round((x - minX) * 100) / 100, Math.round((y - minY) * 100) / 100] as [number, number]); const a = polyArea({ points: pts });

@@ -70,7 +70,7 @@ const refused = (p) => p.evaluate(() => !!document.querySelector('[data-testid=a
   // keyboard: an action that opens a panel keeps the focus where it was
   await p.focus('[data-testid=cx-availability]'); await p.keyboard.press('Enter'); await wait(p);
   const av = await p.evaluate(() => ({ text: document.querySelector('[data-testid=cx-avail-panel]')?.innerText || '', focus: document.activeElement?.dataset.testid, pressed: document.querySelector('[data-testid=cx-availability]').getAttribute('aria-pressed') }));
-  ok('CB-17', 'See availability, by keyboard: working hours and busy times in the person’s own zone, marked simulated; focus stays on the button', /Amara works 07:30–16:00, Chicago time/.test(av.text) && /Simulated calendar/.test(av.text) && /Public holidays and leave are not modelled/.test(av.text) && av.focus === 'cx-availability' && av.pressed === 'true', JSON.stringify(av));
+  ok('CB-17', 'See availability, by keyboard: working hours and busy times in the person’s own zone, marked simulated; focus stays on the button', /Amara works 07:30–16:00, Chicago time/.test(av.text) && /Simulated calendar/.test(av.text) && /Public holidays and leave are not modeled/.test(av.text) && av.focus === 'cx-availability' && av.pressed === 'true', JSON.stringify(av));
   await p.click('[data-testid=cx-backup]'); await wait(p);
   ok('CB-18', 'Find a backup contact names the backup champion and why', /Bao Kahale[\s\S]*Stands in for Amara at Atlas HQ/.test(await txt(p, '[data-testid=cx-backup-panel]')) && await attr(p, '[data-testid=cx-backup-panel]', 'data-person') === 'p-backup-ATL', await txt(p, '[data-testid=cx-backup-panel]'));
 
@@ -141,7 +141,7 @@ const refused = (p) => p.evaluate(() => !!document.querySelector('[data-testid=a
   ok('CB-41', 'only changes that really produce a time are offered: the backup’s counterpart, or making someone optional', none.alts.length >= 1 && none.alts.some(([k]) => k === 'backup' || k === 'optional') && none.alts.every(([, text]) => /\d+ times? would then work/.test(text)), JSON.stringify(none.alts));
   await at(p, '[data-testid=meet-alternatives] .cx-pick').first().click(); await p.waitForSelector('[data-testid=meet-slots]'); await wait(p);
   ok('CB-42', 'taking one shows times, and the address carries the change', await at(p, '[data-testid=meet-slot]').count() >= 1 && /opt=p-syseng-forum|with=p-syseng-forum,p-champ-MBK/.test(await p.evaluate(() => location.hash)), await p.evaluate(() => location.hash));
-  ok('CB-43', 'the page says what it does not model, and that it is not connected', /Public holidays and leave are not modelled/.test(await txt(p, '[data-testid=meet-when]')) && /NOT CONNECTED\..*no Microsoft 365 tenant.*mock-tested.*never been validated against a real calendar/.test(await p.evaluate(() => document.querySelector('[data-testid=meet-truth]').textContent)));
+  ok('CB-43', 'the page says what it does not model, and that it is not connected', /Public holidays and leave are not modeled/.test(await txt(p, '[data-testid=meet-when]')) && /NOT CONNECTED\..*no Microsoft 365 tenant.*mock-tested.*never been validated against a real calendar/.test(await p.evaluate(() => document.querySelector('[data-testid=meet-truth]').textContent)));
   ok('CB-44', 'no console error', t.errs.length === 0, t.errs.join(' | ')); await t.close(); }
 
 // ------------------------------------------------------------------ two tabs: a review that is overtaken is withdrawn without a press

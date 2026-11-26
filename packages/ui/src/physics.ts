@@ -77,7 +77,7 @@ export const SIMS: Record<string, Sim> = {
     model: (s) => ({ err: Math.abs(n(s, 'h3') - 1 / 3) + Math.abs(n(s, 'h5') - 1 / 5) + Math.abs(n(s, 'h7') - 1 / 7) }),
     read: (m, s, L) => [['fundamental', `${L['f0']} Hz`], ['3rd', `${3 * N(L, 'f0')} Hz × ${s['h3']}`], ['5th', `${5 * N(L, 'f0')} Hz × ${s['h5']}`], ['7th', `${7 * N(L, 'f0')} Hz × ${s['h7']}`]],
     check: (m) => ((m as M).err! <= 0.06 ? pass() : fail('Not square yet: odd harmonics at 1/n of the fundamental.')) },
-  throw: { aria: 'Side view of a theatre: the screen, a ceiling beam, and a projector whose position and lens you set.',
+  throw: { aria: 'Side view of a theater: the screen, a ceiling beam, and a projector whose position and lens you set.',
     controls: (L) => [sl('d', 'Projector distance', 2, N(L, 'dMax', 14), 0.1, 'm'), sl('tr', 'Throw ratio (lens)', 0.5, 2.5, 0.05, ':1')],
     model: (s, L) => { const b = L['beam'] as number[]; return { w: n(s, 'd') / n(s, 'tr'), inBeam: n(s, 'd') >= b[0]! - 0.3 && n(s, 'd') <= b[1]! + 0.3 }; },
     read: (m, s, L) => { const b = L['beam'] as number[]; return [['image width = distance ÷ throw ratio', `${r((m as M).w!, 2)} m`], ['target width', `${L['width']} m`], ['beam zone', `${b[0]}–${b[1]} m from the screen`], ['projector', m['inBeam'] ? 'IN THE BEAM ZONE' : 'clear of the beam']]; },
@@ -129,7 +129,7 @@ export const SIMS: Record<string, Sim> = {
     model: (s, L) => { const off = n(s, 'audio') - N(L, 'video', 0); return { off, frames: off / (1000 / N(L, 'fps', 29.97)) }; },
     read: (m, s, L) => { const x = m as M; return [['video path', `${N(L, 'video', 0)} ms`], ['audio path', `${s['audio']} ms`], ['offset = audio − video', `${r(x.off!, 1)} ms (${r(x.frames!, 2)} frames)`], ['heard as', x.off! < 0 ? 'sound EARLY' : x.off! > 0 ? 'sound late' : 'in sync']]; },
     check: (m, s, L) => { const w = (L['window'] as number[]) || [-15, 45], off = (m as M).off!; return off >= w[0]! && off <= w[1]! ? pass([`Offset ${r(off, 1)} ms: inside the window.`]) : fail(`Offset ${r(off, 1)} ms is outside the acceptable window (${w[0]} to +${w[1]} ms; sound early is noticed sooner than sound late).`); } },
-  loudness: { aria: 'A loudness meter across a programme: one segment stands out; the gain trims it toward the target.',
+  loudness: { aria: 'A loudness meter across a program: one segment stands out; the gain trims it toward the target.',
     controls: (L) => { const segs = L['segs'] as Array<[string, number]>; return [sl('g', `Gain on ${(segs[N(L, 'adjust', 1)] || ['segment'])[0]}`, -20, 10, 0.5, 'dB')]; },
     model: (s, L) => { const segs = (L['segs'] as Array<[string, number]>).map((x, i) => ({ name: x[0], lufs: x[1] + (i === N(L, 'adjust', 1) ? n(s, 'g') : 0) })); return { segs, adj: segs[N(L, 'adjust', 1)] }; },
     read: (m, s, L) => [...(m['segs'] as Array<{ name: string; lufs: number }>).map((x): [string, string] => [x.name, `${r(x.lufs, 1)} LUFS`]), ['target', `${L['target']} LUFS (±${N(L, 'tol', 1)})`]],
@@ -164,14 +164,14 @@ export const SIMS: Record<string, Sim> = {
     check: (m, s, L) => { const x = m as M; if (x.angle! > 360.5) return fail(`A 1/${s['x']} s shutter is longer than one frame at ${s['fps']} fps (${Math.round(x.angle!)}°). The shutter can’t stay open longer than a frame.`);
       if (x.depth! > N(L, 'goal')) return fail(`Bands ${r(x.depth! * 100, 1)}% deep: 1/${s['x']} s holds ${r(x.n!, 2)} light pulses. Make it a whole number.`);
       return pass([`1/${s['x']} s holds ${r(x.n!, 2)} pulses — the bands average out${x.alias! < 0.05 ? `, and at ${s['fps']} fps they would stand still anyway.` : '.'}`]); } },
-  fiber: { aria: 'A plan of three fibre routes from the equipment room to the stage rack, and the chosen link’s loss against the optics’ budget.',
+  fiber: { aria: 'A plan of three fiber routes from the equipment room to the stage rack, and the chosen link’s loss against the optics’ budget.',
     controls: (L) => [{ kind: 'select', key: 'route', label: 'Route', options: (L['routes'] as Array<{ name: string }>).map((x, i) => ({ value: i, text: x.name })) }, { kind: 'select', key: 'fiber', label: 'Fiber', options: (L['fibers'] as Array<{ name: string }>).map((x, i) => ({ value: i, text: x.name })) }],
     model: (s, L) => { const rt = (L['routes'] as Array<{ name: string; m: number; conn: number; splice: number; blocked?: string }>)[n(s, 'route')]!, f = (L['fibers'] as Array<{ name: string; att: number; budget: number; reach: number }>)[n(s, 'fiber')]!;
       const att = (f.att * rt.m) / 1000, con = rt.conn * N(L, 'conn'), spl = rt.splice * N(L, 'splice'), loss = att + con + spl; return { rt, f, att, con, spl, loss, margin: f.budget - loss, reach: rt.m <= f.reach }; },
     read: (m) => { const rt = m['rt'] as { m: number }, f = m['f'] as { budget: number; reach: number }, x = m as M; return [['length', `${rt.m} m`], ['fiber α·d', `${r(x.att!, 2)} dB`], ['connectors + splices', `${r(x.con! + x.spl!, 2)} dB`], ['total loss', `${r(x.loss!, 2)} dB`], ['budget · margin', `${f.budget} dB · ${r(x.margin!, 2)} dB`], ['reach', m['reach'] ? `within ${f.reach} m` : `BEYOND ${f.reach} m`]]; },
     check: (m, s, L) => { const rt = m['rt'] as { m: number; blocked?: string }, f = m['f'] as { name: string; budget: number; reach: number }, x = m as M;
       if (rt.blocked) return fail(rt.blocked); if (!m['reach']) return fail(`${f.name} reaches only ${f.reach} m at this speed; this route is ${rt.m} m.`);
-      if (x.margin! < N(L, 'needMargin')) return fail(`Margin is ${r(x.margin!, 2)} dB; the spec asks for at least ${L['needMargin']} dB (for ageing, repairs and dirty connectors).`);
+      if (x.margin! < N(L, 'needMargin')) return fail(`Margin is ${r(x.margin!, 2)} dB; the spec asks for at least ${L['needMargin']} dB (for aging, repairs and dirty connectors).`);
       return pass([`${r(x.loss!, 2)} dB of loss against a ${f.budget} dB budget leaves ${r(x.margin!, 2)} dB — the route the drawings promised.`]); } },
   cooling: { aria: 'The equipment room’s heat load against its cooling, with all units running and with one unit out.',
     controls: () => [sl('n', 'Cooling units', 1, 5, 1), { kind: 'toggle', key: 'out', label: 'Show one unit out for maintenance' }],

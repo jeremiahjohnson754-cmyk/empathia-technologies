@@ -50,7 +50,7 @@ function StudyView({ world, config, node, option, show, trail }: { world: World;
       <p className="kicker w-kicker">Space Optimizer · {world.place} (fictional) <Synthetic /></p>
       <h1 tabIndex={-1}>{node.name}: three ways to equip it</h1>
       <p className="lead">{trail ? `${trail}. ` : ''}{node.dims![0]} × {node.dims![1]} m, {node.dims![2]} m high, for {node.capacity} people. Each option is scored on nine dimensions.</p>
-      <p className="so-model" data-testid="optimizer-model"><b>A planning model, not a measurement.</b> Seats and equipment are placed by rule and every score is a stated rule applied to them. A real room needs a survey, drawings and an engineer’s judgement.{saved && <> <span className="ui-tag" data-testid="optimizer-saved">Saved study for {world.name}</span></>}</p>
+      <p className="so-model" data-testid="optimizer-model"><b>A planning model, not a measurement.</b> Seats and equipment are placed by rule and every score is a stated rule applied to them. A real room needs a survey, drawings and an engineer’s judgment.{saved && <> <span className="ui-tag" data-testid="optimizer-saved">Saved study for {world.name}</span></>}</p>
 
       <Block title="What the model prefers" testId="optimizer-best">
         <p className="so-best"><b>Option {c.best.option.key}: {c.best.option.name}</b>, with a purpose fit of {scoreOf(c.best, 'purpose')} out of 100.</p>
@@ -59,13 +59,13 @@ function StudyView({ world, config, node, option, show, trail }: { world: World;
       </Block>
 
       <div className="so-two">
-        <Block title={`Option ${sel.option.key} on the plan`} sub="Modelled positions · not to scale with the building" testId="optimizer-plan">
+        <Block title={`Option ${sel.option.key} on the plan`} sub="Modeled positions · not to scale with the building" testId="optimizer-plan">
           <nav className="w-pick" aria-label="Option">{OPTIONS.map((o) => <a key={o.key} className="w-pick__b so-pickb" href={href(o.key)} aria-current={sel.option.key === o.key ? 'true' : undefined} data-option={o.key}>Option {o.key}</a>)}</nav>
           <p>{sel.option.summary}</p>
           <nav className="w-pick" aria-label="Show on the plan">{SHOWS.map((d) => <a key={d} className="w-pick__b so-pickb" href={href(undefined, d)} aria-current={show === d ? 'true' : undefined} data-show={d}>{DIMENSION_LABEL[d]}</a>)}</nav>
           <RoomPlan s={sel} show={show} name={node.name} />
         </Block>
-        <Block title="Nine dimensions, three options" sub="0 to 100 · modelled" testId="optimizer-table">
+        <Block title="Nine dimensions, three options" sub="0 to 100 · modeled" testId="optimizer-table">
           <div className="es-tablewrap"><table className="so-table">
             <caption className="ui-visually-hidden">Scores of options A, B and C on each of the nine dimensions for {node.name}</caption>
             <thead><tr><th scope="col">Dimension</th>{c.studies.map((s) => <th key={s.option.key} scope="col" className="so-num" aria-current={s === sel ? 'true' : undefined}><a href={href(s.option.key)}>{s.option.key}</a></th>)}</tr></thead>
@@ -81,7 +81,7 @@ function StudyView({ world, config, node, option, show, trail }: { world: World;
         <dl className="so-why">{sel.scores.map((x) => <div key={x.dimension} data-dimension={x.dimension}><dt>{DIMENSION_LABEL[x.dimension]} <b>{x.score}</b></dt><dd>{x.detail}.<span className="ui-meta"> Rule: {RULE_TEXT[x.dimension as Dimension]}</span></dd></div>)}</dl>
       </Block>
       <Block title="What this model does not know">
-        <ul className="w-notes"><li>Columns, windows, doors, daylight, room acoustics and the furniture actually in the room.</li><li>Cost, programme and what equipment the estate already owns.</li><li>Any measurement: nothing here was surveyed, tested or commissioned.</li></ul>
+        <ul className="w-notes"><li>Columns, windows, doors, daylight, room acoustics and the furniture actually in the room.</li><li>Cost, program and what equipment the estate already owns.</li><li>Any measurement: nothing here was surveyed, tested or commissioned.</li></ul>
       </Block>
       <p className="w-skip"><a className="ui-btn w-btn" href={estateHref(world.key, node.id, config.id)}>Back to {node.name}</a>{!saved && <> <a className="ui-btn ui-btn--quiet w-btn" href={optimizerHref(world.key, SAVED[world.key]!, config.id)}>Open this world’s saved study</a></>}</p>
     </div>

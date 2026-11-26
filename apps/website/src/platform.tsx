@@ -83,7 +83,7 @@ export function familyPages(demoUrl: string): Page[] {
           {/* 24 Nov 2026, design pass: this was five cards naming the other families. The family is shown where it stands instead: its
               column in the platform figure, the other five beside it, all on the same record */}
           <Section title="Where it stands, and where its records go" lead={f.hands} tone="deep"><Plate demoUrl={demoUrl} back={back} current={f.id} /></Section>
-          <Section id="shared" title="What it shares with the other five" lead="The families are not separate products that were integrated afterwards. They are six views of one engineering record."><SharedIntelligence />
+          <Section id="shared" title="What it shares with the other five" lead="The families are not separate products that were integrated afterward. They are six views of one engineering record."><SharedIntelligence />
             <Actions><a className="btn" href="/platform">The whole platform</a><a className="btn" href="/platform#thread">One issue, followed through the families</a></Actions></Section>
           <div className="wrap"><Note>The nine core products and the eight further capabilities run in the public demonstration on synthetic data. The eight further capabilities are simulations: nothing is connected to a calling platform, a network, a signage system, an alerting source or any device.</Note></div>
         </div>

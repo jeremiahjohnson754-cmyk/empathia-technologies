@@ -29,11 +29,11 @@ The roster asks for three primary campuses and satellite sites.
 | Campus or site | Kind | Buildings | Rooms |
 |---|---|---|---:|
 | Northstar Innovation Campus | campus | Atlas HQ, Meridian R&D, Forge Manufacturing, Beacon Learning Center, Horizon Media Center, Northstar Annex | 64 |
-| Science and Learning Park | campus | Westmere Health and Research Centre, Highfield Academy | 10 |
-| Forum and Resilience Quarter | campus | Eastgate Forum, Stonebridge Resilience Centre | 10 |
+| Science and Learning Park | campus | Westmere Health and Research Center, Highfield Academy | 10 |
+| Forum and Resilience Quarter | campus | Eastgate Forum, Stonebridge Resilience Center | 10 |
 | Lakeshore Regional Office | satellite | Lakeshore Regional Office | 3 |
 | Ridgeview Operations Site | satellite | Ridgeview Operations Site | 1 |
-| Millbrook Distribution Centre | satellite | Millbrook Distribution Centre | 2 |
+| Millbrook Distribution Center | satellite | Millbrook Distribution Center | 2 |
 
 Only the six buildings of the Northstar Innovation Campus are on the campus map. The other sites are listed and searchable; they are not drawn.
 
@@ -63,21 +63,21 @@ Only the six buildings of the Northstar Innovation Campus are on the campus map.
 
 | Row | Roster | Room | Where | Designed as | Seats | Size (m) | Shows | Record today |
 |---|---|---|---|---|---:|---|---|---|
-| 56 | ADD-11 Global Network Operations Center | Global Network Operations Center (`R-SBR-1-110`) | Stonebridge Resilience Centre, floor 1 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 22 | 15.4 × 11.2 × 3.8 | network rack/port topology and incidents | commissioning · 74 of 82 tests verified |
-| 57 | ADD-12 Cybersecurity Operations Center | Cybersecurity Operations Center (`R-SBR-2-120`) | Stonebridge Resilience Centre, floor 2 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 16 | 12.6 × 9.4 × 3.4 | privacy and role-scoped incident context | accepted · 82 of 82 tests verified |
-| 58 | ADD-13 Emergency Operations Center | Alternate Emergency Operations Center (`R-SBR-1-130`) | Stonebridge Resilience Centre, floor 1 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 18 | 12.2 × 10.6 × 3.6 | redundancy and evidence trail | accepted · 82 of 82 tests verified |
-| 59 | ADD-14 Critical Incident Briefing Room | Critical Incident Briefing Room (`R-SBR-2-140`) | Stonebridge Resilience Centre, floor 2 | Operations War Room (no war-room template in the catalogue: designed from the boardroom template) | 12 | 7.8 × 7.2 × 3 | high-priority escalation and workflow orchestration | accepted · 82 of 82 tests verified |
-| 60 | ADD-15 Backup Disaster Recovery Command Room | Backup Disaster Recovery Command Room (`R-SBR-2-150`) | Stonebridge Resilience Centre, floor 2 | Operations War Room (no war-room template in the catalogue: designed from the boardroom template) | 16 | 10.4 × 8.8 × 3.2 | failover, source of truth and recovery drill | accepted · 82 of 82 tests verified |
+| 56 | ADD-11 Global Network Operations Center | Global Network Operations Center (`R-SBR-1-110`) | Stonebridge Resilience Center, floor 1 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 22 | 15.4 × 11.2 × 3.8 | network rack/port topology and incidents | commissioning · 74 of 82 tests verified |
+| 57 | ADD-12 Cybersecurity Operations Center | Cybersecurity Operations Center (`R-SBR-2-120`) | Stonebridge Resilience Center, floor 2 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 16 | 12.6 × 9.4 × 3.4 | privacy and role-scoped incident context | accepted · 82 of 82 tests verified |
+| 58 | ADD-13 Emergency Operations Center | Alternate Emergency Operations Center (`R-SBR-1-130`) | Stonebridge Resilience Center, floor 1 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 18 | 12.2 × 10.6 × 3.6 | redundancy and evidence trail | accepted · 82 of 82 tests verified |
+| 59 | ADD-14 Critical Incident Briefing Room | Critical Incident Briefing Room (`R-SBR-2-140`) | Stonebridge Resilience Center, floor 2 | Operations War Room (no war-room template in the catalogue: designed from the boardroom template) | 12 | 7.8 × 7.2 × 3 | high-priority escalation and workflow orchestration | accepted · 82 of 82 tests verified |
+| 60 | ADD-15 Backup Disaster Recovery Command Room | Backup Disaster Recovery Command Room (`R-SBR-2-150`) | Stonebridge Resilience Center, floor 2 | Operations War Room (no war-room template in the catalogue: designed from the boardroom template) | 16 | 10.4 × 8.8 × 3.2 | failover, source of truth and recovery drill | accepted · 82 of 82 tests verified |
 
 ### Health / research
 
 | Row | Roster | Room | Where | Designed as | Seats | Size (m) | Shows | Record today |
 |---|---|---|---|---|---:|---|---|---|
-| 61 | ADD-16 Telemedicine Consultation Suite | Telemedicine Consultation Suite (`R-WMR-1-110`) | Westmere Health and Research Centre, floor 1 | Focus Room | 3 | 3.8 × 4.4 × 2.7 | audiovisual privacy, call experience and quality | accepted · 32 of 32 tests verified |
-| 62 | ADD-17 Clinical Simulation Theater | Clinical Simulation Theater (`R-WMR-2-120`) | Westmere Health and Research Centre, floor 2 | Studio | 16 | 11.6 × 9.4 × 3.4 | capture, replay and operator controls | commissioning · 64 of 68 tests verified · 1 failed · 1 open issue |
-| 63 | ADD-18 Medical Training Auditorium | Medical Training Auditorium (`R-WMR-1-130`) | Westmere Health and Research Centre, floor 1 | Townhall | 180 | 19 × 17.4 × 6.6 | hearing assistance, camera views and lecture streaming | accepted · 86 of 86 tests verified |
-| 64 | ADD-19 Research Collaboration Laboratory | Research Collaboration Laboratory (`R-WMR-3-140`) | Westmere Health and Research Centre, floor 3 | Engineering Lab (no lab template in the catalogue: designed from the medium conference template) | 12 | 9.6 × 7.8 × 3 | secure file/display sharing, asset lifecycle | accepted · 76 of 76 tests verified |
-| 65 | ADD-20 Hospital Logistics Coordination Room | Clinical Logistics Coordination Room (`R-WMR-1-150`) | Westmere Health and Research Centre, floor 1 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 10 | 8.8 × 7.4 × 3 | wallboards, uptime and role-scoped data | accepted · 82 of 82 tests verified |
+| 61 | ADD-16 Telemedicine Consultation Suite | Telemedicine Consultation Suite (`R-WMR-1-110`) | Westmere Health and Research Center, floor 1 | Focus Room | 3 | 3.8 × 4.4 × 2.7 | audiovisual privacy, call experience and quality | accepted · 32 of 32 tests verified |
+| 62 | ADD-17 Clinical Simulation Theater | Clinical Simulation Theater (`R-WMR-2-120`) | Westmere Health and Research Center, floor 2 | Studio | 16 | 11.6 × 9.4 × 3.4 | capture, replay and operator controls | commissioning · 64 of 68 tests verified · 1 failed · 1 open issue |
+| 63 | ADD-18 Medical Training Auditorium | Medical Training Auditorium (`R-WMR-1-130`) | Westmere Health and Research Center, floor 1 | Townhall | 180 | 19 × 17.4 × 6.6 | hearing assistance, camera views and lecture streaming | accepted · 86 of 86 tests verified |
+| 64 | ADD-19 Research Collaboration Laboratory | Research Collaboration Laboratory (`R-WMR-3-140`) | Westmere Health and Research Center, floor 3 | Engineering Lab (no lab template in the catalogue: designed from the medium conference template) | 12 | 9.6 × 7.8 × 3 | secure file/display sharing, asset lifecycle | accepted · 76 of 76 tests verified |
+| 65 | ADD-20 Hospital Logistics Coordination Room | Clinical Logistics Coordination Room (`R-WMR-1-150`) | Westmere Health and Research Center, floor 1 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 10 | 8.8 × 7.4 × 3 | wallboards, uptime and role-scoped data | accepted · 82 of 82 tests verified |
 
 ### Education
 
@@ -93,11 +93,11 @@ Only the six buildings of the Northstar Innovation Campus are on the campus map.
 
 | Row | Roster | Room | Where | Designed as | Seats | Size (m) | Shows | Record today |
 |---|---|---|---|---|---:|---|---|---|
-| 71 | ADD-26 Warehouse Dispatch Operations Center | Warehouse Dispatch Operations Center (`R-MBK-1-110`) | Millbrook Distribution Centre, floor 1 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 10 | 9.6 × 7.6 × 3.6 | ruggedized displays, network dependency | accepted · 81 of 81 tests verified · 1 open issue |
+| 71 | ADD-26 Warehouse Dispatch Operations Center | Warehouse Dispatch Operations Center (`R-MBK-1-110`) | Millbrook Distribution Center, floor 1 | Operations Control Tower (no control-tower template in the catalogue: designed from the boardroom template) | 10 | 9.6 × 7.6 × 3.6 | ruggedized displays, network dependency | accepted · 81 of 81 tests verified · 1 open issue |
 | 72 | ADD-27 Manufacturing Supervisory Control Room | Manufacturing Supervisory Control Room (`R-FRG-1-410`) | Forge Manufacturing, floor 1 | Control Room (no control-room template in the catalogue: designed from the studio template) | 8 | 8.6 × 6.8 × 3.2 | operator consoles, safe access controls | accepted · 66 of 66 tests verified |
 | 73 | ADD-28 Industrial Quality Review Suite | Industrial Quality Review Suite (`R-FRG-2-420`) | Forge Manufacturing, floor 2 | Plant Collaboration (no plant template in the catalogue: designed from the medium conference template) | 8 | 7.4 × 6.2 × 3 | high-resolution inspection and capture | accepted · 76 of 76 tests verified |
 | 74 | ADD-29 Factory Safety Training Facility | Factory Safety Training Facility (`R-FRG-1-430`) | Forge Manufacturing, floor 1 | Training Room | 24 | 11.8 × 9.6 × 3.4 | simulation, SIGNAL and verified training | accepted · 81 of 81 tests verified |
-| 75 | ADD-30 Supply-Chain Visualization Wall | Supply-Chain Visualization Wall (`R-MBK-1-120`) | Millbrook Distribution Centre, floor 1 | Video Tower (no video-tower template in the catalogue: designed from the studio template) | 10 | 10.8 × 6.4 × 3.8 | huge display matrices and data sources | accepted · 66 of 66 tests verified |
+| 75 | ADD-30 Supply-Chain Visualization Wall | Supply-Chain Visualization Wall (`R-MBK-1-120`) | Millbrook Distribution Center, floor 1 | Video Tower (no video-tower template in the catalogue: designed from the studio template) | 10 | 10.8 × 6.4 × 3.8 | huge display matrices and data sources | accepted · 66 of 66 tests verified |
 
 ### Civic and hospitality
 

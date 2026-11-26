@@ -49,7 +49,7 @@ export interface Question { id: string; q: string; options: readonly string[]; a
 export const CHECK: readonly Question[] = [
   { id: 'q-report', q: 'A colleague tells you the display in a room is black. What do you do first?', answer: 1, why: 'A report from the room, in plain words, is the champion’s part. The cabinet and the settings belong to the people who answer for them.',
     options: ['Open the cabinet and push the cables back in', 'Report it from the room, saying what you see', 'Change the input settings until a picture appears'] },
-  { id: 'q-access', q: 'You confirmed access for a visit. An hour later the room is taken for an all-day event. What now?', answer: 2, why: 'Your confirmation is your word to the technician. When it stops being true, the job is where to say so; confirming never moved or cancelled anything by itself.',
+  { id: 'q-access', q: 'You confirmed access for a visit. An hour later the room is taken for an all-day event. What now?', answer: 2, why: 'Your confirmation is your word to the technician. When it stops being true, the job is where to say so; confirming never moved or canceled anything by itself.',
     options: ['Nothing: the confirmation is already recorded', 'Cancel the job yourself', 'Say so on the job, so the service manager can plan again'] },
   { id: 'q-match', q: 'The door label says 4.218. The record calls the same room 4.216. What do you record?', answer: 0, why: 'A check that does not match is as useful as one that does, as long as it says what differs. The record is corrected by its owners.',
     options: ['What does not match, in the note of the check', '“Details match”: it is clearly the same room', 'Nothing, and change the door label'] },

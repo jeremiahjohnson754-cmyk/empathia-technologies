@@ -44,8 +44,8 @@ export default function ScouterPage({ role, params, query }: PageProps) {
     <section className="scouter" aria-labelledby="scouter-h">
       <p className="kicker product-kicker" data-product="lite"><a href="#/v25/build">Lite</a> · Scouter</p>
       <h1 id="scouter-h">Does this device suit this room?</h1>
-      <p className="lead">Ask Scouter before anyone buys. Each of the catalogue’s nine device classes is checked against the room’s own requirement — not against each other — and every check says where its figure comes from and whether it is published or modelled.</p>
-      <p className="ui-meta">Acting as {ROLES[role].label}. Synthetic rooms; this build’s device catalogue.</p>
+      <p className="lead">Ask Scouter before anyone buys. Each of the catalog’s nine device classes is checked against the room’s own requirement — not against each other — and every check says where its figure comes from and whether it is published or modeled.</p>
+      <p className="ui-meta">Acting as {ROLES[role].label}. Synthetic rooms; this build’s device catalog.</p>
       <p><a className="ui-btn ui-btn--quiet" href="#/scouter/anatomy" data-testid="scouter-anatomy">Anatomy: open a device class into its blocks</a></p>
       <label className="scouter__field">Room
         <select value={room.key} onChange={(e) => { location.hash = href(undefined, e.target.value); }}>{ROOMS.map((r) => <option key={r.key} value={r.key}>{r.label}</option>)}</select>
@@ -60,7 +60,7 @@ export default function ScouterPage({ role, params, query }: PageProps) {
               <span className="scouter__tags"><Tag tone={VERDICT[e.verdict].tone}>{VERDICT[e.verdict].label}</Tag></span>
               <p className="scouter__why">{e.verdict === 'NOT_REQUIRED' ? e.checks[0]!.detail : fail ? `${fail.label}: ${fail.detail}` : e.condition || `All ${e.checks.length} checks pass.`}</p>
             </div>
-            <div className="scouter__score"><b>{e.checks.filter((c) => c.pass).length}/{e.checks.length}</b><span>checks · {e.checks.filter((c) => c.basis === 'MODELED').length} modelled</span></div>
+            <div className="scouter__score"><b>{e.checks.filter((c) => c.pass).length}/{e.checks.length}</b><span>checks · {e.checks.filter((c) => c.basis === 'MODELED').length} modeled</span></div>
           </li>); })}
       </ol>
       {open && <Detail e={open} roomLabel={room.label} proposed={mine.some((m) => m.key === open.key)} onPropose={() => propose(open)} closeHref={href()} />}

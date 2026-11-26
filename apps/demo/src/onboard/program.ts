@@ -44,7 +44,7 @@ export interface Item {
 export const ITEMS: readonly Item[] = [
   // ------------------------------------------------------------------ before day one: the manager's part
   { id: 'pre-start', phase: 'pre', topic: 'orientation', kind: 'do', owner: 'manager', confirm: 'manager', title: 'Confirm the start date, the site and the working hours', why: 'The first message a new starter gets should answer where, when and who meets them.' },
-  { id: 'pre-access', phase: 'pre', topic: 'identity-access', kind: 'do', owner: 'manager', confirm: 'manager', title: 'Ask for accounts and access, and confirm they are ready', why: 'A first day spent waiting for an account teaches the wrong thing about the organisation.', needs: 'access',
+  { id: 'pre-access', phase: 'pre', topic: 'identity-access', kind: 'do', owner: 'manager', confirm: 'manager', title: 'Ask for accounts and access, and confirm they are ready', why: 'A first day spent waiting for an account teaches the wrong thing about the organization.', needs: 'access',
     rubric: ['Each request names the person, the role and the least access that role needs', 'Ready means tested by someone, not merely approved'] },
   { id: 'pre-kit', phase: 'pre', topic: 'workplace-ops', kind: 'do', owner: 'manager', confirm: 'manager', title: 'Assign equipment and a place to work', why: 'Equipment that arrives in week two is a week of borrowing.', needs: 'equipment' },
   { id: 'pre-mentor', phase: 'pre', topic: 'stakeholders', kind: 'do', owner: 'manager', confirm: 'manager', title: 'Name a mentor and put the first-week meetings in the calendar', why: 'A mentor chosen before day one has time to prepare.', place: 'people-mentor' },
@@ -62,7 +62,7 @@ export const ITEMS: readonly Item[] = [
   { id: 'w1-room', phase: 'week1', topic: 'avuc', kind: 'learn', confirm: 'check', check: 'room', title: 'How a meeting room works: display, camera, microphones, processor, control', why: 'Faults make sense once you know what each part is for.', place: 'room-guide' },
   { id: 'w1-tools', phase: 'week1', topic: 'systems-tools', kind: 'learn', confirm: 'self', title: 'The systems and tools you will use, and what each is for', why: 'One tool for the record, one for talking, one for monitoring: know which is which.', needs: 'software' },
   { id: 'w1-shadow', phase: 'week1', topic: 'troubleshooting', kind: 'exercise', owner: 'mentor', confirm: 'mentor', title: 'Shadow a visit: your mentor shows a first-response check in a room', why: 'Watch the order someone experienced works in before forming your own.',
-    rubric: ['The mentor says what they are checking and why, as they go', 'The starter can repeat the order of the check afterwards'] },
+    rubric: ['The mentor says what they are checking and why, as they go', 'The starter can repeat the order of the check afterward'] },
   { id: 'w1-network', phase: 'week1', topic: 'network', kind: 'learn', confirm: 'check', check: 'network', title: 'Network fundamentals for rooms: addresses, switch ports, and what “offline” can mean', why: '“Offline” is a symptom with several causes, and only some are yours to fix.' },
   { id: 'w1-records', phase: 'week1', topic: 'documentation', kind: 'learn', confirm: 'self', title: 'Where things are written down: the room’s record, its guide, and its commissioning documents', why: 'The answer is often already written; know where to look first.', place: 'documentation' },
   { id: 'w1-escalate', phase: 'week1', topic: 'escalation', kind: 'learn', confirm: 'check', check: 'escalation', title: 'Escalation: when to hand on, to whom, and what to write', why: 'A good hand-on saves the next person from starting again.', place: 'people-site' },
@@ -72,13 +72,13 @@ export const ITEMS: readonly Item[] = [
   { id: 'm1-job', phase: 'month1', topic: 'troubleshooting', kind: 'exercise', confirm: 'mentor', title: 'Take a job from assignment to restored, with your mentor watching', why: 'The first one done properly sets the pattern for the rest.',
     rubric: ['Read the job and the room’s record before going', 'Said what was seen before saying what was wrong', 'Wrote what was done so that someone else could repeat it', 'Checked with the person affected before calling it restored'] },
   { id: 'm1-talk', phase: 'month1', topic: 'communication', kind: 'learn', confirm: 'check', check: 'communication', title: 'Communication: what to say to the person in the room, and what to write on the job', why: 'People forgive a fault sooner than they forgive not being told.' },
-  { id: 'm1-standards', phase: 'month1', topic: 'standards', kind: 'learn', confirm: 'self', title: 'Engineering standards: what a standard is, where this organisation keeps its own, and what an exception needs', why: 'A standard is why two rooms behave the same; an exception is a decision someone signed.', place: 'knowledge', needs: 'standards' },
+  { id: 'm1-standards', phase: 'month1', topic: 'standards', kind: 'learn', confirm: 'self', title: 'Engineering standards: what a standard is, where this organization keeps its own, and what an exception needs', why: 'A standard is why two rooms behave the same; an exception is a decision someone signed.', place: 'knowledge', needs: 'standards' },
   { id: 'm1-vendors', phase: 'month1', topic: 'vendors', kind: 'learn', confirm: 'self', title: 'Vendors: who supports what at your site, and how a vendor visit is arranged', why: 'Some repairs are someone else’s under an agreement; doing them yourself can void it.', needs: 'vendors' },
   { id: 'm1-writeup', phase: 'month1', topic: 'documentation', kind: 'do', confirm: 'self', title: 'Write up one fix so the next person can use it', why: 'What you learned this month is worth more written down than remembered.', place: 'learn',
     rubric: ['Names the symptom as a user would describe it', 'Says what was checked, in order, and what was found', 'Contains no password, no personal detail and nothing that identifies a person'] },
   { id: 'm1-review', phase: 'month1', topic: 'development', kind: 'review', owner: 'manager', confirm: 'manager', title: 'Thirty-day review', why: 'Compare the month with what was agreed on day one, and agree the next thirty days.' },
   // ------------------------------------------------------------------ by day 60
-  { id: 's1-alone', phase: 'day60', topic: 'troubleshooting', kind: 'exercise', confirm: 'mentor', title: 'Handle a job alone; your mentor reads the record afterwards', why: 'Independence is shown by the record, not claimed.',
+  { id: 's1-alone', phase: 'day60', topic: 'troubleshooting', kind: 'exercise', confirm: 'mentor', title: 'Handle a job alone; your mentor reads the record afterward', why: 'Independence is shown by the record, not claimed.',
     rubric: ['The record alone tells the mentor what happened', 'Anything outside the role was handed on, with what had been tried'] },
   { id: 's1-people', phase: 'day60', topic: 'stakeholders', kind: 'learn', confirm: 'self', title: 'Stakeholders: who feels a room’s failure most, and how to keep them told', why: 'The person who booked the room and the person who presents in it are rarely the one who reports the fault.' },
   { id: 's1-ready', phase: 'day60', topic: 'avuc', kind: 'do', confirm: 'self', title: 'Check a room is ready before an important meeting', why: 'Ten minutes before is when a fault costs nothing.', place: 'control' },
@@ -87,7 +87,7 @@ export const ITEMS: readonly Item[] = [
   // ------------------------------------------------------------------ by day 90
   { id: 'n1-teach', phase: 'day90', topic: 'communication', kind: 'exercise', confirm: 'mentor', title: 'Show someone else: take a newer colleague or the site champion through one check', why: 'Explaining a check is the proof of understanding it.',
     rubric: ['Explained what each step is for, not only what to press', 'Said where the check stops and a report begins'] },
-  { id: 'n1-certs', phase: 'day90', topic: 'certification', kind: 'learn', confirm: 'self', title: 'Certification pathways: what the organisation asks of your role, and what is optional', why: 'Know which learning is required, which is supported, and which is your own choice.', needs: 'training' },
+  { id: 'n1-certs', phase: 'day90', topic: 'certification', kind: 'learn', confirm: 'self', title: 'Certification pathways: what the organization asks of your role, and what is optional', why: 'Know which learning is required, which is supported, and which is your own choice.', needs: 'training' },
   { id: 'n1-review', phase: 'day90', topic: 'development', kind: 'review', owner: 'manager', confirm: 'manager', title: 'Ninety-day review', why: 'Independent in the core of the role? Agree what the next quarter is for.' },
 ];
 export const itemById = (id: string): Item | null => ITEMS.find((i) => i.id === id) || null;
@@ -99,7 +99,7 @@ export interface Check { id: string; title: string; questions: readonly Question
 export const CHECKS: readonly Check[] = [
   { id: 'security', title: 'Security basics', questions: [
     { q: 'A senior colleague phones and asks you to read out a one-time sign-in code so they can “get in quickly”. What do you do?', answer: 2, why: 'A sign-in code is for the person it was sent to. Nobody in support needs yours, and a request that leans on seniority and hurry is how these attacks are made.',
-      options: ['Read it out: they are senior', 'Send it by message instead, so there is a record', 'Decline, and report the request the way your organisation asks you to'] },
+      options: ['Read it out: they are senior', 'Send it by message instead, so there is a record', 'Decline, and report the request the way your organization asks you to'] },
     { q: 'You find a password written on a note stuck to a room’s equipment. What is the right first step?', answer: 0, why: 'A credential in plain sight is exposed whether or not anyone has used it. It is reported so that it can be changed; removing the note alone leaves the same password in place.',
       options: ['Report it, so the credential is changed', 'Take the note away and say nothing', 'Use it to check that it still works'] },
   ] },
@@ -110,7 +110,7 @@ export const CHECKS: readonly Check[] = [
       options: ['Recording it, with the room and what they saw', 'Fixing it straight away', 'Remembering to mention it at the next meeting'] },
   ] },
   { id: 'room', title: 'How a meeting room works', questions: [
-    { q: 'People in the room can hear the far end, but the far end cannot hear the room. Which part of the room is the first to look at?', answer: 1, why: 'Sound travelling out starts at the microphones and their mute state. The loudspeakers are working: the room hears the far end.',
+    { q: 'People in the room can hear the far end, but the far end cannot hear the room. Which part of the room is the first to look at?', answer: 1, why: 'Sound traveling out starts at the microphones and their mute state. The loudspeakers are working: the room hears the far end.',
       options: ['The loudspeakers', 'The microphones, and whether the room is muted', 'The display'] },
     { q: 'What does a room’s touch panel do?', answer: 2, why: 'The panel asks; other equipment does the work. A panel that responds does not prove the equipment behind it did.',
       options: ['It produces the picture and the sound', 'It stores the meeting', 'It sends requests to the equipment that does the work'] },
@@ -161,7 +161,7 @@ export const EDITIONS: Readonly<Record<Edition, { title: string; forWhom: string
   employee: { title: 'Employee edition', forWhom: 'The new starter', holds: 'What to learn, whom to meet, what to do, and how to succeed.' },
   manager: { title: 'Manager edition', forWhom: 'The starter’s manager', holds: 'Milestones, approvals, access readiness, assignment expectations, and progress.' },
   mentor: { title: 'Mentor edition', forWhom: 'The starter’s mentor', holds: 'Coaching plans, demonstrations, technical exercises, and feedback.' },
-  administrator: { title: 'Administrator edition', forWhom: 'The person who publishes the guide for the organisation', holds: 'Tenant-specific publishing, version control, localization, and reporting.' },
+  administrator: { title: 'Administrator edition', forWhom: 'The person who publishes the guide for the organization', holds: 'Tenant-specific publishing, version control, localization, and reporting.' },
 };
 /** The mentor's plan: what to show, watch and say, by phase. Derived from the items a mentor confirms. */
 export const mentorItems = (): Item[] => ITEMS.filter((i) => i.confirm === 'mentor');

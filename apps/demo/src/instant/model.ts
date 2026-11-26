@@ -30,7 +30,7 @@ export interface Shot {
 export const SHOTS: readonly Shot[] = [
   { id: 'front', title: 'The front wall', say: 'Stand near the entrance and capture the full front wall.', covers: ['front'], kind: 'wide', scopes: ['room', 'front'], required: ['room', 'front'] },
   { id: 'table', title: 'The table and the display wall', say: 'Capture the conference table and display wall.', covers: ['front'], kind: 'wide', scopes: ['room', 'front'], required: ['front'] },
-  { id: 'corner', title: 'From the opposite corner', say: 'Move to the opposite corner. Capture the room looking back towards the entrance.', covers: ['rear'], kind: 'wide', scopes: ['room'], required: ['room'] },
+  { id: 'corner', title: 'From the opposite corner', say: 'Move to the opposite corner. Capture the room looking back toward the entrance.', covers: ['rear'], kind: 'wide', scopes: ['room'], required: ['room'] },
   { id: 'left', title: 'The left wall', say: 'Stand by the right wall and capture the whole left wall.', covers: ['left'], kind: 'wide', scopes: ['room'], required: ['room'] },
   { id: 'right', title: 'The right wall', say: 'Stand by the left wall and capture the whole right wall.', covers: ['right'], kind: 'wide', scopes: ['room'], required: ['room'] },
   { id: 'ceiling', title: 'The ceiling over the table', say: 'Stand at the end of the table and capture the ceiling above it: microphones, loudspeakers, anything hanging.', covers: ['ceiling'], kind: 'wide', scopes: ['room'], required: ['room'] },
@@ -87,8 +87,8 @@ export const emptyCapture = (roomId: string | null, name: string): Capture => ({
 
 export function readDim(value: string, how: unknown, which: 'width' | 'length' | 'height'): { ok: Dim } | { why: string } {
   const m = Number(String(value).trim().replace(',', '.')); const [lo, hi] = which === 'height' ? [2, 15] : [1.5, 80];
-  if (!String(value).trim() || !Number.isFinite(m)) return { why: `Give the ${which} in metres, as a number.` };
-  if (m < lo || m > hi) return { why: `A ${which} of ${m} m is outside what a room can be (${lo} to ${hi} m). Check the unit: metres, not feet or centimetres.` };
+  if (!String(value).trim() || !Number.isFinite(m)) return { why: `Give the ${which} in meters, as a number.` };
+  if (m < lo || m > hi) return { why: `A ${which} of ${m} m is outside what a room can be (${lo} to ${hi} m). Check the unit: meters, not feet or centimeters.` };
   if (how !== 'measured' && how !== 'paced' && how !== 'estimated') return { why: `Say how the ${which} was found: measured, paced or estimated.` };
   return { ok: { m: Math.round(m * 100) / 100, how } };
 }

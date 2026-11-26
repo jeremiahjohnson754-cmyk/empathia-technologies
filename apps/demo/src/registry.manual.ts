@@ -11,7 +11,7 @@ import { MAN_ROLES } from './manual/roles.js';
 const WHY = 'Founder, 11 November 2026, §08 Product C: a governed technical reference with standards-aware workflows';
 export const MANUAL_PAGES: readonly PageDef[] = [
   {
-    id: 'manual', title: 'AV Engineering Standards & Design Manual', purpose: 'The engineering rules a room is designed, built and accepted by; your organisation’s edition of them; one room’s requirements and commissioning template; exceptions and the evidence kept against each', product: 'learn',
+    id: 'manual', title: 'AV Engineering Standards & Design Manual', purpose: 'The engineering rules a room is designed, built and accepted by; your organization’s edition of them; one room’s requirements and commissioning template; exceptions and the evidence kept against each', product: 'learn',
     path: '/manual', alias: ['/manual/:view', '/manual/:view/:id'], authority: { roles: MAN_ROLES.read, why: `${WHY}; read by the roles V2.5.3 admits to Learn and by the project manager who holds suppliers to it` },
     actions: [
       { id: 'manual.set', label: 'Save a room’s design requirements and commissioning template', authority: { action: 'build.design' } },

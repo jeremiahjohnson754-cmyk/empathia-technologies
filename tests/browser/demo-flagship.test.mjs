@@ -165,7 +165,7 @@ const linked = S.devices.map((d) => ({ d, n: S.connections.filter((k) => k.from 
 { const v = await open('#/flagship', { role: 'cxeng', sw: false, init: `localStorage.setItem('empathia.demo.sandbox.v1', ${JSON.stringify(JSON.stringify(stored))})` }); const r = v.page;
   await r.route(`${API}/v1/rooms/UNI-SCI-110`, (route) => route.fulfill({ status: 404, contentType: 'application/problem+json', headers: { 'access-control-allow-origin': base.replace(/\/$/, '') }, body: JSON.stringify({ status: 404, code: 'not_found', detail: 'room UNI-SCI-110 was not found in this tenant' }) }));
   await r.reload(); await r.getByTestId('fl-new').waitFor({ timeout: 60000 }); const says = await r.locator('main').innerText();
-  ok('FL-09', 'a sandbox with no such room is explained, with a way to a new one; no room is shown', /opened before the lecture theatre existed on the server/.test(says) && (await r.getByTestId('fl-bar').count()) === 0 && (await r.getByTestId('fl-plan').count()) === 0, says.replace(/\s+/g, ' ').slice(-220));
+  ok('FL-09', 'a sandbox with no such room is explained, with a way to a new one; no room is shown', /opened before the lecture theater existed on the server/.test(says) && (await r.getByTestId('fl-bar').count()) === 0 && (await r.getByTestId('fl-plan').count()) === 0, says.replace(/\s+/g, ' ').slice(-220));
   await v.close(); }
 
 { const m = await open('#/flagship', { role: 'cxeng', sw: false, w: 390, h: 844, init: `localStorage.setItem('empathia.demo.sandbox.v1', ${JSON.stringify(JSON.stringify(stored))})` }); const r = m.page;

@@ -14,7 +14,7 @@ import { hasProgram, REDESIGN_TYPES } from './rooms/programs.js';
 export const LITE_WORLDS = ['university', 'stadium', 'convention'] as const;
 export type LiteWorld = (typeof LITE_WORLDS)[number];
 export const isLiteWorld = (w: string): w is LiteWorld => (LITE_WORLDS as readonly string[]).includes(w);
-export const WORLD_NAME: Record<LiteWorld, string> = { university: 'Kestrel Valley University', stadium: 'Harborlight Stadium', convention: 'The convention centre' };
+export const WORLD_NAME: Record<LiteWorld, string> = { university: 'Kestrel Valley University', stadium: 'Harborlight Stadium', convention: 'The convention center' };
 
 /** the estate's room types, by the V2.5.3 room type whose layout fits them; a type not listed is not furnished */
 const TYPE_ARCH: Record<string, string> = {

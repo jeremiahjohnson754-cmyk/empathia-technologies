@@ -105,7 +105,7 @@ export default function IngestPage({ role, query, can }: PageProps) {
           </div>}
 
           {step === 'authorize' && <div data-testid="ing-authorize">{head('authorize')}
-            <p>What is asked for: <b>read-only access to this one site</b>. Not the whole organisation; nothing can be written or deleted at the source; no mail, chat or people.</p>
+            <p>What is asked for: <b>read-only access to this one site</b>. Not the whole organization; nothing can be written or deleted at the source; no mail, chat or people.</p>
             {s.authorized ? <p data-testid="ing-authorized"><Tag tone="ok">Authorized</Tag> by {s.authorized.by} on {s.authorized.on}.</p> : admin ? <>
               <Field label="Administrator authorizing this" hint="Recorded with the authorization.">{(id, d) => <input id={id} aria-describedby={d} value={authName} maxLength={80} autoComplete="off" onChange={(e) => setAuthName(e.target.value)} data-testid="ing-auth-name" />}</Field>
               <p><Button kind="primary" onClick={() => run({ t: 'authorize', name: authName }, 'scope')} testId="ing-do-authorize">Authorize read access to this site only</Button></p></> : adminOnly}

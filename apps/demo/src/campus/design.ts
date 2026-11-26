@@ -273,7 +273,7 @@ function renameReference(devices: PlannedDevice[]) {
 export const REF_CAMERA_NEW = 'AS-0112';
 const REF_EXCEPTION: NonNullable<RoomRecord['exception']> = {
   id: 'EXC-4218-01', state: 'PENDING_APPROVAL', finding: 'sightline:A-0101 (Medium): the farthest seats sit beyond the planning viewing distance for the display',
-  requirement: 'REQ-DSN-SIGHTLINE-01 — SYNTHETIC requirement of the synthetic organisation’s design standard (MODELED planning ratio 6–8 × image height)',
+  requirement: 'REQ-DSN-SIGHTLINE-01 — SYNTHETIC requirement of the synthetic organization’s design standard (MODELED planning ratio 6–8 × image height)',
   waivability: 'PERMITS_DOCUMENTED_EXCEPTION: an independent reviewer, evidence, rationale, scope, revision binding and an expiry of at most 12 months',
   rationale: 'The two farthest seats are used for note-takers; content is mirrored on the touch panel.', scope: 'seats 13–14 · finding key sightline:A-0101 · position A-0101', revision: 2,
   expiry: iso(DEMO_NOW + 300 * DAY).slice(0, 10), requester: 'designer', reviewer: null,

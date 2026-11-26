@@ -6,7 +6,7 @@
 import type { PageDef } from './registry.types.js';
 import { IR_READERS, IR_ROLES } from './instant/store.js';
 
-const WHY = 'Founder, 11 November 2026, §11: a technician, an employee, a designer or an authorised field engineer captures a space';
+const WHY = 'Founder, 11 November 2026, §11: a technician, an employee, a designer or an authorized field engineer captures a space';
 const ALL = [...new Set([...IR_ROLES, ...IR_READERS])];
 export const INSTANT_PAGES: readonly PageDef[] = [
   {

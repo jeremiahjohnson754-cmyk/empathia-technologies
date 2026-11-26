@@ -46,7 +46,7 @@ test('RH-06 the Executive’s figures are the campus’s own: health, healthy ro
   const s = start('exec'); const c = M.campusStats(w); const funded = PR.programme().funding.reduce((a, f) => a + f.amount, 0);
   const tile = (l) => s.tiles.find((t) => t.label === l);
   assert.equal(tile('Campus health').value, String(c.score)); assert.equal(tile('Rooms healthy').value, String(c.healthy)); assert.equal(tile('Rooms healthy').unit, ` of ${c.rooms}`);
-  assert.equal(tile('Tests verified').value, String(c.verifiedPct)); assert.equal(tile('Funding authorised').value, `$${Math.round(funded / 1000)}k`);
+  assert.equal(tile('Tests verified').value, String(c.verifiedPct)); assert.equal(tile('Funding authorized').value, `$${Math.round(funded / 1000)}k`);
   // 25 Nov 2026 (metric integrity): the summary says the score is an average and names the rooms at risk it would hide ("stands at"
   // read as a verdict on the whole campus while six rooms held a critical issue); the check now also requires that count and the lowest room
   assert.match(s.summary, new RegExp(`averages ${c.score} of 100`)); assert.match(s.summary, /PRJ-NST-TH is approved and not yet funded/);

@@ -60,4 +60,4 @@ export function liteForText(text: string): LiteTry | null {
   }
   return null;
 }
-export const LITE_CAVEAT = 'A modeled campus room in Lite, not the story’s church: the same idea in a different room. Lite shows what the plan and the catalogue predict, never a measurement.';
+export const LITE_CAVEAT = 'A modeled campus room in Lite, not the story’s church: the same idea in a different room. Lite shows what the plan and the catalog predict, never a measurement.';

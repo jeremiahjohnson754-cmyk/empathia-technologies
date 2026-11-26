@@ -29,7 +29,7 @@ export function RoomQrCodes({ roomId, name }: { roomId: string; name: string }) 
   const base = typeof location === 'undefined' ? '' : `${location.origin}${location.pathname}`;
   const codes = useMemo(() => [
     { key: 'public', title: 'Public code', who: 'Employees and room users', where: 'On the door and the table card', text: publicCodeFor(base, roomId), opens: 'Opens this room in the employee and room-user modes only; no other mode is offered from it.' },
-    { key: 'engineering', title: 'Engineering code', who: 'Authorised engineering personnel', where: 'Inside the rack, on the ceiling tile, at the equipment', text: engineeringCodeFor(base, roomId), opens: 'Opens the engineer mode, and only for a role allowed to use it: anyone else is refused. The code itself grants nothing.' },
+    { key: 'engineering', title: 'Engineering code', who: 'Authorized engineering personnel', where: 'Inside the rack, on the ceiling tile, at the equipment', text: engineeringCodeFor(base, roomId), opens: 'Opens the engineer mode, and only for a role allowed to use it: anyone else is refused. The code itself grants nothing.' },
   ], [base, roomId]);
   return (
     <Card title="Room QR codes" sub="Two labels per room: one for everyone who uses it, one for engineering" icon="grid" testId="lite-room-qr">

@@ -41,7 +41,7 @@ export const CHAPTERS: readonly Chapter[] = [
       { heading: 'Without a cable', points: ['Some rooms let you share over the network, from the meeting or from a code shown on the screen. The room’s page says whether this one does.', 'Wireless sharing is fine for slides and documents. For video with sound, a cable is steadier.'] },
       { heading: 'From your own device', points: ['Your own laptop can run the meeting while the room supplies the screen, camera and sound, in rooms that allow it.', 'Mute your laptop’s microphone and loudspeaker when you do this, or the room will echo.'] },
     ],
-    links: [{ label: 'Practise on a room’s panel: a simulation, nothing real changes', href: '#/control/R-ATL-4-218' }],
+    links: [{ label: 'Practice on a room’s panel: a simulation, nothing real changes', href: '#/control/R-ATL-4-218' }],
     yours: 'Whether personal devices may connect to room equipment, and to which network.' },
   { id: 'hybrid', title: 'Hybrid meetings: making it work for the people who are not in the room', summary: 'The room is built for the people in it. The people elsewhere need you to make up the difference.', covers: ['Hybrid meetings', 'Video conferencing etiquette', 'Meeting controls'],
     sections: [
@@ -49,11 +49,11 @@ export const CHAPTERS: readonly Chapter[] = [
       { heading: 'Joining from elsewhere', points: ['Sound matters more than picture. A headset in a quiet place beats a good camera in a café.', 'Mute when you are not speaking; unmute a moment before you start.', 'Light your face from the front. A window behind you makes you a silhouette.'] },
       { heading: 'Running one', points: ['Say at the start how people should ask to speak, and keep to it.', 'If you record, say so before you start and say where the recording will be kept. People may ask not to be recorded.'] },
     ],
-    links: [], yours: 'Your organisation’s rule on recording meetings, and who may see a recording.' },
+    links: [], yours: 'Your organization’s rule on recording meetings, and who may see a recording.' },
   { id: 'help', title: 'When something does not work', summary: 'Three safe things to try, then ask. Asking early is the right call, not a failure.', covers: ['Common troubleshooting', 'How to request assistance', 'Site-specific support', 'QR codes'],
     sections: [
       { heading: 'Three things anyone can try', points: ['Look at the panel. It often says what the room is waiting for: an input, a meeting, a person to press Join.', 'Check the room is not muted and the volume is not at nothing.', 'Reseat the cable at your laptop’s end, and try the other cable if the table has two.'] },
-      { heading: 'Then stop', points: ['Do not open a cabinet, reach behind the screen, unplug the room’s equipment or restart things you did not start. That turns a small fault into a visit.', 'If a meeting is about to start, move to another room first and report this one afterwards.'] },
+      { heading: 'Then stop', points: ['Do not open a cabinet, reach behind the screen, unplug the room’s equipment or restart things you did not start. That turns a small fault into a visit.', 'If a meeting is about to start, move to another room first and report this one afterward.'] },
       { heading: 'Asking for help', points: ['Report it from the room. The label by the door opens this room’s own page on your phone, so the report already knows where you are.', 'Say what you see and hear: “the screen is black and the panel shows a red bar”. That is more use than “it is broken”.', 'You get a number. You do not have to chase it; someone will tell you what happens next.', 'Your site champion knows the rooms and the people who look after them. They are a colleague, not the service desk: start with the report.'] },
     ],
     links: [{ label: 'I am in a room and something is wrong', href: '#/here' }, { label: 'Who knows the rooms at my site', href: '#/people' }],
@@ -67,7 +67,7 @@ export const CHAPTERS: readonly Chapter[] = [
     yours: 'Where visitors sign in, and whether they must be accompanied.' },
   { id: 'accessibility', title: 'Accessibility', summary: 'What rooms offer, and how to ask for what you need.', covers: ['Accessibility features'],
     sections: [
-      { heading: 'In a meeting', points: ['Most meeting applications offer live captions that each person can turn on for themselves; whether yours does is your organisation’s setting. Where a room can show captions on its screen, its page says so.', 'If you use a hearing aid, ask whether the room has a hearing loop. A room’s page lists what it supports, and says when it does not.', 'Share documents before the meeting, not only on the screen: a screen reader cannot read a wall.'] },
+      { heading: 'In a meeting', points: ['Most meeting applications offer live captions that each person can turn on for themselves; whether yours does is your organization’s setting. Where a room can show captions on its screen, its page says so.', 'If you use a hearing aid, ask whether the room has a hearing loop. A room’s page lists what it supports, and says when it does not.', 'Share documents before the meeting, not only on the screen: a screen reader cannot read a wall.'] },
       { heading: 'In the room', points: ['A room’s page says whether the way to it is step-free.', 'Touch panels are usually at table height. If one is out of reach, say so in a report: it is a fault of the room, not of you.'] },
       { heading: 'Asking', points: ['You do not have to explain why you need an adjustment to ask for one.', 'Ask before the meeting when you can. Some things take a day to arrange.'] },
     ],
@@ -93,7 +93,7 @@ export const CHAPTERS: readonly Chapter[] = [
       { heading: 'In Empathia', points: ['A contact action opens the application you chose with the person and the subject filled in. You still press send yourself; opening it has not sent anything.', 'Where a button opens another application, it says so before you press it, and says which one.'] },
     ],
     links: [{ label: 'People, and the ways to reach each', href: '#/people' }],
-    yours: 'Step-by-step instructions for these applications are not written here: they change, and your organisation has its own approved guidance. This is where it would be linked.' },
+    yours: 'Step-by-step instructions for these applications are not written here: they change, and your organization has its own approved guidance. This is where it would be linked.' },
   { id: 'questions', title: 'Common questions', summary: 'The ones the people who look after rooms hear most.', covers: ['Common technical questions'],
     sections: [
       { heading: 'In a room', points: ['“The far end cannot hear us.” The room is muted, or you joined from a laptop whose microphone is the one in use. Check the panel, then the meeting’s own microphone setting.', '“We can hear an echo.” Two devices in the room are in the meeting with their sound on. Mute every laptop.', '“My screen will not show.” Give it ten seconds, reseat the cable at your end, and check your laptop is set to use a second screen.', '“The camera is pointing at the wall.” If the panel offers camera presets, choose the one for the table. If it does not, report it; do not turn the camera by hand.', '“The panel is frozen.” Report it and use another room. Do not unplug it.'] },

@@ -32,7 +32,7 @@ function Index({ room, ids }: { room: string; ids: readonly string[] }) {
   return (
     <section className="sp" data-native="" data-testid="sp-scenarios">
       <header className="room__hero"><p className="kicker">Search Party · scenarios</p><h1>{ids.length === 5 ? 'Five questions' : `${ids.length} question${ids.length === 1 ? '' : 's'}`}, answered from recorded relationships</h1>
-      <p className="room__intent">Each starts from one record of the synthetic campus. Support organisations, agreements, people and competencies are labelled synthetic demonstration fixtures.</p>
+      <p className="room__intent">Each starts from one record of the synthetic campus. Support organizations, agreements, people and competencies are labeled synthetic demonstration fixtures.</p>
       <RoomPick room={room} base="#/search/scenarios" /></header>
       <ol className="sp__scen">{ids.map((id) => { const s = scenario(id, room)!; return <li key={id}><a href={`#/search/scenarios/${id}?room=${room}`} data-testid={`sp-scen-${id}`}><span className="ui-meta">{id}{s.hero ? ` · ${HERO[s.hero]}` : ''}</span><b>{SCENARIO_TITLES[id]}</b><span className="ui-muted">{s.question}</span><span className="ui-meta">{scenarioCount(s)} related records in {s.groups.length} groups</span></a></li>; })}</ol>
     </section>

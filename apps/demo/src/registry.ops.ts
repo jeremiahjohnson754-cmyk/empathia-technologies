@@ -18,10 +18,10 @@ const SERVER_THREAD: PageDef[] = process.env.DEMO_API_URL ? [{
   search: { keywords: 'server backed connected sandbox durable database api thread audit history resume code demonstration session role switch field record', aliases: ['server thread', 'connected demo', 'sandbox'] },
 }, {
   // 50/10 flagship (17 Nov 2026): one university lecture hall carries the engineering demonstration, read from the server
-  id: 'flagship.room', title: 'The flagship room: Lecture Theatre SCI-110', purpose: 'The university lecture hall that carries the engineering demonstration, read from the server: its plan, its devices, its commissioning plan and its thread, as the person you choose. The same page shows any other room of the sandbox', product: 'commissioning',
+  id: 'flagship.room', title: 'The flagship room: Lecture Theater SCI-110', purpose: 'The university lecture hall that carries the engineering demonstration, read from the server: its plan, its devices, its commissioning plan and its thread, as the person you choose. The same page shows any other room of the sandbox', product: 'commissioning',
   path: '/flagship', alias: ['/flagship/:room'], authority: { roles: ['syseng', 'cxeng', 'designer', 'installer', 'service', 'svcmgr', 'ops', 'qa', 'architect', 'exec', 'steward'], why: 'the engineering record of one room on the server: everyone who works on a room or answers for it' },
   load: adapt(() => import('./pages/Flagship.js'), (m, p) => h(m.FlagshipPage, { room: p.params['room'] })),   // #/flagship/CNV-MR-H201: another room of the sandbox, same page
-  search: { keywords: 'flagship lecture theatre hall university UNI-SCI-110 SCI-110 engineering workstation plan devices commissioning plan server', aliases: ['lecture hall', 'flagship room', 'UNI-SCI-110', 'Harbor 201', 'CNV-MR-H201'] },
+  search: { keywords: 'flagship lecture theater hall university UNI-SCI-110 SCI-110 engineering workstation plan devices commissioning plan server', aliases: ['lecture hall', 'flagship room', 'UNI-SCI-110', 'Harbor 201', 'CNV-MR-H201'] },
 }, {
   // OUTSTANDING 1a (18 Nov 2026): the ServiceHands queue worked on the server's records, not the browser's
   id: 'servicehands.queue', title: 'ServiceHands on the server', purpose: 'The sandbox’s work orders and incidents across its rooms, read from the server, each worked one governed step at a time', product: 'servicehands',
@@ -193,7 +193,7 @@ export const OPS_PAGES: readonly PageDef[] = [
   },
   {
     id: 'people.experience', title: 'People intelligence', purpose: 'Who has done the work: the rooms and projects each person touched, and experience by layer and by quarter (evidence, never a credential)', product: 'servicehands',
-    path: '/v25/people', authority: { roles: ['svcmgr', 'ops', 'exec', 'ipm', 'bpm', 'architect', 'syseng', 'cxeng'], why: 'people and their work: the people who dispatch, manage service and programmes, and lead engineering (founder, 14 Nov 2026)' },
+    path: '/v25/people', authority: { roles: ['svcmgr', 'ops', 'exec', 'ipm', 'bpm', 'architect', 'syseng', 'cxeng'], why: 'people and their work: the people who dispatch, manage service and programs, and lead engineering (founder, 14 Nov 2026)' },
     load: adapt(() => import('./pages/People.js'), (m, p) => h(m.PeoplePage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'people technician experience expertise who worked touched project room layer control audio video involvement', aliases: ['who worked on', 'expertise', 'technician experience'] },
   },
@@ -243,7 +243,7 @@ export const OPS_PAGES: readonly PageDef[] = [
   // ---- the operational workspaces (rebuild/demo-ops): each loads its own file (ws/<name>.js) only once the role is admitted
   {
     id: 'servicehands.analytics', title: 'Service analytics', purpose: 'Service by month and quarter, by building and project, and a scorecard that holds each vendor to its agreement', product: 'servicehands',
-    path: '/v25/service/analytics', authority: { roles: ['svcmgr', 'ops', 'exec', 'ipm', 'bpm', 'architect'], why: 'service and vendor performance: the people who manage service, programmes and vendor agreements (founder, 14 Nov 2026)' },
+    path: '/v25/service/analytics', authority: { roles: ['svcmgr', 'ops', 'exec', 'ipm', 'bpm', 'architect'], why: 'service and vendor performance: the people who manage service, programs and vendor agreements (founder, 14 Nov 2026)' },
     load: adapt(() => import('./pages/ServiceAnalytics.js'), (m, p) => h(m.ServiceAnalyticsPage, { perspective: p.role, hash: p.hash })),
     search: { keywords: 'service analytics vendor scorecard sla trend monthly quarterly mttr first time fix accountability', aliases: ['vendor scorecard', 'service analytics', 'sla trend'] },
   },
@@ -280,7 +280,7 @@ export const OPS_PAGES: readonly PageDef[] = [
     path: '/field-tools', alias: ['/field-tools/:tool', '/tools', '/tools/:tool', '/calc', '/calc/:tool'],
     authority: { roles: ROLE_KEYS, why: 'reference arithmetic with no record in it (founder, 18 Nov 2026): every role may use it, and a calculation grants nothing' },
     load: () => import('./fieldtools/FieldTools.js'),
-    search: { keywords: 'field tools calculator calculators throw distance throw ratio lumens contrast screen size viewing distance led wall pixel pitch bandwidth hdmi sdi spl db dbu dbv impedance 70v 100v constant voltage ceiling speaker cable loss delay wavelength rt60 reverberation critical distance pag nag room modes ohms law amps watts circuits voltage drop ups btu bridle wll design factor subnet poe dante aes67 fiber loss budget cat6 100 m lux foot-candles labour crew convert units', aliases: ['field tools', 'calculator', 'calculators', 'tools', 'av calculator', 'subnet calculator', 'throw calculator', 'bandwidth calculator'] },
+    search: { keywords: 'field tools calculator calculators throw distance throw ratio lumens contrast screen size viewing distance led wall pixel pitch bandwidth hdmi sdi spl db dbu dbv impedance 70v 100v constant voltage ceiling speaker cable loss delay wavelength rt60 reverberation critical distance pag nag room modes ohms law amps watts circuits voltage drop ups btu bridle wll design factor subnet poe dante aes67 fiber loss budget cat6 100 m lux foot-candles labor crew convert units', aliases: ['field tools', 'calculator', 'calculators', 'tools', 'av calculator', 'subnet calculator', 'throw calculator', 'bandwidth calculator'] },
   },
   {
     id: 'decisions.desk', title: 'Decision desk', purpose: 'Approve, hold or reject against a scope revision; fund separately', product: 'pro',

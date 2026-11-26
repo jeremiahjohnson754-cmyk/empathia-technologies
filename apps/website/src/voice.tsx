@@ -16,10 +16,10 @@ const PATH = [
   { title: 'UC provider connection', body: 'A provider’s call-quality record, when a licensed connector exists. Without one: not configured.' },
 ];
 const ROLES = [
-  { title: 'UC / Voice administrator', body: 'Reads the configured route beside what was observed for a session, hop by hop, for the sites in their scope. Session tokens and signalling-side detail stay with this role alone.', icon: 'plug' },
-  { title: 'AV operations and engineering', body: 'See the path and which rooms share an uplink before deciding where to look. They do not read signalling-side detail.', icon: 'scope' },
+  { title: 'UC / Voice administrator', body: 'Reads the configured route beside what was observed for a session, hop by hop, for the sites in their scope. Session tokens and signaling-side detail stay with this role alone.', icon: 'plug' },
+  { title: 'AV operations and engineering', body: 'See the path and which rooms share an uplink before deciding where to look. They do not read signaling-side detail.', icon: 'scope' },
   { title: 'Support technician', body: 'Opens the room from the job, reads the path and the samples for their site, and never sees session tokens or directory numbers.', icon: 'service' },
-  { title: 'Executive', body: 'Reads non-identifying summaries: whether calling met the organisation’s own targets, and where evidence is missing.', icon: 'exec' },
+  { title: 'Executive', body: 'Reads non-identifying summaries: whether calling met the organization’s own targets, and where evidence is missing.', icon: 'exec' },
 ];
 const STATUS: { title: string; body: string; meta: React.ReactNode }[] = [
   { title: 'In the demonstration today', body: 'One room’s CallPath on synthetic data: six hops, one simulated session, quality samples with their method, a shared-uplink view, a missing-telemetry case, a stale-data case, a report from the room that becomes a job followed through to independent verification, the network view in FLOW, readiness in MissionProof, and refusals by role and by site.', meta: <Tag s="simulated">Available in the demonstration · simulated</Tag> },
@@ -44,16 +44,16 @@ export const voicePage = (demoUrl: string) => {
         <Section id="quality" tone="warm" title="A quality figure comes with its method, or it is not shown" lead="Loss, jitter and delay are shown with their window, unit and source. An estimated listening score appears only when its inputs and a documented method support it; a missing input, an unsupported codec or a stale sample gets no estimate.">
           <Cards cols={3} items={[
             { title: 'Measurements first', body: 'Loss, jitter and delay lead. The demonstration also shows an experimental estimate from the published ITU-T G.107 E-model in a reduced form; it is an engineering-review implementation, not independently validated, and it decides nothing.' },
-            { title: 'Your targets, not ours', body: 'Samples are compared with the calling targets your organisation declares. VOICE sets none of its own.' },
+            { title: 'Your targets, not ours', body: 'Samples are compared with the calling targets your organization declares. VOICE sets none of its own.' },
             { title: 'Missing is not healthy', body: 'A provider that sends nothing, a timeout or an old sample reads as unknown, and stays unknown everywhere downstream.' },
           ]} />
         </Section>
         <Section id="connected" title="One room, the same records" lead="A calling problem is rarely only a calling problem. VOICE reads the same room, device and network records as the rest of Empathia, so the path from a report to a fix stays in one place.">
           <Cards cols={3} items={[
             { title: 'From the room', body: 'Someone in the room reports the problem from their phone. They get a receipt and follow their own report; they never see how calls are routed.' },
-            { title: 'To the network', body: 'The uplink a room shares with its neighbours is the platform’s own network record, so three rooms with one cause read as one problem.' },
+            { title: 'To the network', body: 'The uplink a room shares with its neighbors is the platform’s own network record, so three rooms with one cause read as one problem.' },
             { title: 'To a hypothesis', body: 'What the evidence suggests is recorded as a hypothesis with its citations and its unknowns, never as a root cause.' },
-            { title: 'To a job', body: 'The report is a ServiceHands job with the room attached, assigned to someone authorised for that site.' },
+            { title: 'To a job', body: 'The report is a ServiceHands job with the room attached, assigned to someone authorized for that site.' },
             { title: 'To proof', body: 'Closing a job does not pass an acceptance test. Only reviewed evidence changes what Assurance says about the room.' },
             { title: 'To the event', body: 'Readiness for a town hall moves when its calling path does, and only on verified repair plus later evidence. In the demonstration this is simulated.' },
           ]} />
@@ -64,7 +64,7 @@ export const voicePage = (demoUrl: string) => {
         <Section id="privacy" title="Privacy and safety, stated as limits" lead="VOICE works from call and endpoint metadata. These are limits of the product, not settings.">
           <ul className="ticks" data-voice-never>
             <li>No call recording, transcription or listening by default. Session identities are pseudonymous tokens.</li>
-            <li>Directory numbers and personal contact details are redacted unless a role is authorised to read them.</li>
+            <li>Directory numbers and personal contact details are redacted unless a role is authorized to read them.</li>
             <li>No test call to an emergency number, ever. Emergency-location records are a configuration audit aid, not a compliance certificate.</li>
             <li>No command to a provider or a device without a verified capability and an approval. Reading comes first.</li>
           </ul>

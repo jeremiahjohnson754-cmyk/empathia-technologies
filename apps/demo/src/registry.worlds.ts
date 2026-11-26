@@ -15,10 +15,10 @@ const OPEN = { roles: ROLE_KEYS, why: 'the world-first entry (v1.8 ADR-022): a p
 export const WORLD_PAGES: readonly PageDef[] = [
   {
     // task #181 (founder, 17 Nov 2026 10:20): Expo LIVE, the first slice of the convention experience
-    id: 'play.expo', title: 'Expo LIVE', purpose: 'The Northlight Technology Expo in 3D with its plan: twenty exhibitors and the Empathia showcase, sessions with polls and moderated questions, an agenda, details left only with consent, and the organiser’s modeled footfall', product: 'shell',
+    id: 'play.expo', title: 'Expo LIVE', purpose: 'The Northlight Technology Expo in 3D with its plan: twenty exhibitors and the Empathia showcase, sessions with polls and moderated questions, an agenda, details left only with consent, and the organizer’s modeled footfall', product: 'shell',
     path: '/play/expo', alias: ['/expo/live', '/worlds/convention/live'], authority: OPEN,
     load: () => import('./play/ExpoLive.js'),
-    search: { keywords: 'expo convention hall booth exhibitor session poll question agenda consent footfall organiser 3d', aliases: ['expo live', 'convention live', 'northlight expo'] },
+    search: { keywords: 'expo convention hall booth exhibitor session poll question agenda consent footfall organizer 3d', aliases: ['expo live', 'convention live', 'northlight expo'] },
   },
   {
     // task #182 (founder, 17 Nov 2026 10:20 and 13:40): Stadium LIVE, the bowl in 3D with the LIVE console
@@ -76,9 +76,9 @@ export const WORLD_PAGES: readonly PageDef[] = [
     search: { keywords: 'mix stream church sound console 32 channel mixer faders eq compressor reverb delay feedback ring out wedges subs line array delay towers lufs boss lab basement mega church', aliases: ['mix the stream', 'mixing lab', 'sound lab'] },
   },
   {
-    id: 'labs.light', title: 'Light the Stage', purpose: 'SIGNAL’s lighting flagship lab: hang, patch (DMX), aim, zoom, colour and level fixtures for a sermon and a worship set', product: 'learn',
+    id: 'labs.light', title: 'Light the Stage', purpose: 'SIGNAL’s lighting flagship lab: hang, patch (DMX), aim, zoom, color and level fixtures for a sermon and a worship set', product: 'learn',
     path: '/labs/light', authority: OPEN, load: () => import('./mixlab/LightLab.js'),
-    search: { keywords: 'lighting lab dmx patch address universe fixture profile fresnel par moving head batten beam angle lux key fill back light colour temperature kelvin spill screen', aliases: ['light the stage', 'lighting lab'] },
+    search: { keywords: 'lighting lab dmx patch address universe fixture profile fresnel par moving head batten beam angle lux key fill back light color temperature kelvin spill screen', aliases: ['light the stage', 'lighting lab'] },
   },
   {
     id: 'labs.video', title: 'Shoot the Service', purpose: 'SIGNAL’s video flagship lab: two cameras, an LED wall, a switcher and lip-sync for the stream', product: 'learn',

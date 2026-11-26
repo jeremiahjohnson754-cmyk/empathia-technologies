@@ -432,7 +432,7 @@ const PHYS = {
     check: function (m, st, L) {
       if (m.r.blocked) return { ok: false, why: [m.r.blocked] };
       if (!m.reach) return { ok: false, why: [m.f.name + ' reaches only ' + m.f.reach + ' m at this speed; this route is ' + m.r.m + ' m.'] };
-      if (m.margin < L.needMargin) return { ok: false, why: ['Margin is ' + round(m.margin, 2) + ' dB; the spec asks for at least ' + L.needMargin + ' dB (for ageing, repairs and dirty connectors).'] };
+      if (m.margin < L.needMargin) return { ok: false, why: ['Margin is ' + round(m.margin, 2) + ' dB; the spec asks for at least ' + L.needMargin + ' dB (for aging, repairs and dirty connectors).'] };
       return { ok: true, why: [], notes: [round(m.loss, 2) + ' dB of loss against a ' + m.f.budget + ' dB budget leaves ' + round(m.margin, 2) + ' dB — the route the drawings promised.'] };
     },
     draw: function (ctx, m, st, L, t) {

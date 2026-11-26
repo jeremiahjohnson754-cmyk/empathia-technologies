@@ -37,8 +37,8 @@ function RoleArt({ k }: { k: string }) {
 
 const SCENARIOS = [
   ['If this switch fails, what is affected?', 'Nobody can say what a failing device takes down. Search Party shows the room, the switch, its uplink, the rooms that share it and the power behind it, each with its freshness.', 'graph'],
-  ['Field Intelligence: what the collector declares', 'Monitoring tools report what a configuration file says, not what is true. Every observation is labelled declared, observed, verified, modeled, unknown or unavailable.', 'search'],
-  ['Room optimisation in Lite', 'Rooms are changed on a hunch. Lite states a prediction with its uncertainty and never calls a scenario a measurement.', 'cube'],
+  ['Field Intelligence: what the collector declares', 'Monitoring tools report what a configuration file says, not what is true. Every observation is labeled declared, observed, verified, modeled, unknown or unavailable.', 'search'],
+  ['Room optimization in Lite', 'Rooms are changed on a hunch. Lite states a prediction with its uncertainty and never calls a scenario a measurement.', 'cube'],
   ['Commissioning and governance', 'Rooms are accepted without proof. An adaptive plan states why each test applies, and an approval is refused in front of you with every unresolved item named.', 'check'],
   ['Incident → service → retest → closure', 'Repairs close on a technician\'s word. Hard gates before dispatch, evidence in the field, independent verification, and the baseline that decides whether it is fixed.', 'device'],
   ['Learn', 'Lessons stay in people\'s heads. Reviewed cases are written from what actually happened, with permission and de-identification, and training never grants authority.', 'people'],
@@ -70,7 +70,7 @@ export default function Landing({ role }: PageProps) {
         <p className="lead lnd__tag">Every room has a story. Every system has a history. Every decision has consequences.</p>
         <Ask />
         </div>
-        <figure className="lnd__art stage" data-stage="" aria-label="The living campus in 3D"><CampusMap tiles={tiles} onOpen={(b) => { location.hash = `#/campus/${b.key}`; }} /><figcaption className="stage__cap">The living campus: six buildings, each tinted by its modelled health. Select one to go inside.</figcaption></figure>
+        <figure className="lnd__art stage" data-stage="" aria-label="The living campus in 3D"><CampusMap tiles={tiles} onOpen={(b) => { location.hash = `#/campus/${b.key}`; }} /><figcaption className="stage__cap">The living campus: six buildings, each tinted by its modeled health. Select one to go inside.</figcaption></figure>
         </div>
         <First role={role} />
         <Worlds3d />
@@ -83,7 +83,7 @@ export default function Landing({ role }: PageProps) {
           <a className="go" href="#problems"><span className="go__ic" aria-hidden="true"><Icon name="check" size={22} /></span><b>What each workflow solves</b><span>The customer problem behind each scenario</span></a>
         </div>
         <a className="lnd__worlds" href="#/worlds" data-testid="worlds-entry"><b>Choose a world</b><span>Enterprise, Stadium, University or Convention: a handful of everyday journeys each, in 2D first</span></a>
-        <ul className="lnd__facts" aria-label="This edition"><li><Chip tone="accent">Offline · self-contained</Chip></li><li><Chip tone="warn">Synthetic data</Chip></li><li><Chip tone="muted">No request leaves the page</Chip></li><li><Chip tone="muted">A demonstration of authorisation, not security</Chip></li></ul>
+        <ul className="lnd__facts" aria-label="This edition"><li><Chip tone="accent">Offline · self-contained</Chip></li><li><Chip tone="warn">Synthetic data</Chip></li><li><Chip tone="muted">No request leaves the page</Chip></li><li><Chip tone="muted">A demonstration of authorization, not security</Chip></li></ul>
       </section>
 
       <section className="lnd__now" aria-labelledby="now-h" data-testid="landing-now">
@@ -114,7 +114,7 @@ export default function Landing({ role }: PageProps) {
       <section className="status lnd__disc">
         <h2>Disclosures and coverage</h2>
         <ul className="lnd__dl">
-          <li>Every person, organisation, room, device, figure and approval is synthetic; no customer data is present.</li>
+          <li>Every person, organization, room, device, figure and approval is synthetic; no customer data is present.</li>
           <li>Roles, personas and permissions are a front-end demonstration of a policy, never production security.</li>
           <li>No device, network or acoustic measurement is taken by this page; every health score is modeled from the records.</li>
           <li>This demonstration is built as modular pages from the Living Campus V2.5.3 source. {AREAS.filter((a) => NATIVE.has(a.key)).length} of {AREAS.length} address areas land on a native page; <a href="#/parity">the map of every original address</a> is computed from the page registry, never typed.</li>
@@ -167,7 +167,7 @@ function First({ role }: { role: RoleKey }) {
 const WORLDS_3D: readonly { key: string; world: string; title: string; line: string; href: string; img: string; alt: string }[] = [
   { key: 'stadium', world: 'Stadium', title: 'Stadium LIVE', line: 'Harborlight Stadium under the lights: run the bowl from the LIVE console', href: '#/play/stadium', img: 'exp-stadium', alt: 'Harborlight Stadium in 3D at night, with the LIVE console' },
   { key: 'university', world: 'University', title: 'Campus Life', line: 'Walk the Quad, meet Professor Calder, fix the circuit bench in SCI-110', href: '#/play/campus', img: 'exp-campus', alt: 'The Quad of Kestrel Valley University in 3D' },
-  { key: 'convention', world: 'Convention', title: 'Expo LIVE', line: 'Hall A of the Larkspur Exchange: booths, sessions and polls', href: '#/play/expo', img: 'exp-expo', alt: 'Hall A of the Larkspur Exchange Convention Centre in 3D' },
+  { key: 'convention', world: 'Convention', title: 'Expo LIVE', line: 'Hall A of the Larkspur Exchange: booths, sessions and polls', href: '#/play/expo', img: 'exp-expo', alt: 'Hall A of the Larkspur Exchange Convention Center in 3D' },
 ];
 function Worlds3d() {
   return (

@@ -110,7 +110,7 @@ export function FloorPlate({ rooms, onOpen }: { rooms: Array<{ id: string; label
           {r.issues > 0 && <g transform={`translate(${(r.x + r.w) * S - 16} ${(H - r.l) * S + 16})`} className="cm__glyph"><circle r={11} /><text y={4} textAnchor="middle">{r.issues}</text></g>}
         </g>
       ))}
-      <text x={0} y={H * S + 50} className="fp__scale">Footprints are the rooms’ modelled dimensions (not surveyed). Scale: {S} px = 1 m.</text>
+      <text x={0} y={H * S + 50} className="fp__scale">Footprints are the rooms’ modeled dimensions (not surveyed). Scale: {S} px = 1 m.</text>
     </svg>
   );
 }

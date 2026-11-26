@@ -25,7 +25,7 @@ function building(id: string, name: string, campus: string, type: string, levels
   for (let l = 0; l < levels; l += 1) add({ id: `${id}-L${l}`, kind: 'level', type: 'level', name: l === 0 ? 'Ground floor' : `Level ${l}`, parent: id, access: o.access || 'public' });
 }
 // ---- buildings ----
-building('UNI-ENG', 'Engineering Centre', 'UNI-N', 'academic', 3, [470, 40, 130, 90], { group: school('ENG') });
+building('UNI-ENG', 'Engineering Center', 'UNI-N', 'academic', 3, [470, 40, 130, 90], { group: school('ENG') });
 building('UNI-CMP', 'Computing Hall', 'UNI-N', 'academic', 3, [620, 40, 110, 90], { group: school('ENG') });
 building('UNI-SCI', 'Science Hall', 'UNI-N', 'academic', 3, [320, 40, 130, 90], { group: school('HAS') });
 building('UNI-HLT', 'Health Sciences Building', 'UNI-N', 'academic', 3, [750, 40, 130, 90], { group: school('HAS') });
@@ -34,12 +34,12 @@ building('UNI-HUM', 'Humanities Building', 'UNI-C', 'academic', 3, [470, 200, 12
 building('UNI-LIB', 'Hollis Library', 'UNI-C', 'library', 4, [320, 200, 130, 70]);
 building('UNI-ADM', 'Founders Hall', 'UNI-C', 'administration', 2, [320, 320, 110, 60], { note: 'Administration, registrar and admissions' });
 building('UNI-SUN', 'Student Union', 'UNI-C', 'student-life', 3, [450, 320, 140, 60]);
-building('UNI-WLC', 'Welcome Centre', 'UNI-C', 'visitor-services', 1, [320, 250, 80, 50], { note: 'Visitor desk, tours and parking validation' });
-building('UNI-WEL', 'Wellbeing Centre', 'UNI-C', 'student-services', 2, [610, 200, 90, 60], { note: 'Health and counselling' });
+building('UNI-WLC', 'Welcome Center', 'UNI-C', 'visitor-services', 1, [320, 250, 80, 50], { note: 'Visitor desk, tours and parking validation' });
+building('UNI-WEL', 'Wellbeing Center', 'UNI-C', 'student-services', 2, [610, 200, 90, 60], { note: 'Health and counseling' });
 building('UNI-PAC', 'Ashby Auditorium', 'UNI-C', 'performance', 2, [610, 290, 100, 80]);
 building('UNI-BUS', 'Business & Innovation Hall', 'UNI-S', 'academic', 3, [40, 450, 150, 80], { group: school('BUS') });
 building('UNI-ART', 'Arts Hall', 'UNI-S', 'academic', 3, [210, 450, 110, 80], { group: school('AMC'), stepFree: false, accessNote: 'The upper floors have no lift; ground-floor rooms are step-free' });
-building('UNI-MED', 'Media Centre', 'UNI-S', 'academic', 2, [340, 450, 110, 80], { group: school('AMC') });
+building('UNI-MED', 'Media Center', 'UNI-S', 'academic', 2, [340, 450, 110, 80], { group: school('AMC') });
 building('UNI-REC', 'Sports Pavilion', 'UNI-S', 'recreation', 2, [470, 450, 130, 80]);
 building('UNI-FAC', 'Facilities Yard', 'UNI-S', 'facilities', 1, [980, 470, 80, 60], { access: 'staff' });
 export const DORMS = [['UNI-RSA', 'Alder House', 4, 620], ['UNI-RSB', 'Birch House', 5, 720], ['UNI-RSC', 'Cedar House', 4, 820], ['UNI-RSD', 'Dunlin House', 3, 920]] as const;
@@ -84,9 +84,9 @@ C.forEach(([b, l, num, tpl, hybrid, cx, year], i) => {
 });
 // other teaching and research spaces (not classrooms)
 const AV = [K('projector', 'Projection', 'Laser projector, 10,000 lumen class', 2), K('microphone', 'Lectern and wireless microphones', 'Gooseneck and wireless set'), K('loudspeaker', 'Main loudspeakers', 'Line array loudspeaker', 2), K('processor', 'Audio processor', 'Digital signal processor'), K('camera', 'Capture cameras', 'PTZ camera', 2), K('capture', 'Lecture capture', 'Capture and streaming encoder'), K('assistive', 'Assistive listening', 'Assistive listening transmitter'), K('control', 'Lectern control panel', 'Touch panel, 10 inch class')];
-room('UNI-SCI-110', 'Lecture Theatre SCI-110', 'UNI-SCI-L0', 'lecture-theatre', 180, [20, 16, 6.5], { group: school('HAS'), layout: 'Raked theatre, 180 seats, six wheelchair positions at the rear cross-aisle', refreshed: 2024, kit: AV });
-room('UNI-BUS-LT1', 'Innovation Hall Lecture Theatre', 'UNI-BUS-L0', 'lecture-theatre', 140, [18, 15, 6], { group: school('BUS'), layout: 'Raked theatre, 140 seats', refreshed: 2023, kit: AV });
-room('UNI-HUM-LT1', 'Humanities Lecture Theatre', 'UNI-HUM-L0', 'lecture-theatre', 120, [17, 14, 5.5], { group: school('HSS'), layout: 'Raked theatre, 120 seats', refreshed: 2019, commissioning: 'ACCEPTED', kit: AV.slice(0, 6) });
+room('UNI-SCI-110', 'Lecture Theater SCI-110', 'UNI-SCI-L0', 'lecture-theatre', 180, [20, 16, 6.5], { group: school('HAS'), layout: 'Raked theater, 180 seats, six wheelchair positions at the rear cross-aisle', refreshed: 2024, kit: AV });
+room('UNI-BUS-LT1', 'Innovation Hall Lecture Theater', 'UNI-BUS-L0', 'lecture-theatre', 140, [18, 15, 6], { group: school('BUS'), layout: 'Raked theater, 140 seats', refreshed: 2023, kit: AV });
+room('UNI-HUM-LT1', 'Humanities Lecture Theater', 'UNI-HUM-L0', 'lecture-theatre', 120, [17, 14, 5.5], { group: school('HSS'), layout: 'Raked theater, 120 seats', refreshed: 2019, commissioning: 'ACCEPTED', kit: AV.slice(0, 6) });
 room('UNI-ENG-MKR', 'Maker Studio', 'UNI-ENG-L0', 'maker-space', 32, [16, 12, 4.2], { group: school('ENG'), layout: 'Benches, a tool wall and a demonstration bench with an overhead camera', refreshed: 2023, kit: [K('display', 'Demonstration display', 'Flat panel, 75 inch class'), K('camera', 'Bench camera', 'Fixed document camera'), K('loudspeaker', 'Wall loudspeakers', 'Surface loudspeaker', 4)] });
 room('UNI-ENG-ELB', 'Electronics Laboratory', 'UNI-ENG-L0', 'laboratory', 28, [14, 11, 3.4], { group: school('ENG'), layout: 'Fourteen two-person benches with supplies and instruments', refreshed: 2022, kit: [K('display', 'Instruction displays', 'Flat panel, 65 inch class', 2), K('microphone', 'Wireless microphone', 'Wireless lapel set'), K('loudspeaker', 'Ceiling loudspeakers', 'Ceiling loudspeaker', 6)] });
 room('UNI-CMP-LAB1', 'Computing Lab A', 'UNI-CMP-L0', 'computer-lab', 40, [15, 11, 3], { group: school('ENG'), layout: 'Forty open-access workstations', refreshed: 2024, kit: [K('compute', 'Workstations', 'Desktop workstation', 40), K('network', 'Room switch', 'Access switch, 48 port'), K('signage', 'Availability sign', 'Small signage display')] });
@@ -110,11 +110,11 @@ room('UNI-SUN-SOC2', 'Societies Room 2', 'UNI-SUN-L1', 'student-organization', 1
 room('UNI-SUN-CAR', 'Career Services', 'UNI-SUN-L2', 'student-services', 18, [10, 8, 3], { access: 'public', layout: 'Drop-in desk and four interview rooms' });
 room('UNI-WLC-DSK', 'Visitor Desk', 'UNI-WLC-L0', 'visitor-services', 20, [10, 8, 3.2], { access: 'public', layout: 'Visitor desk, tour meeting point and parking validation', kit: [K('signage', 'Wayfinding display', 'Interactive signage display')], refreshed: 2024 });
 room('UNI-SCI-118', 'Teaching Team Room 118', 'UNI-SCI-L1', 'office', 8, [6, 4.5, 3], { group: school('HAS'), layout: 'A small room for office hours' });
-room('UNI-ADM-REG', 'Registrar', 'UNI-ADM-L0', 'administration', 20, [11, 8, 3], { access: 'public', layout: 'Enrolment, records and timetabling counter' });
+room('UNI-ADM-REG', 'Registrar', 'UNI-ADM-L0', 'administration', 20, [11, 8, 3], { access: 'public', layout: 'Enrollment, records and timetabling counter' });
 room('UNI-ADM-ADS', 'Admissions', 'UNI-ADM-L0', 'administration', 24, [11, 9, 3], { access: 'public', layout: 'Visitor and applicant reception', kit: [K('display', 'Welcome display', 'Flat panel, 65 inch class')], refreshed: 2023 });
 room('UNI-ADM-FAC', 'Faculty Offices', 'UNI-ADM-L1', 'office', 40, [26, 14, 3], { access: 'staff', layout: 'Shared and single offices' });
 room('UNI-WEL-HLT', 'Health Service', 'UNI-WEL-L0', 'student-services', 20, [14, 9, 3], { access: 'public', layout: 'Reception and consulting rooms; what happens inside is private and not recorded here' });
-room('UNI-WEL-CNS', 'Counselling Service', 'UNI-WEL-L1', 'student-services', 12, [12, 8, 3], { access: 'public', layout: 'Reception and private rooms; what happens inside is private and not recorded here' });
+room('UNI-WEL-CNS', 'Counseling Service', 'UNI-WEL-L1', 'student-services', 12, [12, 8, 3], { access: 'public', layout: 'Reception and private rooms; what happens inside is private and not recorded here' });
 room('UNI-PAC-AUD', 'Ashby Auditorium', 'UNI-PAC-L0', 'auditorium', 620, [34, 26, 12], { access: 'public', layout: 'Raked stalls and a balcony, 620 seats, twelve wheelchair positions', refreshed: 2021, kit: [K('loudspeaker', 'Main loudspeaker system', 'Line array loudspeaker', 2), K('processor', 'Front-of-house console', 'Digital mixing console'), K('projector', 'Cinema projection', 'Laser projector, 20,000 lumen class'), K('camera', 'Event cameras', 'PTZ camera', 3), K('lighting', 'Stage lighting', 'LED stage fixture', 48), K('assistive', 'Assistive listening', 'Assistive listening transmitter'), K('intercom', 'Production intercom', 'Intercom matrix')] });
 room('UNI-REC-FIT', 'Fitness Suite', 'UNI-REC-L0', 'recreation', 90, [26, 18, 4.5], { layout: 'Cardio, weights and two studios', kit: [K('signage', 'Class schedule displays', 'Signage display', 3), K('loudspeaker', 'Zone loudspeakers', 'Surface loudspeaker', 10)], refreshed: 2022 });
 room('UNI-REC-CRT', 'Sports Hall', 'UNI-REC-L0', 'recreation', 400, [44, 26, 9], { access: 'public', layout: 'Three courts with retractable seating for 400', kit: [K('display', 'Scoreboard', 'LED scoreboard'), K('loudspeaker', 'Hall loudspeakers', 'Horn loudspeaker', 8)], refreshed: 2020 });

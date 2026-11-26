@@ -89,7 +89,7 @@ test('DI-08 the standards review is the commissioning engine’s own rules on wh
   assert.deepEqual(d.devices.find((x) => x.id === 'CAM-01').provenance, 'drawing'); assert.ok(d.devices.every((x) => x.x >= 0 && x.x <= 6.2 && x.y >= 0 && x.y <= 9.4));
   const r = V.standardsReview(e, d, 'BRD'); assert.equal(r.archetype, 'BRD'); assert.deepEqual(r.findings.filter((f) => /^standard:missing-equipment/.test(f.id)), [], 'a boardroom’s required equipment is all on the drawing');
   assert.ok(!r.findings.some((f) => /no signal path|no video path/.test(f.text)), 'connections were not in the package, so they are not reported as missing');
-  assert.ok(r.checklist.length >= 5 && r.checklist.every((t) => t.id && t.label)); assert.match(r.assumptions[0], /Reviewed as .*, the room type the reviewer named/); assert.ok(r.assumptions.some((a) => /No ceiling height is on the plan: 2\.7 m is assumed/.test(a))); assert.ok(r.assumptions.some((a) => /An organisation’s own approved standard would replace it/.test(a)));
+  assert.ok(r.checklist.length >= 5 && r.checklist.every((t) => t.id && t.label)); assert.match(r.assumptions[0], /Reviewed as .*, the room type the reviewer named/); assert.ok(r.assumptions.some((a) => /No ceiling height is on the plan: 2\.7 m is assumed/.test(a))); assert.ok(r.assumptions.some((a) => /An organization’s own approved standard would replace it/.test(a)));
   const noDsp = ex('B', { plan: with_(doc('B', 'plan'), (t) => t.replace('<text x="680" y="1000">DSP-01</text>', '')), schedule: with_(doc('B', 'schedule'), (t) => t.replace('DSP-01,Audio processor,A16,Y\n', '')), bom: with_(doc('B', 'bom'), (t) => t.replace('A16,Audio processor,1\n', '')) });
   const r2 = V.standardsReview(noDsp, V.toDesign(noDsp, { template: 'boardroom', occupancy: 14, use: 'Board meetings' }).ok, 'BRD'); const miss = r2.findings.find((f) => f.id === 'standard:missing-equipment:dsp');
   assert.ok(miss, 'a boardroom with no audio processor is found'); assert.equal(miss.blocker, true); assert.equal(miss.cls, 'MODELED'); assert.match(miss.ask, /or an engineer records why the room is an exception/);
@@ -100,7 +100,7 @@ test('DI-09 what changed between revision A and revision B, by tag', () => {
   const ch = V.diff(ex('A'), ex('B')).map((c) => `${c.kind}: ${c.text}`).sort();
   assert.deepEqual(ch, ['added: AMP-01 was added (P2).', 'added: SW-01 was added (N24-P).', 'moved: CAM-01 moved 0.42 m.', 'moved: MICC-02 moved 0.6 m.', 'removed: XYZ-01 was removed.']);
   assert.deepEqual(kinds(ex('B')), ['ports'], 'revision B answers every finding of A but the network ports'); assert.deepEqual(V.diff(ex('A'), ex('A')), []);
-  const noScale = ex('B', { plan: with_(doc('B', 'plan'), (t) => t.replace('6200 mm', '').replace('9.40 m', '')) }); assert.ok(V.diff(ex('A'), noScale).some((c) => /CAM-01 moved on the drawing\. How far in metres is not known/.test(c.text)));
+  const noScale = ex('B', { plan: with_(doc('B', 'plan'), (t) => t.replace('6200 mm', '').replace('9.40 m', '')) }); assert.ok(V.diff(ex('A'), noScale).some((c) => /CAM-01 moved on the drawing\. How far in meters is not known/.test(c.text)));
 });
 
 test('DI-10 the engineer’s part: a review is saved by design roles; a blocker is settled only by a written decision, which does not change the finding; approval needs every blocker decided and a different role', () => {

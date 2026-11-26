@@ -101,7 +101,7 @@ export function ContactBar({ role, person: p, about, seen, compact, onChange }: 
       {panel === 'avail' && <div className="cx-panel" data-testid="cx-avail-panel">
         <p><b>{first} works {(p.shift || p.hours).start}–{(p.shift || p.hours).end}{p.shift ? ` (${p.shift.name.toLowerCase()})` : ''}</b>, {zoneCity(p.tz)} time.</p>
         <ul>{days.map((d) => { const b = busy.filter((x) => x.from < d.to && x.to > d.from); return <li key={d.from}><b>{fmtDay(p.tz, d.from)}</b> {fmtTime(p.tz, d.from)}–{fmtTime(p.tz, d.to)}{b.length ? <> · busy {b.map((x) => `${fmtTime(p.tz, x.from)}–${fmtTime(p.tz, x.to)}`).join(', ')}</> : ' · nothing in the calendar'}</li>; })}</ul>
-        <p className="ui-meta">Times are {first}’s own. Simulated calendar: generated for the demonstration, not read from anyone’s diary. Public holidays and leave are not modelled.</p>
+        <p className="ui-meta">Times are {first}’s own. Simulated calendar: generated for the demonstration, not read from anyone’s diary. Public holidays and leave are not modeled.</p>
       </div>}
       {panel === 'backup' && backup && <div className="cx-panel" data-testid="cx-backup-panel" data-person={backup.id}>
         <p><b>{backup.name}</b> <span className="ui-muted">{backup.title}</span></p>

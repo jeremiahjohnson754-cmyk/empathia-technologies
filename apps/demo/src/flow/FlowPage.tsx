@@ -21,14 +21,14 @@ export default function FlowPage({ role, params, query }: PageProps) {
     const nodes = networkNodes().map((n) => ({ n, v: linkView(n.id)! }));
     return (<div className="vc" data-testid="flow-home">
       <PageHero eyebrow="Empathia FLOW · read-only" title="The network your rooms depend on" product="pro" icon="network"
-        lede="FLOW reads the same network records as the rest of Empathia and sorts what is known by layer: power and cabling, switching, uplinks, and the streams on top. Each claim says whether it was declared, modelled or observed, and what nobody has recorded."
+        lede="FLOW reads the same network records as the rest of Empathia and sorts what is known by layer: power and cabling, switching, uplinks, and the streams on top. Each claim says whether it was declared, modeled or observed, and what nobody has recorded."
         meta={[<Tag key="s" tone="info">Estate records</Tag>, <span key="n">{nodes.length} network nodes</span>]} />
     <Connected id="flow" role={role} />
       <Notice tone="info"><b>Read-only.</b> FLOW changes no configuration and reads no live network. Timing, multicast and the WAN are not recorded in this estate, and say so.</Notice>
       <section className="vc-sec vc-two" aria-label="Network nodes">{nodes.map(({ n, v }) => (
         <Card key={n.id} title={n.label} sub={n.subtitle} icon="network" testId={`flow-node-${n.id}`}>
           <p>{v.rooms.length} room{v.rooms.length === 1 ? '' : 's'} and {v.dependents} record{v.dependents === 1 ? '' : 's'} depend on it.</p>
-          <p className="ui-muted">{v.claims.filter((c) => c.state === 'OBSERVED').length} observed, {v.claims.filter((c) => c.state === 'DECLARED').length} declared, {v.claims.filter((c) => c.state === 'MODELED').length} modelled, {v.claims.filter((c) => c.state === 'UNKNOWN').length} unknown.</p>
+          <p className="ui-muted">{v.claims.filter((c) => c.state === 'OBSERVED').length} observed, {v.claims.filter((c) => c.state === 'DECLARED').length} declared, {v.claims.filter((c) => c.state === 'MODELED').length} modeled, {v.claims.filter((c) => c.state === 'UNKNOWN').length} unknown.</p>
           <p><a href={`#/flow/link/${n.id}`} data-testid={`flow-open-${n.id}`}>Open {n.label}</a></p>
         </Card>))}</section>
       <section className="vc-sec" aria-labelledby="fl-not-h"><h2 id="fl-not-h">What FLOW does not do here</h2><ul className="vc-next"><li>No configuration is written to a switch or a stream.</li><li>No path is inferred from device names; an edge exists only where a record states it.</li><li>Dante, AES67 and NMOS are named in the specification; no such source is connected in the demonstration.</li></ul></section>

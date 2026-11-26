@@ -103,7 +103,7 @@ export function cancelWorkOrder(w: WX, persona: string, incidentId: string, reas
   const wo = inc.workOrderId ? S.workOrderOf(w, inc.workOrderId) : undefined;
   const why: string[] = [];
   if (!wo) why.push('there is no work order to cancel');
-  if (['RESOLVED', 'CLOSED', 'CANCELLED', 'VERIFYING'].includes(inc.state)) why.push(`a ${inc.state} job is not cancelled${inc.state === 'VERIFYING' ? ': the verifier decides it' : ''}`);
+  if (['RESOLVED', 'CLOSED', 'CANCELLED', 'VERIFYING'].includes(inc.state)) why.push(`a ${inc.state} job is not canceled${inc.state === 'VERIFYING' ? ': the verifier decides it' : ''}`);
   if (reason.trim().length < 8) why.push('a cancellation records its reason');
   if (why.length) return deny(w, persona, 'service.cancelled', inc.id, why);
   sh(w).cancelled[wo!.id] = { reason: reason.trim(), by: persona, at: now(), prevState: inc.state };

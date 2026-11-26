@@ -49,7 +49,7 @@ export default function PrismPage({ role, can }: PageProps) {
     </section>
     <section className="vc-sec vc-two" aria-label="Adapters and limits">
       <div><h2>Where the data would come from</h2><ul className="vc-next" data-testid="prism-adapters">{ADAPTERS.map((a) => <li key={a.id}><b>{a.target}</b> <Tag tone={a.status === 'MOCK' ? 'info' : 'muted'}>{a.status === 'MOCK' ? 'Mock' : 'Contract only'}</Tag><br /><span className="ui-muted">{a.note}</span></li>)}</ul></div>
-      <div><h2>What PRISM does not do</h2><ul className="vc-next"><li>It does not publish, schedule or change content.</li><li>It does not call a player’s state report proof of play.</li><li>It does not watch the screen with a camera here; a visual check would be a separate, authorised observation.</li><li>It names no signage vendor and claims no integration.</li></ul></div>
+      <div><h2>What PRISM does not do</h2><ul className="vc-next"><li>It does not publish, schedule or change content.</li><li>It does not call a player’s state report proof of play.</li><li>It does not watch the screen with a camera here; a visual check would be a separate, authorized observation.</li><li>It names no signage vendor and claims no integration.</li></ul></div>
     </section>
   </div>);
 }

@@ -44,7 +44,7 @@ test('IR-02 a photograph is judged by arithmetic on its pixels: blurred, dark, w
 
 test('IR-03 a measurement is a number of metres with how it was found; feet and centimetres are caught by range', () => {
   assert.deepEqual(M.readDim(' 6,25 ', 'measured', 'width'), { ok: { m: 6.25, how: 'measured' } }); assert.deepEqual(M.readDim('2.9', 'estimated', 'height'), { ok: { m: 2.9, how: 'estimated' } });
-  assert.match(M.readDim('', 'measured', 'width').why, /in metres, as a number/); assert.match(M.readDim('six', 'measured', 'width').why, /as a number/); assert.match(M.readDim('620', 'measured', 'width').why, /metres, not feet or centimetres/); assert.match(M.readDim('1', 'measured', 'length').why, /outside what a room can be/);
+  assert.match(M.readDim('', 'measured', 'width').why, /in meters, as a number/); assert.match(M.readDim('six', 'measured', 'width').why, /as a number/); assert.match(M.readDim('620', 'measured', 'width').why, /meters, not feet or centimeters/); assert.match(M.readDim('1', 'measured', 'length').why, /outside what a room can be/);
   assert.match(M.readDim('30', 'measured', 'height').why, /outside/); assert.match(M.readDim('6', 'guess', 'width').why, /measured, paced or estimated/);
 });
 

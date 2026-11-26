@@ -70,7 +70,7 @@ test('PC-05b the device is described in words that are true of it', () => {
   assert.equal(P.browserOf('Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1'), 'Safari/18.1 on iPhone');
   assert.equal(P.browserOf('Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/131.0.6778.73 Mobile/15E148 Safari/604.1'), 'Chrome/131.0.6778.73 on iPhone');
   assert.equal(P.browserOf('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Safari/605.1.15'), 'Safari/18.1 on macOS');
-  assert.equal(P.browserOf('Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0'), 'Firefox/132.0 on Linux'); assert.equal(P.browserOf('Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'), 'Chrome/131.0.0.0 on ChromeOS'); assert.equal(P.browserOf('something else'), 'browser not recognised');
+  assert.equal(P.browserOf('Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0'), 'Firefox/132.0 on Linux'); assert.equal(P.browserOf('Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'), 'Chrome/131.0.0.0 on ChromeOS'); assert.equal(P.browserOf('something else'), 'browser not recognized');
   // the memory a browser reports never exceeds 8: 8 is "8 or more", not "about 8"
   assert.equal(P.memoryWords(null), 'not reported by this browser'); assert.equal(P.memoryWords(4), 'about 4 GB (a rounded figure the browser gives)'); assert.equal(P.memoryWords(8), '8 GB or more (the browser reports no more than 8)');
 });

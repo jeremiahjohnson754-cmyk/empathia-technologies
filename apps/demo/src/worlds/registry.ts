@@ -38,7 +38,7 @@ export const WORLDS: Readonly<Record<WorldKey, World>> = {
   enterprise: { key: 'enterprise', name: 'Enterprise', place: 'Northstar Innovation Campus', line: 'A workplace estate of rooms, devices and the evidence behind them', about: 'The original Living Campus: every room, device, test and service record of a fictional enterprise, with the fifteen View-as roles.', roleCount: 13, defaultConfig: 'enterprise.visitor' },
   stadium: { key: 'stadium', name: 'Stadium', place: 'Harborlight Stadium', line: 'A match day, from the seat to the broadcast gallery', about: 'A fictional open-air stadium: find a seat and a step-free way to it, the nearest amenities, and — for venue roles — the broadcast and AV systems behind the event.', roleCount: 14, defaultConfig: 'stadium.visitor' },
   university: { key: 'university', name: 'University', place: 'Kestrel Valley University', line: 'A campus day, from the first class to the last shuttle', about: 'A fictional university campus: a student’s day, a 2D map with wayfinding, a learning quest, and — for campus roles — the teaching spaces and the classroom AV estate.', roleCount: 13, defaultConfig: 'university.visitor' },
-  convention: { key: 'convention', name: 'Convention', place: 'Larkspur Exchange Convention Centre', line: 'A technology expo, from the hall floor to the keynote', about: 'A fictional convention centre hosting a technology expo: the hall map, sessions and exhibitors, a moderated keynote poll, and — for event roles — exhibitor, production and venue work.', roleCount: 12, defaultConfig: 'convention.convention_visitor' },
+  convention: { key: 'convention', name: 'Convention', place: 'Larkspur Exchange Convention Center', line: 'A technology expo, from the hall floor to the keynote', about: 'A fictional convention center hosting a technology expo: the hall map, sessions and exhibitors, a moderated keynote poll, and — for event roles — exhibitor, production and venue work.', roleCount: 12, defaultConfig: 'convention.convention_visitor' },
 };
 
 // ------------------------------------------------------------------ role configurations
@@ -46,7 +46,7 @@ export type Purpose = 'audience' | 'teaching' | 'exhibiting' | 'production' | 'e
 export const PURPOSES: Readonly<Record<Purpose, { label: string; about: string }>> = {
   audience: { label: 'Visit, work and take part', about: 'Public and everyday perspectives' },
   teaching: { label: 'Teach and research', about: 'Academic perspectives' },
-  exhibiting: { label: 'Exhibit and present', about: 'Perspectives of the people on the programme and the show floor' },
+  exhibiting: { label: 'Exhibit and present', about: 'Perspectives of the people on the program and the show floor' },
   production: { label: 'Produce and broadcast', about: 'Show, event and broadcast perspectives' },
   engineering: { label: 'Engineer and service', about: 'Technical perspectives: systems, AV, IT and service' },
   operations: { label: 'Operate the place', about: 'Operations, facilities, support and security perspectives' },
@@ -171,14 +171,14 @@ export const JOURNEYS: readonly Journey[] = [
 
   j('stadium', 'attend-game', 'Attend Game', 'Your seat, the gate to use and a step-free way there, on a 2D plan.', 'public', 'all', 'fan'),
   j('stadium', 'find-amenities', 'Find Amenities', 'Food, restrooms, first aid and guest services near your seat, with how fresh each status is.', 'public', 'all', 'fan'),
-  j('stadium', 'broadcast-production', 'Broadcast & Production', 'The run of show, the sources on the programme and the modelled crowd acoustics.', 'production', ['event_producer', 'broadcast_engineer'], 'event_producer'),
+  j('stadium', 'broadcast-production', 'Broadcast & Production', 'The run of show, the sources on the program and the modeled crowd acoustics.', 'production', ['event_producer', 'broadcast_engineer'], 'event_producer'),
   j('stadium', 'venue-engineering', 'Venue Engineering', 'The AV and broadcast signal chain, device passports and the evidence state of each.', 'engineering', ['av_it_engineer', 'broadcast_engineer', 'service_technician', 'msp_engineer'], 'av_it_engineer'),
   j('stadium', 'venue-operations', 'Venue Operations', 'Gates, incidents and service work during an event, with event-time gates on disruptive work.', 'operations', ['venue_ops_lead', 'security_safety_lead', 'guest_services'], 'venue_ops_lead'),
 
   j('university', 'student-life', 'Student Life', 'A student’s day: classes, reminders, dining and the next shuttle.', 'student', ['student'], 'student'),
   j('university', 'discover-campus', 'Discover Campus', 'A 2D campus map with walking, cycling and shuttle routes, and a step-free option.', 'public', 'all', 'visitor'),
   j('university', 'study-play', 'Study & Play', 'A circuit quest with scoring and feedback, and badges that cost and pay nothing.', 'public', 'all', 'student'),
-  j('university', 'teaching-research', 'Teaching & Research', 'Is the lecture theatre ready for my session, and which research spaces are free.', 'teaching', ['faculty', 'researcher'], 'faculty'),
+  j('university', 'teaching-research', 'Teaching & Research', 'Is the lecture theater ready for my session, and which research spaces are free.', 'teaching', ['faculty', 'researcher'], 'faculty'),
   j('university', 'campus-technology', 'Campus Technology', 'The classroom AV estate, room by room, with the service workflow.', 'engineering', ['av_it_engineer', 'facilities_engineer', 'msp_engineer'], 'av_it_engineer'),
 
   j('convention', 'attend-expo', 'Attend Expo', 'The hall map, the sessions and the exhibitors, with your own agenda.', 'public', 'all', 'convention_attendee'),

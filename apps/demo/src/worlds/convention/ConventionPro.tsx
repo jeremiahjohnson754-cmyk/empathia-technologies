@@ -43,8 +43,8 @@ function ExhibitorExperience({ world, journey, config }: ScreenProps) {
 const p = (...rows: [string, string][]) => rows;
 const KEYNOTE: ChainNode[] = [
   { id: 'k-mic', label: 'Speaker microphones', klass: 'Wireless headset and lectern microphones', stage: 'Source · keynote stage', link: 'RF to receivers, then audio over IP', evidence: 'DECLARED', state: 'Nominal', passport: p(['Tag', 'LXC-KN-MIC-01'], ['RF', 'Coordinated frequencies: plan declared, not scanned here']) },
-  { id: 'k-cam', label: 'Stage cameras', klass: 'PTZ and manned system cameras', stage: 'Source · keynote theatre', link: 'SDI 12G', evidence: 'DECLARED', state: 'Nominal', passport: p(['Tag', 'LXC-KN-CAM-01'], ['Positions', 'Centre, left, right']) },
-  { id: 'k-sw', label: 'Production switcher', klass: 'Production switcher with graphics', stage: 'Production · control position', link: 'Programme to screens and encoder', evidence: 'DECLARED', state: 'Nominal', passport: p(['Tag', 'LXC-KN-SW-01'], ['Operator', 'Show Producer (role, not a person)']) },
+  { id: 'k-cam', label: 'Stage cameras', klass: 'PTZ and manned system cameras', stage: 'Source · keynote theater', link: 'SDI 12G', evidence: 'DECLARED', state: 'Nominal', passport: p(['Tag', 'LXC-KN-CAM-01'], ['Positions', 'Center, left, right']) },
+  { id: 'k-sw', label: 'Production switcher', klass: 'Production switcher with graphics', stage: 'Production · control position', link: 'Program to screens and encoder', evidence: 'DECLARED', state: 'Nominal', passport: p(['Tag', 'LXC-KN-SW-01'], ['Operator', 'Show Producer (role, not a person)']) },
   { id: 'k-led', label: 'Stage LED wall', klass: 'Fine-pitch LED wall with processor', stage: 'Output · keynote stage', link: 'To stream encoder', evidence: 'MODELED', state: 'Degraded', passport: p(['Tag', 'LXC-KN-LED-01'], ['Note', 'One cabinet reports a temperature warning (simulated)'], ['Work order', 'VO-311, see Venue Operations']) },
   { id: 'k-enc', label: 'Stream encoder', klass: 'Streaming encoder', stage: 'Output · stream', evidence: 'UNAVAILABLE', state: 'Unknown', passport: p(['Tag', 'LXC-KN-ENC-01'], ['Note', 'No streaming platform is connected in this demonstration']) },
 ];
@@ -63,9 +63,9 @@ function ProductionBroadcast({ world, journey, config }: ScreenProps) {
   </>);
 }
 
-const HALLS = [{ k: 'Hall A', v: 'Open · aisles clear', ev: 'DECLARED' as const }, { k: 'Keynote Theatre', v: 'Open · LED wall under watch', ev: 'MODELED' as const }, { k: 'Session Room 1', v: 'Open', ev: 'DECLARED' as const }, { k: 'Session Room 2', v: 'No report since doors', ev: 'UNKNOWN' as const }];
+const HALLS = [{ k: 'Hall A', v: 'Open · aisles clear', ev: 'DECLARED' as const }, { k: 'Keynote Theater', v: 'Open · LED wall under watch', ev: 'MODELED' as const }, { k: 'Session Room 1', v: 'Open', ev: 'DECLARED' as const }, { k: 'Session Room 2', v: 'No report since doors', ev: 'UNKNOWN' as const }];
 const WORK: Work[] = [
-  { id: 'VO-311', title: 'Keynote LED wall: cabinet temperature warning', where: 'Keynote Theatre', priority: 'High', step: 2, disruptive: true, by: 'Show Producer' },
+  { id: 'VO-311', title: 'Keynote LED wall: cabinet temperature warning', where: 'Keynote Theater', priority: 'High', step: 2, disruptive: true, by: 'Show Producer' },
   { id: 'VO-312', title: 'Booth A3: network port not patched', where: 'Hall A', priority: 'Medium', step: 1, by: 'Exhibitor' },
   { id: 'VO-313', title: 'Session Room 2: hearing loop sign missing', where: 'Session Room 2', priority: 'Medium', step: 0, by: 'Facilities & Safety' },
 ];

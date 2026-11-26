@@ -45,7 +45,7 @@ export function reverbPackage(x: { positions: Position[]; chain: Chain; target: 
       'A comparison with a project target is not a commissioning result: the test is recorded by the commissioning engineer, with these files as evidence, and verified by someone else.',
       `Made as ${by.role}: a perspective on the record, which grants no permission.`,
     ],
-    headline: `${x.positions.length} position${x.positions.length === 1 ? '' : 's'} analysed. Mean T20 at ${t1k?.band || '1 kHz'}: ${t1k?.t20.mean ?? '—'} s (n=${t1k?.t20.n ?? 0}).${x.target ? ` Target ${x.target.seconds} s ± ${x.target.tolPct}%: ${outside.length ? `${outside.map((m) => m.band).join(', ')} outside.` : 'every band with a T20 within.'}` : ' No target set.'}`,
+    headline: `${x.positions.length} position${x.positions.length === 1 ? '' : 's'} analyzed. Mean T20 at ${t1k?.band || '1 kHz'}: ${t1k?.t20.mean ?? '—'} s (n=${t1k?.t20.n ?? 0}).${x.target ? ` Target ${x.target.seconds} s ± ${x.target.tolPct}%: ${outside.length ? `${outside.map((m) => m.band).join(', ')} outside.` : 'every band with a T20 within.'}` : ' No target set.'}`,
     kpis: [
       { label: 'Positions', value: String(x.positions.length), note: synth ? `${synth} synthetic reference${synth === 1 ? '' : 's'}` : 'measured files' },
       { label: `Mean T20, ${t1k?.band || '1 kHz'}`, value: t1k?.t20.mean === null || !t1k ? '—' : `${t1k.t20.mean} s`, note: `n=${t1k?.t20.n ?? 0}` },

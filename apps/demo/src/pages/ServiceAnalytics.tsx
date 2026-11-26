@@ -112,7 +112,7 @@ export function ServiceAnalyticsPage({ perspective, hash }: { perspective: strin
       <ExportMenu testId="san-export" data={{ role: perspective, roles: DATA_EXPORT_ROLES }} title="Service analytics report" by={personaLabel(persona)} sub="This view (with its drill) as a PDF: the trends, the vendor scorecard, by building and project, and every job behind it"
         make={() => serviceAnalyticsPackage({ jobs: scope, all, periods: ps, months: ms, drill: d, crumbs: crumbs.map((c) => c[0]), projName, scorecard: card }, made)} />
       <details className="ln-dom" data-testid="san-defs"><summary><b>How each figure is worked out</b></summary><dl className="san__defs">{DEFINITIONS.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
-        <p className="wk-note">The history is synthetic: generated from a fixed seed so every visit and every test sees the same jobs, shaped like a service history and labelled wherever it appears. Each job’s vendor is the one the support agreement names for its building and layer; where no active agreement covers it, the internal team serves it and the scorecard says so.</p></details>
+        <p className="wk-note">The history is synthetic: generated from a fixed seed so every visit and every test sees the same jobs, shaped like a service history and labeled wherever it appears. Each job’s vendor is the one the support agreement names for its building and layer; where no active agreement covers it, the internal team serves it and the scorecard says so.</p></details>
     </section>
   );
 }

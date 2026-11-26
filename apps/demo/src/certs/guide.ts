@@ -45,7 +45,7 @@ export const MATH: Section[] = [
     { f: 'pixel blends beyond ≈ 3438 × pixel pitch', say: 'one arcminute', tool: 'pixel-acuity' },
   ], traps: ['Using the width where the height is asked.', 'A bigger image from the same projector is dimmer and lower in contrast.'] },
   { id: 'signals', title: 'Video signals, bandwidth and the links that carry them', body: [
-    'Uncompressed video rate is pixels per frame (including blanking) × frames per second × bits per pixel. Bits per pixel is bits per colour × samples per pixel: 3 for 4:4:4/RGB, 2 for 4:2:2, 1.5 for 4:2:0.',
+    'Uncompressed video rate is pixels per frame (including blanking) × frames per second × bits per pixel. Bits per pixel is bits per color × samples per pixel: 3 for 4:4:4/RGB, 2 for 4:2:2, 1.5 for 4:2:0.',
     'A link carries a payload after its line coding: HDMI 2.0’s 18 Gb/s carries about 14.4 Gb/s of video; 3G-SDI 2.97 Gb/s; 12G-SDI 11.88 Gb/s. If the format’s rate exceeds the payload, it needs chroma subsampling, lower bit depth or frame rate, or compression.',
     'EDID tells a source what the display accepts; HDCP must be supported at every hop for protected content. Most intermittent long-run problems are links at their limit.',
   ], formulas: [{ f: 'rate = H_total × V_total × fps × bpp', say: 'uncompressed bandwidth', tool: 'video-bandwidth' }, { f: 'bpp = bits × (3 | 2 | 1.5)', say: '4:4:4 | 4:2:2 | 4:2:0', tool: 'video-bandwidth' }] },
@@ -60,7 +60,7 @@ export const MATH: Section[] = [
   ] },
   { id: 'network', title: 'Networks for AV', body: [
     'An IPv4 address and its mask divide into network and host parts. The usable hosts in a /p subnet are 2^(32−p) − 2. A device needs an address, a mask, a gateway on its own subnet to reach others, and DNS to reach names. 169.254.x.x means DHCP did not answer.',
-    'AV-over-IP and networked audio are real-time: they want VLANs to contain them, QoS so the network honours their priority, IGMP snooping with a querier so multicast reaches only the ports that joined it, and PoE budgets that cover every powered device by class.',
+    'AV-over-IP and networked audio are real-time: they want VLANs to contain them, QoS so the network honors their priority, IGMP snooping with a querier so multicast reaches only the ports that joined it, and PoE budgets that cover every powered device by class.',
   ], formulas: [{ f: 'hosts = 2^(32−p) − 2', say: 'usable addresses', tool: 'subnet' }, { f: 'PoE: 15.4 / 30 / 60 / 90 W at the port', say: 'class 3 / 4 / 6 / 8', tool: 'poe-budget' }] },
 ];
 
@@ -69,7 +69,7 @@ export const STRATEGY: Section[] = [
   { id: 'plan', title: 'A study plan that works', body: [
     'Start from the published outline, not a book’s chapters: the duty weights tell you where the points are. Spend time in proportion to the weight and inversely to how well you already know it.',
     'Study by doing. Every formula in the math section has a Field Tools calculator; work a problem by hand, then check it there, until you no longer need the check.',
-  ], points: ['Weeks 1–2: read the outline; take a short practice exam cold to find your weak duties.', 'Weeks 3–6: one duty at a time, guide then questions; keep a list of every question you missed and why.', 'Weeks 7–8: calculation drills daily; full timed practice exams; review only what you missed.', 'Last days: the formula sheet from memory, sleep, and the route to the test centre.'] },
+  ], points: ['Weeks 1–2: read the outline; take a short practice exam cold to find your weak duties.', 'Weeks 3–6: one duty at a time, guide then questions; keep a list of every question you missed and why.', 'Weeks 7–8: calculation drills daily; full timed practice exams; review only what you missed.', 'Last days: the formula sheet from memory, sleep, and the route to the test center.'] },
   { id: 'reading', title: 'Reading the question', body: [
     'Find what is actually asked before reading the options: the first step, the best choice, the most likely cause, the minimum value. Words like first, best, most and least change the answer.',
     'Several options are often true statements; only one answers this question. A technically correct option that skips a step the process requires (documenting, asking, testing) is usually the wrong one.',
@@ -77,7 +77,7 @@ export const STRATEGY: Section[] = [
   { id: 'time', title: 'Time and the test day', body: [
     'Each exam allows 150 minutes: about 78 seconds a question for CTS and 82 for CTS-D and CTS-I. Do a first pass answering everything you can, mark the slow ones, and come back. An unanswered question cannot earn credit, so answer every one.',
     'Some questions are unscored pilot items, and you cannot tell which: give each one your best answer and move on.',
-    'You will have the test centre’s on-screen calculator and a note board, nothing of your own. Practise with a basic calculator so the real one is not new, and write your key formulas on the note board when you start.',
+    'You will have the test center’s on-screen calculator and a note board, nothing of your own. Practice with a basic calculator so the real one is not new, and write your key formulas on the note board when you start.',
   ] },
   { id: 'after', title: 'After the exam', body: ['Keep your list of what you studied: renewal needs renewal units over three years, and the same habits earn them. If you do not pass, the score report’s duty-by-duty breakdown tells you where to spend the next weeks; the handbook sets how soon you may retake.'] },
 ];
@@ -87,13 +87,13 @@ export const GUIDES: Record<CertId, DomainGuide[]> = {
   CTS: [
     { domain: 'A', sections: [
       { id: 'needs', title: 'Needs analysis: activities before equipment', body: ['Ask what people will do, who they are, what content they use and where they sit. The output is a documented, agreed set of needs that the design answers and later changes are measured against.'],
-        points: ['Interview end users, not only the sponsor; include IT, facilities and accessibility.', 'Record functional requirements in measurable terms.', 'Prioritise with the client when the budget cannot meet everything.'] },
+        points: ['Interview end users, not only the sponsor; include IT, facilities and accessibility.', 'Record functional requirements in measurable terms.', 'Prioritize with the client when the budget cannot meet everything.'] },
       { id: 'survey', title: 'Site survey: measure what the design will depend on', body: ['Bring back dimensions, ceiling type and plenum status, structure for mounts, power and network locations, ambient light at the screen, background noise with HVAC running, and the delivery route. Photos with references and a marked-up plan make it usable by someone who was not there.'] },
       { id: 'scope', title: 'Scope: the boundary of the job', body: ['Inclusions, exclusions, responsibilities and deliverables. A responsibility matrix settles who provides power, data and structure. Anything added later goes through a change order with its cost and time.'] },
       { id: 'design', title: 'Design basics: display, audio, video, control', body: ['Size images from the content and the farthest viewer; check contrast against the ambient light; choose microphone patterns to reject what you do not want; use balanced lines for long runs; plan EDID and HDCP through switchers and extenders; place conferencing cameras near the display; know which control methods need line of sight.'] },
     ] },
     { domain: 'B', sections: [
-      { id: 'integrate', title: 'Integrating: build it so it can be serviced', body: ['Heavy equipment low in the rack; blanks for airflow; power and signal separated and crossing at 90°; both ends of every cable labelled; terminations to standard (XLR pin 2 hot, the same T568 scheme at both ends); lines tested before amplifiers are connected; gain set stage by stage for signal-to-noise and headroom.'],
+      { id: 'integrate', title: 'Integrating: build it so it can be serviced', body: ['Heavy equipment low in the rack; blanks for airflow; power and signal separated and crossing at 90°; both ends of every cable labeled; terminations to standard (XLR pin 2 hot, the same T568 scheme at both ends); lines tested before amplifiers are connected; gain set stage by stage for signal-to-noise and headroom.'],
         traps: ['Fixing hum by lifting a safety ground. Never: break the loop in the signal path.'] },
       { id: 'manage', title: 'Managing the integration', body: ['Coordinate with the trades before they cover your work; keep a daily log; process changes formally; send submittals before buying; store deliveries securely; keep the as-builts current as the build changes.'] },
     ] },

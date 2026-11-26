@@ -89,7 +89,7 @@ test('ES-14 University: every building, green and stop on the campus-day map is 
 });
 test('ES-15 Convention: the hall, theatre, session rooms, help points and the eight named exhibitors of the expo journey are estate records', () => {
   const names = new Set(C.CONVENTION.nodes.map((n) => n.name));
-  for (const x of ['Hall A', 'Keynote Theatre', 'Session Room 1', 'Session Room 2', 'Food court', 'Main entrance', 'Registration', 'First aid', 'Quiet room']) assert.ok(names.has(x), x);
+  for (const x of ['Hall A', 'Keynote Theater', 'Session Room 1', 'Session Room 2', 'Food court', 'Main entrance', 'Registration', 'First aid', 'Quiet room']) assert.ok(names.has(x), x);
   const src = fs.readFileSync(path.join(repo, 'apps/demo/src/worlds/convention/ConventionPublic.tsx'), 'utf8');
   for (const [booth, [name]] of Object.entries(C.EXHIBITORS)) { assert.ok(names.has(`Booth ${booth}`)); assert.ok(src.includes(`name: '${name}', booth: '${booth}'`), `${name} at ${booth}`); }
 });

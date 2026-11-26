@@ -51,7 +51,7 @@ export function serviceQueuePackage(w: S.Workspace, by: MadeBy): Report {
     scope: { tenant: SITE.enterprise, site: SITE.name, building: 'All buildings', floor: 'All floors', room: 'All rooms', roomId: '' },
     status: { label: crit.length ? 'Mission critical open' : open.length ? 'Requests open' : 'Queue clear', tone: crit.length ? 'bad' : open.length ? 'warn' : 'ok', why: `${plural(open.length, 'open request')}, ${crit.length} mission critical` },
     generatedAt: by.at, role: by.role, build: by.build, primary: 'Requests', provenance: PROV(by),
-    headline: `${plural(open.length, 'open request')} across ${plural(buildings.length, 'building')}; ${crit.length} mission critical, ${unassigned.length} unassigned, ${verifying.length} awaiting verification. ${all.length - open.length} closed or cancelled.`,
+    headline: `${plural(open.length, 'open request')} across ${plural(buildings.length, 'building')}; ${crit.length} mission critical, ${unassigned.length} unassigned, ${verifying.length} awaiting verification. ${all.length - open.length} closed or canceled.`,
     kpis: [
       { label: 'Open requests', value: String(open.length), note: `${all.length} on record` },
       { label: 'Mission critical open', value: String(crit.length), note: `held to ${SLA['Mission critical'].respond}` },

@@ -48,7 +48,7 @@ finds out by asking. `tests/browser/demo-connected.test.mjs` CN-14…16.
 1. Opens `#/connected` and presses **Open my sandbox**. The server creates a synthetic organization for that visitor: sixteen people
    (one for each of the fifteen roles and, since 18 Nov 2026, a second service technician whose field certificate is recorded and not
    yet verified), one site, one building, and a huddle room that has been designed, approved and installed by four of those people.
-   (The sandbox also holds the two engineering rooms of `#/flagship`: Lecture Theatre SCI-110 and Harbor 201 of the convention
+   (The sandbox also holds the two engineering rooms of `#/flagship`: Lecture Theater SCI-110 and Harbor 201 of the convention
    centre. This journey does not touch them.)
 2. Takes the room through nineteen steps. Each is made as the person whose work it is:
 

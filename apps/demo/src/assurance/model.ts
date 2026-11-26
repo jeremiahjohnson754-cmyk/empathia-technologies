@@ -288,7 +288,7 @@ export function maintenanceSignals(incidents: S.Incident[], recs = allRecords())
 // ------------------------------------------------------------------------------------------------------------ design reviews
 /** A design score from the engine's own design checks: 100, less 30 for each high finding, 12 for each medium and 5 for each low. */
 export const designScore = (r: RoomRecord) => Math.max(0, 100 - r.findings.reduce((a, f) => a + (f.severity === 'High' ? 30 : f.severity === 'Medium' ? 12 : 5), 0));
-export const REVIEW_RULE = 'A room is reviewed when its design score is under 70, or when a high design check fails. The score starts at 100 and loses 30 for each high finding of the engine’s design checks, 12 for each medium and 5 for each low. Modelled from the layout and the catalog.';
+export const REVIEW_RULE = 'A room is reviewed when its design score is under 70, or when a high design check fails. The score starts at 100 and loses 30 for each high finding of the engine’s design checks, 12 for each medium and 5 for each low. Modeled from the layout and the catalog.';
 export function designReviews(recs = allRecords()) {
   return recs.map((r) => ({ r, score: designScore(r), high: r.findings.some((f) => f.severity === 'High') })).filter((x) => x.score < 70 || x.high).sort((a, b) => a.score - b.score);
 }

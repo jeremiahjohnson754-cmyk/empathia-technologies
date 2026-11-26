@@ -61,7 +61,7 @@ export function Measure({ mode, done, prior, firstCall, onDone }: PlayProps & { 
   const ready = !left.length && (mode === 'before' || wrote);
   return <div className="fm-play" data-testid={`fm-play-${mode === 'before' ? 'measure' : 'verify'}`}>
     {mode === 'before' && firstCall === 'A' && <p className="fm-play__cons" data-testid="fm-cons-eq"><b>Because of your first call:</b> you cut the fill’s mids before measuring. Every reading below is of a changed system — the comparison you would need later is gone. You can still measure; the record will say so.</p>}
-    {mode === 'before' && firstCall === 'B' && rig.fill === 'off' && <p className="fm-play__cons" data-testid="fm-cons-off"><b>Because of your first call:</b> the fill is still off. Off, the centre is clear and the sides are thin — the hollowness people complain about is not there to measure. <button type="button" className="ui-btn ui-btn--sm" onClick={() => { setRig({ ...rig, fill: 'up' }); setMsg('The fill is back on.'); }} data-testid="fm-fill-on">Turn the fill back on</button></p>}
+    {mode === 'before' && firstCall === 'B' && rig.fill === 'off' && <p className="fm-play__cons" data-testid="fm-cons-off"><b>Because of your first call:</b> the fill is still off. Off, the center is clear and the sides are thin — the hollowness people complain about is not there to measure. <button type="button" className="ui-btn ui-btn--sm" onClick={() => { setRig({ ...rig, fill: 'up' }); setMsg('The fill is back on.'); }} data-testid="fm-fill-on">Turn the fill back on</button></p>}
     <div className="fm-play__grid">
       <SeatMap sel={sel} onPick={setSel} got={new Set(Object.keys(got))} show={show} />
       <div className="fm-play__side">
@@ -93,13 +93,13 @@ const CARDS = [
   { id: 9, when: 'Sep, 2 years ago', row: 8, seat: 12, text: 'Middle rows sound like the pastor is in a cupboard. — D.', canon: true },
   { id: 10, when: 'Dec, last year', row: 9, seat: 12, text: 'Still hollow in the middle.' },
   { id: 11, when: 'Mar, this year', row: 8, seat: 14, text: 'Moved seats, better on the aisle.' },
-  { id: 12, when: 'Jun, this year', row: 7, seat: 13, text: 'Hollow sound centre rows.' },
+  { id: 12, when: 'Jun, this year', row: 7, seat: 13, text: 'Hollow sound center rows.' },
 ];
 export function Cards({ done, onDone }: PlayProps) {
   const [plotted, setPlotted] = useState<number[]>([]); const [where, setWhere] = useState<string | null>(null); const [when, setWhen] = useState<string | null>(null);
   const all = plotted.length === CARDS.length; const right = where === 'centre' && when === 'after';
   return <div className="fm-play" data-testid="fm-play-cards">
-    <p className="ui-meta">The renovation finished in September, two years ago — when the new centre fill went up. <i>The cards are props for this scene; card nine is the story’s own.</i></p>
+    <p className="ui-meta">The renovation finished in September, two years ago — when the new center fill went up. <i>The cards are props for this scene; card nine is the story’s own.</i></p>
     <div className="fm-play__grid">
       <div className="fm-cards" role="list" aria-label="Comment cards">{CARDS.map((c) => { const on = plotted.includes(c.id); return <div role="listitem" key={c.id} className={`fm-card${on ? ' on' : ''}${c.canon ? ' canon' : ''}`}><p className="ui-meta">Card {c.id} · {c.when}</p><p>{c.text}</p><p className="ui-meta">row {c.row}, seat {c.seat}</p>
         <button type="button" className="ui-btn ui-btn--sm" disabled={on} onClick={() => setPlotted([...plotted, c.id])} data-testid={`fm-card-${c.id}`}>{on ? 'On the chart' : 'Plot it'}</button></div>; })}</div>
@@ -108,10 +108,10 @@ export function Cards({ done, onDone }: PlayProps) {
         {Array.from({ length: 11 }, (_, r) => Array.from({ length: 14 }, (_, c) => <circle key={`${r}-${c}`} cx={22 + c * 15} cy={30 + r * 13} r={2.5} className="fm-map__seat" />))}
         {plotted.map((id) => { const c = CARDS.find((x) => x.id === id)!; return <circle key={id} cx={22 + (c.seat - 5) * 15} cy={30 + (c.row - 1) * 13} r={5} className={`fm-chart__dot${c.stray ? ' stray' : ''}`} />; })}
       </svg>
-      {all && <fieldset className="fm-q" data-testid="fm-cards-q"><legend>Where do the complaints cluster?</legend>{[['front', 'Rows 1–3'], ['centre', 'Rows 7–9, centre'], ['aisles', 'Along the aisles'], ['everywhere', 'Everywhere']].map(([k, l]) => <label key={k}><input type="radio" name="fm-where" checked={where === k} onChange={() => setWhere(k!)} data-testid={`fm-where-${k}`} /> {l}</label>)}</fieldset>}
+      {all && <fieldset className="fm-q" data-testid="fm-cards-q"><legend>Where do the complaints cluster?</legend>{[['front', 'Rows 1–3'], ['centre', 'Rows 7–9, center'], ['aisles', 'Along the aisles'], ['everywhere', 'Everywhere']].map(([k, l]) => <label key={k}><input type="radio" name="fm-where" checked={where === k} onChange={() => setWhere(k!)} data-testid={`fm-where-${k}`} /> {l}</label>)}</fieldset>}
       {all && <fieldset className="fm-q"><legend>When did they start?</legend>{[['before', 'Before the renovation'], ['after', 'Just after the renovation'], ['recent', 'Only this year']].map(([k, l]) => <label key={k}><input type="radio" name="fm-when" checked={when === k} onChange={() => setWhen(k!)} data-testid={`fm-when-${k}`} /> {l}</label>)}</fieldset>}
       {all && where && when && !right && <p className="fm-play__cons" data-testid="fm-cards-wrong">Look again at the dots and the dates: the stray cards are about other things.</p>}
-      {right && <p className="fm-play__ok" data-testid="fm-cards-right">A tight cluster in rows 7 to 9, centre — starting just after the renovation.</p>}</div>
+      {right && <p className="fm-play__ok" data-testid="fm-cards-right">A tight cluster in rows 7 to 9, center — starting just after the renovation.</p>}</div>
     </div>
     <p className="fm-play__acts">{done ? <span className="ui-tag" data-testid="fm-play-done">Recorded{done.assisted ? ' (shown)' : ''}</span> : <>
       <button type="button" className="ui-btn ui-btn--primary" disabled={!right} onClick={() => onDone({ done: true, assisted: false, evidence: 'EV-CASE001-01', caveat: null, data: { plotted: plotted.length } })} data-testid="fm-play-finish">Show Ray the chart</button>

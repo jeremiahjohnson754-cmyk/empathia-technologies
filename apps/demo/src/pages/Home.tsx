@@ -328,7 +328,7 @@ function MissionControl({ role }: PageProps) {
           </section>
         </Group>
       </section>
-      <p className="ui-meta mc-foot">Every figure on this page is computed from the demonstration’s synthetic records ({c.rooms} room records, the programme, the service workspace) when the page opens; nothing is measured or monitored. {roomById('R-ATL-4-218') ? 'Atlas 4.218 is the complete reference record.' : ''} <button type="button" className="mc-link" data-testid="mc-intro-again" onClick={() => { forgetIntro(); dispatchEvent(new Event(INTRO_EVENT)); scrollTo({ top: 0 }); }}>Show the introduction again</button></p>
+      <p className="ui-meta mc-foot">Every figure on this page is computed from the demonstration’s synthetic records ({c.rooms} room records, the program, the service workspace) when the page opens; nothing is measured or monitored. {roomById('R-ATL-4-218') ? 'Atlas 4.218 is the complete reference record.' : ''} <button type="button" className="mc-link" data-testid="mc-intro-again" onClick={() => { forgetIntro(); dispatchEvent(new Event(INTRO_EVENT)); scrollTo({ top: 0 }); }}>Show the introduction again</button></p>
     </section>
   );
 }

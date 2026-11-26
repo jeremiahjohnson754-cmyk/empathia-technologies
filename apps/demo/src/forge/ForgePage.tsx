@@ -59,7 +59,7 @@ export default function ForgePage({ role, params, can }: PageProps) {
       {opens('#/commissioning/room') ? <a href={`#/commissioning/room/${p.roomId}`} data-testid="forge-to-cx">Where the room is accepted</a> : null}</p> : null}
     {!p.designed ? <Notice tone="warn"><span data-testid="forge-nodesign"><b>Nothing to compile.</b> No equipment has been designed for this room, so FORGE derives no bill of materials, paths, installation list or acceptance plan, and there is nothing to approve.</span></Notice> : null}
     {p.designed ? <section className="vc-sec" aria-labelledby="fg-c-h"><h2 id="fg-c-h">Device configuration</h2>
-      <p className="vc-verdict vc-verdict--outside_policy" data-testid="forge-config-says"><b>{p.configs.length} of {p.configs.length} configuration targets rejected.</b> FORGE generates configuration only for an approved catalogue model with a vendor-verified capability pack. There are {CAPABILITY_PACKS.length} such packs.</p>
+      <p className="vc-verdict vc-verdict--outside_policy" data-testid="forge-config-says"><b>{p.configs.length} of {p.configs.length} configuration targets rejected.</b> FORGE generates configuration only for an approved catalog model with a vendor-verified capability pack. There are {CAPABILITY_PACKS.length} such packs.</p>
       <details><summary>The {p.configs.length} targets and the reason</summary><ul className="vc-next" data-testid="forge-configs">{p.configs.map((c) => <li key={c.position} data-status={c.status}><b>{c.position} {c.label}</b> · {c.device}<br /><span className="ui-muted">{c.why}</span></li>)}</ul></details>
     </section> : null}
     <section className="vc-sec vc-two" aria-label="Checks, changes and approval">
@@ -72,6 +72,6 @@ export default function ForgePage({ role, params, can }: PageProps) {
           : <p className="ui-muted" data-testid="forge-noapprove">Not approved. {rule.why}</p>}
         <p className="ui-muted">Kept in this browser (demonstration). Approval here does not accept the room: acceptance is Commissioning’s, with its own evidence and its own second person.</p></div>
     </section>
-    <Notice tone="muted"><b>Not built:</b> import and reconciliation of CAD, Revit or Visio extracts, an approved device catalogue, capability packs, and export of the package as files. Each will say what it could not read instead of guessing.</Notice>
+    <Notice tone="muted"><b>Not built:</b> import and reconciliation of CAD, Revit or Visio extracts, an approved device catalog, capability packs, and export of the package as files. Each will say what it could not read instead of guessing.</Notice>
   </div>);
 }

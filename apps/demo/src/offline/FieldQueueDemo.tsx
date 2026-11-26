@@ -80,7 +80,7 @@ export function FieldQueueDemo({ online }: { online: boolean }) {
         <section aria-labelledby="fq-dev-h" data-testid="fq-device" data-up={up}>
           <h3 className="of-h3" id="fq-dev-h">On this device · Atlas 4.218</h3>
           <ul className="fq-tests" aria-label="Tests to record">{TESTS.map((t) => <li key={t}><span>{t}</span><span className="fq-acts"><Button small onClick={() => record(t, 'PASS')} testId="fq-pass">Record PASS</Button><Button small onClick={() => record(t, 'FAIL')} testId="fq-fail">Record FAIL</Button></span></li>)}</ul>
-          <p className="fq-count" data-testid="fq-counted" data-counted={counted} data-recorded={live}><b>{counted} of {live}</b> recorded here {live === 1 ? 'counts' : 'count'} towards the room’s record.{sum.needsPerson ? ` ${sum.needsPerson} need${sum.needsPerson === 1 ? 's' : ''} your decision.` : ''}</p>
+          <p className="fq-count" data-testid="fq-counted" data-counted={counted} data-recorded={live}><b>{counted} of {live}</b> recorded here {live === 1 ? 'counts' : 'count'} toward the room’s record.{sum.needsPerson ? ` ${sum.needsPerson} need${sum.needsPerson === 1 ? 's' : ''} your decision.` : ''}</p>
           {list.length ? <ol className="fq-list" data-testid="fq-entries">{list.map((e) => { const b = e.body as { test: string; outcome: string }; const held = e.state === 'WAITING' && list.some((x) => x.record === e.record && x.seq < e.seq && isOpen(x) && (x.state === 'CONFLICT' || x.state === 'REJECTED')); return (
             <li key={e.id} data-testid="fq-entry" data-state={e.state} data-attempts={e.attempts}>
               <div className="fq-entry__h"><b>{b.outcome}</b> · {b.test}<span className={`ui-tag ui-tone--${TONE[e.state]}`}>{WORD[e.state]}</span></div>

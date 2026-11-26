@@ -57,11 +57,11 @@ export const FLOW = {
       configured: { state: 'DECLARED', source: 'Estate edge SW-ATL-CORE FEEDS SW-ATL-4A: network design' },
       observed: { state: 'SIMULATED', source: 'Simulated uplink interface counters (fixture VQ-FX-01): discards rising on the ATL-4A uplink', at: '2026-11-23T15:04:30Z' } },
     { id: 'hop-wan', layer: 'wan', label: 'QoS policy and WAN edge', ref: ref('NetworkNode', 'WAN-NORTH-1'),
-      configured: { state: 'DECLARED', source: 'Calling policy CP-NORTH-VOICE: voice class marked and prioritised at the edge' },
+      configured: { state: 'DECLARED', source: 'Calling policy CP-NORTH-VOICE: voice class marked and prioritized at the edge' },
       observed: { state: 'UNKNOWN', source: 'No collector is configured at the WAN edge. Nothing is known about this hop.' } },
     { id: 'hop-sbc', layer: 'sbc', label: 'Session border controller NORTH-1', ref: ref('SBC', 'SBC-NORTH-1'),
       configured: { state: 'DECLARED', source: 'The north site’s trunk record terminates on this controller' },
-      observed: { state: 'SIMULATED', source: 'Simulated SBC session record (fixture VQ-FX-01)', at: '2026-11-23T15:02:12Z' }, admin: 'Trunk TRK-NORTH-A · signalling peer address withheld in the demonstration' },
+      observed: { state: 'SIMULATED', source: 'Simulated SBC session record (fixture VQ-FX-01)', at: '2026-11-23T15:02:12Z' }, admin: 'Trunk TRK-NORTH-A · signaling peer address withheld in the demonstration' },
     { id: 'hop-provider', layer: 'provider', label: 'UC provider connection A (fictional)', ref: ref('UCProviderConnection', 'UCP-A'),
       configured: { state: 'DECLARED', source: 'Provider connection record UCP-A (a fictional provider; no real carrier or product is named)' },
       observed: { state: 'SIMULATED', source: 'Simulated provider call-quality record (fixture VQ-FX-01)', at: '2026-11-23T15:05:00Z' }, admin: 'Connector: MOCK (no real provider API is called)' },
@@ -83,7 +83,7 @@ export const FLOW_MER = {
     { id: 'hop-access', layer: 'access', label: 'Access switch (not recorded)', ref: ref('NetworkNode', 'UNRECORDED-MER-ACCESS'),
       configured: { state: 'UNKNOWN', source: 'The estate holds no network record for Meridian R&D. VOICE does not guess one.' }, observed: { state: 'UNKNOWN', source: 'No observation.' } },
     { id: 'hop-wan', layer: 'wan', label: 'QoS policy and WAN edge', ref: ref('NetworkNode', 'WAN-NORTH-1'),
-      configured: { state: 'DECLARED', source: 'Calling policy CP-NORTH-VOICE: voice class marked and prioritised at the edge' }, observed: { state: 'UNKNOWN', source: 'No collector is configured at the WAN edge.' } },
+      configured: { state: 'DECLARED', source: 'Calling policy CP-NORTH-VOICE: voice class marked and prioritized at the edge' }, observed: { state: 'UNKNOWN', source: 'No collector is configured at the WAN edge.' } },
     { id: 'hop-sbc', layer: 'sbc', label: 'Session border controller NORTH-1', ref: ref('SBC', 'SBC-NORTH-1'),
       configured: { state: 'DECLARED', source: 'The site’s trunk record terminates on this controller' }, observed: { state: 'UNKNOWN', source: 'No session observed.' }, admin: 'Trunk TRK-NORTH-A' },
     { id: 'hop-provider', layer: 'provider', label: 'UC provider connection A (fictional)', ref: ref('UCProviderConnection', 'UCP-A'),
@@ -224,7 +224,7 @@ export const VOICE_SUMMARY: readonly RoleKey[] = ['exec'];
 export const SITE_SCOPED: readonly RoleKey[] = ['ucadmin', 'service', 'svcmgr'];
 export const inScope = (role: RoleKey, building: string): boolean => !SITE_SCOPED.includes(role) || VOICE_SITE_SCOPE.includes(building);
 export const viewOf = (role: RoleKey): VoiceView => (VOICE_ADMIN.includes(role) ? 'administration' : VOICE_OPS.includes(role) ? 'operations' : VOICE_SUMMARY.includes(role) ? 'summary' : 'none');
-export const WHY = 'Enterprise 3.0 directive 1A and founder decision E3-D2 (23 Nov 2026): the UC / Voice Administrator reads routing, quality and signalling for the sites in their scope; operations and service roles read the path without signalling detail; an executive reads aggregates; a caller reports and follows only their own issue';
+export const WHY = 'Enterprise 3.0 directive 1A and founder decision E3-D2 (23 Nov 2026): the UC / Voice Administrator reads routing, quality and signaling for the sites in their scope; operations and service roles read the path without signaling detail; an executive reads aggregates; a caller reports and follows only their own issue';
 export const WHY_SCOPE = `${WHY}. This room is on a site outside the scope of the UC / Voice Administrator and the service team`;
 
 /** Adapter contracts and where each stands. Nothing here is connected: CONTRACT_ONLY means a specification exists and no code calls the vendor. */

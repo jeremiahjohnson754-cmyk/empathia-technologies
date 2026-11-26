@@ -8,17 +8,17 @@ export const VIEW = [600, 400] as const;
 const b = (id: string, label: string, short: string, x: number, y: number, w: number, h: number, kind = 'building'): Zone => ({ id, label, short, x, y, w, h, kind });
 export const ZONES: Zone[] = [
   { id: 'quad', label: 'The Quad', short: 'Quad', x: 215, y: 150, w: 170, h: 100, kind: 'green', round: true },
-  b('WEL', 'Welcome Centre', 'Welcome', 30, 300, 110, 60), b('LIB', 'Hollis Library', 'Library', 230, 40, 140, 70), b('SCI', 'Science Hall', 'Science', 420, 60, 130, 70),
-  b('ENG', 'Engineering Centre', 'Engineering', 440, 180, 130, 70), b('UNI', 'Student Union', 'Union', 230, 290, 140, 70), b('ART', 'Arts Hall', 'Arts', 40, 60, 130, 70),
+  b('WEL', 'Welcome Center', 'Welcome', 30, 300, 110, 60), b('LIB', 'Hollis Library', 'Library', 230, 40, 140, 70), b('SCI', 'Science Hall', 'Science', 420, 60, 130, 70),
+  b('ENG', 'Engineering Center', 'Engineering', 440, 180, 130, 70), b('UNI', 'Student Union', 'Union', 230, 290, 140, 70), b('ART', 'Arts Hall', 'Arts', 40, 60, 130, 70),
   b('RES', 'Residence Court', 'Residence', 40, 170, 120, 80), b('SPT', 'Sports Pavilion', 'Sports', 430, 300, 130, 60),
 ];
 export interface Spot { id: string; label: string; at: Pt; steps: boolean; about: string }
 const c = (id: string): Pt => { const z = ZONES.find((x) => x.id === id)!; return [z.x + z.w / 2, z.y + z.h / 2]; };
 export const SPOTS: Spot[] = [
-  { id: 'WEL', label: 'Welcome Centre', at: c('WEL'), steps: false, about: 'Visitor desk, tours and parking validation' },
+  { id: 'WEL', label: 'Welcome Center', at: c('WEL'), steps: false, about: 'Visitor desk, tours and parking validation' },
   { id: 'LIB', label: 'Hollis Library', at: c('LIB'), steps: true, about: 'Study floors and the quiet reading room' },
-  { id: 'SCI', label: 'Science Hall', at: c('SCI'), steps: false, about: 'Lecture theatre SCI-110 and teaching labs' },
-  { id: 'ENG', label: 'Engineering Centre', at: c('ENG'), steps: false, about: 'Maker studio and electronics labs' },
+  { id: 'SCI', label: 'Science Hall', at: c('SCI'), steps: false, about: 'Lecture theater SCI-110 and teaching labs' },
+  { id: 'ENG', label: 'Engineering Center', at: c('ENG'), steps: false, about: 'Maker studio and electronics labs' },
   { id: 'UNI', label: 'Student Union', at: c('UNI'), steps: false, about: 'Dining hall, societies and the shuttle stop' },
   { id: 'ART', label: 'Arts Hall', at: c('ART'), steps: true, about: 'Recital room and studios' },
   { id: 'RES', label: 'Residence Court', at: c('RES'), steps: false, about: 'First-year residences' },
@@ -54,7 +54,7 @@ export function route(from: string, to: string, mode: Mode, stepFree: boolean): 
 // ---- a sample student's day (synthetic; shown only to the Student configuration)
 export const CLASSES = [
   { at: '09:00', what: 'Circuits and Signals — lecture', where: 'Science Hall, SCI-110', spot: 'SCI' },
-  { at: '11:00', what: 'Engineering Design — studio', where: 'Engineering Centre, maker studio', spot: 'ENG' },
+  { at: '11:00', what: 'Engineering Design — studio', where: 'Engineering Center, maker studio', spot: 'ENG' },
   { at: '14:00', what: 'Writing for Engineers — seminar', where: 'Arts Hall, room 204', spot: 'ART' },
 ];
 export const REMINDERS = [{ id: 'r1', text: 'Circuits problem set 4 is due Friday (a pointer to your course site, not the work itself)' }, { id: 'r2', text: 'Library book due tomorrow' }, { id: 'r3', text: 'Advising drop-in, Thursday 15:00, Student Union' }];

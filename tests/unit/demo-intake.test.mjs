@@ -167,7 +167,7 @@ test('IN-14 a request in the person’s own words goes to the AV operations team
 test('IN-15 a size the person gives is used and labelled as theirs; half a size or a nonsense one is refused, never guessed', () => {
   const base = { use: 'meet', people: 8, need: 'A room for eight' };
   const g = I.propose(I.blank('new-room', { ...base, dims: { w: 5, l: 7.5, h: null } })); assert.equal(g.w, 5); assert.equal(g.l, 7.5); assert.match(g.basis[0], /Size as you gave it: 5 × 7.5 m; ceiling modelled/);
-  const m = I.propose(I.blank('new-room', base)); assert.match(m.basis[0], /^Size modelled from/);
+  const m = I.propose(I.blank('new-room', base)); assert.match(m.basis[0], /^Size modeled from/);
   assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 5, l: null, h: null } })).dims, 'one side only'); assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 500, l: 7, h: null } })).dims, 'out of range');
   assert.ok(I.problems(I.blank('new-room', { ...base, dims: { w: 5, l: 7, h: 1 } })).dims, 'a ceiling of 1 m');
   const other = I.blank('new-room', { ...base, building: I.OTHER_BUILDING, floor: 3 }); assert.ok(I.problems(other).building, 'a building not on record needs its name');

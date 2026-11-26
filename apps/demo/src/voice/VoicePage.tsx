@@ -9,7 +9,7 @@ import { canOpen } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
 import { ADAPTERS, CASES, FLOW, NEVER, OTHER_SITE_ROOM, SESSION, SHARED_LINK, caseView, viewOf } from './model.js';
 
-const VIEW_SAYS = { administration: 'You are reading as voice administration: routing, quality and signalling-side detail, for the sites in your scope.', operations: 'You are reading as operations or service: the path and the samples, without session tokens or signalling-side detail.', summary: 'You are reading the summary: no session, endpoint or signalling detail.', none: '' } as const;
+const VIEW_SAYS = { administration: 'You are reading as voice administration: routing, quality and signaling-side detail, for the sites in your scope.', operations: 'You are reading as operations or service: the path and the samples, without session tokens or signaling-side detail.', summary: 'You are reading the summary: no session, endpoint or signaling detail.', none: '' } as const;
 
 export default function VoicePage({ role }: PageProps) {
   const view = viewOf(role); const opens = (h: string) => { const r = resolve(h); return !!r && canOpen(role, r); };

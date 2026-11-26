@@ -53,7 +53,7 @@ export default function GameDayPage({ role, query }: PageProps) {
         {mayOpenSignal(config.id) ? <a className="ui-btn ui-btn--primary" href={signalHref(config.id, signal.step === 'FIXED' ? 'verify' : 'alert')} data-testid="gameday-alert-open">Open the incident</a>
           : <span className="ui-meta">Worked by the broadcast and engineering roles, and checked by the production or operations lead.</span>}
       </div>}
-      <ul className="es-totals" data-testid="gameday-numbers"><li><b>{nf(n.inside)}</b> inside of {nf(62200)}</li><li><b>{n.concoursePct}%</b> concourse load</li><li><b>{nf(n.staffTotal)}</b> staff on post</li><li>Programme feed <b>{n.program.toLowerCase()}</b></li><li><b>{n.openIncidents}</b> open incident{n.openIncidents === 1 ? '' : 's'}</li></ul>
+      <ul className="es-totals" data-testid="gameday-numbers"><li><b>{nf(n.inside)}</b> inside of {nf(62200)}</li><li><b>{n.concoursePct}%</b> concourse load</li><li><b>{nf(n.staffTotal)}</b> staff on post</li><li>Program feed <b>{n.program.toLowerCase()}</b></li><li><b>{n.openIncidents}</b> open incident{n.openIncidents === 1 ? '' : 's'}</li></ul>
       <p className="w-skip">
         {next && <button type="button" className="ui-btn ui-btn--primary w-btn" data-testid="gameday-advance" aria-describedby="gd-hold" onClick={() => apply(advance(g), `${PHASE[next].label}.`)}>Move to {PHASE[next].label.toLowerCase()}</button>}
         <button type="button" className="ui-btn ui-btn--quiet w-btn" data-testid="gameday-reset" onClick={() => { const s = start(); setG(s); keep(s); setSaid('A fresh event day.'); }}>Start the day again</button>

@@ -86,7 +86,7 @@ function Outcome({ input, role, can, sees }: { input: string } & Pick<PageProps,
   // not one of the hub's labels: an identifier of the estate's own records, when it is typed bare and this role may read that type
   const rec = p.tenant === null ? core.get(p.id) : undefined;
   if (rec && canEntity(role, rec.type)) return <div data-testid="scan-record"><Card title={rec.name} sub={rec.sub} icon="link" action={<Chip small tone="warn">Synthetic</Chip>}><p className="pf-note">{p.id} is a record of the demonstration estate. It opens in its own passport.</p><div className="pf-actions"><a className="ui-btn ui-btn--primary" href={rec.href || recHref(rec)}>Open {rec.name}</a>{roomById(p.id) && hereOpens(role) && <a className="ui-btn" href={`#/here/${p.id}`} data-testid="scan-here">I am in this room</a>}</div></Card></div>;
-  return <div data-testid="scan-notfound"><EmptyState title="No label with that identifier" icon="search">Nothing opens for <code>{p.id}</code>. A label that belongs to another organisation reads exactly the same way: whether it exists elsewhere is not disclosed.</EmptyState></div>;
+  return <div data-testid="scan-notfound"><EmptyState title="No label with that identifier" icon="search">Nothing opens for <code>{p.id}</code>. A label that belongs to another organization reads exactly the same way: whether it exists elsewhere is not disclosed.</EmptyState></div>;
 }
 
 export default function QrHub({ role, params, query, can, sees }: PageProps) {

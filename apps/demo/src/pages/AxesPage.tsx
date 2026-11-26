@@ -6,7 +6,7 @@ import { PageHero, Card, ConditionChip, ProvenanceChip, ConfidenceChip, Workflow
 
 export default function AxesPage() {
   return <section className="stack" data-native="" data-testid="axes-page">
-    <PageHero compact eyebrow="Design language" title="Five axes, never one colour" lede="A screen can say five different things about a value. Each has its own shape and always says its value in words, so one is never read as another." />
+    <PageHero compact eyebrow="Design language" title="Five axes, never one color" lede="A screen can say five different things about a value. Each has its own shape and always says its value in words, so one is never read as another." />
     <Card title="Condition" sub="What state the thing is in now. Not where the value came from." testId="axes-condition"><p className="ax-row">{AXES.conditions.map((v) => <ConditionChip key={v} value={v} />)}</p></Card>
     <Card title="Provenance" sub="Where the value came from. Not whether it is good or bad." testId="axes-provenance"><p className="ax-row">{AXES.provenances.map((v) => <ProvenanceChip key={v} value={v} />)}</p></Card>
     <Card title="Confidence" sub="How good the method is, in words, with its bounds. Never an invented percentage." testId="axes-confidence"><p className="ax-row"><ConfidenceChip method="Calibrated class 1 meter" bounds="±0.7 dB, calibrated 2026-06" /><ConfidenceChip method="Class template radius" bounds="spec to verify" /><ConfidenceChip method="Sabine estimate" bounds="assumed finishes" /></p></Card>

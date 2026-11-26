@@ -36,7 +36,7 @@ for (const scheme of SCHEMES) for (const vp of VIEWPORTS) {
   const fl = await t.page.evaluate(() => ({ plan: !!document.querySelector('[data-testid="lite-floorplan"]'), tiles: document.querySelectorAll('[data-testid="lite-floorplan"] a').length, cards: document.querySelectorAll('[data-testid^="lite-room-"]').length }));
   ok(`LT-${tag}-05`, 'a floor shows its rooms on a floor plan and as cards (same count)', fl.plan && fl.tiles >= 2 && fl.tiles === fl.cards, JSON.stringify(fl));
   // 10 Nov 2026: NST floor 3, not floor 1: the 90-room estate put two rooms on floor 1, so it is no longer an empty floor
-  await t.go('#/lite/b/NST/3'); ok(`LT-${tag}-06`, 'an empty floor says so rather than going blank', /No modelled room on this floor/.test(await t.text()), (await t.text()).slice(0, 100));
+  await t.go('#/lite/b/NST/3'); ok(`LT-${tag}-06`, 'an empty floor says so rather than going blank', /No modeled room on this floor/.test(await t.text()), (await t.text()).slice(0, 100));
   // the rooms: all 90 at desktop (45 until 10 Nov 2026), a sample on phone and tablet
   const list = vp[2] === 'desktop' ? ids : SAMPLE; const bad = [];
   for (const id of list) {
@@ -263,7 +263,7 @@ for (const scheme of SCHEMES) {
   const heads = await p.evaluate(() => Array.from(document.querySelectorAll('[data-testid="lite-card"] .lt-card__h')).map((h) => h.textContent));
   const figs = await p.getByTestId('lite-card-figs').innerText(); const cx = await p.getByTestId('lite-card-cx').innerText();
   await p.getByTestId('lite-card-move').click(); await p.waitForTimeout(200); const tool = await p.getByTestId('lite-tool').inputValue();
-  ok(`LT-${scheme}-X11`, 'the object card adds V2.5.3’s catalogue figures (declared, not a datasheet), the room standard and the commissioning row; “Move this” picks the device in “Change the room”', heads.some((h) => /^Catalogue figures/.test(h)) && heads.includes('Commissioning') && /networked|mount/.test(figs) && /Baseline v\d|No commissioning baseline/.test(cx) && tool === code, JSON.stringify([heads, figs, cx, tool, code]));
+  ok(`LT-${scheme}-X11`, 'the object card adds V2.5.3’s catalogue figures (declared, not a datasheet), the room standard and the commissioning row; “Move this” picks the device in “Change the room”', heads.some((h) => /^Catalog figures/.test(h)) && heads.includes('Commissioning') && /networked|mount/.test(figs) && /Baseline v\d|No commissioning baseline/.test(cx) && tool === code, JSON.stringify([heads, figs, cx, tool, code]));
   ok(`LT-${scheme}-X12`, 'no page error, no request left the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].slice(0, 3).join(' | '));
   await t.close();
 }

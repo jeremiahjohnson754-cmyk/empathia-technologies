@@ -24,7 +24,7 @@ export const CATEGORIES: ReadonlyArray<{ id: Category; label: string; blurb: str
   { id: 'network', label: 'Network', blurb: 'Subnets, PoE and AV-over-IP' },
   { id: 'cabling', label: 'Cabling', blurb: 'Fiber budgets and copper limits' },
   { id: 'lighting', label: 'Lighting', blurb: 'Illuminance and luminance' },
-  { id: 'project', label: 'Project and crew', blurb: 'Labour and schedule arithmetic' },
+  { id: 'project', label: 'Project and crew', blurb: 'Labor and schedule arithmetic' },
   { id: 'convert', label: 'Convert', blurb: 'Units site work keeps asking for' },
 ];
 
@@ -127,12 +127,12 @@ const contrastLumens: Tool = {
     { id: 'cr', label: 'Contrast target', kind: 'select', options: [{ value: '7', label: 'Passive viewing (7:1)' }, { value: '15', label: 'Basic decision making (15:1)' }, { value: '50', label: 'Analytical decision making (50:1)' }, { value: '80', label: 'Full-motion video (80:1)' }], default: '15' },
     { id: 'gain', label: 'Screen gain', default: 1, step: 0.1 }, { id: 'have', label: 'Your projector (optional)', unit: 'lm', default: 0 }],
   run: (v) => { const [aw, ah] = aspect(v.aspect); const area = n(v.w) * n(v.w) * ah / aw; const amb = n(v.fc) * n(v.gain, 1); const cr = n(v.cr, 15); const lm = (cr - 1) * amb * area / n(v.gain, 1); const have = n(v.have);
-    const out: Out[] = [{ label: 'Image area', value: `${fmt(area, 1)} ft²` }, { label: 'Ambient luminance off the screen', value: `${fmt(amb, 1)} fL (${fmt(amb * 3.426, 0)} nits)` }, { label: 'Lumens on the screen', value: `${fmt(lm, 0)} lm`, key: true }, { label: 'With 20 % for lamp/laser ageing', value: `${fmt(lm * 1.2, 0)} lm` }];
+    const out: Out[] = [{ label: 'Image area', value: `${fmt(area, 1)} ft²` }, { label: 'Ambient luminance off the screen', value: `${fmt(amb, 1)} fL (${fmt(amb * 3.426, 0)} nits)` }, { label: 'Lumens on the screen', value: `${fmt(lm, 0)} lm`, key: true }, { label: 'With 20 % for lamp/laser aging', value: `${fmt(lm * 1.2, 0)} lm` }];
     if (have > 0) { const got = 1 + have * n(v.gain, 1) / area / Math.max(1e-9, amb); out.push({ label: 'Contrast with your projector', value: `${fmt(got, 1)} : 1`, tone: got >= cr ? 'ok' : 'bad', note: got >= cr ? 'meets the target' : 'below the target: more lumens, less ambient light, or a smaller image' }); }
     return R(out, [`area = ${fmt(n(v.w), 1)} ft × ${fmt(n(v.w) * ah / aw, 2)} ft = ${fmt(area, 1)} ft²`, `ambient = ${fmt(n(v.fc), 1)} fc × gain ${n(v.gain, 1)} = ${fmt(amb, 1)} fL`, `projected luminance needed = (CR − 1) × ambient = ${cr - 1} × ${fmt(amb, 1)} fL = ${fmt((cr - 1) * amb, 1)} fL`, `lumens = fL × area ÷ gain = ${fmt(lm, 0)} lm`]); },
   formula: ['CR = (L_image + L_ambient) ÷ L_ambient', 'L_image = (CR − 1) · L_ambient', 'lm = L_image(fL) · A(ft²) ÷ gain', 'L_ambient(fL) = E(fc) · gain'],
   basis: 'Contrast is (image + ambient) over ambient on the same screen. A matte (gain 1) screen returns foot-candles as foot-lamberts; a gain screen multiplies both. The four targets are the content categories AVIXA uses for projected image contrast; its standard (ANSI/AVIXA 3M-2011) defines the measurement.',
-  caution: 'Lumens on the data sheet are measured new, at the centre of a full-white field: plan for ageing and uniformity.',
+  caution: 'Lumens on the data sheet are measured new, at the center of a full-white field: plan for aging and uniformity.',
 };
 
 const luminance: Tool = {
@@ -179,7 +179,7 @@ const bandwidth: Tool = {
   id: 'video-bandwidth', category: 'signal', title: 'Video bandwidth', summary: 'Uncompressed data rate of a video format, and which links carry it.', cts: ['CTS', 'CTS-D', 'CTS-I'],
   fields: [{ id: 'res', label: 'Resolution', kind: 'select', options: Object.keys(TIMINGS).map((k) => ({ value: k, label: k.replace('x', ' × ') })), default: '3840x2160' },
     { id: 'fps', label: 'Frame rate', kind: 'select', options: ['24', '25', '30', '50', '59.94', '60', '120'].map((x) => ({ value: x, label: `${x} Hz` })), default: '60' },
-    { id: 'bpc', label: 'Bit depth', kind: 'select', options: ['8', '10', '12'].map((x) => ({ value: x, label: `${x} bits per colour` })), default: '8' },
+    { id: 'bpc', label: 'Bit depth', kind: 'select', options: ['8', '10', '12'].map((x) => ({ value: x, label: `${x} bits per color` })), default: '8' },
     { id: 'chroma', label: 'Chroma', kind: 'select', options: [{ value: '3', label: '4:4:4 / RGB' }, { value: '2', label: '4:2:2' }, { value: '1.5', label: '4:2:0' }], default: '3' }],
   run: (v) => { const t = TIMINGS[s(v.res)] ?? TIMINGS['1920x1080']!; const bpp = n(v.bpc, 8) * n(v.chroma, 3); const fps = n(v.fps, 60);
     const active = t.ha * t.va * fps * bpp / 1e9; const total = t.ht * t.vt * fps * bpp / 1e9; const pclk = t.ht * t.vt * fps / 1e6;
@@ -187,7 +187,7 @@ const bandwidth: Tool = {
       ...LINKS.map((l): Out => ({ label: l.name, value: total <= l.gbps ? `fits (${l.gbps} Gb/s)` : `too much (${l.gbps} Gb/s)`, tone: total <= l.gbps ? 'ok' : 'bad', note: l.note }))],
       [`bits per pixel = ${n(v.bpc, 8)} × ${n(v.chroma, 3)} = ${bpp}`, `total = ${t.ht} × ${t.vt} (${t.std} timing) × ${fps} × ${bpp} = ${fmt(total, 2)} Gb/s`, `active = ${t.ha} × ${t.va} × ${fps} × ${bpp} = ${fmt(active, 2)} Gb/s`],
       ['SDI carries active video with its own ancillary space, and DSC or chroma subsampling changes what a link can take: treat “fits” as a first check, not a guarantee']); },
-  formula: ['bpp = bits per colour × samples per pixel (3, 2 or 1.5)', 'rate = H_total · V_total · f · bpp', 'pixel clock = H_total · V_total · f'],
+  formula: ['bpp = bits per color × samples per pixel (3, 2 or 1.5)', 'rate = H_total · V_total · f · bpp', 'pixel clock = H_total · V_total · f'],
   basis: 'Uncompressed rate including blanking (the interval links still clock through), compared with each link’s payload after line coding.',
 };
 
@@ -195,10 +195,10 @@ const bandwidth: Tool = {
 const splAtListener: Tool = {
   id: 'spl-listener', category: 'audio', title: 'SPL at the listener', summary: 'Maximum level a loudspeaker delivers at a distance from its sensitivity and power.', cts: ['CTS', 'CTS-D', 'CTS-I'],
   fields: [{ id: 'sens', label: 'Sensitivity (1 W at 1 m)', unit: 'dB SPL', default: 97 }, { id: 'p', label: 'Amplifier power into the speaker', unit: 'W', default: 250 }, { id: 'd', label: 'Distance to listener', default: 15 }, { id: 'u', label: 'Unit', kind: 'select', options: UNIT_LEN, default: 'm' },
-    { id: 'max', label: 'Speaker’s rated max SPL (optional)', unit: 'dB', default: 0 }, { id: 'head', label: 'Headroom for programme', unit: 'dB', default: 10 }],
+    { id: 'max', label: 'Speaker’s rated max SPL (optional)', unit: 'dB', default: 0 }, { id: 'head', label: 'Headroom for program', unit: 'dB', default: 10 }],
   run: (v) => { const d = toM(n(v.d), v.u); const at1 = n(v.sens) + db10(Math.max(1e-9, n(v.p))); const capped = n(v.max) > 0 ? Math.min(at1, n(v.max)) : at1; const at = capped - db20(Math.max(1e-9, d) / 1);
     return R([{ label: 'Max SPL at 1 m', value: `${fmt(capped, 1)} dB`, note: n(v.max) > 0 && at1 > n(v.max) ? `limited by the rated max (${n(v.max)} dB)` : undefined }, { label: 'Distance', value: lenBoth(d) },
-      { label: 'Max SPL at the listener', value: `${fmt(at, 1)} dB`, key: true }, { label: `Programme level (− ${n(v.head)} dB headroom)`, value: `${fmt(at - n(v.head), 1)} dB`, key: true }],
+      { label: 'Max SPL at the listener', value: `${fmt(at, 1)} dB`, key: true }, { label: `Program level (− ${n(v.head)} dB headroom)`, value: `${fmt(at - n(v.head), 1)} dB`, key: true }],
       [`10·log(${n(v.p)} W) = ${fmt(db10(n(v.p)), 1)} dB → ${n(v.sens)} + ${fmt(db10(n(v.p)), 1)} = ${fmt(at1, 1)} dB at 1 m`, `20·log(${fmt(d, 2)} m ÷ 1 m) = ${fmt(db20(d), 1)} dB lost`, `${fmt(capped, 1)} − ${fmt(db20(d), 1)} = ${fmt(at, 1)} dB`]); },
   formula: ['SPL₁ₘ = S + 10·log(P)', 'SPL_d = SPL₁ₘ − 20·log(d ÷ 1 m)'], basis: 'Power doubles → +3 dB; distance doubles → −6 dB (point source, free field). Indoors the reverberant field holds levels up beyond the critical distance.',
 };
@@ -213,7 +213,7 @@ const inverseSquare: Tool = {
 };
 
 const addLevels: Tool = {
-  id: 'add-levels', category: 'audio', title: 'Adding sound levels', summary: 'Combined level of uncorrelated sources (noise plus programme, several machines).', cts: ['CTS', 'CTS-D'],
+  id: 'add-levels', category: 'audio', title: 'Adding sound levels', summary: 'Combined level of uncorrelated sources (noise plus program, several machines).', cts: ['CTS', 'CTS-D'],
   fields: [{ id: 'a', label: 'Level 1', unit: 'dB', default: 90 }, { id: 'b', label: 'Level 2', unit: 'dB', default: 90 }, { id: 'c', label: 'Level 3 (optional)', unit: 'dB', default: 0 }, { id: 'd', label: 'Level 4 (optional)', unit: 'dB', default: 0 }],
   run: (v) => { const ls = [v.a, v.b, v.c, v.d].map((x) => n(x)).filter((x) => x > 0); const sum = db10(ls.reduce((t, l) => t + 10 ** (l / 10), 0));
     return R([{ label: 'Combined level', value: `${fmt(sum, 1)} dB`, key: true }, { label: 'Above the loudest', value: `+${fmt(sum - Math.max(...ls), 1)} dB` }], [`10·log(${ls.map((l) => `10^(${l}/10)`).join(' + ')}) = ${fmt(sum, 1)} dB`]); },
@@ -245,13 +245,13 @@ const ceilingLayout: Tool = {
   id: 'ceiling-speakers', category: 'audio', title: 'Ceiling speaker layout', summary: 'Coverage, spacing and count for ceiling loudspeakers in a square grid.', cts: ['CTS', 'CTS-D', 'CTS-I'],
   fields: [{ id: 'ceil', label: 'Ceiling height', unit: 'ft', default: 10 }, { id: 'ear', label: 'Ear height', kind: 'select', options: [{ value: '4', label: 'Seated (4 ft)' }, { value: '5.5', label: 'Standing (5.5 ft)' }], default: '4' },
     { id: 'ang', label: 'Dispersion (−6 dB, conical)', unit: '°', default: 90 },
-    { id: 'lay', label: 'Overlap', kind: 'select', options: [{ value: 'edge', label: 'Edge to edge (gaps at the corners)' }, { value: 'min', label: 'Minimum overlap (corners covered)' }, { value: 'centre', label: 'Edge to centre (most even)' }], default: 'min' },
+    { id: 'lay', label: 'Overlap', kind: 'select', options: [{ value: 'edge', label: 'Edge to edge (gaps at the corners)' }, { value: 'min', label: 'Minimum overlap (corners covered)' }, { value: 'centre', label: 'Edge to center (most even)' }], default: 'min' },
     { id: 'L', label: 'Room length', unit: 'ft', default: 48 }, { id: 'W', label: 'Room width', unit: 'ft', default: 32 }],
   run: (v) => { const h = n(v.ceil) - n(v.ear, 4); const D = 2 * h * Math.tan(n(v.ang) / 2 * Math.PI / 180); const sp = s(v.lay) === 'edge' ? D : s(v.lay) === 'min' ? D / Math.SQRT2 : D / 2;
     const nx = Math.max(1, Math.ceil(n(v.L) / sp)); const ny = Math.max(1, Math.ceil(n(v.W) / sp));
     return R([{ label: 'Coverage diameter at ear height', value: `${fmt(D, 1)} ft` }, { label: 'Speaker spacing', value: `${fmt(sp, 1)} ft`, key: true }, { label: 'Grid', value: `${nx} × ${ny}` }, { label: 'Speakers needed', value: String(nx * ny), key: true }],
       [`h = ${n(v.ceil)} − ${n(v.ear)} = ${fmt(h, 1)} ft`, `D = 2·h·tan(${n(v.ang)}° ÷ 2) = ${fmt(D, 1)} ft`, `spacing = ${s(v.lay) === 'edge' ? 'D' : s(v.lay) === 'min' ? 'D ÷ √2' : 'D ÷ 2'} = ${fmt(sp, 1)} ft`, `${n(v.L)} ÷ ${fmt(sp, 1)} → ${nx}; ${n(v.W)} ÷ ${fmt(sp, 1)} → ${ny}`]); },
-  formula: ['h = ceiling − ear', 'D = 2·h·tan(θ/2)', 'spacing = D (edge-edge), D/√2 (min overlap), D/2 (edge-centre)'], basis: 'Geometry of a cone of coverage meeting the listening plane. Real patterns narrow with frequency: use the data sheet’s 2 kHz to 4 kHz figure for speech.',
+  formula: ['h = ceiling − ear', 'D = 2·h·tan(θ/2)', 'spacing = D (edge-edge), D/√2 (min overlap), D/2 (edge-center)'], basis: 'Geometry of a cone of coverage meeting the listening plane. Real patterns narrow with frequency: use the data sheet’s 2 kHz to 4 kHz figure for speech.',
 };
 
 const constVolt: Tool = {
@@ -290,7 +290,7 @@ const delay: Tool = {
   run: (v) => { const c = 331.3 * Math.sqrt(1 + n(v.t) / 273.15); const diff = (n(v.dm) - n(v.df)) * FT; const ms = diff / c * 1000;
     return R([{ label: 'Speed of sound', value: `${fmt(c, 1)} m/s (${fmt(c / FT, 0)} ft/s)` }, { label: 'Path difference', value: `${fmt(diff / FT, 1)} ft` }, { label: 'Arrival difference', value: `${fmt(ms, 2)} ms` }, { label: 'Delay to set on the fill', value: `${fmt(ms + n(v.pre), 1)} ms`, key: true }],
       [`c = 331.3 × √(1 + ${n(v.t)}/273.15) = ${fmt(c, 1)} m/s`, `Δt = ${fmt(diff, 2)} m ÷ ${fmt(c, 1)} m/s = ${fmt(ms, 2)} ms`, `+ ${n(v.pre)} ms so the main is heard first (precedence / Haas effect)`]); },
-  formula: ['c ≈ 331.3·√(1 + T/273.15) m/s', 'Δt = (d_main − d_fill) ÷ c', 'delay = Δt + 5…15 ms'], basis: 'Precedence: the ear localises to the first arrival when a later, similar sound arrives within roughly 5–35 ms and is not much louder.',
+  formula: ['c ≈ 331.3·√(1 + T/273.15) m/s', 'Δt = (d_main − d_fill) ÷ c', 'delay = Δt + 5…15 ms'], basis: 'Precedence: the ear localizes to the first arrival when a later, similar sound arrives within roughly 5–35 ms and is not much louder.',
 };
 
 const wavelength: Tool = {
@@ -462,7 +462,7 @@ const illuminance: Tool = {
 
 // ------------------------------------------------------------------------------------------------ project
 const crew: Tool = {
-  id: 'labour-estimate', category: 'project', title: 'Labour estimate', summary: 'Crew cost for a call with your own straight-time and overtime terms.', cts: ['CTS'],
+  id: 'labour-estimate', category: 'project', title: 'Labor estimate', summary: 'Crew cost for a call with your own straight-time and overtime terms.', cts: ['CTS'],
   fields: [{ id: 'rate', label: 'Straight-time rate per tech', unit: '$/h', default: 55 }, { id: 'crew', label: 'Crew', default: 4 }, { id: 'hours', label: 'Hours on site per day', default: 12 }, { id: 'days', label: 'Days', default: 2 },
     { id: 'st', label: 'Straight-time hours per day', default: 8 }, { id: 'ot', label: 'Overtime multiplier', default: 1.5, step: 0.1 }, { id: 'dt', label: 'Double-time after (hours per day, 0 = none)', default: 0 }],
   run: (v) => { const h = n(v.hours); const st = Math.min(h, n(v.st)); const dtAfter = n(v.dt); const dtH = dtAfter > 0 ? Math.max(0, h - dtAfter) : 0; const otH = Math.max(0, h - st - dtH); const r = n(v.rate);
@@ -474,7 +474,7 @@ const crew: Tool = {
 
 // ------------------------------------------------------------------------------------------------ convert
 const CONV: Record<string, { label: string; f: (x: number) => number; unit: string }> = {
-  ft_m: { label: 'Feet → metres', f: (x) => x * FT, unit: 'm' }, m_ft: { label: 'Metres → feet', f: (x) => x / FT, unit: 'ft' }, in_mm: { label: 'Inches → millimetres', f: (x) => x * 25.4, unit: 'mm' }, mm_in: { label: 'Millimetres → inches', f: (x) => x / 25.4, unit: 'in' },
+  ft_m: { label: 'Feet → meters', f: (x) => x * FT, unit: 'm' }, m_ft: { label: 'Meters → feet', f: (x) => x / FT, unit: 'ft' }, in_mm: { label: 'Inches → millimeters', f: (x) => x * 25.4, unit: 'mm' }, mm_in: { label: 'Millimeters → inches', f: (x) => x / 25.4, unit: 'in' },
   lb_kg: { label: 'Pounds → kilograms', f: (x) => x * 0.45359237, unit: 'kg' }, kg_lb: { label: 'Kilograms → pounds', f: (x) => x / 0.45359237, unit: 'lb' }, fc_lux: { label: 'Foot-candles → lux', f: (x) => x * 10.764, unit: 'lux' }, lux_fc: { label: 'Lux → foot-candles', f: (x) => x / 10.764, unit: 'fc' },
   fl_nit: { label: 'Foot-lamberts → nits', f: (x) => x * 3.426, unit: 'cd/m²' }, nit_fl: { label: 'Nits → foot-lamberts', f: (x) => x / 3.426, unit: 'fL' }, w_btu: { label: 'Watts → BTU/h', f: (x) => x * 3.412, unit: 'BTU/h' }, btu_w: { label: 'BTU/h → watts', f: (x) => x / 3.412, unit: 'W' },
   c_f: { label: '°C → °F', f: (x) => x * 9 / 5 + 32, unit: '°F' }, f_c: { label: '°F → °C', f: (x) => (x - 32) * 5 / 9, unit: '°C' }, dbspl_pa: { label: 'dB SPL → pascals', f: (x) => 20e-6 * 10 ** (x / 20), unit: 'Pa' }, ratio_db: { label: 'Power ratio → dB', f: (x) => db10(x), unit: 'dB' },

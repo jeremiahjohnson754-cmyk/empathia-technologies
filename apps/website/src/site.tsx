@@ -14,7 +14,7 @@ const ICON = {
   dark: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" /></svg>,
 };
 export const ThemeSwitch = () => (
-  <div className="theme" role="group" aria-label="Colour theme" data-theme-switch>
+  <div className="theme" role="group" aria-label="Color theme" data-theme-switch>
     {(['system', 'light', 'dark'] as const).map((t) => <button key={t} type="button" data-theme-set={t} aria-pressed={t === 'system' ? 'true' : 'false'} title={t === 'system' ? 'Follow the system' : t === 'light' ? 'Light' : 'Dark'}>{ICON[t]}<span>{t === 'system' ? 'System' : t === 'light' ? 'Light' : 'Dark'}</span></button>)}
   </div>
 );

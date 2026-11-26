@@ -41,7 +41,7 @@ export default function ReportPage({ role, params }: PageProps) {
     </form> : null}
     <section className="vc-sec" aria-labelledby="vc-mine-h"><h2 id="vc-mine-h">Your reports from this browser</h2>
       {mine.length ? <ul className="vc-next" data-testid="voice-mine">{mine.map((r) => <li key={r.id}><b>{r.id}</b> · {r.symptom} · {roomById(r.roomId) ? fullName(roomById(r.roomId)!) : r.roomId} · job {r.incidentId}{opens('#/servicehands') ? <> · <a href="#/servicehands">open in ServiceHands</a></> : null}</li>)}</ul> : <p className="ui-muted">None yet.</p>}
-      {opens(`#/voice/callpath/${room.id}`) ? <p><a href={`#/voice/callpath/${room.id}`} data-testid="voice-report-to-callpath">Open this room’s CallPath</a></p> : <p className="ui-muted">How the call travelled is read by the people who administer calling, not from this page.</p>}
+      {opens(`#/voice/callpath/${room.id}`) ? <p><a href={`#/voice/callpath/${room.id}`} data-testid="voice-report-to-callpath">Open this room’s CallPath</a></p> : <p className="ui-muted">How the call traveled is read by the people who administer calling, not from this page.</p>}
     </section>
   </div>);
 }

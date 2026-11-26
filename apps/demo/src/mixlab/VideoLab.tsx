@@ -17,8 +17,8 @@ const HELP: Record<string, [string, string]> = {
   shutter: ['Shutter', 'How long each frame is exposed, as a fraction of a second. It decides motion blur, and whether lights and LED walls band or flicker.'],
   iris: ['Iris (f-stop)', 'The lens opening. Each full stop (2.8 → 4 → 5.6) halves the light. Wider (smaller number) also blurs the background more.'],
   iso: ['ISO / gain', 'Amplifies the picture. Each doubling is one stop brighter, and noisier.'],
-  nd: ['ND filter', 'Neutral grey glass in front of the sensor: takes stops of light away without changing anything else.'],
-  wb: ['White balance', 'Tells the camera what colour white is. Set it to the light’s colour temperature.'],
+  nd: ['ND filter', 'Neutral gray glass in front of the sensor: takes stops of light away without changing anything else.'],
+  wb: ['White balance', 'Tells the camera what color white is. Set it to the light’s color temperature.'],
   switcher: ['The switcher', 'Preview is what goes next; program is what is live. CUT swaps them at once; MIX dissolves. The key puts the lyrics over the program.'],
   sync: ['Lip-sync', 'Each device in the video path holds a frame. Delay the stream’s audio by the same time: frames × (1000 ÷ fps) ms.'],
 };

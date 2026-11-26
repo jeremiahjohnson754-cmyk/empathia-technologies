@@ -108,7 +108,7 @@ function Profile({ role, p, hash }: { role: RoleKey; p: Person; hash: string }) 
                 <div><h3 className="cx-h3">May</h3><ul className="cx-yes">{championMay().map((x) => <li key={x}>{x}</li>)}<li>Report a problem in a room, and say what was seen</li><li>Add what they know about the site to this profile</li></ul></div>
                 <div><h3 className="cx-h3">May not, whatever the title</h3><ul className="cx-no" data-testid="champion-maynot">{championMayNot().map((x) => <li key={x}>{x}</li>)}</ul></div>
               </div>
-              <p className="ui-meta">The three permissions are the {CHAMPION_PERSONA.label} persona’s own in the product’s catalogue ({CHAMPION_PERSONA.authority.join(', ')}; scope: {CHAMPION_PERSONA.scope || 'site'}). Nothing engineering, administrative or to do with commissioning sign-off comes with being a champion.</p>
+              <p className="ui-meta">The three permissions are the {CHAMPION_PERSONA.label} persona’s own in the product’s catalog ({CHAMPION_PERSONA.authority.join(', ')}; scope: {CHAMPION_PERSONA.scope || 'site'}). Nothing engineering, administrative or to do with commissioning sign-off comes with being a champion.</p>
             </section>
 
             <section aria-labelledby="cx-knows-h" data-testid="champion-knows" data-rooms={knows.length}><h2 className="build__h" id="cx-knows-h">Rooms {p.name.split(' ')[0]} knows</h2>
@@ -120,7 +120,7 @@ function Profile({ role, p, hash }: { role: RoleKey; p: Person; hash: string }) 
 
             <section aria-labelledby="cx-esc-h" data-testid="champion-escalation"><h2 className="build__h" id="cx-esc-h">Who {p.name.split(' ')[0]} escalates to, in order</h2>
               <ol className="cx-esc">{esc.map((s) => <li key={s.role} data-role={s.role}><b>{s.title}</b>{s.person ? <> — {maySeeDetails(role, s.person) && opens(`#/people/${s.person.id}`) ? <a href={`#/people/${s.person.id}`}>{s.person.name}</a> : s.person.name}</> : <> — nobody is named for this building</>}<span className="ui-meta">{s.when}</span></li>)}</ol>
-              <p className="ui-meta">The path is by role; the person named is the holder for {B?.name}. Facilities and security contacts are not modelled in this demonstration.</p>
+              <p className="ui-meta">The path is by role; the person named is the holder for {B?.name}. Facilities and security contacts are not modeled in this demonstration.</p>
             </section>
 
             <section aria-labelledby="cx-local-h" data-testid="champion-local"><h2 className="build__h" id="cx-local-h">Local knowledge</h2>

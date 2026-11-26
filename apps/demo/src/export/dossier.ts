@@ -37,7 +37,7 @@ export function dossierPackage(w: Working, redaction: Redaction, by: MadeBy): Re
     { key: 'control', label: 'Control' }, { key: 'waived', label: 'Waived until', kind: 'date' as const },
   ];
   const sections: Section[] = [
-    { id: 'decision', heading: 'Acceptance decision', text: [accepted ? `Final acceptance is recorded: ${why}.` : `Final acceptance is held: ${why}.`, 'A passing simulation is not commissioning; this dossier records what was tested and evidenced, and nothing is rounded towards green.'],
+    { id: 'decision', heading: 'Acceptance decision', text: [accepted ? `Final acceptance is recorded: ${why}.` : `Final acceptance is held: ${why}.`, 'A passing simulation is not commissioning; this dossier records what was tested and evidenced, and nothing is rounded toward green.'],
       facts: [['Acceptance', accepted ? 'Accepted' : 'Held'], ['Final sign-off', SIGNOFF[w.signoff]],
         ['First approval', w.firstApproval ? `${w.firstApproval.by.label}, ${ymd(w.firstApproval.at)}${w.firstApproval.waivers ? `, over ${plural(w.firstApproval.waivers, 'waiver')}` : ''}` : 'Not given'],
         ['Second approval', w.secondApproval ? `${w.secondApproval.by.label}, ${ymd(w.secondApproval.at)}${w.secondApproval.waivers ? `, over ${plural(w.secondApproval.waivers, 'waiver')}` : ''}` : 'Not given'],
@@ -53,7 +53,7 @@ export function dossierPackage(w: Working, redaction: Redaction, by: MadeBy): Re
       rows: w.deficiencies.map((x) => ({ id: x.id, sev: x.severity, test: x.test, statement: x.statement, owner: x.owner, action: x.action, state: DEF[x.state] || x.state })) } },
     { id: 'blockers', heading: 'What holds acceptance', table: { title: 'Blockers', cols: [{ key: 'test', label: 'Test' }, { key: 'reason', label: 'Why it blocks' }],
       rows: w.blockers.map((b) => ({ test: b.test ?? '', reason: b.reason })), note: 'Each blocker must clear, or be waived where the rules allow, before the first approval can be given.' } },
-    { id: 'waivers', heading: 'Waivers', text: ['A waiver accepts a stated risk for a stated time. It never bypasses security, tenant isolation, authorisation, evidence integrity or a mandatory safety test, and nobody approves their own.'],
+    { id: 'waivers', heading: 'Waivers', text: ['A waiver accepts a stated risk for a stated time. It never bypasses security, tenant isolation, authorization, evidence integrity or a mandatory safety test, and nobody approves their own.'],
       table: { title: 'Waivers', cols: [{ key: 'test', label: 'Test' }, { key: 'kind', label: 'Kind' }, { key: 'state', label: 'State', kind: 'status' }, { key: 'risk', label: 'Risk accepted' }, { key: 'until', label: 'Stands until', kind: 'date' }, { key: 'by', label: 'Granted by' }, { key: 'review', label: 'Engineering review' }],
         rows: w.waivers.map((x) => ({ test: x.test, kind: x.kind === 'business' ? 'Business-risk acceptance' : 'Technical deviation', state: WAIVER[x.state] || x.state, risk: x.risk, until: x.expires, by: x.by.label, review: x.review ? `${x.review.by.label}: ${x.review.finding}` : '' })) } },
     { id: 'attestations', heading: 'Site champion attestations', text: ['An attestation is a local statement by the site champion. It is recorded beside the dossier and is not an approval.'],

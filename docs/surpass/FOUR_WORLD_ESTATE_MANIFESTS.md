@@ -129,7 +129,7 @@ Seats: **62,200**, the sum of every section and suite record. Scale benchmark: a
 | waste | 1 | 4 | 126 |
 | workshop | 1 | 8 | 96 |
 
-## Larkspur Exchange Convention Centre (convention)
+## Larkspur Exchange Convention Center (convention)
 
 Seed version `lxc-2026.11.2`. 1,740 records in the hierarchy, 1,435 equipment records (3,373 pieces), 11 recorded routes (9 step-free).
 A walk-in visitor is shown 132 of 1,737 places; an engineer is shown all of them. Rooms the Space Optimizer can study: 345.

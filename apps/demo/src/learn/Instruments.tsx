@@ -131,7 +131,7 @@ export function CameraLab({ onState }: { onState: (checks: Check[]) => void }) {
   return (
     <div className="ops-grid ops-grid--2b">
       <div className="ops-card"><div className="ops-stage"><canvas ref={cv} width={640} height={360} role="img" aria-label={`Simulated picture: exposure ${fmt(m.ev)} EV, blur ${fmt(m.blurPx)} px, ${m.flicker ? 'banding visible' : 'no banding'}, gain ${s.gain} dB`} style={{ width: '100%', height: 'auto', display: 'block' }} /></div>
-        <p className="ops-meta">A drawn scene: a presenter at three metres, a display at five, a hand moving. An illustration of the physics, not a lens model.</p></div>
+        <p className="ops-meta">A drawn scene: a presenter at three meters, a display at five, a hand moving. An illustration of the physics, not a lens model.</p></div>
       <div className="ops-card"><h3>Camera</h3>
         <label className="ops-field">Shutter <select value={s.shutter} onChange={(e) => set('shutter', Number(e.target.value))} data-testid="cl-shutter">{[25, 30, 50, 60, 100, 120, 250, 500, 1000].map((v) => <option key={v} value={v}>1/{v} s</option>)}</select></label>
         <label className="ops-field">Frame rate <select value={s.fps} onChange={(e) => set('fps', Number(e.target.value))} data-testid="cl-fps">{[25, 30, 50, 60].map((v) => <option key={v} value={v}>{v} fps</option>)}</select></label>
@@ -161,7 +161,7 @@ export function lightChecks(f: Fixture[]): Check[] {
   return [
     { label: 'Face lit to 500–800 lux (vertical)', ok: m.face >= 500 && m.face <= 800, now: `${Math.round(m.face)} lux` },
     { label: 'Key-to-fill ratio between 1.5 and 3 (shape without hard shadows)', ok: m.ratio >= 1.5 && m.ratio <= 3, now: Number.isFinite(m.ratio) ? fmt(m.ratio) : 'no fill' },
-    { label: 'Fixtures within 300 K of each other (one colour on the face)', ok: m.spread <= 300, now: `${m.spread} K apart` },
+    { label: 'Fixtures within 300 K of each other (one color on the face)', ok: m.spread <= 300, now: `${m.spread} K apart` },
     { label: 'Spill on the display behind under 150 lux', ok: m.spill < 150, now: `${Math.round(m.spill)} lux` },
   ];
 }
@@ -184,7 +184,7 @@ export function LightLab({ onState }: { onState: (checks: Check[]) => void }) {
         <Range id="ll-dmx" label="Intensity (DMX)" value={x.dmx} min={0} max={255} step={1} onChange={(v) => set('dmx', v)} />
         <Range id="ll-dist" label="Distance to the face" unit=" m" value={x.dist} min={1} max={5} step={0.1} onChange={(v) => set('dist', v)} />
         <Range id="ll-angle" label="Angle off the face" unit="°" value={x.angle} min={0} max={80} step={1} onChange={(v) => set('angle', v)} />
-        <Range id="ll-cct" label="Colour temperature" unit=" K" value={x.cct} min={2700} max={6500} step={100} onChange={(v) => set('cct', v)} />
+        <Range id="ll-cct" label="Color temperature" unit=" K" value={x.cct} min={2700} max={6500} step={100} onChange={(v) => set('cct', v)} />
         <button type="button" className="ui-btn ui-btn--quiet" onClick={() => setF(LIGHT_DEFAULT)}>Reset the fixtures</button></div>
     </div>
   );

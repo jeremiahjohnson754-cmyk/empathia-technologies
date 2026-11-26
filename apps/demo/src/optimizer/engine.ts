@@ -21,7 +21,7 @@ export const RULES = {
 } as const;
 export const RULE_TEXT: Record<Dimension, string> = {
   video: `A seat counts when it is inside a camera’s ${RULES.cameraFovDeg}° view and within ${RULES.cameraRangeM} m of it.`,
-  sightlines: `A seat counts when it is between ${RULES.closestViewer} and ${RULES.farthestViewer} image heights from a screen and no more than ${RULES.offAxisDeg}° off its centre line.`,
+  sightlines: `A seat counts when it is between ${RULES.closestViewer} and ${RULES.farthestViewer} image heights from a screen and no more than ${RULES.offAxisDeg}° off its center line.`,
   capture: `A seat counts when it is within ${RULES.micRadiusM} m of a microphone.`,
   reproduction: `A seat counts when it is inside a loudspeaker’s cone at ear height (${RULES.earHeightM} m): ${RULES.ceilingSpeakerHalfAngleDeg}° either side below a ceiling loudspeaker, or within ${RULES.frontSpeakerRangeM} m in front of a column.`,
   efficiency: 'Floor area per seat against the usual band for this kind of room; seats that do not fit count against it.',
@@ -49,7 +49,7 @@ export interface Study { room: string; option: OptionSpec; layout: Layout; score
 const PITCH: Record<Seating, { w: number; d: number; band: [number, number] }> = { rows: { w: 0.75, d: 1.5, band: [1.9, 2.8] }, tables: { w: 0.8, d: 1.8, band: [2.2, 3.4] }, theatre: { w: 0.55, d: 0.95, band: [0.8, 1.5] }, groups: { w: 1.1, d: 1.9, band: [2.6, 3.8] } };
 export function seatingOf(n: Pick<EstateNode, 'type' | 'layout' | 'capacity'>): Seating {
   const l = (n.layout || '').toLowerCase();
-  if (/theatre|raked|loose seats/.test(l) || ['lecture-theatre', 'keynote-hall', 'performance'].includes(n.type)) return 'theatre';
+  if (/theatre|theater|raked|loose seats/.test(l) || ['lecture-theatre', 'keynote-hall', 'performance'].includes(n.type)) return 'theatre';
   if (/group tables|rounds|bays/.test(l)) return 'groups';
   if (/one table|boardroom|hollow/.test(l)) return 'tables';
   return 'rows';
@@ -131,7 +131,7 @@ export function study(room: Pick<EstateNode, 'id' | 'dims' | 'capacity' | 'type'
     { dimension: 'supportability', score: sup, detail: `${c.devices} devices, ${c.overhead} overhead, ${c.classes} equipment classes${c.reachable ? '' : '; overhead equipment needs access equipment'}`, basis: 'MODELED' },
   ];
   const w = WEIGHTS[seating]; const purpose = Math.round(eight.reduce((s, x) => s + x.score * w[x.dimension as Exclude<Dimension, 'purpose'>], 0));
-  return { room: room.id, option: o, layout: L, perSeat, scores: [...eight, { dimension: 'purpose', score: purpose, detail: `Weighted for a ${seating === 'rows' ? 'teaching or presentation room in rows' : seating === 'theatre' ? 'theatre-style room' : seating === 'groups' ? 'group-work room' : 'meeting table'}`, basis: 'MODELED' }] };
+  return { room: room.id, option: o, layout: L, perSeat, scores: [...eight, { dimension: 'purpose', score: purpose, detail: `Weighted for a ${seating === 'rows' ? 'teaching or presentation room in rows' : seating === 'theatre' ? 'theater-style room' : seating === 'groups' ? 'group-work room' : 'meeting table'}`, basis: 'MODELED' }] };
 }
 export const scoreOf = (s: Study, d: Dimension): number => s.scores.find((x) => x.dimension === d)!.score;
 /** Options within this many points of the best are too close for a planning model to separate; the easier one to look after is preferred. */

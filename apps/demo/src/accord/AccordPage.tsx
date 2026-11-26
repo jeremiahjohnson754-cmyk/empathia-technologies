@@ -32,13 +32,13 @@ export default function AccordPage({ role, query, can }: PageProps) {
     ...(local.withdrawnAt ? [`${day(local.withdrawnAt)} · withdrawn by the ${local.withdrawnBy ? ROLES[local.withdrawnBy].label : 'customer'}`] : []), ...(clock === 'expired' ? [`${day(CAPSULE.expiresAt)} · ended on its own date`] : [])];
   return (<div className="vc" data-testid="accord" data-party={party} data-status={v.status} data-readable={v.readable ? '1' : '0'}>
     <PageHero eyebrow="Empathia ACCORD · simulation" title="Scoped evidence, shared for one purpose" product="search-party" icon="link"
-      lede="A capsule gives another organisation the evidence it needs for one issue, and nothing else, until a date. It copies nothing: each item is read from the record that owns it, and what is withheld is said."
+      lede="A capsule gives another organization the evidence it needs for one issue, and nothing else, until a date. It copies nothing: each item is read from the record that owns it, and what is withheld is said."
       meta={[<Tag key="s" tone={TONE[v.status]}>{STATUS_WORD[v.status]}</Tag>, <span key="c">{CAPSULE.id}</span>]} />
     <Connected id="accord" role={role} />
     <div className="vc-cases">
       <Segmented label="Read the capsule as" value={party} onChange={(p) => go(p, clock)} options={[{ value: 'customer', label: 'The customer' }, { value: 'provider', label: 'The service provider' }]} />
       <Segmented label="Read it at" value={clock} onChange={(c) => go(party, c)} options={[{ value: 'now', label: `Today (${CLOCKS.now.slice(0, 10)})` }, { value: 'expired', label: `After it ends (${CLOCKS.expired.slice(0, 10)})` }]} />
-      <p className="ui-muted">In the product each organisation signs in to its own tenant. This switch shows what each side would receive; it is not an authorisation.</p>
+      <p className="ui-muted">In the product each organization signs in to its own tenant. This switch shows what each side would receive; it is not an authorization.</p>
     </div>
     <p className={`vc-verdict vc-verdict--${v.status === 'ACTIVE' ? 'within_policy' : 'unknown'}`} data-testid="accord-says"><b>{PARTIES[party].name}.</b> {v.says}</p>
     <section className="vc-sec vc-two" aria-label="Terms">
@@ -62,6 +62,6 @@ export default function AccordPage({ role, query, can }: PageProps) {
           : v.status === 'WITHDRAWN' && can('accord.withdraw') ? <p><Button kind="secondary" testId="accord-restore" onClick={restore}>Share it again (demonstration)</Button></p>
           : v.status === 'ACTIVE' ? <p className="ui-muted">Operations, the data steward or the architect can withdraw it.</p> : null}</div>
     </section> : null}
-    <Notice tone="muted"><b>Not built:</b> two real tenants, signed capsules, a dispute record between the organisations, and enforcement of the delegation. Nothing is sent to anyone: both organisations are fictional.</Notice>
+    <Notice tone="muted"><b>Not built:</b> two real tenants, signed capsules, a dispute record between the organizations, and enforcement of the delegation. Nothing is sent to anyone: both organizations are fictional.</Notice>
   </div>);
 }

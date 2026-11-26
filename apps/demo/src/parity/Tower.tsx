@@ -34,7 +34,7 @@ export default function TowerPage({ query }: PageProps) {
   return (
     <div className="pa pa-tower" data-native="" data-testid="parity-tower">
       <PageHero eyebrow="Mission Control · Control Tower" title="Operations Control Tower" product="mission-control" icon="grid"
-        lede="One room to watch the campus: where it is healthy, what is open, who has it and how it escalated. Built for the operations-centre room archetype; every figure is counted from this demonstration’s records."
+        lede="One room to watch the campus: where it is healthy, what is open, who has it and how it escalated. Built for the operations-center room archetype; every figure is counted from this demonstration’s records."
         meta={honest(['Non-operational demonstration', 'warn'], ['Synthetic sites and incidents', 'warn'], ['Not a live feed', 'muted'])}
         aside={<ScoreRing value={campusH} label="Campus health" caption={`${ROOMS.length} rooms, by the demonstration’s rule`} />} />
       <p className="pa-tower__banner" role="note"><StatusDot state="modelled" label="Non-operational" /> No live data reaches this page and nothing here dispatches anyone. Sites are the six buildings of the fictional Northstar campus, drawn as tiles — not a map of real places.</p>
@@ -70,7 +70,7 @@ function Executive({ q, sites, w }: { q: Item[]; sites: Site[]; w: Workspace }) 
         <StatTile label="Rooms needing attention" value={sites.reduce((s, x) => s + x.rs.filter((r) => bandOf(healthOf(r)) !== 'healthy').length, 0)} icon="room" hint="below 85 by the health rule" href="#/set/room:monitor" />
       </div>
       <div className="pa-split">
-        <Card title="Site status" icon="map" sub="Colour from the open items and room health of each building">
+        <Card title="Site status" icon="map" sub="Color from the open items and room health of each building">
           <SiteGrid sites={sites} />
         </Card>
         <Card title="Open by severity" icon="chart" sub={worst ? `Most open: ${worst.b.name} (${worst.items.length})` : 'Nothing open'}>

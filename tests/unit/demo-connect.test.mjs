@@ -640,7 +640,7 @@ test('CX-29 [graph] not authorised: 401 and 403 name the permission to ask an ad
   const champ = D.championOf('ATL'); const need = { users: ['people', (a) => a.people('Amara')], getSchedule: ['schedule', (a) => a.schedule([champ.email], FROM, TO)], shifts: ['shifts', (a) => a.shifts(FROM, TO)], findMeetingTimes: ['suggest', (a) => a.native({ parties: [], room: null, minutes: 30, from: FROM, to: TO })] };
   for (const mode of ['delegated', 'application']) for (const [call, [id, run]] of Object.entries(need)) {
     const g = worlds().graph; const a = G.graphAdapter({ ...g.cfg, mode }); const c = G.graphCall(id); const perm = mode === 'delegated' ? c.delegated : c.application; if (!perm) continue;
-    g.tenant.deny(call, 403); const out = await run(a); assert.equal(out.ok, false, `${mode} ${call}`); assert.equal(out.kind, 'not-authorised'); assert.match(out.why[0], new RegExp(`^Not authorised; ask your administrator for ${perm.replace(/\./g, '\\.')} \\(${mode} permission, Microsoft Graph\\)`));
+    g.tenant.deny(call, 403); const out = await run(a); assert.equal(out.ok, false, `${mode} ${call}`); assert.equal(out.kind, 'not-authorised'); assert.match(out.why[0], new RegExp(`^Not authorized; ask your administrator for ${perm.replace(/\./g, '\\.')} \\(${mode} permission, Microsoft Graph\\)`));
     g.tenant.deny(call, 401); const o2 = await run(a); assert.equal(o2.kind, 'not-authorised'); assert.match(o2.why[0], new RegExp(`sign-in is missing or has expired.*ask your administrator for ${perm.replace(/\./g, '\\.')}`));
     assert.ok(!/accessDenied|InvalidAuthenticationToken|Access is denied/.test(out.why.join(' ') + o2.why.join(' ')), 'the server’s own message is not shown to people');
   }
@@ -657,7 +657,7 @@ test('CX-29 [graph] not authorised: 401 and 403 name the permission to ask an ad
   const bare = G.graphAdapter({ ...worlds().graph.cfg, token: async () => '' }); assert.equal((await bare.people('Amara')).kind, 'not-authorised');
   // somebody else's meeting cannot be cancelled: the page's own 400
   const g2 = worlds().graph; const other = G.graphAdapter({ ...g2.cfg, mode: 'application', organizer: champ.email }); const s2 = (await g2.adapter.suggest({ parties: [party(g2, ME), party(g2, champ)], room: null, minutes: 30, from: FROM, to: TO })).value[0]; const mine = await g2.adapter.create({ ...req, transactionId: 'TX-MINE', from: s2.from, to: s2.to });
-  const stolen = await other.cancel(mine.value.event.id, ''); assert.equal(stolen.kind, 'invalid'); assert.match(stolen.why[0], /Only the organiser/); assert.equal(g2.tenant.events.filter((e) => !e.cancelled).length, 1);
+  const stolen = await other.cancel(mine.value.event.id, ''); assert.equal(stolen.kind, 'invalid'); assert.match(stolen.why[0], /Only the organizer/); assert.equal(g2.tenant.events.filter((e) => !e.cancelled).length, 1);
 });
 
 test('CX-30 [graph] throttling and a lost answer: wait what Retry-After says, retry the same request, and never make a second event', async () => {

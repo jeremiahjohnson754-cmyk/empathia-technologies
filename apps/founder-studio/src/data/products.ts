@@ -221,7 +221,7 @@ export const PRODUCTS: Product[] = [
     nextStep: 'Write the UE5 contract (spatial/ue5-contracts) before any engine work.',
   },
   {
-    id: '17', slug: 'collaboro-sing', name: 'Collaboro-Sing', group: 'expansion',
+    id: '17', slug: 'collaboro-sing', name: 'Collabora-SING', group: 'expansion',
     pitch: 'Remote rehearsal and practice for musicians, measured honestly.',
     routes: ['#/v25/sing'], persona: 'architect',
     state: 'SIMULATED_FUNCTIONAL', proof: 'OFFLINE_SYNTHETIC', ladder: L('YES', 'YES', 'YES', 'PARTIAL'), builderSuites: T(2, 2, 0), acceptance: 'CSG-AT: a PROPOSED 15-test matrix (owner approval pending)',

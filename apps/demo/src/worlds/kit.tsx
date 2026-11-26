@@ -172,7 +172,7 @@ export function WorkBoard({ label, initial, eventLive, actor, verifier }: { labe
               <ol className="w-steps" aria-label={`${x.id} progress`}>{WORK_STEPS.map((s, i) => <li key={s} aria-current={i === x.step ? 'step' : undefined} data-done={i < x.step || undefined}>{s}</li>)}</ol>
               {done ? <span className="w-work__done"><Icon name="check" size={16} /> Closed</span>
                 : <button type="button" className="ui-btn w-btn" disabled={gated} aria-describedby={gated ? gid : undefined} onClick={() => move(x.id)}>{NEXT[x.step]}</button>}
-              {gated && <p className="w-work__gate" id={gid}><Icon name="lock" size={14} /> Disruptive work waits until the event ends. An authorised override would be recorded; this demonstration has none.</p>}
+              {gated && <p className="w-work__gate" id={gid}><Icon name="lock" size={14} /> Disruptive work waits until the event ends. An authorized override would be recorded; this demonstration has none.</p>}
             </li>
           );
         })}

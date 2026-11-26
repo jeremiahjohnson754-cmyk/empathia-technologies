@@ -46,7 +46,7 @@ export const TAKES: Record<string, Take[]> = {
     { who: 'maya', text: 'I don\'t go up the lift. I stand outside the tape and hold the clipboard like it\'s a very important clipboard.', src: `${N}maya-15.mp3` },
     { who: 'maya', text: 'So did I, last week. It was the room.', src: `${N}maya-16.mp3` },
     { who: 'maya', text: '(She had been leaning for two years. Nobody asked why.)', src: `${N}maya-17.mp3` },
-    { who: 'ray', text: 'A comb filter is the same sound arriving twice, a hair apart. Some frequencies cancel. Each cancelled one is a notch.', src: `${N}ray-4.mp3` },
+    { who: 'ray', text: 'A comb filter is the same sound arriving twice, a hair apart. Some frequencies cancel. Each canceled one is a notch.', src: `${N}ray-4.mp3` },
     { who: 'ray', text: 'One over twice the gap. Arrivals one millisecond apart: one divided by two thousandths — five hundred hertz.', src: `${N}ray-5.mp3` },
     { who: 'ray', text: 'Five milliseconds. The human ear doesn\'t hear that as an echo. It hears it as a bad day.', src: `${N}ray-6.mp3` },
     { who: 'ray', text: 'What would you tell someone who wasn\'t here tonight?', src: `${N}ray-7.mp3` },

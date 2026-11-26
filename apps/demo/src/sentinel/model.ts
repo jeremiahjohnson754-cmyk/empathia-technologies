@@ -33,8 +33,8 @@ export const momentOf = (v: string | null): number => { const n = Number(v); ret
 
 function planFor(s: Screen): { steps: Step[]; why: string } {
   const req: Step = { state: 'REQUESTED', at: 0, basis: 'SIMULATED', says: 'Notice sent to the screen’s player' };
-  if (!s.reachable) return { steps: [req, { state: 'FAILED', at: PLAN.ackWindowSeconds, basis: 'SIMULATED', says: `No acknowledgement within ${PLAN.ackWindowSeconds} s` }],
-    why: s.verdict === 'UNKNOWN' ? 'No player connection is configured for this screen, so no acknowledgement can arrive. Recorded as a failed route.' : 'The player has stopped reporting. No acknowledgement arrived in the window. Recorded as a failed route.' };
+  if (!s.reachable) return { steps: [req, { state: 'FAILED', at: PLAN.ackWindowSeconds, basis: 'SIMULATED', says: `No acknowledgment within ${PLAN.ackWindowSeconds} s` }],
+    why: s.verdict === 'UNKNOWN' ? 'No player connection is configured for this screen, so no acknowledgment can arrive. Recorded as a failed route.' : 'The player has stopped reporting. No acknowledgment arrived in the window. Recorded as a failed route.' };
   const ack: Step = { state: 'ACKNOWLEDGED', at: 1, basis: 'SIMULATED', says: 'The player acknowledged the notice' };
   return s.provesRender ? { steps: [req, ack, { state: 'RENDERED', at: 3, basis: 'SIMULATED', says: 'Proof-of-play record for the notice' }], why: 'Acknowledged, and the player issued a proof-of-play record for the notice (simulated).' }
     : { steps: [req, ack], why: 'Acknowledged. This player issues no proof of play, so whether the notice was shown is not known and is not claimed.' };
@@ -53,8 +53,8 @@ export function tally(all: Route[]) { const n = (s: RouteState) => all.filter((r
 
 /** The failed routes of the drill become one real ServiceHands job; this finds it again. */
 export const JOB_TITLE = `Secondary notice routes failed in drill ${ALERT.id}`;
-export const jobSummary = (failed: Route[]) => `${failed.length} route${failed.length === 1 ? '' : 's'} gave no acknowledgement in the ${PLAN.ackWindowSeconds}-second window: ${failed.map((r) => `${r.target} (${r.screen})`).join('; ')}. From a simulated drill; no real alert was sent.`;
+export const jobSummary = (failed: Route[]) => `${failed.length} route${failed.length === 1 ? '' : 's'} gave no acknowledgment in the ${PLAN.ackWindowSeconds}-second window: ${failed.map((r) => `${r.target} (${r.screen})`).join('; ')}. From a simulated drill; no real alert was sent.`;
 export const jobFor = (w: Workspace): Incident | undefined => w.incidents.find((i) => i.title === JOB_TITLE);
 
 export const NEVER = ['It never replaces, delays, silences or controls a fire alarm, voice evacuation or mass notification system.', 'It never creates an alert. No model, rule or person in Empathia can originate one.',
-  'It never waits for confirmation before a primary system operates; primary systems do not depend on it.', 'It never reports an acknowledgement as “shown”.', 'It holds no certification and claims none.'];
+  'It never waits for confirmation before a primary system operates; primary systems do not depend on it.', 'It never reports an acknowledgment as “shown”.', 'It holds no certification and claims none.'];

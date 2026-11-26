@@ -63,7 +63,7 @@ export function BuildYour({ demoUrl }: { demoUrl: string }) {
               <input id="by-outside" type="number" inputMode="numeric" min={0} max={100000000} step={1} defaultValue={0} data-by="outside" /></div>
             <div className="by__q by__outside" data-by-buildings hidden><label htmlFor="by-buildings"><b>Buildings with Lite</b><span>Lite is priced per building</span></label>
               <input id="by-buildings" type="number" inputMode="numeric" min={1} max={9999} step={1} defaultValue={1} data-by="buildings" /></div>
-            <label className="by__bundle"><span><b>Bundle</b><small>A bundle’s discount applies when all of its products are on the order, so choosing one adds them. Room licences take it or the volume discount, whichever is larger, never both.</small></span>
+            <label className="by__bundle"><span><b>Bundle</b><small>A bundle’s discount applies when all of its products are on the order, so choosing one adds them. Room licenses take it or the volume discount, whichever is larger, never both.</small></span>
               <select data-by-bundle defaultValue=""><option value="">No bundle</option>{ROOM_BUNDLES.map((b) => <option key={b.id} value={b.id}>{b.name}: {b.discount} off, {b.skus.length} products</option>)}</select></label>
             <fieldset className="by__hw"><legend>FieldLink hardware <small>optional; Empathia works without it</small></legend>
               <Step id="nano" name="Nano" price={hw[0]!.cents} /><Step id="edge" name="Edge" price={hw[1]!.cents} /><Step id="pulse" name="Pulse" price={hw[2]!.cents} />
@@ -102,7 +102,7 @@ export function FourEstates() {
         {row('Devices', (c) => c.e.devices.toLocaleString('en-US'), 'devices')}
         {row('Licensed users', (c) => c.p.users, 'users')}
         {row('Platform fee, a year', (c) => usd(c.e.band.cents), 'platform')}
-        {row('Room licences, a year', amt('ROOM-STD', 'ROOM-LRG'), 'rooms')}
+        {row('Room licenses, a year', amt('ROOM-STD', 'ROOM-LRG'), 'rooms')}
         {row('Device charges, a year', amt('DEVICE-STD', 'DEVICE-LRG'), 'devices-charged')}
         {row('Volume discount, a year', amt('DISCOUNT-VOLUME'), 'volume')}
         {row('Licensed users, a year', amt('USER'), 'user')}
@@ -138,8 +138,8 @@ export function PriceParts() {
       <article className="card" data-part="users"><h3>People, by the month</h3>
         <ul className="prices"><li data-rate={b.user.id}><div className="prices__what"><h4>{b.user.name}</h4><p>{b.user.note}</p></div><div className="price"><b>{usd(b.user.cents)}</b><span>{b.user.unit}</span></div></li></ul></article>
       <article className="card" data-part="discounts"><h3>Discounts, shown as lines of their own</h3>
-        <p><b>Volume:</b> the monthly licence of rooms {b.volume.tranches.map((t) => `${t.from}${t.to ? `–${t.to}` : ' and up'} is ${t.pct} % off`).join(', ')}; standard rooms are counted first, then large rooms. Device charges are not volume-discounted, so adding a room or a device never lowers a bill.</p>
-        <p><b>Bundles:</b> each of the {BUNDLES.length} bundles takes its discount off its own products when the whole bundle is on the order; a single product is at its list price. In the three that held Core and the Pro room, the platform fee and the room licences take their place. {b.volume.rule}</p>
+        <p><b>Volume:</b> the monthly license of rooms {b.volume.tranches.map((t) => `${t.from}${t.to ? `–${t.to}` : ' and up'} is ${t.pct} % off`).join(', ')}; standard rooms are counted first, then large rooms. Device charges are not volume-discounted, so adding a room or a device never lowers a bill.</p>
+        <p><b>Bundles:</b> each of the {BUNDLES.length} bundles takes its discount off its own products when the whole bundle is on the order; a single product is at its list price. In the three that held Core and the Pro room, the platform fee and the room licenses take their place. {b.volume.rule}</p>
         <p><b>Search Party</b> counts {b.searchParty.counts}.</p></article>
       <article className="card" data-part="once"><h3>Once, and only if you choose</h3>
         <ul className="prices">{b.hardware.map((h) => <li key={h.id} data-rate={h.id}><div className="prices__what"><h4>{h.name}</h4><p>{h.note}</p></div><div className="price"><b>{usd(h.cents)}</b><span>proposed, {h.unit}</span></div></li>)}</ul>

@@ -156,7 +156,7 @@ function Cost({ locked, onOutcome, s, tier, formulas }: StageProps & { s: Extrac
   return <div className="stack" data-testid="boss-cost">
     <div className="lab__tablewrap"><table className="ch__boq"><thead><tr><th>Line · quantity × each</th><th>Amount</th></tr></thead><tbody>{(['eq', 'lab', 'run', 'later'] as const).flatMap((kd) => { const ls = s.lines.filter((l) => (l.kind || 'eq') === kd); if (!ls.length) return [];
       return [<tr key={kd}><th colSpan={2}>{KIND[kd]}</th></tr>, ...ls.map((l, j) => <tr key={`${kd}${j}`}><td>{l.t}<br /><small className="ui-meta">{BX.bnum(l.q)}{l.u ? ` ${l.u}` : ''} × {BX.usd(l.each)}</small></td><td className="ch__n">{BX.usd(l.q * l.each)}</td></tr>)]; })}</tbody></table></div>
-    <p className="ui-meta">{s.rule || `Contingency ${Math.round((s.cont || 0) * 100)}% on equipment and labour.`}</p>
+    <p className="ui-meta">{s.rule || `Contingency ${Math.round((s.cont || 0) * 100)}% on equipment and labor.`}</p>
     {F && !gate && <FormulaCard F={F} tier={tier} />}
     {gate && F && <div className="stack boss__fx-choose"><p className="lab__k">🎯 Mastery · which relationship do you need? Choose it, then solve.</p><div className="dr__chips">{F.opts!.map((k) => formulas[k] ? <button key={k} type="button" className="dr__chip" aria-pressed={chose === k} disabled={locked || chose === s.f || wrongF.includes(k)} onClick={() => { if (k === s.f) setChose(k); else setWrongF([...wrongF, k]); }}>{formulas[k]!.name}</button> : null)}</div>
       <p className="ui-meta" aria-live="polite">{chose === s.f ? `✓ ${F.when || 'That’s the one.'}` : wrongF.length ? `✕ Not this one — ${formulas[wrongF[wrongF.length - 1]!]?.when || ''} Think about what the problem gives you and what it asks for.` : ''}</p></div>}

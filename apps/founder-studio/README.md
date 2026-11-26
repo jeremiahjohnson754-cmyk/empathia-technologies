@@ -25,7 +25,7 @@ the data inspector and saved states need the launcher.
 |---|---|
 | Start | Mission Control · The Enterprise Platform · Build a Room with Lite |
 | Seven operational products | Search Party · Empathia Pro · Universal Commissioning · Assurance / APEX · Field Intelligence · ServiceHands · Intake Portal |
-| Expansion products | Drawing Intelligence · Scouter · Procurement · Control Studio · Learn · SIGNAL · Onboard · Experiences · Collaboro-Sing · Frontline |
+| Expansion products | Drawing Intelligence · Scouter · Procurement · Control Studio · Learn · SIGNAL · Onboard · Experiences · Collabora-SING · Frontline |
 | Experience | Interactive Scenarios · Media Library |
 | Engineering | Architecture Explorer · Engineering Documentation · Product Maturity |
 | Vault | IP & Provenance Vault · Settings and Demo Reset |

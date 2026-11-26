@@ -20,7 +20,7 @@ export const MODULE_PAGES: readonly PageDef[] = [
     search: { keywords: 'families platform map products capabilities voice flow forge prism sentinel accord missionproof omnipresence', aliases: ['platform families', 'all capabilities', 'platform map', 'platform tour'] },
   },
   {
-    id: 'flow', title: 'FLOW', purpose: 'The network a room’s streams and calls depend on, layer by layer, with what is declared, modelled, observed and unknown (read-only)', product: 'pro',
+    id: 'flow', title: 'FLOW', purpose: 'The network a room’s streams and calls depend on, layer by layer, with what is declared, modeled, observed and unknown (read-only)', product: 'pro',
     path: '/flow', alias: ['/flow/link/:node'], authority: { entity: 'NetworkNode' },
     load: () => import('./flow/FlowPage.js'),
     search: { keywords: `flow network avoip switch uplink vlan qos multicast ptp dante aes67 nmos stream dependency layer`, aliases: ['flow', 'network dependencies', 'what depends on this switch'] },
@@ -51,7 +51,7 @@ export const MODULE_PAGES: readonly PageDef[] = [
     path: '/accord', authority: { roles: M.ACCORD_ROLES, why: M.ACCORD_WHY },
     actions: [{ id: 'accord.withdraw', label: 'Withdraw the capsule', authority: { roles: M.ACCORD_WITHDRAW, why: M.ACCORD_WHY } }],
     load: () => import('./accord/AccordPage.js'),
-    search: { keywords: 'accord capsule evidence sharing provider integrator redaction expiry withdraw download audit organisation', aliases: ['accord', 'evidence capsule', 'share evidence'] },
+    search: { keywords: 'accord capsule evidence sharing provider integrator redaction expiry withdraw download audit organization', aliases: ['accord', 'evidence capsule', 'share evidence'] },
   },
   {
     id: 'forge', title: 'FORGE', purpose: 'A room’s design record compiled into reviewable engineering artefacts; configuration only with a vendor-verified capability pack', product: 'lite',

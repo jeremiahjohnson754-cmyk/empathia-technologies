@@ -282,7 +282,7 @@ function QuizView({ q, id, rec, onDone }: { q: Quiz; id: string; rec?: { best: n
   const [picked, setPicked] = useState<Record<number, number>>({}); const [round, setRound] = useState(0); const n = Object.keys(picked).length; const right = q.qs.filter((x, i) => picked[i] === x.a).length;
   useEffect(() => { if (n === q.qs.length && n > 0) onDone(right, q.qs.length); }, [n]);
   return <div className="sg-quiz" data-testid="story-quiz" data-quiz={id} data-answered={n} data-of={q.qs.length} key={round}>
-    <h4>✎ {q.title}</h4>{rec && n === 0 && <p className="ui-meta" data-testid="story-quiz-rec">Done before: best {rec.best} of {rec.total}, first {rec.first}. Answer again to practise; the first score stays.</p>}
+    <h4>✎ {q.title}</h4>{rec && n === 0 && <p className="ui-meta" data-testid="story-quiz-rec">Done before: best {rec.best} of {rec.total}, first {rec.first}. Answer again to practice; the first score stays.</p>}
     <ol className="sg-qs">{q.qs.map((x, i) => { const got = picked[i]; const done = got !== undefined; return <li key={i} data-done={done}><p className="sg-q">{x.q}</p>
       <div className="sg-qopts" role="group" aria-label={`Question ${i + 1}`} onKeyDown={arrowKeys}>{x.o.map((o, j) => <button key={j} type="button" className="sg-opt sg-qopt" disabled={done} data-state={!done ? '' : j === x.a ? 'right' : j === got ? 'wrong' : ''} onClick={() => setPicked({ ...picked, [i]: j })}>{o}{done && j === x.a ? <span className="sg-mark"> ✓ right answer</span> : done && j === got ? <span className="sg-mark"> ✕ your answer</span> : null}</button>)}</div>
       {done && <p className="sg-why" role="status">{got === x.a ? '✓ Right. ' : '✕ Not quite. '}{x.why}</p>}</li>; })}</ol>
@@ -463,7 +463,7 @@ function QuestCard({ p, it, name }: { p: ViewProps; it: Extract<Item, { type: 'q
     <p className="sg-party">{it.party.map((id) => <span key={id} className="sg-who"><Face id={id} pose="N" expr="smile" />{name(id)}</span>)}</p>
     <dl className="sg-dl"><div><dt>At stake</dt><dd>{it.stakes}</dd></div><div><dt>Clock</dt><dd>{it.clock}</dd></div><div><dt>Reward</dt><dd>{it.reward}</dd></div></dl>
     <ul className="sg-obj" aria-label={`Objectives, ${n} of ${it.objectives.length} done`}>{it.objectives.map((o) => { const d = done(o.key); return <li key={o.key} data-obj={o.key} data-done={d}><span aria-hidden="true">{d ? '✓' : '○'}</span> {o.text}{d ? <span className="ui-visually-hidden"> (done)</span> : null}</li>; })}</ul>
-    {it.rumor && <p className="sg-rumor"><b>Rumour.</b> {it.rumor}</p>}
+    {it.rumor && <p className="sg-rumor"><b>Rumor.</b> {it.rumor}</p>}
   </section>;
 }
 function Weight({ o, c, d, review }: { o: Option | null; c: { letter: string; hints: number } | null; d: Extract<Item, { type: 'decision' }>; review: boolean }) {

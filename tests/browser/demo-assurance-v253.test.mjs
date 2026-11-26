@@ -13,7 +13,7 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   let t = await open('#/assurance', { role: 'architect', w, h, sw: false }); let p = t.page; p.setDefaultTimeout(10000);
   await p.getByTestId('as-trend').waitFor();
   const trend = await p.getByTestId('as-trend').innerText();
-  ok(`AH-${tag}-01`, 'which way it is moving: four weekly runs, matched, drift and failure, with this week against the first', (await p.locator('[data-testid=as-trend] .wk-bars > li').count()) === 4 && /This week \d+ of \d+ runs matched the baseline \(\d+%\)/.test(trend) && /modelled schedule/i.test(trend), trend.slice(0, 200));
+  ok(`AH-${tag}-01`, 'which way it is moving: four weekly runs, matched, drift and failure, with this week against the first', (await p.locator('[data-testid=as-trend] .wk-bars > li').count()) === 4 && /This week \d+ of \d+ runs matched the baseline \(\d+%\)/.test(trend) && /modeled schedule/i.test(trend), trend.slice(0, 200));
   const rem = p.getByTestId('as-remedy'); const remT = await rem.innerText();
   ok(`AH-${tag}-02`, 'what the findings call for: four remedies, each with a count and a rough order of magnitude, labelled an estimate, not a quote', ['Recommissioning only', 'Minor remediation', 'Replacement', 'Redesign'].every((x) => remT.includes(x)) && /\$\d+k – \$\d+k/.test(remT) && /ROM estimate · not a quote/.test(remT) && /eighteen-component cost model/.test(remT), remT.slice(0, 200));
   await p.getByTestId('as-remedy-recommission').locator('summary').click();

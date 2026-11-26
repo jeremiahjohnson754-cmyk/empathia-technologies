@@ -3,7 +3,7 @@
  * the flagship engineering demonstration before expanding all the tools across the estate… the same engine can power your enterprise
  * rooms, stadium executive suites, and convention center spaces without creating separate engineering systems for each world").
  *
- * The room is Lecture Theatre SCI-110, reached by the identifier it has in the canonical estate, UNI-SCI-110. This first panel set
+ * The room is Lecture Theater SCI-110, reached by the identifier it has in the canonical estate, UNI-SCI-110. This first panel set
  * shows four things and nothing else: its plan, its devices, its commissioning plan and its thread. Every value on the page is what
  * the enterprise API returned for the person chosen; the page holds no record of the room, and the estate's copy in the bundle is not
  * read (tests/unit/migration-ledger.test.mjs checks the imports). The panels are one selection: choosing a device on the plan shows
@@ -123,7 +123,7 @@ function Plan({ room, devices, connections, selected, onSelect, showLinks, showF
         <line x1={U(p.current.x)} y1={U(p.current.y)} x2={U(p.proposed!.x)} y2={U(p.proposed!.y)} /><circle cx={U(p.proposed!.x)} cy={U(p.proposed!.y)} r={0.48} /><text x={U(p.proposed!.x)} y={U(p.proposed!.y) + (p.current.y < p.proposed!.y ? 1.05 : -0.7)} textAnchor="middle">proposed</text></g>; })}
       {shown.map((d) => { const f = familyOf(d.cat); const on = d.id === selected; const mv = d.id === moving; const here = mv && draft ? draft : placeOf(d);
         return <g key={d.id} className="fl__dev" data-family={d.furniture ? 'furniture' : f.family} data-on={on ? 'yes' : 'no'} data-move={mv ? 'yes' : 'no'} data-device={d.id} data-x={here.x} data-y={here.y} transform={`translate(${U(here.x)} ${U(here.y)})`} role="button" tabIndex={0} aria-pressed={on}
-          aria-label={mv ? `${d.label}: moving. Drag it, or use the arrow keys: a tenth of a metre a press, half a metre with Shift` : `${d.label}, ${d.furniture ? 'furniture' : f.family}, ${d.id}`}
+          aria-label={mv ? `${d.label}: moving. Drag it, or use the arrow keys: a tenth of a meter a press, half a meter with Shift` : `${d.label}, ${d.furniture ? 'furniture' : f.family}, ${d.id}`}
           onClick={() => { if (!moving) onSelect(on ? null : d.id); }}
           onPointerDown={(e: { currentTarget: Element; pointerId: number; preventDefault: () => void }) => { if (mv) { dragging.current = true; e.preventDefault(); } }}
           onKeyDown={(e: { key: string; shiftKey: boolean; preventDefault: () => void }) => {
@@ -276,23 +276,23 @@ export function FlagshipPage({ room }: { room?: string }) {
   const mover = R && moving ? R.devices.find((d) => d.id === moving) || null : null; const moverAt = mover ? placeOf(mover) : null;
   const far = mover && moverAt && draft ? dist(moverAt, draft) : 0; const ready = !!(mover && draft && far >= 0.05 && reason && (reason !== 'other' || note.trim()));
 
-  if (!c.configured) return <div className="ui-page" data-testid="flagship"><PageHero product="commissioning" icon="link" eyebrow="The flagship engineering room, on the server" title="Lecture Theatre SCI-110" lede="This build of the demonstration is not connected to a server, so there is no room to read." /></div>;
+  if (!c.configured) return <div className="ui-page" data-testid="flagship"><PageHero product="commissioning" icon="link" eyebrow="The flagship engineering room, on the server" title="Lecture Theater SCI-110" lede="This build of the demonstration is not connected to a server, so there is no room to read." /></div>;
   return (
     <div className="ui-page" data-testid="flagship" data-loaded={data ? 'yes' : 'no'}>
-      {flagship ? <PageHero product="commissioning" icon="link" eyebrow="The flagship engineering room, on the server" title="Lecture Theatre SCI-110"
+      {flagship ? <PageHero product="commissioning" icon="link" eyebrow="The flagship engineering room, on the server" title="Lecture Theater SCI-110"
         lede="One university lecture hall carries the engineering demonstration: the same room, the same record, for every tool that follows. This is its first panel set. Everything below was returned by the server for the person you choose; the page keeps no copy of the room."
         meta={[`Canonical identifier ${FLAGSHIP_REF}`, `Server ${c.origin}`, 'Synthetic records: a fictional university']} />
         : <PageHero product="commissioning" icon="link" eyebrow="Another room, the same engineering record" title={data?.room.room.name || ref}
-          lede="The page, the server and the rules are the ones the lecture theatre uses. Only the room is different: its own design, its own criterion, its own people’s work. Everything below was returned by the server for the person you choose; the page keeps no copy of the room."
+          lede="The page, the server and the rules are the ones the lecture theater uses. Only the room is different: its own design, its own criterion, its own people’s work. Everything below was returned by the server for the person you choose; the page keeps no copy of the room."
           meta={[`Identifier ${data?.room.room.canonicalRef || ref}`, `Server ${c.origin}`, 'Synthetic records: a fictional venue']} />}
 
       {!avail ? <p role="status" data-testid="fl-asking"><Tag tone="warn">asking</Tag> Asking the server… One that has been idle can take about a minute to start.</p> : null}
       {avail && !avail.enabled ? <Notice tone="warn"><b>The server-backed demonstration is not available here.</b> {avail.reason} The room cannot be shown without it: this page keeps no copy.</Notice> : null}
       {avail?.enabled && !sb ? <Card icon="link" title="Open a sandbox to see the room" testId="fl-open-card">
-        <p>A sandbox is a synthetic organization of your own on the server. It opens with the lecture theatre already designed, approved and installed, ready to be commissioned.</p>
+        <p>A sandbox is a synthetic organization of your own on the server. It opens with the lecture theater already designed, approved and installed, ready to be commissioned.</p>
         <p className="build__row"><button type="button" className="ui-btn ui-btn--primary" data-testid="fl-open" disabled={!!busy} onClick={() => void open(false)}>Open a sandbox</button> <a href="#/connected">I have a resume code</a></p>
       </Card> : null}
-      {avail?.enabled && sb && absent ? <Notice tone="warn">{flagship ? <><b>This sandbox was opened before the lecture theatre existed on the server.</b> It has no room with the identifier {FLAGSHIP_REF}.</> : <>{/* the trail’s NotAPlace marker, written out: a server page imports nothing that reads a browser-held record (tests/unit/migration-ledger.test.mjs ML-02) */}<span data-missing="" hidden /><b>This sandbox has no room “{ref}”.</b> <a href="#/flagship" data-testid="fl-back">Go to the lecture theatre</a>, or open a new sandbox: a sandbox opened before a room existed does not have it.</>} A new sandbox has it; the old one stays on the server until it expires.{' '}
+      {avail?.enabled && sb && absent ? <Notice tone="warn">{flagship ? <><b>This sandbox was opened before the lecture theater existed on the server.</b> It has no room with the identifier {FLAGSHIP_REF}.</> : <>{/* the trail’s NotAPlace marker, written out: a server page imports nothing that reads a browser-held record (tests/unit/migration-ledger.test.mjs ML-02) */}<span data-missing="" hidden /><b>This sandbox has no room “{ref}”.</b> <a href="#/flagship" data-testid="fl-back">Go to the lecture theater</a>, or open a new sandbox: a sandbox opened before a room existed does not have it.</>} A new sandbox has it; the old one stays on the server until it expires.{' '}
         <button type="button" className="ui-btn ui-btn--sm" data-testid="fl-new" disabled={!!busy} onClick={() => void open(true)}>Close this one and open a new one</button></Notice> : null}
       {busy ? <p role="status" data-testid="fl-busy"><Tag tone="warn">working</Tag> {busy}</p> : null}
       {said ? <div data-testid="fl-said" data-ok={said.ok ? 'yes' : 'no'}><Notice tone={!said.ok ? 'bad' : said.warn ? 'warn' : 'ok'}><b>{said.title}</b> {said.text}{said.reasons?.length ? <ul className="fl__list" data-testid="fl-said-reasons">{said.reasons.map((r) => <li key={r}>{r}</li>)}</ul> : null}</Notice></div> : null}

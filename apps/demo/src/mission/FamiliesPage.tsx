@@ -34,7 +34,7 @@ export default function FamiliesPage({ role }: PageProps) {
         <p>{m.says}</p></li>))}</ul>
     </section>))}
     <section className="vc-sec" aria-labelledby="fam-shared-h" data-testid="fam-shared"><h2 id="fam-shared-h">What all seventeen share</h2>
-      <p className="ui-muted">The families are six views of one engineering record, not six products that were joined afterwards.</p>
+      <p className="ui-muted">The families are six views of one engineering record, not six products that were joined afterward.</p>
       <ul className="mp-deps om-claims">{SHARED.map((s) => <li key={s.id} className="mp-dep" data-shared={s.id} data-ready="READY"><h3>{s.title}</h3><p>{s.says}</p></li>)}</ul>
     </section>
   </div>);

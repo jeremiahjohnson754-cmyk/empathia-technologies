@@ -130,7 +130,7 @@ export function CampusLifePage() {
         const L: Array<{ x: number; y: number; text: string; sub?: string; kind: string }> = [];
         if (!inside) for (const g of signs) { const q = proj(g.at); if (q && q.d < 70) L.push({ x: q.x, y: q.y, text: g.text, sub: g.sub, kind: 'sign' }); }
         const qn = proj([NPC.x, 2.15, NPC.z]); if (qn && qn.d < 25) L.push({ x: qn.x, y: qn.y, text: NPC.name, sub: NPC.role, kind: 'npc' });
-        if (inside) { const qb = proj([BENCH.x, 1.6, BENCH.z]); if (qb) L.push({ x: qb.x, y: qb.y, text: BENCH.label, kind: 'thing' }); const qs = proj([0, 4.8, -41.4]); if (qs) L.push({ x: qs.x, y: qs.y, text: 'SCI-110 · Lecture theatre', kind: 'thing' }); }
+        if (inside) { const qb = proj([BENCH.x, 1.6, BENCH.z]); if (qb) L.push({ x: qb.x, y: qb.y, text: BENCH.label, kind: 'thing' }); const qs = proj([0, 4.8, -41.4]); if (qs) L.push({ x: qs.x, y: qs.y, text: 'SCI-110 · Lecture theater', kind: 'thing' }); }
         const write = () => { setLabels(L); setHud({ ...s, reach: reach(s), fps, detail: dNow, inside, eyeZ: cam.eye[2] }); }; if (dChanged) flushSync(write); else write();
       }
       r.draw(r.unit, m4.ident(), undefined, 0);   // keep the program bound for the next frame's begin
@@ -161,7 +161,7 @@ export function CampusLifePage() {
       <div className="cl-labels" aria-hidden="true">{labels.map((l, i) => <div key={i} className={`cl-tag cl-tag--${l.kind}`} style={{ transform: `translate(${Math.round(l.x)}px, ${Math.round(l.y)}px)` }}><b>{l.text}</b>{l.sub ? <span>{l.sub}</span> : null}</div>)}</div>
       <div className="cl-hud">
         <div className="cl-card cl-who" data-testid="cl-level"><span className="cl-avatar" aria-hidden="true" /> <div><b>Student · level {lvl}</b><div className="cl-xp" role="meter" aria-label="Experience in this level" aria-valuemin={0} aria-valuemax={200} aria-valuenow={into}><i style={{ width: `${into / 2}%` }} /></div><span>{s.xp} XP</span></div></div>
-        <div className="cl-card cl-quest" data-testid="cl-quest"><span className="cl-kick">Quest · Light the lecture theatre</span><b>{STAGES[s.stage]}</b><span>Campus Discovery · fact cards {s.cards.length} of {CARDS.length}</span></div>
+        <div className="cl-card cl-quest" data-testid="cl-quest"><span className="cl-kick">Quest · Light the lecture theater</span><b>{STAGES[s.stage]}</b><span>Campus Discovery · fact cards {s.cards.length} of {CARDS.length}</span></div>
         {map ? <svg className="cl-map" viewBox={`${WORLD.minX} ${WORLD.minZ} ${WORLD.maxX - WORLD.minX} ${WORLD.maxZ - WORLD.minZ}`} role="img" aria-label="Map of the Quad and Science Hall with your position" data-testid="cl-map">
           <rect x={WORLD.minX} y={WORLD.minZ} width={WORLD.maxX - WORLD.minX} height={WORLD.maxZ - WORLD.minZ} className="cl-map__g" />
           {boxes.filter((b) => b.max[1] > 5 && b.tag !== 'roof').map((b, i) => <rect key={i} x={b.min[0]} y={b.min[2]} width={b.max[0] - b.min[0]} height={b.max[2] - b.min[2]} className="cl-map__b" />)}
@@ -209,12 +209,12 @@ function Panel({ panel, s, onClose, onSolved }: { panel: 'talk' | 'circuits' | '
     const lines: Record<string, string[]> = {
       met: ['Good morning! I’m Professor Calder. My 09:00 Circuits and Signals lecture is in SCI-110 — and the LED demonstration board on the circuit bench is dark.', 'Could you go in and fix it? Three circuits, three resistors. Work each one out; don’t guess.'],
       inside: ['The bench is on the right-hand side of SCI-110, past the desks. Take your time.'], bench: ['How is the bench? Ohm’s law is your friend: V = I × R.'],
-      solved: ['You did it already? Wonderful — come and tell me.'], done: ['The board is lit and the lecture can start on time. Thank you! You’ve earned your experience today.', 'There’s more of the campus to come: the library, the Engineering Centre and the Union open in later releases.'],
+      solved: ['You did it already? Wonderful — come and tell me.'], done: ['The board is lit and the lecture can start on time. Thank you! You’ve earned your experience today.', 'There’s more of the campus to come: the library, the Engineering Center and the Union open in later releases.'],
       start: ['Hello!'],
     };
     body = <><h2>{NPC.name}</h2><p className="cl-sub">{NPC.role}</p>{(lines[s.stage] || lines['start']!).map((l, i) => <p key={i}>{l}</p>)}</>;
   } else if (panel === 'screen') {
-    body = <><h2>SCI-110 · Lecture screen</h2><p>09:00 · Circuits and Signals — Week 6: series and parallel resistance.</p><p className="cl-sub">In the connected demonstration, this room is the one commissioned on the server: its plan, devices, tests and acceptance are at <a href="#/flagship">the lecture theatre’s page</a>.</p></>;
+    body = <><h2>SCI-110 · Lecture screen</h2><p>09:00 · Circuits and Signals — Week 6: series and parallel resistance.</p><p className="cl-sub">In the connected demonstration, this room is the one commissioned on the server: its plan, devices, tests and acceptance are at <a href="#/flagship">the lecture theater’s page</a>.</p></>;
   } else if (panel === 'circuits') {
     return <Circuits onClose={onClose} onSolved={onSolved} done={s.stage !== 'bench'} />;
   } else { const c = CARDS.find((x) => x.id === panel.card)!; body = <><h2>Fact card · {c.title}</h2><p>{c.fact}</p><p className="cl-sub">Campus Discovery: {s.cards.length} of {CARDS.length} found.</p></>; }

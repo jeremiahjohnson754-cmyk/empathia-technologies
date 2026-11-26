@@ -53,7 +53,7 @@ export function OrbitBar({ orbit, extra }: { orbit: ReturnType<typeof useOrbit>;
       <button type="button" className="lt-ibtn" onClick={() => turn(-45)} aria-label="Turn left 45 degrees" title="Turn left">⟲</button>
       <button type="button" className="lt-ibtn" onClick={() => turn(45)} aria-label="Turn right 45 degrees" title="Turn right">⟳</button>
       <button type="button" className="lt-ibtn" onClick={() => tilt(-12)} aria-label="Tilt lower" title="Tilt lower">▽</button>
-      <button type="button" className="lt-ibtn" onClick={() => tilt(12)} aria-label="Tilt higher, towards a plan" title="Tilt higher">△</button>
+      <button type="button" className="lt-ibtn" onClick={() => tilt(12)} aria-label="Tilt higher, toward a plan" title="Tilt higher">△</button>
       <button type="button" className="lt-ibtn" onClick={() => setView((v) => ({ ...v, pitch: 90, yaw: 0 }))} aria-label="Plan view from above" aria-pressed={view.pitch === 90} title="Plan">⊡</button>
       <button type="button" className="lt-ibtn" onClick={() => zoomBy(0.2)} aria-label="Zoom in" title="Zoom in">+</button>
       <button type="button" className="lt-ibtn" onClick={() => zoomBy(-0.2)} aria-label="Zoom out" title="Zoom out">−</button>

@@ -102,7 +102,7 @@ export const EXAMPLES: Array<{ key: string; context: 'Enterprise' | 'University'
   { key: 'ex-enterprise-camera', context: 'Enterprise', role: 'employee', draft: () => blank('add-devices', { need: 'People at the far end of the boardroom table cannot see the shared screen; a second display would help.', roomId: 'R-ATL-4-218', building: 'ATL', adds: [{ cat: 'display', qty: 1 }], goals: ['displays'] }) },
   { key: 'ex-university', context: 'University', role: 'bpm', draft: () => blank('change-room', { need: 'The tiered lecture hall should let remote students ask questions and be heard by everyone in the room.', roomId: 'R-HFD-1-110', building: 'HFD', goals: ['teach', 'audio', 'access'], when: 'half' }) },
   { key: 'ex-stadium', context: 'Stadium', role: 'exec', draft: () => blank('general', { need: 'Harborlight Stadium needs its press conference room ready for live-streamed briefings before the season opener. It is not in the campus records yet.', goals: [] }) },
-  { key: 'ex-convention', context: 'Convention', role: 'ops', draft: () => blank('general', { need: 'Hall A of the Larkspur Exchange Convention Centre needs a temporary streaming setup for the keynote, and the gear returned afterwards.', goals: [] }) },
+  { key: 'ex-convention', context: 'Convention', role: 'ops', draft: () => blank('general', { need: 'Hall A of the Larkspur Exchange Convention Center needs a temporary streaming setup for the keynote, and the gear returned afterward.', goals: [] }) },
 ];
 /** Add the examples that are not here yet. Each is sent through the same `send` as any request (its project or job is created the same way). */
 export function addExamples(w: Workspace, desk: DecisionState = loadDesk()): { added: string[]; refused: string[] } {

@@ -128,7 +128,7 @@ export function ReverbBenchPage({ perspective }: { perspective: string }) {
           <li>The energy decay curve is the squared response integrated backwards from that point (Schroeder), in dB.</li>
           <li>A least-squares line is fitted over each range — EDT 0 to −10 dB, T20 −5 to −25 dB, T30 −5 to −35 dB — and extrapolated to 60 dB of decay.</li>
           <li>A figure is refused when the response’s dynamic range does not reach 10 dB beyond the end of its range (T20 needs 35 dB, T30 45 dB), or when the decay does not reach it before the noise.</li>
-          <li>Octave bands 125 Hz to 4 kHz use a zero-phase fourth-order band-pass (an approximation of the standard filters; band results are labelled as such). One position’s band figures vary; measure several positions and use the mean.</li>
+          <li>Octave bands 125 Hz to 4 kHz use a zero-phase fourth-order band-pass (an approximation of the standard filters; band results are labeled as such). One position’s band figures vary; measure several positions and use the mean.</li>
           <li>The method follows the published approach of ISO 3382-2; the standard itself is not reproduced here. The bench is checked against synthetic responses of known decay time (tests/unit/bench-reverb.test.mjs).</li>
         </ul>
       </details>

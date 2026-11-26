@@ -28,7 +28,7 @@ export const FAMILIES: readonly Family[] = [
   ] },
   { id: 'field', name: 'Field and assurance', says: 'Proof that a room does what it was approved to do, and keeps doing it', asks: 'Does the room do what was approved, and does it still?', hands: 'An accepted baseline is what operations compares every later change, failure and repair with.', members: [
     P('commissioning', 'Commissioning & Assurance', 'Adaptive tests, evidence, independent verification, accepted baselines and drift', '/commissioning'),
-    P('field', 'Field Intelligence', 'Authorised, labelled observations of a room, inside policy limits', '/v25/fi'),
+    P('field', 'Field Intelligence', 'Authorized, labeled observations of a room, inside policy limits', '/v25/fi'),
   ] },
   { id: 'infrastructure', name: 'Infrastructure and communications', says: 'The network and the calling that every room depends on', asks: 'Can the network and the calling carry what the rooms need?', hands: 'Its evidence is cited by diagnosis, attached to service jobs, and read by event readiness.', members: [
     C('flow', 'FLOW', 'AVoIP signal and network intelligence, read-only: what depends on what, layer by layer', '/flow'),
@@ -39,7 +39,7 @@ export const FAMILIES: readonly Family[] = [
     C('sentinel', 'SENTINEL', 'Emergency communications assurance for approved secondary channels; never a life-safety system', '/sentinel'),
     C('omnipresence', 'OMNIPRESENCE', 'A building’s tag opens the building on a phone; presence and control need separate proof', '/omnipresence'),
   ] },
-  { id: 'collaboration', name: 'Collaboration and knowledge', says: 'Finding things, sharing proof across organisations, and learning from it', asks: 'Who knows, who may see, and what did we learn?', hands: 'Search reaches any record of any family; a scoped capsule carries evidence to another organisation; a lesson goes back to the people who do the work.', members: [
+  { id: 'collaboration', name: 'Collaboration and knowledge', says: 'Finding things, sharing proof across organizations, and learning from it', asks: 'Who knows, who may see, and what did we learn?', hands: 'Search reaches any record of any family; a scoped capsule carries evidence to another organization; a lesson goes back to the people who do the work.', members: [
     P('search-party', 'Search Party', 'Universal search and the relationships between rooms, devices, people and projects', '/search'),
     C('accord', 'ACCORD', 'Scoped, expiring evidence shared between a customer, an integrator and a service provider', '/accord'),
     P('learn', 'Learn', 'SIGNAL and the lessons that come out of real jobs', '/learn'),
@@ -54,7 +54,7 @@ export const POSITIONING = { line: 'One platform. Six product families. Shared e
 /** What every capability shares: the engineering intelligence under the six families. `icon` names a line icon of the website's set. */
 export const SHARED: ReadonlyArray<{ id: string; title: string; says: string; icon: string }> = [
   { id: 'identity', title: 'One identity', says: 'A room, a position, an asset, a person and a job each have one id, the same in every capability. Nothing is re-keyed between products.', icon: 'key' },
-  { id: 'evidence', title: 'One vocabulary for evidence', says: 'Every value says whether it was declared, modelled, simulated, observed or verified, and what is unknown stays unknown.', icon: 'evidence' },
+  { id: 'evidence', title: 'One vocabulary for evidence', says: 'Every value says whether it was declared, modeled, simulated, observed or verified, and what is unknown stays unknown.', icon: 'evidence' },
   { id: 'graph', title: 'One relationship graph', says: 'What contains, feeds, supports and depends on what, each relationship with where it comes from. Impact is computed, not guessed.', icon: 'model' },
   { id: 'authority', title: 'One permission model', says: 'What a role may open and do is decided the same way everywhere, and a refusal says why.', icon: 'lock' },
   { id: 'ledger', title: 'One ledger', says: 'Who did what, when and on which evidence. Closing a job never accepts a room, and nobody verifies their own work.', icon: 'history' },

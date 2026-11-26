@@ -50,7 +50,7 @@ export function AssetsPage({ perspective, hash }: { perspective: string; hash?: 
       <ProTabs role={perspective} current="#/pro/assets" />
       <PageHero product="pro" plain icon="device" eyebrow="Pro · what the organization owns" title="Asset Intelligence"
         lede={<>Every device position across the campus, its identity and where it is installed. <b>{plural(pos.length, 'position')}</b> in {plural(recs.length, 'room')}; <b>{ident[3]!.value}</b> carry no verified make, model or serial — a class template, never an invented one.</>}
-        meta={[<OnlyChip key="o" only={only} base="#/pro/assets" />, <Chip key="m" small tone="muted">Modelled positions</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
+        meta={[<OnlyChip key="o" only={only} base="#/pro/assets" />, <Chip key="m" small tone="muted">Modeled positions</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
       <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Device positions" value={pos.length} icon="device" tone="pro" hint={`${byCat.length} kinds · furniture excluded`} />
         <StatTile label="Identity verified" value={ident[0]!.value} unit={`of ${pos.length}`} icon="check" tone="ok" hint="A person other than the installer confirmed it" />
@@ -70,7 +70,7 @@ export function AssetsPage({ perspective, hash }: { perspective: string; hash?: 
             <StatTile label="Documentation complete" value={docs} unit={`of ${recs.length}`} icon="book" tone="ok" hint="rooms whose every document area is recorded" />
           </div>
           <div className="wk-g2">
-            <Card icon="building" title="Buildings" sub="Campus, building, room, device: health is modelled from the records">
+            <Card icon="building" title="Buildings" sub="Campus, building, room, device: health is modeled from the records">
               <List label="Buildings">{cs.buildings.filter((b) => b.rooms && (!only || b.b.key === only)).map((b) => <ListRow key={b.b.key} title={b.b.name} sub={`${plural(b.rooms, 'room')} · ${plural(b.devices, 'device position')} · ${b.open} open issue${b.open === 1 ? '' : 's'}${b.verifiedPct != null ? ` · ${b.verifiedPct}% of tests verified` : ''}`} href={`#/commissioning?b=${b.b.key}`} trailing={<Tag tone={b.band === 'healthy' ? 'ok' : b.band === 'monitor' ? 'warn' : 'bad'}>{b.score ?? '—'}</Tag>} />)}</List>
             </Card>
             <Card icon="chart" title="Service on units, by month" sub="Jobs that named a unit, by layer · synthetic service history">
@@ -94,7 +94,7 @@ export function AssetsPage({ perspective, hash }: { perspective: string; hash?: 
           { key: 'v', header: 'Verified', render: (x) => `${x.verified} of ${x.n}`, sort: (x) => x.verified, align: 'right' },
         ]} />
       </Card>
-      <Foot>Positions are modelled from each room's archetype; no device was surveyed, and no make, model or serial is invented.</Foot>
+      <Foot>Positions are modeled from each room's archetype; no device was surveyed, and no make, model or serial is invented.</Foot>
     </section>
   );
 }
@@ -218,7 +218,7 @@ export function StandardsPage({ perspective }: { perspective: string }) {
       <ProTabs role={perspective} current="#/pro/eng" />
       <PageHero product="pro" plain icon="book" eyebrow="Pro · Standards and Engineering" title="The standards every room is built to"
         lede={<><b>{plural(arch.length, 'archetype')}</b> across the campus, each designed from an engineering template; <b>{conform}</b> of {recs.length} rooms have every applicable test verified, and the design checks raised <b>{plural(findings.length, 'finding')}</b>.</>}
-        meta={[<Chip key="m" small tone="muted">Class templates · modelled</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
+        meta={[<Chip key="m" small tone="muted">Class templates · modeled</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         actions={<><a className="ui-btn" href="#/v25/build">Build a Room</a>{readsManual(perspective as RoleKey) ? <a className="ui-btn" href="#/manual" data-testid="eng-manual">Engineering standards manual</a> : null}</>} />
       <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Archetypes in use" value={arch.length} icon="layers" tone="pro" />
@@ -239,7 +239,7 @@ export function StandardsPage({ perspective }: { perspective: string }) {
       <Card icon="building" title="Conformance by building" sub="Rooms with every applicable test verified">
         <ul className="kit-meters">{BUILDINGS.map((b) => { const rs = recs.filter((r) => r.outline.building === b.key); const c = rs.filter((r) => r.counts.applicable && r.counts.verified === r.counts.applicable).length; return rs.length ? <MeterRow key={b.key} label={b.name} sub={`${c} of ${plural(rs.length, 'room')}`} value={pct(c, rs.length)} /> : null; })}</ul>
       </Card>
-      <Foot>Templates are engineering classes from the catalogue; a room designed from one is modelled, never surveyed.</Foot>
+      <Foot>Templates are engineering classes from the catalog; a room designed from one is modeled, never surveyed.</Foot>
     </section>
   );
 }

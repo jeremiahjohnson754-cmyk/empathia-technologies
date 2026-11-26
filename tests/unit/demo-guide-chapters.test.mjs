@@ -43,7 +43,7 @@ test('EU-03 nothing tells anyone to open, unplug, restart or reach behind a room
 
 test('EU-04 no step-by-step for another company’s application is written, and what an organisation would add is said to be its own', () => {
   const all = JSON.stringify(H.CHAPTERS.map((c) => c.sections)); assert.ok(!/\b(click|tap|select|go to) (the )?[“"'A-Z][^.]{0,40}(menu|tab|ribbon|settings|button)\b/.test(all), 'no menu-by-menu instruction'); assert.ok(!/ > /.test(all), 'no menu paths');
-  assert.match(H.chapterById('apps').yours, /Step-by-step instructions for these applications are not written here: they change, and your organisation has its own approved guidance/);
+  assert.match(H.chapterById('apps').yours, /Step-by-step instructions for these applications are not written here: they change, and your organization has its own approved guidance/);
   assert.ok(H.CHAPTERS.filter((c) => c.yours).length >= 7); for (const c of H.CHAPTERS) if (c.yours) assert.ok(c.yours.length > 30, c.id);
 });
 

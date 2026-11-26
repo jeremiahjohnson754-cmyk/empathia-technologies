@@ -100,7 +100,7 @@ function SitePage() {
           <p className="kicker">The living campus · synthetic</p>
           <h1>{SITE.name}</h1>
           <p className="room__intent">{BUILDINGS.length} buildings and {REGIONAL_SITES.length} regional sites, {c.rooms} rooms, {c.devices} device positions. Select a building to go inside.</p>
-          <p className="ui-meta">One complete reference room, three that keep this demonstration’s earlier records, and {ROOMS.filter((r) => r.kind === 'designed').length} designed from their archetypes ({ROOMS.filter((r) => r.planRow && !r.roster).length} added by the rooms plan and {ROOMS.filter((r) => r.roster).length} by the 90-room estate, and {ROOMS.filter((r) => /^V2\.5\.3 campus, read from V2\.5\.3/.test(r.source)).length} of V2.5.3’s own rooms) — modelled layouts and devices, never surveyed.</p>
+          <p className="ui-meta">One complete reference room, three that keep this demonstration’s earlier records, and {ROOMS.filter((r) => r.kind === 'designed').length} designed from their archetypes ({ROOMS.filter((r) => r.planRow && !r.roster).length} added by the rooms plan and {ROOMS.filter((r) => r.roster).length} by the 90-room estate, and {ROOMS.filter((r) => /^V2\.5\.3 campus, read from V2\.5\.3/.test(r.source)).length} of V2.5.3’s own rooms) — modeled layouts and devices, never surveyed.</p>
         </div>
       </header>
       <div className="seg campus__view" role="group" aria-label="Campus view"><button type="button" aria-pressed={view === 'map'} onClick={() => setView('map')}>3D map</button><button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>List</button></div>
@@ -226,7 +226,7 @@ function RoomsInner({ hash }: { hash: string }) {
   return (
     <section className="campus" data-native="" data-testid="rooms-index">
       <Crumbs items={[['Campus', '#/campus'], ['Rooms']]} />
-      <header className="campus__head"><div><p className="kicker">The canonical campus</p><h1>{ROOMS.length} rooms</h1><p className="ui-muted">Every room opens in the same room page. Coverage says per room what is complete, modelled or a gap.</p></div></header>
+      <header className="campus__head"><div><p className="kicker">The canonical campus</p><h1>{ROOMS.length} rooms</h1><p className="ui-muted">Every room opens in the same room page. Coverage says per room what is complete, modeled or a gap.</p></div></header>
       <div className="filters"><label>Lifecycle <select value={state} onChange={(e) => set('state', e.target.value)}><option value="">Every state</option>{[...new Set(all.map((r) => r.lifecycle))].map((s) => <option key={s} value={s}>{s}</option>)}</select></label>
         <label>Building <select value={b} onChange={(e) => set('building', e.target.value)}><option value="">Every building</option>{[...BUILDINGS, ...REGIONAL_SITES].map((x) => <option key={x.key} value={x.key}>{x.name}</option>)}</select></label>
         <label>Health <select value={band} onChange={(e) => set('health', e.target.value)}><option value="">Any</option>{(['healthy', 'monitor', 'action', 'none'] as const).map((x) => <option key={x} value={x}>{BAND_LABEL[x]}</option>)}</select></label>

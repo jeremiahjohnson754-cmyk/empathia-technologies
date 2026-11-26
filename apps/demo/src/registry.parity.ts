@@ -51,9 +51,9 @@ export const PARITY_PAGES: readonly PageDef[] = [
     search: { keywords: 'compare side by side budget baseline commissioned proposed', aliases: ['core compare', 'estimate vs actual'] },
   },
   {
-    id: 'control.tower', title: 'Control Tower', purpose: 'The operations-centre room: site status, incident queue, escalation timeline and relationship map — non-operational', product: 'mission-control',
+    id: 'control.tower', title: 'Control Tower', purpose: 'The operations-center room: site status, incident queue, escalation timeline and relationship map — non-operational', product: 'mission-control',
     path: '/control/tower', authority: { area: 'pro.ops' }, load: () => import('./parity/Tower.js'),
-    search: { keywords: 'control tower operations centre incident queue escalation site status', aliases: ['control tower', 'operations control tower', 'ops room'] },
+    search: { keywords: 'control tower operations center incident queue escalation site status', aliases: ['control tower', 'operations control tower', 'ops room'] },
   },
   {
     id: 'control.rooms', title: 'Empathia Control', purpose: 'One room-control language: one sentence, one room, one dock, five modes', product: 'lite',

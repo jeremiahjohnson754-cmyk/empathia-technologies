@@ -110,7 +110,7 @@ function LiteHome({ role }: PageProps) {
         </Card>
         <div className="lt-side">
           {scouter && <Card title="Scouter in Lite" sub="Does this device suit this room?" icon="spark" tone="lite" testId="lite-scouter-card">
-            <p className="ui-muted">Each catalogued model checked against the room’s own record — seats, geometry, connections and power — with the source of every figure, before anyone buys it.</p>
+            <p className="ui-muted">Each cataloged model checked against the room’s own record — seats, geometry, connections and power — with the source of every figure, before anyone buys it.</p>
             <a className="ui-btn ui-btn--primary lt-cta" href="#/lite/scouter">Ask Scouter</a></Card>}
           <Card title="Buildings" icon="building">
             <ul className="lt-meters">{ALL_SITES.map((B) => { const b = buildingSummary(B.key); return <li key={B.key}><MeterRow label={B.name} sub={`${b.rooms} rooms${b.atRisk ? ` · ${b.atRisk} with a critical issue` : ''}${b.issues ? ` · ${b.issues} open issue${b.issues === 1 ? '' : 's'}` : ''}${B.source.includes('regional') ? ' · regional site' : ''}`} value={b.score} href={`#/lite/b/${B.key}`} /></li>; })}</ul>
@@ -127,14 +127,14 @@ function LiteHome({ role }: PageProps) {
         <Tile href="#/lite/qr" icon="grid" title="QR codes" sub="What each code on campus opens" />
       </ul>
       <h2 className="lt-h2">The other three worlds</h2>
-      <p className="ui-muted lt-lede">The same walk, from the whole place down to one room, for the university, the stadium and the convention centre. Fictional and synthetic.</p>
+      <p className="ui-muted lt-lede">The same walk, from the whole place down to one room, for the university, the stadium and the convention center. Fictional and synthetic.</p>
       <ul className="lt-tiles" data-testid="lite-worlds">
-        <Tile href="#/lite/w/university" icon="building" title="Kestrel Valley University" sub="Buildings, levels and rooms; classrooms, labs and theatres furnished" />
+        <Tile href="#/lite/w/university" icon="building" title="Kestrel Valley University" sub="Buildings, levels and rooms; classrooms, labs and theaters furnished" />
         <Tile href="#/lite/w/stadium" icon="map" title="Harborlight Stadium" sub="Five levels; suites, broadcast and team rooms furnished" />
-        <Tile href="#/lite/w/convention" icon="grid" title="The convention centre" sub="Halls, ballrooms, breakout and meeting rooms furnished" />
+        <Tile href="#/lite/w/convention" icon="grid" title="The convention center" sub="Halls, ballrooms, breakout and meeting rooms furnished" />
       </ul>
       <h2 className="lt-h2">Fifteen rooms of the plan</h2>
-      <p className="ui-muted lt-lede">Town halls, an auditorium, war rooms, operations centres and the Global Operations Control Tower — each with one scenario. Operations rooms are simulated and non-operational.</p>
+      <p className="ui-muted lt-lede">Town halls, an auditorium, war rooms, operations centers and the Global Operations Control Tower — each with one scenario. Operations rooms are simulated and non-operational.</p>
       <ul className="lt-rooms">{PLAN_ROOMS.map((o) => <li key={o.id}><RoomCard id={o.id} extra={o.scenario} /></li>)}</ul>
       <EstateSectors />
     </section>
@@ -156,7 +156,7 @@ function EstateSectors() {
   return (
     <section aria-labelledby="lt-estate-h" data-testid="lite-estate" data-sector={sector}>
       <h2 className="lt-h2" id="lt-estate-h">Forty-five more rooms, in nine sectors</h2>
-      <p className="ui-muted lt-lede">The estate beyond the first forty-five: briefing centres, broadcast and operations rooms, clinics and lecture halls, plants and galleries. Each is designed from an archetype, with one scenario. Synthetic and modeled.</p>
+      <p className="ui-muted lt-lede">The estate beyond the first forty-five: briefing centers, broadcast and operations rooms, clinics and lecture halls, plants and galleries. Each is designed from an archetype, with one scenario. Synthetic and modeled.</p>
       <div className="lt-sectors" role="group" aria-label="Sector">{sectors.map((x) => <button key={x} type="button" className="lt-sector" aria-pressed={x === sector} onClick={() => setSector(x)} data-testid="lite-sector">{x}</button>)}</div>
       <ul className="lt-rooms" aria-live="polite">{rooms.map((o) => <li key={o.id}><RoomCard id={o.id} extra={`${o.scenario} Shows: ${o.roster!.showcase}.`} /></li>)}</ul>
     </section>
@@ -194,8 +194,8 @@ function LiteBuilding({ role, b, f }: PageProps & { b: string; f?: string }) {
           : `${rooms.length} room${rooms.length === 1 ? '' : 's'}${spaces.length ? `, ${spaces.map((x) => x.label).join(', ')}` : ''}.`} />
       <LensPicker role={role} lens={lens} onPick={(l) => { saveLens(l); setLens(l); }} />
       {floor == null
-        ? <><BuildingStage bKey={b} onNav={go} /><p className="lt-gnote">Each plate is one floor, drawn to scale from the room sizes in the record (modelled, not surveyed). Tap a floor to open it; drag to turn, pinch or scroll to zoom.</p></>
-        : <><FloorStage bKey={b} fN={floor} onNav={go} /><p className="lt-gnote">Rooms sit either side of the corridor, lifts and stairs in the core, in V2.5.3’s arrangement from each room’s modelled size. Tap a room to go in.</p></>}
+        ? <><BuildingStage bKey={b} onNav={go} /><p className="lt-gnote">Each plate is one floor, drawn to scale from the room sizes in the record (modeled, not surveyed). Tap a floor to open it; drag to turn, pinch or scroll to zoom.</p></>
+        : <><FloorStage bKey={b} fN={floor} onNav={go} /><p className="lt-gnote">Rooms sit either side of the corridor, lifts and stairs in the core, in V2.5.3’s arrangement from each room’s modeled size. Tap a room to go in.</p></>}
       <div className="lt-floors" role="list" aria-label="Floors">
         <a role="listitem" className={`lt-floor${floor == null ? ' on' : ''}`} href={`#/lite/b/${b}`} aria-current={floor == null ? 'page' : undefined}><b>All</b><span>{s.rooms}</span></a>
         {floors.reverse().map((n) => { const c = roomsOf(b, n).length; return <a role="listitem" key={n} className={`lt-floor${floor === n ? ' on' : ''}${c ? '' : ' empty'}`} href={`#/lite/b/${b}/${n}`} aria-current={floor === n ? 'page' : undefined} aria-label={`Floor ${n}: ${c} room${c === 1 ? '' : 's'}`} data-testid={`lite-floor-${n}`}><b>{n}</b><span>{c}</span></a>; })}
@@ -204,7 +204,7 @@ function LiteBuilding({ role, b, f }: PageProps & { b: string; f?: string }) {
         <div className="lt-below__main">
           {floor != null && rooms.length > 0 && <Card title="The floor as a 2D plan" sub="Footprints at scale; the same rooms as the 3D floor" icon="grid" pad={false}><FloorPlan rooms={rooms.map((o) => o.id)} /></Card>}
           {rooms.length ? <ul className="lt-rooms">{rooms.map((o) => <li key={o.id}><RoomCard id={o.id} extra={o.scenario} /></li>)}</ul>
-            : <EmptyState title="No modelled room on this floor" icon="building">The campus model has {s.rooms} rooms in {B.name}; none is on floor {floor}. Try another floor.</EmptyState>}
+            : <EmptyState title="No modeled room on this floor" icon="building">The campus model has {s.rooms} rooms in {B.name}; none is on floor {floor}. Try another floor.</EmptyState>}
         </div>
         <aside className="lt-below__side">
           <Card title="Readiness" icon="check"><ScoreRing value={s.score} size={96} label="Readiness" caption="Average of its rooms" /></Card>
@@ -233,7 +233,7 @@ function FloorPlan({ rooms }: { rooms: string[] }) {
             <text x={px * S + 8} y={py * S + 18} className="lt-tilept__n">{r.outline.number}</text>
             <text x={px * S + 8} y={py * S + 34} className="lt-tilept__l">{r.outline.name.length > Math.floor(w * 2.6) ? `${r.outline.name.slice(0, Math.floor(w * 2.6) - 1)}…` : r.outline.name}</text>
           </a>); })}
-        <text x={0} y={H * S + 28} className="fp__scale">Footprints are modelled dimensions (not surveyed) · {S} px = 1 m</text>
+        <text x={0} y={H * S + 28} className="fp__scale">Footprints are modeled dimensions (not surveyed) · {S} px = 1 m</text>
       </svg>
     </figure>
   );

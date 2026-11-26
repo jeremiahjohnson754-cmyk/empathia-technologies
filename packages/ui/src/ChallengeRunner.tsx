@@ -50,7 +50,7 @@ function Inner({ id, lv, factor = 1, boss = false, where, heading = 'h3', record
         {!done && <p className="lab__row"><Button kind="primary" onClick={() => check()}>{boss ? '✔ Check my work — one shot' : '✔ Check my work'}</Button>{!boss && <Button onClick={again}>↺ Start over</Button>}</p>}
       </>}
       {out && <ResultView o={out} lv={lv} />}
-      {!boss && <p className="ui-meta">⚑ CH-01: a teaching model. The physics is standard; the targets are teaching windows, and a professional may choose differently on purpose. No real product is modelled.</p>}
+      {!boss && <p className="ui-meta">⚑ CH-01: a teaching model. The physics is standard; the targets are teaching windows, and a professional may choose differently on purpose. No real product is modeled.</p>}
     </article>
   );
 }
@@ -129,7 +129,7 @@ function EqCurve({ st, lv }: { st: CState; lv: number }) {
   const path = (fn: (f: number) => number) => Array.from({ length: 121 }, (_x, i) => { const f = 20 * 1000 ** (i / 120); return `${i ? 'L' : 'M'}${X(f).toFixed(1)} ${Y(fn(f)).toFixed(1)}`; }).join('');
   const bw = 540 / CH.Hear.THIRDS.length - 3;
   const outline = CH.Hear.THIRDS.map((f, i) => `${i ? 'L' : 'M'}${(X(f) - bw / 2).toFixed(1)} ${Y(ref[i]!).toFixed(1)}L${(X(f) + bw / 2).toFixed(1)} ${Y(ref[i]!).toFixed(1)}`).join('');
-  return <Svg h={214} label={`A ⅓-octave analyser of the guitar through the channel${byp ? ' with your EQ bypassed' : ''}, the untouched guitar's outline, and the EQ curves; judged ±${tol} dB from 100 Hz to 10 kHz.`}>
+  return <Svg h={214} label={`A ⅓-octave analyzer of the guitar through the channel${byp ? ' with your EQ bypassed' : ''}, the untouched guitar's outline, and the EQ curves; judged ±${tol} dB from 100 Hz to 10 kHz.`}>
     <rect className="ch__band" x={X(100)} y={10} width={X(10000) - X(100)} height={170} />
     {[-36, -24, -12, 0, 12].map((d) => <g key={d}><line className="ch__grid" x1={40} x2={580} y1={Y(d)} y2={Y(d)} /><text className="ch__t" x={34} y={Y(d) + 4} textAnchor="end">{d > 0 ? '+' : ''}{d}</text></g>)}
     {CH.Hear.THIRDS.map((f, i) => { const v = ref[i]! + S.bf(f) + (byp ? 0 : S.yf(f)); return <rect key={f} className="ch__bar" x={X(f) - bw / 2} y={Y(v)} width={bw} height={Math.max(0, Y(-42) - Y(v))} />; })}
@@ -174,7 +174,7 @@ function MoireView({ st, lv }: { st: CState; lv: number }) {
 }
 function PromoSlide({ st, lv }: { st: CState; lv: number }) {
   const T = CH.See.promoText(lv), btn = CH.See.buttonText(String(st['ac'])), sim = String(st['sim']); const f = (hx: string) => { if (sim === 'none') return hx; const c = CH.See.hex(hx), d = sim === 'deut' ? CH.See.deut(c) : (() => { const l = Math.round(255 * (CH.See.lum(c) ** (1 / 2.2))); return [l, l, l]; })(); return `rgb(${d.join(',')})`; };
-  return <Svg h={338} label={`The promo slide in your colours${sim === 'deut' ? ', as a viewer with deuteranopia sees it' : sim === 'gray' ? ', in brightness only' : ''}.`}>
+  return <Svg h={338} label={`The promo slide in your colors${sim === 'deut' ? ', as a viewer with deuteranopia sees it' : sim === 'gray' ? ', in brightness only' : ''}.`}>
     <rect width={600} height={338} fill={f(String(st['bg']))} /><circle cx={525} cy={60} r={112} fill={f(String(st['ac']))} opacity={0.18} />
     <text x={44} y={128} fontSize={46} fontWeight={900} fill={f(String(st['hd']))} textLength={T.title.length > 14 ? 510 : undefined} lengthAdjust="spacingAndGlyphs">{T.title}</text>
     <text x={46} y={166} fontSize={18} fontWeight={600} fill={f(String(st['bd']))}>{T.sub}</text><text x={46} y={192} fontSize={13.5} fill={f(String(st['bd']))}>{T.small}</text>
@@ -208,7 +208,7 @@ function RfPlan({ st, lv }: { st: CState; lv: number }) {
 }
 function LoudBars({ st }: { st: CState }) {
   const R = CH.Record.loudness(st), tot = R.seg.reduce((s, x) => s + x.d, 0), Y = (v: number) => 170 - ((CH.clamp(v, -36, 0) + 36) / 36) * 150; let x = 40;
-  return <Svg label="Loudness of each programme segment against the −24 LKFS target, with the integrated loudness.">
+  return <Svg label="Loudness of each program segment against the −24 LKFS target, with the integrated loudness.">
     <rect className="ch__band" x={40} y={Y(-22)} width={540} height={Y(-26) - Y(-22)} />
     {R.seg.map((s) => { const w = (s.d / tot) * 540, x0 = x; x += w; return <g key={s.sn}><rect className={s.locked ? 'ch__bar is-locked' : 'ch__bar'} x={x0 + 2} y={Y(s.L)} width={w - 4} height={170 - Y(s.L)} /><text className="ch__t" x={x0 + w / 2} y={190} textAnchor="middle">{s.sn}</text></g>; })}
     <line className="ch__int" x1={40} x2={580} y1={Y(R.I)} y2={Y(R.I)} /><text className="ch__t" x={44} y={14}>loudness by segment (LKFS) · dashed: integrated {CH.round(R.I, 1)} · band: −24 ±2</text></Svg>;

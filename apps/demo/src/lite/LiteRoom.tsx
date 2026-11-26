@@ -130,7 +130,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
               states={STATES.map((s) => ({ key: s.key, label: s.label, on: s.key === stateKey, onPick: () => upd('state', s.key === 'current' ? null : s.key) }))}
               xray={[{ key: 'acoustic', label: 'Sound in the room', on: ac, says: 'first reflections to the farthest seat: a training model, not a certified simulation', onToggle: () => upd('ac', ac ? null : '1') }]}
               layers={mayLayers.map((x) => ({ key: x.key, label: x.label, on: layers.has(x.key), says: x.says, onToggle: () => toggle('ly', x.key, layers) }))} />}</div>
-            <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">{look === 'v253' ? 'The room as V2.5.3 drew it for this room type' : 'V2.5.3’s arrangement for this room type, drawn by Empathia with materials and light'}: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modelled, not surveyed. Basis: {st.basis}.</span>{scaledFrom && <span className="ui-meta lt-scalednote" data-testid="lite-scaled-note"> {`V2.5.3 never drew this room: it is drawn from ${scaledFrom}, scaled to its ${o.dims[0]} × ${o.dims[1]} m (founder’s choice, 13 Nov 2026). Positions are illustrative; ${(v253Layout(id, stateKey === 'proposed' ? 'current' : stateKey)?.seats.length ?? 0)} of its ${o.capacity} seats are drawn.`}</span>}{ac && <span className="ui-meta lt-acnote" data-testid="lite-acoustic-note"> Sound in the room: a training and engineering model of first reflections, not a certified acoustic simulation.</span>}</figcaption>
+            <figcaption className="stage__cap"><b>{st.title}.</b> {st.summary} <span className="ui-meta">{look === 'v253' ? 'The room as V2.5.3 drew it for this room type' : 'V2.5.3’s arrangement for this room type, drawn by Empathia with materials and light'}: walls, door, glazing, furniture and equipment, with coverage drawn from its own cameras, microphones and loudspeakers. Modeled, not surveyed. Basis: {st.basis}.</span>{scaledFrom && <span className="ui-meta lt-scalednote" data-testid="lite-scaled-note"> {`V2.5.3 never drew this room: it is drawn from ${scaledFrom}, scaled to its ${o.dims[0]} × ${o.dims[1]} m (founder’s choice, 13 Nov 2026). Positions are illustrative; ${(v253Layout(id, stateKey === 'proposed' ? 'current' : stateKey)?.seats.length ?? 0)} of its ${o.capacity} seats are drawn.`}</span>}{ac && <span className="ui-meta lt-acnote" data-testid="lite-acoustic-note"> Sound in the room: a training and engineering model of first reflections, not a certified acoustic simulation.</span>}</figcaption>
           </figure> : <figure className="stage lt-stage" data-stage="">
             <div className="stage__bar"><OrbitBar orbit={orbit} /></div>
             <RoomScene label={`${o.name} in 3D, ${st.title}`} w={o.dims[0]} l={o.dims[1]} h={o.dims[2]} view={orbit.view} positions={positions} connections={r.connections} layers={layers} overlays={overlays} cov={cov}
@@ -141,7 +141,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
             {([['empathia', 'Empathia', 'V2.5.3’s layout, drawn with materials and light'], ['v253', 'V2.5.3 original', 'the room exactly as V2.5.3 drew it']] as const).map(([k, t, d]) => <button key={k} type="button" role="radio" aria-checked={look === k} title={d} className={`lt-chipbtn${look === k ? ' on' : ''}`} onClick={() => upd('look', k === 'empathia' ? null : k)} data-testid={`lite-look-${k}`}>{t}</button>)}</div>}
           {view === 'room' && <div className="lt-eyes" role="radiogroup" aria-label="See the room from" data-testid="lite-eyes"><span className="lt-eyes__l">See it from</span>
             {[{ key: null, label: 'Above', says: 'the whole room' }, { key: 'plan', label: 'Plan', says: 'the floor plan, to scale' }, ...EYE_SPOTS].map((e) => <button key={e.key || 'above'} type="button" role="radio" aria-checked={e.key === 'plan' ? planView : !planView && eyeKey === e.key} className={`lt-chipbtn${(e.key === 'plan' ? planView : !planView && eyeKey === e.key) ? ' on' : ''}`} title={e.says} onClick={() => upd('eye', e.key)} data-testid={`lite-eye-${e.key || 'above'}`}>{e.label}</button>)}
-            {eyeKey && <span className="ui-meta">At eye level, in perspective: drag or use the arrows to look around. Modelled from the layout, not a photograph.</span>}</div>}
+            {eyeKey && <span className="ui-meta">At eye level, in perspective: drag or use the arrows to look around. Modeled from the layout, not a photograph.</span>}</div>}
           {arranging && arrL && <ArrangeBar ar={ar} L={arrL} sel={arrObj} onAdded={setArrSel} />}
           {arranging && <PrecisionPlan ar={ar} roomId={id} sel={arrSel} onSel={setArrSel} />}
           <div className="lt-states" role="radiogroup" aria-label="Room state" data-testid="lite-states">
@@ -177,7 +177,7 @@ export function LiteRoom({ role, id, query }: PageProps & { id: string }) {
               <p className="ui-meta"><a href={`#/install/redline?room=${r.outline.id}&device=${p.code}`} data-testid="lite-dev-field">Field record: how it is mounted, hooked up and where it went in</a></p>
               <p className="lt-ask"><a className="ui-btn ui-btn--primary" href={`#/request?kind=replace-device&room=${encodeURIComponent(o.id)}&position=${encodeURIComponent(p.code)}`} data-testid="lite-ask-device">Ask for work on this device</a></p>
               {allows({ area: 'room' }, role) && <a href={`${roomHref(o)}?device=${encodeURIComponent(p.code)}`}>Open in the technical room view →</a>}</>
-              : furn ? <><h2 className="lt-h3" data-testid="lite-furn-card">{furnTitle(furn.obj)}</h2><dl className="lt-dl"><dt>Size</dt><dd>{furn.obj.w.toFixed(2)} × {furn.obj.d.toFixed(2)} m{furn.obj.h ? `, ${furn.obj.h.toFixed(2)} m high` : ''}</dd><dt>Where</dt><dd>{furn.obj.x.toFixed(1)} m across, {furn.obj.y.toFixed(1)} m in from the front wall</dd><dt>Basis</dt><dd>From the room type’s layout (V2.5.3), modelled</dd></dl></>
+              : furn ? <><h2 className="lt-h3" data-testid="lite-furn-card">{furnTitle(furn.obj)}</h2><dl className="lt-dl"><dt>Size</dt><dd>{furn.obj.w.toFixed(2)} × {furn.obj.d.toFixed(2)} m{furn.obj.h ? `, ${furn.obj.h.toFixed(2)} m high` : ''}</dd><dt>Where</dt><dd>{furn.obj.x.toFixed(1)} m across, {furn.obj.y.toFixed(1)} m in from the front wall</dd><dt>Basis</dt><dd>From the room type’s layout (V2.5.3), modeled</dd></dl></>
               : <p className="ui-muted">Choose a device in the 3D view to see its position, asset and identity.</p>}
           </div>
         </aside>
@@ -247,7 +247,7 @@ export function Measurements({ cov, w, l, h }: { cov: ReturnType<typeof roomStat
   ];
   return <section className="lt-meas" aria-label="Measurements" data-testid="lite-meas">
     {rows.map(([label, v, unit, basis]) => <div key={label} className="lt-meas__m"><b>{v}{unit && v !== '—' ? <small> {unit}</small> : null}</b><span>{label}</span><i>{basis}</i></div>)}
-    <p className="ui-meta">A measured figure names its record and method; a modeled one is the coverage model’s estimate from catalogue radii and geometry. They are different kinds of knowledge and are never mixed in one number.</p>
+    <p className="ui-meta">A measured figure names its record and method; a modeled one is the coverage model’s estimate from catalog radii and geometry. They are different kinds of knowledge and are never mixed in one number.</p>
   </section>;
 }
 
@@ -263,7 +263,7 @@ function CardRecordRows({ p, r, role, S }: { p: ReturnType<typeof roomState>['po
   const ins = r.installations.filter((i) => i.position === p.code).sort((a, b) => b.installedAt.localeCompare(a.installedAt)); const now = ins.find((i) => !i.removedAt);
   const figs = K ? [K.poe ? `PoE ${K.poe} W` : null, K.net ? 'networked' : 'not networked', `${K.mount} mount`, ...Object.entries(K.props || {}).filter(([, v]) => typeof v === 'number' || typeof v === 'string').map(([k, v]) => { const L = PROP_LABEL[k]; return L ? `${L[0]} ${v}${L[1] ? ` ${L[1]}` : ''}` : `${k.replace(/_/g, ' ')} ${v}`; })].filter(Boolean) as string[] : [];
   return <>
-    {K && S({ h: 'Catalogue figures', note: 'Class template · declared, not from a datasheet', children: <p data-testid="lite-card-figs"><b>{K.label}.</b> {figs.join(' · ')}.</p> })}
+    {K && S({ h: 'Catalog figures', note: 'Class template · declared, not from a datasheet', children: <p data-testid="lite-card-figs"><b>{K.label}.</b> {figs.join(' · ')}.</p> })}
     {readsManual(role) && S({ h: 'Room standard', children: <p><a href={`#/manual/build?room=${encodeURIComponent(r.outline.id)}`}>The standards {r.outline.name} is held to</a></p> })}
     {S({ h: 'Commissioning', children: <p data-testid="lite-card-cx">{bl ? `Baseline v${bl.version} (${bl.at.slice(0, 10)}).` : 'No commissioning baseline on record yet.'}{now ? ` Installed ${now.installedAt.slice(0, 10)} as ${now.asset}${bl ? (now.installedAt <= bl.at ? ', accepted with that baseline' : ', after that baseline: not yet re-commissioned') : ''}.` : ' Nothing installed at this position on record.'}{ins.length > 1 ? ` ${ins.length - 1} earlier unit${ins.length === 2 ? '' : 's'} at this position.` : ''}
       {allows({ area: 'commissioning.room' }, role) && <> <a href={`#/commissioning/room/${encodeURIComponent(r.outline.id)}`}>The commissioning record</a></>}</p> })}
@@ -275,8 +275,8 @@ function ObjectCardView({ p, r, tech, cov, role, onMove }: { p: ReturnType<typeo
   const near = (x: number, y: number) => Math.abs(x - p.x) < 0.01 && Math.abs(y - p.y) < 0.01;
   const cover = (() => { const cone = cov.cones.find((c) => c.code === p.code), mic = cov.mics.find((m) => m.code === p.code), spk = cov.speakers.find((m) => m.code === p.code);
     if (cone) return `${cov.seats.filter((s) => { const d = Math.hypot(s.x - cone.x, s.y - cone.y); let a = Math.atan2(s.y - cone.y, s.x - cone.x) - cone.aim; while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return d <= cone.range && Math.abs(a) <= cone.half; }).length} of ${cov.seats.length} seats inside its field of view (${Math.round((cone.half * 360) / Math.PI)}°).`;
-    if (mic) return `Pickup radius ${mic.r.toFixed(1)} m from the catalogue.`;
-    if (spk) return `Coverage radius ${spk.r.toFixed(1)} m at ear height from the catalogue.`;
+    if (mic) return `Pickup radius ${mic.r.toFixed(1)} m from the catalog.`;
+    if (spk) return `Coverage radius ${spk.r.toFixed(1)} m at ear height from the catalog.`;
     const mine = cov.sight.rays.filter((x) => near(x.dx, x.dy)); if (['display', 'ledwall', 'projector'].includes(p.cat)) return `Best display for ${mine.length} ${mine.length === 1 ? 'seat' : 'seats'}: ${mine.filter((x) => x.cls === 'CLEAR').length} clear, ${mine.filter((x) => x.cls === 'MARGINAL').length} marginal, ${mine.filter((x) => x.cls === 'OBSTRUCTED').length} obstructed.`;
     return ''; })();
   const S = ({ h, children, note }: { h: string; children: ReactNode; note?: string }) => <section className="lt-card__s"><h3 className="lt-card__h">{h}{note && <span className="ui-meta"> · {note}</span>}</h3>{children}</section>;
@@ -318,7 +318,7 @@ function ChangeRoom({ positions, base, cov, ed, setEd, tool, setTool, roomId, ed
       <span className="lt-sc__bar" aria-hidden="true"><i style={{ width: `${v ?? 0}%` }} />{edited && b != null && <s style={{ left: `${b}%` }} />}</span><b className="num">{v == null ? '—' : `${v}%`}{edited && v != null && b != null && v !== b ? <small> ({v > b ? '+' : '−'}{Math.abs(v - b)})</small> : null}</b></div>; })}</div>
     <p className="ui-meta">Five measures, shown separately; they are never added into one score.{edited ? ' The tick on each bar is the current layout.' : ''}</p>
     {cur && <div className="lt-tool"><label className="ch__field"><span>Move</span><select value={cur.code} onChange={(e) => setTool(e.target.value)} data-testid="lite-tool">{movable.map((x) => <option key={x.code} value={x.code}>{x.label} · {x.code}</option>)}</select></label>
-      <div className="lt-pad" role="group" aria-label="Move the selected item in steps of 25 centimetres">
+      <div className="lt-pad" role="group" aria-label="Move the selected item in steps of 25 centimeters">
         <button type="button" className="ui-btn" aria-label="Move toward the display wall" onClick={() => nudge(0, -0.25)}>↑</button>
         <span className="lt-pad__row"><button type="button" className="ui-btn" aria-label="Move left" onClick={() => nudge(-0.25, 0)}>←</button><span className="num" data-testid="lite-moved">{mv[0] || mv[1] ? `${fmt(mv[0])}, ${fmt(mv[1])} m` : '25 cm steps'}</span><button type="button" className="ui-btn" aria-label="Move right" onClick={() => nudge(0.25, 0)}>→</button></span>
         <button type="button" className="ui-btn" aria-label="Move toward the back wall" onClick={() => nudge(0, 0.25)}>↓</button></div></div>}

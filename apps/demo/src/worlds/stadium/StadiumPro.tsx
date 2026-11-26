@@ -17,7 +17,7 @@ function BroadcastProduction({ world, journey, config }: ScreenProps) {
       </Block>
       <Block title="Crowd acoustics by stand" sub="one-minute window" testId="acoustics">
         <Rows label="Crowd acoustics by stand" rows={ACOUSTICS.map((z) => ({ k: z.zone, sub: z.note, v: z.laeq == null ? 'No value' : <>LAeq,1 min {z.laeq} dB · LAFmax {z.lafmax} dB</>, ev: z.laeq == null ? 'UNKNOWN' as const : 'MODELED' as const }))} />
-        <p className="ui-meta">LAeq is an average over a stated interval; LAFmax is a maximum. They are different metrics and are never merged into one “loudness”. These are modelled, not measured: there is no calibrated sensor in this demonstration, and nothing here identifies a person or a group of supporters.</p>
+        <p className="ui-meta">LAeq is an average over a stated interval; LAFmax is a maximum. They are different metrics and are never merged into one “loudness”. These are modeled, not measured: there is no calibrated sensor in this demonstration, and nothing here identifies a person or a group of supporters.</p>
       </Block>
     </div>
     <Block title="Overlay export" sub="approval and rights">

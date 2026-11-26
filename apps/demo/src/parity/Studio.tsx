@@ -155,7 +155,7 @@ function Editor({ initial }: { initial: Concept }) {
       <p className="pa-note" aria-live="polite" data-testid="studio-said">{said}</p>
       <div className="pa-split">
         <Card title="Plan" icon="map" sub="Top-down, to scale; the front wall is at the top. Tap an object to select it.">
-          <svg className="pa-map" viewBox={`-10 -10 ${c.w * sc + 20} ${c.l * sc + 20}`} role="group" aria-label={`Plan of ${c.name}: ${c.w} by ${c.l} metres with ${c.items.map((i) => KIND[i.k].toLowerCase()).join(', ') || 'no objects'}`} data-testid="studio-plan">
+          <svg className="pa-map" viewBox={`-10 -10 ${c.w * sc + 20} ${c.l * sc + 20}`} role="group" aria-label={`Plan of ${c.name}: ${c.w} by ${c.l} meters with ${c.items.map((i) => KIND[i.k].toLowerCase()).join(', ') || 'no objects'}`} data-testid="studio-plan">
             <rect className="n" x="0" y="0" width={c.w * sc} height={c.l * sc} rx="4" onClick={() => setSel(null)} />
             {c.items.map((i) => { const x = clamp(i.x, 0, c.w) * sc, y = clamp(i.y, 0, c.l) * sc; const on = sel === i.id; const r = ((i.rot || 0) * Math.PI) / 180;
               return <g key={i.id} role="button" tabIndex={0} aria-pressed={on} aria-label={`${KIND[i.k]} at ${i.x.toFixed(2)}, ${i.y.toFixed(2)} m${i.k === 'camera' ? `, aimed ${i.rot || 0}°` : ''}`} data-item={i.id} data-kind={i.k} style={{ cursor: 'pointer' }}
@@ -167,7 +167,7 @@ function Editor({ initial }: { initial: Concept }) {
         <div className="stack">
           {S ? <Card title={`${KIND[S.k]} selected`} icon="settings" testId="studio-insp">
             <p className="ui-meta" data-testid="studio-pos">At {S.x.toFixed(2)} m across, {S.y.toFixed(2)} m from the front wall{S.k === 'camera' ? ` · aimed ${S.rot || 0}° (0 faces into the room)` : ''}.</p>
-            <div className="pa-row-actions" role="group" aria-label="Move in steps of 25 centimetres">
+            <div className="pa-row-actions" role="group" aria-label="Move in steps of 25 centimeters">
               <Button small onClick={() => nudge(0, -STEP)} testId="studio-nudge-up">Toward the front wall</Button><Button small onClick={() => nudge(-STEP, 0)} testId="studio-nudge-left">Left</Button><Button small onClick={() => nudge(STEP, 0)} testId="studio-nudge-right">Right</Button><Button small onClick={() => nudge(0, STEP)} testId="studio-nudge-down">Toward the back</Button></div>
             <div className="pa-row-actions">
               {S.k === 'camera' && <><Button small kind="quiet" onClick={() => upd((i) => ({ ...i, rot: (i.rot || 0) - 15 }), 'Aimed 15° left.')} testId="studio-aim-left">Aim left 15°</Button><Button small kind="quiet" onClick={() => upd((i) => ({ ...i, rot: (i.rot || 0) + 15 }), 'Aimed 15° right.')} testId="studio-aim-right">Aim right 15°</Button><Button small kind="quiet" onClick={() => aimAt(sx, sy)} testId="studio-aim-seats">Aim at the seats</Button></>}

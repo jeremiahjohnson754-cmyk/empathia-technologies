@@ -19,7 +19,7 @@
 | Audit tooling | `scripts/audit/site-audit.mjs`: A1–A10 at four widths, in a strict CI suite. `scripts/audit/v253-media-census.py`. | IMPLEMENTED · TESTED | `tests/evidence/SITE_AUDIT*.json`, `docs/parity/V253_MEDIA_CENSUS.json` |
 | Release controls | CI fails when a suite FAILs or is NOT_RUN without a stated reason (`scripts/verify/no-unexpected-skips.mjs`). The Blueprint validator now runs in CI (PyYAML installed). The film rights gate is in dist hygiene. | IMPLEMENTED · CI NOT RUN (runs on push) | `.github/workflows/ci.yml` |
 | Design system | Specification, tokens JSON and code mapping, plus the Figma file [Empathia — Experience System v1](https://www.figma.com/design/n6IyoAdwNpD5DnWbKeptIa): 44 variables, 10 text styles, 9 component sets plus 4 supporting components, Home and Founder frames for desktop and mobile, accessibility notes. | IMPLEMENTED · **Figma differs from code** in font (Inter) and portrait (placeholder); the Home composition is a first pass | `docs/design-system/EXPERIENCE_SYSTEM.md` |
-| Competitive benchmark | Nine sites, source-linked. Four pages could not be retrieved; this is stated in the document. Differentiation is written as hypotheses to prove. | DONE | `docs/strategy/COMPETITOR_EXPERIENCE_BENCHMARK.md` |
+| Competitive benchmark | Nine sites, source-linked. Four pages could not be retrieved; this is stated in the document. Differentiation is written as hypotheses to prove. | DONE | `docs/strategy/COMPETITOR_EXPERIENCE_BENCHMARK.md`, moved out of this public repository to the private store on 26 Nov 2026 (founder decision CR-D4) |
 | QA documents | Prioritized defect register (D-01…D-18), acceptance guide, media restoration status. | DONE | `docs/qa/`, `docs/parity/` |
 
 ## 2. What remains, in order of risk

@@ -8,8 +8,10 @@
  *   - string and template-literal text that contains a space (a sentence, a label of several words), outside className, style, id, key,
  *     href, src and data-* attributes, outside import/export specifiers and object keys.
  * It never changes identifiers, object keys, regular expressions, comments, single-word strings (they are often keys or enum values), or
- * an ALL-CAPS word (an enum value such as CANCELLED). A capitalized "Centre" or "Theatre" is kept: it is part of a fictional place's
- * proper name ("Larkspur Exchange Convention Centre", "Lecture Theatre"); renaming places is the founder's decision.
+ * an ALL-CAPS word (an enum value such as CANCELLED). A capitalized "Centre" or "Theatre" in the name of a fictional place is changed
+ * too: founder, 26 Nov 2026 04:50 CT, "Use Center for fictional American locations" / "Use Theater for fictional American locations"
+ * (every place in the demonstration and the website is a fictional American one). The SIGNAL canon (packages/signal-canon) is not
+ * under ROOTS: it is the preserved standalone source and is not edited here.
  * "analyses" is kept: it is also the American plural of "analysis".
  *
  *   node scripts/content/american-english.mjs            report what would change, per file, and exit 1 when anything would
@@ -38,7 +40,6 @@ for (const [uk, us] of [['centre', 'center'], ['centres', 'centers'], ['centred'
 for (const [uk, us] of [['modelled', 'modeled'], ['modelling', 'modeling'], ['labelled', 'labeled'], ['labelling', 'labeling'], ['travelled', 'traveled'], ['travelling', 'traveling'], ['traveller', 'traveler'], ['travellers', 'travelers'], ['cancelled', 'canceled'], ['cancelling', 'canceling'], ['levelled', 'leveled'], ['levelling', 'leveling'], ['signalled', 'signaled'], ['signalling', 'signaling'], ['fuelled', 'fueled'], ['fuelling', 'fueling'], ['totalled', 'totaled'], ['channelled', 'channeled'], ['marshalled', 'marshaled'], ['dialled', 'dialed'], ['dialling', 'dialing'], ['counselling', 'counseling'], ['counsellor', 'counselor'], ['jewellery', 'jewelry'], ['enrolment', 'enrollment'], ['enrolments', 'enrollments'], ['fulfil', 'fulfill'], ['fulfils', 'fulfills'], ['fulfilment', 'fulfillment'], ['instalment', 'installment'], ['instalments', 'installments'], ['skilful', 'skillful'], ['wilful', 'willful'], ['programme', 'program'], ['programmes', 'programs'], ['catalogue', 'catalog'], ['catalogues', 'catalogs'], ['catalogued', 'cataloged'], ['cataloguing', 'cataloging'], ['licence', 'license'], ['licences', 'licenses'], ['grey', 'gray'], ['greys', 'grays'], ['greyed', 'grayed'], ['defence', 'defense'], ['defences', 'defenses'], ['offence', 'offense'], ['offences', 'offenses'], ['pretence', 'pretense'], ['ageing', 'aging'], ['acknowledgement', 'acknowledgment'], ['acknowledgements', 'acknowledgments'], ['judgement', 'judgment'], ['judgements', 'judgments'], ['practise', 'practice'], ['practised', 'practiced'], ['practising', 'practicing'], ['cheque', 'check'], ['cheques', 'checks'], ['kerb', 'curb'], ['storey', 'story'], ['storeys', 'stories'], ['towards', 'toward'], ['afterwards', 'afterward'], ['learnt', 'learned'], ['spelt', 'spelled'], ['dreamt', 'dreamed'], ['whilst', 'while'], ['amongst', 'among'], ['plough', 'plow'], ['mould', 'mold'], ['moulds', 'molds'], ['smoulder', 'smolder'], ['tyre', 'tire'], ['tyres', 'tires'], ['aluminium', 'aluminum'], ['sceptical', 'skeptical'], ['sceptic', 'skeptic'], ['speciality', 'specialty'], ['specialities', 'specialties'], ['draught', 'draft'], ['pyjamas', 'pajamas'], ['aeroplane', 'airplane']]) add(uk, us);
 
 const MAP = new Map(PAIRS.filter(([a, b]) => a !== b));
-const KEEP_CAPITALIZED = new Set(['centre', 'centres', 'theatre', 'theatres']);   // proper names of fictional places stay (founder's decision)
 const WORD = /[A-Za-z]+/g;
 const caseLike = (src, to) => src === src.toLowerCase() ? to : src[0] === src[0].toUpperCase() && src.slice(1) === src.slice(1).toLowerCase() ? to[0].toUpperCase() + to.slice(1) : null;
 function fix(text) {
@@ -46,7 +47,6 @@ function fix(text) {
   const out = text.replace(WORD, (w) => {
     if (w.length > 1 && w === w.toUpperCase()) return w;   // an enum value or an acronym
     const low = w.toLowerCase(); const to = MAP.get(low); if (!to) return w;
-    if (KEEP_CAPITALIZED.has(low) && w[0] !== w[0].toLowerCase()) return w;
     const r = caseLike(w, to); if (!r) return w; n += 1; return r;
   });
   return { out, n };

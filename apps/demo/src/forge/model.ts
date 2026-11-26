@@ -43,7 +43,7 @@ export function compile(roomId: string): Package | null {
   ] : [
     { id: 'schema', title: 'Room schema', status: 'COMPILED', basis: 'DECLARED', says: `Revision ${revision} of the design record: ${r.outline.dims[0].toFixed(2)} × ${r.outline.dims[1].toFixed(2)} m, ${units.length} equipment positions, ${r.connections.length} connections.`,
       lines: [`Template ${r.design.template}`, `Geometry: ${r.geometryProvenance}`], href: `#/lite/room/${roomId}`, hrefLabel: 'The room in Lite' },
-    { id: 'bom', title: 'Bill of materials', status: 'COMPILED_WITH_GAPS', basis: 'DECLARED', says: `${units.length} lines in ${byCat.size} categories. Every line is a class template: no approved catalogue model is selected, so this is a list of what is needed, not an order.`,
+    { id: 'bom', title: 'Bill of materials', status: 'COMPILED_WITH_GAPS', basis: 'DECLARED', says: `${units.length} lines in ${byCat.size} categories. Every line is a class template: no approved catalog model is selected, so this is a list of what is needed, not an order.`,
       lines: [...byCat].map(([k, n]) => `${n} × ${k} (class template; specification to verify)`) },
     { id: 'paths', title: 'Signal and network paths', status: proposed ? 'COMPILED_WITH_GAPS' : 'COMPILED', basis: 'MODELED', says: `${r.connections.length} connections from the design record${proposed ? `; ${proposed} are still proposed and have not been confirmed on site` : ''}.`,
       lines: r.connections.slice(0, 6).map((c) => `${c.id}: ${c.from} → ${c.to} (${c.kind}; ${(c.state || 'state not recorded').toLowerCase()})`).concat(r.connections.length > 6 ? [`and ${r.connections.length - 6} more`] : []) },
@@ -54,7 +54,7 @@ export function compile(roomId: string): Package | null {
       says: installed ? `${installed} of ${units.length} positions have an installed asset on record. Identity of every unit is still to be verified on site.` : 'Nothing is recorded as installed.', lines: units.filter((p) => p.asset).slice(0, 4).map((p) => `${p.code}: ${p.asset} (identity ${p.identity.toLowerCase()})`) },
   ];
   const configs: ConfigTarget[] = units.filter((p) => CONFIGURABLE.includes(p.cat)).map((p) => ({ position: p.code, label: p.label, device: p.device, status: 'REJECTED' as const,
-    why: 'This unit is a class template, not an approved catalogue model, and no vendor-verified capability pack exists for it. FORGE generates no configuration and no command for it.' }));
+    why: 'This unit is a class template, not an approved catalog model, and no vendor-verified capability pack exists for it. FORGE generates no configuration and no command for it.' }));
   const changes = r.installations.filter((i) => i.removedAt).map((i) => { const next = r.installations.find((x) => x.position === i.position && !x.removedAt); return `${i.position}: ${i.asset} replaced${next ? ` by ${next.asset}` : ''} (${i.removalReason || i.reason})`; });
   return { roomId, roomName: fullName(r.outline), designed: !none, revision, previous, fingerprint: fingerprint(JSON.stringify(schemaOf(r))), artifacts, configs,
     findings: r.findings.map((f) => ({ title: f.title, severity: f.severity, says: f.rationale })), blockers: high.length, changes,

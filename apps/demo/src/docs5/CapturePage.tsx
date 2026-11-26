@@ -21,7 +21,7 @@ import { Said, docHref, plural, when } from './ui.js';
 interface Frame { id: string; name: string; must: string[]; /** x, y, width, height of the guide, as fractions of the picture */ box: [number, number, number, number] }
 export const FRAMES: readonly Frame[] = [
   { id: 'label', name: 'Equipment label', must: ['The whole label, square-on', 'Model and serial number readable', 'Enough of the unit to tell which one it is'], box: [0.2, 0.3, 0.6, 0.4] },
-  { id: 'position', name: 'Installed position', must: ['The whole unit and how it is fixed', 'Its neighbours on both sides', 'The cables at the unit, not hidden'], box: [0.12, 0.12, 0.76, 0.76] },
+  { id: 'position', name: 'Installed position', must: ['The whole unit and how it is fixed', 'Its neighbors on both sides', 'The cables at the unit, not hidden'], box: [0.12, 0.12, 0.76, 0.76] },
   { id: 'reading', name: 'Screen or meter reading', must: ['The display square-on, without glare', 'The value and its unit readable', 'The instrument’s own label or range setting in the frame'], box: [0.15, 0.25, 0.7, 0.5] },
   { id: 'room', name: 'Room view', must: ['Taken from the door', 'Both far corners in the frame', 'The display wall and the table'], box: [0.04, 0.1, 0.92, 0.8] },
 ];
@@ -65,7 +65,7 @@ export default function CapturePage({ role, can }: PageProps) {
   useEffect(() => { void reload(); }, [reload]);
   useEffect(() => { const up = () => setOnline(true); const down = () => setOnline(false); window.addEventListener('online', up); window.addEventListener('offline', down); return () => { window.removeEventListener('online', up); window.removeEventListener('offline', down); }; }, []);
   // the draft is saved as it is changed: a capture made in a room with no signal must not depend on a button
-  useEffect(() => { if (!d || !dirty.current) return; const t = setTimeout(() => { const next = { ...d, savedAt: nowIso() }; void saveDraft(next).then((done) => { if (done) { setSaved(next.savedAt); dirty.current = false; void reload(); } else setNo('This device already holds twenty drafts. Synchronise or delete one first.'); }); }, 400); return () => clearTimeout(t); }, [d, reload]);
+  useEffect(() => { if (!d || !dirty.current) return; const t = setTimeout(() => { const next = { ...d, savedAt: nowIso() }; void saveDraft(next).then((done) => { if (done) { setSaved(next.savedAt); dirty.current = false; void reload(); } else setNo('This device already holds twenty drafts. Synchronize or delete one first.'); }); }, 400); return () => clearTimeout(t); }, [d, reload]);
   const edit = (patch: Partial<Draft>) => { dirty.current = true; setD((x) => (x ? { ...x, ...patch } : x)); setOk(null); };
 
   const targets = useMemo(() => { const tests = dz.working.tests.map((t) => ({ id: `test:${t.id}`, label: `${t.id} · ${t.name}`, open: t.result !== 'PASS' || !t.evidence })); const docs = (w?.docs ?? []).filter((x) => x.applies && x.gate !== 'dossier' || (x.applies && !!x.test)).map((x) => ({ id: `doc:${x.type}`, label: x.title, open: !x.met }));
@@ -88,15 +88,15 @@ export default function CapturePage({ role, can }: PageProps) {
 
   const synchronise = async () => {
     if (!d) return; setOk(null);
-    if (!online) { setNo('This device is offline. The draft is kept here; synchronise when it is back online.'); return; }
+    if (!online) { setNo('This device is offline. The draft is kept here; synchronize when it is back online.'); return; }
     if (m.wrong.length) { setNo(m.wrong.join(' ')); return; }
-    if (!d.note.trim() && !m.ok.length && !d.photo) { setNo('There is nothing to synchronise yet: add a photograph, a note or a measurement.'); return; }
+    if (!d.note.trim() && !m.ok.length && !d.photo) { setNo('There is nothing to synchronize yet: add a photograph, a note or a measurement.'); return; }
     const [kind, id] = d.target.split(':') as ['test' | 'doc', string];
     const c: Capture = { key: d.key, target: { kind, id: id! }, note: d.note.trim(), measurements: m.ok, photo: d.photo ? { ...d.photo, annotated: d.marks.length > 0 } : null, by: actorOf(role), at: nowIso() };
     const r = sync(c);
     if (r === 'refused') { setNo('The capture could not be written to the record.'); return; }
     const next = { ...d, syncedAt: d.syncedAt ?? c.at, savedAt: nowIso() }; await saveDraft(next); dirty.current = false; setD(next); await reload(); refresh(); setNo(null);
-    setOk(r === 'added' ? `Synchronised once. ${d.key} is on the record.` : `${d.key} was already synchronised. Nothing was added.`);
+    setOk(r === 'added' ? `Synchronized once. ${d.key} is on the record.` : `${d.key} was already synchronized. Nothing was added.`);
   };
   const test = d && d.target.startsWith('test:') ? dz.working.tests.find((t) => t.id === d.target.slice(5)) ?? null : null;
   const mayRecord: Authority = { record: can('docs.record'), verify: false, raise: false, accept: false, countersign: false };
@@ -106,9 +106,9 @@ export default function CapturePage({ role, can }: PageProps) {
     <div className="pa d5 d5-cap" data-native="" data-testid="capture" data-online={online ? 'yes' : 'no'} data-durable={durable === null ? 'unknown' : durable ? 'yes' : 'no'}>
       <Crumbs items={[['Documentation', docHref()], ['Field capture']]} />
       <PageHero compact eyebrow={`Phase 5 · ${D.room.name}`} title="Field capture" product="commissioning" icon="camera"
-        lede="Take the photograph, say what it shows, write down what you read. It is kept on this device as you go, and reaches the record when you synchronise."
+        lede="Take the photograph, say what it shows, write down what you read. It is kept on this device as you go, and reaches the record when you synchronize."
         meta={[...honest(['Synthetic data', 'warn'], ['Photographs stay in this browser', 'muted']), <Chip key="n" small tone={online ? 'ok' : 'warn'}>{online ? 'Online' : 'Offline: drafts are kept here'}</Chip>]} />
-      {durable === false ? <p className="d5-note" data-testid="capture-volatile">This browser will not keep drafts after the page is closed. Synchronise before leaving.</p> : null}
+      {durable === false ? <p className="d5-note" data-testid="capture-volatile">This browser will not keep drafts after the page is closed. Synchronize before leaving.</p> : null}
 
       {!d ? <>
         <Card title="Start a capture" icon="plus" sub="What is it for?" testId="capture-start">
@@ -118,13 +118,13 @@ export default function CapturePage({ role, can }: PageProps) {
           </div><p className="d5-note">● still open.</p>
         </Card>
         <Card title="Drafts on this device" icon="inbox" sub={drafts.length ? `${plural(drafts.length, 'draft')}, newest first` : undefined} testId="capture-drafts">
-          {drafts.length ? <ul className="d5-drafts">{drafts.map((x) => <li key={x.key} data-draft={x.key} data-synced={x.syncedAt ? 'yes' : 'no'}><div><b><code>{x.key}</code> · {x.target.replace(/^test:|^doc:/, '').replace(/_/g, ' ')}</b><span>Saved {when(x.savedAt)}{x.syncedAt ? ` · synchronised ${when(x.syncedAt)}` : ' · not synchronised'}{x.photo ? ' · photograph' : ''}{x.measurements.length ? ` · ${plural(x.measurements.length, 'measurement')}` : ''}</span></div>
+          {drafts.length ? <ul className="d5-drafts">{drafts.map((x) => <li key={x.key} data-draft={x.key} data-synced={x.syncedAt ? 'yes' : 'no'}><div><b><code>{x.key}</code> · {x.target.replace(/^test:|^doc:/, '').replace(/_/g, ' ')}</b><span>Saved {when(x.savedAt)}{x.syncedAt ? ` · synchronized ${when(x.syncedAt)}` : ' · not synchronized'}{x.photo ? ' · photograph' : ''}{x.measurements.length ? ` · ${plural(x.measurements.length, 'measurement')}` : ''}</span></div>
             <div className="d5-actions"><button type="button" className="ui-btn ui-btn--sm" data-act="resume" onClick={() => resume(x)}>Open</button><button type="button" className="ui-btn ui-btn--sm" data-act="delete" onClick={() => { void remove(x.key); }}>Delete</button></div></li>)}</ul>
             : <p className="d5-note">None. A draft appears here as soon as you start a capture.</p>}
         </Card>
       </> : <>
         <p className="d5-capbar" data-testid="capture-bar"><span><b><code>{d.key}</code></b> for {d.target.startsWith('test:') ? `test ${d.target.slice(5)}` : (w?.docs.find((x) => `doc:${x.type}` === d.target)?.title ?? d.target)}</span>
-          <span data-testid="capture-saved" data-saved={saved ? 'yes' : 'no'}>{saved ? `Saved on this device ${when(saved)}` : 'Not saved yet'}{synced ? ' · synchronised' : ''}</span>
+          <span data-testid="capture-saved" data-saved={saved ? 'yes' : 'no'}>{saved ? `Saved on this device ${when(saved)}` : 'Not saved yet'}{synced ? ' · synchronized' : ''}</span>
           <button type="button" className="ui-btn ui-btn--sm" onClick={() => { setD(null); void reload(); }} data-testid="capture-close">All drafts</button></p>
         <Said no={no} ok={ok} id="capture" />
 
@@ -148,7 +148,7 @@ export default function CapturePage({ role, can }: PageProps) {
               {d.image ? <div className="d5-tools" data-testid="capture-tools">
                 <div role="group" aria-label="Mark-up tool" className="d5-tools__set">{(['arrow', 'box', 'label'] as const).map((k) => <button key={k} type="button" className="ui-btn ui-btn--sm" aria-pressed={tool === k} onClick={() => setTool(k)} data-tool={k}>{k === 'arrow' ? 'Arrow' : k === 'box' ? 'Box' : 'Label'}</button>)}</div>
                 {tool === 'label' ? <div className="ui-field"><label htmlFor="cap-label">Label text, then tap the photograph</label><input id="cap-label" type="text" maxLength={40} value={labelText} onChange={(e) => setLabelText(e.target.value)} data-testid="capture-label-text" /></div> : <p className="d5-note">Drag on the photograph to draw {tool === 'arrow' ? 'an arrow' : 'a box'}.</p>}
-                <div className="d5-actions"><button type="button" className="ui-btn ui-btn--sm" onClick={centre} data-testid="capture-mark-centre">Add at the centre</button><button type="button" className="ui-btn ui-btn--sm" disabled={!d.marks.length} onClick={() => edit({ marks: d.marks.slice(0, -1) })} data-testid="capture-mark-undo">Undo the last mark</button></div>
+                <div className="d5-actions"><button type="button" className="ui-btn ui-btn--sm" onClick={centre} data-testid="capture-mark-centre">Add at the center</button><button type="button" className="ui-btn ui-btn--sm" disabled={!d.marks.length} onClick={() => edit({ marks: d.marks.slice(0, -1) })} data-testid="capture-mark-undo">Undo the last mark</button></div>
               </div> : null}
             </>}
           </Card>
@@ -166,8 +166,8 @@ export default function CapturePage({ role, can }: PageProps) {
           </Card>
         </div>
 
-        <Card title={synced ? 'Synchronised' : 'Synchronise'} icon="check" sub={synced ? `On the record since ${when(synced.at)}. Synchronising again adds nothing.` : 'Writes the note, the measurements and the photograph’s name, size and checksum to the record, once. The photograph stays here.'} testId="capture-sync">
-          <div className="d5-actions"><button type="button" className="ui-btn ui-btn--primary" onClick={() => { void synchronise(); }} data-testid="capture-sync-go">{synced ? 'Synchronise again' : 'Synchronise'}</button>
+        <Card title={synced ? 'Synchronised' : 'Synchronise'} icon="check" sub={synced ? `On the record since ${when(synced.at)}. Synchronizing again adds nothing.` : 'Writes the note, the measurements and the photograph’s name, size and checksum to the record, once. The photograph stays here.'} testId="capture-sync">
+          <div className="d5-actions"><button type="button" className="ui-btn ui-btn--primary" onClick={() => { void synchronise(); }} data-testid="capture-sync-go">{synced ? 'Synchronize again' : 'Synchronise'}</button>
             {test && synced && !test.evidence && can('docs.record') ? <button type="button" className="ui-btn" onClick={attach} data-testid="capture-attach">Make it the evidence of {test.id}</button> : null}
             <a className="ui-btn" href={docHref()}>Back to the checklist</a></div>
         </Card>

@@ -2,7 +2,7 @@
  * Convention, public journeys: Attend Expo and Keynote & Polls. Attendee-facing; no organiser, exhibitor-private or engineering data is
  * in this module. The poll and the questions work locally and are dropped when the world or the role changes (scope.ts).
  *
- * Larkspur Exchange Convention Centre, the Northlight Technology Expo and every exhibitor named here are fictional.
+ * Larkspur Exchange Convention Center, the Northlight Technology Expo and every exhibitor named here are fictional.
  */
 import { useState, type ComponentType } from 'react';
 import { Block, Ev, Pick, Plan, Said, ScreenHead, useScoped, type Place, type ScreenProps, type Zone } from '../kit.js';
@@ -27,14 +27,14 @@ const boothAt = (b: string): [number, number] => [120 + (Number(b[1]) - 1) * 90,
 const ZONES: Zone[] = [
   { id: 'hall', label: 'Hall A', short: '', x: 60, y: 60, w: 400, h: 190, kind: 'ring' },
   ...EXHIBITORS.map((e): Zone => ({ id: e.booth, label: `Booth ${e.booth}`, short: e.booth, x: boothAt(e.booth)[0] - 32, y: boothAt(e.booth)[1] - 26, w: 64, h: 52, kind: 'booth' })),
-  { id: 'keynote', label: 'Keynote Theatre', short: 'Keynote', x: 480, y: 60, w: 100, h: 190, kind: 'field' },
+  { id: 'keynote', label: 'Keynote Theater', short: 'Keynote', x: 480, y: 60, w: 100, h: 190, kind: 'field' },
   { id: 'r1', label: 'Session Room 1', short: 'Room 1', x: 60, y: 290, w: 150, h: 70, kind: 'stand' }, { id: 'r2', label: 'Session Room 2', short: 'Room 2', x: 230, y: 290, w: 150, h: 70, kind: 'stand' },
   { id: 'food', label: 'Food court', short: 'Food', x: 400, y: 290, w: 180, h: 70, kind: 'green' },
 ];
 const PLACES: Place[] = [{ id: 'entrance', label: 'Main entrance', x: 40, y: 200, kind: 'gate', short: 'E' }, { id: 'reg', label: 'Registration', x: 40, y: 110, kind: 'guest-services', short: 'R' }, { id: 'aid', label: 'First aid', x: 470, y: 270, kind: 'first-aid', short: '+' }, { id: 'quiet', label: 'Quiet room', x: 220, y: 270, kind: 'water', short: 'Q' }];
 interface Session { id: string; at: string; title: string; track: 'Keynote' | 'Engineering' | 'Workplace'; room: string; zone: string }
 const SESSIONS: Session[] = [
-  { id: 's1', at: '09:30', title: 'Opening keynote: rooms that explain themselves', track: 'Keynote', room: 'Keynote Theatre', zone: 'keynote' },
+  { id: 's1', at: '09:30', title: 'Opening keynote: rooms that explain themselves', track: 'Keynote', room: 'Keynote Theater', zone: 'keynote' },
   { id: 's2', at: '11:00', title: 'Audio over IP without the guesswork', track: 'Engineering', room: 'Session Room 1', zone: 'r1' },
   { id: 's3', at: '11:00', title: 'Designing the accessible meeting room', track: 'Workplace', room: 'Session Room 2', zone: 'r2' },
   { id: 's4', at: '13:30', title: 'Commissioning: proof before handover', track: 'Engineering', room: 'Session Room 1', zone: 'r1' },

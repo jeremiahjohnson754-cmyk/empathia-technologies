@@ -32,7 +32,7 @@ function StudentLife({ world, journey, config }: ScreenProps) {
       </Block>
       <Block title="Next shuttles" sub="arrival estimates">
         <Rows label="Next shuttles" rows={SHUTTLES.map((s) => ({ k: `${s.stop} · ${s.route}`, v: s.mins == null ? 'No estimate' : `about ${s.mins} min`, sub: s.age == null ? 'no source in this snapshot' : `declared ${s.age} min before this snapshot`, ev: s.mins == null ? 'UNAVAILABLE' as const : 'SIMULATED' as const }))} />
-        <p className="ui-meta">A synthetic timetable. No transit feed is connected; a real one needs a licence and proof of access first. Every shuttle is low-floor.</p>
+        <p className="ui-meta">A synthetic timetable. No transit feed is connected; a real one needs a license and proof of access first. Every shuttle is low-floor.</p>
         <h3>Office hours and support</h3>
         <Rows label="Office hours and support" rows={OFFICE_HOURS.map((o) => ({ k: o.who, v: o.when, sub: o.where }))} />
       </Block>
@@ -70,7 +70,7 @@ function DiscoverCampus({ world, journey, config }: ScreenProps) {
       </Block>
       <Block title="A first visit" sub="four stops, about 40 minutes">
         <ol className="w-way">{TOUR.map((id) => <li key={id}><b>{spot(id).label}</b> <span className="ui-meta">{spot(id).about}</span></li>)}</ol>
-        <p className="ui-meta">A suggested order for visitors and prospective students. Tours with a guide are booked at the Welcome Centre.</p>
+        <p className="ui-meta">A suggested order for visitors and prospective students. Tours with a guide are booked at the Welcome Center.</p>
       </Block>
     </div>
   </>);

@@ -19,7 +19,7 @@ const ORG = {
 };
 /** The fictional partner organisations, for the Organizations tab. */
 export const ORGS = Object.values(ORG);
-const fict = (n: string) => `${n} (fictional organisation)`;
+const fict = (n: string) => `${n} (fictional organization)`;
 type Comp = 'declared' | 'lab-evidenced' | 'reviewer-verified';
 const TECHS: Array<{ id: string; name: string; site: boolean; comps: Record<string, Comp>; tz: string; load: number }> = [
   { id: 'T-01', name: 'Technician A (synthetic)', site: true, comps: { 'Video systems': 'reviewer-verified', 'Audio DSP': 'lab-evidenced', Network: 'declared' }, tz: 'America/Chicago', load: 2 },
@@ -61,8 +61,8 @@ export function scenario(id: string, roomId = REFERENCE_ROOM_ID): Scenario | nul
         { key: 'people', label: 'People with a matching internal competency', items: TECHS.filter((t) => t.site).map((t) => ({ id: t.id, label: t.name, detail: Object.entries(t.comps).map(([k, v]) => `${k}: ${COMP_LABEL(v)}`).join(' · '), rel: 'COVERS', provenance: FIXTURE })) },
         { key: 'installer', label: 'Integrator of record', items: [{ id: 'ORG-INT', label: fict(ORG.INT.name), detail: `${ORG.INT.kind} · no real company implied`, rel: 'INTEGRATED_BY', provenance: FIXTURE }] },
       ],
-      answer: `Three support paths cover ${shortName(o)}; each names a synthetic role, a fictional escalation organisation and a response target.`,
-      cannot: ['No real contract, company or employee credential is implied.', 'Availability right now is not modelled.'],
+      answer: `Three support paths cover ${shortName(o)}; each names a synthetic role, a fictional escalation organization and a response target.`,
+      cannot: ['No real contract, company or employee credential is implied.', 'Availability right now is not modeled.'],
       acts: [{ label: 'Open ServiceHands', href: '#/v25/service' }],
     };
   }
@@ -89,7 +89,7 @@ export function scenario(id: string, roomId = REFERENCE_ROOM_ID): Scenario | nul
         { key: 'change', label: 'The replacement', items: ref.installations.filter((x) => ref.positions.find((p) => p.code === x.position)?.cat === 'camera').map((x) => ({ id: `${x.position}/${x.asset}`, label: `${x.asset} at ${x.position}`, detail: `${x.installedAt.slice(0, 10)}${x.removedAt ? ` → ${x.removedAt.slice(0, 10)} (${x.removalReason})` : ' → current'}`, rel: 'INSTALLED_AT', provenance: x.basis })) },
         { key: 'reopened', label: 'Tests reopened and re-verified', items: re.map((x) => ({ id: x.testId, label: x.testId, detail: x.reasons.join('; '), rel: 'REOPENED_BY', provenance: 'commissioning engine (re-run, independently verified)' })) },
         { key: 'held', label: 'What still holds acceptance', items: (ref.nextStep?.blockers || []).map((b, i) => ({ id: `B-${i}`, label: b, detail: ref.exception ? `${ref.exception.id} pending approval` : '', rel: 'BLOCKS', provenance: 'commissioning engine gate' })) },
-        { key: 'learn', label: 'Learning', items: [{ id: 'CASE-4218-CAM', label: 'Learn case: camera replacement and re-verification (synthetic, sanitized)', detail: 'competency EVIDENCE only — it never authorises work', rel: 'TEACHES', provenance: FIXTURE, href: '#/v25/learn' }] },
+        { key: 'learn', label: 'Learning', items: [{ id: 'CASE-4218-CAM', label: 'Learn case: camera replacement and re-verification (synthetic, sanitized)', detail: 'competency EVIDENCE only — it never authorizes work', rel: 'TEACHES', provenance: FIXTURE, href: '#/v25/learn' }] },
       ],
       answer: `The unit changed, the position stayed. ${re.length} tests were reopened by the replacement, re-run and verified by a different person; acceptance is still held by the engine.`,
       cannot: ['A closed ticket is not recommissioning: re-acceptance is decided by the engine’s gate.', 'Baseline v1 stays CURRENT until v2 is accepted.'],

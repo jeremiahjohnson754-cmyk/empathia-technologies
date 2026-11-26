@@ -55,12 +55,12 @@ export function defaultLayers(lens: Lens, role: RoleKey): LiteLayer[] {
 
 export type Overlay = 'camera' | 'mic' | 'speaker' | 'sight' | 'access' | 'infra';
 export const OVERLAYS: Array<{ key: Overlay; label: string; basis: string; layer: LiteLayer }> = [
-  { key: 'camera', label: 'Camera coverage', basis: 'Modeled from the catalogue field of view · not measured', layer: 'av' },
-  { key: 'mic', label: 'Microphone pickup', basis: 'Modeled from the catalogue pickup radius · not measured', layer: 'av' },
-  { key: 'speaker', label: 'Speaker zones', basis: 'Illustrative coverage model from the catalogue coverage radius', layer: 'av' },
+  { key: 'camera', label: 'Camera coverage', basis: 'Modeled from the catalog field of view · not measured', layer: 'av' },
+  { key: 'mic', label: 'Microphone pickup', basis: 'Modeled from the catalog pickup radius · not measured', layer: 'av' },
+  { key: 'speaker', label: 'Speaker zones', basis: 'Illustrative coverage model from the catalog coverage radius', layer: 'av' },
   { key: 'sight', label: 'Sightlines', basis: 'Modeled from display positions and image size (45° and 60° off axis, six image heights) · not measured', layer: 'av' },
   { key: 'access', label: 'Accessibility', basis: 'Planning reference (ADA 2010 tables 221.2.1.1 and 219.3) · to verify on site', layer: 'wayfinding' },
-  { key: 'infra', label: 'Infrastructure fit', basis: 'Declared catalogue values (PoE, rack units, outlets) · not measured', layer: 'network' },
+  { key: 'infra', label: 'Infrastructure fit', basis: 'Declared catalog values (PoE, rack units, outlets) · not measured', layer: 'network' },
 ];
 /** an overlay is offered only to a role that may see its layer (D44: absent, not disabled) */
 export const overlaysFor = (role: RoleKey) => OVERLAYS.filter((o) => allows({ layer: o.layer }, role));
@@ -157,8 +157,8 @@ export function sightlines(seats: Seat[], positions: Position[], w: number): Sig
   const rays: SightRay[] = []; const rank = { CLEAR: 0, MARGINAL: 1, OBSTRUCTED: 2 } as const;
   seats.forEach((s, i) => { let best: (SightRay & { r: number }) | null = null;
     for (const d of ds) { const dist = Math.hypot(s.x - d.x, s.y - d.y), off = angDiff(Math.atan2(s.y - d.y, s.x - d.x), d.face); let cls: SightClass = 'CLEAR', why = '';
-      if (off > 60) { cls = 'OBSTRUCTED'; why = 'more than 60° off the centre line'; } else if (blockers.some((b) => segHitsBox(s.x, s.y, d.x, d.y, b))) { cls = 'OBSTRUCTED'; why = 'blocked by something in the room'; }
-      else if (off > 45) { cls = 'MARGINAL'; why = 'more than 45° off the centre line'; } else if (dist > 6 * d.h) { cls = 'MARGINAL'; why = `beyond six image heights (${(6 * d.h).toFixed(1)} m)`; }
+      if (off > 60) { cls = 'OBSTRUCTED'; why = 'more than 60° off the center line'; } else if (blockers.some((b) => segHitsBox(s.x, s.y, d.x, d.y, b))) { cls = 'OBSTRUCTED'; why = 'blocked by something in the room'; }
+      else if (off > 45) { cls = 'MARGINAL'; why = 'more than 45° off the center line'; } else if (dist > 6 * d.h) { cls = 'MARGINAL'; why = `beyond six image heights (${(6 * d.h).toFixed(1)} m)`; }
       const r = rank[cls] * 100 + dist; if (!best || r < best.r) best = { seat: i, sx: s.x, sy: s.y, dx: d.x, dy: d.y, dz: d.z, cls, why, dist: Math.round(dist * 10) / 10, off: Math.round(off), r }; }
     if (best) { const { r, ...ray } = best; void r; rays.push(ray); } });
   const clear = rays.filter((r) => r.cls === 'CLEAR').length, marginal = rays.filter((r) => r.cls === 'MARGINAL').length;
@@ -234,7 +234,7 @@ export function roomState(r: RoomRecord, key: StateKey): RoomState {
   const mk = (title: string, summary: string, basis: string, ps: StatePosition[], available = true): RoomState => ({ key, available, title, summary, basis, positions: ps, marks: marks(ps), cov: coverage(r, ps) });
   const bl = r.baselines.find((b) => b.state === 'CURRENT') || r.baselines[0];
   if (key === 'designed') {
-    return mk('The approved design', `${base.filter((p) => !p.furniture).length} device positions from the ${r.archetypeName.toLowerCase()} template${r.templateNote ? ` (${r.templateNote})` : ''}.`, 'Design record · class templates from the catalogue, spec to verify', base.map((p) => ({ ...p, mark: 'same' })));
+    return mk('The approved design', `${base.filter((p) => !p.furniture).length} device positions from the ${r.archetypeName.toLowerCase()} template${r.templateNote ? ` (${r.templateNote})` : ''}.`, 'Design record · class templates from the catalog, spec to verify', base.map((p) => ({ ...p, mark: 'same' })));
   }
   if (key === 'commissioned') {
     if (!bl) return mk('Not commissioned yet', `No commissioning baseline: ${r.counts.verified} of ${r.counts.applicable} applicable tests verified so far. The room is ${r.lifecycle.toLowerCase().replace(/_/g, ' ')}.`, 'Commissioning record · no baseline published', base.map((p) => ({ ...p, mark: 'same' })), false);
@@ -348,7 +348,7 @@ export function configStatus(r: RoomRecord, c: Config): { cameras: number; mics:
   const mics = r.positions.filter((p) => ['micceil', 'mictable'].includes(p.cat) && inside(p.x)).length;
   const seats = seatsOf(r).filter((s) => inside(s.x)).length;
   const held = r.lifecycle === 'COMMISSIONING' && c.key === 'combined';
-  return { cameras: cams, mics, seats, commissioned: !held && !!r.baselines.length, note: c.key === 'combined' ? 'One programme across the hall: audio, cameras and control follow the partitions open.' : `Its own audio, cameras and control while the partitions are closed.` };
+  return { cameras: cams, mics, seats, commissioned: !held && !!r.baselines.length, note: c.key === 'combined' ? 'One program across the hall: audio, cameras and control follow the partitions open.' : `Its own audio, cameras and control while the partitions are closed.` };
 }
 
 // ------------------------------------------------------------------------------------------------ campus and readiness

@@ -18,7 +18,7 @@ function AttendGame({ world, journey, config }: ScreenProps) {
   return (<>
     <ScreenHead world={world} journey={journey} config={config}><p className="ui-meta">{FIXTURE}. Tickets, routes and statuses are sample data.</p></ScreenHead>
     {away && <Notice tone="info">Visiting-supporter guidance is shown because you chose Away Fan. It is an opt-in preference and is never inferred from where you sit, what you buy or what you say.</Notice>}
-    {config.roleId === 'premium_guest' && <Notice tone="info">Premium areas open only with an authorised ticket entitlement. This demonstration holds none, so the public journey is shown.</Notice>}
+    {config.roleId === 'premium_guest' && <Notice tone="info">Premium areas open only with an authorized ticket entitlement. This demonstration holds none, so the public journey is shown.</Notice>}
     <div className="w-two">
       <Block title="Your seat" sub="choose a sample ticket" testId="seat">
         <label className="w-field"><span>Ticket</span>

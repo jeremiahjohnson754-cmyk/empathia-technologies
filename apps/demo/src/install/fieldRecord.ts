@@ -73,7 +73,7 @@ export function recordMounting(r: RoomRecord, persona: string, device: string, m
   const kind = MOUNTS.find((x) => x.id === m.method); const why: string[] = [];
   if (!kind) why.push('choose how the device is mounted');
   const h = m.heightM === '' || m.heightM === undefined || m.heightM === null ? null : Number(m.heightM);
-  if (h !== null && !(Number.isFinite(h) && h >= 0 && h <= 15)) why.push('a mounting height is in metres above the finished floor, 0–15');
+  if (h !== null && !(Number.isFinite(h) && h >= 0 && h <= 15)) why.push('a mounting height is in meters above the finished floor, 0–15');
   const fixing = (m.fixing || '').trim(); const backing = (m.backing || '').trim(); const note = (m.note || '').trim();
   if (kind && kind.id !== 'other' && kind.id !== 'floor' && !fixing) why.push('say how it is fixed (the bracket, anchors or hardware used)');
   if (kind?.id === 'other' && !note) why.push('describe the mounting in the note');
@@ -94,7 +94,7 @@ export function recordHookup(r: RoomRecord, persona: string, h: { device: string
   if (!mayRecord(persona)) return deny(room, s, persona, [recordRefusal(persona)]);
   const why: string[] = []; const port = (h.port || '').trim(); const to = (h.to || '').trim();
   if (!deviceOf(r, h.device)) why.push(`${h.device} is not a device of ${room}`);
-  if (!port) why.push('name the port on the device (as labelled on it)');
+  if (!port) why.push('name the port on the device (as labeled on it)');
   if (!to) why.push('say what the other end is');
   else if (!deviceOf(r, to) && !ENDS_OUTSIDE.includes(to)) why.push('the other end is a device of this room or one of: ' + ENDS_OUTSIDE.join(', '));
   if (to === h.device) why.push('a device is not hooked up to itself');

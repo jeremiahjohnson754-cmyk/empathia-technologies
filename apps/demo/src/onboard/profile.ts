@@ -20,7 +20,7 @@ export interface Profile {
   tenant: string; starterRole: RoleKey; starter: Person | null; manager: Person | null; mentor: Person | null; champion: Person | null; site: string | null; siteName: string | null; rooms: number;
   fields: Field[];
 }
-const NOT = 'The organisation’s administrator provides it; none is recorded in this demonstration';
+const NOT = 'The organization’s administrator provides it; none is recorded in this demonstration';
 
 /** The profile of the demonstration's one new starter. Every value comes from a record; what has no record is null. */
 export function profile(): Profile {
@@ -28,7 +28,7 @@ export function profile(): Profile {
   const manager = site ? holdersOf(OB_ROLES.manager[0]!, site)[0] || null : null; const mentor = site ? holdersOf(OB_ROLES.mentor[0]!, site)[0] || null : null; const champion = site ? championOf(site) : null;
   const rooms = site ? roomsIn(site).length : 0; const tenant = tenantName(HOME_TENANT);
   const fields: Field[] = [
-    { id: 'employer', label: 'Employer', value: `${tenant} (a synthetic organisation)`, from: 'The tenant' },
+    { id: 'employer', label: 'Employer', value: `${tenant} (a synthetic organization)`, from: 'The tenant' },
     { id: 'role', label: 'Job role', value: ROLES[starterRole].label, from: 'The access policy' },
     { id: 'department', label: 'Department', value: null, from: NOT },
     { id: 'locations', label: 'Assigned locations', value: starter ? starter.buildings.map((k) => buildingByKey(k)?.name || k).join(', ') : null, from: 'The directory' },

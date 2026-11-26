@@ -13,7 +13,7 @@ import type { V3 } from './gl.js';
 
 export const R = 0.35; const WALK = 3.2; const RUN = 6.4;
 export type Stage = 'start' | 'met' | 'inside' | 'bench' | 'solved' | 'done';
-export const STAGES: Record<Stage, string> = { start: 'Find Professor Calder outside Science Hall', met: 'Go into Science Hall', inside: 'Find the circuit bench in SCI-110', bench: 'Solve the three circuits at the bench', solved: 'Tell Professor Calder the LED board is lit', done: 'Done: the lecture theatre is ready for 09:00' };
+export const STAGES: Record<Stage, string> = { start: 'Find Professor Calder outside Science Hall', met: 'Go into Science Hall', inside: 'Find the circuit bench in SCI-110', bench: 'Solve the three circuits at the bench', solved: 'Tell Professor Calder the LED board is lit', done: 'Done: the lecture theater is ready for 09:00' };
 export interface Save { v: 1; x: number; z: number; yaw: number; camYaw: number; xp: number; stage: Stage; cards: string[]; door: boolean; at: string }
 export interface State { x: number; z: number; yaw: number; speed: number; camYaw: number; camPitch: number; camDist: number; xp: number; stage: Stage; cards: string[]; door: boolean; doorT: number; walkT: number; t: number; log: string[] }
 export interface Input { fwd: number; right: number; run: boolean; turn: number; tilt: number }
@@ -94,7 +94,7 @@ export function reach(s: State): Reach | null {
 /** acting on what is in reach: returns the new state and what the page should open (dialogue, card, circuits) */
 export function act(s: State, r: Reach): { s: State; open?: 'talk' | 'circuits' | 'screen'; card?: string } {
   const n = { ...s };
-  if (r.id === 'npc') { if (n.stage === 'start') { n.stage = 'met'; n.xp += 10; n.log = [...n.log, 'Quest received: Light the lecture theatre · +10 XP']; } else if (n.stage === 'solved') { n.stage = 'done'; n.xp += 50; n.log = [...n.log, 'Quest complete · +50 XP']; } return { s: n, open: 'talk' }; }
+  if (r.id === 'npc') { if (n.stage === 'start') { n.stage = 'met'; n.xp += 10; n.log = [...n.log, 'Quest received: Light the lecture theater · +10 XP']; } else if (n.stage === 'solved') { n.stage = 'done'; n.xp += 50; n.log = [...n.log, 'Quest complete · +50 XP']; } return { s: n, open: 'talk' }; }
   if (r.id.startsWith('card:')) { const id = r.id.slice(5); if (!n.cards.includes(id)) { n.cards = [...n.cards, id]; n.xp += 25; n.log = [...n.log, `Fact card found · +25 XP`]; if (n.cards.length === CARDS.length) { n.xp += 40; n.log = [...n.log, 'Campus Discovery: all three cards · +40 XP']; } } return { s: n, card: id }; }
   if (r.id === 'door') { n.door = !n.door; return { s: n }; }
   if (r.id === 'bench') { if (n.stage === 'inside') n.stage = 'bench'; return { s: n, open: 'circuits' }; }

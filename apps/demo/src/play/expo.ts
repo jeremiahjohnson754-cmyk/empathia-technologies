@@ -1,5 +1,5 @@
 /**
- * The Northlight Technology Expo in Hall A of the Larkspur Exchange Convention Centre (the canon of worlds/convention), as 3D geometry
+ * The Northlight Technology Expo in Hall A of the Larkspur Exchange Convention Center (the canon of worlds/convention), as 3D geometry
  * and records for Expo LIVE (task #181, first slice). Twenty exhibitors and the Empathia showcase, the main stage and two presentation
  * zones, registration, a lounge and the food court, under a high trussed roof on a grid of columns. The venue, the expo and every
  * exhibitor are fictional; no real exhibitor, brand or floor plan is reproduced. Metres; x along the hall, z across it, y up.
@@ -20,7 +20,7 @@ const E: Array<[string, Cat, string, string]> = [
   ['Brightmoor Signage', 'Displays', 'Digital signage and wayfinding', 'Wayfinding that changes with the hall’s sessions'],
   ['Kettleby Wireless', 'Audio', 'Wireless microphones and frequency coordination', 'A frequency plan for a busy hall'],
   ['Ashgrove Lighting', 'Control', 'Architectural and presentation lighting', 'Scenes for lecture, video call and presentation'],
-  ['Marrow Lane Racks', 'Networks', 'Racks, power and cable management', 'A dressed rack with labelled patching'],
+  ['Marrow Lane Racks', 'Networks', 'Racks, power and cable management', 'A dressed rack with labeled patching'],
   ['Teasel Conferencing', 'Collaboration', 'Huddle and boardroom kits', 'A huddle room that starts a call in one touch'],
   ['Orrin Hearing Access', 'Audio', 'Assistive listening and hearing loops', 'A loop you can hear through the booth’s receivers'],
   ['Stonechat Capture', 'Collaboration', 'Lecture capture and streaming', 'A lecture recorded with slides and captions'],
@@ -28,11 +28,11 @@ const E: Array<[string, Cat, string, string]> = [
   ['Wexcombe Display Mounts', 'Displays', 'Mounts, lifts and structures', 'A motorised lift taking a display out of a desk'],
   ['Fennimore Control Systems', 'Control', 'Programmable control and automation', 'A room that turns itself on as people arrive'],
   ['Pinecroft Network Security', 'Networks', 'Securing AV on the enterprise network', 'Segmented AV traffic and its policies'],
-  ['Hollin Bay Interpreting', 'Collaboration', 'Interpretation and captioning services', 'Live captions on a screen, labelled as a demonstration'],
+  ['Hollin Bay Interpreting', 'Collaboration', 'Interpretation and captioning services', 'Live captions on a screen, labeled as a demonstration'],
 ];
 export const BOOTHS: Booth[] = [
   ...E.map(([name, cat, about, demo], i): Booth => { const row = Math.floor(i / 5), col = i % 5; return { id: `${'ABCD'[row]}${col + 1}`, name, cat, about, demo, x: -38 + col * 15, z: -22 + row * 11.5, w: 9, d: 7, color: CAT_COL[cat] }; }),
-  { id: 'E1', name: 'Empathia', cat: 'Showcase', about: 'Rooms that explain themselves: design, commissioning proof, service and learning on one record', demo: 'The lecture theatre SCI-110 from design to acceptance, live on a screen', x: 40, z: -16, w: 16, d: 12, color: CAT_COL.Showcase },
+  { id: 'E1', name: 'Empathia', cat: 'Showcase', about: 'Rooms that explain themselves: design, commissioning proof, service and learning on one record', demo: 'The lecture theater SCI-110 from design to acceptance, live on a screen', x: 40, z: -16, w: 16, d: 12, color: CAT_COL.Showcase },
 ];
 export const STAGE = { x: 50, z: 18, w: 18, d: 12 };
 export const ZONES = [{ id: 'p1', label: 'Presentation zone 1', x: 40, z: 6 }, { id: 'p2', label: 'Presentation zone 2', x: -50, z: 26 }];

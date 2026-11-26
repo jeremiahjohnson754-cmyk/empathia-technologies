@@ -7,10 +7,10 @@
 export type FxKind = 'profile' | 'fresnel' | 'par' | 'mover' | 'batten';
 export interface FixtureType { kind: FxKind; label: string; footprint: number; lumens: number; beam: number; zoom?: [number, number]; color: 'white' | 'rgb' | 'both'; says: string }
 export const FIXTURES: Record<FxKind, FixtureType> = {
-  profile: { kind: 'profile', label: 'Profile (ellipsoidal)', footprint: 2, lumens: 14000, beam: 26, color: 'white', says: 'A hard-edged, controllable beam: the key light on a face. Two channels: intensity and colour temperature.' },
-  fresnel: { kind: 'fresnel', label: 'LED Fresnel', footprint: 3, lumens: 7000, beam: 40, zoom: [15, 60], color: 'white', says: 'A soft-edged beam that zooms: fill light and back light. Intensity, colour temperature, zoom.' },
-  par: { kind: 'par', label: 'LED PAR (RGBW)', footprint: 8, lumens: 4000, beam: 25, color: 'rgb', says: 'A colour wash: eight channels (intensity, red, green, blue, white, strobe, mode, speed).' },
-  mover: { kind: 'mover', label: 'Moving head spot', footprint: 16, lumens: 12000, beam: 15, zoom: [8, 30], color: 'both', says: 'Pan, tilt, colour, gobo, zoom: sixteen channels in this mode.' },
+  profile: { kind: 'profile', label: 'Profile (ellipsoidal)', footprint: 2, lumens: 14000, beam: 26, color: 'white', says: 'A hard-edged, controllable beam: the key light on a face. Two channels: intensity and color temperature.' },
+  fresnel: { kind: 'fresnel', label: 'LED Fresnel', footprint: 3, lumens: 7000, beam: 40, zoom: [15, 60], color: 'white', says: 'A soft-edged beam that zooms: fill light and back light. Intensity, color temperature, zoom.' },
+  par: { kind: 'par', label: 'LED PAR (RGBW)', footprint: 8, lumens: 4000, beam: 25, color: 'rgb', says: 'A color wash: eight channels (intensity, red, green, blue, white, strobe, mode, speed).' },
+  mover: { kind: 'mover', label: 'Moving head spot', footprint: 16, lumens: 12000, beam: 15, zoom: [8, 30], color: 'both', says: 'Pan, tilt, color, gobo, zoom: sixteen channels in this mode.' },
   batten: { kind: 'batten', label: 'LED batten', footprint: 12, lumens: 5000, beam: 60, color: 'rgb', says: 'A strip of cells for washing a wall or the floor of the stage: twelve channels.' },
 };
 /** Hanging positions: x across the stage (m, 0 = stage left edge), y forward of the stage front (negative = upstage), z height. */
@@ -29,7 +29,7 @@ export interface Rig { hung: Hung[] }
 export type Look = 'sermon' | 'worship';
 export const LOOKS: Array<{ key: Look; label: string; says: string }> = [
   { key: 'sermon', label: 'Sermon', says: 'One face for the room and the camera: a key from the front, a softer fill from the other side, a back light to lift the pastor off the background, and nothing on the screen.' },
-  { key: 'worship', label: 'Worship', says: 'A lit leader the camera can see, colour on the band, and still nothing washing the screen.' },
+  { key: 'worship', label: 'Worship', says: 'A lit leader the camera can see, color on the band, and still nothing washing the screen.' },
 ];
 const pos = (k: string) => POSITIONS.find((p) => p.key === k)!; const subj = (k: string) => SUBJECTS.find((s) => s.key === k)!;
 export const beamOf = (h: Hung) => (FIXTURES[h.kind].zoom ? h.zoom : FIXTURES[h.kind].beam);
@@ -73,10 +73,10 @@ export function lightGoals(r: Rig, a: LightAnalysis, look: Look): LGoal[] {
     { key: 'key', label: 'Key on the pastor', ok: P >= 800 && P <= 1600, value: `${P} lux (800–1600)`, why: 'Enough light on the face for the camera to expose cleanly without crushing the room’s eyes.' },
     { key: 'ratio', label: 'Key-to-fill ratio', ok: a.ratio >= 1.5 && a.ratio <= 3, value: a.fill ? `${a.ratio}:1 (${kl} key, ${a.fill} fill)` : 'no fill from the other side', why: 'A fill from the other side, softer than the key (1.5:1 to 3:1), keeps the shadows on the face open without flattening it.' },
     { key: 'back', label: 'Back light', ok: a.back >= Math.max(200, P * 0.25), value: `${a.back} lux from behind`, why: 'Light from behind and above draws a rim that lifts the pastor off the background, on camera most of all.' },
-    { key: 'cct', label: 'One colour of white', ok: a.cctGap <= 300, value: `${a.cctGap} K apart`, why: 'Two whites more than about 300 K apart look like two colours on camera; match the key and fill.' });
+    { key: 'cct', label: 'One color of white', ok: a.cctGap <= 300, value: `${a.cctGap} K apart`, why: 'Two whites more than about 300 K apart look like two colors on camera; match the key and fill.' });
   else g.push(
-    { key: 'leader', label: 'Leader lit for camera', ok: a.at['leader']! >= 600, value: `${a.at['leader']} lux (600+)`, why: 'In a worship look the stage gets darker and more colourful, but the camera still needs the face.' },
-    { key: 'colour', label: 'Colour on the band', ok: a.colorOnBand, value: a.colorOnBand ? 'a colour wash is on them' : 'only white on the band', why: 'Colour behind and on the band gives the room depth and mood while the faces stay in white.' },
+    { key: 'leader', label: 'Leader lit for camera', ok: a.at['leader']! >= 600, value: `${a.at['leader']} lux (600+)`, why: 'In a worship look the stage gets darker and more colorful, but the camera still needs the face.' },
+    { key: 'colour', label: 'Color on the band', ok: a.colorOnBand, value: a.colorOnBand ? 'a color wash is on them' : 'only white on the band', why: 'Color behind and on the band gives the room depth and mood while the faces stay in white.' },
     { key: 'pastorOff', label: 'Lectern dark', ok: P < 300, value: `${P} lux on the lectern`, why: 'Whatever is not part of the moment goes down, so the eye goes where the music is.' });
   return g;
 }

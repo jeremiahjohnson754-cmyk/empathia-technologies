@@ -11,7 +11,7 @@ type LabProps = { embedded?: boolean; onResult?: (key: string, score: number, pa
 interface Flag { id: 'mix' | 'light' | 'video'; kicker: string; title: string; blurb: string; button: string; load: () => Promise<ComponentType<LabProps>> }
 export const FLAGSHIPS: Record<string, Flag> = {
   s01e05: { id: 'light', kicker: 'Flagship lab · optional · the story goes on either way', title: 'Light the Stage', button: 'Hang the rig',
-    blurb: 'Twelve new fixtures tripped a breaker. Now hang them properly: drag fixtures onto the trusses, patch one DMX universe without overlaps, aim, zoom and colour them, and light a sermon and a worship set without washing out the screen.',
+    blurb: 'Twelve new fixtures tripped a breaker. Now hang them properly: drag fixtures onto the trusses, patch one DMX universe without overlaps, aim, zoom and color them, and light a sermon and a worship set without washing out the screen.',
     load: () => import('../mixlab/LightLab.js').then((m) => m.LightLab as ComponentType<LabProps>) },
   s01e07: { id: 'video', kicker: 'Flagship lab · optional · the story goes on either way', title: 'Shoot the Service', button: 'Take the cameras',
     blurb: 'The rental wall striped at 1/50. Run two cameras, the LED wall and the switcher yourself: clean the bands and the flicker, expose the faces, match the white, cut the service on cue and line the sound up with the picture.',

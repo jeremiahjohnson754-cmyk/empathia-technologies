@@ -27,19 +27,19 @@ type Story = Omit<Product, keyof CanonProduct | 'slug'>;
 const STORY: Record<string, Story> = {
   'mission-control': {
     body: 'Mission Control counts live records at every station of the lifecycle, from the first request to the last service visit, and says what changed, what matters and what needs action. Every count opens the records behind it.',
-    showsAs: ['simulated', 'declared', 'simulated', 'declared', 'declared'], shows: ['The lifecycle with every station counted', 'What changed since you last looked, and why it matters', 'The ledger behind every state', 'Data reports as PDFs and as a Power BI project of your own records, made by the server for the people who answer for the figures, each export audited', 'Jumps from a room or a device to your organisation’s own device cloud, meeting-room portal or service desk'],
+    showsAs: ['simulated', 'declared', 'simulated', 'declared', 'declared'], shows: ['The lifecycle with every station counted', 'What changed since you last looked, and why it matters', 'The ledger behind every state', 'Data reports as PDFs and as a Power BI project of your own records, made by the server for the people who answer for the figures, each export audited', 'Jumps from a room or a device to your organization’s own device cloud, meeting-room portal or service desk'],
     limits: 'The counts come from the synthetic demonstration estate; nothing is connected to a live system. Jumps are links you open in your own portal, not integrations: nothing is read from or sent to it. The Power BI project is written to Microsoft’s published file formats and has not yet been opened in Power BI Desktop by us; nothing is published for you.', demoState: 'native', demo: { href: '#/v25', label: 'Open Mission Control' },
     shotAlt: 'Mission Control in the product demonstration: the campus drawn as buildings, each with its health and open issues computed from its rooms’ records.',
   },
   lite: {
-    body: 'A conceptual room model from an archetype, dimensions, plans and photos. Geometry carries its provenance: extracted, inferred, simulated, field-measured or engineer-approved, and never promoted silently. Coverage is predicted and labelled modeled. Scouter works inside Lite: equipment proposals from comparable rooms, reviewed by the engineer before anything is adopted.',
+    body: 'A conceptual room model from an archetype, dimensions, plans and photos. Geometry carries its provenance: extracted, inferred, simulated, field-measured or engineer-approved, and never promoted silently. Coverage is predicted and labeled modeled. Scouter works inside Lite: equipment proposals from comparable rooms, reviewed by the engineer before anything is adopted.',
     showsAs: ['modeled', 'modeled', 'modeled', 'declared'], shows: ['Drawing a room from an archetype and its dimensions', 'Seats, displays, cameras and microphones placed in plan and 3D', 'Modeled coverage with the assumptions stated', 'Scouter: equipment proposals from comparable rooms, with their limits'],
     limits: 'Predictions are modeled values; a calibrated instrument measures. Photo and plan extraction are not part of the public demonstration.', demoState: 'native', demo: { href: '#/lite/room/R-ATL-4-218', label: 'Open Atlas 4.218 in Lite' },
   },
   pro: {
     body: 'Executive intelligence that shows its work: each measure with its numerator, denominator, window, coverage and freshness, and missing data shown as missing, never as success.',
     showsAs: ['simulated', 'simulated', 'declared'], shows: ['Executive measures with their denominators', 'Portfolio and service performance', 'Coverage and freshness on every figure'],
-    limits: 'The Pro command centre, operations hub and standards pages are still being migrated in the public demonstration.', demoState: 'partial', demo: { href: '#/v25/exec', label: 'Open the executive measures' },
+    limits: 'The Pro command center, operations hub and standards pages are still being migrated in the public demonstration.', demoState: 'partial', demo: { href: '#/v25/exec', label: 'Open the executive measures' },
   },
   'search-party': {
     body: 'One search across people, rooms, devices, projects, standards and documents, with the relationships between them: who owns this, who covers it, what depends on it. Each relationship carries its source and its freshness.',
@@ -63,7 +63,7 @@ const STORY: Record<string, Story> = {
     limits: 'APEX runs on simulated evidence in the public demonstration.', demoState: 'partial', demo: { href: '#/v25/apex', label: 'Open APEX' },
   },
   field: {
-    body: 'Every observation is labelled declared, observed, verified, modeled, unknown or unavailable. A device that answers is not a room that works; the plan keeps every pair untested until evidence arrives.',
+    body: 'Every observation is labeled declared, observed, verified, modeled, unknown or unavailable. A device that answers is not a room that works; the plan keeps every pair untested until evidence arrives.',
     showsAs: ['declared', 'simulated', 'simulated', 'modeled'], shows: ['Collector facts as declared, with their limits', 'Plan versus executed, with nothing filled in', 'An optional physical-validation flow, simulated', 'Field Tools: 39 calculators for the site walk, each showing its formula and working'],
     limits: 'No collector is connected in the public demonstration; physical validation is simulated.', demoState: 'native', film: 'IE', demo: { href: '#/v25/fi/scan/R-ATL-4-218', label: 'Play a room scan' },
   },
@@ -96,4 +96,4 @@ export const ROOM_MIX = [
 ];
 export const ROOM_TOTAL = ROOM_MIX.reduce((a, m) => a + m.n, 0);
 /** The demonstration rooms, in the founder-approved wording of the thirty, extended to the 140 by the same terms. */
-export const ROOMS_SENTENCE = 'one is the complete reference room, three keep the demonstration’s earlier records, eighty-six are designed from their archetypes and fifty are the earlier release’s own rooms, laid out by its room types: modelled layouts and devices, never surveyed.';
+export const ROOMS_SENTENCE = 'one is the complete reference room, three keep the demonstration’s earlier records, eighty-six are designed from their archetypes and fifty are the earlier release’s own rooms, laid out by its room types: modeled layouts and devices, never surveyed.';

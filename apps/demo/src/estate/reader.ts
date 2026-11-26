@@ -19,10 +19,10 @@ export function readerOf(c: Pick<RoleConfig, 'roleId' | 'purpose'>): Access {
   }
 }
 export const READER_WORDS: Record<Access, string> = {
-  public: 'the places anyone may walk into', members: 'public places, and the rooms a ticket, badge or enrolment opens',
+  public: 'the places anyone may walk into', members: 'public places, and the rooms a ticket, badge or enrollment opens',
   staff: 'public and member places, and staff rooms', restricted: 'every recorded place, including engineering and restricted rooms',
 };
-export const ACCESS_WORDS: Record<Access, string> = { public: 'Open to everyone', members: 'Ticket, badge or enrolment', staff: 'Staff only', restricted: 'Named access only' };
+export const ACCESS_WORDS: Record<Access, string> = { public: 'Open to everyone', members: 'Ticket, badge or enrollment', staff: 'Staff only', restricted: 'Named access only' };
 /** A node is shown only when it and every place above it may be seen: a public cupboard inside a restricted wing stays out of sight. */
 export const shown = (ix: Index, reader: Access, id: string): boolean => { const p = pathOf(ix, id); return p.length > 0 && p.every((n) => maySee(reader, n)); };
 export const visibleNodes = (ix: Index, reader: Access): EstateNode[] => ix.estate.nodes.filter((n) => shown(ix, reader, n.id));

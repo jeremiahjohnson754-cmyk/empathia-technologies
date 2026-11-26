@@ -23,7 +23,7 @@ export function serviceAnalyticsPackage(x: AnalyticsInput, by: MadeBy): Report {
     status: { label: flagged.length ? `${flagged.length} vendor${flagged.length === 1 ? '' : 's'} need attention` : 'Within targets', tone: flagged.length ? 'warn' : 'ok', why: flagged.length ? flagged.map((v) => `${v.name}: ${v.flags[0]}`).join('; ') : 'every vendor within the response and restore targets' },
     generatedAt: by.at, role: by.role, build: by.build, primary: 'Jobs',
     provenance: [
-      'Synthetic service history: generated from a fixed seed (August 2025 to October 2026), shaped like a service history, plus this browser’s own requests. Not telemetry and not a real organisation’s record.',
+      'Synthetic service history: generated from a fixed seed (August 2025 to October 2026), shaped like a service history, plus this browser’s own requests. Not telemetry and not a real organization’s record.',
       'Each job’s vendor is the one the support agreement names for its building and layer; with no active agreement the internal team serves it.',
       'SLA targets from the service engine, in hours: response 2 / 24 / 48, restore 8 / 48 / 120 (business days counted as 24 h).',
       `Made as ${by.role}: a perspective on the record, which grants no permission.`,

@@ -34,8 +34,8 @@ export default function ManualPage({ role, params, query, can }: PageProps) {
   return (
     <div className="pa mn" data-native="" data-testid="manual" data-view={view || 'contents'} data-rev={fresh.rev.rev}>
       <PageHero compact eyebrow="Standards" title={chapter ? chapter.title : 'AV Engineering Standards & Design Manual'} product="learn" icon="book"
-        lede={chapter ? chapter.aim : 'The rules a room is designed, built and accepted by; your organisation’s edition of them; and one room’s requirements, exceptions and evidence.'}
-        meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <span key="d" data-testid="mn-status"><Chip small tone="muted">Draft: not yet reviewed by a practising professional</Chip></span>,
+        lede={chapter ? chapter.aim : 'The rules a room is designed, built and accepted by; your organization’s edition of them; and one room’s requirements, exceptions and evidence.'}
+        meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <span key="d" data-testid="mn-status"><Chip small tone="muted">Draft: not yet reviewed by a practicing professional</Chip></span>,
           <span key="f" data-testid="mn-fresh" data-state={fresh.state}><Chip small tone={fresh.state === 'CURRENT' ? 'muted' : fresh.state === 'DUE' ? 'warn' : 'bad'}>Edition revision {fresh.rev.rev}, adopted {day(fresh.rev.at)} · {fresh.state === 'OVERDUE' ? `review overdue by ${plural(-fresh.days, 'day')}` : `review due in ${plural(fresh.days, 'day')}`}</Chip></span>]} />
       <nav className="mn-nav" aria-label="The manual" data-testid="mn-nav">{VIEWS.map(([v, label]) => <a key={v} className="pa-own" href={v ? `#/manual/${v}` : '#/manual'} aria-current={at === v && view !== 'ch' ? 'page' : undefined}>{label}</a>)}</nav>
       {no ? <div role="alert" className="mn-msg mn-msg--no" data-testid="mn-refused"><Icon name="alert" size={18} /><span>{no}</span></div> : null}
@@ -50,7 +50,7 @@ export default function ManualPage({ role, params, query, can }: PageProps) {
                   : <Contents s={s} />}
 
       <Notice tone="info">
-        <b>What this manual is.</b> {CONTENT_STATUS} {NO_NUMBERS} It gives no fixing, rigging, mains or work-at-height instruction: those belong to the qualified installer under the site’s rules. Adopting a revision is your organisation’s act and does not review the manual’s text.
+        <b>What this manual is.</b> {CONTENT_STATUS} {NO_NUMBERS} It gives no fixing, rigging, mains or work-at-height instruction: those belong to the qualified installer under the site’s rules. Adopting a revision is your organization’s act and does not review the manual’s text.
       </Notice>
     </div>
   );
@@ -73,8 +73,8 @@ function Contents({ s }: { s: ManualState }) {
     <Card title="How to read it" icon="info" testId="mn-how">
       <ul className="mn-plain">
         <li><b>A rule has a reason.</b> Each one says what to do, why, and how a reviewer can tell it was done.</li>
-        <li><b>A rule names its tests.</b> Where the commissioning catalogue already holds a test that checks a rule, the rule names it. The method, the verifier and the evidence accepted are the catalogue’s.</li>
-        <li data-testid="mn-values-line"><b>A number is yours.</b> {VALUES.length} values are for your organisation to settle, each with its source. Your edition in force has set {set} of them. <a href="#/manual/edition">Open your edition.</a></li>
+        <li><b>A rule names its tests.</b> Where the commissioning catalog already holds a test that checks a rule, the rule names it. The method, the verifier and the evidence accepted are the catalog’s.</li>
+        <li data-testid="mn-values-line"><b>A number is yours.</b> {VALUES.length} values are for your organization to settle, each with its source. Your edition in force has set {set} of them. <a href="#/manual/edition">Open your edition.</a></li>
         <li data-testid="mn-never-line"><b>Some rules never bend.</b> {never} of the {ALL_PRINCIPLES.length} rules are never excepted: critical security, mandatory safety, a legal duty, the integrity of evidence, and anything a never-waived test checks.</li>
       </ul>
     </Card>
@@ -82,7 +82,7 @@ function Contents({ s }: { s: ManualState }) {
     <Card title="Where the manual is used" icon="layers" sub="The same rules, met in the products that act on them." testId="mn-connects">
       <ul className="mn-links">
         <li><a href="#/manual/build">Requirements for a room</a><span>A room’s design requirements and commissioning template, from its own record.</span></li>
-        <li><a href="#/lite">Empathia Lite</a><span>The room, what stands in it, and its coverage as modelled.</span></li>
+        <li><a href="#/lite">Empathia Lite</a><span>The room, what stands in it, and its coverage as modeled.</span></li>
         <li><a href="#/drawings">Drawing Intelligence</a><span>A drawing package read against a room type’s standard.</span></li>
         <li><a href="#/commissioning">Commissioning</a><span>The tests these rules name, and the evidence recorded for each.</span></li>
         <li><a href="#/assurance">Assurance</a><span>Rooms that a change has sent back for checking.</span></li>
@@ -95,7 +95,7 @@ function Contents({ s }: { s: ManualState }) {
       <div className="mn-row"><button type="button" className="ui-btn ui-btn--sm" onClick={() => window.print()} data-testid="mn-print">Print or save as PDF</button></div>
     </Card>
 
-    <Card title="Editions" icon="clock" sub="Each revision your organisation adopted, kept as it stood." testId="mn-revisions">
+    <Card title="Editions" icon="clock" sub="Each revision your organization adopted, kept as it stood." testId="mn-revisions">
       <ol className="mn-revs" reversed>{[...s.revisions].reverse().map((r) => <li key={r.rev} data-rev={r.rev} data-state={r.state}><b>Revision {r.rev}</b> <Chip small tone={r.state === 'IN_FORCE' ? 'ok' : 'muted'}>{r.state === 'IN_FORCE' ? 'In force' : 'Archived'}</Chip>
         <span>Adopted {day(r.at)} by the {ROLES[r.by].label}. {plural(Object.keys(r.values).length, 'value')} set, {plural(r.siteAdds.length, 'building addition')}. Review by {day(r.reviewBy)}.</span><span>“{r.note}”</span></li>)}</ol>
     </Card>
@@ -111,9 +111,9 @@ function Rule({ p, s, mayAsk }: { p: Principle; s: ManualState; mayAsk: boolean 
       <p className="mn-say">{p.say}</p>
       <p className="mn-why"><b>Why.</b> {p.why}</p>
       {p.check ? <p className="mn-why"><b>How it is checked.</b> {p.check}</p> : null}
-      {p.tests?.length ? <p className="mn-why" data-tests={p.tests.join(' ')}><b>Tests in the catalogue.</b> {p.tests.map((t, i) => <span key={t}>{i ? '; ' : ''}{testLabel(t)}{(C.tests[t] || C.packTests[t])?.nonwaivable ? ' (never waived)' : ''}</span>)}.</p> : null}
+      {p.tests?.length ? <p className="mn-why" data-tests={p.tests.join(' ')}><b>Tests in the catalog.</b> {p.tests.map((t, i) => <span key={t}>{i ? '; ' : ''}{testLabel(t)}{(C.tests[t] || C.packTests[t])?.nonwaivable ? ' (never waived)' : ''}</span>)}.</p> : null}
       {p.values?.length ? <dl className="mn-vals">{p.values.map((v) => { const def = VALUES.find((x) => x.id === v)!; const held = rev.values[v]; return (
-        <div key={v} data-value={v} data-set={held ? 'yes' : 'no'}><dt>{def.name}</dt><dd>{held ? <><b>{held.value}</b> <span>Source: {held.source}</span></> : <span>Not set by your organisation. {def.ask}</span>}</dd></div>); })}</dl> : null}
+        <div key={v} data-value={v} data-set={held ? 'yes' : 'no'}><dt>{def.name}</dt><dd>{held ? <><b>{held.value}</b> <span>Source: {held.source}</span></> : <span>Not set by your organization. {def.ask}</span>}</dd></div>); })}</dl> : null}
       {never ? <p className="mn-never">{never}</p> : mayAsk ? <p className="mn-ask"><a href={`#/manual/exceptions?rule=${p.id}`} data-testid={`mn-ask-${p.id}`}>Ask for an exception to {p.id}</a></p> : null}
     </li>
   );
@@ -125,7 +125,7 @@ function ChapterView({ c, s, mayAsk }: { c: Chapter; s: ManualState; mayAsk: boo
       <p className="mn-note">Chapter {i + 1} of {CHAPTERS.length} · {plural(c.principles.length, 'rule')}. <a href="#/manual">All chapters</a></p>
       <ol className="mn-rules" data-testid="mn-rules">{c.principles.map((p) => <Rule key={p.id} p={p} s={s} mayAsk={mayAsk} />)}</ol>
     </section>
-    <Card title="For your organisation to settle" icon="info" sub="The manual asks these questions. It does not answer them." testId="mn-open"><ul className="mn-plain">{c.open.map((o) => <li key={o}>{o}</li>)}</ul></Card>
+    <Card title="For your organization to settle" icon="info" sub="The manual asks these questions. It does not answer them." testId="mn-open"><ul className="mn-plain">{c.open.map((o) => <li key={o}>{o}</li>)}</ul></Card>
     <Card title="Where this chapter is used" icon="layers" testId="mn-see"><ul className="mn-links">{c.see.map((l) => <li key={l.href}><a href={l.href}>{l.label}</a></li>)}</ul></Card>
     <nav className="mn-pager" aria-label="Chapters">{prev ? <a href={`#/manual/ch/${prev.id}`} data-testid="mn-prev">Previous: {prev.title}</a> : <span />}{next ? <a href={`#/manual/ch/${next.id}`} data-testid="mn-next">Next: {next.title}</a> : <span />}</nav>
   </>);
@@ -142,7 +142,7 @@ function EditionView({ role, s, act }: { role: PageProps['role']; s: ManualState
       <p className="mn-note" data-testid="mn-holder">The standard is held by the {ROLES.architect.label} in this demonstration. {owner ? 'That is you: you work on a copy, and nothing in it is in force until you adopt a revision.' : `The ${ROLES[role].label} reads the edition and does not change it.`}</p>
     </Card>
 
-    <Card title="Values" icon="layers" sub="Each value is your organisation’s, recorded with where it came from. The manual supplies none." testId="mn-values">
+    <Card title="Values" icon="layers" sub="Each value is your organization’s, recorded with where it came from. The manual supplies none." testId="mn-values">
       <div className="mn-scroll"><table className="mn-table"><thead><tr><th scope="col">Value</th><th scope="col">In force</th><th scope="col">Working copy</th><th scope="col">Where a value may come from</th></tr></thead>
         <tbody>{VALUES.map((v) => { const f = rev.values[v.id]; const wv = s.values[v.id]; const changed = p.values.includes(v.id); return (
           <tr key={v.id} data-value={v.id} data-set={f ? 'yes' : 'no'} data-pending={changed ? 'yes' : 'no'}><th scope="row">{v.name}<span className="mn-sub">{v.ask}</span></th>

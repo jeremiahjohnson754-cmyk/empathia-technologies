@@ -16,10 +16,10 @@ const entry = (name: string) => (attempt = 0): Promise<{ default: ComponentType<
 export const SHELL_PAGES: readonly PageDef[] = [
   {
     // the V2.5 Policy page as the demonstrator had it: what each native page checks and the role × area matrix, verbatim
-    id: 'policy', title: 'Policy', purpose: 'Role access, licences, adapters — the demonstrator’s role × area matrix', product: 'shell',
+    id: 'policy', title: 'Policy', purpose: 'Role access, licenses, adapters — the demonstrator’s role × area matrix', product: 'shell',
     path: '/v25/policy', authority: { roles: ROLE_KEYS, why: 'the V2.5 Policy page: a demonstration of authorization, shown to every role' },
     load: adapt(() => import('./pages/Control.js'), (m, p) => h(m.LedgerPage, { perspective: p.role, policy: true })),
-    search: { keywords: 'policy role area matrix licences adapters', aliases: ['role matrix'] },
+    search: { keywords: 'policy role area matrix licenses adapters', aliases: ['role matrix'] },
   },
   {
     id: 'investor', title: 'Investor start', purpose: 'Three ways in: Build a Room, guided scenarios, the problems each workflow solves', product: 'shell',
@@ -77,7 +77,7 @@ export const SHELL_PAGES: readonly PageDef[] = [
   },
   {
     // 60/10 P1 (12 Nov 2026): the five axes of the Experience Language, each shown in every value, both themes, at any width
-    id: 'design.axes', title: 'Five axes', purpose: 'Condition, provenance, confidence, workflow and maturity: five separate things a screen can say about a value, never one colour', product: 'shell',
+    id: 'design.axes', title: 'Five axes', purpose: 'Condition, provenance, confidence, workflow and maturity: five separate things a screen can say about a value, never one color', product: 'shell',
     path: '/design/axes', authority: { roles: ROLE_KEYS, why: 'a reference page of the design language: it shows no record, so every role may read it' },
     load: () => import('./pages/AxesPage.js'),
     search: { keywords: 'design language axes condition provenance confidence workflow maturity measured modeled simulated assumed', aliases: ['axes', 'design language'] },

@@ -32,7 +32,7 @@ export default function SentinelPage({ role, query, can }: PageProps) {
     <Connected id="sentinel" role={role} />
     <section className="vc-sec vc-two" aria-label="The alert and the plan">
       <div data-testid="sentinel-alert"><h2>The alert</h2><ul className="vc-next"><li><b>{ALERT.kind}</b></li><li>From: {ALERT.source}</li><li><State s="SIMULATED" /> {ALERT.authentication}</li><li>Received {ALERT.receivedAt.slice(11, 19)} UTC, 23 November 2026</li><li>{ALERT.origin}</li></ul></div>
-      <div data-testid="sentinel-plan"><h2>The approved secondary plan</h2><ul className="vc-next"><li><b>{PLAN.title}</b></li><li><State s="DECLARED" /> Approved by the {PLAN.approvedBy}, {PLAN.approvedOn}</li><li>Message: “{PLAN.message}”</li><li>A route with no acknowledgement in {PLAN.ackWindowSeconds} seconds is failed.</li><li><b>{PLAN.review}</b></li></ul></div>
+      <div data-testid="sentinel-plan"><h2>The approved secondary plan</h2><ul className="vc-next"><li><b>{PLAN.title}</b></li><li><State s="DECLARED" /> Approved by the {PLAN.approvedBy}, {PLAN.approvedOn}</li><li>Message: “{PLAN.message}”</li><li>A route with no acknowledgment in {PLAN.ackWindowSeconds} seconds is failed.</li><li><b>{PLAN.review}</b></li></ul></div>
     </section>
     <div className="vc-cases"><Segmented label="The drill at" value={String(t)} onChange={(v) => { location.hash = Number(v) === last ? '#/sentinel' : `#/sentinel?t=${v}`; }} options={MOMENTS.map((m) => ({ value: String(m.t), label: m.label }))} />
       <p className={`vc-verdict vc-verdict--${!sum.started ? 'unknown' : sum.failed ? 'outside_policy' : 'unknown'}`} data-testid="sentinel-tally"><b>{sum.says}</b></p></div>

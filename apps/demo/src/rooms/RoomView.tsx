@@ -87,7 +87,7 @@ export function RoomView({ id, hash, sees = () => true, opens = () => true, base
           <Chip tone={r.counts.failed ? 'bad' : r.counts.verified === r.counts.applicable && r.counts.applicable ? 'ok' : 'warn'}>Commissioning: {r.counts.applicable ? `${r.counts.verified} of ${r.counts.applicable} verified` : 'no applicable test'}</Chip>
           <Chip tone={LIFE_TONE[r.lifecycle] === 'ok' ? 'ok' : LIFE_TONE[r.lifecycle] === 'warn' ? 'warn' : 'info'}>{r.lifecycle.replace(/_/g, ' ')}</Chip>
           {iss.some((i) => i.severity === 'High') && <Chip tone="bad">High-severity issue open</Chip>}
-          <Chip tone={o.kind === 'reference' ? 'accent' : 'muted'}>Record: {o.kind === 'reference' ? 'reference room' : o.kind === 'earlier' ? 'earlier record' : 'modelled from archetype'}</Chip>
+          <Chip tone={o.kind === 'reference' ? 'accent' : 'muted'}>Record: {o.kind === 'reference' ? 'reference room' : o.kind === 'earlier' ? 'earlier record' : 'modeled from archetype'}</Chip>
           {o.nonOperational && <Chip tone="warn">Control-tower experience · simulated, non-operational</Chip>}
           {o.divisible && <Chip tone="info">Divisible · {o.divisible.sections.length} sections</Chip>}
           <span className="ui-meta mono">{o.id}</span>
@@ -155,7 +155,7 @@ function Overview({ r, sel, setSel }: { r: RoomRecord; sel: string | null; setSe
           {view === 'plan' && <label className="stage__check"><input type="checkbox" checked={links} onChange={(e) => setLinks(e.target.checked)} /> Connections</label>}
         </>}>
           {view === '3d' ? <IsoView {...props} angle={angle} /> : <PlanView {...props} />}
-          <figcaption className="stage__cap">{r.geometryProvenance === 'DECLARED' ? 'Dimensions from the design record.' : 'Modelled layout from the archetype template — not surveyed.'} {w} × {l} m, ceiling {h} m. Select a device to inspect it.</figcaption>
+          <figcaption className="stage__cap">{r.geometryProvenance === 'DECLARED' ? 'Dimensions from the design record.' : 'Modeled layout from the archetype template — not surveyed.'} {w} × {l} m, ceiling {h} m. Select a device to inspect it.</figcaption>
         </Stage>
         <fieldset className="layers"><legend>Layers</legend>{LAYERS.map((x) => { const n = r.positions.filter((p) => p.layer === x.key).length; return <label key={x.key} className={n ? '' : 'off'}><input type="checkbox" checked={layers.has(x.key)} onChange={() => toggle(x.key)} disabled={!n} /><span className="layers__sw" style={{ background: LAYER_COLOR[x.key] }} aria-hidden="true" />{x.label} <span className="ui-meta">({n})</span></label>; })}</fieldset>
       </div>
@@ -175,7 +175,7 @@ function RoomSummary({ r, setSel }: { r: RoomRecord; setSel: (c: string) => void
     <div className="stack">
       <p className="kicker">The room</p>
       <h2 className="build__h">{F.positions} position{F.positions === 1 ? '' : 's'}, {F.models} model{F.models === 1 ? '' : 's'}</h2>
-      <p className="ui-meta">Models are device classes from the catalogue; no make, model or serial is invented.</p>
+      <p className="ui-meta">Models are device classes from the catalog; no make, model or serial is invented.</p>
       <dl className="room__facts" data-testid="room-facts">
         <dt>Baseline</dt><dd>{cur ? `BL-${r.outline.id.slice(2)}-v${cur.version}: ${r.installations.filter((x) => !x.removedAt).length} positions bound, ${r.counts.verified} of ${r.counts.applicable} applicable tests verified` : `none accepted · ${r.counts.verified} of ${r.counts.applicable} applicable tests verified`}{pend ? ` · v${pend.version} pending acceptance` : ''}</dd>
         <dt>Camera coverage</dt><dd>{F.coverage ? <>{F.coverage.covered} of {F.coverage.seats} seats <span className="ui-meta">· MODELED: {F.coverage.source}</span></> : 'no camera or seating on record'}</dd>
@@ -234,7 +234,7 @@ function Tests({ r }: { r: RoomRecord }) {
   return (
     <div className="stack">
       <p>{r.counts.applicable} of {r.analysis.applicability.library} tests in the library apply to this room, judged by the commissioning engine from its devices and archetype. <b>{r.counts.verified}</b> passed and independently verified, {r.counts.failed} failed, {r.counts.notTested} not tested.</p>
-      {r.reopened.length > 0 && <Notice tone="info"><b>{r.reopened.length} tests reopened by the camera replacement.</b> Their earlier results stay in history and never count towards re-acceptance; each was re-run and verified by a different person.</Notice>}
+      {r.reopened.length > 0 && <Notice tone="info"><b>{r.reopened.length} tests reopened by the camera replacement.</b> Their earlier results stay in history and never count toward re-acceptance; each was re-run and verified by a different person.</Notice>}
       <label className="stage__check"><input type="checkbox" checked={all} onChange={(e) => setAll(e.target.checked)} /> Show the tests that do not apply, with the reason</label>
       <div className="table-wrap"><table className="build__table" data-testid="test-table"><caption className="ui-visually-hidden">Commissioning tests</caption>
         <thead><tr><th scope="col">Test</th><th scope="col">Domain</th><th scope="col">Result</th><th scope="col">Why</th></tr></thead>

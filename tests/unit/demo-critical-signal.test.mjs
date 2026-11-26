@@ -193,7 +193,7 @@ test('CS-16 every refusal says why, changes nothing and is written to the ledger
 test('CS-17 the whole workflow, end to end, on the engine’s own state: degraded and holding kick-off, then restored, then checked by someone else, and the system reads working', () => {
   let { w, g, id } = opened(); const title = G.FAULTS['camera-feed'].title;
   assert.equal(G.systems(g).broadcast, 'DEGRADED'); assert.ok(G.holds(g).some((h) => h.startsWith(title)), 'kick-off is held'); assert.equal(G.advance(g).ok, false); assert.equal(G.report(g).held, true);
-  const found = M.observe(chain, { incident: id, failed: M.failedHopOf(id) }); const iso = M.isolate(chain, found); const proc = M.procedureFor(chain, iso.hop); assert.equal(iso.hop, 'fibre'); assert.match(proc.title, /backup fibre path/);
+  const found = M.observe(chain, { incident: id, failed: M.failedHopOf(id) }); const iso = M.isolate(chain, found); const proc = M.procedureFor(chain, iso.hop); assert.equal(iso.hop, 'fibre'); assert.match(proc.title, /backup fiber path/);
   g = must(T.step(w, g, ENG, id, 'ACKNOWLEDGED')); assert.equal(G.advance(g).ok, false, 'acknowledging does not release the hold');
   g = must(T.step(w, g, ENG, id, 'DISPATCHED', `procedure: ${proc.title}`)); assert.equal(G.systems(g).broadcast, 'DEGRADED');
   const no = T.notRestored(w, g, ENG, id, 'the backup path shows no link either'); assert.ok(no.ok); assert.equal(no.state, g, 'an attempt that did not work moves nothing'); assert.equal(G.advance(g).ok, false);

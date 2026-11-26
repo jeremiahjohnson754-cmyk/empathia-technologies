@@ -69,7 +69,7 @@ function Overview({ world, config, ix, q: firstQ }: { world: World; config: Role
       <Block title="Find a place" sub="Search Party, in this estate" testId="estate-find">
         <form role="search" className="es-find" onSubmit={(ev) => ev.preventDefault()}>
           <label htmlFor="es-q">Name, room type{seesEquipment(reader) ? ', equipment' : ''} or identifier</label>
-          <input id="es-q" type="search" value={q} onChange={(ev) => setQ(ev.target.value)} autoComplete="off" spellCheck={false} placeholder={world.key === 'university' ? 'lecture theatre' : world.key === 'stadium' ? 'first aid' : 'session room'} />
+          <input id="es-q" type="search" value={q} onChange={(ev) => setQ(ev.target.value)} autoComplete="off" spellCheck={false} placeholder={world.key === 'university' ? 'lecture theater' : world.key === 'stadium' ? 'first aid' : 'session room'} />
         </form>
         <p className="ui-visually-hidden" role="status" aria-live="polite">{q.trim() ? `${hits.length} result${hits.length === 1 ? '' : 's'}` : ''}</p>
         {q.trim() && (hits.length ? <ul className="w-list es-hits" data-testid="estate-hits">{hits.map((h) => <li key={h.id}><a className="w-item" href={estateHref(world.key, h.node, config.id)} data-node={h.node} data-kind={h.kind}><b>{h.title}</b><span className="ui-meta">{h.kind === 'equipment' ? 'Equipment in ' : ''}{h.where}</span></a></li>)}</ul>

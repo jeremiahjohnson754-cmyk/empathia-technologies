@@ -32,7 +32,7 @@ export function holds(p: Pace | null, target: number): 'held' | 'below' | 'not r
 export function standing(s: StepResult, target: number): 'held' | 'below' | 'not run' { return s.pace ? holds(s.pace, target) : s.tooSlow ? 'below' : 'not run'; }
 /** the browser and system a user-agent string names, most specific first (Edge, Opera and in-app browsers all also say "Chrome"; Android also says "Linux") */
 export function browserOf(ua: string): string {
-  const first = (list: Array<[RegExp, string]>) => { for (const [re, name] of list) { const m = re.exec(ua); if (m) return `${name}/${m[1]}`; } return 'browser not recognised'; };
+  const first = (list: Array<[RegExp, string]>) => { for (const [re, name] of list) { const m = re.exec(ua); if (m) return `${name}/${m[1]}`; } return 'browser not recognized'; };
   const b = first([[/Edg(?:e|A|iOS)?\/([\d.]+)/, 'Edge'], [/OPR\/([\d.]+)/, 'Opera'], [/Firefox\/([\d.]+)/, 'Firefox'], [/(?:Chrome|CriOS)\/([\d.]+)/, 'Chrome'], [/Version\/([\d.]+).*Safari/, 'Safari']]);
   const os = /Android/.test(ua) ? 'Android' : /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Windows/.test(ua) ? 'Windows' : /CrOS/.test(ua) ? 'ChromeOS' : /Mac OS X/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : '';
   return os ? `${b} on ${os}` : b;

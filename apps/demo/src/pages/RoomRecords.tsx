@@ -44,7 +44,7 @@ function Head({ r, kind, perspective, tab }: { r: RoomRecord; kind: 'cx' | 'as';
     <nav className="ln-crumbs" aria-label="Where you are"><a href={kind === 'cx' ? '#/commissioning' : '#/assurance'}>{kind === 'cx' ? 'Commissioning' : 'Assurance'}</a> › <a href={`#/campus/${r.outline.building}`}>{b?.name}</a> › <b aria-current="page">{shortName(r.outline)}</b></nav>
     <PageHero product="commissioning" icon="shield" compact eyebrow={kind === 'cx' ? 'Commissioning record' : 'Assurance comparison'} title={`${kind === 'cx' ? 'Commissioning' : 'Assurance'}: ${fullName(r.outline)}`}
       lede={<>{r.archetypeName} · seats {r.outline.capacity} · {r.outline.dims.join(' × ')} m ({r.outline.kind === 'reference' ? 'design record' : 'modelled'}). {st.why}. Acting as <b>{personaLabel(personaOf(perspective))}</b>.</>}
-      meta={[<Chip key="s" small tone={T.tone as Tone}>{T.label}</Chip>, <Chip key="b" small tone="muted">{cur ? `Baseline v${cur.version} · ${ymd(cur.at)}` : 'No baseline on record'}{pend ? ` · v${pend.version} pending` : ''}</Chip>, <Chip key="r" small tone="muted">Synthetic records</Chip>, <Chip key="m" small tone="warn">Modelled · not measured</Chip>, <Chip key="p" small tone="muted">Prototype · not production monitoring</Chip>]}
+      meta={[<Chip key="s" small tone={T.tone as Tone}>{T.label}</Chip>, <Chip key="b" small tone="muted">{cur ? `Baseline v${cur.version} · ${ymd(cur.at)}` : 'No baseline on record'}{pend ? ` · v${pend.version} pending` : ''}</Chip>, <Chip key="r" small tone="muted">Synthetic records</Chip>, <Chip key="m" small tone="warn">Modeled · not measured</Chip>, <Chip key="p" small tone="muted">Prototype · not production monitoring</Chip>]}
  />
     <RoomJumps roomId={r.outline.id} here={kind === 'cx' ? 'commissioning' : 'assurance'} opens={opensFor(perspective as RoleKey)} />
     {tab}
@@ -165,7 +165,7 @@ function Signoff({ r, bl, perspective }: { r: RoomRecord; bl: ReturnType<typeof 
         <ListRow title="Devices" sub={`${fw.length} devices in ${cats.size} categories`} />
         <ListRow title="Identity" sub={`${fw.filter((p) => p.identity === 'VERIFIED').length} of ${fw.length} verified; the rest ${[...new Set(fw.map((p) => p.identity.toLowerCase()))].join(', ')} — no make, model or serial is invented`} />
         <ListRow title="Spatial layout" sub={`${r.outline.capacity} seats, ${r.outline.dims[0]} × ${r.outline.dims[1]} m, ${r.outline.kind === 'reference' ? 'surveyed' : 'modelled'}`} />
-        <ListRow title="Connections" sub={`${r.connections.length} proposed by the engine’s rules (modelled, not traced)`} />
+        <ListRow title="Connections" sub={`${r.connections.length} proposed by the engine’s rules (modeled, not traced)`} />
         <ListRow title="Test results" sub={`${r.counts.verified} of ${r.counts.applicable} applicable checks passed and verified · ${r.counts.failed} failed · ${r.counts.notTested} not run`} />
         <ListRow title="Design findings" sub={r.findings.length ? r.findings.map((f) => f.title).join(' · ') : 'none'} />
         <ListRow title="Documentation" sub={`${plural(r.coverage.filter((c) => c.state === 'complete').length, 'area')} complete of ${r.coverage.length} in the record’s coverage`} />
@@ -246,7 +246,7 @@ export function AsRoomPage({ perspective, params, hash }: { perspective: string;
         <h3 className="ln-h3">Runs in this demo</h3><ul className="ln-log">{w.events.filter((e) => e.type === 'assurance.run' && e.aggregate === r.outline.id).slice(0, 10).map((e, i) => <li key={i}>{ymd(e.at)} · {personaLabel(e.by)} · {e.detail}</li>)}</ul>{!w.events.some((e) => e.type === 'assurance.run' && e.aggregate === r.outline.id) ? <p className="ui-meta">No run recorded in this browser.</p> : null}</Card> : null}
       <ExportMenu testId="as-export" title="Assurance report" sub={`${shortName(r.outline)} against its commissioned baseline, as six files`} by={persona}
         make={() => asPackage(r, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' })} />
-      <Foot>Simulated discovery, modelled, not measured; a prototype, not production monitoring.</Foot>
+      <Foot>Simulated discovery, modeled, not measured; a prototype, not production monitoring.</Foot>
     </section>
   );
 }
@@ -307,7 +307,7 @@ function FourStates({ r, perspective }: { r: RoomRecord; perspective: string }) 
   return <div data-testid="as-four-states" data-state={st}>
     <Segmented small label="Which state" value={st} onChange={(v) => { setSt(v); setPick(null); }} options={[{ value: 'designed', label: 'Designed' }, { value: 'commissioned', label: 'Commissioned' }, { value: 'current', label: 'Current' }, { value: 'proposed', label: 'Proposed' }]} />
     <div className="as-stage"><V253RoomStage roomId={r.outline.id} lens={lens} state={st} layers={new Set(['furniture', 'av'])} overlays={new Set(['camera', 'mic'])} role={role} label={`${fullName(r.outline)} in 3D, ${st}`} sel={pick?.obj.id ?? null} onPick={setPick} /></div>
-    <p className="ui-meta" data-testid="as-four-note">{st === 'current' ? 'What exists now: a device with an open issue is marked where it stands.' : st === 'commissioned' ? 'What was proven at handover.' : st === 'designed' ? 'What was planned.' : 'What is being proposed: added positions are marked.'} Modelled, not measured. {pick ? <>Selected: <b>{pick.obj.label || pick.obj.kind}</b>{opensFor(role)(lite) ? <> · <a href={`${lite}${pick.code ? `&device=${encodeURIComponent(pick.code)}` : ''}`} data-testid="as-open-lite">open it in Lite</a></> : null}</> : opensFor(role)(lite) ? <a href={lite}>Open this state in Lite</a> : null}</p>
+    <p className="ui-meta" data-testid="as-four-note">{st === 'current' ? 'What exists now: a device with an open issue is marked where it stands.' : st === 'commissioned' ? 'What was proven at handover.' : st === 'designed' ? 'What was planned.' : 'What is being proposed: added positions are marked.'} Modeled, not measured. {pick ? <>Selected: <b>{pick.obj.label || pick.obj.kind}</b>{opensFor(role)(lite) ? <> · <a href={`${lite}${pick.code ? `&device=${encodeURIComponent(pick.code)}` : ''}`} data-testid="as-open-lite">open it in Lite</a></> : null}</> : opensFor(role)(lite) ? <a href={lite}>Open this state in Lite</a> : null}</p>
   </div>;
 }
 /**

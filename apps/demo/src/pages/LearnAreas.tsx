@@ -92,7 +92,7 @@ export function LearnHome({ perspective }: { perspective: string }) {
   const nextDrill = lib?.drillOrder.find((id) => !w.training.some((t) => t.by === persona && t.drillId === id && t.correct));
   return (
     <section className="wk ln" data-native="workspace" data-testid="learn-home">
-      <Head role={perspective} current="#/learn" title="Empathia Learn" lede={<>SIGNAL: the same Core that runs the estate, read as something to practise on. A case is a room’s own records; a score is evidence of how you reasoned. Acting as <b>{personaLabel(persona)}</b>.</>}
+      <Head role={perspective} current="#/learn" title="Empathia Learn" lede={<>SIGNAL: the same Core that runs the estate, read as something to practice on. A case is a room’s own records; a score is evidence of how you reasoned. Acting as <b>{personaLabel(persona)}</b>.</>}
         actions={<><a className="ui-btn ui-btn--primary" href={firstOpen ? `#/learn/service/${firstOpen.id}` : '#/learn/service'}>{firstOpen ? `Service Mode: ${firstOpen.short}` : 'Service Mode'}</a><a className="ui-btn" href="#/learn/servicehands">ServiceHands Academy</a></>}
         aside={<ScoreRing value={R.next ? Math.round(((R.points - V.READINESS[R.index]![0]) / (R.next.at - V.READINESS[R.index]![0])) * 100) : 100} label={`Readiness: ${R.level[1]}, ${R.points} points`} caption={R.next ? `${R.next.need} points to ${R.next.name.toLowerCase()}` : 'the top level'} />} />
       <div className="kit-grid kit-grid--tiles wk-tiles4" data-testid="learn-tiles">
@@ -101,7 +101,7 @@ export function LearnHome({ perspective }: { perspective: string }) {
         <StatTile label="Drills passed" value={R.drills} unit={lib ? `of ${lib.drillOrder.length + cases.length * 3}` : undefined} icon="layers" tone="info" hint="Short, and made from Core records" href="#/learn/practice" />
         <StatTile label="Story decisions" value={storyDone} unit={`of ${cases.length * 3}`} icon="play" tone="indigo" hint={storyDone ? 'from the room stories' : 'none taken yet'} href="#/learn/story" />
       </div>
-      <p className="wk-note">Service Mode, the Labs, Lessons and the ServiceHands Academy all practise on the same records the engineers use.</p>
+      <p className="wk-note">Service Mode, the Labs, Lessons and the ServiceHands Academy all practice on the same records the engineers use.</p>
       <div className="wk-g3">
         <Card icon="check" tone="learn" title="Proven in the room" sub="Evidence from the cases you proved, recorded in this browser" testId="ln-proven">
           {proven.length ? <List label="Proven cases">{proven.map((c) => <ListRow key={c.id} title={c.short} sub={`${c.domain} · overall ${p.runs[c.id]!.best.overall}`} href={`#/learn/cases/${c.id}`} chevron leading={<Icon name="check" />} />)}</List>
@@ -264,9 +264,9 @@ export function roomDrills(c: TrainingCase): Array<{ kind: string; title: string
   const r = c.room; const pass = r.counts.verified; const other = trainingCases(S.load()).filter((x) => x.domain !== c.domain).flatMap((x) => x.tests).filter((t, i, a) => a.findIndex((y) => y.id === t.id) === i);
   const proving = c.tests.find((t) => t.result !== 'PASS_VERIFIED') || c.tests[0];
   const ev = [
-    { q: `“${c.complaint}” — as ${c.source} records it. What is it?`, o: ['OBSERVED', 'MEASURED', 'VERIFIED', 'SUSPECTED'], a: /engine|design check|hypothesis/.test(c.source) ? 3 : 0, why: /engine|design check|hypothesis/.test(c.source) ? 'An engine design check is a modelled prediction until someone measures it: a suspicion with a reason.' : 'Somebody saw or heard it and wrote it down: observed, not yet measured.' },
+    { q: `“${c.complaint}” — as ${c.source} records it. What is it?`, o: ['OBSERVED', 'MEASURED', 'VERIFIED', 'SUSPECTED'], a: /engine|design check|hypothesis/.test(c.source) ? 3 : 0, why: /engine|design check|hypothesis/.test(c.source) ? 'An engine design check is a modeled prediction until someone measures it: a suspicion with a reason.' : 'Somebody saw or heard it and wrote it down: observed, not yet measured.' },
     { q: `${pass} of ${r.counts.applicable} applicable tests passed and were independently verified. What is that evidence?`, o: ['INFERRED', 'VERIFIED', 'OBSERVED', 'UNKNOWN'], a: 1, why: 'Measured, then checked by a second person: the top of the ladder.' },
-    { q: `The room’s geometry is ${r.outline.kind === 'reference' ? 'from the design record' : 'modelled from its archetype'}. A sightline worked from it is…`, o: ['MEASURED', 'INFERRED', 'VERIFIED', 'CONTRADICTED'], a: 1, why: 'Worked out from other records, not measured in the room.' },
+    { q: `The room’s geometry is ${r.outline.kind === 'reference' ? 'from the design record' : 'modeled from its archetype'}. A sightline worked from it is…`, o: ['MEASURED', 'INFERRED', 'VERIFIED', 'CONTRADICTED'], a: 1, why: 'Worked out from other records, not measured in the room.' },
   ];
   const hops = c.hops.map((h) => h.label);
   const follow = hops.length > 2 ? [
@@ -321,7 +321,7 @@ export function ServiceModePage({ perspective }: { perspective: string }) {
           <p className="wk-note">Work an incident the way the service desk does: symptoms, evidence, the first thing to try, and an escalation with facts.</p>
         </Card>); }}</LibGate>
       <MeltdownList />
-      <Card icon="speaker" title="The bench · hear it, see it" sub="Six demos to try before you touch a live room: the ear, EQ and the analyser, compression, shutter and flicker, beams, colour temperature. Illustrative models — sound only when you press play, quietly." testId="service-bench"><Bench /></Card>
+      <Card icon="speaker" title="The bench · hear it, see it" sub="Six demos to try before you touch a live room: the ear, EQ and the analyzer, compression, shutter and flicker, beams, color temperature. Illustrative models — sound only when you press play, quietly." testId="service-bench"><Bench /></Card>
       <div className="wk-g2">
         <Card icon="menu" title="Ten actions" sub="Look, test, measure, escalate and six more: what each one does and what it costs on the clock">
           <ul className="ln-verbs">{V.SERVICE_VERBS.map(([k, l, wd]) => <li key={k}><b>{l}</b><span>{wd}</span><span className="ui-meta">{V.VERB_MIN[k]} min</span></li>)}</ul>
@@ -548,7 +548,7 @@ export function DesignClinicPage({ perspective }: { perspective: string }) {
   return (
     <section className="wk ln" data-native="workspace" data-testid="learn-design">
       <Head role={perspective} current="#/learn/design" title="Design clinic" lede="Read a room the way an experienced AV designer does: the figures, the rules and the fix, worked on rooms in Core with the same engineering model Lite and Assurance use."
-        meta={[...BADGES, <Chip key="m" small tone="warn">Modelled figures: for design comparison, not sign-off</Chip>]} />
+        meta={[...BADGES, <Chip key="m" small tone="warn">Modeled figures: for design comparison, not sign-off</Chip>]} />
       <Card icon="book" title="Eight lessons" sub="Each ends with figures to work out" testId="design-lessons">
         <ol className="ln-lessons">{V.DESIGN_LESSONS.map((l, i) => { const worked = roomsFor(l.rooms); const d = p.design[l.id]; return <li key={l.id}><a href={`#/learn/design/${l.id}`}><span className="ln-season__n">{i + 1}</span><span><b>{l.title}</b><span className="ln-p">{l.sum}</span><span className="ui-meta">{worked.length ? `Worked on ${worked.map((r) => shortName(r.outline)).join(', ')}` : 'A method lesson'}</span></span><Chip small tone={d ? (d.right / d.of >= 0.6 ? 'ok' : 'warn') : 'muted'}>{d ? `${d.right} of ${d.of}` : 'Not taken'}</Chip></a></li>; })}</ol>
       </Card>
@@ -564,7 +564,7 @@ export function DesignClinicPage({ perspective }: { perspective: string }) {
           </List>
         </Card>
       </div>
-      <Card icon="route" title="Design to assurance, end to end" sub="Build a Room takes a design through request, proposal, edit, approval, build and Assurance’s review"><p className="ln-p">Each step is a record you can open afterwards, and Reset demo removes them.</p>{openable(perspective, '#/v25/build') ? <a className="ui-btn" href="#/v25/build">Open Build a Room</a> : null}</Card>
+      <Card icon="route" title="Design to assurance, end to end" sub="Build a Room takes a design through request, proposal, edit, approval, build and Assurance’s review"><p className="ln-p">Each step is a record you can open afterward, and Reset demo removes them.</p>{openable(perspective, '#/v25/build') ? <a className="ui-btn" href="#/v25/build">Open Build a Room</a> : null}</Card>
     </section>
   );
 }
@@ -822,7 +822,7 @@ export function AcademyPage({ perspective }: { perspective: string }) {
     ] }; };
   return (
     <section className="wk ln" data-native="workspace" data-testid="learn-academy">
-      <Head role={perspective} current="#/learn/servicehands" title="ServiceHands Academy" lede={<>Fifteen jobs from intake to close. Practise on a live request, answer three questions. {cleared} of {stages.length} jobs cleared; a job clears with two of its three questions right.</>}
+      <Head role={perspective} current="#/learn/servicehands" title="ServiceHands Academy" lede={<>Fifteen jobs from intake to close. Practice on a live request, answer three questions. {cleared} of {stages.length} jobs cleared; a job clears with two of its three questions right.</>}
         actions={openable(perspective, '#/servicehands') ? <a className="ui-btn ui-btn--primary" href="#/servicehands">Open ServiceHands</a> : undefined} aside={<ScoreRing value={pct(cleared, stages.length)} label={`${cleared} of ${stages.length} jobs cleared`} caption={<><b>{cleared}</b> of {stages.length}<br />cleared</>} band="modelled" />} />
       <div className="wk-g3 ln-academy">{STAGE_GROUPS.map(([g, ks]) => <Card key={g} icon="wrench" title={g} testId={`academy-${g}`}>
         <List label={g}>{ks.map((k) => { const s = V.SH_STAGES.find((x) => x[0] === k)!; const n = V.SH_STAGES.indexOf(s); const a = p.academy[k]; return <ListRow key={k} title={`${n} · ${s[1]}`} sub={s[2]} onClick={() => setJob(k)} current={job === k} trailing={<Chip small tone={a ? (a.right >= 2 ? 'ok' : 'warn') : 'muted'}>{a ? (a.right >= 2 ? 'Cleared' : `${a.right} of ${a.of}`) : 'Not started'}</Chip>} />; })}</List>
@@ -831,7 +831,7 @@ export function AcademyPage({ perspective }: { perspective: string }) {
         <QuizRunner key={job} q={quizOf(job)} onComplete={(s, t) => setP(record(persona, 'training.academy_job', job, `ServiceHands Academy “${job}”: ${s} of ${t}`, (x) => { const prev = x.academy[job]; x.academy[job] = !prev || s > prev.right ? { right: s, of: t } : prev; }))} />
       </Card> : null}
       <Card icon="pulse" title="On the campus now" sub="Live requests you can open, by the job they are waiting on" testId="academy-now">
-        <List label="Waiting">{stages.filter(([k]) => waiting(k)).map(([k, l]) => <ListRow key={k} title={l} sub={`${plural(waiting(k), 'request')} waiting on this job`} onClick={() => setJob(k)} trailing={openable(perspective, '#/servicehands') ? <a className="ui-btn ui-btn--sm" href="#/servicehands" onClick={(e) => e.stopPropagation()}>Practise</a> : undefined} />)}</List>
+        <List label="Waiting">{stages.filter(([k]) => waiting(k)).map(([k, l]) => <ListRow key={k} title={l} sub={`${plural(waiting(k), 'request')} waiting on this job`} onClick={() => setJob(k)} trailing={openable(perspective, '#/servicehands') ? <a className="ui-btn ui-btn--sm" href="#/servicehands" onClick={(e) => e.stopPropagation()}>Practice</a> : undefined} />)}</List>
         {!stages.some(([k]) => waiting(k)) ? <p className="ui-meta">No live request is waiting on a job right now.</p> : null}
       </Card>
       <Card icon="route" title="How requests are routed" sub="Four routes, chosen by risk and scope"><List label="Routes">{Object.entries(V.SH_ROUTES).map(([k, [l, d]]) => <ListRow key={k} title={l} sub={d} />)}</List></Card>
@@ -861,7 +861,7 @@ export function ChallengesPage({ perspective }: { perspective: string }) {
 }
 
 // ------------------------------------------------------------------------------------------------------------ Mission Control (reference renderHome)
-const SEASON_HOME = ['', 'Citylight', 'Halyard Live', 'Aldermoor Group', 'Kestrel Valley Media', 'Brackenmoor University', 'Linden Row Design', 'Corvane Group', 'The Wyndmere Centre', 'The Wyndmere Centre', 'Lowfield Studio', 'Regional EOC', 'Principal review'];
+const SEASON_HOME = ['', 'Citylight', 'Halyard Live', 'Aldermoor Group', 'Kestrel Valley Media', 'Brackenmoor University', 'Linden Row Design', 'Corvane Group', 'The Wyndmere Center', 'The Wyndmere Center', 'Lowfield Studio', 'Regional EOC', 'Principal review'];
 let missionCache: Promise<[MC.MissionIndex, RT.RatingsIndex, Story.StoryIndex]> | null = null;
 const loadMission = () => (missionCache ||= Promise.all(['signal/mission.json', 'signal/ratings.json', 'signal/index.json'].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(`${u} ${r.status}`); return r.json(); }))).catch((e) => { missionCache = null; throw e; }) as Promise<[MC.MissionIndex, RT.RatingsIndex, Story.StoryIndex]>);
 /** SIGNAL Mission Control: continue the story, the competency level, the evidence locker, the role path, crew trust, competency by domain,

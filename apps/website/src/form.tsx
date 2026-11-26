@@ -3,7 +3,7 @@ import React from 'react';
 export type LeadKind = 'demo' | 'pilot' | 'contact';
 const FIELDS: Record<LeadKind, { intro: string; extra?: { name: string; label: string; options: string[] } }> = {
   demo: { intro: 'We will reply from a person, not a system, usually within two working days.', extra: { name: 'audience', label: 'Your role', options: ['CIO / CTO / IT leadership', 'AV or UC engineering', 'Systems integrator', 'Managed service provider', 'Facilities / workplace', 'Investor', 'Other'] } },
-  pilot: { intro: 'Tell us the scope you have in mind; we will come back with what a bounded pilot would take.', extra: { name: 'scope', label: 'Pilot scope', options: ['One building', 'One site (several buildings)', 'A room programme (new build or refresh)', 'Service and assurance of existing rooms', 'Not sure yet'] } },
+  pilot: { intro: 'Tell us the scope you have in mind; we will come back with what a bounded pilot would take.', extra: { name: 'scope', label: 'Pilot scope', options: ['One building', 'One site (several buildings)', 'A room program (new build or refresh)', 'Service and assurance of existing rooms', 'Not sure yet'] } },
   contact: { intro: 'Anything else: questions, press, partnerships, investor demonstrations.' },
 };
 

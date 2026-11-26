@@ -127,7 +127,7 @@ function Photos({ d, id, role, atts, setAtts, set, err }: { d: Draft; id: string
           <Field label="Length, m">{(fid) => <input id={fid} type="number" inputMode="decimal" step="0.1" min={1.5} max={120} value={g.l ?? ''} onChange={(e) => set({ dims: { ...g, l: num(e.target.value) } })} data-testid="ik-dim-l" />}</Field>
           <Field label="Ceiling, m">{(fid) => <input id={fid} type="number" inputMode="decimal" step="0.1" min={2.2} max={25} value={g.h ?? ''} onChange={(e) => set({ dims: { ...g, h: num(e.target.value) } })} data-testid="ik-dim-h" />}</Field>
         </div>
-        {givenSize(d) && <p className="ui-meta">The proposal uses your size, labelled as yours: not surveyed until an engineer confirms it.</p>}</fieldset>}
+        {givenSize(d) && <p className="ui-meta">The proposal uses your size, labeled as yours: not surveyed until an engineer confirms it.</p>}</fieldset>}
     </div>
   );
 }

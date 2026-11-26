@@ -37,7 +37,7 @@ export const championRole = (keys: readonly string[] = ROLE_KEYS): RoleKey | nul
  */
 export const ZONE_OF_GROUP: Readonly<Record<string, string>> = {
   'Northstar Innovation Campus': 'America/Chicago', 'Science and Learning Park': 'America/New_York', 'Forum and Resilience Quarter': 'Europe/London',
-  'Lakeshore Regional Office': 'America/New_York', 'Ridgeview Operations Site': 'America/Phoenix', 'Millbrook Distribution Centre': 'America/Los_Angeles',
+  'Lakeshore Regional Office': 'America/New_York', 'Ridgeview Operations Site': 'America/Phoenix', 'Millbrook Distribution Center': 'America/Los_Angeles',
 };
 export const groupOf = (buildingKey: string) => ESTATE_GROUPS.find((g) => g.buildings.includes(buildingKey)) || null;
 export const groupSlug = (name: string) => name.split(' ')[0]!.toLowerCase();
@@ -121,7 +121,7 @@ export function people(): Person[] {
       const have = here.filter((x) => x.role === role);
       for (const x of have) {
         const sites = x.s.sites.filter((k) => g.buildings.includes(k)); const name = x.s.name.split(/ [—(]/)[0]!.trim(); used.add(name);
-        add({ id: `p-${x.s.id}`, name, kind: 'role', role, title: ROLES[role].label, org: x.s.internal ? null : x.s.orgName || 'a partner organisation', home: x.s.buildingKey && g.buildings.includes(x.s.buildingKey) ? x.s.buildingKey : sites[0]!, buildings: sites, hours: HOURS[role] || HOURS['service']!, shift: SHIFT_ROLES.includes(role) ? SHIFTS[x.i % SHIFTS.length]! : null, staffId: x.s.id });
+        add({ id: `p-${x.s.id}`, name, kind: 'role', role, title: ROLES[role].label, org: x.s.internal ? null : x.s.orgName || 'a partner organization', home: x.s.buildingKey && g.buildings.includes(x.s.buildingKey) ? x.s.buildingKey : sites[0]!, buildings: sites, hours: HOURS[role] || HOURS['service']!, shift: SHIFT_ROLES.includes(role) ? SHIFTS[x.i % SHIFTS.length]! : null, staffId: x.s.id });
       }
       const covered = new Set(have.flatMap((x) => x.s.sites)); const left = scoped ? g.buildings.filter((k) => !covered.has(k)) : have.length ? [] : [...g.buildings];
       if (left.length) add({ id: `p-${role}-${groupSlug(g.name)}`, name: invent(), kind: 'role', role, title: ROLES[role].label, org: null, home: left[0]!, buildings: left, hours: HOURS[role] || HOURS['service']!, shift: SHIFT_ROLES.includes(role) ? SHIFTS[(have.length + 1) % SHIFTS.length]! : null, staffId: null });
@@ -191,7 +191,7 @@ const AUTHORITY_WORDS: Record<string, string> = {
 export const PRIVILEGED: ReadonlyArray<[authority: string, words: string]> = [
   ['room.design', 'Change a room’s design'], ['design.release', 'Release a design'], ['room.classify.approve', 'Approve a room’s classification'],
   ['test.verify', 'Verify a commissioning test'], ['tests.verify.all', 'Verify commissioning tests for a whole room'], ['customer.accept', 'Accept a room at commissioning sign-off'], ['baseline.approve', 'Approve a commissioning baseline'],
-  ['service.triage', 'Triage or dispatch service jobs'], ['license.grant', 'Grant licences'], ['profile.publish', 'Publish directory profiles'], ['standard.change', 'Change a standard'],
+  ['service.triage', 'Triage or dispatch service jobs'], ['license.grant', 'Grant licenses'], ['profile.publish', 'Publish directory profiles'], ['standard.change', 'Change a standard'],
 ];
 export const championMay = (): string[] => CHAMPION_PERSONA.authority.map((a) => AUTHORITY_WORDS[a] || a);
 export const championMayNot = (): string[] => PRIVILEGED.filter(([a]) => !CHAMPION_PERSONA.authority.includes(a)).map(([, w]) => w);

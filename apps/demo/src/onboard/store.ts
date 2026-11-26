@@ -26,7 +26,7 @@ export interface Revision { rev: number; at: string; by: RoleKey; note: string; 
 export interface ObState { done: Record<string, Done>; checks: Record<string, { at: string; score: number; of: number; passed: boolean; tries: number }>; reviews: Record<string, Review>; revisions: Revision[] }
 const DAY = 864e5;
 /** The guide as first published in the demonstration: one revision, due for review 180 days after the workspace was seeded. */
-const seedRevision = (seededAt: string): Revision => ({ rev: 1, at: seededAt, by: 'architect', note: 'First publication for this organisation (seeded with the demonstration).', reviewBy: new Date(Date.parse(seededAt) + 180 * DAY).toISOString(), state: 'PUBLISHED' });
+const seedRevision = (seededAt: string): Revision => ({ rev: 1, at: seededAt, by: 'architect', note: 'First publication for this organization (seeded with the demonstration).', reviewBy: new Date(Date.parse(seededAt) + 180 * DAY).toISOString(), state: 'PUBLISHED' });
 const isDate = (x: unknown): x is string => typeof x === 'string' && !Number.isNaN(Date.parse(x));
 const rec = (v: unknown) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}) as Record<string, unknown>;
 
@@ -56,7 +56,7 @@ const WHO: Record<Item['confirm'], string> = { self: 'the starter', check: 'the 
 
 /** Mark an item done: the starter's own word, or the mentor's or manager's confirmation, as the item says. */
 export function completeItem(w: S.Workspace, role: RoleKey, id: string, note = ''): Refusal | { ok: true } {
-  const persona = personaOf(role); const it = itemById(id); if (!it) return { why: ['There is no such item in the programme.'] };
+  const persona = personaOf(role); const it = itemById(id); if (!it) return { why: ['There is no such item in the program.'] };
   if (it.kind === 'review') return { why: ['A review is recorded with its ratings, not ticked.'] };
   if (it.confirm === 'check') return deny(w, persona, 'onboard.item_done', id, ['This item is done by passing its check. Nobody ticks it.']);
   if (!mayComplete(role, it)) return deny(w, persona, 'onboard.item_done', id, [`“${it.title}” is confirmed by ${WHO[it.confirm]}. The ${ROLES[role].label} cannot say it is done.`]);
@@ -95,7 +95,7 @@ export function publish(w: S.Workspace, role: RoleKey, note: string, reviewInDay
   if (!Number.isInteger(reviewInDays) || reviewInDays < 30 || reviewInDays > 365) return { why: ['Set a review date between 30 and 365 days away.'] };
   const s = ob(w); const at = new Date().toISOString(); s.revisions = [...s.revisions.map((r) => ({ ...r, state: 'ARCHIVED' as const })), { rev: s.revisions.length + 1, at, by: role, note: text, reviewBy: new Date(Date.parse(at) + reviewInDays * DAY).toISOString(), state: 'PUBLISHED' as const }].slice(-24);
   const rev = s.revisions[s.revisions.length - 1]!.rev;
-  log(w, persona, 'onboard.published', 'onboard:guide', `Revision ${rev} of the IT Onboarding Success Guide published for this organisation; to be reviewed within ${reviewInDays} days · ${text.slice(0, 120)}`);
+  log(w, persona, 'onboard.published', 'onboard:guide', `Revision ${rev} of the IT Onboarding Success Guide published for this organization; to be reviewed within ${reviewInDays} days · ${text.slice(0, 120)}`);
   return { ok: true, rev };
 }
 

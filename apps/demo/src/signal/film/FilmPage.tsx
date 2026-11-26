@@ -202,7 +202,7 @@ function Film({ ix, id }: { ix: StoryIndex; id: string }) {
       <label className="fm-ctl__act">Act <select value={acts.filter((a) => a.i <= k).pop()?.i ?? ''} onChange={(e) => goTo(Number(e.target.value))} data-testid="film-acts">{acts.map((a) => <option key={a.i} value={a.i}>{a.s.title}</option>)}</select></label>
       <button type="button" className="ui-btn ui-btn--quiet" onClick={() => { if (sound) { silence(); setSound(false); audio.current?.pause(); } else { const ok = enableSound(); setSound(ok); if (ok) roomTone(true); } }} aria-pressed={sound} data-testid="film-sound">{sound ? 'Sound on' : 'Sound off'}</button>
       <button type="button" className="ui-btn ui-btn--quiet" onClick={() => setCap(cap === 'm' ? 'l' : 'm')} aria-pressed={cap === 'l'} data-testid="film-capsize">Larger captions</button>
-      <button type="button" className="ui-btn ui-btn--quiet" onClick={() => setTheatre(!theatre)} aria-pressed={theatre} data-testid="film-theatre">Theatre</button>
+      <button type="button" className="ui-btn ui-btn--quiet" onClick={() => setTheatre(!theatre)} aria-pressed={theatre} data-testid="film-theatre">Theater</button>
       <button type="button" className="ui-btn ui-btn--quiet" onClick={() => { const el = stage.current; if (!el) return; if (document.fullscreenElement) void document.exitFullscreen(); else void el.requestFullscreen?.().catch(() => setTheatre(true)); }} data-testid="film-full">Full screen</button>
       <span className="ui-meta fm-ctl__where" data-testid="film-where">{actOf(k)} · shot {k} of {shots.length - 2}</span>
     </div>}

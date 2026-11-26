@@ -18,13 +18,13 @@ import { loadLabs, saveLabs, recordLab, resultKey, type LabState } from './store
 const INSTRUMENTS = [
   { id: 'hear', title: 'Audio Lab: hear the engineering', domain: 'Audio', kind: 'Instrument', brief: 'The far end hears rumble and the voice is buried. Take out the rumble, bring the consonants forward, and keep the output from surprising anyone.' },
   { id: 'see', title: 'Camera Lab: see the settings', domain: 'Camera', kind: 'Instrument', brief: 'The picture bands under the room lights and the presenter’s hand smears. Fix the shutter, exposure, gain and white balance together.' },
-  { id: 'light', title: 'Lighting Lab: shape the light', domain: 'Lighting', kind: 'Instrument', brief: 'The presenter is over-lit and two-coloured and the display behind washes out. Balance key and fill, match the colour, keep spill off the screen.' },
+  { id: 'light', title: 'Lighting Lab: shape the light', domain: 'Lighting', kind: 'Instrument', brief: 'The presenter is over-lit and two-colored and the display behind washes out. Balance key and fill, match the color, keep spill off the screen.' },
 ] as const;
 /** The flagship labs (founder, 12 Nov 2026): hands-on, scored, and part of SIGNAL; open to every role, results kept in this browser. */
 export const FLAGSHIPS = [
   { href: '#/labs/mix', title: 'Mix the Stream', domain: 'Audio', brief: 'SIGNAL Episode 10’s lab boss: a 32-channel console, five rooms from a basement to a mega church, wedges, subs, fills, arrays and delay towers, and a live stream to keep at −16 LUFS.' },
-  { href: '#/labs/light', title: 'Light the Stage', domain: 'Lighting', brief: 'Hang and drag fixtures on the plot, patch one DMX universe without overlaps, aim, zoom and colour them, and light a sermon (key, fill, back light, one white) and a worship set without washing the screen.' },
-  { href: '#/labs/video', title: 'Shoot the Service', domain: 'Video', brief: 'Two live viewfinders that band, flicker, smear and colour-cast as the settings say; a switcher with program, preview, cut, mix and a lyrics key; and lip-sync for the stream.' },
+  { href: '#/labs/light', title: 'Light the Stage', domain: 'Lighting', brief: 'Hang and drag fixtures on the plot, patch one DMX universe without overlaps, aim, zoom and color them, and light a sermon (key, fill, back light, one white) and a worship set without washing the screen.' },
+  { href: '#/labs/video', title: 'Shoot the Service', domain: 'Video', brief: 'Two live viewfinders that band, flicker, smear and color-cast as the settings say; a switcher with program, preview, cut, mix and a lyrics key; and lip-sync for the stream.' },
 ];
 function FlagshipList() {
   return <ul className="ops-board" data-testid="flagship-labs">{FLAGSHIPS.map((x) => <li key={x.href} className="ops-col"><a className="ops-job" href={x.href}><b>{x.title}</b><span className="ops-meta">{x.domain} · flagship lab boss</span><span className="ops-note">{x.brief}</span></a></li>)}</ul>;

@@ -93,10 +93,10 @@ function greenRoom(r: RoomRecord): Program {
     { id: 'lowtable', kind: 'lowtable', label: 'Low table', x: lx, y: d - 1.55, w: 0.95, d: 0.55, h: 0.38 },
     { id: 'arm', kind: 'armchair', label: 'Armchair', x: lx + 1.5, y: d - 1.55, rot: -90, w: 0.84, d: 0.88, h: 0.8 },
     { id: 'coffee', kind: 'bar', label: 'Coffee station with a small refrigerator', x: 0.32, y: Math.max(1.9, d * 0.52), rot: 90, w: Math.min(1.6, d - 2.6), d: 0.6, h: 0.92 },
-    { id: 'display', kind: 'display', label: 'Programme monitor', x: w - 0.04, y: Math.max(1.4, d * 0.36), rot: -90, w: 0.97, d: 0.05, h: 0.55, z: 1.45, device: devOf(r, 'display') },
+    { id: 'display', kind: 'display', label: 'Program monitor', x: w - 0.04, y: Math.max(1.4, d * 0.36), rot: -90, w: 0.97, d: 0.05, h: 0.55, z: 1.45, device: devOf(r, 'display') },
     { id: 'plant', kind: 'plant', label: 'Planter', x: w - 0.4, y: 0.42, w: 0.48, d: 0.48, h: 1.4 },
   ];
-  return { key: 'green-room', title: 'Green room', summary: 'A dressing counter with a lit mirror, a sofa and armchair, a coffee station and the programme monitor.', w, d, H, floor: 'carpet', walls: { ...plain(doorX), W: { finish: 'url(#rm-slats)' } },
+  return { key: 'green-room', title: 'Green room', summary: 'A dressing counter with a lit mirror, a sofa and armchair, a coffee station and the program monitor.', w, d, H, floor: 'carpet', walls: { ...plain(doorX), W: { finish: 'url(#rm-slats)' } },
     pieces, lights: lightGrid(w, d, 1.6), speakers: [[w / 2, d / 2]], outside: null, hero: { yaw: 28, pitch: 40, zoom: 1.1 },
     eyes: [eye('mirror', 'At the mirror', 'seated at the dressing counter, eyes at 1.2 m', vx - vw / 4, 1.0, 1.2, vx - vw / 4, 0, 44), eye('sofa', 'On the sofa', 'seated, eyes at 1.15 m', lx, d - 0.6, 1.15, lx, 0, 40),
       eye('door', 'Doorway', 'just inside the door, standing', doorX, d - 0.3, 1.6, w * 0.35, 0.5, 44), eye('wheel', 'Wheelchair place', 'at the low table, eyes at 1.2 m', lx - 0.9, d - 1.55, 1.2, lx + 1.5, d - 1.55, 42)] };

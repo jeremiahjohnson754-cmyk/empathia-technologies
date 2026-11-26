@@ -182,7 +182,7 @@ function Room({ id, role, query, sees, can }: { id: string } & Pick<PageProps, '
           </Stage>
           <p className="hr-cap" data-testid="here-caption" data-ringed={ring.length} data-links={links.length} aria-live="polite">{caption}</p>
           {picked && <p className="hr-dev" data-testid="here-device" data-code={picked.code}>{deviceLine(picked)}</p>}
-          <p className="ui-meta">The room’s size is {r.geometryProvenance === 'DECLARED' ? 'declared in its design record' : 'modelled from rooms of its kind, not measured'}. No device is contacted from this page.</p>
+          <p className="ui-meta">The room’s size is {r.geometryProvenance === 'DECLARED' ? 'declared in its design record' : 'modeled from rooms of its kind, not measured'}. No device is contacted from this page.</p>
           <DoorLabel roomId={id} name={shortName(o)} />
         </aside>
 

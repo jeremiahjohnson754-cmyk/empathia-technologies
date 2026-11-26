@@ -168,7 +168,7 @@ function LearnIt({ tool }: { tool: Tool }) {
   const used = n ? Object.entries(n).filter(([, k]) => k > 0) : [];
   if (!tool.cts?.length && !used.length) return null;
   return <div className="ft-panel ft-learn" data-testid="ft-learn"><h2><Icon name="book" size={16} /> Learn it</h2>
-    <p className="ft-fine">This arithmetic is on the {tool.cts?.join(', ')} exam outlines’ ground. Study it with the formula, then practise:</p>
+    <p className="ft-fine">This arithmetic is on the {tool.cts?.join(', ')} exam outlines’ ground. Study it with the formula, then practice:</p>
     <div className="ft-keep__row">{(tool.cts || []).map((c) => <a key={c} className="ui-btn ui-btn--sm" href={`#/learn/${c.toLowerCase()}/math`}>{c} math and physics</a>)}
       {used.map(([c, k]) => <a key={c} className="ui-btn ui-btn--sm" href={`#/learn/${c.toLowerCase()}/practice`} data-testid={`ft-learn-${c}`}>{k} {c} question{k === 1 ? '' : 's'} use it</a>)}</div>
   </div>;

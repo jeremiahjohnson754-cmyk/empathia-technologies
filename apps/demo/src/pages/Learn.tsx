@@ -34,7 +34,7 @@ export function LearnPage({ perspective, hash }: { perspective: string; hash: st
   return (
     <section className="learn wk" data-native="workspace">
       <PageHero product="learn" icon="book" eyebrow="Empathia Learn · SIGNAL" title="Reviewed cases from what actually happened"
-        lede={<>SIGNAL: the same Core that runs the estate, read as something to practise on. A case needs customer permission, de-identification, an SME review and the steward's approval. Training performance never grants work authorization. Acting as <b>{personaLabel(persona)}</b>.</>}
+        lede={<>SIGNAL: the same Core that runs the estate, read as something to practice on. A case needs customer permission, de-identification, an SME review and the steward's approval. Training performance never grants work authorization. Acting as <b>{personaLabel(persona)}</b>.</>}
         meta={lib ? [<Chip key="l" small tone="muted">{Object.keys(lib.lessons).length} lessons</Chip>, <Chip key="d" small tone="muted">{Object.keys(lib.drills).length} drills</Chip>, <Chip key="c" small tone="muted">{Object.keys(lib.cases).length} canon cases</Chip>, <Chip key="s" small tone="accent">Scores stay in this browser</Chip>] : [<Chip key="s" small tone="accent">Scores stay in this browser</Chip>]}
         actions={<><a className="ui-btn ui-btn--primary" href="#/learn/labs">Open the labs</a><a className="ui-btn" href="#/story" data-testid="learn-story">Read the SIGNAL story</a><a className="ui-btn" href="#/onboard" data-testid="learn-onboard">IT Onboarding Success Guide</a><a className="ui-btn" href="#/manual" data-testid="learn-manual">Engineering standards manual</a><a className="ui-btn" href="#/servicehands">ServiceHands</a></>} />
       <Overview w={w} persona={persona} lib={lib} />

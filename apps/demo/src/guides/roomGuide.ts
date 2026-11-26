@@ -72,7 +72,7 @@ export function roomGuide(r: RoomRecord): RoomGuide {
   ] });
   // ---- sound
   if (p.hears || p.speakers.length || bar) sections.push({ id: 'sound', title: 'Be heard, and hear', lead: ceilMics ? 'The microphones are in the ceiling. Speak normally; there is nothing to pick up or switch on.' : tableMics ? 'The microphones are on the table.' : bar ? 'The microphone is in the bar under or over the screen.' : handMics ? 'The room has hand-held or clip-on microphones.' : 'The room has loudspeakers for what is played, and no microphones.', steps: [
-    ...(ceilMics ? [{ do: 'Speak towards the table, not the wall. Everyone at the table is covered.', uses: ['micceil'] }] : []),
+    ...(ceilMics ? [{ do: 'Speak toward the table, not the wall. Everyone at the table is covered.', uses: ['micceil'] }] : []),
     ...(tableMics ? [{ do: 'Keep papers, cups and laptops off the table microphones, and do not move them.', why: 'They are placed so every seat is heard.', uses: ['mictable'] }] : []),
     ...(bar && !ceilMics && !tableMics ? [{ do: 'Sit facing the screen. The further you are from it, the quieter you sound to people elsewhere.', uses: ['bar'] }] : []),
     ...(handMics ? [{ do: 'For a hand-held or clip-on microphone: switch it on, hold or clip it a hand’s width below your chin, and put it back on its charger when you finish.', uses: ['micwireless'] }] : []),

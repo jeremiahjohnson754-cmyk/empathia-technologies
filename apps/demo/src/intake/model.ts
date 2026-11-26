@@ -37,7 +37,7 @@ export const KINDS: Kind[] = [
 export type CardId = 'create' | 'improve' | 'equipment' | 'help';
 export const CARDS: Array<{ id: CardId; label: string; blurb: string; kinds: KindId[]; icon: 'plus' | 'room' | 'device' | 'wrench' }> = [
   { id: 'create', label: 'Create a space', blurb: 'A new room, meeting area, classroom, event space or other place that needs technology.', kinds: ['new-room'], icon: 'plus' },
-  { id: 'improve', label: 'Improve a space', blurb: 'Modernise a room, give it new capabilities, make it more accessible, or change how it is used.', kinds: ['change-room', 'improve-room'], icon: 'room' },
+  { id: 'improve', label: 'Improve a space', blurb: 'Modernize a room, give it new capabilities, make it more accessible, or change how it is used.', kinds: ['change-room', 'improve-room'], icon: 'room' },
   { id: 'equipment', label: 'Add or change equipment', blurb: 'Install, replace or evaluate a device.', kinds: ['add-devices', 'replace-device', 'evaluate-device'], icon: 'device' },
   { id: 'help', label: 'Get help', blurb: 'Something is not working, an event needs support, or you need someone to look at a space.', kinds: ['problem', 'event', 'general'], icon: 'wrench' },
 ];
@@ -47,7 +47,7 @@ export const cardOf = (kind: KindId): CardId => CARDS.find((c) => c.kinds.includ
 export const GOALS: Array<[id: string, label: string]> = [
   ['video', 'Better video meetings'], ['audio', 'Better microphones and speakers'], ['displays', 'Larger or more displays'], ['present', 'Presenting and working together'],
   ['record', 'Recording, streaming or broadcasting'], ['teach', 'Hybrid training or teaching'], ['signage', 'Digital signage'], ['access', 'Accessibility'],
-  ['standard', 'Bring it to the standard, or replace it'], ['reliable', 'Reliability and easier support'], ['modern', 'General modernisation'],
+  ['standard', 'Bring it to the standard, or replace it'], ['reliable', 'Reliability and easier support'], ['modern', 'General modernization'],
 ];
 export const goalLabel = (id: string) => GOALS.find((g) => g[0] === id)?.[1] || id;
 /** The kinds that ask which goals matter (a room being made or changed, or equipment being added). */
@@ -97,7 +97,7 @@ export function sizeFor(archetype: string, people: number): { w: number; l: numb
   const same = CAMPUS_ROOMS.filter((r) => r.archetype === archetype && r.capacity > 0); const pool = same.length >= 2 ? same : CAMPUS_ROOMS;
   const perSeat = median(pool.map((r) => (r.dims[0] * r.dims[1]) / r.capacity)); const ratio = median(pool.map((r) => Math.max(r.dims[0], r.dims[1]) / Math.min(r.dims[0], r.dims[1]))); const h = median(pool.map((r) => r.dims[2]));
   const floor = Math.max(people * perSeat, Math.min(...pool.map((r) => r.dims[0] * r.dims[1]))); const w = Math.sqrt(floor / ratio);
-  return { w: r1(w), l: r1(w * ratio), h: r1(h), basis: `Size modelled from the ${plural(pool.length, 'room')} ${same.length >= 2 ? `of this kind (${ARCHETYPE_NAME[archetype] || archetype})` : 'on record'}: ${r1(perSeat)} m² a seat. Not surveyed` };
+  return { w: r1(w), l: r1(w * ratio), h: r1(h), basis: `Size modeled from the ${plural(pool.length, 'room')} ${same.length >= 2 ? `of this kind (${ARCHETYPE_NAME[archetype] || archetype})` : 'on record'}: ${r1(perSeat)} m² a seat. Not surveyed` };
 }
 
 export interface Proposal {
@@ -144,7 +144,7 @@ export function propose(d: Draft): Proposal | null {
   const k = kindOf(d.kind);
   if (d.kind === 'new-room') {
     const use = USES.find((u) => u.id === d.use) || USES[0]!; const people = Math.max(1, Math.min(600, Math.round(d.people) || 1)); const [archetype, template] = use.pick(people); const modelled = sizeFor(archetype, people);
-    const g = givenSize(d); const size = g ? { w: g.w, l: g.l, h: g.h ?? modelled.h, basis: `Size as you gave it: ${g.w} × ${g.l} m${g.h ? `, ceiling ${g.h} m` : `; ceiling modelled (${modelled.h} m)`}. Not surveyed; an engineer confirms it` } : modelled;
+    const g = givenSize(d); const size = g ? { w: g.w, l: g.l, h: g.h ?? modelled.h, basis: `Size as you gave it: ${g.w} × ${g.l} m${g.h ? `, ceiling ${g.h} m` : `; ceiling modeled (${modelled.h} m)`}. Not surveyed; an engineer confirms it` } : modelled;
     let seq = 0; const devices = templateDevices(template, outlineFor('rect', size.w, size.l), () => `PA-${String(++seq).padStart(4, '0')}`, C);
     const marked: string[] = []; for (const add of d.adds) for (let i = 0; i < add.qty; i++) { const id = `PA-${String(++seq).padStart(4, '0')}`; devices.push(newDevice(id, add.cat, devices, place(add.cat, i, add.qty, size.w, size.l, devices.filter((x) => !x.furniture)), 'asked for in the request', C)); marked.push(id); }
     const design = designOf({ template, intent: `${use.label}${d.need ? `: ${d.need}` : ''}`, people, ...size }, devices); const { a, tests } = testsOf(design, null);
@@ -192,8 +192,8 @@ export function problems(d: Draft): Record<string, string> {
   if (d.kind === 'event' && !/^\d{4}-\d{2}-\d{2}$/.test(d.date)) e.date = 'Say the day of the event.';
   if (k.needs === 'category' && !C.categories[d.category]) e.category = 'Choose the kind of device.';
   if ((d.goals || []).some((g) => !GOALS.some((x) => x[0] === g))) e.goals = 'Choose from the list.';
-  const k2 = d.dims || { w: null, l: null, h: null }; if ((k2.w !== null || k2.l !== null) && !givenSize(d)) e.dims = 'Give both sides, in metres (1.5 to 80 wide, 1.5 to 120 long), or leave both empty.';
-  if (k2.h !== null && !(k2.h >= 2.2 && k2.h <= 25)) e.dims = 'A ceiling height is between 2.2 and 25 metres, or leave it empty.';
+  const k2 = d.dims || { w: null, l: null, h: null }; if ((k2.w !== null || k2.l !== null) && !givenSize(d)) e.dims = 'Give both sides, in meters (1.5 to 80 wide, 1.5 to 120 long), or leave both empty.';
+  if (k2.h !== null && !(k2.h >= 2.2 && k2.h <= 25)) e.dims = 'A ceiling height is between 2.2 and 25 meters, or leave it empty.';
   return e;
 }
 /** Where a hand-off kind sends the person instead of raising a request. */

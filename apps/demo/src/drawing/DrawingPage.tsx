@@ -76,9 +76,9 @@ export default function DrawingPage({ role, can }: PageProps) {
         <p className="dr-note">PDF, Visio, CAD and image files are not read: that is not built. A file is read as text; it is never displayed or run.</p>
       </Card>
 
-      {plan ? <Card title="What was read from the plan" icon="search" sub={u ? `Scale: ${Math.round(u * 100) / 100} drawing units to a metre (${clsShort(plan.scaleCls!).toLowerCase()}).` : 'Not to scale: the scale is unknown, so nothing is given in metres.'} testId="dr-plan-card">
+      {plan ? <Card title="What was read from the plan" icon="search" sub={u ? `Scale: ${Math.round(u * 100) / 100} drawing units to a meter (${clsShort(plan.scaleCls!).toLowerCase()}).` : 'Not to scale: the scale is unknown, so nothing is given in meters.'} testId="dr-plan-card">
         {b ? <figure className="dr-plan" data-testid="dr-plan" data-scale={plan.scaleCls || 'none'} data-devices={ex.devices.length}>
-          <svg viewBox={`0 0 ${460 + 100} ${Math.round(b.h * k) + 80}`} role="img" aria-label={`The room as read: ${ex.room ? `${ex.room.width} metres by ${ex.room.length} metres` : 'size unknown'}, with ${plural(ex.devices.length, 'device')}`} preserveAspectRatio="xMidYMid meet">
+          <svg viewBox={`0 0 ${460 + 100} ${Math.round(b.h * k) + 80}`} role="img" aria-label={`The room as read: ${ex.room ? `${ex.room.width} meters by ${ex.room.length} metres` : 'size unknown'}, with ${plural(ex.devices.length, 'device')}`} preserveAspectRatio="xMidYMid meet">
             <rect className="dr-room" x={X(b.x)} y={Y(b.y)} width={b.w * k} height={b.h * k} />
             <text className="dr-lab" x={X(b.x + b.w / 2)} y={24} textAnchor="middle">{ex.room ? `${ex.room.width} m` : `${Math.round(b.w)} units`}</text>
             {plan.ports.map((p) => <rect key={p.tag} className="dr-port" x={X(p.px) - 4} y={Y(p.py) - 4} width="8" height="8" />)}
@@ -87,7 +87,7 @@ export default function DrawingPage({ role, can }: PageProps) {
         {plan.notes.length || plan.doubts.length ? <ul className="dr-plain" data-testid="dr-reading">{plan.doubts.map((x) => <li key={x} data-doubt="yes"><Icon name="alert" size={14} /> {x}</li>)}{plan.notes.map((x) => <li key={x}>{x}</li>)}</ul> : null}
         {b && can('drawing.review') ? <form className="dr-cal" noValidate data-testid="dr-calibrate" onSubmit={(e) => { e.preventDefault(); const m = Number(calText.trim().replace(',', '.')); setCal({ edge: calEdge, metres: m }); }}>
           <div className="ui-field"><label htmlFor="dr-cal-edge">A line you know the real length of</label><select id="dr-cal-edge" value={calEdge} onChange={(e) => setCalEdge(e.target.value as 'width' | 'length')} data-testid="dr-cal-edge"><option value="width">The room’s top edge ({Math.round(b.w)} units)</option><option value="length">The room’s left edge ({Math.round(b.h)} units)</option></select></div>
-          <div className="ui-field"><label htmlFor="dr-cal-m">Its real length, in metres</label><input id="dr-cal-m" type="text" inputMode="decimal" value={calText} onChange={(e) => setCalText(e.target.value)} data-testid="dr-cal-m" autoComplete="off" /></div>
+          <div className="ui-field"><label htmlFor="dr-cal-m">Its real length, in meters</label><input id="dr-cal-m" type="text" inputMode="decimal" value={calText} onChange={(e) => setCalText(e.target.value)} data-testid="dr-cal-m" autoComplete="off" /></div>
           <div className="dr-row"><button type="submit" className="ui-btn ui-btn--sm" data-testid="dr-cal-go">{u ? 'Set the scale myself' : 'Calibrate'}</button>{calWhy ? <span role="alert" className="dr-why">{calWhy}</span> : null}</div>
         </form> : null}
       </Card> : null}
@@ -96,7 +96,7 @@ export default function DrawingPage({ role, can }: PageProps) {
       {ex.devices.length ? <Card title="Devices" icon="layers" sub="Each with how it is known. A tag’s prefix is a convention; a schedule’s own words are stronger." testId="dr-devices-card">
         <div className="dr-scroll"><table className="dr-table" data-testid="dr-devices"><caption className="ui-sr">Devices read from the package</caption><thead><tr><th scope="col">Tag</th><th scope="col">What it is</th><th scope="col">Model</th><th scope="col">Position</th></tr></thead>
           <tbody>{ex.devices.map((d, i) => <tr key={`${d.tag}${i}`} data-tag={d.tag} data-cls={d.catCls}><th scope="row">{i + 1}. {d.tag}</th><td>{d.cat ? C.categories[d.cat]?.label || d.cat : 'Unknown'} <Chip small tone={CLS_TONE[d.catCls]} title={CLS_WORD[d.catCls]}>{clsShort(d.catCls)}</Chip><span className="dr-sub">{d.catWhy}</span></td><td>{d.model || 'Not given'}</td>
-            <td>{d.x !== null && d.y !== null ? <>{d.x} m across, {d.y} m from the top wall <Chip small tone="muted" title={CLS_WORD.MODELED}>Modelled</Chip></> : 'Unknown without a scale'}{d.inRoom === false ? <span className="dr-sub">Outside the outline</span> : null}</td></tr>)}</tbody></table></div>
+            <td>{d.x !== null && d.y !== null ? <>{d.x} m across, {d.y} m from the top wall <Chip small tone="muted" title={CLS_WORD.MODELED}>Modeled</Chip></> : 'Unknown without a scale'}{d.inRoom === false ? <span className="dr-sub">Outside the outline</span> : null}</td></tr>)}</tbody></table></div>
       </Card> : null}
 
       <Card title={`Findings (${all.length})`} icon="alert" sub={blockers ? `${plural(blockers, 'finding')} for an engineer to decide before the review can be approved.` : 'Nothing here needs an engineer’s decision before approval.'} testId="dr-findings-card">
@@ -176,7 +176,7 @@ function ViewingCard({ ex, role, name, revision, type }: { ex: Extraction; role:
  *  the farthest viewer and the outermost seat's angle; each mark labelled with how it is known. */
 function ViewingOverlay({ v }: { v: NonNullable<ReturnType<typeof viewing>> }) {
   const g = v.geom; const k = Math.min(420 / g.W, 300 / g.L); const pad = 30; const X = (x: number) => pad + x * k, Y = (y: number) => pad + y * k;
-  return <figure className="dr-plan" data-testid="dr-viewing-overlay"><svg viewBox={`0 0 ${Math.round(g.W * k + 2 * pad + 120)} ${Math.round(g.L * k + 2 * pad)}`} role="img" aria-label={`Overlay: a ${g.W} by ${g.L} metre room; the farthest viewer ${v.far} metres from the display; the outermost seat ${v.outerAngle} degrees off axis`}>
+  return <figure className="dr-plan" data-testid="dr-viewing-overlay"><svg viewBox={`0 0 ${Math.round(g.W * k + 2 * pad + 120)} ${Math.round(g.L * k + 2 * pad)}`} role="img" aria-label={`Overlay: a ${g.W} by ${g.L} meter room; the farthest viewer ${v.far} meters from the display; the outermost seat ${v.outerAngle} degrees off axis`}>
     <rect className="dr-room" x={X(0)} y={Y(0)} width={g.W * k} height={g.L * k} />
     <rect x={X(0.6)} y={Y(g.frontRow)} width={(g.W - 1.2) * k} height={(g.backRow - g.frontRow) * k} fill="none" stroke="currentColor" strokeOpacity={0.45} strokeDasharray="5 4" />
     <text className="dr-lab" x={X(g.W) + 6} y={Y((g.frontRow + g.backRow) / 2)}>seating · assumed</text>

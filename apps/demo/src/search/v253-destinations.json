@@ -303,15 +303,15 @@
 {
 "href": "#/learn/labs/see",
 "label": "Camera Lab: see the settings",
-"description": "Focus, shutter, frame rate, gain, exposure, colour temperature",
+"description": "Focus, shutter, frame rate, gain, exposure, color temperature",
 "keywords": "camera lab video shutter motion blur focus exposure iso",
 "primary": false
 },
 {
 "href": "#/learn/labs/light",
 "label": "Lighting Lab: shape the light",
-"description": "Fixtures you move: beam, distance, colour temperature, DMX",
-"keywords": "lighting lab dmx fixture beam inverse square colour temperature",
+"description": "Fixtures you move: beam, distance, color temperature, DMX",
+"keywords": "lighting lab dmx fixture beam inverse square color colour temperature",
 "primary": false
 },
 {

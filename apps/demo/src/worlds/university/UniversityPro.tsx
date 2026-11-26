@@ -9,10 +9,10 @@ import { Block, Chain, Ev, Pick, Rows, Said, ScreenHead, WorkBoard, type ChainNo
 type Health = 'Healthy' | 'Monitor' | 'Action needed' | 'No data';
 interface Space { id: string; name: string; building: string; kind: string; seats: number; health: Health; note: string }
 const SPACES: Space[] = [
-  { id: 'SCI-110', name: 'Lecture theatre', building: 'Science Hall', kind: 'Tiered lecture theatre', seats: 240, health: 'Monitor', note: 'Projector lamp hours near the replacement threshold (declared by the device record)' },
+  { id: 'SCI-110', name: 'Lecture theater', building: 'Science Hall', kind: 'Tiered lecture theater', seats: 240, health: 'Monitor', note: 'Projector lamp hours near the replacement threshold (declared by the device record)' },
   { id: 'SCI-204', name: 'Teaching lab', building: 'Science Hall', kind: 'Teaching laboratory', seats: 36, health: 'Healthy', note: 'No open work' },
-  { id: 'ENG-020', name: 'Maker studio', building: 'Engineering Centre', kind: 'Active-learning studio', seats: 48, health: 'Healthy', note: 'No open work' },
-  { id: 'ENG-115', name: 'Seminar room', building: 'Engineering Centre', kind: 'Seminar room', seats: 24, health: 'Action needed', note: 'Ceiling microphone reported silent (simulated incident)' },
+  { id: 'ENG-020', name: 'Maker studio', building: 'Engineering Center', kind: 'Active-learning studio', seats: 48, health: 'Healthy', note: 'No open work' },
+  { id: 'ENG-115', name: 'Seminar room', building: 'Engineering Center', kind: 'Seminar room', seats: 24, health: 'Action needed', note: 'Ceiling microphone reported silent (simulated incident)' },
   { id: 'ART-204', name: 'Seminar room', building: 'Arts Hall', kind: 'Seminar room', seats: 20, health: 'Healthy', note: 'No open work' },
   { id: 'ART-010', name: 'Recital room', building: 'Arts Hall', kind: 'Performance room', seats: 120, health: 'No data', note: 'Nothing has reported from this room, so no state is claimed' },
   { id: 'LIB-301', name: 'Group study room', building: 'Hollis Library', kind: 'Study room', seats: 8, health: 'Healthy', note: 'No open work' },
@@ -25,12 +25,12 @@ const chainFor = (s: Space): ChainNode[] => {
     { id: 'src', label: 'Lectern inputs', klass: 'Lectern connection plate (HDMI, USB-C)', stage: 'Source · lectern', link: 'HDMI over twisted pair', evidence: ev, state: none ? 'Unknown' : 'Nominal', passport: p(['Tag', `${s.id}-IN-01`], ['Owner', 'Campus AV / IT']) },
     { id: 'mic', label: 'Room microphones', klass: s.seats > 100 ? 'Wireless lectern and handheld microphones' : 'Ceiling microphone array', stage: 'Source · room', link: 'Audio over IP', evidence: ev, state: none ? 'Unknown' : mic ? 'Degraded' : 'Nominal', passport: p(['Tag', `${s.id}-MIC-01`], ['Note', mic ? 'Reported silent; see the work order below' : 'No open work']) },
     { id: 'sw', label: 'Presentation switcher', klass: 'Presentation switcher with audio DSP', stage: 'Processing · lectern rack', link: 'HDMI and audio over IP', evidence: ev, state: none ? 'Unknown' : 'Nominal', passport: p(['Tag', `${s.id}-SW-01`], ['Network', 'Campus AV VLAN (declared)']) },
-    { id: 'disp', label: s.seats > 60 ? 'Projector and screen' : 'Flat-panel display', klass: s.seats > 60 ? 'Laser or lamp projector, class by throw distance' : 'Large-format display', stage: 'Output · front wall', link: 'To lecture capture', evidence: ev, state: none ? 'Unknown' : s.health === 'Monitor' && s.id === 'SCI-110' ? 'Degraded' : 'Nominal', passport: p(['Tag', `${s.id}-DSP-01`], ['Lifecycle', s.id === 'SCI-110' ? 'Replacement due this year (modelled plan)' : 'Within planned life (modelled plan)']) },
+    { id: 'disp', label: s.seats > 60 ? 'Projector and screen' : 'Flat-panel display', klass: s.seats > 60 ? 'Laser or lamp projector, class by throw distance' : 'Large-format display', stage: 'Output · front wall', link: 'To lecture capture', evidence: ev, state: none ? 'Unknown' : s.health === 'Monitor' && s.id === 'SCI-110' ? 'Degraded' : 'Nominal', passport: p(['Tag', `${s.id}-DSP-01`], ['Lifecycle', s.id === 'SCI-110' ? 'Replacement due this year (modeled plan)' : 'Within planned life (modeled plan)']) },
     { id: 'cap', label: 'Lecture capture', klass: 'Capture appliance', stage: 'Output · recording', evidence: 'UNAVAILABLE', state: 'Unknown', passport: p(['Tag', `${s.id}-CAP-01`], ['Note', 'No capture platform is connected in this demonstration']) },
   ];
 };
 const WORK: Work[] = [
-  { id: 'CT-481', title: 'ENG-115 ceiling microphone silent', where: 'Engineering Centre', priority: 'High', step: 1, by: 'Faculty / Instructor' },
+  { id: 'CT-481', title: 'ENG-115 ceiling microphone silent', where: 'Engineering Center', priority: 'High', step: 1, by: 'Faculty / Instructor' },
   { id: 'CT-482', title: 'SCI-110 projector: plan lamp replacement', where: 'Science Hall', priority: 'Medium', step: 2, disruptive: true, by: 'Campus AV / IT Engineer' },
   { id: 'CT-483', title: 'UNI-001 lectern microphone battery', where: 'Student Union', priority: 'Low', step: 0, by: 'Campus Staff' },
 ];
@@ -44,7 +44,7 @@ const LABS = [{ id: 'ENG-L3', name: 'Electronics lab 3', free: 'Free 13:00–17:
 function TeachingResearch({ world, journey, config }: ScreenProps) {
   const [record, setRecord] = useState(false); const [asked, setAsked] = useState<string[]>([]);
   return (<>
-    <ScreenHead world={world} journey={journey} config={config}><p className="ui-meta">A sample session and sample labs. No course, enrolment or booking system is connected.</p></ScreenHead>
+    <ScreenHead world={world} journey={journey} config={config}><p className="ui-meta">A sample session and sample labs. No course, enrollment or booking system is connected.</p></ScreenHead>
     <div className="w-two">
       <Block title={`Is ${SESSION.room} ready?`} sub={`${SESSION.course} · ${SESSION.when}`} testId="readiness">
         <Rows label={`Readiness of ${SESSION.room}`} rows={READY.map((r) => ({ k: r.k, v: r.v, ev: r.ev }))} />
@@ -64,7 +64,7 @@ function CampusTechnology({ world, journey, config }: ScreenProps) {
   const [f, setF] = useState<'all' | Health>('all'); const [sel, setSel] = useState('ENG-115');
   const list = SPACES.filter((s) => f === 'all' || s.health === f); const s = list.find((x) => x.id === sel) ?? list[0];
   return (<>
-    <ScreenHead world={world} journey={journey} config={config}><p className="ui-meta">{SPACES.length} teaching spaces. Health is modelled from synthetic device records; no room is monitored.</p></ScreenHead>
+    <ScreenHead world={world} journey={journey} config={config}><p className="ui-meta">{SPACES.length} teaching spaces. Health is modeled from synthetic device records; no room is monitored.</p></ScreenHead>
     <Pick label="Room state" value={f} options={STATES} onChange={setF} />
     <div className="w-two">
       <Block title="Classroom AV estate" sub={`${list.length} of ${SPACES.length} rooms`} testId="estate">

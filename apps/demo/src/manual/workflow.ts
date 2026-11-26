@@ -42,7 +42,7 @@ export function profileFor(cat: string): string | null {
 export function neverExcepted(p: Principle): string | null {
   if (p.noWaiver) return p.noWaiver;
   const t = (p.tests || []).find((id) => (C.tests[id] || C.packTests[id])?.nonwaivable);
-  return t ? `It is checked by “${C.testLabel[t] || C.packTests[t]?.label || t}”, which the commissioning catalogue marks as never waived.` : null;
+  return t ? `It is checked by “${C.testLabel[t] || C.packTests[t]?.label || t}”, which the commissioning catalog marks as never waived.` : null;
 }
 
 export interface Requirement {
@@ -91,7 +91,7 @@ export function generate(room: RoomRecord, o: Options): Generated {
   const citing = (test: string) => ALL_PRINCIPLES.filter((p) => p.tests?.includes(test));
   const template: TemplateRow[] = applicable.map((r) => {
     const T = C.tests[r.id] || C.packTests[r.id]; const ps = citing(r.id); const vals = [...new Set(ps.flatMap((p) => p.values || []))];
-    return { id: r.id, label: r.label, domain: r.domain, phase: r.phase, verifier: r.verifier || T?.verifier || 'not stated', method: T?.method || 'not stated in the catalogue', evidence: [...(r.evidence || T?.accepts || [])], instrument: !!(r.instrument ?? T?.instrument), nonwaivable: !!T?.nonwaivable,
+    return { id: r.id, label: r.label, domain: r.domain, phase: r.phase, verifier: r.verifier || T?.verifier || 'not stated', method: T?.method || 'not stated in the catalog', evidence: [...(r.evidence || T?.accepts || [])], instrument: !!(r.instrument ?? T?.instrument), nonwaivable: !!T?.nonwaivable,
       status: r.status, why: r.why, missing: r.missing || [], principles: ps.map((p) => p.id), criteria: held(vals, o.values).map(({ id, name, value }) => ({ id, name, value })) };
   }).sort((a, b) => a.phase - b.phase || a.domain.localeCompare(b.domain) || a.id.localeCompare(b.id));
 
@@ -100,7 +100,7 @@ export function generate(room: RoomRecord, o: Options): Generated {
 
   const gaps: string[] = [];
   const unset = [...new Set([...requirements.flatMap((r) => r.values), ...template.flatMap((t) => t.criteria)].filter((v) => v.value == null).map((v) => v.name))];
-  if (unset.length) gaps.push(`${unset.length} ${unset.length === 1 ? 'value this room depends on is' : 'values this room depends on are'} not set by the organisation: ${unset.join('; ')}. Until one is set, its test records a reading and has no pass mark.`);
+  if (unset.length) gaps.push(`${unset.length} ${unset.length === 1 ? 'value this room depends on is' : 'values this room depends on are'} not set by the organization: ${unset.join('; ')}. Until one is set, its test records a reading and has no pass mark.`);
   for (const r of roles) if (!r.has.length) gaps.push(`The room type requires ${r.role} equipment (${r.approved.join(' or ')}) and the room’s record has none.`);
   const missing = [...new Set(template.flatMap((t) => t.missing))]; if (missing.length) gaps.push(`The record lacks facts some tests need: ${missing.join(', ')}.`);
   if (!arch) gaps.push('The room has no room type the engine can act on, so no type package applies.');

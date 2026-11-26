@@ -54,7 +54,7 @@ test('MN-02 it carries no pass mark, names nobody, reproduces no standard and te
   assert.equal(/stated in source|former employer|pain points/i.test(text), false);
   assert.equal(/\b(ladder|climb|scaffold|mains voltage|live wiring|remove the cover|open the (unit|device|amplifier|rack)|protective earth|rigging point)\b/i.test(text), false, 'an instruction that belongs to a qualified installer');
   assert.equal(/certified by|guarantee|compliant with the law|100%/i.test(text), false);
-  assert.match(M.CONTENT_STATUS, /^Draft\./); assert.match(M.CONTENT_STATUS, /not yet reviewed by a practising professional/); assert.match(M.NO_NUMBERS, /carries no pass marks/);
+  assert.match(M.CONTENT_STATUS, /^Draft\./); assert.match(M.CONTENT_STATUS, /not yet reviewed by a practicing professional/); assert.match(M.NO_NUMBERS, /carries no pass marks/);
   // the things the archive got wrong are resolved in the manual’s own words, not repeated
   assert.match(M.principleById('A-05').say, /room’s own microphones never appear in it/); assert.match(M.principleById('V-02').say, /Condition the microphone signal once, then split it/);
   assert.match(M.principleById('V-08').say, /never found by raising the gain of a live microphone until the room rings/); assert.match(M.principleById('V-04').say, /not sent to the loudspeakers nearest that talker/);

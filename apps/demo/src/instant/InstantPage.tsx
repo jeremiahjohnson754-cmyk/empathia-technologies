@@ -92,7 +92,7 @@ export default function InstantPage({ role, params, query, can }: PageProps) {
       {params['room'] && !room ? <NotAPlace /> : null}
       <PageHero compact eyebrow="Instant Room" title={c.name ? `Capture ${c.name}` : 'Capture a space'} product="lite" icon="camera"
         lede="Guided photographs and a few measurements, turned into a plan and a proposed design. On your phone, in the room."
-        meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="p" small tone="muted">Photographs stay on this device</Chip>, <Chip key="n" small tone="muted">Nothing is recognised by a machine</Chip>]} />
+        meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="p" small tone="muted">Photographs stay on this device</Chip>, <Chip key="n" small tone="muted">Nothing is recognized by a machine</Chip>]} />
 
       {!capturing ? <p className="ir-msg ir-msg--info" data-testid="ir-readonly"><Icon name="info" size={18} /><span>You read proposals here. Capturing a space is for the people in the room.</span></p> : <>
         <nav className="ir-steps" aria-label="Steps" data-testid="ir-steps"><ol>{STEPS.map((s, i) => <li key={s.id}><a className="pa-own" href={`${base}?step=${s.id}`} aria-current={s.id === step ? 'step' : undefined} data-step={s.id}><span aria-hidden="true">{i + 1}</span>{s.title}</a></li>)}</ol></nav>
@@ -138,7 +138,7 @@ export default function InstantPage({ role, params, query, can }: PageProps) {
       </Card> : null}
 
       <Notice tone="info">
-        <b>What Instant Room does, and does not.</b> It guides the photographs, checks each for sharpness and light, compares what you record with the room’s record, draws a rectangle of the measured size and studies layouts for it. It does not look at what a photograph shows, read a label, recognise equipment, or build a 3D model: those are not built. The plan is a working drawing, not a survey, and a proposal changes no record.
+        <b>What Instant Room does, and does not.</b> It guides the photographs, checks each for sharpness and light, compares what you record with the room’s record, draws a rectangle of the measured size and studies layouts for it. It does not look at what a photograph shows, read a label, recognize equipment, or build a 3D model: those are not built. The plan is a working drawing, not a survey, and a proposal changes no record.
       </Notice>
     </div>
   );
@@ -153,7 +153,7 @@ function Measure({ c, edit }: { c: Capture; edit: (p: Partial<Capture>) => void 
     <section className="ir-step" aria-labelledby="ir-h-measure" data-testid="ir-measure"><h2 id="ir-h-measure">Measure the room</h2>
       <p className="ir-note">Confirm the room width using an actual measurement. A tape or a laser measure is best; if you pace it out or estimate, say so, and the plan will carry that.</p>
       {(['width', 'length', 'height'] as const).map((k) => <div key={k} className="ir-dim" data-dim={k} data-ok={c[k] ? 'yes' : 'no'}>
-        <div className="ui-field"><label htmlFor={`ir-${k}`}>{LABEL[k]}, in metres</label><input id={`ir-${k}`} type="text" inputMode="decimal" value={f[k].v} onChange={(e) => commit(k, e.target.value, f[k].how)} aria-describedby={why[k] ? `ir-${k}-why` : undefined} aria-invalid={why[k] ? true : undefined} data-testid={`ir-${k}`} autoComplete="off" /></div>
+        <div className="ui-field"><label htmlFor={`ir-${k}`}>{LABEL[k]}, in meters</label><input id={`ir-${k}`} type="text" inputMode="decimal" value={f[k].v} onChange={(e) => commit(k, e.target.value, f[k].how)} aria-describedby={why[k] ? `ir-${k}-why` : undefined} aria-invalid={why[k] ? true : undefined} data-testid={`ir-${k}`} autoComplete="off" /></div>
         <div className="ui-field"><label htmlFor={`ir-${k}-how`}>How it was found</label><select id={`ir-${k}-how`} value={f[k].how} onChange={(e) => commit(k, f[k].v, e.target.value as How)} data-testid={`ir-${k}-how`}>{(Object.keys(HOW_WORD) as How[]).map((h) => <option key={h} value={h}>{HOW_WORD[h]}</option>)}</select></div>
         {why[k] ? <p className="ir-why" id={`ir-${k}-why`} role="alert">{why[k]}</p> : null}
       </div>)}
@@ -184,7 +184,7 @@ function PlanView({ plan, name }: { plan: Plan; name: string }) {
   const k = 480 / Math.max(plan.width, 1); const W = 480 + 80; const H = Math.round(plan.length * k) + 70; const X = (x: number) => 40 + x * k; const Y = (y: number) => 34 + y * k;
   return (
     <figure className="ir-plan" data-testid="ir-plan" data-basis={plan.basis} data-markers={plan.markers.length}>
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${name} from above: ${plan.width} metres wide, ${plan.length} metres long, with ${plural(plan.markers.length, 'piece')} of equipment where you said`} preserveAspectRatio="xMidYMid meet">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${name} from above: ${plan.width} meters wide, ${plan.length} meters long, with ${plural(plan.markers.length, 'piece')} of equipment where you said`} preserveAspectRatio="xMidYMid meet">
         <rect className="ir-room" x={X(0)} y={Y(0)} width={plan.width * k} height={plan.length * k} rx="2" />
         <text className="ir-lab" x={X(plan.width / 2)} y={20} textAnchor="middle">Front wall · {plan.width} m</text>
         <text className="ir-lab" x={16} y={Y(plan.length / 2)} textAnchor="middle" transform={`rotate(-90 16 ${Y(plan.length / 2)})`}>{plan.length} m</text>
@@ -207,7 +207,7 @@ function Review({ c, plan, record, role, can, onSave }: { c: Capture; plan: Retu
         <Card title="What the plan assumes" icon="info" sub="Each of these is a guess the drawing depends on." testId="ir-assumptions"><ul className="ir-plain">{plan.ok.assumptions.map((a) => <li key={a}>{a}</li>)}</ul></Card>
         <Card title={record ? `Against the record of ${record.name}` : 'Against the record'} icon="search" sub="Differences for a person to look at. Neither side is taken as right, and the record is not changed." testId="ir-findings">
           {found.length ? <ul className="ir-plain" data-count={found.length}>{found.map((f) => <li key={f.text} data-kind={f.kind}>{f.text}</li>)}</ul> : <p className="ir-note" data-count="0">What you recorded agrees with the record, as far as the two can be compared.</p>}</Card>
-        <Card title="A layout for it" icon="layers" sub="The same study the Space Optimizer runs, on the room you captured. Its scores are modelled from geometry, not measured." testId="ir-study">
+        <Card title="A layout for it" icon="layers" sub="The same study the Space Optimizer runs, on the room you captured. Its scores are modeled from geometry, not measured." testId="ir-study">
           {'why' in input ? <p className="ir-note" data-testid="ir-nostudy">{input.why}</p> : studies ? <>
             <fieldset className="ir-opts"><legend>Choose a layout to propose, or none</legend>
               <label className="ir-opt"><input type="radio" name="ir-option" checked={option === null} onChange={() => setOption(null)} data-option="none" /><span><b>No layout</b><span>Save the plan and what you saw, without proposing where things go.</span></span></label>

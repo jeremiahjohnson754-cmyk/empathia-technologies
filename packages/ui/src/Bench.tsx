@@ -32,7 +32,7 @@ function Ear() {
   const d = Array.from({ length: 201 }, (_x, i) => { const q = 10 ** (Math.log10(20) + (i / 200) * 3); return `${i ? 'L' : 'M'}${round(logX(q, x0, x1), 1)} ${round(Y(Math.min(120, thr(q))), 1)}`; }).join('');
   const toggle = () => { if (osc.current) { try { osc.current.stop(); } catch { /* */ } osc.current = null; setOn(false); return; } const ac = audio(); if (!ac) return; const o = ac.createOscillator(), g = ac.createGain(); g.gain.value = 0.04; o.frequency.value = f; o.connect(g); g.connect(ac.destination); o.start(); osc.current = o; setOn(true); };
   return <>
-    <Stage w={800} h={360} label="Hearing range: the approximate threshold of hearing across frequency, the audible regions in colour, and a marker for the tone you choose.">
+    <Stage w={800} h={360} label="Hearing range: the approximate threshold of hearing across frequency, the audible regions in color, and a marker for the tone you choose.">
       {REGIONS.map((r, i) => { const a = logX(r.lo, x0, x1), b = logX(r.hi, x0, x1); return <g key={r.name}><rect x={a} y={y0} width={b - a} height={y1 - y0} fill={REG_C[r.name]} opacity={0.16} /><T x={(a + b) / 2} y={y0 + (i % 2 ? 32 : 14)} s={r.name} size={12} fill={REG_C[r.name]} anchor="middle" weight={800} /></g>; })}
       {[0, 20, 40, 60, 80, 100, 120].map((v) => <g key={v}><line x1={x0} x2={x1} y1={Y(v)} y2={Y(v)} stroke="#1F2A3D" /><T x={x0 - 8} y={Y(v) + 5} s={v} size={13} fill="#94A3B8" anchor="end" /></g>)}
       {[20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000].map((q) => <T key={q} x={logX(q, x0, x1)} y={y1 + 22} s={fmtHz(q)} size={13} fill="#94A3B8" anchor="middle" />)}
@@ -81,7 +81,7 @@ function Eq() {
   const worst = THIRDS.map((f) => [f, SOURCES[s.src]!.f(f) + eq(f)] as const).sort((a, b) => b[1] - a[1])[0]!;
   const curve = Array.from({ length: 241 }, (_x, i) => { const f = 10 ** (Math.log10(20) + (i / 240) * 3); return `${i ? 'L' : 'M'}${round(logX(f, x0, x1), 1)} ${round(Y(eq(f)), 1)}`; }).join('');
   return <>
-    <Stage w={800} h={380} label="A real-time analyser: ⅓-octave bars coloured by frequency region, and the EQ curve you are shaping.">
+    <Stage w={800} h={380} label="A real-time analyzer: ⅓-octave bars colored by frequency region, and the EQ curve you are shaping.">
       {REGIONS.map((r) => { const a = logX(r.lo, x0, x1), b = logX(r.hi, x0, x1); return <rect key={r.name} x={a} y={y1 + 4} width={b - a - 2} height={10} fill={REG_C[r.name]} />; })}
       {[-24, -12, 0, 12].map((v) => <g key={v}><line x1={x0} x2={x1} y1={Y(v)} y2={Y(v)} stroke={v === 0 ? '#475569' : '#1F2A3D'} /><T x={x0 - 8} y={Y(v) + 5} s={`${v > 0 ? '+' : ''}${v}`} size={13} fill="#94A3B8" anchor="end" /></g>)}
       {[31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000].map((f) => <T key={f} x={logX(f, x0, x1)} y={y1 + 34} s={fmtHz(f)} size={13} fill="#94A3B8" anchor="middle" />)}
@@ -89,12 +89,12 @@ function Eq() {
       <path d={curve} fill="none" stroke="#F4F1E8" strokeWidth={3.5} /><T x={x1} y={20} s={bars ? 'LIVE ANALYSER · what you are hearing' : 'bars = source + EQ · white line = EQ alone'} size={14} anchor="end" weight={800} />
       <T x={10} y={374} s="dB re: flat · ⅓-octave bands · ILLUSTRATIVE sources (FB-05)" size={12} fill="#94A3B8" />
     </Stage>
-    <Read rows={[['loudest band', `${fmtHz(worst[0])} Hz · ${regionOf(worst[0]).name}`], ['what lives there', REG_FEEL[regionOf(worst[0]).name]!], ['high-pass', `${s.hp} Hz · 12 dB/octave`], ['rule of thumb', 'cut narrow, boost wide — and sweep with your ears, confirm with the analyser']]} />
+    <Read rows={[['loudest band', `${fmtHz(worst[0])} Hz · ${regionOf(worst[0]).name}`], ['what lives there', REG_FEEL[regionOf(worst[0]).name]!], ['high-pass', `${s.hp} Hz · 12 dB/octave`], ['rule of thumb', 'cut narrow, boost wide — and sweep with your ears, confirm with the analyzer']]} />
     <label className="ch__field"><span>Source</span><select value={s.src} onChange={(e) => setS({ ...s, src: e.target.value })}>{Object.entries(SOURCES).map(([k, v]) => <option key={k} value={k}>{v.name}</option>)}</select></label>
     <div className="ch__ctl">{([['High-pass', 'hp', 20, 400, 1, 'Hz', true], ['Low shelf freq', 'lsf', 40, 400, 1, 'Hz', true], ['Low shelf gain', 'ls', -12, 12, 0.5, 'dB'], ['Band 1 freq', 'p1f', 60, 12000, 1, 'Hz', true], ['Band 1 gain', 'p1g', -18, 12, 0.5, 'dB'], ['Band 1 Q', 'p1q', 0.3, 16, 0.1, ''], ['Band 2 freq', 'p2f', 60, 16000, 1, 'Hz', true], ['Band 2 gain', 'p2g', -18, 12, 0.5, 'dB'], ['Band 2 Q', 'p2q', 0.3, 16, 0.1, ''], ['High shelf freq', 'hsf', 2000, 16000, 1, 'Hz', true], ['High shelf gain', 'hs', -12, 12, 0.5, 'dB']] as Array<[string, keyof EqS, number, number, number, string, boolean?]>)
       .map(([label, k, min, max, step, unit, log]) => <Slider key={k} label={label} v={s[k] as number} min={min} max={max} step={step} unit={unit} log={log} set={set(k)} />)}</div>
     <p><Button onClick={listen}>{bars ? '■ Stop' : '🔊 Listen through the EQ (pink noise, quiet)'}</Button></p>
-    <p className="ui-meta">The white curve is the EQ alone; the coloured bars are what reaches the listener, band by band, in the colours the Fieldbook uses for the regions of the spectrum. When you listen, the bars become a live analyser of the noise you hear (relative to its 1 kHz band) — your ears and the meter should agree. Try the ringing mic: find it, then cut it with a narrow band.</p>
+    <p className="ui-meta">The white curve is the EQ alone; the colored bars are what reaches the listener, band by band, in the colors the Fieldbook uses for the regions of the spectrum. When you listen, the bars become a live analyzer of the noise you hear (relative to its 1 kHz band) — your ears and the meter should agree. Try the ringing mic: find it, then cut it with a narrow band.</p>
   </>;
 }
 
@@ -121,13 +121,13 @@ function Comp() {
       <rect x={tx} y={ty} width={tw} height={lh} fill="#0B1220" stroke="#334155" /><rect x={tx} y={ty + lh + 24} width={tw} height={60} fill="#0B1220" stroke="#334155" />
       <T x={tx} y={ty + lh + 18} s="gain reduction · 0 (top) to 20 dB (bottom)" size={12} fill="#FCA5A5" />
       <path d={di} fill="none" stroke="#64748B" strokeWidth={2} /><path d={dO} fill="none" stroke="#34D399" strokeWidth={2.5} /><path d={dg} fill="none" stroke="#F87171" strokeWidth={2.5} />
-      <T x={tx} y={26} s="LEVEL OVER 2 s · grey in · green out" size={13} weight={800} /><T x={10} y={392} s="Feed-forward compressor model, dB domain, soft knee · ILLUSTRATIVE programme (FB-05)" size={12} fill="#94A3B8" />
+      <T x={tx} y={26} s="LEVEL OVER 2 s · gray in · green out" size={13} weight={800} /><T x={10} y={392} s="Feed-forward compressor model, dB domain, soft knee · ILLUSTRATIVE program (FB-05)" size={12} fill="#94A3B8" />
     </Stage>
     <Read rows={[['ratio', `${s.ratio}:1 above ${s.thr} dBFS`], ['most gain reduction', `${round(maxGR, 1)} dB`], ['peaks', `in ${round(pkIn, 1)} → out ${round(pkOut, 1)} dBFS`], ['attack / release', `${s.att} ms / ${s.rel} ms`], ['listen for', maxGR > 10 ? 'pumping, lost punch — too much' : maxGR < 2 ? 'barely working' : 'steadier level, natural attack']]} />
-    <label className="ch__field"><span>Programme</span><select value={s.prog} onChange={(e) => setS({ ...s, prog: e.target.value })}><option value="vocal">A sung phrase (loud and soft syllables)</option><option value="drums">Drum hits (fast peaks)</option><option value="bass">Bass guitar (uneven notes)</option></select></label>
+    <label className="ch__field"><span>Program</span><select value={s.prog} onChange={(e) => setS({ ...s, prog: e.target.value })}><option value="vocal">A sung phrase (loud and soft syllables)</option><option value="drums">Drum hits (fast peaks)</option><option value="bass">Bass guitar (uneven notes)</option></select></label>
     <div className="ch__ctl">{([['Threshold', 'thr', -50, 0, 1, 'dBFS'], ['Ratio', 'ratio', 1, 20, 0.5, ':1'], ['Knee width', 'knee', 0, 20, 1, 'dB'], ['Attack', 'att', 0.5, 100, 0.5, 'ms'], ['Release', 'rel', 20, 1000, 5, 'ms'], ['Makeup gain', 'mk', 0, 20, 0.5, 'dB']] as Array<[string, string, number, number, number, string]>)
       .map(([label, k, min, max, step, unit]) => <Slider key={k} label={label} v={(s as Record<string, number | string>)[k] as number} min={min} max={max} step={step} unit={unit} set={set(k)} />)}</div>
-    <p className="ui-meta">Above the threshold, every <i>ratio</i> dB in becomes 1 dB out. Attack is how fast it reduces gain; release how fast it lets go. The Fieldbook’s starting points (a vocal around 3:1 with 3–6 dB of reduction) are starting points — the programme and the room decide.</p>
+    <p className="ui-meta">Above the threshold, every <i>ratio</i> dB in becomes 1 dB out. Attack is how fast it reduces gain; release how fast it lets go. The Fieldbook’s starting points (a vocal around 3:1 with 3–6 dB of reduction) are starting points — the program and the room decide.</p>
   </>;
 }
 
@@ -162,10 +162,10 @@ function Shutter() {
 
 // ------------------------------------------------------------------------------------------------------------ 5 · beams and fixture types
 const FIXTURES = [
-  { id: 'par', name: 'PAR (fixed lens)', beam: 25, field: 40, range: '≈10–60° by lens', edge: 'soft, oval or round', use: 'colour washes, back light, uplight' },
+  { id: 'par', name: 'PAR (fixed lens)', beam: 25, field: 40, range: '≈10–60° by lens', edge: 'soft, oval or round', use: 'color washes, back light, uplight' },
   { id: 'fresnel', name: 'Fresnel (spot ↔ flood)', beam: 30, field: 50, range: '≈15–60° focus range', edge: 'soft edge, blends well', use: 'key and fill on faces, even washes' },
   { id: 'ellip', name: 'Ellipsoidal / profile', beam: 26, field: 30, range: 'fixed barrels, e.g. 19°, 26°, 36°, 50°', edge: 'hard edge; shutters and gobos shape it', use: 'front light that stays off walls and screens' },
-  { id: 'wash', name: 'Moving head wash', beam: 20, field: 35, range: '≈10–50° zoom', edge: 'soft', use: 'colour, looks, re-aimable washes' },
+  { id: 'wash', name: 'Moving head wash', beam: 20, field: 35, range: '≈10–50° zoom', edge: 'soft', use: 'color, looks, re-aimable washes' },
   { id: 'spot', name: 'Moving head spot', beam: 18, field: 24, range: '≈12–35° zoom', edge: 'sharp, gobos and iris', use: 'specials, texture, pickups' },
   { id: 'beam', name: 'Moving head beam', beam: 3, field: 5, range: '≈2–5°', edge: 'tight shaft of light', use: 'mid-air effects in haze' },
   { id: 'batten', name: 'LED batten / strip', beam: 40, field: 60, range: 'wide, linear', edge: 'soft line of light', use: 'cyc and backdrop washes, uplight' }];
@@ -176,7 +176,7 @@ function Beam() {
   const sx = 40, fy = 160, L = Math.min(300, 125 / Math.tan(rad(Math.max(field, 1) / 2))), ex = sx + L, h = (a: number) => Math.tan(rad(a / 2)) * (ex - sx), hf = h(field), hb = h(s.beam);
   const py = 314, pc = 400, psc = Math.min(22, 300 / Math.max(1, s.n * s.gap + Df), 84 / Math.max(0.1, Df))   /* the pools stay on the floor strip, above the footnote */, even = s.gap <= Db * 1.05 && s.gap >= Db * 0.6;
   return <>
-    <Stage w={800} h={420} label="Beam geometry: a fixture’s cone reaching a stage at the throw distance, with the beam and field diameters, the illuminance at the centre, and several fixtures overlapping on the floor.">
+    <Stage w={800} h={420} label="Beam geometry: a fixture’s cone reaching a stage at the throw distance, with the beam and field diameters, the illuminance at the center, and several fixtures overlapping on the floor.">
       <T x={20} y={26} s={`SIDE VIEW · throw ${s.d} m (angles true, length not to scale)`} size={14} weight={800} />
       <path d={`M${sx} ${fy} L${ex} ${fy - hf} L${ex} ${fy + hf} Z`} fill="#FDE68A" opacity={0.18} /><path d={`M${sx} ${fy} L${ex} ${fy - hb} L${ex} ${fy + hb} Z`} fill="#FDE68A" opacity={0.38} />
       <rect x={sx - 24} y={fy - 14} width={26} height={28} rx={4} fill="#334155" stroke="#94A3B8" /><line x1={ex} x2={ex} y1={40} y2={260} stroke="#94A3B8" strokeWidth={3} />
@@ -184,13 +184,13 @@ function Beam() {
       <T x={20} y={286} s={`ON THE STAGE FLOOR · ${s.n} fixtures, ${s.gap} m apart`} size={14} weight={800} />
       {Array.from({ length: s.n }, (_x, k) => { const cx = pc + (k - (s.n - 1) / 2) * s.gap * psc; return <g key={k}><circle cx={cx} cy={py + 40} r={(Df / 2) * psc} fill="#FDE68A" opacity={0.14} /><circle cx={cx} cy={py + 40} r={(Db / 2) * psc} fill="#FDE68A" opacity={0.28} stroke="#FBBF24" /></g>; })}
       <T x={780} y={300} s={even ? 'beams meet near their 50% edges → an even wash' : s.gap > Db * 1.05 ? 'gaps between beams → dark patches' : 'heavy overlap → hot spots'} size={13} fill={even ? '#6EE7B7' : '#FCA5A5'} anchor="end" />
-      <T x={10} y={414} s="Beam angle: where intensity falls to 50% of centre · field angle: 10% · uniform-cone estimate for lux · ILLUSTRATIVE (FB-05)" size={12} fill="#94A3B8" />
+      <T x={10} y={414} s="Beam angle: where intensity falls to 50% of center · field angle: 10% · uniform-cone estimate for lux · ILLUSTRATIVE (FB-05)" size={12} fill="#94A3B8" />
     </Stage>
-    <Read rows={[['fixture', `${f.name} · ${f.range}`], ['edge', f.edge], ['used for', f.use], ['beam ⌀ = 2 × d × tan(θ ÷ 2)', `${round(Db, 2)} m`], ['centre intensity (approx.)', `${Math.round(I)} cd`], ['illuminance E = I ÷ d²', `${Math.round(E)} lux ≈ ${round(E / 10.764, 1)} fc`]]} />
+    <Read rows={[['fixture', `${f.name} · ${f.range}`], ['edge', f.edge], ['used for', f.use], ['beam ⌀ = 2 × d × tan(θ ÷ 2)', `${round(Db, 2)} m`], ['center intensity (approx.)', `${Math.round(I)} cd`], ['illuminance E = I ÷ d²', `${Math.round(E)} lux ≈ ${round(E / 10.764, 1)} fc`]]} />
     <label className="ch__field"><span>Fixture type</span><select value={s.fx} onChange={(e) => { const x = FIXTURES.find((q) => q.id === e.target.value)!; setS({ ...s, fx: x.id, beam: x.beam, field: x.field }); }}>{FIXTURES.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></label>
     <div className="ch__ctl"><Slider label="Throw distance" v={s.d} min={2} max={30} step={0.5} unit="m" set={set('d')} /><Slider label="Beam angle" v={s.beam} min={2} max={70} step={1} unit="°" set={set('beam')} /><Slider label="Field angle" v={field} min={3} max={90} step={1} unit="°" set={set('field')} />
       <Slider label="Light output" v={s.lm} min={500} max={30000} step={100} unit="lumens" set={set('lm')} /><Slider label="Fixtures in the row" v={s.n} min={1} max={5} step={1} set={set('n')} /><Slider label="Spacing" v={s.gap} min={0.5} max={8} step={0.5} unit="m" set={set('gap')} /></div>
-    <p className="ui-meta">Double the throw and the pool doubles in width but the light on it falls to a quarter. The same lumens in a narrower beam make a brighter pool. Real fixtures publish photometric data — beam and field angles and candela at centre; use it, not these typical ranges.</p>
+    <p className="ui-meta">Double the throw and the pool doubles in width but the light on it falls to a quarter. The same lumens in a narrower beam make a brighter pool. Real fixtures publish photometric data — beam and field angles and candela at center; use it, not these typical ranges.</p>
   </>;
 }
 
@@ -203,28 +203,28 @@ export function cctRGB(K: number): [number, number, number] {   // widely used a
 function Colour() {
   const [s, setS] = useState({ k: 3200, k2: 5600, r: 255, g: 180, b: 60 }); const set = (k: string) => (v: number) => setS({ ...s, [k]: v }); const shift = Math.round(1e6 / s.k2 - 1e6 / s.k), cx = 660, cy = 205, rr = 62;
   return <>
-    <Stage w={800} h={360} label="Colour temperature swatches with their mired values, and three coloured lights overlapping to show additive mixing.">
-      <T x={20} y={26} s="WHITE IS NOT ONE COLOUR · colour temperature (kelvin)" size={14} weight={800} />
+    <Stage w={800} h={360} label="Color temperature swatches with their mired values, and three colored lights overlapping to show additive mixing.">
+      <T x={20} y={26} s="WHITE IS NOT ONE COLOUR · color temperature (kelvin)" size={14} weight={800} />
       {Array.from({ length: 40 }, (_x, i) => <rect key={i} x={20 + i * 19} y={40} width={19} height={40} fill={`rgb(${cctRGB(1800 + i * 210).join(',')})`} />)}
       {[2000, 3200, 4300, 5600, 6500, 9000].map((K) => <T key={K} x={20 + ((K - 1800) / 210) * 19} y={98} s={`${K} K`} size={12} anchor="middle" />)}
       {([['A', s.k, 30], ['B', s.k2, 280]] as const).map(([n, K, x]) => <g key={n}><rect x={x} y={120} width={220} height={90} rx={10} fill={`rgb(${cctRGB(K).join(',')})`} /><T x={x + 110} y={234} s={`${n} · ${K} K · ${Math.round(1e6 / K)} mired`} size={14} fill="#E2E8F0" anchor="middle" weight={800} /></g>)}
       <T x={30} y={266} s={`A → B needs a ${shift > 0 ? '+' : ''}${shift} mired shift`} size={15} fill="#FDE68A" weight={800} /><T x={30} y={288} s={`(${shift > 0 ? 'a warming' : 'a cooling'} filter or setting)`} size={14} fill="#FDE68A" />
-      <T x={30} y={314} s="mired = 1,000,000 ÷ kelvin" size={13} fill="#94A3B8" /><T x={30} y={332} s="equal mired steps look like equal colour steps" size={13} fill="#94A3B8" />
+      <T x={30} y={314} s="mired = 1,000,000 ÷ kelvin" size={13} fill="#94A3B8" /><T x={30} y={332} s="equal mired steps look like equal color steps" size={13} fill="#94A3B8" />
       <rect x={545} y={110} width={235} height={220} fill="#000" />
       <g className="bench__screen">{([[`rgb(${s.r},0,0)`, cx, cy - 40], [`rgb(0,${s.g},0)`, cx - 45, cy + 30], [`rgb(0,0,${s.b})`, cx + 45, cy + 30]] as const).map(([c, x, y]) => <circle key={c} cx={x} cy={y} r={rr} fill={c} className="bench__light" />)}</g>
-      <T x={662} y={322} s={`R ${s.r} · G ${s.g} · B ${s.b}`} size={13} fill="#E2E8F0" anchor="middle" /><T x={10} y={354} s="Swatches approximate blackbody colour on your screen — not a measurement (FB-05)" size={12} fill="#94A3B8" />
+      <T x={662} y={322} s={`R ${s.r} · G ${s.g} · B ${s.b}`} size={13} fill="#E2E8F0" anchor="middle" /><T x={10} y={354} s="Swatches approximate blackbody color on your screen — not a measurement (FB-05)" size={12} fill="#94A3B8" />
     </Stage>
     <Read rows={[['A', `${s.k} K ≈ ${s.k < 3500 ? 'warm (tungsten-like)' : s.k < 5000 ? 'neutral' : 'cool (daylight-like)'}`], ['mired shift A→B', `${shift > 0 ? '+' : ''}${shift}`], ['mixing', 'red + green + blue light add toward white; paint subtracts'], ['on camera', 'match all sources to one white balance; RGB-only white can make skin look odd — RGBW / RGBAL fixtures render it better']]} />
     <div className="ch__ctl"><Slider label="Source A" v={s.k} min={1800} max={10000} step={50} unit="K" set={set('k')} /><Slider label="Source B (target)" v={s.k2} min={1800} max={10000} step={50} unit="K" set={set('k2')} />
       <Slider label="Red" v={s.r} min={0} max={255} step={1} set={set('r')} /><Slider label="Green" v={s.g} min={0} max={255} step={1} set={set('g')} /><Slider label="Blue" v={s.b} min={0} max={255} step={1} set={set('b')} /></div>
-    <p className="ui-meta">Warm light (low kelvin) looks orange; daylight (5,600 K and up) looks blue beside it. Cameras need every source on one colour temperature — or a deliberate choice not to. Mireds make the arithmetic of filters and settings add up.</p>
+    <p className="ui-meta">Warm light (low kelvin) looks orange; daylight (5,600 K and up) looks blue beside it. Cameras need every source on one color temperature — or a deliberate choice not to. Mireds make the arithmetic of filters and settings add up.</p>
   </>;
 }
 
 export const BENCH: Array<{ id: string; title: string; icon: string; C: () => JSX.Element }> = [
-  { id: 'ear', title: 'The ear — what we can hear', icon: '👂', C: Ear }, { id: 'eq', title: 'EQ and the analyser — regions in colour', icon: '🎚', C: Eq },
+  { id: 'ear', title: 'The ear — what we can hear', icon: '👂', C: Ear }, { id: 'eq', title: 'EQ and the analyzer — regions in color', icon: '🎚', C: Eq },
   { id: 'comp', title: 'Compression — threshold, ratio, attack, release', icon: '🗜', C: Comp }, { id: 'shutter', title: 'Shutter, frame rate and flicker', icon: '🎥', C: Shutter },
-  { id: 'beam', title: 'Light — beam sizes and fixture types', icon: '💡', C: Beam }, { id: 'color', title: 'Colour temperature and mixing', icon: '🌈', C: Colour }];
+  { id: 'beam', title: 'Light — beam sizes and fixture types', icon: '💡', C: Beam }, { id: 'color', title: 'Color temperature and mixing', icon: '🌈', C: Colour }];
 /** The bench: six demos, one open at a time. */
 export function Bench() {
   const [open, setOpen] = useState<string | null>(null); const D = BENCH.find((b) => b.id === open);

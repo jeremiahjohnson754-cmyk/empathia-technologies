@@ -34,7 +34,7 @@ export type SourceAuthority = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 export const AUTHORITIES: Readonly<Record<SourceAuthority, string>> = {
   1: 'Law or mandatory regulation', 2: 'Licensed, current standard from a standards body', 3: 'Official manufacturer documentation',
   4: 'Approved organisational engineering standard', 5: 'Verified laboratory or field measurement', 6: 'Expert-reviewed internal procedure',
-  7: 'Documented operational evidence', 8: 'Model or simulation, labelled as such', 9: 'Unverified community submission', 10: 'Unreviewed AI-generated suggestion',
+  7: 'Documented operational evidence', 8: 'Model or simulation, labeled as such', 9: 'Unverified community submission', 10: 'Unreviewed AI-generated suggestion',
 };
 
 export type ContentType = 'concept' | 'term' | 'reference-card' | 'diagram' | 'calculation' | 'decision-tree' | 'procedure' | 'case-study' | 'failure-pattern' | 'reference-architecture' | 'lesson' | 'exercise' | 'assessment' | 'standard' | 'chapter';

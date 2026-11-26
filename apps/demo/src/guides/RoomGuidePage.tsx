@@ -72,7 +72,7 @@ export default function RoomGuidePage({ role, params }: PageProps) {
                 {s.steps.some((x) => x.uses.length) ? <button type="button" className="ui-btn ui-btn--sm gd-show" aria-pressed={active === s.id} onClick={() => setActive(active === s.id ? null : s.id)} data-act="show">{active === s.id ? 'Shown on the plan' : 'Show on the plan'}</button> : null}</header>
               <p className="gd-lead">{s.lead}</p>
               <ol className="gd-steps">{s.steps.map((x, i) => <li key={i}><p>{x.do}</p>{x.why ? <p className="gd-why">{x.why}</p> : null}</li>)}</ol>
-              {s.id === 'controls' && hasPanel && opens(`#/control/${o.id}`) ? <p className="gd-link"><a className="ui-btn" href={`#/control/${o.id}`} data-testid="guide-practise">Practise on this room’s panel</a> <span className="gd-note">A simulated panel: nothing in a real room changes.</span></p> : null}
+              {s.id === 'controls' && hasPanel && opens(`#/control/${o.id}`) ? <p className="gd-link"><a className="ui-btn" href={`#/control/${o.id}`} data-testid="guide-practise">Practice on this room’s panel</a> <span className="gd-note">A simulated panel: nothing in a real room changes.</span></p> : null}
               {s.id === 'help' ? <p className="gd-link">{opens(`#/here/${o.id}`) ? <a className="ui-btn ui-btn--primary" href={`#/here/${o.id}?step=wrong`} data-testid="guide-help">Something is not working here</a> : null} {opens('#/request') ? <a className="ui-btn" href="#/request">Ask for something</a> : null}</p> : null}
             </section>))}
         </div>

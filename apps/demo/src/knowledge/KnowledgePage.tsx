@@ -24,7 +24,7 @@ import { HOME_TENANT, OTHER_TENANT, TENANTS, tenantName, type LedgerObject } fro
 const NAME_KEY = 'empathia.demo.knowledge.reviewer';
 /** how many results a list shows before it is asked for the rest: a phone is not handed ninety cards */
 const FIRST = 12;
-const RIGHTS_WORD: Record<string, string> = { 'empathia-original': 'Written by Empathia', 'founder-owned': 'Owned by the founder', 'licensed-reproduction': 'Reproduced under licence', 'metadata-only': 'Title and number only: the text is not held here', 'tenant-owned': 'Owned by the customer', 'tenant-shared-with-consent': 'Shared by a customer, with consent', unknown: 'Rights not known' };
+const RIGHTS_WORD: Record<string, string> = { 'empathia-original': 'Written by Empathia', 'founder-owned': 'Owned by the founder', 'licensed-reproduction': 'Reproduced under license', 'metadata-only': 'Title and number only: the text is not held here', 'tenant-owned': 'Owned by the customer', 'tenant-shared-with-consent': 'Shared by a customer, with consent', unknown: 'Rights not known' };
 const toneOf = (o: LedgerObject): 'ok' | 'warn' | 'muted' | 'info' => (o.zone === 5 ? 'warn' : isFact(o) ? 'ok' : o.state === 'SUPERSEDED' || o.state === 'ARCHIVED' ? 'muted' : 'info');
 const plural = (n: number, one: string, more = `${one}s`) => `${n} ${n === 1 ? one : more}`;
 const remembered = () => { try { return sessionStorage.getItem(NAME_KEY) || ''; } catch { return ''; } };

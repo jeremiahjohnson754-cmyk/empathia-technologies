@@ -21,9 +21,9 @@ const HELP: Record<string, [string, string]> = {
   plot: ['The lighting plot', 'Drag a fixture between hanging positions. Front positions light faces; back positions draw a rim; side booms shape; the floor washes the back wall.'],
   addr: ['DMX start address', 'A universe has 512 channels. A fixture takes its start address and the next (footprint − 1). The next fixture must start after it ends.'],
   level: ['Intensity', 'How bright the fixture is, 0–100 %. Faces for camera want about 800–1600 lux.'],
-  cct: ['Colour temperature', 'Warm (low kelvin) to cool (high kelvin). Compare two whites in mireds (1 000 000 ÷ K): more than about 300 K apart reads as two colours on camera.'],
+  cct: ['Color temperature', 'Warm (low kelvin) to cool (high kelvin). Compare two whites in mireds (1 000 000 ÷ K): more than about 300 K apart reads as two colors on camera.'],
   zoom: ['Beam angle (zoom)', 'A narrower beam puts the same light into a smaller circle: more lux on the face, less spill. Beam diameter = 2 × distance × tan(angle ÷ 2).'],
-  hue: ['Colour', 'The colour a wash fixture mixes from its red, green, blue and white emitters.'],
+  hue: ['Colour', 'The color a wash fixture mixes from its red, green, blue and white emitters.'],
   target: ['Focus', 'What the fixture is aimed at.'],
 };
 
@@ -43,8 +43,8 @@ export function LightLab({ embedded, onResult }: { embedded?: boolean; onResult?
   const P = rig.hung.find((x) => x === a.key); const Pd = P ? Math.hypot(...(['x', 'y', 'z'] as const).map((k) => L.POSITIONS.find((p) => p.key === P.pos)![k] - L.SUBJECTS[0]![k])) : 0;
   return <div className={`mx lx${embedded ? ' mx--embedded' : ''}`} data-testid="lightlab" data-look={look} data-score={sc}>
     <header className="mx-head"><div><p className="mx-kicker">SIGNAL flagship lab · Lighting · Season 1, Episode 5</p>{embedded ? <h2 className="mx-title">Light the Stage</h2> : <h1 className="mx-title">Light the Stage</h1>}
-      <p className="mx-lede">Hang the fixtures, patch them in one DMX universe, aim and zoom them, set the colour and the level, and light a sermon and a worship set for the room and the camera. Drag fixtures on the plot; the beams, the faces and the screen answer at once.</p>
-      <p className="mx-note">A teaching model: inverse-square and cosine laws, beam angles and colour temperature in mireds. Not a measurement, not any maker’s fixture. Results stay in this browser.</p></div>
+      <p className="mx-lede">Hang the fixtures, patch them in one DMX universe, aim and zoom them, set the color and the level, and light a sermon and a worship set for the room and the camera. Drag fixtures on the plot; the beams, the faces and the screen answer at once.</p>
+      <p className="mx-note">A teaching model: inverse-square and cosine laws, beam angles and color temperature in mireds. Not a measurement, not any maker’s fixture. Results stay in this browser.</p></div>
       <div className="mx-score" data-testid="lx-score"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" className="mx-score__bg" /><circle cx="18" cy="18" r="15.5" className="mx-score__fg" style={{ strokeDasharray: `${sc * 0.974} 100`, stroke: sc >= 75 ? '#22c55e' : sc >= 50 ? '#f59e0b' : '#ef4444' }} /></svg><b>{sc}</b><span>look score</span></div></header>
     <div className="mx-scenes" role="group" aria-label="Looks">{L.LOOKS.map((x) => <button key={x.key} type="button" className={`mx-scene${look === x.key ? ' on' : ''}${(st.best[x.key] || 0) >= 75 ? ' done' : ''}`} aria-pressed={look === x.key} onClick={() => setLook(x.key)} data-testid={`lx-look-${x.key}`} title={x.says}>{x.label}{st.best[x.key] != null ? <em>{st.best[x.key]}</em> : null}</button>)}
       <button type="button" className="mx-btn mx-btn--go" onClick={check} data-testid="lx-check">Check this look</button><button type="button" className="mx-btn" onClick={() => { save(fresh()); setSel(1); setSaid('The rig is back as it was handed over.'); }}>Reset rig</button></div>
@@ -57,7 +57,7 @@ export function LightLab({ embedded, onResult }: { embedded?: boolean; onResult?
           <b style={{ color: `rgb(${colorOf(x).join(',')})` }}>#{x.id} {T.label}</b><span className="mx-dim">{L.POSITIONS.find((p) => p.key === x.pos)!.label}</span>
           <Knob label={`#${x.id} start address`} value={x.addr} min={1} max={512} onChange={(v) => upd(x.id, { addr: v })} fmt={(v) => `${v}–${v + T.footprint - 1}`} color={bad ? '#ef4444' : '#22c55e'} onHelp={() => setHelp('addr')} testId={`lx-addr-${x.id}`} />
           <Knob label={`#${x.id} intensity`} value={x.level} min={0} max={100} onChange={(v) => setLevel(x.id, v)} fmt={(v) => `${v}%`} color="#f59e0b" onHelp={() => setHelp('level')} testId={`lx-level-${x.id}`} />
-          {T.color !== 'rgb' && <Knob label={`#${x.id} colour temperature`} value={x.cct} min={2700} max={6500} step={100} onChange={(v) => upd(x.id, { cct: v })} fmt={(v) => `${v} K`} color={`rgb(${kelvinRgb(x.cct).join(',')})`} onHelp={() => setHelp('cct')} />}
+          {T.color !== 'rgb' && <Knob label={`#${x.id} color temperature`} value={x.cct} min={2700} max={6500} step={100} onChange={(v) => upd(x.id, { cct: v })} fmt={(v) => `${v} K`} color={`rgb(${kelvinRgb(x.cct).join(',')})`} onHelp={() => setHelp('cct')} />}
           {T.color !== 'white' && <Knob label={`#${x.id} colour`} value={x.hue} min={0} max={359} onChange={(v) => upd(x.id, { hue: v })} fmt={(v) => `${v}°`} color={`hsl(${x.hue} 90% 55%)`} onHelp={() => setHelp('hue')} />}
           {T.zoom && <Knob label={`#${x.id} zoom`} value={x.zoom} min={T.zoom[0]} max={T.zoom[1]} onChange={(v) => upd(x.id, { zoom: v })} fmt={(v) => `${v}°`} color="#38bdf8" onHelp={() => setHelp('zoom')} testId={`lx-zoom-${x.id}`} />}
           <label className="lx-sel"><span className="mx-dim">focus</span><select value={x.target} onChange={(e) => { upd(x.id, { target: e.target.value }); setHelp('target'); }} data-testid={`lx-target-${x.id}`}>{L.SUBJECTS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}</select></label>
@@ -69,7 +69,7 @@ export function LightLab({ embedded, onResult }: { embedded?: boolean; onResult?
         {h && <div><dt>Candela <code>I = lm / 2π(1 − cos(θ/2))</code></dt><dd>{L.FIXTURES[h.kind].lumens} lm at {L.beamOf(h)}° → {Math.round(L.candela(L.FIXTURES[h.kind].lumens, L.beamOf(h)))} cd at full</dd></div>}
         {P && <div><dt>Illuminance (key) <code>E = I cos α / d²</code></dt><dd>{Math.round(Pd * 10) / 10} m to the face → {Math.round(L.lux(P, L.SUBJECTS[0]!))} lux at {P.level}%</dd></div>}
         {P && <div><dt>Beam diameter <code>D = 2 d tan(θ/2)</code></dt><dd>{Math.round(L.beamDiameter(Pd, L.beamOf(P)) * 10) / 10} m wide at the pastor</dd></div>}
-        <div><dt>Colour match <code>Δ mired = 10⁶/K₁ − 10⁶/K₂</code></dt><dd>{a.cctGap} K apart between the front whites</dd></div></dl></section>
+        <div><dt>Color match <code>Δ mired = 10⁶/K₁ − 10⁶/K₂</code></dt><dd>{a.cctGap} K apart between the front whites</dd></div></dl></section>
       <section className="mx-help" aria-live="polite" data-testid="lx-help"><h3>{HELP[help]![0]}</h3><p>{HELP[help]![1]}</p>{h && <p className="mx-dim">{L.FIXTURES[h.kind].says}</p>}</section></div>
   </div>;
 }

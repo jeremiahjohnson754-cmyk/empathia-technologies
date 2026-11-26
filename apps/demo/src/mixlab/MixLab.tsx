@@ -33,7 +33,7 @@ export const HELP: Record<string, [string, string]> = {
   streambus: ['Stream bus', 'The level of the stream mix. Aim for about −16 LUFS, with peaks no higher than −1 dBTP.'],
   layer: ['Fader layers', 'A 32-channel console shows its channels eight at a time. Flip layers to reach the rest.'],
   delays: ['Fill delays', 'A loudspeaker nearer the listener than the mains is heard first unless it waits. Delay = the extra distance ÷ 343 m/s, plus about 10 ms so the mains still lead.'],
-  room: ['Room view', 'Waves leave each loudspeaker group in its colour; the seats glow by sound pressure (blue quiet, red loud). The yellow ring is the critical distance. Select a seat to read it.'],
+  room: ['Room view', 'Waves leave each loudspeaker group in its color; the seats glow by sound pressure (blue quiet, red loud). The yellow ring is the critical distance. Select a seat to read it.'],
   fx: ['Effects rack', 'Reverb and delay, each with its own return to the room and to the stream.'],
 };
 

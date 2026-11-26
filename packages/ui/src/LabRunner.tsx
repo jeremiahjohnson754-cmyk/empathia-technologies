@@ -130,7 +130,7 @@ function useEq(L: X.EqLab): Sim {
     <svg className="lab__svg" viewBox="0 0 400 60" role="img" aria-label={`Picture at ${L.dt} ms; sound at ${s.delay} ms`}><rect className="lab__win" x={10 + (((L.dt || 0) - (L.early ?? 15)) / eqMax(L)) * 380} y="10" width={(((L.early ?? 15) + (L.late ?? 45)) / eqMax(L)) * 380} height="40" /><line className="lab__pic" x1={10 + ((L.dt || 0) / eqMax(L)) * 380} x2={10 + ((L.dt || 0) / eqMax(L)) * 380} y1="5" y2="55" /><line className="lab__snd" x1={10 + (s.delay / eqMax(L)) * 380} x2={10 + (s.delay / eqMax(L)) * 380} y1="5" y2="55" /></svg>
     <div className="lab__ctl">{field('delay', `Delay on the ${L.delayOn || 'audio'}`, 0, eqMax(L), 0.01, 'ms')}</div></> : <>
     <svg className="lab__svg" viewBox={`0 0 ${W} ${Hh}`} role="img" aria-label={band ? 'Frequency response with the ringing peak and your EQ band' : 'Frequency response of two arrivals with your delay'}><line className="lab__zero" x1="10" x2={W - 10} y1={fy(0)} y2={fy(0)} /><polyline className="lab__before" points={pts((f) => X.eqMeasured(L, X.eqInit(L), f))} /><polyline className="lab__after" points={pts((f) => X.eqHeard(L, s, f))} /></svg>
-    <p className="ui-meta">Grey: before. Coloured: what the listener hears now.</p>
+    <p className="ui-meta">Gray: before. Colored: what the listener hears now.</p>
     <div className="lab__ctl">{band && <>{field('f', 'Band frequency', 20, 20000, 1, 'Hz')}{field('g', 'Band gain', -18, 6, 0.5, 'dB')}{field('q', 'Band Q (width)', 0.3, 16, 0.1, '')}</>}{L.mode === 'align' && field('delay', `Delay on the ${L.delayOn || 'fill'}`, 0, eqMax(L), 0.01, 'ms')}</div></>;
   return { check: () => X.eqCheck(L, s), view };
 }

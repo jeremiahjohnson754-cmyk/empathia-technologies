@@ -28,7 +28,7 @@ export const STEPS: readonly Step[] = ['OPEN', 'ACKNOWLEDGED', 'DISPATCHED', 'FI
 export const FAULTS = {
   'ribbon-east': { title: 'East ribbon board shows no picture', room: 'STA-LED', system: 'ribbons', severity: 'major', effect: 'DEGRADED', publicNote: null, owner: 'technology' },
   'pa-upper': { title: 'Upper bowl announcements are not heard in sections 301 to 312', room: 'STA-PA', system: 'pa', severity: 'critical', effect: 'DEGRADED', publicNote: 'Announcements in the upper north sections are also shown on the video boards.', owner: 'technology' },
-  'program-return': { title: 'Programme return to the commentary booths has dropped', room: 'STA-BCR', system: 'broadcast', severity: 'critical', effect: 'DEGRADED', publicNote: null, owner: 'broadcast' },
+  'program-return': { title: 'Program return to the commentary booths has dropped', room: 'STA-BCR', system: 'broadcast', severity: 'critical', effect: 'DEGRADED', publicNote: null, owner: 'broadcast' },
   'suite-9-display': { title: 'Suite 9 displays show no television picture', room: 'STA-STE-009', system: 'suites', severity: 'minor', effect: 'DEGRADED', publicNote: null, owner: 'technology' },
   'gate-c-scanners': { title: 'Ticket scanners at Gate C are offline', room: 'STA-GATE-C', system: 'gates', severity: 'major', effect: 'DEGRADED', publicNote: 'Gate C is slow. Gate D, next along, has a step-free lane and a shorter queue.', owner: 'gates' },
   // The Critical Signal (founder, 10 Nov 2026): one camera feed lost in the broadcast chain. Its room is the camera platform's own estate
@@ -37,7 +37,7 @@ export const FAULTS = {
 } as const satisfies Record<string, { title: string; room: string; system: SystemKey; severity: Severity; effect: 'DEGRADED' | 'DOWN'; publicNote: string | null; owner: Team }>;
 export type FaultId = keyof typeof FAULTS;
 export type SystemKey = 'pa' | 'boards' | 'ribbons' | 'broadcast' | 'suites' | 'gates';
-export const SYSTEM_LABEL: Record<SystemKey, string> = { pa: 'Bowl public address', boards: 'Main video boards', ribbons: 'Ribbon boards', broadcast: 'Broadcast programme chain', suites: 'Suite television', gates: 'Gate ticket scanning' };
+export const SYSTEM_LABEL: Record<SystemKey, string> = { pa: 'Bowl public address', boards: 'Main video boards', ribbons: 'Ribbon boards', broadcast: 'Broadcast program chain', suites: 'Suite television', gates: 'Gate ticket scanning' };
 /** `notes` is present only when a step was recorded with words (what was done, the evidence a check named): a step taken without them leaves the record exactly as before. */
 export interface Incident { id: string; fault: FaultId; openedIn: Phase; step: Step; by: Partial<Record<Step, string>>; notes?: Partial<Record<Step, string>> }
 export interface Entry { phase: Phase; text: string }
@@ -64,7 +64,7 @@ export function holds(g: GameDay): string[] {
 export type Result = { ok: true; state: GameDay } | { ok: false; why: string };
 export function advance(g: GameDay): Result {
   const h = holds(g); if (h.length) return { ok: false, why: `Held: ${h.join('; ')}.` };
-  const next = PHASES[PHASES.indexOf(g.phase) + 1]!; return { ok: true, state: { ...g, phase: next, log: [...g.log, { phase: next, text: `${PHASE[next].label}. Programme feed ${PHASE[next].program.toLowerCase()}.` }] } };
+  const next = PHASES[PHASES.indexOf(g.phase) + 1]!; return { ok: true, state: { ...g, phase: next, log: [...g.log, { phase: next, text: `${PHASE[next].label}. Program feed ${PHASE[next].program.toLowerCase()}.` }] } };
 }
 export function inject(g: GameDay, fault: FaultId): Result {
   if (g.phase === 'strike') return { ok: false, why: 'The event is over; nothing is running to fail.' };
@@ -97,7 +97,7 @@ export function publicView(g: GameDay): { phase: string; gates: GateView[]; note
 export function report(g: GameDay): { title: string; lines: string[]; held: boolean } {
   const n = numbers(g); const sys = systems(g); const h = holds(g);
   return { title: `Readiness at ${PHASE[g.phase].label.toLowerCase()} (T${n.minute >= 0 ? '+' : ''}${n.minute} min)`, held: h.length > 0 && g.phase !== 'strike',
-    lines: [`${n.inside.toLocaleString('en-GB')} of ${SEATS.toLocaleString('en-GB')} inside; concourses at ${n.concoursePct}% of planned load`, `${n.staffTotal.toLocaleString('en-GB')} staff on post`, `Programme feed: ${n.program.toLowerCase()}`,
+    lines: [`${n.inside.toLocaleString('en-GB')} of ${SEATS.toLocaleString('en-GB')} inside; concourses at ${n.concoursePct}% of planned load`, `${n.staffTotal.toLocaleString('en-GB')} staff on post`, `Program feed: ${n.program.toLowerCase()}`,
       ...(Object.keys(sys) as SystemKey[]).map((k) => `${SYSTEM_LABEL[k]}: ${sys[k] === 'OK' ? 'working' : sys[k] === 'DEGRADED' ? 'degraded' : 'restored, awaiting an independent check'}`),
       ...g.incidents.map((i) => `${i.id} ${FAULTS[i.fault].title} — ${i.step.toLowerCase()}`), ...(h.length && g.phase !== 'strike' ? [`Next phase held: ${h.join('; ')}`] : [])] };
 }

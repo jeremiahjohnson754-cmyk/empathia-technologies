@@ -59,15 +59,15 @@ export const CTSI_BANK: Q[] = [
 
   // ---------------------------------------------------------------- D install
   q('d1-01', 'D', 'D1', 'Rack', 'How is height measured in a 19-inch rack?',
-    ['In inches', 'In rack units (1 RU = 1.75 in)', 'In centimetres', 'In shelves'], 1, 'One rack unit is 1.75 in (44.45 mm).', { math: true }),
+    ['In inches', 'In rack units (1 RU = 1.75 in)', 'In centimeters', 'In shelves'], 1, 'One rack unit is 1.75 in (44.45 mm).', { math: true }),
   q('d1-02', 'D', 'D1', 'Rack', 'A rack has 42 RU. Devices take 3, 2, 1, 4 and 2 RU, with 1 RU vent panels between each pair. How many RU remain?',
     ['26', '28', '30', '32'], 0, '3 + 2 + 1 + 4 + 2 = 12 RU of devices, plus 4 vents between five devices = 16 RU used; 42 − 16 = 26 RU remain.', { math: true }),
   q('d2-01', 'D', 'D2', 'Rack wiring', 'Why separate power and signal cables on opposite sides of a rack?',
-    ['For appearance', 'To reduce induced noise and make service easier', 'Code requires coloured cables', 'To save cable ties'], 1, 'Separation keeps mains fields off signal cables and keeps the rack serviceable.'),
+    ['For appearance', 'To reduce induced noise and make service easier', 'Code requires colored cables', 'To save cable ties'], 1, 'Separation keeps mains fields off signal cables and keeps the rack serviceable.'),
   q('d2-02', 'D', 'D2', 'Rack wiring', 'What is the purpose of strain relief at the rear of rack equipment?',
     ['To hold labels', 'To keep the weight of cables off the connectors', 'To ground the rack', 'To increase airflow'], 1, 'Unsupported cable weight pulls connectors loose; lacing bars and ties take the strain.'),
   q('d4-01', 'D', 'D4', 'Mounting', 'Before hanging a projector, what must be confirmed?',
-    ['The lens colour', 'The mount and structure are rated for the load, with a secondary safety attachment where required', 'The projector’s IP address', 'The screen size only'], 1, 'Overhead equipment is mounted to rated structure with the manufacturer’s hardware and a secondary safety where the specification or code requires it.'),
+    ['The lens color', 'The mount and structure are rated for the load, with a secondary safety attachment where required', 'The projector’s IP address', 'The screen size only'], 1, 'Overhead equipment is mounted to rated structure with the manufacturer’s hardware and a secondary safety where the specification or code requires it.'),
   q('d4-02', 'D', 'D4', 'Mounting', 'A ceiling speaker with a 90° conical pattern sits 7 ft above seated ears. What diameter does it cover at ear height?',
     ['7 ft', '10 ft', '14 ft', '21 ft'], 2, 'D = 2 × h × tan(45°) = 2 × 7 = 14 ft.', { math: true, tool: 'ceiling-speakers' }),
   q('d5-01', 'D', 'D5', 'Termination', 'What is the maximum untwist of pairs at an RJ45 termination for Category 5e and above?',
@@ -91,11 +91,11 @@ export const CTSI_BANK: Q[] = [
   q('d8-02', 'D', 'D8', 'Testing', 'Which signal is commonly used to check loudspeaker coverage and frequency response?',
     ['A 1 kHz sine only', 'Pink noise', 'Music at full level', 'White noise at maximum'], 1, 'Pink noise has equal energy per octave, matching how an RTA displays bands.'),
   q('d9-01', 'D', 'D9', 'Calibration', 'Delay is set on an under-balcony loudspeaker. What is the goal?',
-    ['It plays before the main system', 'Its sound arrives just after the main system’s, so listeners localise to the stage', 'It plays at the same level as the main', 'It plays only high frequencies'], 1, 'Align to the main arrival and add a small offset so precedence keeps the image on stage.', { tool: 'delay-alignment' }),
+    ['It plays before the main system', 'Its sound arrives just after the main system’s, so listeners localize to the stage', 'It plays at the same level as the main', 'It plays only high frequencies'], 1, 'Align to the main arrival and add a small offset so precedence keeps the image on stage.', { tool: 'delay-alignment' }),
   q('d9-02', 'D', 'D9', 'Calibration', 'A calibrated SPL meter reads 86 dB at 4 m from a loudspeaker. Ignoring the room, what would it read at 8 m?',
     ['83 dB', '80 dB', '78 dB', '43 dB'], 1, 'Doubling the distance from a point source loses about 6 dB: 86 − 6 = 80 dB.', { math: true, tool: 'inverse-square' }),
   q('d9-03', 'D', 'D9', 'Calibration', 'When calibrating a display, why use test patterns rather than content?',
-    ['They look better', 'Known patterns show black level, white level, geometry and colour objectively', 'They are required by HDCP', 'Content is copyrighted'], 1, 'Patterns with known values let you set brightness, contrast, sharpness and colour repeatably.'),
+    ['They look better', 'Known patterns show black level, white level, geometry and color objectively', 'They are required by HDCP', 'Content is copyrighted'], 1, 'Patterns with known values let you set brightness, contrast, sharpness and color repeatably.'),
 
   // ---------------------------------------------------------------- E closeout
   q('e1-01', 'E', 'E1', 'Demonstration', 'What is demonstrated to the client at closeout?',

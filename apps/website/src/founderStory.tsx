@@ -100,7 +100,7 @@ export const SearchPartyStory = ({ sp, cap, demoHref }: { sp: Product; cap?: Cap
             {[0, 1, 2, 3].map((r) => <div key={r} className="holds__row" aria-hidden="true">{LIST_COLUMNS.map((c) => <i key={c} />)}</div>)}
           </div>
           <ol className="holds__links" aria-label="What a contacts list has no column for">{LAYERS.map((l) => <li key={l.id} data-layer={l.id}><b>{l.name}</b><span>{l.asks}</span></li>)}</ol>
-          <figcaption>A drawing of the idea, in the four words the product is built on. It is not the record of any organisation.</figcaption>
+          <figcaption>A drawing of the idea, in the four words the product is built on. It is not the record of any organization.</figcaption>
         </figure></Part>
       <Part n={3} id="words"><p className="eyebrow">In the founder’s own words</p><FoundersWords /></Part>
       <Part n={4} id="became"><div className="origin__became">

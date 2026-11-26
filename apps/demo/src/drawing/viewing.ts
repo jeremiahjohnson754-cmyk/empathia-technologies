@@ -43,7 +43,7 @@ export function viewing(room: { width: number; length: number; cls: 'OBSERVED' |
   return {
     facts: [
       { label: 'Room', value: `${r2(W)} × ${r2(L)} m`, prov, basis: room.cls === 'OBSERVED' ? 'from the drawing, its scale calibrated by a person' : 'from the drawing’s own dimensions and scale' },
-      { label: 'Display wall', value: display ? `display at ${r2(d.x)}, ${r2(d.y)} m` : 'the front wall, centred', prov: display ? 'modeled' : 'assumed', basis: display ? 'the display tag’s position on the plan' : 'no display on the plan: assumed' },
+      { label: 'Display wall', value: display ? `display at ${r2(d.x)}, ${r2(d.y)} m` : 'the front wall, centered', prov: display ? 'modeled' : 'assumed', basis: display ? 'the display tag’s position on the plan' : 'no display on the plan: assumed' },
       { label: 'Farthest viewer', value: `${far} m`, prov: 'assumed', basis: `no seats on the plan: back row ${CLEAR_M} m from the back wall, outermost seats ${CLEAR_M} m from the side walls` },
       { label: 'Outermost seat off the display’s axis', value: `${outerAngle}° (${outerClass.toLowerCase()})`, prov: 'assumed', basis: `first row at ${r2(front)} m (30 % of the depth, Lite’s convention); more than 45° is marginal, more than 60° obstructed` },
       { label: 'Eye height and vertical angles', value: 'not modeled', prov: 'unavailable', basis: 'the drawing has no section or elevation' },

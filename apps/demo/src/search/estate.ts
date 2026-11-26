@@ -112,5 +112,5 @@ export function buildEstate(): Catalogue & { graph: Graph } {
   const visible = new Set(nodes.map((n) => nodeKey(n)));
   const kept = edges.filter((e) => visible.has(nodeKey(e.from)) && visible.has(nodeKey(e.to)));
   const types: Record<string, number> = {}; for (const n of nodes) types[n.type] = (types[n.type] || 0) + 1;
-  return { nodes, edges: kept, graph: new Graph(kept), coverage: { types, edges: kept.length, notes: ['synthetic estate: every record and relationship is invented for the demonstration', 'ownership, support paths, vendors, skills and availability are not modelled: intents about them answer UNKNOWN', d ? 'your Build a Room draft is merged in as a live room' : 'build a room (Lite) and it appears here with its devices and connections'] } };
+  return { nodes, edges: kept, graph: new Graph(kept), coverage: { types, edges: kept.length, notes: ['synthetic estate: every record and relationship is invented for the demonstration', 'ownership, support paths, vendors, skills and availability are not modeled: intents about them answer UNKNOWN', d ? 'your Build a Room draft is merged in as a live room' : 'build a room (Lite) and it appears here with its devices and connections'] } };
 }

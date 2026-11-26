@@ -29,7 +29,7 @@ const inDays = (n: number) => new Date(Date.now() + n * 864e5).toISOString().sli
 const when = (iso: string) => { try { return new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch { return iso; } };
 const STATUS_TONE: Record<string, 'ok' | 'warn' | 'bad' | 'muted'> = { DOWN: 'bad', DEGRADED: 'bad', ATTENTION: 'warn', NO_OPEN_INCIDENT: 'ok', OPEN: 'bad', IN_PROGRESS: 'warn', BLOCKED: 'bad', AWAITING_CONFIRMATION: 'warn', CLOSED: 'ok', DEFERRED: 'muted' };
 const hours = (h: number | null) => (h === null ? 'not yet' : h < 1 ? `${Math.round(h * 60)} min` : `${Math.round(h * 10) / 10} h`);
-const WORK = { raise: 'handed over from the service desk (synthetic)', scope: 'Find and correct the fault reported (synthetic)', risk: 'The room is in service; its users are affected until it is corrected (synthetic)', evidence: 'Fault found and corrected; the room checked afterwards (synthetic)' };
+const WORK = { raise: 'handed over from the service desk (synthetic)', scope: 'Find and correct the fault reported (synthetic)', risk: 'The room is in service; its users are affected until it is corrected (synthetic)', evidence: 'Fault found and corrected; the room checked afterward (synthetic)' };
 
 function One({ x, wo, creds, cat, t }: { x: Incident; wo: WorkOrder | null; creds: Cred[]; cat: Catalogue; t: Tools }) {
   const [owner, setOwner] = useState('service'); const [due, setDue] = useState(inDays(3)); const [cause, setCause] = useState(cat.rootCauses[0] || ''); const [how, setHow] = useState(cat.resolutionTypes[0] || '');
@@ -97,7 +97,7 @@ export function Incidents({ room, lifecycle, devices, selected, data, creds, t }
           <label className="kit-field">In a line <input type="text" value={title} maxLength={160} data-testid="fl-inc-title" onChange={(e: { target: { value: string } }) => setTitle(e.target.value)} /></label>
           <label className="kit-field">What happened <textarea value={desc} maxLength={2000} rows={2} data-testid="fl-inc-desc" onChange={(e: { target: { value: string } }) => setDesc(e.target.value)} /></label>
           <p className="build__row"><button type="button" className="ui-btn ui-btn--primary ui-btn--sm" data-testid="fl-inc-send" disabled={t.busy || title.trim().length < 5 || desc.trim().length < 10} onClick={() => void report()}>Report it as the {t.person}</button>
-            <span className="ui-meta">Anyone who can see the room may report. What is reported is never edited afterwards.</span></p>
+            <span className="ui-meta">Anyone who can see the room may report. What is reported is never edited afterward.</span></p>
         </details> : <Notice tone="warn">The server did not give the incident vocabulary to the {t.person}.</Notice>}
         {data.items.length && cat ? <ul className="fl__list in__list" data-testid="fl-inc-list">{data.items.map((x) => <One key={x.incident} x={x} wo={data.work[x.incident] ?? null} creds={creds} cat={cat} t={t} />)}</ul> : <p data-testid="fl-inc-none">No incident is on this room’s record.</p>}
         {data.intelligence && T ? <div className="in__intel" data-testid="fl-inc-intel" data-incidents={T.incidents} data-open={T.open} data-repeats={T.repeats} data-resolved={T.resolved}>

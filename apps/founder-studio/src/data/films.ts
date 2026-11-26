@@ -8,7 +8,7 @@ export interface FilmEntry {
   key: string;
   file: string;
   title: string;
-  series: 'Flagship' | 'Investor films' | 'V1.4.1 campaign' | 'Field Intelligence' | 'Empathia 2:00' | 'Campaign 2026-10-10' | 'Collaboro-Sing' | 'Social shorts';
+  series: 'Flagship' | 'Investor films' | 'V1.4.1 campaign' | 'Field Intelligence' | 'Empathia 2:00' | 'Campaign 2026-10-10' | 'Collabora-SING' | 'Social shorts';
   about: string;
 }
 
@@ -34,7 +34,7 @@ export const FILMS: FilmEntry[] = [
   { key: 'M15', file: 'Empathia_Teaser_15s_1080p_voice.mp4', title: 'Empathia — teaser (0:15)', series: 'Empathia 2:00', about: 'Fifteen-second teaser.' },
   { key: 'F02P', file: 'Empathia_F02_The-Living-System_3m00_1080p_captioned.mp4', title: 'The Living System (3:00)', series: 'Campaign 2026-10-10', about: 'Campaign film "The Living System".' },
   { key: 'F04', file: 'Empathia_F04_What-If-Your-Environment-Could-Explain-Itself_2m00_1080p_captioned.mp4', title: 'What If Your Environment Could Explain Itself? (2:00)', series: 'Campaign 2026-10-10', about: 'Campaign film F04.' },
-  { key: 'SyncLab', file: 'Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p.mp4', title: 'SyncLab — From Hypothesis to Evidence', series: 'Collaboro-Sing', about: 'The Collaboro-Sing SyncLab explainer.' },
+  { key: 'SyncLab', file: 'Collabora-sing-SyncLab-From-Hypothesis-to-Evidence-1080p.mp4', title: 'SyncLab — From Hypothesis to Evidence', series: 'Collabora-SING', about: 'The Collabora-SING SyncLab explainer.' },
   S('01', 'Start with a building. Find everything connected.'),
   S('02', 'Don’t browse blindly. Ask where to look.'),
   S('03', 'An inventory isn’t an operating model.'),

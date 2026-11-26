@@ -172,7 +172,7 @@ function ExceptionRecord({ issue, records, dw, t }: { issue: Issue; records: Exc
 /** The user impact of the deficiency (0046): the same five words as an incident, recorded with why; each change an issue event. */
 const IMPACT_WORDS = ['none', 'minor_annoyance', 'moderate_disruption', 'major_disruption', 'executive_impact'];
 function ImpactLine({ issue, def, t }: { issue: Issue; def: Deficiency | null; t: Tools }) {
-  const [v, setV] = useState(def?.userImpact || 'moderate_disruption'); const [why, setWhy] = useState('Speech at the back of the theatre is hard to follow (synthetic).'); const { go, post, btn } = kit(t);
+  const [v, setV] = useState(def?.userImpact || 'moderate_disruption'); const [why, setWhy] = useState('Speech at the back of the theater is hard to follow (synthetic).'); const { go, post, btn } = kit(t);
   if (issue.state !== 'OPEN') return def?.userImpact ? <p className="ui-meta" data-testid="fl-def-impact">User impact: {words(def.userImpact)}</p> : null;
   return (
     <div className="ca__row" data-testid="fl-def-impact" data-impact={def?.userImpact || ''}>

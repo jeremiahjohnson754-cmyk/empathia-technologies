@@ -83,9 +83,9 @@ export function createModel(id: string, opts: { room?: RoomRecord | null; archet
   const zs = zones.find((z) => z.kind === 'seating')!.rect, cap = g.capacity, cols = Math.max(2, Math.round(Math.sqrt((cap * (zs[2] - zs[0])) / Math.max(0.5, zs[3] - zs[1])))), rows = Math.ceil(cap / cols); const seats: Seat[] = [];
   for (let r = 0; r < rows; r += 1) for (let c = 0; c < cols && seats.length < cap; c += 1) seats.push({ id: `S${seats.length + 1}`, x: r2(zs[0] + ((c + 0.5) * (zs[2] - zs[0])) / cols), y: r2(zs[1] + ((r + 0.5) * (zs[3] - zs[1])) / rows) });
   const tp: TestPoint[] = []; const add = (x: number, y: number, zone: string, purpose: string) => tp.push({ id: `TP${tp.length + 1}`, x: r2(x), y: r2(y), zone, purpose, state: 'PROPOSED' });
-  for (const z of zones) { const [x1, y1, x2, y2] = z.rect; add((x1 + x2) / 2, (y1 + y2) / 2, z.id, z.kind === 'stage' ? 'presenter position · SPL/STI reference' : 'seating centre · LAeq, STIPA, RT60');
+  for (const z of zones) { const [x1, y1, x2, y2] = z.rect; add((x1 + x2) / 2, (y1 + y2) / 2, z.id, z.kind === 'stage' ? 'presenter position · SPL/STI reference' : 'seating center · LAeq, STIPA, RT60');
     if (z.kind === 'seating') { add(x1 + 0.6, y1 + 0.6, z.id, 'front corner · coverage edge'); add(x2 - 0.6, y2 - 0.6, z.id, 'rear corner · coverage edge');
-      if (g.arch === 'TWN') { add(x1 + 0.6, y2 - 0.6, z.id, 'rear-left · coverage edge'); add(x2 - 0.6, y1 + 0.6, z.id, 'front-right · coverage edge'); add((x1 + x2) / 2, y2 - 0.6, z.id, 'last row centre · intelligibility'); } } }
+      if (g.arch === 'TWN') { add(x1 + 0.6, y2 - 0.6, z.id, 'rear-left · coverage edge'); add(x2 - 0.6, y1 + 0.6, z.id, 'front-right · coverage edge'); add((x1 + x2) / 2, y2 - 0.6, z.id, 'last row center · intelligibility'); } } }
   const worst = worstOf(g.dims); const label = opts.room?.outline.number || opts.roomName || ARCHETYPE_NAME[g.arch] || g.arch;
   return { id, name: `Lite · ${label} · v1`, roomId: opts.room?.outline.id || null, roomName: opts.room?.outline.name || opts.roomName || null, archetype: g.arch, version: 1, capacity: cap,
     geometry: { length: L, width: W, height: H }, dims: g.dims, confidence: confidenceOf(worst), worstSource: worst, zones, seats, placements: place, testPoints: tp, variants: [], history: [{ v: 1, what: `built from the ${g.dims.length.source === 'MODEL' ? 'campus model' : 'archetype'}` }], state: 'CONCEPTUAL' };
@@ -122,8 +122,8 @@ export function variantOf(m: LiteModel, newId: string, reason: string): Result {
 /** The test protocols a model asks Field Intelligence to run (V2.5.3 v25LiteToFi, word for word). Proposed only: nothing is measured here. */
 export const PROTOCOLS = [
   { id: 'PROTO-LAEQ-SEATS', metric: 'LAeq', how: '30 s per point', instrument: 'class 1 or 2 sound level meter with current calibration', condition: 'unoccupied' },
-  { id: 'PROTO-STIPA', metric: 'STIPA', how: 'validated STIPA protocol and instrument', instrument: 'STIPA signal source and analyser', condition: 'unoccupied, HVAC on' },
-  { id: 'PROTO-RT60', metric: 'T20/T30', how: 'validated impulse or interrupted-noise protocol', instrument: 'sound source and analyser', condition: 'unoccupied' },
+  { id: 'PROTO-STIPA', metric: 'STIPA', how: 'validated STIPA protocol and instrument', instrument: 'STIPA signal source and analyzer', condition: 'unoccupied, HVAC on' },
+  { id: 'PROTO-RT60', metric: 'T20/T30', how: 'validated impulse or interrupted-noise protocol', instrument: 'sound source and analyzer', condition: 'unoccupied' },
   { id: 'PROTO-FOV', metric: 'camera FOV', how: 'calibration target scan at known distance', instrument: 'calibration target', condition: 'presets recalled' },
 ] as const;
 /** The package sent to Field Intelligence: geometry with what is verified, the device coordinates, the proposed test points, the protocols. */

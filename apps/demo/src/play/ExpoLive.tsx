@@ -1,6 +1,6 @@
 /**
  * #/play/expo — Expo LIVE, the first slice (task #181): the Northlight Technology Expo in Hall A of the Larkspur Exchange Convention
- * Centre (fictional) in 3D, with its plan beside it. Choose a booth on the plan, in the list or in the hall, and the camera flies to it;
+ * Center (fictional) in 3D, with its plan beside it. Choose a booth on the plan, in the list or in the hall, and the camera flies to it;
  * its card says what the exhibitor does and what they are demonstrating; save it to your agenda, or leave your details for them only
  * after ticking the consent box. Sessions run on the main stage and in two presentation zones: join one and answer its poll, or ask a
  * question that waits for the moderator. The organiser view lays a modeled footfall map over the hall and shows a booth's simulated AV
@@ -134,7 +134,7 @@ export function ExpoLivePage() {
   const inAgenda = booth ? saved.agenda.includes(booth.id) : false; const left = booth ? saved.leads.some((l) => l.booth === booth.id) : false;
 
   return <section className="xpo" data-testid="expo-live" data-ready={!err} data-sel={sel || ''} data-organiser={organiser} data-session={session || ''} data-fps={fps} data-detail={detail} data-quality={fullQ ? 'full' : 'auto'} data-agenda={saved.agenda.length} data-leads={saved.leads.length}>
-    <header className="cl-head"><h1>Expo LIVE</h1><p>The Northlight Technology Expo, Hall A of the Larkspur Exchange Convention Centre: a fictional expo, twenty fictional exhibitors and the Empathia showcase. Your agenda, details, votes and questions stay in this browser.</p></header>
+    <header className="cl-head"><h1>Expo LIVE</h1><p>The Northlight Technology Expo, Hall A of the Larkspur Exchange Convention Center: a fictional expo, twenty fictional exhibitors and the Empathia showcase. Your agenda, details, votes and questions stay in this browser.</p></header>
     <div className="xpo-grid">
       <div className="xpo-stage" ref={stage}>
         <canvas ref={canvas} className="cl-canvas" tabIndex={0} data-testid="xpo-canvas" aria-label="Hall A in 3D. Tap or click a booth to go to it. Drag to look around, right-drag or Shift-drag to move along the hall, Ctrl or ⌘ with the wheel or a pinch to zoom; on a phone two fingers move the view, or open it full screen. Every booth is also on the plan and in the list." />
@@ -147,7 +147,7 @@ export function ExpoLivePage() {
         {full && booth ? <div className="xpo-mini" data-testid="xpo-mini"><b>{booth.id} · {booth.name}</b><span>{booth.cat}</span><button type="button" className="cl-btn" onClick={() => { toggleFull(false); requestAnimationFrame(() => document.querySelector('[data-testid=xpo-card]')?.scrollIntoView({ block: 'nearest' })); }}>Details</button></div> : null}
           <button type="button" className="cl-btn" onClick={() => flyTo(null)} data-testid="xpo-overview">Whole hall</button>
           <button type="button" className="cl-btn" aria-pressed={full} onClick={() => toggleFull(!full)} data-testid="xpo-full">{full ? 'Done' : 'Full screen'}</button>
-          <label className="cl-btn xpo-org"><input type="checkbox" checked={organiser} onChange={(e) => setOrganiser(e.target.checked)} data-testid="xpo-organiser" /> Organiser view</label>
+          <label className="cl-btn xpo-org"><input type="checkbox" checked={organiser} onChange={(e) => setOrganiser(e.target.checked)} data-testid="xpo-organiser" /> Organizer view</label>
           <label className="cl-btn xpo-org"><input type="checkbox" checked={fullQ} onChange={(e) => { setFullQ(e.target.checked); rRef.current?.setFull(e.target.checked); }} data-testid="xpo-quality" /> Full quality</label><span className="xpo-fps" data-testid="xpo-pace">{fps} fps here{fullQ ? ', held at full detail' : detail < 100 ? `, drawn at ${detail}% of full detail` : ''} · <a href="#/play/performance" data-testid="xpo-measure">Measure this device</a></span></div>
       </div>
       <aside className="xpo-side" aria-label="Plan, booths and sessions">

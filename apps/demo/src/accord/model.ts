@@ -51,7 +51,7 @@ export function items(w: Workspace): Item[] {
       withheld: ['Drawings, positions and asset identities not involved in the issue'] },
   ];
 }
-export const OUTSIDE = ['Every other room, job and work order of the estate', 'People’s names and contact details', 'Prices, contract values and licence terms', 'Anything recorded after the capsule ends'];
+export const OUTSIDE = ['Every other room, job and work order of the estate', 'People’s names and contact details', 'Prices, contract values and license terms', 'Anything recorded after the capsule ends'];
 
 export interface Audit { at: string; party: Party; by: RoleKey; sha256: string; bytes: number }
 export interface Local { withdrawnAt: string | null; withdrawnBy: RoleKey | null; audit: Audit[] }

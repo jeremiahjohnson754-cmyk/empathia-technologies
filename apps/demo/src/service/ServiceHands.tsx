@@ -162,13 +162,13 @@ function Job({ ops, inc, confirm, offerUndo, perspective }: { ops: Ops; inc: S.I
       actions={<a className="ui-btn ui-btn--quiet" href="#/servicehands">All jobs</a>} />
     <ol className="ops-strip" aria-label="Stage of this job" data-testid="stages">{STAGES.map((s, i) => <li key={s} className={i < st ? 'done' : i === st ? 'on' : ''} aria-current={i === st ? 'step' : undefined}>{s}</li>)}</ol>
     <Refused r={ops.refusal} />
-    {cancelled && <p className="ops-refused" role="status">Work order cancelled by {personaLabel(cancelled.by)} on {when(cancelled.at)}: {cancelled.reason}. The record and its history are kept.</p>}
+    {cancelled && <p className="ops-refused" role="status">Work order canceled by {personaLabel(cancelled.by)} on {when(cancelled.at)}: {cancelled.reason}. The record and its history are kept.</p>}
     <div className="ops-grid ops-grid--2b">
       <div className="ops-grid">
         {/* the technician's workspace comes first: on a phone it is the whole page above the fold */}
         {wo && mine && ['ASSIGNED', 'ACCEPTED', 'IN_PROGRESS'].includes(inc.state) && needs && (
           <section className="ops-card" aria-labelledby="tw-h" data-testid="tech-workspace"><h2 id="tw-h">Your job</h2>
-            <dl className="ops-kv"><dt>Instructions</dt><dd>{wo.title}. Restore the room to its commissioned behaviour; change nothing that is not needed for the fix.</dd>
+            <dl className="ops-kv"><dt>Instructions</dt><dd>{wo.title}. Restore the room to its commissioned behavior; change nothing that is not needed for the fix.</dd>
               <dt>Safety</dt><dd>Brief with the site champion before entering; {needs.certs.includes('lic.working_at_height') ? 'working at height: permit and a second person' : 'no work at height planned'}; leave the room as you found it.</dd>
               <dt>Tools</dt><dd>{needs.tools.join(', ') || 'none listed'}</dd><dt>Parts</dt><dd>{(wo.parts.length ? wo.parts.map((x) => `${x.qty} × ${x.part}`) : needs.parts).join(', ') || 'none'}</dd>
               <dt>Escalate to</dt><dd>Service Manager (synthetic) — write an escalation note below; it reaches the dispatch board's ledger</dd></dl>
@@ -213,7 +213,7 @@ function Job({ ops, inc, confirm, offerUndo, perspective }: { ops: Ops; inc: S.I
               <input type="text" aria-label="Reopen reason" value={reopen} onChange={(e) => setReopen(e.target.value)} placeholder="recurrence or failed verification" /><button type="button" className="ui-btn" onClick={() => ops.apply((x) => S.reopen(x, persona, inc.id, reopen))} data-testid="reopen">Reopen</button></div></> : <NotYours who="Service Manager" what="Closing" />}</section>}
         {['RESOLVED', 'CLOSED'].includes(inc.state) && <section className="ops-card" aria-labelledby="ln-h" data-testid="learning"><h2 id="ln-h">Operational learning</h2>
           <p className="ops-note">Recommended Learn band <b>{band.band}</b> — {band.why}. <span className="ops-meta">The band comes from the technical subject of the work (the demonstration's rule), not from an assessment of anyone.</span></p>
-          <p className="ops-note">A lab completed afterwards is <b>competency evidence</b> on the person's internal competency record — not a credential, and never an authorization to work.</p>
+          <p className="ops-note">A lab completed afterward is <b>competency evidence</b> on the person's internal competency record — not a credential, and never an authorization to work.</p>
           <p className="ops-row">{inc.learnCaseId ? <a href={`#/v25/learn?case=${inc.learnCaseId}`}>Learn case {inc.learnCaseId}</a> : <a href={`#/v25/learn?incident=${inc.id}`}>Propose a de-identified Learn case from this incident</a>}<a href="#/learn/labs">Learn labs</a></p></section>}
         {/* 24 Nov 2026 (design pass): this column holds what the job needs from the person looking at it. Where that was nothing (a triaged
             job, or one waiting for triage, or a cancelled one) two thirds of the screen were blank. This card is shown only when
@@ -221,7 +221,7 @@ function Job({ ops, inc, confirm, offerUndo, perspective }: { ops: Ops; inc: S.I
         <section className="ops-card wo-next" aria-labelledby="wn-h" data-testid="wo-next"><h2 id="wn-h">Nothing to do on this page yet</h2>
           <p className="ops-note">{['OPEN', 'REOPENED'].includes(inc.state) ? <>This job is waiting for triage. {holds(persona, 'service.triage') ? 'You triage it' : 'The Service Manager triages it'} on the <a href={`#/service?id=${inc.id}`}>Dispatch board</a>.</>
             : inc.state === 'TRIAGED' ? <>This job is triaged and has no technician yet. {holds(persona, 'service.assign') ? 'You choose' : 'The Service Manager chooses'} who may do the work on the <a href={`#/service?id=${inc.id}`}>Dispatch board</a>.</>
-            : inc.state === 'CANCELLED' ? <>This work order was cancelled. Its record and history are kept.</>
+            : inc.state === 'CANCELLED' ? <>This work order was canceled. Its record and history are kept.</>
             : <>Nothing on this job waits for the {personaLabel(persona)} at this stage.</>}</p>
           <p className="ops-meta">Acting as {personaLabel(persona)}. What the job needs from each person appears here when it is that person’s turn.</p></section>
       </div>
@@ -234,8 +234,8 @@ function Job({ ops, inc, confirm, offerUndo, perspective }: { ops: Ops; inc: S.I
           {intake?.answers.length ? <ul className="ops-list">{intake.answers.map(([q, a]) => <li key={q} className="ops-note">{q} <b>{a}</b></li>)}</ul> : null}
           {intake?.attachments.length ? <p className="ops-meta">Attachments: {intake.attachments.join(', ')}</p> : null}
           {seen.length > 0 && <div data-testid="seen-again"><h3>Seen again in the room ({seen.length})</h3><ul className="ops-list">{seen.map((x) => <li key={x.at} className="ops-note"><b>{when(x.at)} · {x.who}</b>{x.note ? ` — ${x.note}` : ''}{x.tried.length ? <span className="ops-meta"> Tried: {x.tried.map(([q, a]) => `${q} (${a})`).join('; ')}</span> : null}</li>)}</ul></div>}
-          {wo && holds(persona, 'service.assign') && !['RESOLVED', 'CLOSED', 'CANCELLED', 'VERIFYING'].includes(inc.state) && <button type="button" className="ui-btn ui-btn--quiet" data-testid="cancel-wo" onClick={() => confirm({ key: 'servicehands.cancel', title: `Cancel work order ${wo.id}?`, object: wo.id, actionLabel: 'Cancel the work order', reason: { label: 'Why it is cancelled', min: 8 }, consequence: <>{tech ? `${tech.name} stops the work. ` : ''}The incident becomes CANCELLED; its record and history are kept and the cancellation is in the ledger.</>,
-            onConfirm: (reason) => { const prev = ops.snapshot(); if (!cancelWorkOrder(structuredClone(prev), persona, inc.id, reason)) { ops.apply((x) => cancelWorkOrder(x, persona, inc.id, reason)); offerUndo({ label: `${wo.id} was cancelled`, undo: () => ops.restore(prev) }); } else ops.apply((x) => cancelWorkOrder(x, persona, inc.id, reason)); } })}>Cancel the work order…</button>}
+          {wo && holds(persona, 'service.assign') && !['RESOLVED', 'CLOSED', 'CANCELLED', 'VERIFYING'].includes(inc.state) && <button type="button" className="ui-btn ui-btn--quiet" data-testid="cancel-wo" onClick={() => confirm({ key: 'servicehands.cancel', title: `Cancel work order ${wo.id}?`, object: wo.id, actionLabel: 'Cancel the work order', reason: { label: 'Why it is canceled', min: 8 }, consequence: <>{tech ? `${tech.name} stops the work. ` : ''}The incident becomes CANCELLED; its record and history are kept and the cancellation is in the ledger.</>,
+            onConfirm: (reason) => { const prev = ops.snapshot(); if (!cancelWorkOrder(structuredClone(prev), persona, inc.id, reason)) { ops.apply((x) => cancelWorkOrder(x, persona, inc.id, reason)); offerUndo({ label: `${wo.id} was canceled`, undo: () => ops.restore(prev) }); } else ops.apply((x) => cancelWorkOrder(x, persona, inc.id, reason)); } })}>Cancel the work order…</button>}
         </section>
         {notes.length > 0 && <section className="ops-card" aria-labelledby="nt-h"><h2 id="nt-h">Field notes ({notes.length})</h2><ul className="ops-list">{notes.map((n, i) => <li key={i} className="ops-note"><Tag tone={n.kind === 'blocker' ? (n.cleared ? 'ok' : 'bad') : n.kind === 'escalation' ? 'warn' : 'muted'}>{n.kind}{n.kind === 'blocker' ? (n.cleared ? ' · cleared' : ' · open') : ''}</Tag> {n.text} <span className="ops-meta">{when(n.at)}{n.cleared ? ` · ${n.cleared}` : ''}</span>
           {n.kind === 'blocker' && !n.cleared && (mine || holds(persona, 'service.assign')) && <button type="button" className="ui-btn ui-btn--sm" onClick={() => ops.apply((x) => clearBlocker(x, persona, wo!.id, i, 'cleared on site'))}>Mark cleared</button>}</li>)}</ul></section>}

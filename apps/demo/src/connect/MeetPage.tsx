@@ -79,7 +79,7 @@ function Meet({ role, query, hash }: PageProps) {
     if ('why' in out) { setRefused(out.why); setSaid(''); refresh(); head.current?.focus(); return; }
     moved.current = true; setRefused(null); setAgain(out.again); setSaid(out.said); setDoneId(out.meeting.id); setStepRaw('done'); refresh();
   };
-  const doCancel = (id: string) => { const out = cancelMeeting(role, id, reason, Date.now()); if ('why' in out) setRefused(out.why); else { setRefused(null); setReason(''); setSaid(`${out.id} is cancelled in this demonstration’s simulated calendar. No cancellation left this browser.`); } refresh(); };
+  const doCancel = (id: string) => { const out = cancelMeeting(role, id, reason, Date.now()); if ('why' in out) setRefused(out.why); else { setRefused(null); setReason(''); setSaid(`${out.id} is canceled in this demonstration’s simulated calendar. No cancellation left this browser.`); } refresh(); };
   const teamsForm = (m: Meeting) => { const others = m.parties.filter((x) => x.id !== me.id).map((x) => personById(x.id)).filter((p): p is NonNullable<typeof p> => !!p); if (!others.length || !others.every((p) => mayReach(role, p))) return null; const b = build('teams.meeting', { to: others.map((p) => p.email), subject: m.subject, body: m.body, from: isoLocal(me.tz, m.from), until: isoLocal(me.tz, m.to) }); return b.ok ? { href: b.href, first: others[0]! } : null; };
   const mine = meetingsOf(st, role);
 
@@ -97,7 +97,7 @@ function Meet({ role, query, hash }: PageProps) {
         <h2 className="build__h" tabIndex={-1} ref={head}>{STEP_TITLE.who[1]}</h2>
         {about && <p className="cx-about" data-testid="meet-about">About <b>{about.label}</b>{about.href && opens(about.href) ? <> · <a href={about.href}>open it</a></> : null} <button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" onClick={() => change({ about: null })}>Remove</button></p>}
         <h3 className="cx-h3">People</h3>
-        <ul className="cx-chosen" data-testid="meet-chosen"><li data-person={me.id}><b>{me.name}</b> <span className="ui-meta">organiser · {zoneCity(me.tz)} time{me.id.startsWith('you-') ? ' · office hours 08:00–17:00 assumed for this role' : ''}</span></li>
+        <ul className="cx-chosen" data-testid="meet-chosen"><li data-person={me.id}><b>{me.name}</b> <span className="ui-meta">organizer · {zoneCity(me.tz)} time{me.id.startsWith('you-') ? ' · office hours 08:00–17:00 assumed for this role' : ''}</span></li>
           {chosen.map((p) => <li key={p.id} data-person={p.id}><b>{p.name}</b> <span className="ui-meta">{p.title} · {zoneCity(p.tz)} time{p.shift ? ` · ${p.shift.name.toLowerCase()}` : ''}</span>
             <label className="cx-opt"><input type="checkbox" checked={input.optionalIds.includes(p.id)} onChange={(e) => change({ optionalIds: e.target.checked ? [...input.optionalIds, p.id] : input.optionalIds.filter((x) => x !== p.id) })} /> optional</label>
             <button type="button" className="ui-btn ui-btn--sm ui-btn--quiet" onClick={() => change({ withIds: input.withIds.filter((x) => x !== p.id), optionalIds: input.optionalIds.filter((x) => x !== p.id) })} aria-label={`Remove ${p.name}`}>Remove</button></li>)}</ul>
@@ -139,7 +139,7 @@ function Meet({ role, query, hash }: PageProps) {
             : <p>None of the usual changes produces a time either: a shorter meeting, the following days, or a backup contact. Ask each person directly.</p>}
           <div className="hr-nav"><Button kind="quiet" onClick={() => go('who')} testId="meet-back">Change who or what</Button></div>
         </div>}
-        <p className="ui-meta">Proposed by the same rule every time: inside each person’s working hours or shift in their own time zone (daylight-saving changes included), clear of their busy time and of the room’s bookings. Public holidays and leave are not modelled.</p>
+        <p className="ui-meta">Proposed by the same rule every time: inside each person’s working hours or shift in their own time zone (daylight-saving changes included), clear of their busy time and of the room’s bookings. Public holidays and leave are not modeled.</p>
       </div>}
 
       {step === 'review' && <div className="cx-step" data-testid="meet-review-step">
@@ -165,9 +165,9 @@ function Meet({ role, query, hash }: PageProps) {
       </div>}
 
       {step === 'done' && <div className="cx-step hr-done" data-testid="meet-done" data-state={done?.state || 'missing'} data-again={again ? 'yes' : 'no'}>
-        <h2 className="build__h" tabIndex={-1} ref={head}>{done ? (done.state === 'CANCELLED' ? `${done.id} is cancelled` : `Recorded as ${done.id}`) : 'That meeting is not recorded here'}</h2>
+        <h2 className="build__h" tabIndex={-1} ref={head}>{done ? (done.state === 'CANCELLED' ? `${done.id} is canceled` : `Recorded as ${done.id}`) : 'That meeting is not recorded here'}</h2>
         {done ? <>
-          <p data-testid="meet-statement"><b>{done.state === 'CANCELLED' ? 'Cancelled in this demonstration’s simulated calendar. No cancellation left this browser.' : RECORDED_STATEMENT}</b></p>
+          <p data-testid="meet-statement"><b>{done.state === 'CANCELLED' ? 'Canceled in this demonstration’s simulated calendar. No cancellation left this browser.' : RECORDED_STATEMENT}</b></p>
           {again && <Notice tone="info">This meeting was already recorded. Nothing was recorded a second time.</Notice>}
           <p>{done.subject} · {fmtRange(me.tz, done.from, done.to)} {zoneCity(me.tz)} time · {done.parties.map((x) => x.name).join(', ')}{done.room ? ` · ${done.room.name}` : ''}.</p>
           {done.state === 'RECORDED' && (() => { const t = teamsForm(done); const j = jumpById('teams.meeting'); return t && j ? <p className="cx-next"><a className="ui-btn" href={t.href} target="_blank" rel="noopener noreferrer" data-testid="meet-teams" data-jump="teams.meeting" onClick={() => { const out = recordJump(role, { jump: 'teams.meeting', personId: t.first.id, about: input.about, from: location.hash }); setSaid('why' in out ? out.why.join(' ') : out.said); refresh(); }}>Open Teams’ scheduling form with this filled in</a><span className="ui-meta">To invite people for real you send it yourself, from Teams: this opens Teams’ own form with the time, people and subject filled in. Nobody is invited until you press Send there. These people are synthetic, so Teams will not find them.</span></p> : null; })()}

@@ -19,7 +19,7 @@ export function jobView(w: Workspace, roomId: string): JobView | null {
   const evidence = workOrder?.evidence.length || 0; const verified = !!incident.verifiedBy && ['RESOLVED', 'CLOSED'].includes(incident.state);
   const steps: JobStep[] = [
     { key: 'reported', label: 'Reported from the room', done: true, detail: `${incident.id} · ${incident.state}` },
-    { key: 'assigned', label: 'Assigned to a technician authorised for the site', done: !!workOrder?.techId, detail: workOrder?.techId ? `${workOrder.id} · ${workOrder.techId}` : 'not assigned yet' },
+    { key: 'assigned', label: 'Assigned to a technician authorized for the site', done: !!workOrder?.techId, detail: workOrder?.techId ? `${workOrder.id} · ${workOrder.techId}` : 'not assigned yet' },
     { key: 'evidence', label: 'Field evidence recorded', done: evidence > 0, detail: evidence ? `${evidence} item${evidence === 1 ? '' : 's'} on ${workOrder!.id}` : 'none yet' },
     { key: 'verified', label: 'Verified by someone other than the technician', done: verified, detail: verified ? `verified by ${incident.verifiedBy}` : 'not verified' },
   ];

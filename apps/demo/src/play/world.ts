@@ -77,7 +77,7 @@ const block = (id: string, x0: number, z0: number, x1: number, z1: number, h: nu
 };
 block('library', -48, -20, -30, 4, 10, C.lib, 'e'); block('engineering', 30, -18, 48, 6, 9, C.eng, 'w'); block('union', -12, 28, 12, 42, 8, C.union, 'n');
 block('arts', -48, 14, -32, 30, 8, C.brick, 'e'); block('residence', 32, 16, 48, 34, 12, C.brick2, 'w');
-signs.push({ at: [0, 7.9, -23.6], text: 'Science Hall', sub: 'SCI-110 lecture theatre · labs' }, { at: [-29.6, 6, -8], text: 'Hollis Library', sub: 'opens in a later release' }, { at: [29.6, 6, -6], text: 'Engineering Centre', sub: 'opens in a later release' },
+signs.push({ at: [0, 7.9, -23.6], text: 'Science Hall', sub: 'SCI-110 lecture theater · labs' }, { at: [-29.6, 6, -8], text: 'Hollis Library', sub: 'opens in a later release' }, { at: [29.6, 6, -6], text: 'Engineering Center', sub: 'opens in a later release' },
   { at: [0, 8.6, 27.6], text: 'Student Union', sub: 'dining · societies · shuttle' }, { at: [-31.6, 6, 22], text: 'Arts Hall', sub: 'opens in a later release' }, { at: [31.6, 8, 25], text: 'Residence Court', sub: 'opens in a later release' });
 
 // trees, benches and lamps around the Quad; the hedge at the edge

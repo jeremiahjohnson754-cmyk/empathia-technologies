@@ -6,9 +6,9 @@
  * Record per id@level: {tries, best, first, passed, last, at}. Everything here is pure; drawing and sound live in the runner.
  */
 export const MODES = [
-  { id: 'hear', name: 'HEAR IT', icon: '👂', blurb: 'Fix what the ear hears: EQ and dynamics on real synthesised audio, measured by an analyser.' },
-  { id: 'see', name: 'SEE IT', icon: '🎥', blurb: 'Make the picture right: exposure, focus, motion and colour, by the numbers a camera operator uses.' },
-  { id: 'reach', name: 'REACH IT', icon: '💡', blurb: 'Light a person and run a show: photometry, colour temperature, and cues on the beat.' },
+  { id: 'hear', name: 'HEAR IT', icon: '👂', blurb: 'Fix what the ear hears: EQ and dynamics on real synthesised audio, measured by an analyzer.' },
+  { id: 'see', name: 'SEE IT', icon: '🎥', blurb: 'Make the picture right: exposure, focus, motion and color, by the numbers a camera operator uses.' },
+  { id: 'reach', name: 'REACH IT', icon: '💡', blurb: 'Light a person and run a show: photometry, color temperature, and cues on the beat.' },
   { id: 'build', name: 'BUILD IT', icon: '🧰', blurb: 'Choose the gear and the settings that actually work together — some of the gear is a joke.' },
   { id: 'record', name: 'RECORD IT', icon: '⏺', blurb: 'Gain-stage a real take from the singer’s mouth to the converter, and keep the noise under it.' },
 ] as const;

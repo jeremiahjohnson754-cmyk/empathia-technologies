@@ -51,7 +51,7 @@ test('OB-03 personalisation comes from records and is never invented: what the o
   assert.deepEqual(p.fields.map((f) => f.id), ['employer', 'role', 'department', 'locations', 'reporting', 'mentor', 'contacts', 'software', 'standards', 'training', 'equipment', 'access', 'vendors', 'hr'], 'the founder’s twelve kinds of information, with the mentor and vendors');
   const recorded = p.fields.filter((f) => f.value !== null).map((f) => f.id); assert.deepEqual(recorded, ['employer', 'role', 'locations', 'reporting', 'mentor', 'contacts']);
   for (const f of p.fields) { assert.ok(f.from.length > 8, f.id); if (f.value === null) assert.match(f.from, /administrator provides it|none is listed here/, f.id); }
-  assert.match(F.fieldOf(p, 'employer').value, /synthetic organisation/); assert.equal(F.fieldOf(p, 'reporting').value, `${p.manager.name}, ${p.manager.title}`);
+  assert.match(F.fieldOf(p, 'employer').value, /synthetic organization/); assert.equal(F.fieldOf(p, 'reporting').value, `${p.manager.name}, ${p.manager.title}`);
   for (const i of G.ITEMS.filter((x) => x.needs)) assert.ok(F.fieldOf(p, i.needs), `${i.id} needs a field the profile has`);
   for (const i of G.ITEMS.filter((x) => x.place)) { const h = F.placeHref(i.place, p); assert.ok(h === null || /^#\//.test(h), i.id); if (h) assert.ok(PG.resolve(h.split('?')[0]), `${i.id} → ${h} is a registered page`); }
   assert.equal(F.placeHref('people-manager', { ...p, manager: null }), null, 'no record, no link');

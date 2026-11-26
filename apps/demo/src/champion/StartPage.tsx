@@ -44,7 +44,7 @@ export default function StartPage({ role, can }: PageProps) {
     <div className="pa sc st" data-native="" data-testid="start" data-done={v.done} data-complete={v.complete ? 'yes' : 'no'}>
       <PageHero compact eyebrow="Site Champion" title={`Getting started at ${B?.name || site}`} product="lite" icon="book"
         lede={v.complete ? 'Everything on this list is done. It stays here to come back to.' : `${v.done} of ${v.total} done. Six short lessons, a check, and four things you do on your own site. Take them in any order, over days.`}
-        meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="d" small tone="muted">Draft: not yet reviewed by a practising AV engineer</Chip>, <Chip key="q" small tone="muted">A list, not a qualification</Chip>]} />
+        meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="d" small tone="muted">Draft: not yet reviewed by a practicing AV engineer</Chip>, <Chip key="q" small tone="muted">A list, not a qualification</Chip>]} />
 
       <div className="st-top">
         <Card title="Your list" icon="check" sub="Each line says who knows it is done: the record, or you." testId="start-list">
@@ -110,7 +110,7 @@ export default function StartPage({ role, can }: PageProps) {
       </section>
 
       <Notice tone="info">
-        <b>What this list is.</b> A way to learn the role, and a record that you did. Marking a lesson as read is your own word; the check is marked here and its result is kept as a count on the ledger. None of it is a qualification, and none of it changes what a Site Champion may do. The lessons were written for this demonstration and have not yet been reviewed by a practising AV engineer.
+        <b>What this list is.</b> A way to learn the role, and a record that you did. Marking a lesson as read is your own word; the check is marked here and its result is kept as a count on the ledger. None of it is a qualification, and none of it changes what a Site Champion may do. The lessons were written for this demonstration and have not yet been reviewed by a practicing AV engineer.
       </Notice>
     </div>
   );

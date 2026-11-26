@@ -19,7 +19,7 @@
  */
 export type Cls = 'OBSERVED' | 'EXTRACTED' | 'MODELED' | 'INFERRED' | 'VERIFIED' | 'APPROVED';
 export const CLS_WORD: Record<Cls, string> = {
-  OBSERVED: 'Observed: stated by a person who looked', EXTRACTED: 'Extracted: read from the document as written', MODELED: 'Modelled: computed from other facts', INFERRED: 'Inferred: concluded from a convention',
+  OBSERVED: 'Observed: stated by a person who looked', EXTRACTED: 'Extracted: read from the document as written', MODELED: 'Modeled: computed from other facts', INFERRED: 'Inferred: concluded from a convention',
   VERIFIED: 'Verified: checked against its source by a reviewer', APPROVED: 'Approved: an engineer approved the conclusion',
 };
 export type DocKind = 'plan' | 'schedule' | 'bom';
@@ -90,7 +90,7 @@ export function readPlan(doc: Doc): PlanRead {
 /** A person gives the real length between two points of the drawing. It replaces whatever scale was read, and is theirs (OBSERVED). */
 export function calibrate(p: PlanRead, a: { x1: number; y1: number; x2: number; y2: number; metres: number }): PlanRead | { why: string } {
   const len = Math.hypot(a.x2 - a.x1, a.y2 - a.y1); if (![a.x1, a.y1, a.x2, a.y2, a.metres].every(Number.isFinite) || len < 1) return { why: 'Choose two different points on the drawing.' };
-  if (a.metres < 0.3 || a.metres > 200) return { why: 'Give the real distance between them in metres (0.3 to 200).' };
+  if (a.metres < 0.3 || a.metres > 200) return { why: 'Give the real distance between them in meters (0.3 to 200).' };
   return { ...p, unitsPerMetre: len / a.metres, scaleCls: 'OBSERVED', doubts: p.doubts.filter((d) => !/do not agree with each other/.test(d)), notes: [...p.notes, `The scale was set by a person: ${Math.round(len)} drawing units are ${a.metres} m.`] };
 }
 

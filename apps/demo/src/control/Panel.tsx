@@ -95,9 +95,9 @@ export function RoomPanel({ r, role, use, mode, onChange }: { r: RoomRecord; rol
                 {p.hears && <button type="button" className="rc-chip" aria-pressed={st.micMuted} disabled={!use} onClick={() => run({ type: 'micMute', on: !st.micMuted })} data-testid="rc-micmute">Mute the microphones</button>}
                 {(p.hears || p.cameras.length > 0) && <button type="button" className="rc-chip" aria-pressed={st.privacy} disabled={!use} onClick={() => run({ type: 'privacy', on: !st.privacy })} data-testid="rc-privacy">Privacy</button>}
               </div>
-              <div className="rc-meters" data-testid="rc-meters" aria-label={`Microphones ${meters.mic ? 'open' : 'closed'}, programme ${meters.program ? 'playing' : 'silent'}`}>
+              <div className="rc-meters" data-testid="rc-meters" aria-label={`Microphones ${meters.mic ? 'open' : 'closed'}, program ${meters.program ? 'playing' : 'silent'}`}>
                 <div><span>Microphones</span><svg className="rc-meter" width="100%" height="10" preserveAspectRatio="none" focusable="false" aria-hidden="true" data-v={meters.mic}><rect x="0" y="0" height="100%" width={`${Math.round(meters.mic * 100)}%`} rx="3" /></svg></div>
-                <div><span>Programme</span><svg className="rc-meter" width="100%" height="10" preserveAspectRatio="none" focusable="false" aria-hidden="true" data-v={meters.program}><rect x="0" y="0" height="100%" width={`${Math.round(meters.program * 100)}%`} rx="3" /></svg></div>
+                <div><span>Program</span><svg className="rc-meter" width="100%" height="10" preserveAspectRatio="none" focusable="false" aria-hidden="true" data-v={meters.program}><rect x="0" y="0" height="100%" width={`${Math.round(meters.program * 100)}%`} rx="3" /></svg></div>
                 <p className="ui-meta">A picture of the settings above, not a level: nothing here is measured.</p>
               </div>
             </div>
@@ -113,7 +113,7 @@ export function RoomPanel({ r, role, use, mode, onChange }: { r: RoomRecord; rol
               : <p className="pa-note">Nothing has been sent since this page opened. Operate the room and its commands appear here.</p>}
             <dl className="rc-conn" data-testid="rc-connection" data-connected={connected().length}>
               <dt>Connection</dt><dd>{SIMULATED.label}.</dd>
-              <dt>A real system</dt><dd>Connects through an adapter with the same contract: commands in, answers out, each answer with its source. None is written. It needs the customer’s authorisation for each room, credentials kept on a server and never in the page, a dry run, a rate limit, an emergency stop, and every command in the ledger before it is sent.</dd>
+              <dt>A real system</dt><dd>Connects through an adapter with the same contract: commands in, answers out, each answer with its source. None is written. It needs the customer’s authorization for each room, credentials kept on a server and never in the page, a dry run, a rate limit, an emergency stop, and every command in the ledger before it is sent.</dd>
               <dt>The baseline</dt><dd>Operating a room does not change what it was commissioned as: the panel’s state is not part of the room’s record.</dd>
             </dl>
           </Card>}

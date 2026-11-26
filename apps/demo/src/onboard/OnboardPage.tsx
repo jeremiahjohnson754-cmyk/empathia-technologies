@@ -34,8 +34,8 @@ export default function OnboardPage({ role, params, can }: PageProps) {
   return (
     <div className="pa ob" data-native="" data-testid="onboard" data-edition={held ? want : 'none'} data-rev={fresh.rev.rev}>
       <PageHero compact eyebrow="Onboard" title="IT Onboarding Success Guide" product="learn" icon="book"
-        lede="A new colleague’s first ninety days: what to learn, whom to meet, what to do, and how the people around them help. One programme, in four editions."
-        meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="d" small tone="muted">Draft: not yet reviewed by a practising IT manager</Chip>,
+        lede="A new colleague’s first ninety days: what to learn, whom to meet, what to do, and how the people around them help. One program, in four editions."
+        meta={[<Chip key="s" small tone="warn">Synthetic data</Chip>, <Chip key="d" small tone="muted">Draft: not yet reviewed by a practicing IT manager</Chip>,
           <span key="f" data-testid="ob-fresh" data-state={fresh.state}><Chip small tone={fresh.state === 'CURRENT' ? 'muted' : fresh.state === 'DUE' ? 'warn' : 'bad'}>Revision {fresh.rev.rev}, published {day(fresh.rev.at)} · {fresh.state === 'CURRENT' ? `review by ${day(fresh.rev.reviewBy)}` : fresh.state === 'DUE' ? `review due in ${plural(fresh.days, 'day')}` : `past its review date by ${plural(-fresh.days, 'day')}`}</Chip></span>]} />
 
       <nav className="ob-eds" aria-label="Editions" data-testid="ob-editions">{mine.map((e) => <a key={e} className="pa-own" href={`#/onboard/${e}`} data-edition={e} aria-current={held && e === want ? 'page' : undefined}><b>{EDITIONS[e].title}</b><span>{EDITIONS[e].forWhom}</span></a>)}</nav>
@@ -50,7 +50,7 @@ export default function OnboardPage({ role, params, can }: PageProps) {
         : <AdministratorEdition {...shared} />}
 
       <Notice tone="info">
-        <b>What this guide is.</b> A programme written for this demonstration from the founder’s list of contents, not yet reviewed by a practising IT manager. A check here is a count of right answers and a review is a manager’s record of a conversation: neither is a qualification. The people and the organisation are synthetic. What an organisation has not provided is shown as not recorded.
+        <b>What this guide is.</b> A program written for this demonstration from the founder’s list of contents, not yet reviewed by a practicing IT manager. A check here is a count of right answers and a review is a manager’s record of a conversation: neither is a qualification. The people and the organization are synthetic. What an organization has not provided is shown as not recorded.
       </Notice>
     </div>
   );
@@ -61,13 +61,13 @@ function Who({ p, opens }: { p: Profile; opens: Shared['opens'] }) {
   const missing = p.fields.filter((f) => f.value === null);
   const person = (label: string, x: Profile['manager']) => <div><dt>{label}</dt><dd>{x ? (opens(`#/people/${x.id}`) ? <a href={`#/people/${x.id}`}>{x.name}</a> : x.name) : 'Not recorded'}{x ? <span className="ui-meta"> · {x.title}</span> : null}</dd></div>;
   return (
-    <Card title="The starter" icon="users" sub="Read from the organisation’s own records when this page opens. Names are synthetic." testId="ob-profile">
+    <Card title="The starter" icon="users" sub="Read from the organization’s own records when this page opens. Names are synthetic." testId="ob-profile">
       <dl className="ob-facts">
-        <div><dt>Organisation</dt><dd>{fieldOf(p, 'employer')?.value}</dd></div>
+        <div><dt>Organization</dt><dd>{fieldOf(p, 'employer')?.value}</dd></div>
         <div><dt>Role</dt><dd>{fieldOf(p, 'role')?.value}{p.siteName ? ` at ${p.siteName}` : ''}{p.rooms ? ` · ${plural(p.rooms, 'room')}` : ''}</dd></div>
         {person('Starter', p.starter)}{person('Manager', p.manager)}{person('Mentor', p.mentor)}{person('Site champion', p.champion)}
       </dl>
-      {missing.length ? <p className="ob-note" data-testid="ob-missing">Not recorded by this organisation: {missing.map((f) => f.label.toLowerCase()).join(', ')}. Nothing is filled in for them.</p> : null}
+      {missing.length ? <p className="ob-note" data-testid="ob-missing">Not recorded by this organization: {missing.map((f) => f.label.toLowerCase()).join(', ')}. Nothing is filled in for them.</p> : null}
     </Card>
   );
 }
@@ -77,7 +77,7 @@ function ItemBody({ it, p, opens }: { it: Item; p: Profile; opens: Shared['opens
     <span className="ob-why">{it.why}</span>
     <span className="ob-tags"><Chip small tone="muted">{KIND[it.kind]}</Chip><Chip small tone="muted">{TOPICS[it.topic]}</Chip>{href && opens(href) ? <a href={href}>Open where this happens</a> : null}</span>
     {it.rubric ? <div className="ob-rubric"><span>What good looks like</span><ul>{it.rubric.map((r) => <li key={r}>{r}</li>)}</ul></div> : null}
-    {need && need.value === null ? <span className="ob-need" data-need={need.id}><Icon name="info" size={14} /> This organisation has not recorded its {need.label.toLowerCase()}. Ask your manager; nothing is assumed here.</span> : null}
+    {need && need.value === null ? <span className="ob-need" data-need={need.id}><Icon name="info" size={14} /> This organization has not recorded its {need.label.toLowerCase()}. Ask your manager; nothing is assumed here.</span> : null}
   </>);
 }
 function CheckForm({ id, sh }: { id: string; sh: Shared }) {
@@ -104,7 +104,7 @@ function EmployeeEdition(sh: Shared) {
   const { role, can, p, ph, act, opens } = sh; const own = isStarter(role); const sees = seesProgress(role);
   const total = ph.reduce((n, x) => n + x.total, 0); const done = ph.reduce((n, x) => n + x.done, 0);
   return (<>
-    {own ? <Who p={p} opens={opens} /> : <p className="ob-msg ob-msg--info" data-testid="ob-programme-only"><Icon name="info" size={18} /><span>You are reading the programme a new starter follows. {sees === 'none' || sees === 'counts' ? 'A starter’s own progress is shown to them, their manager and their mentor, and to nobody else.' : `The starter’s progress is in the ${sees} edition.`}</span></p>}
+    {own ? <Who p={p} opens={opens} /> : <p className="ob-msg ob-msg--info" data-testid="ob-programme-only"><Icon name="info" size={18} /><span>You are reading the program a new starter follows. {sees === 'none' || sees === 'counts' ? 'A starter’s own progress is shown to them, their manager and their mentor, and to nobody else.' : `The starter’s progress is in the ${sees} edition.`}</span></p>}
     {own ? <p className="ob-sum" data-testid="ob-progress" data-done={done} data-total={total}>{done} of {total} done · {plural(ph.filter((x) => x.met).length, 'milestone')} of {ph.length} met. Take the items in any order inside a phase.</p> : null}
     {ph.map((x) => (
       <section key={x.phase} className="ob-phase" aria-labelledby={`ob-ph-${x.phase}`} data-testid={`ob-phase-${x.phase}`} data-met={own && x.met ? 'yes' : 'no'} data-done={x.done}>
@@ -118,8 +118,8 @@ function EmployeeEdition(sh: Shared) {
             {own && !d && it.confirm === 'self' && can('onboard.done') ? <button type="button" className="ui-btn ui-btn--sm" data-testid={`ob-done-${it.id}`} onClick={() => act((n) => completeItem(n, role, it.id), `“${it.title}” marked done. It is your own word; your manager sees it.`)}>I have done this</button> : null}
           </li>))}</ol>
       </section>))}
-    <Card title="Certification pathways" icon="info" sub="What an organisation asks of a role is its own decision." testId="ob-pathways">
-      <p className="ob-note">This organisation has not recorded required training for the role, so none is listed. Examples of certifications people in this field hold: {PATHWAY_EXAMPLES.join(', ')}. Naming them here is not a requirement, a recommendation or an endorsement.</p>
+    <Card title="Certification pathways" icon="info" sub="What an organization asks of a role is its own decision." testId="ob-pathways">
+      <p className="ob-note">This organization has not recorded required training for the role, so none is listed. Examples of certifications people in this field hold: {PATHWAY_EXAMPLES.join(', ')}. Naming them here is not a requirement, a recommendation or an endorsement.</p>
     </Card>
   </>);
 }
@@ -168,7 +168,7 @@ function ManagerEdition(sh: Shared) {
     <Who p={p} opens={opens} />
     <Card title="Progress and milestones" icon="check" sub="A milestone is met when every item of its phase is done and its review is recorded. Nobody ticks it." testId="ob-progress-card"><Progress ph={ph} /></Card>
     <Card title="Access readiness" icon="lock" sub="Ready means tested by someone, not merely approved." testId="ob-access">
-      <p className="ob-note" data-ready={access?.done ? 'yes' : 'no'}>{access?.done ? `You confirmed on ${day(access.done.at)} that accounts and access are ready.` : 'Not confirmed yet. It is the second item below.'} {fieldOf(p, 'access')?.value === null ? 'This organisation has not recorded its access procedures, so the list of what to request is not shown here.' : ''}</p>
+      <p className="ob-note" data-ready={access?.done ? 'yes' : 'no'}>{access?.done ? `You confirmed on ${day(access.done.at)} that accounts and access are ready.` : 'Not confirmed yet. It is the second item below.'} {fieldOf(p, 'access')?.value === null ? 'This organization has not recorded its access procedures, so the list of what to request is not shown here.' : ''}</p>
     </Card>
     <section className="ob-phase" aria-labelledby="ob-mgr-h" data-testid="ob-manager-items"><header><h2 id="ob-mgr-h">Yours to do or confirm</h2><p className="ui-meta">Before day one, and at the points where the starter needs your decision.</p></header><ConfirmList items={mine} sh={sh} who="manager" /></section>
     <section className="ob-phase" aria-labelledby="ob-rev-h"><header><h2 id="ob-rev-h">Reviews</h2><p className="ui-meta">A record of a conversation: five ratings and what was agreed. The same five each time, so the three can be compared.</p></header>
@@ -185,7 +185,7 @@ function MentorEdition(sh: Shared) {
   const { p, ph, opens } = sh; const mine = ph.flatMap((x) => x.items).filter((x) => x.item.confirm === 'mentor');
   return (<>
     <Who p={p} opens={opens} />
-    <section className="ob-phase" aria-labelledby="ob-men-h" data-testid="ob-mentor-items"><header><h2 id="ob-men-h">Your coaching plan</h2><p className="ui-meta">What to show, what to watch, and what to say afterwards. An exercise is confirmed with its feedback; the starter reads it.</p></header><ConfirmList items={mine} sh={sh} who="mentor" /></section>
+    <section className="ob-phase" aria-labelledby="ob-men-h" data-testid="ob-mentor-items"><header><h2 id="ob-men-h">Your coaching plan</h2><p className="ui-meta">What to show, what to watch, and what to say afterward. An exercise is confirmed with its feedback; the starter reads it.</p></header><ConfirmList items={mine} sh={sh} who="mentor" /></section>
     <Card title="Where the starter is" icon="check" sub="Whether each phase’s items are done. You are not shown the starter’s own notes, their check answers or their reviews." testId="ob-mentor-progress">
       <div className="ob-scroll"><table className="ob-table" data-testid="ob-phases"><caption className="ui-sr">The starter’s progress by phase</caption><thead><tr><th scope="col">Phase</th><th scope="col">Items done</th><th scope="col">What they are learning</th></tr></thead>
         <tbody>{ph.map((x) => { const items = x.items.filter((i) => i.item.kind !== 'review'); return <tr key={x.phase} data-phase={x.phase}><th scope="row">{x.title}</th><td>{items.filter((i) => i.done).length} of {items.length}</td><td>{[...new Set(items.map((i) => TOPICS[i.item.topic]))].join(', ')}</td></tr>; })}</tbody></table></div>
@@ -206,10 +206,10 @@ function AdministratorEdition(sh: Shared) {
         <div className="ui-field"><label htmlFor="ob-pd">Review it within</label><select id="ob-pd" value={days} onChange={(e) => setDays(Number(e.target.value))} data-testid="ob-publish-days"><option value={90}>90 days</option><option value={180}>180 days</option><option value={365}>365 days</option></select></div>
         <div className="ob-row"><button type="submit" className="ui-btn ui-btn--primary" data-testid="ob-publish-go">Publish a revision</button></div>
       </form> : null}
-      <p className="ob-note">In this demonstration the programme’s text is fixed: publishing records a revision and its review date. Editing the text, and translating it, are not built. The programme exists in English only.</p>
+      <p className="ob-note">In this demonstration the program’s text is fixed: publishing records a revision and its review date. Editing the text, and translating it, are not built. The program exists in English only.</p>
       <ol className="ob-revs" data-testid="ob-revisions">{revs.map((r) => <li key={r.rev} data-rev={r.rev} data-state={r.state}><b>Revision {r.rev}</b><Chip small tone={r.state === 'PUBLISHED' ? 'ok' : 'muted'}>{r.state === 'PUBLISHED' ? 'Published' : 'Archived'}</Chip><span>{day(r.at)} by the {ROLES[r.by].label} · review by {day(r.reviewBy)}</span><span>{r.note}</span></li>)}</ol>
     </Card>
-    <Card title="What the organisation has provided" icon="info" sub="The guide is personalised only from these. What is not recorded is said on the page, never filled in." testId="ob-fields-card">
+    <Card title="What the organization has provided" icon="info" sub="The guide is personalized only from these. What is not recorded is said on the page, never filled in." testId="ob-fields-card">
       <div className="ob-scroll"><table className="ob-table" data-testid="ob-fields"><caption className="ui-sr">Tenant-specific information</caption><thead><tr><th scope="col">Information</th><th scope="col">Recorded</th><th scope="col">Read from</th></tr></thead>
         <tbody>{p.fields.map((f) => <tr key={f.id} data-field={f.id} data-recorded={f.value === null ? 'no' : 'yes'}><th scope="row">{f.label}</th><td>{f.value === null ? 'Not recorded' : f.id === 'reporting' || f.id === 'mentor' || f.id === 'contacts' ? 'Yes (names are shown to the starter and their manager)' : f.value}</td><td>{f.from}</td></tr>)}</tbody></table></div>
     </Card>
@@ -221,7 +221,7 @@ function AdministratorEdition(sh: Shared) {
     </Card>
     <Card title="Who holds which edition" icon="users" sub="By role. A starter never confirms a manager’s or a mentor’s item, and nobody rates themselves." testId="ob-holders">
       <dl className="ob-facts">{(Object.keys(EDITIONS) as Edition[]).map((e) => <div key={e}><dt>{EDITIONS[e].title}</dt><dd>{EDITIONS[e].holds} <span className="ui-meta">Held by: {(e === 'employee' ? OB_ROLES.programme : e === 'manager' ? OB_ROLES.manager : e === 'mentor' ? OB_ROLES.mentor : OB_ROLES.administrator).map((r) => ROLES[r].label).join(', ')}.{e === 'employee' ? ` The starter here is the ${ROLES[OB_ROLES.starter[0]!].label}.` : ''}</span></dd></div>)}</dl>
-      <p className="ob-note">{plural(ITEMS.length, 'item')}, {plural(CHECKS.length, 'check')}, {plural(COMPETENCIES.length, 'competency', 'competencies')}. {isAdministrator(role) && !isManager(role) && !isMentor(role) ? 'These role assignments are a modelling decision of this demonstration, awaiting the founder.' : ''}</p>
+      <p className="ob-note">{plural(ITEMS.length, 'item')}, {plural(CHECKS.length, 'check')}, {plural(COMPETENCIES.length, 'competency', 'competencies')}. {isAdministrator(role) && !isManager(role) && !isMentor(role) ? 'These role assignments are a modeling decision of this demonstration, awaiting the founder.' : ''}</p>
     </Card>
   </>);
 }

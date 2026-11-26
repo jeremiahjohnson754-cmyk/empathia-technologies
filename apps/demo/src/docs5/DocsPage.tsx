@@ -103,7 +103,7 @@ function Checklist({ role, can, sees }: PageProps) {
         </Card>
       </div>}
 
-      {narrow ? null : <Card title="Field captures" icon="camera" sub="Photographs, notes and measurements taken in the room and synchronised to this record. The photographs stay in this browser." testId="docs-captures">
+      {narrow ? null : <Card title="Field captures" icon="camera" sub="Photographs, notes and measurements taken in the room and synchronized to this record. The photographs stay in this browser." testId="docs-captures">
         {captures.length ? <ul className="d5-caps">{captures.map((c) => <li key={c.key} data-capture={c.key}><b><code>{c.key}</code> for {c.target.kind === 'test' ? `test ${c.target.id}` : w.docs.find((d) => d.type === c.target.id)?.title ?? c.target.id}</b>
           <span>{c.by.label} · {when(c.at)}{c.photo ? ` · ${c.photo.name} (${bytes(c.photo.bytes)}${c.photo.annotated ? ', annotated' : ''})` : ' · no photograph'}{c.measurements.length ? ` · ${plural(c.measurements.length, 'measurement')}` : ''}</span>
           {c.note ? <p>{c.note}</p> : null}

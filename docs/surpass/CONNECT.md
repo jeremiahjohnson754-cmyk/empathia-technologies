@@ -59,7 +59,7 @@ Stated assumptions of this directory (none comes from a record):
   | Forum and Resilience Quarter | Europe/London |
   | Lakeshore Regional Office | America/New_York |
   | Ridgeview Operations Site | America/Phoenix |
-  | Millbrook Distribution Centre | America/Los_Angeles |
+  | Millbrook Distribution Center | America/Los_Angeles |
 - **Working hours and shifts.** By kind of work (a champion 07:30–16:00, a backup 10:00–18:30, and so on); service technicians work an
   early (06:00–14:00) or late (13:00–21:00) shift, and the shift is what binds them.
 - **Names.** Invented from two lists; "(synthetic)" is said on every page. Addresses are on the reserved domain `empathia.example`;

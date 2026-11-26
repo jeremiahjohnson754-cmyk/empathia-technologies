@@ -42,12 +42,12 @@ interface HopDef {
 }
 /** The chain names records only. Labels, classes, counts, rooms and levels are read from the estate when the chain is built. */
 const DEF: readonly HopDef[] = [
-  { id: 'camera', asset: 'STA-CAM-MAIN-A01', does: 'Makes the picture.', tap: 'the operator’s viewfinder, reported over the intercom', link: 'Hybrid fibre camera cable', backup: null, team: 'broadcast', post: 'Camera crew at the platform' },
-  { id: 'fibre', asset: 'STA-CAM-MAIN-A02', does: 'Carries the picture, and the camera’s power and control, from the platform to the equipment room.', tap: null, link: 'Lands on the broadcast fibre patch', backup: 'STA-CAM-MAIN-A03', team: 'broadcast', post: 'Duty broadcast engineer' },
-  { id: 'patch', asset: 'STA-MER-A02', does: 'Joins each camera’s fibre to its camera control unit.', tap: 'the circuit lights on the patch field', link: 'Fibre lead to the camera control unit', backup: 'STA-CAM-MAIN-A03', team: 'technology', post: 'Venue technology engineer' },
-  { id: 'ccu', asset: 'STA-MER-A04', does: 'Powers and controls the camera, and turns what arrives on the fibre into a video signal.', tap: 'the unit’s link and output lights, shown on the camera control panel', link: 'Video to the router', backup: 'STA-MER-A05', team: 'broadcast', post: 'Vision engineer' },
+  { id: 'camera', asset: 'STA-CAM-MAIN-A01', does: 'Makes the picture.', tap: 'the operator’s viewfinder, reported over the intercom', link: 'Hybrid fiber camera cable', backup: null, team: 'broadcast', post: 'Camera crew at the platform' },
+  { id: 'fibre', asset: 'STA-CAM-MAIN-A02', does: 'Carries the picture, and the camera’s power and control, from the platform to the equipment room.', tap: null, link: 'Lands on the broadcast fiber patch', backup: 'STA-CAM-MAIN-A03', team: 'broadcast', post: 'Duty broadcast engineer' },
+  { id: 'patch', asset: 'STA-MER-A02', does: 'Joins each camera’s fiber to its camera control unit.', tap: 'the circuit lights on the patch field', link: 'Fiber lead to the camera control unit', backup: 'STA-CAM-MAIN-A03', team: 'technology', post: 'Venue technology engineer' },
+  { id: 'ccu', asset: 'STA-MER-A04', does: 'Powers and controls the camera, and turns what arrives on the fiber into a video signal.', tap: 'the unit’s link and output lights, shown on the camera control panel', link: 'Video to the router', backup: 'STA-MER-A05', team: 'broadcast', post: 'Vision engineer' },
   { id: 'router', asset: 'STA-BCR-A02', does: 'Sends each source to where it is needed: the switcher, the multiviewer wall and replay.', tap: 'the source status on the router control panel', link: 'Video to the production switcher', backup: null, team: 'broadcast', post: 'Duty broadcast engineer' },
-  { id: 'switcher', asset: 'STA-BCR-A01', does: 'Where the director cuts between cameras to make the programme.', tap: 'the camera’s input status on the switcher', link: 'Programme output', backup: null, team: 'broadcast', post: 'Technical director' },
+  { id: 'switcher', asset: 'STA-BCR-A01', does: 'Where the director cuts between cameras to make the program.', tap: 'the camera’s input status on the switcher', link: 'Program output', backup: null, team: 'broadcast', post: 'Technical director' },
 ];
 /** Where the loss is noticed: the wall the gallery watches. A record, like every hop. */
 const SEEN_AT = 'STA-BCR-A03';
@@ -75,7 +75,7 @@ export function chainOf(e: Estate = STADIUM): Chain {
 }
 export const hopOf = (c: Chain, id: HopId | null | undefined): Hop | null => c.hops.find((h) => h.id === id) || null;
 /** A hop's name for a sentence: the record's label, and which unit of it when the record counts several. */
-export const hopName = (h: Hop): string => (h.id === 'camera' ? `Camera ${CAMERA}` : h.id === 'fibre' ? `Camera ${CAMERA} fibre, primary path` : h.id === 'ccu' ? `Camera ${CAMERA} control unit` : h.asset.label);
+export const hopName = (h: Hop): string => (h.id === 'camera' ? `Camera ${CAMERA}` : h.id === 'fibre' ? `Camera ${CAMERA} fiber, primary path` : h.id === 'ccu' ? `Camera ${CAMERA} control unit` : h.asset.label);
 /** The places the chain passes through, in order, each once. */
 export const placesOf = (c: Chain): EstateNode[] => { const out: EstateNode[] = []; for (const h of c.hops) if (!out.some((p) => p.id === h.place.id)) out.push(h.place); return out; };
 
@@ -171,12 +171,12 @@ const PROC: Record<HopId, { title: string; restores: string; steps: Array<[strin
   camera: { title: `Restart camera ${CAMERA} from its control panel`, restores: `camera ${CAMERA} restarted from the camera control panel`,
     steps: [[TELL, 'switcher'], [`On the camera control panel in the Broadcast Control Room, use the panel’s own restart for camera ${CAMERA}. The camera crew stand back from the camera while it restarts.`, 'ccu'], ['Ask the camera operator whether the viewfinder shows a picture again.', 'camera'], [WALL, 'seen']],
     never: ['Nobody opens the camera or pulls its cable during the event.', 'Nobody leaves the platform floor or reaches over its rail.'], after: `If the restart does not bring the picture back, camera ${CAMERA} stays out of the show and the camera crew exchange it when the bowl is empty.` },
-  fibre: { title: `Move camera ${CAMERA} to its backup fibre path`, restores: `camera ${CAMERA} moved to the backup fibre path`,
-    steps: [[TELL, 'switcher'], [`On the camera control panel, choose the backup path for camera ${CAMERA}. The changeover is a labelled control made for this: no cable is moved.`, 'ccu'], [`Check the patch field’s circuit light for camera ${CAMERA} on the backup path.`, 'patch'], [WALL, 'seen']],
-    never: ['Nobody pulls, cleans or re-seats a fibre connector during the event.', 'Nobody goes to the cable route. It runs high in the stand and is inspected with the bowl empty, by people equipped for it.'], after: 'The primary path is marked out of use on its record and inspected after the event.' },
+  fibre: { title: `Move camera ${CAMERA} to its backup fiber path`, restores: `camera ${CAMERA} moved to the backup fiber path`,
+    steps: [[TELL, 'switcher'], [`On the camera control panel, choose the backup path for camera ${CAMERA}. The changeover is a labeled control made for this: no cable is moved.`, 'ccu'], [`Check the patch field’s circuit light for camera ${CAMERA} on the backup path.`, 'patch'], [WALL, 'seen']],
+    never: ['Nobody pulls, cleans or re-seats a fiber connector during the event.', 'Nobody goes to the cable route. It runs high in the stand and is inspected with the bowl empty, by people equipped for it.'], after: 'The primary path is marked out of use on its record and inspected after the event.' },
   patch: { title: `Take camera ${CAMERA} off the failed patch circuit, on its backup path`, restores: `camera ${CAMERA} moved to the backup path, which lands on another patch field`,
     steps: [[TELL, 'switcher'], [`On the camera control panel, choose the backup path for camera ${CAMERA}. It lands on a different patch field, so the failed circuit is no longer in the way. No patch lead is moved.`, 'ccu'], [`Check that the camera control unit shows its link for camera ${CAMERA}.`, 'ccu'], [WALL, 'seen']],
-    never: ['Nobody re-patches the fibre patch field during the event: one wrong lead takes another camera off the programme.', 'The equipment room is entered only by the people named for it.'], after: 'The failed circuit is marked out of use on the patch record and tested after the event.' },
+    never: ['Nobody re-patches the fiber patch field during the event: one wrong lead takes another camera off the program.', 'The equipment room is entered only by the people named for it.'], after: 'The failed circuit is marked out of use on the patch record and tested after the event.' },
   ccu: { title: `Assign camera ${CAMERA} to the standby camera control unit`, restores: `camera ${CAMERA} assigned to the standby camera control unit`,
     steps: [[TELL, 'switcher'], [`On the camera control panel, assign camera ${CAMERA} to the standby unit. The assignment is made on the panel: no cable is moved.`, 'ccu'], [`Check the standby unit’s link and output lights for camera ${CAMERA}.`, 'ccu'], [`Ask the vision engineer to match camera ${CAMERA} to the other cameras again. ${WALL}`, 'seen']],
     never: ['The failed unit stays in its rack, powered as it was found. Nobody pulls it, or its power lead, during the event.'], after: 'The failed unit is exchanged in the workshop after the event, and the standby goes back to being the standby.' },
@@ -185,14 +185,14 @@ const PROC: Record<HopId, { title: string; restores: string; steps: Array<[strin
     never: ['Nobody moves a video cable at the back of the router during the event.', 'Nobody restarts the router: every camera passes through it.'], after: 'The first input is marked out of use on the router’s record and tested after the event.' },
   switcher: { title: `Give camera ${CAMERA} a spare input on the production switcher`, restores: `camera ${CAMERA} given a spare input on the production switcher`,
     steps: [[`Tell the director the camera ${CAMERA} button will not work for a moment. The other cameras on the platform cover the play.`, 'switcher'], [`On the router control panel, send camera ${CAMERA} to the switcher’s spare input.`, 'router'], [`On the switcher’s set-up page, give that input to the camera ${CAMERA} button.`, 'switcher'], [`Ask the director to take camera ${CAMERA} to preview and back, then look at its tile on the multiviewer wall.`, 'seen']],
-    never: ['Nobody restarts the switcher during the event: the programme passes through it.', 'Nobody moves a cable at the back of the switcher.'], after: 'The failed input is marked out of use on the switcher’s record and tested after the event.' },
+    never: ['Nobody restarts the switcher during the event: the program passes through it.', 'Nobody moves a cable at the back of the switcher.'], after: 'The failed input is marked out of use on the switcher’s record and tested after the event.' },
 };
 /** The procedure for the hop the observations isolate. With nothing isolated, the only safe procedure is to hold and call for help. */
 export function procedureFor(c: Chain, hop: HopId | null): Procedure {
   const h = hopOf(c, hop);
   if (!h) return { id: 'hold', hop: null, title: `Keep camera ${CAMERA} out of the show and call the duty broadcast engineer`, restores: null,
     steps: [{ id: 'hold-1', do: TELL, at: 'switcher' }, { id: 'hold-2', do: 'Call the duty broadcast engineer and read out what each point of the chain shows.', at: 'seen' }],
-    never: ['Nothing is changed on a guess. A change made at the wrong point can take a working camera off the programme.'], after: 'The incident stays open until the failed point is found.', uses: c.seenAt ? [c.seenAt.asset.id] : [] };
+    never: ['Nothing is changed on a guess. A change made at the wrong point can take a working camera off the program.'], after: 'The incident stays open until the failed point is found.', uses: c.seenAt ? [c.seenAt.asset.id] : [] };
   const p = PROC[h.id]; const steps = p.steps.map(([text, where], i) => ({ id: `${h.id}-${i + 1}`, do: text, at: where }));
   const uses = new Set<string>([h.asset.id]); if (h.backup) uses.add(h.backup.id);
   for (const s of steps) { if (s.at === 'seen') { if (c.seenAt) uses.add(c.seenAt.asset.id); } else { const x = hopOf(c, s.at); if (x) uses.add(x.asset.id); } }
@@ -238,7 +238,7 @@ export interface Prior { id: string; day: string; asset: string; title: string; 
 export const PRIOR: readonly Prior[] = [
   { id: 'HLS-INC-0412', day: 'Simulated event day, 14 September 2026', asset: 'STA-CAM-MAIN-A02', title: 'Camera 3 picture broke up in the second half', cause: 'Water in the primary path’s connector at the platform', fix: 'Moved to the backup path for the event; the connector was replaced the next day', checkedBy: 'Event Producer / Show Caller', provenance: 'SYNTHETIC' },
   { id: 'HLS-INC-0388', day: 'Simulated event day, 30 August 2026', asset: 'STA-MER-A04', title: 'Camera 2 stopped answering its control panel', cause: 'A camera control unit stopped responding', fix: 'Camera 2 assigned to the standby unit; the failed unit was exchanged in the workshop', checkedBy: 'Venue Operations Lead', provenance: 'SYNTHETIC' },
-  { id: 'HLS-INC-0351', day: 'Simulated event day, 16 August 2026', asset: 'STA-BCR-A02', title: 'Router source for camera 5 showed black', cause: 'One input of the video router failed', fix: 'The second input was chosen for the event; the input was repaired afterwards', checkedBy: 'Event Producer / Show Caller', provenance: 'SYNTHETIC' },
+  { id: 'HLS-INC-0351', day: 'Simulated event day, 16 August 2026', asset: 'STA-BCR-A02', title: 'Router source for camera 5 showed black', cause: 'One input of the video router failed', fix: 'The second input was chosen for the event; the input was repaired afterward', checkedBy: 'Event Producer / Show Caller', provenance: 'SYNTHETIC' },
   { id: 'HLS-INC-0297', day: 'Simulated event day, 19 July 2026', asset: 'STA-CAM-MAIN-A02', title: 'Camera 3 lost its picture during warm-up', cause: 'The primary path was strained where it leaves the platform', fix: 'Moved to the backup path; the primary path was re-run after the event', checkedBy: 'Venue Operations Lead', provenance: 'SYNTHETIC' },
 ];
 export interface History { prior: Array<Prior & { hop: HopId }>; thisEvent: Array<{ id: string; title: string; step: Step; phase: string }>; summary: string[] }

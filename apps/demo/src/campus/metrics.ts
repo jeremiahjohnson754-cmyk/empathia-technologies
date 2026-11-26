@@ -137,17 +137,17 @@ export function spine(r: RoomRecord, w?: Workspace | null): Stage[] {
   const issues = roomIssues(r, w); const c = r.counts;
   const designed = r.events.some((e) => e.type === 'room.design_created') || r.outline.kind === 'earlier';
   const st: Stage[] = [
-    req ? { key: 'intake', label: 'Intake', state: 'DONE', detail: `${req.id} → ${prj!.id}`, source: 'programme request', href: '#/home' }
-      : { key: 'intake', label: 'Intake', state: 'NO_RECORD', detail: 'No request on record', source: 'programme (none for this room)' },
+    req ? { key: 'intake', label: 'Intake', state: 'DONE', detail: `${req.id} → ${prj!.id}`, source: 'program request', href: '#/home' }
+      : { key: 'intake', label: 'Intake', state: 'NO_RECORD', detail: 'No request on record', source: 'program (none for this room)' },
     designIssues.length ? { key: 'design', label: 'Design', state: 'BLOCKED', detail: `${designIssues.length} High design deficienc${designIssues.length === 1 ? 'y' : 'ies'} open`, source: 'engine design check' }
       : reached(r, 'DESIGN_APPROVED') ? { key: 'design', label: 'Design', state: 'DONE', detail: `Approved · revision ${r.baselines.length ? Math.max(...r.baselines.map((b) => b.revision)) : 1}`, source: 'room events' }
       : designed ? { key: 'design', label: 'Design', state: 'IN_PROGRESS', detail: 'Designed, not yet approved', source: 'room events' } : { key: 'design', label: 'Design', state: 'NO_RECORD', detail: 'No design on record', source: 'room record' },
     hw.length ? { key: 'selection', label: 'Selection', state: 'DONE', detail: `${hw.length} device position${hw.length === 1 ? '' : 's'}`, source: 'room positions' } : { key: 'selection', label: 'Selection', state: 'NO_RECORD', detail: 'No device on record', source: 'room positions' },
-    prj ? { key: 'project', label: 'Project', state: prj.delivery === 'CUSTOMER_ACCEPTED' ? 'DONE' : 'IN_PROGRESS', detail: `${prj.id} · ${prj.delivery.replace(/_/g, ' ').toLowerCase()}`, source: 'programme project' }
-      : { key: 'project', label: 'Project', state: 'NO_RECORD', detail: 'No project', source: 'programme (none for this room)' },
-    fund.length ? { key: 'procurement', label: 'Procurement', state: 'DONE', detail: `${fund.reduce((s, f) => s + f.amount, 0).toLocaleString('en-US')} USD authorized`, source: 'programme funding' }
-      : dec.length ? { key: 'procurement', label: 'Procurement', state: 'IN_PROGRESS', detail: `${dec[dec.length - 1]!.decision.toLowerCase()} (scope ${dec[dec.length - 1]!.scopeRev}), not funded`, source: 'programme decisions' }
-      : { key: 'procurement', label: 'Procurement', state: 'NO_RECORD', detail: 'No record', source: 'programme (none for this room)' },
+    prj ? { key: 'project', label: 'Project', state: prj.delivery === 'CUSTOMER_ACCEPTED' ? 'DONE' : 'IN_PROGRESS', detail: `${prj.id} · ${prj.delivery.replace(/_/g, ' ').toLowerCase()}`, source: 'program project' }
+      : { key: 'project', label: 'Project', state: 'NO_RECORD', detail: 'No project', source: 'program (none for this room)' },
+    fund.length ? { key: 'procurement', label: 'Procurement', state: 'DONE', detail: `${fund.reduce((s, f) => s + f.amount, 0).toLocaleString('en-US')} USD authorized`, source: 'program funding' }
+      : dec.length ? { key: 'procurement', label: 'Procurement', state: 'IN_PROGRESS', detail: `${dec[dec.length - 1]!.decision.toLowerCase()} (scope ${dec[dec.length - 1]!.scopeRev}), not funded`, source: 'program decisions' }
+      : { key: 'procurement', label: 'Procurement', state: 'NO_RECORD', detail: 'No record', source: 'program (none for this room)' },
     r.installations.length && reached(r, 'INSTALLED_UNVERIFIED') ? { key: 'installation', label: 'Installation', state: 'DONE', detail: `${r.installations.filter((x) => !x.removedAt).length} units installed`, source: 'installations' }
       : reached(r, 'INSTALLATION_PENDING') ? { key: 'installation', label: 'Installation', state: 'IN_PROGRESS', detail: 'Installation pending', source: 'room lifecycle' } : { key: 'installation', label: 'Installation', state: 'NOT_STARTED', detail: 'Not installed', source: 'room lifecycle' },
     !c.applicable || c.applicable === c.notTested ? { key: 'commissioning', label: 'Commissioning', state: reached(r, 'COMMISSIONING') ? 'IN_PROGRESS' : 'NOT_STARTED', detail: c.applicable ? `0 of ${c.applicable} tests recorded` : 'No applicable test', source: 'engine results' }
@@ -218,7 +218,7 @@ export function roomFacts(r: RoomRecord): RoomFacts {
   const WORD: Record<string, string> = { unit: 'a unit replaced', baseline: 'a baseline pending', issue: 'an issue opened', lifecycle: 'a lifecycle change', exception: 'an exception requested' };
   return {
     positions: hw.length, models: new Set(hw.map((p) => p.cat)).size,
-    poe: sw ? { draw, budget, source: 'declared catalogue values, not measured' } : null,
+    poe: sw ? { draw, budget, source: 'declared catalog values, not measured' } : null,
     coverage: cams.length && seats.length ? { seats: seats.length * perBlock, covered, source: 'modeled from the plan: field of view and 9 m reach, not a verified sightline' } : null,
     drift: { dimensions: dims.size, items: [...dims].map((k) => WORD[k] || k) },
   };

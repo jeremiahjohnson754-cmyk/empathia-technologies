@@ -65,7 +65,7 @@ function worldScene(cam: Cam, w: LiteWorld): L3Scene {
   poly(sc, 0, [[-10, -10, -0.05], [W + 10, -10, -0.05], [W + 10, D + 10, -0.05], [-10, D + 10, -0.05]], { f: 'rgba(30,44,36,.9)', s: 'none' });
   for (const p of placed) { const to = worldPlaceHref(w, p.b.id); const n = roomsUnder(ix, p.b.id).length;
     box(sc, cam, { x: p.x + p.w / 2, y: p.y + p.d / 2, w: p.w, d: p.d, h: 3.6 * p.levels }, BLD, { stroke: 'rgba(255,246,232,.3)', nav: to });
-    label(sc, [p.x + p.w / 2, p.y + p.d / 2, 3.6 * p.levels + 0.5], short(p.b.name.replace(/ (Building|Centre|Hall|House)$/, ''), 16), { cls: 'soft', nav: to, testId: `lw-bld-label-${p.b.id}` });
+    label(sc, [p.x + p.w / 2, p.y + p.d / 2, 3.6 * p.levels + 0.5], short(p.b.name.replace(/ (Building|Centre|Center|Hall|House)$/, ''), 16), { cls: 'soft', nav: to, testId: `lw-bld-label-${p.b.id}` });
     hit(sc, [p.x + p.w / 2, p.y + p.d / 2, 1.8 * p.levels], { nav: to, r: 20, label: `${p.b.name}: ${n} rooms. Opens the building.`, testId: `lw-bld-${p.b.id}` }); }
   return sc;
 }
@@ -156,11 +156,11 @@ function WorldRoom({ w, n, role, query }: PageProps & { w: LiteWorld; n: EstateN
     <Crumbs w={w} trail={[...(building ? [[building.name, worldPlaceHref(w, building.id)] as [string, string]] : []), ...(level ? [[level.name, worldLevelHref(w, level.id)] as [string, string]] : []), [n.name, null]]} />
     <PageHero product="lite" icon="room" plain eyebrow={`${WORLD_NAME[w]} · ${n.type.replace(/-/g, ' ')}${n.capacity ? ` · ${n.capacity} places` : ''}`} title={n.name} />
     {prog ? <figure className="stage lt-stage lt-stage--room" data-stage=""><EmpathiaRoomStage P={prog} label={`${n.name}, furnished, in 3D. Turn, tilt and zoom with the buttons, the arrow keys or a drag; each piece is a button.`} initialEye={query.get('eye')} onEye={(k) => { const q = new URLSearchParams(query); if (k) q.set('eye', k); else q.delete('eye'); setQuery(base, q); }} />
-      <figcaption className="stage__cap">{prog.title}, designed by Empathia from the estate’s record: {L} × {Wd} m, {H} m high{n.capacity ? `, ${n.capacity} places` : ''}, and its equipment. {prog.summary} Modelled, not surveyed.</figcaption></figure>
+      <figcaption className="stage__cap">{prog.title}, designed by Empathia from the estate’s record: {L} × {Wd} m, {H} m high{n.capacity ? `, ${n.capacity} places` : ''}, and its equipment. {prog.summary} Modeled, not surveyed.</figcaption></figure>
       : redesign ? <EmptyState title="Being redesigned" icon="room">A {n.type.replace(/-/g, ' ')} is being given its own Empathia layout; the nearest V2.5.3 room type was not a fair picture of it, so it is not drawn until the new one is ready. {level ? <a href={worldLevelHref(w, level.id)}>See it on {level.name}</a> : null}</EmptyState>
       : furnished ? <figure className="stage lt-stage lt-stage--room" data-stage="">
       <V253RoomStage roomId={n.id} lens={lens} state="current" layers={new Set(['furniture', 'av'])} overlays={ov} role={role} sel={pick} onPick={(p) => setPick(p ? p.obj.id : null)} label={`${n.name}, furnished, in 3D. Turn, tilt and zoom with the buttons, the arrow keys or a drag.`} />
-      <figcaption className="stage__cap">Drawn by V2.5.3’s layout for this type of room, from the estate’s record: {L} × {Wd} m, {H} m high{n.capacity ? `, ${n.capacity} places` : ''}, and its equipment classes. Modelled, not surveyed.</figcaption></figure>
+      <figcaption className="stage__cap">Drawn by V2.5.3’s layout for this type of room, from the estate’s record: {L} × {Wd} m, {H} m high{n.capacity ? `, ${n.capacity} places` : ''}, and its equipment classes. Modeled, not surveyed.</figcaption></figure>
       : fixtures ? <figure className="stage lt-stage lt-stage--room" data-stage=""><FixtureRoom n={n} F={fixtures} eye={query.get('eye')} onEye={(k) => { const q = new URLSearchParams(query); if (k) q.set('eye', k); else q.delete('eye'); setQuery(base, q); }} />
         <figcaption className="stage__cap">Furnished by Empathia’s own layout for a {n.type.replace(/-/g, ' ')} (V2.5.3 never drew one), from the record’s size{n.capacity ? ` and ${n.capacity} places` : ''}. Illustrative: no fixture here is a surveyed or verified asset.</figcaption></figure>
       : <EmptyState title="Shown on its floor, not furnished" icon="room">A {n.type.replace(/-/g, ' ')} is not one of the room types V2.5.3 drew, so nothing is invented for it. {level ? <a href={worldLevelHref(w, level.id)}>See it on {level.name}</a> : null}</EmptyState>}

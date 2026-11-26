@@ -27,7 +27,7 @@ export const DESTINATIONS: Destination[] = [
   { path: 'signal', label: 'SIGNAL', group: 'Expansion products', product: 'signal', blurb: 'Story mode.' },
   { path: 'onboard', label: 'Onboard', group: 'Expansion products', product: 'onboard', blurb: 'A new hire’s first milestone.' },
   { path: 'experiences', label: 'Experiences', group: 'Expansion products', product: 'experiences', blurb: 'Guided tours; UE5 planned.' },
-  { path: 'collaboro-sing', label: 'Collaboro-Sing', group: 'Expansion products', product: 'collaboro-sing', blurb: 'Remote rehearsal.' },
+  { path: 'collaboro-sing', label: 'Collabora-SING', group: 'Expansion products', product: 'collaboro-sing', blurb: 'Remote rehearsal.' },
   { path: 'frontline', label: 'Frontline', group: 'Expansion products', product: 'frontline', blurb: 'Frontline teams.' },
   { path: 'scenarios', label: 'Interactive Scenarios', group: 'Experience', blurb: 'Step-by-step journeys through the real pages.' },
   { path: 'media', label: 'Media Library', group: 'Experience', blurb: 'Every finished film, with its rights status.' },

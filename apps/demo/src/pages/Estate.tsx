@@ -138,7 +138,7 @@ export function AssurancePage({ perspective, hash = '' }: { perspective: string;
     <section className="wk" data-native="workspace" data-testid="assurance">
       <PageHero product="commissioning" icon="pulse" eyebrow="Assurance · command center" title="Assurance"
         lede={<>Is the estate still behaving the way it was designed and commissioned to behave? <b>{plural(n('failed'), 'room')}</b> failed a check and <b>{n('drift')}</b> drifted from their baseline{first ? <>; <b>{roomName(first.r)}</b> comes first: {first.why}</> : null}. {nAtt ? <><b>{plural(nAtt, 'high or mission-critical room')}</b> {nAtt === 1 ? 'needs' : 'need'} attention before the next session.</> : <>Every high and mission-critical room is ready for its next session.</>}</>}
-        meta={[<Chip key="s" small tone="muted">Modelled · not live monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
+        meta={[<Chip key="s" small tone="muted">Modeled · not live monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         aside={<ScoreBlock value={n('matched')} max={recs.length} label="Rooms that match their baseline" />} />
       <V25Nav role={perspective} current="#/assurance" />
       <AssuranceTabs role={perspective} current="#/assurance" />
@@ -166,7 +166,7 @@ export function AssurancePage({ perspective, hash = '' }: { perspective: string;
       <AssuranceInsights role={perspective} w={w} />
       <ExportMenu testId="estate-export" data={{ role: perspective, roles: DATA_EXPORT_ROLES }} title="Portfolio brief" sub={`${drill.b ? `${buildingByKey(drill.b)?.name}${drill.f != null ? `, floor ${drill.f}` : ''}` : 'The campus'}: by building, by room type and room by room, as a PDF`} by={persona}
         make={() => estatePackage(all, w.incidents, { role: personaLabel(persona), at: new Date().toISOString(), build: process.env.DEMO_BUILD_ID || 'dev' }, { building: drill.b || undefined, floor: drill.f ?? undefined })} />
-      <Foot>Assurance here is modelled from synthetic records; nothing is monitored live, and no claim of operational health is made without live evidence.</Foot>
+      <Foot>Assurance here is modeled from synthetic records; nothing is monitored live, and no claim of operational health is made without live evidence.</Foot>
     </section>
   );
 }
@@ -192,13 +192,13 @@ export function ProPage({ perspective, hash = '' }: { perspective: string; hash?
       <ProTabs role={perspective} current="#/pro" />
       <PageHero product="pro" plain icon="chart" eyebrow="Pro · command center" title="Command center"
         lede={<>What is open right now, how it stands against its target, and where to look next. <b>{plural(working.length, 'issue')}</b> open across <b>{plural(needRooms.size, 'room')}</b>; <b>{inc.filter(late).length}</b> service {inc.filter(late).length === 1 ? 'job is' : 'jobs are'} past target.</>}
-        meta={[<Chip key="s" small tone="muted">Modelled · not production monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
+        meta={[<Chip key="s" small tone="muted">Modeled · not production monitoring</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]}
         actions={<><a className="ui-btn ui-btn--primary" href="#/v25/exec">Executive passports</a><a className="ui-btn" href="#/service">Dispatch board</a></>} />
       <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Open issues" value={working.length} icon="alert" tone="pro" hint={`${inc.length} service jobs · ${roomIssues.length} room deficiencies`} />
         <StatTile label="Past their target" value={inc.filter(late).length} unit={`of ${inc.length}`} icon="clock" tone="bad" spark={backlog} delta={deltaOf(backlog, 'down', 'open vs 4 wk ago', { level: true })} />
         <StatTile label="Rooms that need action" value={needRooms.size} unit={`of ${recs.length}`} icon="room" tone="warn" href="#/assurance" hint="An issue open or commissioning blocked" />
-        <StatTile label="Devices on record" value={devices} icon="device" tone="info" hint="Modelled positions, class templates only" />
+        <StatTile label="Devices on record" value={devices} icon="device" tone="info" hint="Modeled positions, class templates only" />
       </div>
       <div className="wk-g2 wk-g2--wide">
         <Card icon="inbox" tone="pro" title="Working now" sub="Past target first, then by severity" testId="pro-working">

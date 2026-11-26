@@ -162,7 +162,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
                       <span className="cs-chain__s">{r?.reading ? <><Icon name={READ_ICON[r.reading]} size={14} /> {fixed && failed === h.id ? 'On its standby' : READING_WORD[r.reading]}</> : 'No loss on record'}</span>
                     </li>); })}
                 </ol>
-                <figcaption className="cs-fig__cap" data-testid="signal-caption">{!inc ? 'The six records the picture passes through, from the camera to the programme.' : fixed ? `${isoHop ? hopName(isoHop) : 'The failed item'} is on its standby. Every point shows the picture passing (simulated).` : isoHop ? `The loss starts at ${hopName(isoHop).toLowerCase()} (${iso.by === 'INFERRED' ? 'inferred' : 'simulated indication'}). Before it the picture passes; after it nothing arrives.` : 'No single point is isolated.'}</figcaption>
+                <figcaption className="cs-fig__cap" data-testid="signal-caption">{!inc ? 'The six records the picture passes through, from the camera to the program.' : fixed ? `${isoHop ? hopName(isoHop) : 'The failed item'} is on its standby. Every point shows the picture passing (simulated).` : isoHop ? `The loss starts at ${hopName(isoHop).toLowerCase()} (${iso.by === 'INFERRED' ? 'inferred' : 'simulated indication'}). Before it the picture passes; after it nothing arrives.` : 'No single point is isolated.'}</figcaption>
               </figure>}
         </aside>
 
@@ -170,7 +170,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
           {step === 'alert' && <div data-testid="signal-alert">
             {head('alert')}
             {!inc ? <>
-              <p>No camera feed is lost at this point of the event. The broadcast programme chain reads {SYS_WORD[sys.broadcast].toLowerCase()}.</p>
+              <p>No camera feed is lost at this point of the event. The broadcast program chain reads {SYS_WORD[sys.broadcast].toLowerCase()}.</p>
               {mayWork ? <p className="cs-acts"><button type="button" className="ui-btn ui-btn--primary" data-testid="signal-simulate" onClick={() => run((nx) => simulateLoss(nx, g, actor))}>Simulate the loss of camera {CAMERA}</button></p>
                 : <p className="ui-meta">The {config.label} checks a fix. The scenario is started by the broadcast and engineering roles, here or on the game-day page.</p>}
             </> : <>
@@ -264,7 +264,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
               <p className="ui-meta">{isoHop ? `Chosen because the observations isolate ${hopName(isoHop).toLowerCase()}.` : 'Chosen because the observations isolate nothing.'} A different failed point would give a different procedure.</p>
               <ol className="cs-steps">{proc.steps.map((s) => { const at = s.at === 'seen' ? chain.seenAt?.asset : hopOf(chain, s.at)?.asset; return <li key={s.id} data-step-id={s.id}><span>{s.do}</span>{at && <span className="ui-meta">At: {at.label.toLowerCase()}</span>}</li>; })}</ol>
               <Notice tone="warn"><b>What nobody does during the event</b><ul className="cs-why">{proc.never.map((x) => <li key={x}>{x}</li>)}</ul></Notice>
-              <p className="ui-meta">Afterwards: {proc.after}</p>
+              <p className="ui-meta">Afterward: {proc.after}</p>
               <div className="cs-svc" data-testid="signal-service" data-servicehands="not-raised">
                 <h3 className="cs-h3">The service record</h3>
                 <p>This incident’s service steps are kept on the game-day record as <b>{inc.id}</b>: {(['ACKNOWLEDGED', 'DISPATCHED', 'FIXED', 'VERIFIED'] as const).map((s) => `${s.toLowerCase()}${inc.by[s] ? ` by the ${inc.by[s]}` : ' not yet'}`).join('; ')}.</p>
@@ -281,7 +281,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
           {step === 'outcome' && <div data-testid="signal-outcome">
             {head('outcome')}
             {!inc ? <p>No loss is on record, so there is no outcome to record.</p>
-              : fixed ? <div className="cs-done" data-testid="signal-fixed"><p><b>Recorded as fixed by the {inc.by.FIXED}.</b></p><p>{cap(inc.notes?.FIXED || proc.restores || '')}.</p><p className="ui-meta">The broadcast programme chain now reads “{SYS_WORD[sys.broadcast].toLowerCase()}”. A fix counts once someone else has checked it.</p></div>
+              : fixed ? <div className="cs-done" data-testid="signal-fixed"><p><b>Recorded as fixed by the {inc.by.FIXED}.</b></p><p>{cap(inc.notes?.FIXED || proc.restores || '')}.</p><p className="ui-meta">The broadcast program chain now reads “{SYS_WORD[sys.broadcast].toLowerCase()}”. A fix counts once someone else has checked it.</p></div>
               : inc.step !== 'DISPATCHED' ? <p data-testid="signal-outcome-wait">The procedure has not been started yet. <button type="button" className="cs-link" onClick={() => go(inc.step === 'OPEN' ? 'alert' : 'procedure')}>{inc.step === 'OPEN' ? 'Go to the alert' : 'Go to the procedure'}</button></p>
               : !mayWork ? <p className="ui-meta">Recording the outcome is for the broadcast and engineering roles. The {config.label} checks the fix once it is recorded.</p>
               : <>
@@ -344,7 +344,7 @@ function Incident({ role, config, query }: { role: PageProps['role']; config: Ro
           {step === 'return' && <div data-testid="signal-return" data-verified={inc?.step === 'VERIFIED' || undefined}>
             {head('return')}
             {!inc ? <p>No incident was worked. The event is as it was.</p>
-              : inc.step === 'VERIFIED' ? <p><b>{inc.id} is closed.</b> The broadcast programme chain reads “{SYS_WORD[sys.broadcast].toLowerCase()}”{next ? `, and ${PHASE[next].label.toLowerCase()} is ${held.length ? 'held by something else' : 'not held'}` : ''}. The game-day page reads the same record, so it shows the same.</p>
+              : inc.step === 'VERIFIED' ? <p><b>{inc.id} is closed.</b> The broadcast program chain reads “{SYS_WORD[sys.broadcast].toLowerCase()}”{next ? `, and ${PHASE[next].label.toLowerCase()} is ${held.length ? 'held by something else' : 'not held'}` : ''}. The game-day page reads the same record, so it shows the same.</p>
               : <p data-testid="signal-return-open">{inc.id} is not finished: it is {STATE_WORD[inc.step].toLowerCase()}. The game-day page shows it as it stands, and it can be picked up again from there.</p>}
             <p className="cs-acts"><a className="ui-btn ui-btn--primary" href={gameday} data-testid="signal-return-event">Return to the event</a></p>
             <h3 className="cs-h3">The same event from a seat</h3>

@@ -27,7 +27,7 @@ export const VOICE_PAGES: readonly PageDef[] = [
     path: '/voice/callpath/:room', authority: { roles: [...VOICE_ADMIN, ...VOICE_OPS], why: WHY },
     // site scope: a room on a site outside VOICE_SITE_SCOPE is refused to the site-scoped roles (the UC / Voice Administrator and the service team)
     authorityFor: (params) => { const r = roomById(params['room'] || ''); return r && !VOICE_SITE_SCOPE.includes(r.building) ? { roles: [...VOICE_ADMIN, ...VOICE_OPS].filter((k) => !SITE_SCOPED.includes(k)), why: WHY_SCOPE } : undefined; },
-    sections: [{ id: 'voice.signalling', label: 'Session token and signalling-side detail', authority: { roles: [...VOICE_ADMIN], why: `${WHY}; operations and service roles read the path without signalling detail` } }],
+    sections: [{ id: 'voice.signalling', label: 'Session token and signaling-side detail', authority: { roles: [...VOICE_ADMIN], why: `${WHY}; operations and service roles read the path without signaling detail` } }],
     load: () => import('./voice/CallPathPage.js'),
     search: { keywords: 'callpath call path call flow digital twin hop endpoint switch uplink sbc provider packet loss jitter', aliases: ['call path', 'call flow', 'callpath atlas 4.218'], href: '#/voice/callpath/R-ATL-4-218' },
   },

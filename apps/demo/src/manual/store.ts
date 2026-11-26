@@ -55,7 +55,7 @@ const isDate = (x: unknown): x is string => typeof x === 'string' && !Number.isN
 const rec = (v: unknown) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}) as Record<string, unknown>;
 const text = (s: unknown, n: number) => (typeof s === 'string' ? s.replace(/[\u0000-\u001f<>]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n) : '');
 const isRole = (x: unknown): x is RoleKey => typeof x === 'string' && (ROLE_KEYS as readonly string[]).includes(x);
-const seedRevision = (seededAt: string): Revision => ({ rev: 1, at: seededAt, by: 'architect', note: 'First edition for this organisation, seeded with the demonstration. No value is set.', reviewBy: new Date(Date.parse(seededAt) + 180 * DAY).toISOString(), state: 'IN_FORCE', values: {}, siteAdds: [] });
+const seedRevision = (seededAt: string): Revision => ({ rev: 1, at: seededAt, by: 'architect', note: 'First edition for this organization, seeded with the demonstration. No value is set.', reviewBy: new Date(Date.parse(seededAt) + 180 * DAY).toISOString(), state: 'IN_FORCE', values: {}, siteAdds: [] });
 
 const readValues = (v: unknown): Record<string, HeldValue> => { const out: Record<string, HeldValue> = {}; for (const [id, x] of Object.entries(rec(v))) { const r = rec(x); const value = text(r['value'], 60); const source = text(r['source'], 160); if (valueById(id) && value && source.length >= 8) out[id] = { value, source }; } return out; };
 const readAdds = (v: unknown): SiteAddition[] => (Array.isArray(v) ? v : []).map(rec).filter((a) => /^SA-\d{3}$/.test(String(a['id'])) && typeof a['building'] === 'string' && principleById(String(a['principle'])) && text(a['text'], 300).length >= 12 && isDate(a['at']) && isRole(a['by']) && isOwner(a['by'])).slice(0, 40)
@@ -108,7 +108,7 @@ export function setValue(w: S.Workspace, role: RoleKey, id: string, value: strin
   const def = valueById(id); if (!def) return { why: ['The manual names no such value.'] };
   const v = text(value, 60); const src = text(source, 160);
   if (!v) return { why: ['Write the value, with its unit.'] };
-  if (src.length < 8) return { why: ['Say where the value comes from: the standard your organisation licenses, the maker’s specification, or your own measured baseline. A value without a source is not recorded.'] };
+  if (src.length < 8) return { why: ['Say where the value comes from: the standard your organization licenses, the maker’s specification, or your own measured baseline. A value without a source is not recorded.'] };
   const s = st(w); s.values[id] = { value: v, source: src, at: new Date().toISOString(), by: role };
   log(w, personaOf(role), 'manual.value_set', 'manual', `${def.name} was set in the working copy, with its source (${src.slice(0, 80)}). It is not in force until a revision is adopted`);
   return { ok: true };
@@ -133,7 +133,7 @@ export function adopt(w: S.Workspace, role: RoleKey, note: string, reviewInDays 
   const at = new Date(); const prev = inForce(s); const values: Record<string, HeldValue> = { ...prev.values }; for (const [id, v] of Object.entries(s.values)) values[id] = { value: v.value, source: v.source };
   const p = pending(s); prev.state = 'ARCHIVED';
   s.revisions.push({ rev: prev.rev + 1, at: at.toISOString(), by: role, note: n, reviewBy: new Date(at.getTime() + reviewInDays * DAY).toISOString(), state: 'IN_FORCE', values, siteAdds: s.siteAdds.map((a) => ({ ...a })) });
-  log(w, personaOf(role), 'manual.revision_adopted', 'manual', `Revision ${prev.rev + 1} of the organisation’s edition was adopted (${p.values.length} values and ${p.adds.length} building additions brought into force; review in ${reviewInDays} days). Revision ${prev.rev} is archived as it stood. The manual’s own text was not reviewed by this act · ${n.slice(0, 100)}`);
+  log(w, personaOf(role), 'manual.revision_adopted', 'manual', `Revision ${prev.rev + 1} of the organization’s edition was adopted (${p.values.length} values and ${p.adds.length} building additions brought into force; review in ${reviewInDays} days). Revision ${prev.rev} is archived as it stood. The manual’s own text was not reviewed by this act · ${n.slice(0, 100)}`);
   return { ok: true, rev: prev.rev + 1 };
 }
 

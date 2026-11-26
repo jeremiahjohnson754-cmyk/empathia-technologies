@@ -13,7 +13,7 @@ import { ADDONS } from './build-view.js';
 import { CONNECTORS } from '../../../packages/commercial/src/generated/connectors.ts';
 
 const CAVEAT = PILOTS[0]!.caveat;
-const REPLACED_NAME: Record<string, string> = { 'PRO-ROOM': 'Room licences (standard and large)', 'CORE-ENTERPRISE': 'Annual platform fee', 'CORE-STARTER': 'Annual platform fee', 'SEAT-ENTERPRISE': 'Licensed user' };
+const REPLACED_NAME: Record<string, string> = { 'PRO-ROOM': 'Room licenses (standard and large)', 'CORE-ENTERPRISE': 'Annual platform fee', 'CORE-STARTER': 'Annual platform fee', 'SEAT-ENTERPRISE': 'Licensed user' };
 /** a product's name; a line the price books replaced is named by what replaced it */
 const skuName = (id: string) => REPLACED_NAME[id] || SKUS.find((s) => s.sku === id)?.name || id;
 const Price = ({ cents, unit }: { cents: number; unit: string }) => <div className="price"><b>{cents === 0 ? <>Free <span className="price__zero">({usd(0)})</span></> : usd(cents)}</b><span>{unit}</span></div>;
@@ -36,7 +36,7 @@ const ProPilot = () => (
 function pricingPage(demoUrl: string): Page {
   return { path: '/pricing', nav: 'Pricing', script: 'build.js', title: 'Pricing: build your Empathia — Empathia Technologies', description: 'Choose your rooms, people and options and see the proposed list price every year, once, and over three and five years, line by line; four estates side by side; the pilots.', body: (
     <>
-      <Hero label="Pricing" title="See what Empathia costs before you talk to anyone" lead="A platform fee once a year, a licence for each room (its first 8 or 20 devices included) and each person by the month, and optional hardware once. Choose your estate and every line is added up in front of you.">
+      <Hero label="Pricing" title="See what Empathia costs before you talk to anyone" lead="A platform fee once a year, a license for each room (its first 8 or 20 devices included) and each person by the month, and optional hardware once. Choose your estate and every line is added up in front of you.">
         <ListPrice3 />
         <Actions><a className="btn btn--primary btn--lg" href="#build">Build your Empathia</a><a className="btn btn--lg" href="#four">Four estates side by side</a></Actions>
       </Hero>
@@ -68,9 +68,9 @@ function cataloguePage(): Page {
   const rest = SKUS.filter((s) => s.family !== 'SIGNAL' && !isSuperseded(s.sku));
   const replaced = PRICE_BOOK.superseded.map((r) => ({ r, s: SKUS.find((x) => x.sku === r.sku)! }));
   const families = FAMILIES.filter((f) => rest.some((s) => s.family === f));
-  return { path: '/pricing/catalogue', title: 'Full price list — Empathia Technologies', description: `The Empathia list prices: the platform fee, room and user licences of price book 3, ${SKUS.length - PRICE_BOOK.superseded.length} products by family, ${BUNDLES.length} bundles, the SIGNAL terms and the pilot packages, each with its scope and limits.`, body: (
+  return { path: '/pricing/catalogue', title: 'Full price list — Empathia Technologies', description: `The Empathia list prices: the platform fee, room and user licenses of price book 3, ${SKUS.length - PRICE_BOOK.superseded.length} products by family, ${BUNDLES.length} bundles, the SIGNAL terms and the pilot packages, each with its scope and limits.`, body: (
     <>
-      <Hero label="Pricing · full catalogue" title="The full price list, line by line" lead={`The platform fee, room and user licences of price book 3, then ${SKUS.length - PRICE_BOOK.superseded.length} products priced one by one, ${BUNDLES.length} bundles and ${PILOTS.length + PRICE_BOOK.pilots.length} pilots. Every line states what it covers and what it does not.`}>
+      <Hero label="Pricing · full catalog" title="The full price list, line by line" lead={`The platform fee, room and user licenses of price book 3, then ${SKUS.length - PRICE_BOOK.superseded.length} products priced one by one, ${BUNDLES.length} bundles and ${PILOTS.length + PRICE_BOOK.pilots.length} pilots. Every line states what it covers and what it does not.`}>
         <ListPrice />
         <Actions><a className="btn btn--primary btn--lg" href="/pricing#build">Build your Empathia</a><a className="btn btn--lg" href="/pilots">The pilot packages</a></Actions>
       </Hero>
@@ -90,7 +90,7 @@ function cataloguePage(): Page {
         <ul className="prices prices--grid">{replaced.map(({ r, s }) => <li key={r.sku} data-replaced={r.sku}><div className="prices__what"><h3>{s.name}</h3><p>{r.note}</p><p className="prices__sku">{r.sku} · replaced by {skuName(r.sku)}</p></div><div className="price price--was"><b><s>{usd(s.cents)}</s></b><span>{unitLabel(s.billingUnit)}, v1.5</span></div></li>)}</ul>
       </Section>
       <Section id="bundles" title="Bundles" lead="A bundle takes a percentage off each eligible monthly line of its own products. Quantities stay explicit; a bundle is never a flat price.">
-        <Note>Price book 3 keeps all {BUNDLES.length} bundles whole, each with every product it held. A bundle’s discount applies when every product in it is on the order; a single product is at its list price. Where a bundle held the Core platform or the Pro room, the platform fee and the room licences take their place and take its discount. Room licences take the bundle discount or the volume discount, whichever is larger, never both. An order signed under the v1.5 list keeps its discounts for its signed term. The builder offers the {BUNDLES.filter((b) => b.skus.includes('PRO-ROOM')).length} bundles that hold room licences; the others are quoted.</Note>
+        <Note>Price book 3 keeps all {BUNDLES.length} bundles whole, each with every product it held. A bundle’s discount applies when every product in it is on the order; a single product is at its list price. Where a bundle held the Core platform or the Pro room, the platform fee and the room licenses take their place and take its discount. Room licenses take the bundle discount or the volume discount, whichever is larger, never both. An order signed under the v1.5 list keeps its discounts for its signed term. The builder offers the {BUNDLES.filter((b) => b.skus.includes('PRO-ROOM')).length} bundles that hold room licenses; the others are quoted.</Note>
         <div className="cards cards--2">{BUNDLES.map((b) => (
           <article key={b.id} className="card bundle" data-bundle={b.id}>
             <p className="bundle__pct"><b>{b.discount}</b> off eligible lines</p><h3>{b.name}</h3><p>{b.summary}.</p>
@@ -151,7 +151,7 @@ function pilotsPage(): Page {
               {cats.map((cat) => <optgroup key={cat} label={cat}>{CONNECTORS.filter((c) => c.category === cat).map((c) => { const ch = choiceOf(c); return <option key={c.key} value={c.key} data-model={ch.model} data-maturity={ch.maturity} data-label={ch.label}>{ch.maturity === 'VERIFIED' ? ch.label : `${ch.label} (planned, not connected)`}</option>; })}</optgroup>)}
               <option value="NOT_LISTED">A platform that is not listed</option>
             </select>
-            <p className="wiz__note" id="wiz-connector-note">The {CONNECTORS.length} entries are the connector catalogue: target platforms named for interface planning. No entry implies a partnership, a certification or a working connection, and none has a verified connector today.</p>
+            <p className="wiz__note" id="wiz-connector-note">The {CONNECTORS.length} entries are the connector catalog: target platforms named for interface planning. No entry implies a partnership, a certification or a working connection, and none has a verified connector today.</p>
           </fieldset>
           <fieldset className="wiz__q"><legend><span className="wiz__n" aria-hidden="true">3</span>How much is in scope?</legend>
             <div className="wiz__row"><label className="wiz__field">Rooms<input type="number" name="rooms" min={1} max={999} step={1} defaultValue={1} inputMode="numeric" /></label><label className="wiz__field">Sites<input type="number" name="sites" min={1} max={99} step={1} defaultValue={1} inputMode="numeric" /></label></div>

@@ -333,7 +333,7 @@ const actor = (persona: string): FI.Actor => ({ persona, now: now(), can: (a) =>
 export function fiSessionOf(w: Workspace, id: string) { return w.fiSessions.find((s) => s.id === id); }
 export function setLicense(w: Workspace, persona: string, key: string, on: boolean): Refusal | null {
   const n = need(w, persona, 'license.grant', 'fipv.license', key); if (n) return n;
-  w.licenses[key] = on; log(w, persona, 'fipv.license', key, `${on ? 'granted' : 'revoked'} — a licence opens requests, never proofs`); return null;
+  w.licenses[key] = on; log(w, persona, 'fipv.license', key, `${on ? 'granted' : 'revoked'} — a license opens requests, never proofs`); return null;
 }
 export function fiPropose(w: Workspace, persona: string, roomId: string, archetype: string, points: FI.Session['points'], tests: FI.PvTest[]): Refusal | { id: string } {
   const n = need(w, persona, ['protocol.approve', 'tests.verify.all', 'fipv.review', 'plan.compile', 'test.verify'], 'fipv.propose', roomId); if (n) return n;

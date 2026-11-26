@@ -47,9 +47,9 @@ export function competencies(s: Staff, labEvidence: string[] = []): Array<{ id: 
 export const poolOf = (staff: Staff[]) => [...staff, ...POOL_FIXTURE.filter((f) => !staff.some((s) => s.id === f.id))];
 
 export type GateKey = 'competency' | 'experience' | 'licence' | 'site' | 'availability' | 'capacity' | 'vendor' | 'exclusion';
-export const GATE_LABEL: Record<GateKey, string> = { competency: 'Internal competency', experience: 'Experience', licence: 'Licences and safety', site: 'Site access', availability: 'Availability', capacity: 'Capacity', vendor: 'Vendor agreement / tenant', exclusion: 'Exclusion' };
+export const GATE_LABEL: Record<GateKey, string> = { competency: 'Internal competency', experience: 'Experience', licence: 'Licenses and safety', site: 'Site access', availability: 'Availability', capacity: 'Capacity', vendor: 'Vendor agreement / tenant', exclusion: 'Exclusion' };
 const gateOf = (fail: string): GateKey => {
-  if (/licence/i.test(fail)) return 'licence';
+  if (/licen[cs]e/i.test(fail)) return 'licence';
   if (/^experience/.test(fail)) return 'experience';
   if (/^site access/.test(fail)) return 'site';
   if (/^availability/.test(fail)) return 'availability';
@@ -155,7 +155,7 @@ export function metrics(incs: IncLike[], nowMs: number) {
   const assignTimes = incs.map((i) => { const o = i.history.find((h) => h.to === 'OPEN'); const a = i.history.find((h) => h.to === 'ASSIGNED'); return o && a ? (Date.parse(a.at) - Date.parse(o.at)) / 36e5 : null; }).filter((x): x is number => x !== null && x >= 0);
   const closed = incs.filter((i) => ['CLOSED', 'RESOLVED'].includes(i.state));
   return {
-    open: { value: open.length, def: `incidents not resolved, closed or cancelled, of ${incs.length}` },
+    open: { value: open.length, def: `incidents not resolved, closed or canceled, of ${incs.length}` },
     waiting: { value: waiting.length, def: `open incidents with no technician yet, of ${open.length} open` },
     risk: { value: risk.length, def: `open incidents past 75% of their restore time or past it, of ${open.length} open` },
     assign: { value: assignTimes.length ? Math.round((assignTimes.reduce((a, b) => a + b, 0) / assignTimes.length) * 10) / 10 : null, def: `mean hours from opened to assigned, over ${assignTimes.length} assigned incident(s)` },

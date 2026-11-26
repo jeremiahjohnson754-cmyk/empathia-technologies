@@ -109,7 +109,7 @@ export function Queue({ role }: PageProps) {
       <IntakeNav role={role} here="queue" />
       <PageHero compact eyebrow="Intake" icon="route" title="Requests to triage" lede="Requests in the person’s own words, to route or to ask about; and new spaces whose location is to be confirmed. Routing creates a project or a job; it approves and assigns nothing." meta={[<Tag key="s" tone="warn">Synthetic data</Tag>, <span key="r">As the {ROLES[role].label}</span>]} />
       {said && <p role="status" className="sc-msg sc-msg--ok" data-testid="ik-q-done"><Icon name="check" size={18} /><span>{said}</span></p>}
-      {mayRoute && EXAMPLES.some((x) => !all.some((r) => r.example === x.key)) && <p className="ik-examples" data-testid="ik-examples"><span>For a demonstration: add the Living Campus examples to this browser, five requests from an enterprise, a university, a stadium and a convention centre, sent by different people. Fictional venues, synthetic data.</span>
+      {mayRoute && EXAMPLES.some((x) => !all.some((r) => r.example === x.key)) && <p className="ik-examples" data-testid="ik-examples"><span>For a demonstration: add the Living Campus examples to this browser, five requests from an enterprise, a university, a stadium and a convention center, sent by different people. Fictional venues, synthetic data.</span>
         <button type="button" className="ui-btn" onClick={() => { const o = apply((nx) => addExamples(nx)); setSaid(o.added.length ? `Added ${o.added.length} examples: ${o.added.join(', ')}.` : 'No example was added.'); if (o.refused.length) setNo(o.refused.join(' ')); setTick((n) => n + 1); }} data-testid="ik-examples-add">Add the examples</button></p>}
       {mayRoute && <section className="ik-sec" aria-labelledby="ik-q-r" data-testid="ik-q-route"><h2 id="ik-q-r">To route ({q.route.length})</h2>
         {q.route.length ? <ul className="ik-qlist">{q.route.map((r) => <li key={r.id} data-testid="ik-q-item" data-id={r.id}>
@@ -171,7 +171,7 @@ export function Help({ role }: PageProps) {
           <li><b>You are told where it stands</b>, in plain words, with who acts next.</li></ol></section>
       <section className="ik-sec" aria-labelledby="ik-nv-h"><h2 id="ik-nv-h">What asking never does</h2>
         <ul><li>Nothing is ordered, bought or approved by asking. Approval and funding are separate decisions, each by the person entitled to make it.</li>
-          <li>Asking grants no access to a room, a system or a site.</li><li>No size is read from a photograph, and no measurement is made up. A size you give is labelled as yours until it is surveyed.</li></ul></section>
+          <li>Asking grants no access to a room, a system or a site.</li><li>No size is read from a photograph, and no measurement is made up. A size you give is labeled as yours until it is surveyed.</li></ul></section>
       <section className="ik-sec" aria-labelledby="ik-wh-h"><h2 id="ik-wh-h">Where each kind of request goes</h2>
         <ul className="ik-kinds">{KINDS.map((k) => <li key={k.id}><b>{k.label}</b> <span>{k.then}</span></li>)}</ul></section>
       <section className="ik-sec" aria-labelledby="ik-nw-h"><h2 id="ik-nw-h">Something is broken now?</h2><p>Report it in ServiceHands: it asks what is wrong and suggests what to try first. <a className="ui-btn ui-btn--sm" href="#/servicehands/new">Report a problem</a></p></section>

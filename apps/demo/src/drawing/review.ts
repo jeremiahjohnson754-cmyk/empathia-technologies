@@ -41,7 +41,7 @@ export function combine(plan: PlanRead | null, schedule: ScheduleRead | null, bo
   for (const src of [plan, schedule, bom]) for (const d of src?.doubts || []) add(/do not agree with each other/.test(d) ? 'scale-conflict' : /more than once|listed twice/.test(d) ? 'duplicate' : 'reading-doubt', /do not agree|more than once|listed twice/.test(d), d, [src!.doc], 'EXTRACTED', /do not agree/.test(d) ? 'Calibrate: give the real length of one line on the drawing.' : 'An engineer checks the document and says what is right.', `${src!.doc}:${F.length}`);
   const u = plan?.unitsPerMetre ?? null; const b = plan?.boundary ?? null;
   if (plan && !b) add('no-boundary', true, 'The room’s outline could not be found on the plan.', [plan.doc], 'EXTRACTED', 'Provide a plan on which the room is drawn as a rectangle.', 'b');
-  if (plan && !u && !plan.doubts.some((d) => /do not agree with each other/.test(d))) add('scale-unknown', true, 'The plan’s scale is unknown: no dimension is written beside a line. Nothing is given in metres.', [plan.doc], 'EXTRACTED', 'Calibrate: give the real length of one line on the drawing.', 'u');
+  if (plan && !u && !plan.doubts.some((d) => /do not agree with each other/.test(d))) add('scale-unknown', true, 'The plan’s scale is unknown: no dimension is written beside a line. Nothing is given in meters.', [plan.doc], 'EXTRACTED', 'Calibrate: give the real length of one line on the drawing.', 'u');
   if (b && u) ex.room = { width: r2(b.w / u), length: r2(b.h / u), cls: 'MODELED' };
   const sched = new Map((schedule?.rows || []).map((r) => [r.tag, r] as const));
   for (const d of plan?.devices || []) {
@@ -66,7 +66,7 @@ export function combine(plan: PlanRead | null, schedule: ScheduleRead | null, bo
 
 /** A design the commissioning engine can analyse, when the room's size is known. Positions are metres from the room's corner. */
 export function toDesign(ex: Extraction, opts: { template: string; occupancy: number; use: string; ceiling?: number }, C: Catalog = defaultCatalog): { ok: RoomDesignInput } | { why: string } {
-  if (!ex.room) return { why: 'The room’s size is not known in metres, so no design can be formed from the drawing. Calibrate the plan first.' };
+  if (!ex.room) return { why: 'The room’s size is not known in meters, so no design can be formed from the drawing. Calibrate the plan first.' };
   const devices: PlannedDevice[] = ex.devices.filter((d) => d.cat && d.x !== null && d.y !== null && C.categories[d.cat!]).map((d) => { const K = C.categories[d.cat!]!;
     return { id: d.tag, cat: d.cat!, label: `${K.label} ${d.tag}`, role: K.label, model: d.model || K.label, generic: !d.model, brand: null, modelName: d.model, x: d.x!, y: d.y!, mount: K.mount as PlannedDevice['mount'], props: { ...(K as unknown as { props?: Record<string, unknown> }).props }, provenance: 'drawing' }; });
   const { width: w, length: l } = ex.room; const ceiling = opts.ceiling ?? 2.7;
@@ -85,7 +85,7 @@ export function standardsReview(ex: Extraction, design: RoomDesignInput, archety
   const a = analyzeRoom(d, C); const arch = a.archetype; const A = arch ? C.archetypes[arch] : undefined; const src = [ex.plan?.doc, ex.schedule?.doc].filter(Boolean) as string[];
   const findings: Finding[] = a.checks.filter((k) => !NEEDS_MORE.test(k.check)).map((k) => ({ id: `standard:${k.key}`, kind: 'standard' as const, blocker: k.severity === 'High', text: `${k.title}: ${k.rationale}.`, sources: src, cls: 'MODELED' as const, ask: `${k.action.charAt(0).toUpperCase()}${k.action.slice(1)}, or an engineer records why the room is an exception.` }));
   const assumptions = [archetype && A ? `Reviewed as ${A.name}, the room type the reviewer named.` : `No room type was named. The engine suggests ${A ? A.name : 'none'} from the size, the seats and the equipment; an engineer confirms it.`,
-    `The equipment a ${A ? A.name.toLowerCase() : 'room'} requires is this demonstration’s catalogue (${(arch && C.required[arch] || []).join(', ') || 'nothing listed'}). An organisation’s own approved standard would replace it.`,
+    `The equipment a ${A ? A.name.toLowerCase() : 'room'} requires is this demonstration’s catalog (${(arch && C.required[arch] || []).join(', ') || 'nothing listed'}). An organization’s own approved standard would replace it.`,
     design.geometry.provenance.ceiling === 'assumed' ? `No ceiling height is on the plan: ${design.geometry.ceiling} m is assumed.` : `The ceiling height (${design.geometry.ceiling} m) is as the reviewer stated.`, 'Positions are computed from the drawing’s units and its scale. They are not a survey.'];
   const checklist = a.applicability.rows.filter((r) => r.applicable).map((r) => ({ id: r.id, label: r.label }));
   return { archetype: arch, archetypeName: A?.name ?? null, findings, assumptions, checklist };
@@ -101,7 +101,7 @@ export function diff(a: Extraction, b: Extraction): Change[] {
     if (x.cat !== y.cat) out.push({ kind: 'category', text: `${tag} is now ${y.cat || 'of an unknown kind'}; it was ${x.cat || 'of an unknown kind'}.` });
     if ((x.model || '') !== (y.model || '')) out.push({ kind: 'model', text: `${tag}: the model is now ${y.model || 'not given'}; it was ${x.model || 'not given'}.` });
     if (x.x !== null && y.x !== null && x.y !== null && y.y !== null) { const m = Math.hypot(x.x - y.x, x.y - y.y); if (m >= 0.3) out.push({ kind: 'moved', text: `${tag} moved ${r2(m)} m.` }); }
-    else if (a.plan && b.plan) { const pa = a.plan.devices.find((d) => d.tag === tag); const pb = b.plan.devices.find((d) => d.tag === tag); if (pa && pb && Math.hypot(pa.px - pb.px, pa.py - pb.py) > 5) out.push({ kind: 'moved', text: `${tag} moved on the drawing. How far in metres is not known: one of the two revisions has no scale.` }); } }
+    else if (a.plan && b.plan) { const pa = a.plan.devices.find((d) => d.tag === tag); const pb = b.plan.devices.find((d) => d.tag === tag); if (pa && pb && Math.hypot(pa.px - pb.px, pa.py - pb.py) > 5) out.push({ kind: 'moved', text: `${tag} moved on the drawing. How far in meters is not known: one of the two revisions has no scale.` }); } }
   if (a.room && b.room && (Math.abs(a.room.width - b.room.width) > 0.05 || Math.abs(a.room.length - b.room.length) > 0.05)) out.push({ kind: 'room-size', text: `The room is now ${b.room.width} m by ${b.room.length} m; it was ${a.room.width} m by ${a.room.length} m.` });
   return out;
 }
