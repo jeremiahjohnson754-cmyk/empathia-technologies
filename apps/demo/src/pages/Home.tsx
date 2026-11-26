@@ -112,7 +112,7 @@ function FirstVisit({ opens }: { opens: (href: string) => boolean }) {
   const paths = [
     { href: '#/tours', t: 'Take a guided tour', s: 'Seven short scenarios, narrated, step by step', primary: true },
     { href: '#/replay/R-ATL-4-218', t: 'Follow one room’s whole story', s: 'From the request to an accepted room in service' },
-    { href: '#/investor', t: 'Choose what to see first', s: 'Rooms, the campus, Search Party, SIGNAL or Replay' },
+    { href: '#/investor', t: 'Choose what to see first', s: 'Six first choices, from a room in 3D to SIGNAL' },
   ].filter((x) => opens(x.href));
   const close = () => { markIntro(); setShow(false); };
   return (
