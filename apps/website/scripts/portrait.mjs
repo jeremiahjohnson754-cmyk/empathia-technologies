@@ -40,7 +40,8 @@ const out = path.join(repo, 'apps/website/media/founder'); fs.mkdirSync(out, { r
 const size = (f) => execFileSync('identify', ['-format', '%w %h', f], { encoding: 'utf8' }).trim().split(' ').map(Number);
 const [w, h] = size(source); const side = use.crop ? Number(use.crop.split('x')[0]) : w;
 if (use.crop) {   // the crop must be a square inside the picture: ImageMagick would otherwise quietly return a smaller, non-square image
-  const [, cw, ch, cx, cy] = /^(\d+)x(\d+)\+(\d+)\+(\d+)$/.exec(use.crop).map(Number);
+  const m = /^(\d+)x(\d+)\+(\d+)\+(\d+)$/.exec(use.crop); if (!m) { console.error(`crop ${use.crop} is not a square inside ${w} × ${h}`); process.exit(1); }
+  const [, cw, ch, cx, cy] = m.map(Number);
   if (cw !== ch || cx + cw > w || cy + ch > h) { console.error(`crop ${use.crop} is not a square inside ${w} × ${h}`); process.exit(1); }
 }
 const SIZES = [320, 640, 960].filter((s) => s <= side);   // never upscaled

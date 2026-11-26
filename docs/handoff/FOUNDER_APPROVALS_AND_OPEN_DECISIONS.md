@@ -10,6 +10,17 @@ Decisions the evidence could not settle, and what the founder decided. Decided i
 | E3-D4 | Staging | Isolated staging previews may be created and updated after a successful exact-commit regression. The canonical Next sites are not updated without approval. Keep pushing commits and PRs | See BUILD_STATUS / the execution board for the day's regression and preview state | DECIDED |
 | E3-D5 | GitHub CI on `main` | Prepare the repair on a controlled branch, keep Founder Studio private, do not merge to `main` without approval | See the execution board | DECIDED, IN PROGRESS |
 
+## Decided 26 Nov 2026 (founder, 04:30 and 04:50 CT)
+
+| Id | Question | Founder's decision | What is done on it | Status |
+|---|---|---|---|---|
+| CR-D1 | The founder photograph supplied 25 Nov: crop | Approved (04:30) | Renditions from the supplied file, the approved square crop, colours converted from its Display P3 profile to sRGB, nothing retouched; both originals kept (`docs/media/FOUNDER_PORTRAIT.json`) | DECIDED; regression and staging pending |
+| CR-D2 | Centre or Center, Theatre or Theater in the names of fictional places | "Use Center for fictional American locations"; "Use Theater for fictional American locations" | With the American English sweep, as one checkpoint; stable identifiers unchanged | DECIDED, PLANNED |
+| CR-D3 | Collabora-SING or Collaboro-Sing | "Collabora-SING — more distinctive branding" | One spelling in every text people read; addresses kept, or redirected if one is shown to people | DECIDED, PLANNED |
+| CR-D4 | Naming competitors | Not on the homepage; "Maintain separate buyer-facing comparison materials" | Nothing in the public sites or this public repository names a competitor; comparison material for buyers is kept privately, from dated public sources | DECIDED |
+| CR-D5 | Domain | "Establish a professional branded domain" | A plan only (names, DNS and hosting steps, cost, rollback). Nothing is bought and no DNS is changed without the founder's own action or his approval of the item and the total | DECIDED, PLAN PENDING |
+| CR-D6 | Website headline | Keep the outcome headline with the brand line directly under it | Already so since `d8a9f175`: "From infrastructure request to verified operational readiness." with "Technology. Space. Intelligence. Experience. Connected." under it; unchanged | DECIDED, DONE |
+
 ## Still open
 
 | Id | Decision | Why it is yours | Default the sprint uses |

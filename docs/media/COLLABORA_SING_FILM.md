@@ -120,7 +120,7 @@ for authorised use in Empathia.
   1449 × 1449 at (0, 380), head and shoulders, the crop he approved; colours converted from the photograph's Display P3 profile to
   sRGB; resized; metadata stripped. No grade, no mask, no retouching, nothing generated. `--previous` remakes the earlier renditions.
 - On the site it is rendered by one component, `FounderPortrait` (`apps/website/src/ui.tsx`), on the home page's founder section and
-  on the founder page: whole (square), `width="960" height="960"`, responsive sources, alternative text "Jeremiah Johnson, founder of
+  on the founder page: square (the approved crop), `width="960" height="960"`, responsive sources, alternative text "Jeremiah Johnson, founder of
   Empathia Technologies". The component adds no animation.
 - Since 2026-11-11 the founder page shows it on a plate with a ten-second introduction (`FounderReveal` in
   `apps/website/src/founderStory.tsx`). The plate holds this same component and this same file; the introduction's layers are light,
