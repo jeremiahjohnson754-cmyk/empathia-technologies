@@ -147,9 +147,11 @@ export const PlanRecord = ({ id, title, state, cols, rows, foot }: { id: string;
 );
 
 /** FounderPortrait: the one place the founder's photograph is rendered (the home page's founder section and the founder page).
- *  It is the photograph he supplied on 2026-11-10 (1440 × 1440) and chose to keep, shown whole. The original is kept untouched at
- *  apps/website/media-src/founder/founder-original.webp; the three sizes served here are made from it by
- *  apps/website/scripts/portrait.mjs with a restrained, whole-picture grade (settings and hashes: docs/media/FOUNDER_PORTRAIT.json).
+ *  It is the photograph he supplied on 2026-11-25 to replace the earlier one (only the photograph; this component, its sizes and its
+ *  alternative text are unchanged), cropped square to head and shoulders as he approved on 2026-11-26, colour as taken. The original
+ *  is kept untouched at apps/website/media-src/founder/founder-2026-11-25-supplied.jpg, and the earlier one (2026-11-10) at
+ *  founder-original.webp; the three sizes served here are made by apps/website/scripts/portrait.mjs (crop, hashes and history:
+ *  docs/media/FOUNDER_PORTRAIT.json).
  *  Responsive sources, the intrinsic size (so the page does not shift while it loads) and an alternative text that names him and his
  *  role and describes nothing else. It has no animation of its own. */
 const PORTRAIT_SIZES = '(max-width: 720px) 300px, (max-width: 1100px) 340px, 480px';

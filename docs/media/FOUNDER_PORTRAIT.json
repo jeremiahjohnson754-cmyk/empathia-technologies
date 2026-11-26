@@ -1,53 +1,67 @@
 {
   "subject": "Jeremiah Johnson, founder of Empathia Technologies",
-  "rights": "The founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films, music and creative assets he supplied, for authorised use in Empathia. This photograph is one of them, supplied by him for the website.",
-  "direction": "Founder, 10 Nov 2026: \"KEEP MY EXISTING FOUNDER PHOTOGRAPH. DO NOT REPLACE IT.\" His face, likeness and pose are preserved; grading, lighting, tonal balance and clarity only; no generated version; the original is kept as a recoverable source asset.",
-  "original": {
+  "rights": "The founder confirmed on 10 Nov 2026 that he holds the necessary rights to the photographs, films, music and creative assets he supplied, for authorised use in Empathia. Both photographs here were supplied by him for the website.",
+  "direction": "Founder, 25 Nov 2026 16:56 CT: \"Photo for the founder picture\"; 17:33 CT: \"just replace the founder picture with that not the graphics and the founder picture features\". Crop shown to him and approved 26 Nov 2026 04:30 CT. Only the photograph is replaced; the component, frame, sizes, layout and alternative text are unchanged; founder.ts is not edited. Crop and resize only, no retouching, no generated or altered likeness.",
+  "served": {
+    "from": "apps/website/media-src/founder/founder-2026-11-25-supplied.jpg",
+    "crop": "1449x1449+0+380 (head and shoulders, the crop the founder approved)"
+  },
+  "current": {
+    "kept": "apps/website/media-src/founder/founder-2026-11-25-supplied.jpg",
+    "supplied": "2026-11-25",
+    "width": 1449,
+    "height": 2576,
+    "bytes": 569081,
+    "sha256": "9d8aedd073e0ac9be9a40e4f06c7535e8e7c620a1dd4ee52be64187114f1704d",
+    "note": "untouched; a recoverable source"
+  },
+  "previous": {
     "kept": "apps/website/media-src/founder/founder-original.webp",
+    "supplied": "2026-11-10",
     "width": 1440,
     "height": 1440,
     "bytes": 199958,
     "sha256": "6b63e655f3f46d7d6ead1df9520a72ce1149b7bb3b395ff5f958458fc9aa0239",
-    "note": "untouched; the recoverable source of every rendition"
+    "note": "untouched; a recoverable source"
   },
-  "treatment": "whole picture only: white balance (R × 0.965, G × 1.02, B × 1.03), exposure (gamma 1.10), tonal balance (sigmoidal contrast 2.2 at 48 %), clarity (unsharp 0 × 1.4, amount 0.35, threshold 0.02); then resized (Lanczos), sRGB, metadata stripped. No crop, no mask, no local edit, no retouching, nothing generated, background unchanged.",
+  "treatment": "cropped to 1449x1449+0+380, resized (Lanczos), sRGB, metadata stripped; colour as taken: no grade, no mask, no local edit, no retouching, nothing generated, background unchanged",
   "files": {
     "320.webp": {
       "width": 320,
       "height": 320,
-      "bytes": 5184,
-      "sha256": "bc6e2dc0bf43495b06cd722811caf20688f31f5bed517e37d26dca0960ac466f"
+      "bytes": 5108,
+      "sha256": "03aa31919ed21523ce33a83016a6ea8cb17ab6ca576f6f8a5ea67fda94accccb"
     },
     "320.jpg": {
       "width": 320,
       "height": 320,
-      "bytes": 15068,
-      "sha256": "3b6a7144de6dae5770d69661af334a5743dcea2b3e318e860caf4c57d5a954e9"
+      "bytes": 13461,
+      "sha256": "4c067292c0e739ffac21a962004042d2bd58399e4e0056f00ce4cc1d99ef10b7"
     },
     "640.webp": {
       "width": 640,
       "height": 640,
-      "bytes": 16382,
-      "sha256": "2410d227d797b098ff043c0868fb7f1d56155b1c18cff4a4688fa561444525fc"
+      "bytes": 14226,
+      "sha256": "2089323db442adc1895bf1bf9d539b49f17574409bd0021f9ddd5554dcf8597d"
     },
     "640.jpg": {
       "width": 640,
       "height": 640,
-      "bytes": 51443,
-      "sha256": "1f51344a9be17aa5b01c61253d1564317d6df332520efd9de36e3ab71b20c61d"
+      "bytes": 44105,
+      "sha256": "036c747d616c2f0038f81c8046dcf3c91255550343bd5a1bbd21252ec304172a"
     },
     "960.webp": {
       "width": 960,
       "height": 960,
-      "bytes": 31376,
-      "sha256": "b1870391feaf15f511300957315381626091e1c9b4c67ce62171610aa79a64b0"
+      "bytes": 26286,
+      "sha256": "442de474e3e5d7fac852eb382f76a0b9eb1cd79b496b9bdc894200bf026fefef"
     },
     "960.jpg": {
       "width": 960,
       "height": 960,
-      "bytes": 101742,
-      "sha256": "12df013f6d876082ecd7160243baa3d00153184aa5ac02b137f17713868a9ded"
+      "bytes": 94759,
+      "sha256": "9183b73c201cf2a7f14e12e2669adff34547edb02a55e15492337cff55cbcdcf"
     }
   },
-  "at": "2026-11-11T08:35:38.508Z"
+  "at": "2026-11-26T10:31:42.893Z"
 }
