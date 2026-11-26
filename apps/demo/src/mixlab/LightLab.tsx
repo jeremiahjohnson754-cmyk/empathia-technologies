@@ -23,7 +23,7 @@ const HELP: Record<string, [string, string]> = {
   level: ['Intensity', 'How bright the fixture is, 0–100 %. Faces for camera want about 800–1600 lux.'],
   cct: ['Color temperature', 'Warm (low kelvin) to cool (high kelvin). Compare two whites in mireds (1 000 000 ÷ K): more than about 300 K apart reads as two colors on camera.'],
   zoom: ['Beam angle (zoom)', 'A narrower beam puts the same light into a smaller circle: more lux on the face, less spill. Beam diameter = 2 × distance × tan(angle ÷ 2).'],
-  hue: ['Colour', 'The color a wash fixture mixes from its red, green, blue and white emitters.'],
+  hue: ['Color', 'The color a wash fixture mixes from its red, green, blue and white emitters.'],
   target: ['Focus', 'What the fixture is aimed at.'],
 };
 
@@ -58,7 +58,7 @@ export function LightLab({ embedded, onResult }: { embedded?: boolean; onResult?
           <Knob label={`#${x.id} start address`} value={x.addr} min={1} max={512} onChange={(v) => upd(x.id, { addr: v })} fmt={(v) => `${v}–${v + T.footprint - 1}`} color={bad ? '#ef4444' : '#22c55e'} onHelp={() => setHelp('addr')} testId={`lx-addr-${x.id}`} />
           <Knob label={`#${x.id} intensity`} value={x.level} min={0} max={100} onChange={(v) => setLevel(x.id, v)} fmt={(v) => `${v}%`} color="#f59e0b" onHelp={() => setHelp('level')} testId={`lx-level-${x.id}`} />
           {T.color !== 'rgb' && <Knob label={`#${x.id} color temperature`} value={x.cct} min={2700} max={6500} step={100} onChange={(v) => upd(x.id, { cct: v })} fmt={(v) => `${v} K`} color={`rgb(${kelvinRgb(x.cct).join(',')})`} onHelp={() => setHelp('cct')} />}
-          {T.color !== 'white' && <Knob label={`#${x.id} colour`} value={x.hue} min={0} max={359} onChange={(v) => upd(x.id, { hue: v })} fmt={(v) => `${v}°`} color={`hsl(${x.hue} 90% 55%)`} onHelp={() => setHelp('hue')} />}
+          {T.color !== 'white' && <Knob label={`#${x.id} color`} value={x.hue} min={0} max={359} onChange={(v) => upd(x.id, { hue: v })} fmt={(v) => `${v}°`} color={`hsl(${x.hue} 90% 55%)`} onHelp={() => setHelp('hue')} />}
           {T.zoom && <Knob label={`#${x.id} zoom`} value={x.zoom} min={T.zoom[0]} max={T.zoom[1]} onChange={(v) => upd(x.id, { zoom: v })} fmt={(v) => `${v}°`} color="#38bdf8" onHelp={() => setHelp('zoom')} testId={`lx-zoom-${x.id}`} />}
           <label className="lx-sel"><span className="mx-dim">focus</span><select value={x.target} onChange={(e) => { upd(x.id, { target: e.target.value }); setHelp('target'); }} data-testid={`lx-target-${x.id}`}>{L.SUBJECTS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}</select></label>
           <button type="button" className="mx-tog" onClick={() => save({ ...st, hung: st.hung.filter((y) => y.id !== x.id) })} aria-label={`Remove #${x.id}`}>✕</button>

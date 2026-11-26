@@ -134,7 +134,7 @@ await journey('J5', 'J5 Failure to Field Intelligence to APEX to ServiceHands', 
 
 // ------------------------------------------------------------------------------------------------ J6A FLOW
 await journey('J6A', 'J6A FLOW', 'syseng', '#/flow', [
-  ['one switch the rooms depend on', { click: '[data-testid=flow-open-SW-ATL-4A]' }, { at: /^#\/flow\/link\/SW-ATL-4A/, see: /Declared|Modelled|Observed|Measured|Unknown/i, id: 'SW-ATL-4A' }],
+  ['one switch the rooms depend on', { click: '[data-testid=flow-open-SW-ATL-4A]' }, { at: /^#\/flow\/link\/SW-ATL-4A/, see: /Declared|Modeled|Observed|Measured|Unknown/i, id: 'SW-ATL-4A' }],
   ['a room that depends on it, in CallPath', { click: `main a[href^="#/voice/callpath/${ROOM}"]` }, { at: new RegExp(`^#/voice/callpath/${ROOM}`), id: '4.218' }],
   ['and back to the link from the call path', { click: '[data-testid=voice-to-flow]' }, { at: /^#\/flow\/link\/SW-ATL-4A\?from=voice/, id: 'SW-ATL-4A' }],
   ['the estate’s map of capabilities', { click: '[data-testid=cap-rail-map]' }, { at: /^#\/families/, see: '[data-testid=fam-thread]' }],

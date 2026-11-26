@@ -134,7 +134,7 @@ definitions are not executions; workbook export (JSON/CSV/.xlsx) exists in the d
 | 14 | SIGNAL | A story mode that teaches the platform through a playable season | all staff | `#/learn/signal`, `#/learn/story` · `#/signal` | YES·YES·YES·PARTIAL | 13 (9 / 4) | prototype; Season 1 only — the 12-season corpus is SOURCE_MISSING | none |
 | 15 | Empathia Onboard | A new hire's first connected milestone | new hires, managers | `#/v25/onboard`, `#/lite/guides` · `#/onboard` | YES·PARTIAL·PARTIAL·PARTIAL | 8 (6 / 2) | partial prototype; 25 MVP tests specified | none |
 | 16 | Experiences / UE5 | Guided, cinematic walk-throughs; an Unreal Engine path is planned | buyers, executives | `#/tours`, `#/v25/walkthrough` · `#/experiences` | PARTIAL·PARTIAL·PARTIAL·PARTIAL | 14 (11 / 3) | browser tours only; **UE5 not yet implemented** (UE5_NOT_RUN) | none |
-| 17 | Collaboro-Sing | Remote rehearsal and practice for musicians, measured honestly | musicians, ensemble leaders | `#/v25/sing` · `#/collaboro-sing` | YES·YES·YES·PARTIAL | 2 (2 / 0) | prototype on its own tenant; 15-test matrix PROPOSED | none |
+| 17 | Collabora-SING | Remote rehearsal and practice for musicians, measured honestly | musicians, ensemble leaders | `#/v25/sing` · `#/collaboro-sing` | YES·YES·YES·PARTIAL | 2 (2 / 0) | prototype on its own tenant; 15-test matrix PROPOSED | none |
 | 18 | Frontline | Frontline teams (church and community settings) running their rooms with guided steps | volunteer and community operators | `#/v25/frontline` · `#/frontline` | YES·YES·YES·PARTIAL | 1 (1 / 0) | prototype on its own tenant; 15-test matrix PROPOSED | none |
 
 **Onboard discrepancy (recorded, not corrected in the frozen register):** the 2.5.2 register says "Guides page only", but the
@@ -208,7 +208,7 @@ flowchart LR
   INT --- FI
 ```
 
-Collaboro-Sing and Frontline run on their own tenants in the demonstrator and share only the shell and design system today.
+Collabora-SING and Frontline run on their own tenants in the demonstrator and share only the shell and design system today.
 Experiences/UE5 depends on a spatial contract that does not exist yet (`spatial/ue5-contracts`, SPECIFIED ONLY at most).
 
 ## 6. User roles and personas
@@ -323,7 +323,7 @@ Test references: `api` = `tests/integration/api.test.mjs` (20/20), `sec` = `test
 | Scouter | SIMULATED_FUNCTIONAL | DEMONSTRATED | no | prototype |
 | Empathia Learn | SIMULATED_FUNCTIONAL | DEMONSTRATED | knowledge search | prototype |
 | SIGNAL | SIMULATED_FUNCTIONAL | DEMONSTRATED | no | prototype (Season 1 only) |
-| Collaboro-Sing | SIMULATED_FUNCTIONAL | DEMONSTRATED | no | prototype (own tenant) |
+| Collabora-SING | SIMULATED_FUNCTIONAL | DEMONSTRATED | no | prototype (own tenant) |
 | Frontline | SIMULATED_FUNCTIONAL | DEMONSTRATED | no | prototype (own tenant) |
 | Procurement | SIMULATED_FUNCTIONAL | SPECIFIED | projects only | partial; boundary to specify |
 | Drawing Intelligence | MOCKED_UI_ONLY → Build a Room drawing set | SPECIFIED | drawing revisions | partial |

@@ -10,6 +10,7 @@ import { allRecords, C } from '../campus/design.js';
 import { shortName, buildingByKey } from '../campus/canon.js';
 import { people } from '../connect/directory.js';
 import { seed as deskSeed } from '../decisions/store.js';
+import { spellings } from './spelling.js';
 
 export interface Hit { id: string; kind: 'room' | 'building' | 'device' | 'product' | 'page' | 'tour' | 'issue' | 'person' | 'project'; label: string; description: string; href: string; terms: string; score?: number; why?: string }
 
@@ -75,7 +76,7 @@ export function find(query: string, limit = 12): Hit[] {
   for (const h of searchIndex()) {
     const label = h.label.toLowerCase(); let score = 0; const why: string[] = []; let all = true;
     for (const t of tokens) {
-      const alts = [t, ...(ALIASES[t] || [])];
+      const alts = [...new Set(spellings(t).flatMap((v) => [v, ...(ALIASES[v] || [])]))];   // either spelling, and the aliases of each
       const inLabel = alts.find((a) => label.includes(a)); const inTerms = alts.find((a) => h.terms.includes(a));
       if (inLabel) { score += label.startsWith(inLabel) ? 6 : 4; if (inLabel !== t) why.push(`“${t}” → ${inLabel}`); }
       else if (inTerms) { score += 2; if (inTerms !== t) why.push(`“${t}” → ${inTerms}`); }

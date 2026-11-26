@@ -17,6 +17,7 @@ import { PRODUCTS, ThemeSwitch, Icon, deviceIcon, type IconName } from '@empathi
 import { useDialog } from '../viewas/ViewAsSheet.js';
 import { Coachmarks } from './Coachmarks.js';
 import { openPages } from '../viewas/scope.js';
+import { spellings } from '../search/spelling.js';
 export { openPages };
 
 /** Can the role open this address through a registered page? (Tabs and links never lead to a refusal.) */
@@ -200,7 +201,7 @@ function QuickFind({ role, pages, open, setOpen }: { role: RoleKey; pages: PageD
   const pageHits = words.length ? pages.map((p) => {
     const hay = [p.title, p.purpose, PRODUCTS.find((x) => x.id === p.product)?.name || '', p.search?.keywords || '', ...(p.search?.aliases || [])].join(' ').toLowerCase();
     const alias = (p.search?.aliases || []).some((a) => a.toLowerCase().startsWith(text.toLowerCase()));
-    return { p, alias, s: words.every((w) => hay.includes(w)) ? (alias ? 3 : 0) + (p.title.toLowerCase().includes(words[0]!) ? 2 : 1) : 0 };
+    return { p, alias, s: words.every((w) => spellings(w).some((v) => hay.includes(v))) ? (alias ? 3 : 0) + (p.title.toLowerCase().includes(words[0]!) ? 2 : 1) : 0 };
   }).filter((x) => x.s).sort((a, b) => b.s - a.s) : [];
   const canSearch = pages.some((p) => p.id === 'search');
   const allHref = canSearch ? `#/search?q=${encodeURIComponent(text)}` : canFind ? `#/find?q=${encodeURIComponent(text)}` : '';

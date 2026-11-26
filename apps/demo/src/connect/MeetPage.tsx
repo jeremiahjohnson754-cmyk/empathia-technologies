@@ -150,7 +150,7 @@ function Meet({ role, query, hash }: PageProps) {
         {planOk && reviewSlot && !refused && !already && !taken.length && <>
           <dl className="hr-rec cx-review" data-testid="meet-summary">
             <div><dt>Subject</dt><dd>{planOk.subject}</dd></div>
-            <div><dt>Who</dt><dd><ul>{planOk.parties.map((x) => <li key={x.id}>{x.name}{x.id === me.id ? ' (organiser)' : ''}{x.optional ? ' (optional)' : ''}</li>)}</ul></dd></div>
+            <div><dt>Who</dt><dd><ul>{planOk.parties.map((x) => <li key={x.id}>{x.name}{x.id === me.id ? ' (organizer)' : ''}{x.optional ? ' (optional)' : ''}</li>)}</ul></dd></div>
             <div><dt>When</dt><dd><ul data-testid="meet-zones">{planOk.parties.map((x) => <li key={x.id} data-person={x.id}><b>{fmtRange(tzOf(x.id), reviewSlot.from, reviewSlot.to)}</b> for {x.id === me.id ? 'you' : x.name} · {zoneCity(tzOf(x.id))} ({utcOffset(tzOf(x.id), reviewSlot.from)})</li>)}</ul></dd></div>
             <div><dt>Where</dt><dd>{planOk.room ? planOk.room.name : 'No room: an online meeting'}</dd></div>
             {planOk.about && <div><dt>About</dt><dd>{planOk.about.label}</dd></div>}

@@ -135,6 +135,24 @@ suite('unit: Learn cases — separation of duties held in the store, with the DE
 suite('unit: people and experience — who did each job, experience by complexity and kind, totals by layer and quarter', 'unit', node, ['--test', 'tests/unit/people-involvement.test.mjs'], tap);
 suite('unit: engineer faults — an injected fault refuses with its reason and leaves nothing half-done; the inspection sheets name files that exist', 'unit', node, ['--test', 'tests/unit/engineer-faults.test.mjs'], tap);
 suite('unit: SIGNAL title page — extracted from the reference build, inert, resolves in the canon sprite sheet, agrees with the canon', 'unit', node, ['--test', 'tests/unit/signal-titlepage.test.mjs'], tap);
+// Registered 26 Nov 2026: these unit files were written 12–13 Nov but never listed here, so no run of record executed them (found
+// when tests/unit/signal-cinematic.test.mjs, unlisted, would have caught a spelling change to SIGNAL takes). Each passes on its own.
+// Two other unlisted files fail on commits before this one too (connector-claims, vendor-claims): recorded in
+// docs/qa/DEFECT_REGISTER.md (D-40, D-41) and NOT listed until they are corrected.
+suite('unit: Assurance estate model — V2.5.3 remedies, cost model, ready checks, change impact and signals on this campus', 'unit', node, ['--test', 'tests/unit/assurance-model.test.mjs'], tap);
+suite('unit: Lite: Empathia’s own rooms drawn from their own layouts, not V2.5.3’s boardroom', 'unit', node, ['--test', 'tests/unit/lite-rooms.test.mjs'], tap);
+suite('unit: Lite: V2.5.3’s room layouts in Empathia’s look, for every campus room', 'unit', node, ['--test', 'tests/unit/lite-v253-look.test.mjs'], tap);
+suite('unit: Lite: the furnished rooms, V2.5.3’s own room code on this campus’s records', 'unit', node, ['--test', 'tests/unit/lite-v253-room.test.mjs'], tap);
+suite('unit: Lite: University, Stadium and Convention rooms on level plans inside their floors, none overlapping', 'unit', node, ['--test', 'tests/unit/lite-worlds.test.mjs'], tap);
+suite('unit: Mix the Stream — the model’s arithmetic is the textbook’s (dB sums, Sabine, critical distance)', 'unit', node, ['--test', 'tests/unit/mixlab.test.mjs'], tap);
+suite('unit: ServiceHands dispatch planning — the seeded job passes its preflight', 'unit', node, ['--test', 'tests/unit/service-dispatch-plan.test.mjs'], tap);
+suite('unit: SIGNAL Cinematic Story — every take speaks its canon line word for word, every file exists', 'unit', node, ['--test', 'tests/unit/signal-cinematic.test.mjs'], tap);
+suite('unit: SIGNAL — a major decision changes something later in the episode', 'unit', node, ['--test', 'tests/unit/signal-consequence.test.mjs'], tap);
+suite('unit: SIGNAL × Lite — every “Try it in Lite” place is a real campus room at real Lite addresses', 'unit', node, ['--test', 'tests/unit/signal-lite.test.mjs'], tap);
+suite('unit: spatial completeness gate — every room of the four worlds drawn with floor, walls, light, furniture and eye positions', 'unit', node, ['--test', 'tests/unit/spatial-gate.test.mjs'], tap);
+suite('unit: Light the Stage and Shoot the Service — the lighting and camera labs’ arithmetic', 'unit', node, ['--test', 'tests/unit/stagelabs.test.mjs'], tap);
+suite('unit: Equipment Experience Engine — the first lesson’s record, its sources and what it applies to', 'unit', node, ['--test', 'tests/unit/training-lessons.test.mjs'], tap);
+suite('unit: search finds British and American spellings alike (page search and menu search)', 'unit', node, ['--test', 'tests/unit/search-spellings.test.mjs'], tap);
 suite('unit: one room end to end — handoff to service, the job does not close the deficiency, the verified retest does, APEX hypotheses, the ids that tie the stages', 'unit', node, ['--test', 'tests/unit/thread-slice.test.mjs'], tap);
 suite('unit: certification study spaces — outlines add up, every question well formed, drills rebuilt from their ids, exams in the outline’s proportions, scoring and progress', 'unit', node, ['--test', 'tests/unit/certs.test.mjs'], tap);
 suite('unit: SIGNAL field calculator — the reference’s evaluator, error words and fourteen helpers; never eval', 'unit', node, ['--test', 'tests/unit/field-calc.test.mjs'], tap);

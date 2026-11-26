@@ -387,7 +387,7 @@ const panel = p.getByTestId('fl-corrective'); let WO = ''; const second = {};   
   const detail = (await q.getByTestId('sq-detail').count()) ? (await q.getByTestId('sq-detail').innerText()).replace(/\s+/g, ' ') : '';
   const was = await q.evaluate(() => localStorage.getItem('empathia.demo.perspective')); await q.evaluate(() => { try { localStorage.setItem('empathia.demo.perspective', 'svcmgr'); } catch { /* storage refused */ } }); await q.goto(p.url().replace(/#.*/, '#/v25/service')); await q.reload(); await q.waitForSelector('[data-testid=incidents], [data-testid=servicehands]', { timeout: 30000 }).catch(() => undefined);   /* ServiceHands (#/v25/service) is the service manager's (V2.5.3 area) */ const note = await q.getByTestId('sh-server-note').count(); await q.evaluate((r) => { try { if (r) localStorage.setItem('empathia.demo.perspective', r); } catch { /* storage refused */ } }, was);   /* the main tab's role is left as it was */
   ok('FL-41', 'ServiceHands on the server lists the deficiency’s work order with its state and room, opens it with its governed steps, and the browser’s ServiceHands workspace says where the server’s queue is',
-    rowText.includes(WO) && /assigned/i.test(rowText) && /Theatre|SCI-110/i.test(rowText) && detail.includes(WO) && note === 1, `${rowText.slice(0, 120)} · detail ${detail.slice(0, 80)} · note ${note}`);
+    rowText.includes(WO) && /assigned/i.test(rowText) && /Theater|SCI-110/i.test(rowText) && detail.includes(WO) && note === 1, `${rowText.slice(0, 120)} · detail ${detail.slice(0, 80)} · note ${note}`);
   await q.close(); }
 
 

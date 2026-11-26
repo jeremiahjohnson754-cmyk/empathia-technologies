@@ -166,8 +166,8 @@ export default function CapturePage({ role, can }: PageProps) {
           </Card>
         </div>
 
-        <Card title={synced ? 'Synchronised' : 'Synchronise'} icon="check" sub={synced ? `On the record since ${when(synced.at)}. Synchronizing again adds nothing.` : 'Writes the note, the measurements and the photograph’s name, size and checksum to the record, once. The photograph stays here.'} testId="capture-sync">
-          <div className="d5-actions"><button type="button" className="ui-btn ui-btn--primary" onClick={() => { void synchronise(); }} data-testid="capture-sync-go">{synced ? 'Synchronize again' : 'Synchronise'}</button>
+        <Card title={synced ? 'Synchronized' : 'Synchronize'} icon="check" sub={synced ? `On the record since ${when(synced.at)}. Synchronizing again adds nothing.` : 'Writes the note, the measurements and the photograph’s name, size and checksum to the record, once. The photograph stays here.'} testId="capture-sync">
+          <div className="d5-actions"><button type="button" className="ui-btn ui-btn--primary" onClick={() => { void synchronise(); }} data-testid="capture-sync-go">{synced ? 'Synchronize again' : 'Synchronize'}</button>
             {test && synced && !test.evidence && can('docs.record') ? <button type="button" className="ui-btn" onClick={attach} data-testid="capture-attach">Make it the evidence of {test.id}</button> : null}
             <a className="ui-btn" href={docHref()}>Back to the checklist</a></div>
         </Card>

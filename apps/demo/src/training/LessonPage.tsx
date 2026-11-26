@@ -35,7 +35,7 @@ export default function LessonPage({ params }: PageProps) {
       <ol>{l.steps.map((s) => <li key={s}>{s}</li>)}</ol>
       <p className="ui-meta">Not covered: {l.notCovered.join('; ')}.</p>
     </Card>
-    <Card title="Practise" sub="One decision from the lesson; your answer is training evidence only" testId="lesson-practice">
+    <Card title="Practice" sub="One decision from the lesson; your answer is training evidence only" testId="lesson-practice">
       <p><b>{l.practice.q}</b></p>
       <div className="build__row" role="group" aria-label="Choices">{l.practice.choices.map((c) => <Button key={c.id} small onClick={() => { setLast(recordAttempt(l, c.id)); setN((x) => x + 1); }}>{c.text}</Button>)}</div>
       {last && <p role="status" data-testid="lesson-feedback" data-correct={String(last.correct)}>{last.correct ? <><b>Right.</b> {l.practice.why}</> : <><b>Not this one.</b> {l.practice.wrong[last.choice]} Try again.</>}</p>}

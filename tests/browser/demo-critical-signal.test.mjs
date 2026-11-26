@@ -158,7 +158,7 @@ const worked = { ACKNOWLEDGED: 'Broadcast Engineer', DISPATCHED: 'Broadcast Engi
 
 // ------------------------------------------------------------------ a guest never sees the incident, its page or its code
 { const t = await open(at('stadium.fan'), { init: seeded('OPEN') }); const p = t.page; await p.waitForSelector('[data-testid=access-page]'); const fan = await main(p);
-  ok('CSB-50', 'a fan at the incident’s address gets the access page: no incident, no rooms, no chain', await p.locator('[data-testid=signal-page]').count() === 0 && /Game-day incident is not open/.test(fan) && /No role opens this address/.test(fan) && !/GD-0|STA-|fibre|multiviewer|Acknowledge/i.test(fan), fan.slice(0, 200));
+  ok('CSB-50', 'a fan at the incident’s address gets the access page: no incident, no rooms, no chain', await p.locator('[data-testid=signal-page]').count() === 0 && /Game-day incident is not open/.test(fan) && /No role opens this address/.test(fan) && !/GD-0|STA-|fib(?:re|er)|multiviewer|Acknowledge/i.test(fan), fan.slice(0, 200));
   ok('CSB-51', 'and the page’s code is never requested (D44)', !t.reqs.some((u) => /SignalPage/.test(u)), t.reqs.filter((u) => /chunks/.test(u)).join(' ').slice(0, 200));
   for (const as of ['stadium.away_fan', 'stadium.premium_guest', 'stadium.visitor', 'stadium.guest_services', 'stadium.executive', 'stadium.security_safety_lead', 'university.av_it_engineer', '']) { await p.goto(p.url().replace(/#.*/, as ? at(as, 'chain') : '#/gameday/incident/camera-feed')); await p.waitForSelector('[data-testid=access-page]'); }
   ok('CSB-52', 'the same for every other configuration that is not a venue technical, production or operations role, and for no configuration at all', await p.locator('[data-testid=signal-page]').count() === 0 && !t.reqs.some((u) => /SignalPage/.test(u)));
@@ -186,7 +186,7 @@ const worked = { ACKNOWLEDGED: 'Broadcast Engineer', DISPATCHED: 'Broadcast Engi
 // Decided: in the stadium a Site Champion is one more View-as role. The stadium role configuration in the address decides what is
 // shown and what may be done, exactly as for the other fifteen; its campus authority (reporting, confirming access, attesting) adds nothing here.
 { const t = await open(at('stadium.fan'), { role: 'sitechamp', init: seeded('OPEN') }); const p = t.page; await p.waitForSelector('[data-testid=access-page]'); const txt = await main(p);
-  ok('CSB-69', 'viewing as the Site Champion with a guest configuration: the access page, no incident, and the page’s code is never requested', await p.locator('[data-testid=signal-page]').count() === 0 && !/GD-0|STA-|fibre|multiviewer|Acknowledge/i.test(txt) && !t.reqs.some((u) => /SignalPage/.test(u)), txt.slice(0, 160));
+  ok('CSB-69', 'viewing as the Site Champion with a guest configuration: the access page, no incident, and the page’s code is never requested', await p.locator('[data-testid=signal-page]').count() === 0 && !/GD-0|STA-|fib(?:re|er)|multiviewer|Acknowledge/i.test(txt) && !t.reqs.some((u) => /SignalPage/.test(u)), txt.slice(0, 160));
   await p.goto(p.url().replace(/#.*/, '#/gameday/incident/camera-feed?as=sitechamp')); await p.waitForSelector('[data-testid=access-page]');
   ok('CSB-70', 'naming the View-as role as if it were a stadium configuration opens nothing either', await p.locator('[data-testid=signal-page]').count() === 0 && !t.reqs.some((u) => /SignalPage/.test(u)));
   await p.goto(p.url().replace(/#.*/, at(PROD))); await p.waitForSelector('[data-testid=signal-alert]');

@@ -16,7 +16,14 @@
  *
  *   node scripts/content/american-english.mjs            report what would change, per file, and exit 1 when anything would
  *   node scripts/content/american-english.mjs --write    change it
- *   node scripts/content/american-english.mjs --check    exit 1 when anything would change (for the unit suite)
+ *   node scripts/content/american-english.mjs --check    exit 1 when anything would change (no test runs it yet)
+ *
+ * Kept as written (26 Nov 2026, after an independent review): a generated file ("do not edit by hand", changed at its source); a line
+ * holding the comment `american-english: keep`, or the lines between `american-english: keep-start` and `keep-end` (the recorded SIGNAL
+ * takes, which must equal the canon word for word, and SIGNAL's own place names); a computed object key. A piece of a template literal
+ * is judged by the whole template: in `${w} meters by ${l} metres` the last piece is one word but part of a sentence. Not handled, so
+ * read the diff after --write: a one-word string (a key or a label, the tool cannot tell), an ALL-CAPS word, and a class name joined
+ * by a single hyphen ("text-centre") in a string built outside a className attribute.
  */
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url'; import { createRequire } from 'node:module';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -63,12 +70,16 @@ function edits(file, text) {
       if (ts.isJsxAttribute(p) && SKIP_ATTR.test(p.name.getText(sf))) return true;
       if (ts.isImportDeclaration(p) || ts.isExportDeclaration(p) || ts.isExternalModuleReference(p)) return true;
       if (ts.isPropertyAssignment(p) && p.name === node) return true;
+      if (ts.isComputedPropertyName(p)) return true;                                   // [`${k} colour`]: a key, however it reads
       if (ts.isElementAccessExpression(p) && p.argumentExpression === node) return true;
       if (ts.isCallExpression(p) && /(querySelector(All)?|getElementById|getItem|setItem|removeItem|getAttribute|setAttribute|closest|matches|addEventListener|removeEventListener|dispatchEvent|require|import)$/.test(p.expression.getText(sf))) return true;
       if (ts.isJsxElement(p) || ts.isJsxSelfClosingElement(p) || ts.isBlock(p) || ts.isSourceFile(p)) break;
     }
     return false;
   };
+  const lines = text.split('\n'); const kept = new Set(); let region = false;
+  lines.forEach((l, i) => { if (/american-english: keep-start/.test(l)) region = true; if (region || /american-english: keep\b(?!-)/.test(l)) kept.add(i); if (/american-english: keep-end/.test(l)) region = false; });
+  const keptAt = (node) => kept.has(sf.getLineAndCharacterOfPosition(node.getStart(sf)).line);
   const visit = (node) => {
     let raw = null; let start = 0;
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) { raw = node.getText(sf).slice(1, -1); start = node.getStart(sf) + 1; }
@@ -79,10 +90,10 @@ function edits(file, text) {
       // a piece of a template literal is judged by the whole template: in `${w} meters by ${l} metres` the last piece is one word,
       // but it is a sentence (26 Nov 2026: the first sweep left that piece in British spelling)
       const whole = ts.isTemplateHead(node) || ts.isTemplateMiddle(node) || ts.isTemplateTail(node)
-        ? (() => { let p = node.parent; while (p && !ts.isTemplateExpression(p)) p = p.parent; return p ? [p.head.text, ...p.templateSpans.map((x) => x.literal.text)].join(' ') : raw; })()
+        ? (() => { let p = node.parent; while (p && !ts.isTemplateExpression(p)) p = p.parent; return p ? [p.head.text, ...p.templateSpans.map((x) => x.literal.text)].join('') : raw; })()
         : raw;
       const sentence = isJsxText || /\s/.test(raw.trim()) || (whole !== raw && /\S\s+\S/.test(whole.trim()) && /[a-z]{2,} [a-z]{2,}/i.test(whole));
-      if (sentence && !skip(node)) { const { out: fixed, n } = fix(raw); if (n) out.push({ start, end: start + raw.length, from: raw, to: fixed, n }); }
+      if (sentence && !skip(node) && !keptAt(node)) { const { out: fixed, n } = fix(raw); if (n) out.push({ start, end: start + raw.length, from: raw, to: fixed, n }); }
     }
     ts.forEachChild(node, visit);
   };
@@ -96,7 +107,8 @@ for (const r of ROOTS) walk(path.join(repo, r));
 const write = process.argv.includes('--write'); const check = process.argv.includes('--check');
 let total = 0; const per = [];
 for (const f of files) {
-  const text = fs.readFileSync(f, 'utf8'); const es = edits(f, text); if (!es.length) continue;
+  const text = fs.readFileSync(f, 'utf8'); if (/do not edit by hand|@generated/i.test(text.slice(0, 600))) continue;   // a generated file is changed at its source
+  const es = edits(f, text); if (!es.length) continue;
   const n = es.reduce((a, e) => a + e.n, 0); total += n; per.push([path.relative(repo, f), n, es]);
   if (write) { let t = text; for (const e of [...es].sort((a, b) => b.start - a.start)) t = t.slice(0, e.start) + e.to + t.slice(e.end); fs.writeFileSync(f, t); }
 }

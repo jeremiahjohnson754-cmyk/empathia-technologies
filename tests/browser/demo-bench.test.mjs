@@ -29,7 +29,7 @@ for (const [theme, w, h] of [['light', 1440, 900], ['dark', 390, 844]]) {
   const eq1 = await read(d);
   ok(`BN-03 ${theme}`, 'EQ: the ringing mic’s loudest band is 2.5 kHz in the upper mids; the bars are drawn in the region colours (31 ⅓-octave bands)', /2\.5k Hz · UPPER-MIDS/.test(eq1) && await d.locator('svg rect[opacity="0.85"]').count() === 31, eq1);
   await d.getByRole('button', { name: /Listen through the EQ/ }).click(); await p.waitForTimeout(900);
-  const live = await d.locator('svg text').filter({ hasText: 'LIVE ANALYSER' }).count(); const ys = await d.locator('svg rect[opacity="0.85"]').evaluateAll((r) => r.map((x) => Number(x.getAttribute('y'))));
+  const live = await d.locator('svg text').filter({ hasText: 'LIVE ANALYZER' }).count(); const ys = await d.locator('svg rect[opacity="0.85"]').evaluateAll((r) => r.map((x) => Number(x.getAttribute('y'))));
   await d.getByRole('button', { name: /Stop/ }).click();
   ok(`BN-04 ${theme}`, 'Listen plays pink noise through the five filters and the bars become a live analyser (finite numbers), then Stop returns to the model', live === 1 && ys.length === 31 && ys.every(Number.isFinite) && await d.locator('svg text').filter({ hasText: 'LIVE ANALYSER' }).count() === 0, `${live} ${ys.slice(0, 6)}`);
 

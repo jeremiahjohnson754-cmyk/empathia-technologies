@@ -861,7 +861,7 @@ export function ChallengesPage({ perspective }: { perspective: string }) {
 }
 
 // ------------------------------------------------------------------------------------------------------------ Mission Control (reference renderHome)
-const SEASON_HOME = ['', 'Citylight', 'Halyard Live', 'Aldermoor Group', 'Kestrel Valley Media', 'Brackenmoor University', 'Linden Row Design', 'Corvane Group', 'The Wyndmere Center', 'The Wyndmere Center', 'Lowfield Studio', 'Regional EOC', 'Principal review'];
+const SEASON_HOME = ['', 'Citylight', 'Halyard Live', 'Aldermoor Group', 'Kestrel Valley Media', 'Brackenmoor University', 'Linden Row Design', 'Corvane Group', 'The Wyndmere Centre', 'The Wyndmere Centre', 'Lowfield Studio', 'Regional EOC', 'Principal review'];   // american-english: keep (SIGNAL's own place names, as the canon writes them)
 let missionCache: Promise<[MC.MissionIndex, RT.RatingsIndex, Story.StoryIndex]> | null = null;
 const loadMission = () => (missionCache ||= Promise.all(['signal/mission.json', 'signal/ratings.json', 'signal/index.json'].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(`${u} ${r.status}`); return r.json(); }))).catch((e) => { missionCache = null; throw e; }) as Promise<[MC.MissionIndex, RT.RatingsIndex, Story.StoryIndex]>);
 /** SIGNAL Mission Control: continue the story, the competency level, the evidence locker, the role path, crew trust, competency by domain,

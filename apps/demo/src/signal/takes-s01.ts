@@ -261,8 +261,8 @@ export const TAKES_S01: Record<string, Take[]> = {
     {"who": "maya", "text": "Nobody plans that. That's why it works.", "src": "media/signal/s01/maya-s1g4-12.mp3"},
     {"who": "maya", "text": "And nobody touched anything that wasn't ours.", "src": "media/signal/s01/maya-s1g4-13.mp3"},
     {"who": "maya", "text": "Tell her the dip was 2.1 seconds. The UPS log has it.", "src": "media/signal/s01/maya-s1g4-14.mp3"},
-    {"who": "ray", "text": "Sound travels about three hundred forty-three meters a second. Count from the flash to the thunder.", "src": "media/signal/s01/ray-s1g3-14.mp3"},
-    {"who": "ray", "text": "Three forty-three times fifteen: about five kilometers. That number goes to whoever owns the weather hold. We don't decide it — we make sure they have it.", "src": "media/signal/s01/ray-s1g3-15.mp3"},
+    {"who": "ray", "text": "Sound travels about three hundred forty-three metres a second. Count from the flash to the thunder.", "src": "media/signal/s01/ray-s1g3-14.mp3"},
+    {"who": "ray", "text": "Three forty-three times fifteen: about five kilometres. That number goes to whoever owns the weather hold. We don't decide it — we make sure they have it.", "src": "media/signal/s01/ray-s1g3-15.mp3"},
     {"who": "theo", "text": "Stream's got it. Outside, cellular. Clean.", "src": "media/signal/s01/theo-s1g1-20.mp3"},
   ],
   s01e11: [
