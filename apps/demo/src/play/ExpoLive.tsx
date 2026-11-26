@@ -73,9 +73,11 @@ export function ExpoLivePage() {
     const M = { hall: r.mesh(hall), glow: r.mesh(glowv), screens: r.mesh(screens), carpet: r.mesh(carpet) };
     const figs: number[] = []; for (let i = 0; i < 60; i++) { const sx = STAGE.x - 24 + (i % 8) * 2.2 + 0.3, sz = STAGE.z - 8 + Math.floor(i / 8) * 1.6 + 0.6; figureVerts(sx, 0.2, sz, SHIRTS[i % SHIRTS.length]!, figs); }
     const audience = r.mesh(figs);
-    let raf = 0, last = performance.now(), frames = 0, fpsAt = last, labAt = 0;
+    let raf = 0, last = performance.now(), frames = 0, fpsAt = last, labAt = 0, shown = -1;
     const loop = (now: number) => {
-      raf = requestAnimationFrame(loop); r.pace(now - last); const dt = Math.min(0.05, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setDetail(Math.round(r.detail * 100)); frames = 0; fpsAt = now; }
+      // the detail is reported in the frame it changes, the frame rate once a second (26 Nov 2026: reported once a second on its own clock,
+      // the page's detail could lag what the canvas drew by up to a second; found by XPO-13 in the regression on 6be9fc5b)
+      raf = requestAnimationFrame(loop); r.pace(now - last); const dNow = Math.round(r.detail * 100); if (dNow !== shown) { shown = dNow; setDetail(dNow); } const dt = Math.min(0.05, (now - last) / 1000); last = now; frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); frames = 0; fpsAt = now; }
       const C = cam.current; if (C.goal) { const k = Math.min(1, dt * 3); C.yaw += (C.goal.yaw - C.yaw) * k; C.pitch += (C.goal.pitch - C.pitch) * k; C.dist += (C.goal.dist - C.dist) * k; C.at = lerp(C.at, C.goal.at, k); if (Math.abs(C.dist - C.goal.dist) < 0.05) C.goal = null; }
       r.resize(Math.min(window.devicePixelRatio || 1, 2)); const cv = r.canvas; const aspect = cv.width / Math.max(1, cv.height);   // the renderer's own canvas: the page's reference to it is already empty in the frame between leaving the page and this loop being stopped (found by the performance check, 25 Nov 2026)
       const eye: V3 = [C.at[0] + Math.sin(C.yaw) * Math.cos(C.pitch) * C.dist, C.at[1] + Math.sin(C.pitch) * C.dist, C.at[2] + Math.cos(C.yaw) * Math.cos(C.pitch) * C.dist];

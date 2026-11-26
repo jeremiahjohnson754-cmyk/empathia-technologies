@@ -157,10 +157,11 @@ export function StadiumLivePage() {
   // the loop
   const state = useRef({ light: 0, lc: hex(ATMOS[p.atmos].lights), fade: 1 });
   useEffect(() => {
-    let raf = 0; let last = performance.now(); let frames = 0, fpsAt = last; let labAt = 0; let farLast = 0;   // farLast: sections drawn simply in the last frame
+    let raf = 0; let last = performance.now(); let frames = 0, fpsAt = last; let labAt = 0; let farLast = 0; let shown = -1;   // farLast: sections drawn simply in the last frame; shown: the detail last reported
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop); const M = meshes.current; if (!M) return; const r = M.r; r.pace(now - last); const dt = Math.min(0.05, (now - last) / 1000); last = now;
-      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setDetail(Math.round(r.detail * 100)); setSimple(farLast > 0); frames = 0; fpsAt = now; }   // the page says the far crowd is drawn simply only while some of it is
+      const dNow = Math.round(r.detail * 100); if (dNow !== shown) { shown = dNow; setDetail(dNow); }   // in the frame it changes (26 Nov 2026; it was once a second, up to a second behind the canvas: XPO-13 on 6be9fc5b)
+      frames += 1; if (now - fpsAt > 1000) { setFps(Math.round(frames * 1000 / (now - fpsAt))); setSimple(farLast > 0); frames = 0; fpsAt = now; }   // the page says the far crowd is drawn simply only while some of it is
       const P = pr.current; const A = ATMOS[replayRef.current !== null ? TIMELINE[replayRef.current]!.atmos : P.atmos]; const S = state.current;
       // ease every light change over about half a second: no flash, no strobe
       const k = reducedRef.current ? 1 : Math.min(1, dt * 3); S.light += ((A.night ? 1 : 0) - S.light) * k; S.lc = lerp(S.lc, hex(A.lights), k);
