@@ -2,7 +2,7 @@
  "step": 18,
  "title": "The camera’s dependencies: relationships, connections and dependent devices (graph and Search Party)",
  "room": "R-PLN-0004",
- "at": "2026-11-27T12:41:31.878Z",
+ "at": "2026-11-27T21:47:11.842Z",
  "assertions": [
   {
    "id": "C-69",
@@ -282,7 +282,7 @@
      "note": "every edge is keyed by stable identifiers"
     }
    },
-   "correlationId": "2d0c38c9-6aae-4d4f-93ca-643bfdd740cf"
+   "correlationId": "1740d7dc-3c7e-4756-ae7a-dd1e1d527ead"
   },
   {
    "method": "GET",
@@ -393,7 +393,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-27T12:41:28.972Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-27T21:47:09.819Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -509,7 +509,7 @@
       "type": "Asset",
       "id": "AS-0006",
       "label": "AS-0006 · generic",
-      "subtitle": "identity DECLARED · serial SYN-SN-R-PLN-0004-136-6 · at PA-0065 since 2026-11-27T12:41:23.627Z",
+      "subtitle": "identity DECLARED · serial SYN-SN-R-PLN-0004-108-6 · at PA-0065 since 2026-11-27T21:47:05.979Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -520,7 +520,7 @@
       "keywords": [
        "generic",
        "AS-0006",
-       "SYN-SN-R-PLN-0004-136-6",
+       "SYN-SN-R-PLN-0004-108-6",
        "unit",
        "asset"
       ],
@@ -569,7 +569,7 @@
       "type": "Asset",
       "id": "AS-0008",
       "label": "AS-0008 · generic",
-      "subtitle": "identity DECLARED · serial SYN-SN-R-PLN-0004-136-8 · at PA-0067 since 2026-11-27T12:41:23.627Z",
+      "subtitle": "identity DECLARED · serial SYN-SN-R-PLN-0004-108-8 · at PA-0067 since 2026-11-27T21:47:05.979Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -580,7 +580,7 @@
       "keywords": [
        "generic",
        "AS-0008",
-       "SYN-SN-R-PLN-0004-136-8",
+       "SYN-SN-R-PLN-0004-108-8",
        "unit",
        "asset"
       ],
@@ -627,7 +627,7 @@
      },
      {
       "type": "Person",
-      "id": "e7b70f82-96d5-46d4-a4fc-b4307f9f08a4",
+      "id": "14219b1a-244e-4b9a-bbe3-7a5cd69acbb5",
       "label": "Systems Engineer (synthetic)",
       "provenance": "app.person (named by a visible record)",
       "depth": 2,
@@ -644,7 +644,7 @@
      },
      {
       "type": "Person",
-      "id": "eef1a3f9-97a7-4926-8814-895eb25bb6aa",
+      "id": "16edfe7e-20f8-4449-a849-e683d0f0b201",
       "label": "Designer / CAD / Revit (synthetic)",
       "provenance": "app.person (named by a visible record)",
       "depth": 2,
@@ -711,7 +711,7 @@
      },
      {
       "type": "CommissioningBaseline",
-      "id": "ddf3ff63-7e69-450d-87eb-ff966dd04852",
+      "id": "eb1178b8-f44e-40c3-a390-4287cf8fb76f",
       "label": "Checkpoint conference room (synthetic) · baseline v1",
       "subtitle": "CURRENT · design revision 2",
       "provenance": "app.assurance_baseline",
@@ -2248,7 +2248,7 @@
       "rel": "APPROVED_BY",
       "to": {
        "type": "Person",
-       "id": "e7b70f82-96d5-46d4-a4fc-b4307f9f08a4"
+       "id": "14219b1a-244e-4b9a-bbe3-7a5cd69acbb5"
       },
       "provenance": "DECLARED app.room.approved_class (classification approval)",
       "label": "approved by",
@@ -2262,7 +2262,7 @@
       "rel": "DESIGNED_FOR",
       "to": {
        "type": "Person",
-       "id": "eef1a3f9-97a7-4926-8814-895eb25bb6aa"
+       "id": "16edfe7e-20f8-4449-a849-e683d0f0b201"
       },
       "provenance": "DECLARED app.room.created_by",
       "label": "designed for",
@@ -2313,7 +2313,7 @@
      {
       "from": {
        "type": "CommissioningBaseline",
-       "id": "ddf3ff63-7e69-450d-87eb-ff966dd04852"
+       "id": "eb1178b8-f44e-40c3-a390-4287cf8fb76f"
       },
       "rel": "DOCUMENTS",
       "to": {
@@ -3814,7 +3814,7 @@
      {
       "node": {
        "type": "Person",
-       "id": "e7b70f82-96d5-46d4-a4fc-b4307f9f08a4"
+       "id": "14219b1a-244e-4b9a-bbe3-7a5cd69acbb5"
       },
       "x": 527,
       "y": 129,
@@ -3823,7 +3823,7 @@
      {
       "node": {
        "type": "Person",
-       "id": "eef1a3f9-97a7-4926-8814-895eb25bb6aa"
+       "id": "16edfe7e-20f8-4449-a849-e683d0f0b201"
       },
       "x": 539,
       "y": 135,
@@ -3850,7 +3850,7 @@
      {
       "node": {
        "type": "CommissioningBaseline",
-       "id": "ddf3ff63-7e69-450d-87eb-ff966dd04852"
+       "id": "eb1178b8-f44e-40c3-a390-4287cf8fb76f"
       },
       "x": 572,
       "y": 157,
@@ -4680,7 +4680,7 @@
      ]
     }
    },
-   "correlationId": "38fde2bd-9e28-487a-8f07-58b3763f3fc5"
+   "correlationId": "50e842f5-d61c-4e7a-ad27-aa8c4cfdf661"
   },
   {
    "method": "POST",
@@ -4772,7 +4772,7 @@
     "confidence": "DERIVED",
     "actions": []
    },
-   "correlationId": "8b99b738-6205-405d-b1ce-dc3eaa7d9e3b"
+   "correlationId": "309f8cd4-17ec-454b-ab07-e92586de987e"
   },
   {
    "method": "POST",
@@ -4824,7 +4824,7 @@
     "confidence": "DERIVED",
     "actions": []
    },
-   "correlationId": "91a3e851-02b6-4b2e-a1f6-c078d874c8ad"
+   "correlationId": "05b57b73-396c-4300-af7f-8ac83db25f3f"
   },
   {
    "method": "GET",
@@ -4837,7 +4837,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-27T12:41:28.972Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-27T21:47:09.819Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -4982,7 +4982,7 @@
      }
     ]
    },
-   "correlationId": "c98e1ab5-1083-4800-85fa-44c3e75bdde7"
+   "correlationId": "f16ffbb8-2845-482e-b387-3532025d1172"
   },
   {
    "method": "GET",
@@ -4994,7 +4994,7 @@
      "type": "Asset",
      "id": "AS-0009",
      "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-     "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-27T12:41:28.972Z",
+     "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-27T21:47:09.819Z",
      "provenance": "app.physical_asset",
      "facets": {
       "site": "SITE-NORTH",
@@ -5015,7 +5015,7 @@
       "type": "Asset",
       "id": "AS-0009",
       "label": "AS-0009 · SYN-PTZ-12X (synthetic PTZ camera)",
-      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-27T12:41:28.972Z",
+      "subtitle": "identity UNKNOWN · at PA-0061 since 2026-11-27T21:47:09.819Z",
       "provenance": "app.physical_asset",
       "facets": {
        "site": "SITE-NORTH",
@@ -5124,7 +5124,7 @@
      ]
     }
    },
-   "correlationId": "3cb00aea-4969-4d82-a8c2-050269e95ae1"
+   "correlationId": "e5164301-4526-48c7-94c1-54f60b16786a"
   }
  ]
 }

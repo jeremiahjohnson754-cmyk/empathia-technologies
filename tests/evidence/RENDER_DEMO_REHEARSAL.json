@@ -1,6 +1,6 @@
 {
- "at": "2026-11-27T14:04:48.230Z",
- "commit": "6d07d39b9f7e87a1bffe4bac11f06be2c341c774",
+ "at": "2026-11-27T23:04:25.880Z",
+ "commit": "f39825ce2d2003a5511c71eddffc837b6dc5e098",
  "blueprint": "deploy/render/demo.render.yaml",
  "startCommand": "sh deploy/render/demo-start.sh",
  "passed": 13,
@@ -64,13 +64,13 @@
    "id": "R-09",
    "name": "recovery: an export made with the platform’s privileges restores into an empty database as the owner; migrations, rows, forced row-level security and every audit chain are verified against the source; on the copy as restored the service is unhealthy and refuses, the runtime role cannot repair the privileges and the owner’s repair makes them equal to the source’s; the API then serves the restored copy and a sandbox opened before the export opens with its key and reads the same thread",
    "result": "PASS",
-   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 12620 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.3 s (475 KiB), restore 0.7 s, verify 1.8 s, serving again 16.0 s"
+   "detail": "RV-01 PASS · RV-02 PASS · RV-03 PASS · RV-04 PASS · RV-05 PASS · 12178 rows, 7 chains · objects not the owner’s: 0 · API on the copy true · same thread true · recorded after the export: on the source v2, in the copy v1 (lost, as it must be) · export 0.2 s (467 KiB), restore 0.6 s, verify 1.4 s, serving again 15.9 s"
   },
   {
    "id": "R-10",
    "name": "the verification is not a formality: one audit row changed and one row removed in the restored copy are both reported",
    "result": "PASS",
-   "detail": "RV-02 FAIL: 518 sealed rows in 7 chains · 1 hashes differ · 0 broken links · 0 gaps · 0 rows not yet s | RV-04 FAIL: 12619 rows in 89 tables (source 12620) · tables that differ: app.field_mounting 3→2 · chain heads the same"
+   "detail": "RV-02 FAIL: 518 sealed rows in 7 chains · 1 hashes differ · 0 broken links · 0 gaps · 0 rows not yet s | RV-04 FAIL: 12278 rows in 89 tables (source 12178) · tables that differ: app.field_mounting 3→2, app.outbox_delivery 1746→1846, app."
   },
   {
    "id": "R-11",
@@ -86,15 +86,15 @@
   }
  ],
  "recovery": {
-  "rows": 12620,
+  "rows": 12178,
   "tables": 89,
   "chains": 7,
-  "exportBytes": 486704,
-  "exportSeconds": 0.276,
-  "restoreSeconds": 0.704,
-  "verifySeconds": 1.774,
-  "serveSeconds": 16.024,
-  "totalSeconds": 18.502000000000002,
+  "exportBytes": 478530,
+  "exportSeconds": 0.204,
+  "restoreSeconds": 0.582,
+  "verifySeconds": 1.379,
+  "serveSeconds": 15.943,
+  "totalSeconds": 17.904,
   "lost": "whatever was recorded after the export was made: here one mounting (version 2 on the source, version 1 in the copy)",
   "measuredOn": "this workstation, a local PostgreSQL cluster; not the platform"
  },
@@ -103,7 +103,7 @@
    "id": "SM-01",
    "title": "the service is up in demonstration mode, on a named release, with its database reachable",
    "result": "PASS",
-   "detail": "status ok · authMode demo · release 6d07d39b9f7e (staging) · migrations 48"
+   "detail": "status ok · authMode demo · release f39825ce2d20 (staging) · migrations 48"
   },
   {
    "id": "SM-02",
@@ -121,7 +121,7 @@
    "id": "SM-04",
    "title": "a sandbox opens with a key, sixteen synthetic people and three installed rooms, one of them the flagship lecture theatre by its canonical identifier; its first session is the installer’s",
    "result": "PASS",
-   "detail": "sbx-a209b414de6d4868 · 16 people · R-PLN-0001 INSTALLED_UNVERIFIED, R-PLN-0002 INSTALLED_UNVERIFIED, R-PLN-0003 INSTALLED_UNVERIFIED · UNI-SCI-110 is R-PLN-0002"
+   "detail": "sbx-1313a7b6b1bf4ba7 · 16 people · R-PLN-0001 INSTALLED_UNVERIFIED, R-PLN-0002 INSTALLED_UNVERIFIED, R-PLN-0003 INSTALLED_UNVERIFIED · UNI-SCI-110 is R-PLN-0002"
   },
   {
    "id": "SM-05",
