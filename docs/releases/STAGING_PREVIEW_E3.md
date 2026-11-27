@@ -30,10 +30,29 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 26 Nov 2026 03:47 | `1fa2a07e` | PASS 304 · FAIL 0 · NOT_RUN 2 (evidence in `008083a2`) | dep-dc3qnaa9lscs73degqa0, replaced | dep-dc3qnaa9lscs73degqdg, replaced |
 | 26 Nov 2026 10:29 | `6e0d7877` | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `a173355b`) | dep-dc40jk59el5s73ark5qg, replaced | dep-dc40jk59el5s73ark5n0, replaced |
 | 26 Nov 2026 16:20 | `68ea38ea` (served as `018302f7`) | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `018302f7`) | dep-dc45nk8ae00c73d8moug, replaced by dep-dc45no1aekrs73chenj0, replaced | dep-dc45nk8ae00c73d8mor0, replaced by dep-dc45no28ghsc73fbcn20, replaced |
-| 26 Nov 2026 21:37 | `4231f6a2` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `b915d54a`) | dep-dc4achrbc2fs739id8p0, live | dep-dc4achrbc2fs739id8lg, live |
+| 26 Nov 2026 21:37 | `4231f6a2` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `b915d54a`) | dep-dc4achrbc2fs739id8p0, replaced | dep-dc4achrbc2fs739id8lg, replaced |
+| 27 Nov 2026 02:51 | `e2c9b213` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `fec0ac5e`) | dep-dc4evu3bc2fs739n32lg, live | dep-dc4evu3bc2fs739n32i0, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `e2c9b213`, 27 Nov 2026 02:53 UTC
+
+Only the tested commit was pushed to the preview branch; its evidence commit `fec0ac5e` stays on `v18/continuation`. Both deploys
+went live at 02:51:51 UTC and both served manifests named `e2c9b213…` from 02:52:14 UTC. None of the 1,597 files in the demo manifest
+was served stale. The live check passed **43 of 43** on the two previews; the six founder portrait files served are byte for byte the
+recorded renditions, and the spelling search still finds Highfield 1.110 for "lecture theatre" and "lecture theater".
+
+New for this build, over `4231f6a2`: one rule for an open service request (`apps/demo/src/workspace/requests.ts`; checks MI-09 to
+MI-12 in `tests/unit/metric-integrity.test.mjs` and MC-open-01/02 in `tests/browser/demo-core.test.mjs`). On the `4231f6a2` preview,
+Mission Control said 2 open service requests while Pro's Issue Intelligence and ServiceHands said 3: they counted the seed's resolved
+request as open. On this preview, read as the service manager, Mission Control, Pro Issue Intelligence, ServiceHands and the V2.5.3
+control room all say **2**. A resolved request stays on the service board until it is closed, and counts of requests not yet closed
+say so. Where a live request and a room record share an id, the live request wins: ISS-0417's passport (`#/list/Issue/ISS-0417`)
+reads "OPEN in ServiceHands; the room record says RESOLVED". An independent review approved the commit before the regression ran.
+
+Found during this check, for the next wording pass: the search result row says "modelled" (the derived spelling forms are on the
+checkpoint's list of what the pass does not yet cover).
 
 ## Live check of `4231f6a2`, 26 Nov 2026 21:38 UTC
 
