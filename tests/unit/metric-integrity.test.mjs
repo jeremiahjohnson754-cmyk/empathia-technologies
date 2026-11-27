@@ -242,4 +242,10 @@ test('MI-13 open issues are one per id on every page: a record issue that a live
     assert.deepEqual(M.roomIssuesOf(x, ws.incidents), M.roomIssues(x, ws), x.outline.id);
   }
   assert.equal(M.roomIssues(r, w2).filter((i) => i.id === iss.id).length, 1, 'counted once');
+  // the parity views: the room passport's "Open issues" fact, and the count the room comparison reads, are the same number. They counted
+  // the room record only, so a room with a live request read fewer open issues there than on its campus page (Atlas 4.218 on the seed: 1 against 2, its sightline finding and ISS-0417).
+  for (const ws of [w, w2]) { const core = PC.buildCore(ws, { projects: [], decisions: [], funding: [] });
+    for (const x of recs) { const want = M.roomIssues(x, ws).length;
+      assert.equal(core.get(x.outline.id).facts.find((f) => f[0] === 'Open issues')?.[1], String(want), `${x.outline.id} passport`);
+      assert.equal(core.openIssues(x).length, want, `${x.outline.id} comparison`); } }
 });

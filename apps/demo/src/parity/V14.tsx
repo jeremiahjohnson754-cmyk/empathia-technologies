@@ -15,6 +15,7 @@ import { useCore, honest, Crumbs, Pills, Zone, FactsTable, Bars } from './ui.js'
 import { V14_DEPLOY, EV, PHASES, PILLS, CAPS, SCHEMA, DIAG, OPS_STATES, IC_KINDS, IC_STATES, SCH_STATES, CM_TESTS, RB_SAFETY, fixtures, indicators, readiness, tz, demoClock, roomLabel, type Ev } from './v14Model.js';
 import { CATS } from './Fabric.js';
 import { isOpenRequest } from '../workspace/requests.js';
+import { roomIssues } from '../campus/metrics.js';
 
 export const EvBadge = ({ k }: { k: Ev }) => <span className={`pa-ev kit-s--${EV[k][1]}`}>{EV[k][0]}</span>;
 const Banner = () => <p className="pa-tower__banner" role="note"><EvBadge k="DEMO" /><span><b>Nothing here is live.</b> This build holds no credentials, calls no vendor API and reaches no device. Every V1.4 record is a deterministic fixture built from the demonstration’s Core and labeled with its evidence kind. Mode {V14_DEPLOY.mode}, fixed at build time.</span></p>;
@@ -151,7 +152,7 @@ function Telemetry({ rooms, sub }: { rooms: RoomRecord[]; sub?: string }) {
   const pass = ind.filter((i) => i.state === 'pass').length;
   return (<><Head title="Telemetry and Assurance core" sub="Versioned decoders, a deduplicated ledger with raw and normalized views, seven independent indicators, and a room health that nothing can type in." phase={5} /><Banner />
     <RoomPick rooms={rooms} value={r.outline.id} onChange={setR} view="telemetry" />
-    <div className="kit-grid kit-grid--tiles"><StatTile label="Indicators passing" value={pass} unit={` of ${ind.length}`} icon="pulse" /><StatTile label="Not measured" value={ind.filter((i) => i.state === 'not measured').length} icon="eye" hint="no false PASS: unmeasured stays unmeasured" /><StatTile label="Open issues" value={openIssues(r).length} icon="alert" /></div>
+    <div className="kit-grid kit-grid--tiles"><StatTile label="Indicators passing" value={pass} unit={` of ${ind.length}`} icon="pulse" /><StatTile label="Not measured" value={ind.filter((i) => i.state === 'not measured').length} icon="eye" hint="no false PASS: unmeasured stays unmeasured" /><StatTile label="Open issues" value={roomIssues(r, loadWorkspace()).length} icon="alert" testId="tel-open-issues" /></div>
     <div className="pa-table-wrap"><table className="pa-table" data-testid="tel-matrix"><thead><tr><th scope="col">Indicator</th><th scope="col">State</th><th scope="col">What it says · what it may not claim</th><th scope="col">Evidence</th></tr></thead>
       <tbody>{ind.map((i) => <tr key={i.key} className={i.state === 'fail' ? 'pa-diff' : undefined}><th scope="row">{i.label}</th><td><Tag tone={i.state === 'pass' ? 'ok' : i.state === 'fail' ? 'bad' : 'muted'}>{i.state}</Tag></td><td>{i.note}<br /><span className="pa-note">{i.what}</span></td><td><EvBadge k={i.ev} /></td></tr>)}</tbody></table></div></>);
 }

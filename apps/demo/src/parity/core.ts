@@ -11,6 +11,7 @@ import { allRecords, roomRecord, DEMO_NOW, openIssues, type RoomRecord, type Pos
 import type { Workspace } from '../workspace/store.js';
 import type { DecisionState, Project } from '../decisions/store.js';
 import { isOpenRequest } from '../workspace/requests.js';
+import { roomIssuesOf, type OpenIssue } from '../campus/metrics.js';
 
 export type Prov = 'KNOWN' | 'INFERRED' | 'SIMULATED';
 export const PROV_TEXT: Record<Prov, string> = {
@@ -131,7 +132,8 @@ export const nextOf = (roomId: string, t = DEMO_NOW) => sessionsOf(roomId).find(
 export const hhmm = (t: number) => new Date(t).toISOString().slice(11, 16);
 
 // ------------------------------------------------------------------ the model
-export interface Core { all: Rec[]; byType: Record<EntityType, Rec[]>; get: (id: string) => Rec | undefined; rooms: RoomRecord[] }
+/** openIssues: the room's open issues (issues.open: the record's and the workspace's, one per id), what a parity view counts as "Open issues". */
+export interface Core { all: Rec[]; byType: Record<EntityType, Rec[]>; get: (id: string) => Rec | undefined; rooms: RoomRecord[]; openIssues: (r: RoomRecord) => OpenIssue[] }
 const lifeTone = (l: string): Rec['tone'] => (l === 'OPERATIONAL' || l === 'ACCEPTED' ? 'ok' : l === 'COMMISSIONING' ? 'warn' : 'info');
 const sevTone = (s: string): Rec['tone'] => (s === 'High' || s === 'Mission critical' ? 'bad' : s === 'Medium' ? 'warn' : 'info');
 
@@ -142,7 +144,7 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
   for (const r of rooms) {
     const o = r.outline; const hw = r.positions.filter((p) => !p.furniture);
     add({ type: 'Room', id: o.id, name: fullName(o), sub: `${buildingByKey(o.building)?.name} · floor ${o.floor} · ${r.archetypeName} · ${o.capacity} seats`, roomId: o.id, building: o.building, state: r.lifecycle, tone: lifeTone(r.lifecycle),
-      facts: [['Lifecycle', r.lifecycle], ['Archetype', r.archetypeName], ['Seats', String(o.capacity)], ['Devices', String(hw.length)], ['Tests verified', `${r.counts.verified} of ${r.counts.applicable}`], ['Open issues', String(openIssues(r).length)], ['Health (rule)', `${healthOf(r)} of 100`], ['Geometry', r.geometryProvenance]],
+      facts: [['Lifecycle', r.lifecycle], ['Archetype', r.archetypeName], ['Seats', String(o.capacity)], ['Devices', String(hw.length)], ['Tests verified', `${r.counts.verified} of ${r.counts.applicable}`], ['Open issues', String(roomIssuesOf(r, w.incidents).length)], ['Health (rule)', `${healthOf(r)} of 100`], ['Geometry', r.geometryProvenance]],
       prov: 'KNOWN', source: o.source, href: roomHref(o), links: [{ type: 'Design', id: `DS-${o.id.slice(2)}`, rel: 'designed by' }] });
     for (const p of hw) {
       const st = stageOf(r, p); const inst = r.installations.find((i) => i.position === p.code && !i.removedAt);
@@ -219,6 +221,6 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
 
   const byType = Object.fromEntries(TYPE_KEYS.map((t) => [t, [] as Rec[]])) as Record<EntityType, Rec[]>;
   const ix = new Map<string, Rec>(); for (const r of out) { byType[r.type].push(r); if (!ix.has(r.id)) ix.set(r.id, r); }
-  return { all: out, byType, get: (id) => ix.get(id), rooms };
+  return { all: out, byType, get: (id) => ix.get(id), rooms, openIssues: (r) => roomIssuesOf(r, w.incidents) };
 }
 export { DEMO_NOW, DAY, day, roomRecord, ROOMS, BUILDINGS, roomById, shortName, fullName, roomHref };
