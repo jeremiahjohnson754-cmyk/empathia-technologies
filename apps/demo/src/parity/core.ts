@@ -12,6 +12,7 @@ import type { Workspace } from '../workspace/store.js';
 import type { DecisionState, Project } from '../decisions/store.js';
 import { isOpenRequest } from '../workspace/requests.js';
 import { roomIssuesOf, roomHealth, type OpenIssue, type Health } from '../campus/metrics.js';
+import { pastTargetOf } from '../service/targets.js';
 
 export type Prov = 'KNOWN' | 'INFERRED' | 'SIMULATED';
 export const PROV_TEXT: Record<Prov, string> = {
@@ -129,7 +130,9 @@ export const hhmm = (t: number) => new Date(t).toISOString().slice(11, 16);
 
 // ------------------------------------------------------------------ the model
 /** openIssues: the room's open issues (issues.open: the record's and the workspace's, one per id), what a parity view counts as "Open issues". */
-export interface Core { all: Rec[]; byType: Record<EntityType, Rec[]>; get: (id: string) => Rec | undefined; rooms: RoomRecord[]; openIssues: (r: RoomRecord) => OpenIssue[]; health: (r: RoomRecord) => Health }
+export interface Core { all: Rec[]; byType: Record<EntityType, Rec[]>; get: (id: string) => Rec | undefined; rooms: RoomRecord[]; openIssues: (r: RoomRecord) => OpenIssue[]; health: (r: RoomRecord) => Health;
+  /** the ids (RQ-…) of the open service requests past their restore target at nowMs (service/targets.ts; the set req:late) */
+  lateRequests: (nowMs: number) => string[] }
 const lifeTone = (l: string): Rec['tone'] => (l === 'OPERATIONAL' || l === 'ACCEPTED' ? 'ok' : l === 'COMMISSIONING' ? 'warn' : 'info');
 const sevTone = (s: string): Rec['tone'] => (s === 'High' || s === 'Mission critical' ? 'bad' : s === 'Medium' ? 'warn' : 'info');
 
@@ -217,6 +220,6 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
 
   const byType = Object.fromEntries(TYPE_KEYS.map((t) => [t, [] as Rec[]])) as Record<EntityType, Rec[]>;
   const ix = new Map<string, Rec>(); for (const r of out) { byType[r.type].push(r); if (!ix.has(r.id)) ix.set(r.id, r); }
-  return { all: out, byType, get: (id) => ix.get(id), rooms, openIssues: (r) => roomIssuesOf(r, w.incidents), health: (r) => roomHealth(r, w) };
+  return { all: out, byType, get: (id) => ix.get(id), rooms, openIssues: (r) => roomIssuesOf(r, w.incidents), health: (r) => roomHealth(r, w), lateRequests: (nowMs) => pastTargetOf(w.incidents, nowMs).map((i) => `RQ-${i.id}`) };
 }
 export { DEMO_NOW, DAY, day, roomRecord, ROOMS, BUILDINGS, roomById, shortName, fullName, roomHref };

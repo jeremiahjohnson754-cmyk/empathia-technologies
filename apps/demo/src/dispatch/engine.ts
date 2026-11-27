@@ -13,6 +13,7 @@
  */
 import { candidates, hardGates, CERTS, SLA, WORK_NEEDS, type Staff, type WorkNeed, type WorkOrderFacts } from '@empathia/service-engine';
 import { isOpenRequest } from '../workspace/requests.js';
+import { SLA_HOURS, restoreHoursOf } from '../service/targets.js';
 
 export const NO_TRAVEL = 'Travel time is not estimated: there is no authorized routing source.';
 export const OVERRIDE_MIN = 12;
@@ -129,9 +130,9 @@ export function reassignBlockers(rows: Match[], fromId: string | null, toId: str
 }
 
 /** SLA restore deadline from the severity (business days counted as calendar days in this demonstration, and it says so). */
-export const RESTORE_HOURS: Record<string, number> = { 'Mission critical': 8, High: 48, Standard: 120 };
+export const RESTORE_HOURS: Record<string, number> = Object.fromEntries(Object.entries(SLA_HOURS).map(([k, v]) => [k, v.restore]));   // service/targets.ts, the one table
 export function slaOf(severity: string, openedAt: string, restoredAt: string | null, nowMs: number): { due: string; hoursLeft: number; state: 'met' | 'ok' | 'at risk' | 'breached'; promise: string } {
-  const h = RESTORE_HOURS[severity] ?? 120; const due = Date.parse(openedAt) + h * 36e5;
+  const h = restoreHoursOf(severity); const due = Date.parse(openedAt) + h * 36e5;
   const promise = (SLA as Record<string, { respond: string; restore: string }>)[severity]?.restore || `${h} h`;
   if (restoredAt) return { due: new Date(due).toISOString(), hoursLeft: 0, state: Date.parse(restoredAt) <= due ? 'met' : 'breached', promise };
   const left = (due - nowMs) / 36e5;

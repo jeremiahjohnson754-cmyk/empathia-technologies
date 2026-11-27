@@ -16,7 +16,8 @@ import { isOpenRequest } from '../workspace/requests.js';
 import { Foot, Stack, plural, pct } from './viz.js';
 import { openable } from './V25Nav.js';
 import { TrendChart } from './TrendChart.js';
-import { syntheticHistory, monthKey } from '../service/history.js';
+import { syntheticHistory, workspaceJobs, monthKey } from '../service/history.js';
+import { pastTargetOf, TARGETS_TEXT } from '../service/targets.js';
 import { months, stats, LAYER_LABEL } from '../service/analytics.js';
 import { campusStats, recordIssues } from '../campus/metrics.js';
 import { CampusMap, Stage } from '../spatial/Spatial.js';
@@ -100,6 +101,15 @@ export function AssetsPage({ perspective, hash }: { perspective: string; hash?: 
 }
 
 // ------------------------------------------------------------------------------------------------------------ Issue Intelligence
+/** Issue Intelligence's service figures (the Pro register's PRO-IS-01, #320; MI-27). The live two are this browser's requests: open, and
+ * past their restore target by the dispatch board's rule. The twelve-month three are Service analytics' own (stats over the synthetic
+ * history and the workspace's jobs, the same months). "Escalated" is not counted: no record carries an escalation. */
+export function issueKpis(w: S.Workspace, nowMs: number, only: string | null = null) {
+  const inc = w.incidents.filter((i) => !only || i.buildingKey === only);
+  const jobs = [...syntheticHistory(), ...workspaceJobs(w)].filter((j) => !only || j.building === only); const ms = months(12);
+  const s = stats(jobs, ms[0]!.from, ms[ms.length - 1]!.to);
+  return { open: inc.filter(isOpenRequest), late: pastTargetOf(inc, nowMs), mttrH: s.mttrH, restoreSla: s.restoreSla, reopen: s.reopen, closed: s.closed, escalated: null as number | null, from: ms[0]!.label, to: ms[ms.length - 1]!.label };
+}
 export function IssuesPage({ perspective, hash }: { perspective: string; hash?: string }) {
   const persona = personaOf(perspective); const { w } = useWorkspace(); const only = buildingParam(hash); const recs = allRecords().filter((r) => !only || r.outline.building === only);
   const inc = w.incidents.filter((i) => !only || i.buildingKey === only);
@@ -123,6 +133,14 @@ export function IssuesPage({ perspective, hash }: { perspective: string; hash?: 
         <StatTile label="Service jobs open" testId="pro-jobs-open" value={inc.filter((i) => isOpenRequest(i)).length} icon="ticket" tone="servicehands" href="#/servicehands" />
         <StatTile label="Recurrences" value={rec.length} icon="undo" tone="apex" href="#/v25/apex" hint="Diagnosed by APEX before another visit" />
       </div>
+      {(() => { const k = issueKpis(w, Date.now(), only);
+        return <><div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="pro-issues-service">
+          <StatTile testId="pro-late" label="Past their target" value={k.late.length} unit={`of ${k.open.length}`} icon="clock" tone="bad" href={only ? undefined : '#/set/req:late'} hint={`open requests not restored within ${TARGETS_TEXT}`} />
+          <StatTile testId="pro-mttr" label="Median time to restore" value={k.mttrH} unit=" h" digits={1} icon="clock" tone="info" href="#/v25/service/analytics" hint={`jobs opened ${k.from} to ${k.to}, as Service analytics counts them`} />
+          <StatTile testId="pro-in-target" label="Restored within target" value={k.restoreSla} unit="%" icon="check" tone="ok" href="#/v25/service/analytics" hint={`of the jobs restored, opened ${k.from} to ${k.to}`} />
+          <StatTile testId="pro-reopened" label="Reopened after closure" value={k.reopen} unit="%" icon="undo" tone="warn" href="#/v25/service/analytics" hint={`of ${plural(k.closed, 'job')} closed, ${k.from} to ${k.to}`} />
+        </div>
+        <p className="wk-note" data-testid="pro-escalated">Escalated and still open: not counted, because no record in this demonstration carries an escalation.</p></>; })()}
       {/* #234 (founder 13:42, 14:00): the failure map — the same campus map with the Issues lens, counts and rates per 10 rooms, the source and
           its time, each building drilling to its rooms. One map component, so it agrees with Campus and Mission Control. */}
       {(() => { const c = campusStats(w); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));

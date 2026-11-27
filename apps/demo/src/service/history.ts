@@ -13,6 +13,7 @@ import { seeded } from '../campus/canon.js';
 import { VENDORS, AGREEMENTS } from '../parity/core.js';
 import type * as S from '../workspace/store.js';
 import { requestFixedAt } from '../workspace/requests.js';
+import { SLA_HOURS } from './targets.js';
 
 export type Severity = 'Mission critical' | 'High' | 'Standard';
 export type Layer = 'audio' | 'video' | 'display' | 'control' | 'network' | 'power';
@@ -27,7 +28,7 @@ export interface ServiceJob {
   tech?: string | null;
 }
 /** SLA targets in hours, from @empathia/service-engine's SLA words: business days are counted as 24 h each here (stated wherever shown). */
-export const SLA_HOURS: Record<Severity, { respond: number; restore: number }> = { 'Mission critical': { respond: 2, restore: 8 }, High: { respond: 24, restore: 48 }, Standard: { respond: 48, restore: 120 } };
+export { SLA_HOURS };   // one table of service targets (service/targets.ts)
 export const INTERNAL = 'INTERNAL';
 const LAYERS: Layer[] = ['audio', 'video', 'display', 'control', 'network', 'power'];
 const H = 3600e3;

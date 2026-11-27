@@ -19,6 +19,7 @@ import { personaLabel, personaOf } from '../build/store.js';
 import type * as S from '../workspace/store.js';
 import { isOpenRequest, requestFixedAt } from '../workspace/requests.js';
 import { recordIssues } from '../campus/metrics.js';
+import { pastTargetOf, restoreHoursOf, TARGETS_TEXT } from '../service/targets.js';
 import { Foot, Stack, plural, pct, weekCounts, weekBacklog, deltaOf } from './viz.js';
 import { V25Nav } from './V25Nav.js';
 import { ProTabs } from './ProViews.js';
@@ -173,21 +174,20 @@ export function AssurancePage({ perspective, hash = '' }: { perspective: string;
 }
 
 // ------------------------------------------------------------------------------------------------------------ Pro
-/** The service target by severity (the demonstration's stated policy): restore within this many days of opening. */
-export const TARGET_DAYS: Record<string, number> = { 'Mission critical': 1, High: 2, Standard: 5 };
 export function ProPage({ perspective, hash = '' }: { perspective: string; hash?: string }) {
   const persona = personaOf(perspective); const { w, recs: all } = useEstate(); const drill = drillOf(hash, all); const recs = inScope(all, drill);
   const inScopeRoom = (id: string) => !drill.b || recs.some((r) => r.outline.id === id);
   const now = Date.now();
   const inc = w.incidents.filter((i) => isOpenRequest(i) && inScopeRoom(i.roomId));
-  const late = (i: S.Incident) => (now - Date.parse(i.openedAt)) / DAY > (TARGET_DAYS[i.severity] ?? 5);
+  // past target by the one restore rule the dispatch board and Service analytics use (service/targets.ts; MI-25)
+  const lateIds = new Set(pastTargetOf(inc, now).map((i) => i.id)); const late = (i: S.Incident) => lateIds.has(i.id);
   // the record half of issues.open: a record issue that a live request of the same id overrides is that request, counted once (MI-13)
   const roomIssues = recs.flatMap((r) => recordIssues(r, w.incidents).map((i) => ({ r, i })));
   const sevSegs = [['High', 'bad'], ['Medium', 'warn'], ['Low', 'info']].map(([s, t]) => ({ key: s!, label: s!, value: roomIssues.filter((x) => x.i.severity === s).length + inc.filter((i) => (s === 'High' ? i.severity !== 'Standard' : s === 'Medium' ? i.severity === 'Standard' : false)).length, tone: t as Series }));
   const needRooms = new Set([...roomIssues.map((x) => x.r.outline.id), ...inc.map((i) => i.roomId), ...recs.filter((r) => cxState(r).state === 'blocked').map((r) => r.outline.id)]);
   const devices = recs.reduce((a, r) => a + r.positions.filter((p) => !p.furniture).length, 0);
   const backlog = weekBacklog(w.incidents, (i) => i.openedAt, (i) => i.restoredAt || requestFixedAt(i));
-  const working = [...inc.map((i) => ({ key: i.id, title: i.title, sub: `${i.roomName} · ${i.severity} · opened ${Math.round((now - Date.parse(i.openedAt)) / DAY)} d ago${late(i) ? ` · past its ${TARGET_DAYS[i.severity] ?? 5}-day target` : ''}`, href: i.workOrderId ? `#/servicehands/wo/${i.workOrderId}` : `#/servicehands?id=${i.id}`, tone: (i.severity === 'Standard' ? 'warn' : 'bad') as Series, chip: late(i) ? 'Past target' : i.state, rank: late(i) ? 0 : 1 })),
+  const working = [...inc.map((i) => ({ key: i.id, title: i.title, sub: `${i.roomName} · ${i.severity} · opened ${Math.round((now - Date.parse(i.openedAt)) / DAY)} d ago${late(i) ? ` · past its ${restoreHoursOf(i.severity)} h target` : ''}`, href: i.workOrderId ? `#/servicehands/wo/${i.workOrderId}` : `#/servicehands?id=${i.id}`, tone: (i.severity === 'Standard' ? 'warn' : 'bad') as Series, chip: late(i) ? 'Past target' : i.state, rank: late(i) ? 0 : 1 })),
     ...roomIssues.map(({ r, i }) => ({ key: `${r.outline.id}:${i.id}`, title: i.title, sub: `${roomName(r)} · ${i.severity} · ${i.source}`, href: roomHref(r.outline), tone: (i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'info') as Series, chip: i.severity, rank: i.severity === 'High' ? 1 : i.severity === 'Medium' ? 2 : 3 }))].sort((a, b) => a.rank - b.rank);
   return (
     <section className="wk" data-native="workspace" data-testid="pro">
@@ -209,7 +209,7 @@ export function ProPage({ perspective, hash = '' }: { perspective: string; hash?
         </Card>
         <Card icon="pulse" title="Open issues by severity" sub="Service jobs and room deficiencies together">
           <Donut label="Open issues by severity" total="open" segments={sevSegs} />
-          <p className="wk-note">Targets to restore: {Object.entries(TARGET_DAYS).map(([k, v]) => `${k} ${v} d`).join(' · ')} — the demonstration's stated policy.</p>
+          <p className="wk-note">Targets to restore: {TARGETS_TEXT}, business days counted as 24 h: the dispatch board's and Service analytics' targets.</p>
         </Card>
       </div>
       <EstateDrill kind="pro" recs={all} incidents={w.incidents} hash={hash} base="#/pro" states={PRO_STATES} roomBase="#/assurance/room" />
