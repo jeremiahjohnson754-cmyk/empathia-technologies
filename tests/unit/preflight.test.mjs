@@ -109,4 +109,7 @@ test('PRE-08 the verdict is every step together: a later pass never hides an ear
   assert.match(s, /results\.push\(passed\)/, 'each step-3 suite records its own result');
   assert.match(s, /const verdict = ok && overall\(results\)/, 'the printed verdict and the exit code read every result');
   assert.match(s, /preflight \$\{verdict \? 'PASSED' : 'FAILED'\}/, 'PASSED is printed only from that verdict'); assert.match(s, /process\.exit\(verdict \? 0 : 1\)/);
+  // the report says its own verdict, written before the report is saved (the b9eec2a9 report held no verdict, only its FAIL line)
+  assert.ok(s.indexOf('const verdict') > -1 && s.indexOf('const verdict') < s.indexOf('fs.writeFileSync(file'), 'the verdict is known before the report is written');
+  assert.match(s, /report\.push\('', `Verdict: \$\{verdict \? 'PASSED' : 'FAILED'\}/, 'the report records it');
 });

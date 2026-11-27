@@ -92,7 +92,7 @@ if (ok && r.chosen.length) { report.push('', `## Step 3: ${r.chosen.length} suit
     const passed = step(`step 3: ${c.name}`, ['scripts/test.mjs', '--browser', '--studio', `--files=${c.file}`], 3600000, true); results.push(passed);
     if (passed) { state.passed.push(c.file); save(); }
     if (!passed && !has('--keep-going')) { ok = false; const left = r.chosen.length - r.chosen.indexOf(c) - 1; if (left) { console.log(`stopped at the first failure; ${left} suites not run (--keep-going runs them all)`); report.push(`- stopped at the first failure; ${left} not run`); } break; } } }
+const verdict = ok && overall(results); report.push('', `Verdict: ${verdict ? 'PASSED' : 'FAILED'} (${results.filter(Boolean).length} of ${results.length} steps passed)`);
 const file = path.join(out, `${commit.slice(0, 8)}-${stamp}.md`); fs.writeFileSync(file, report.join('\n') + '\n');
-const verdict = ok && overall(results);
 console.log(`\npreflight ${verdict ? 'PASSED' : 'FAILED'} — ${rel(root, file)}${verdict ? '\nnext: step 4, an independent review of the change and of its tests; then step 5, the exact-commit regression' : ''}`);
 process.exit(verdict ? 0 : 1);

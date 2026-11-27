@@ -546,14 +546,20 @@
         "video": "owner upload (1000045715.mp4: the master, captions burned in)",
         "captions": "apps/website/films/MODERN.captions.vtt"
       },
-      "disclosure": "A cinematic depiction of the intended Empathia experience. AI-generated footage and voice (named in the film's end card: Veo 3.1 and the ElevenLabs voice “Brian”); the places, people and interfaces shown are fictional or synthetic, not a deployed installation.",
+      "disclosure": "A cinematic depiction of the intended Empathia experience. AI-generated footage and voice, named in the film's end card as made through vidIQ with Veo 3.1 and the ElevenLabs voice “Brian”; the places, people and interfaces shown are fictional or synthetic, not a deployed installation.",
       "rights": {
         "website": {
           "status": "VERIFIED",
-          "verifiedBy": "owner, 2026-11-27 04:19 CT: “You can add this film for the experiences page titled Empathia in our modern world” — supplied by the owner for the Experiences page",
+          "verifiedBy": "owner, 2026-11-27 04:19 CT: “You can add this film for the experiences page titled Empathia in our modern world” — the founder's decision that docs/audit/MEDIA_AND_RIGHTS.md required for the cinematic film “A World That Understands You” (whose title card this film carries), with the generating service's terms checked on 2026-11-27 (evidence below)",
+          "ownerChannelAuthorization": "owner supplied the master for the Experiences page (2026-11-27 04:19 CT); its sha256 matches masterSha256",
+          "evidence": [
+            "vidIQ Terms of Service, https://vidiq.com/terms/, effective date 19 Oct 2026, read 2026-11-27, section 14: Content Artifacts (text, images, audio, video, voice, music or other media) created through the Services may be used for personal or commercial purposes, including promotional content; vidIQ requires no attribution or active subscription for content already generated; use is subject to third-party rights and platform and vendor terms, the user must review each artifact before publication and make any required disclosures, and vidIQ gives no warranty against third-party claims."
+          ],
           "acceptedCaveats": [
-            "the footage and voice are AI-generated (as the film's end card says); the source of any music is not recorded",
-            "not entered in the media-rights ledger"
+            "footage (Veo 3.1) and voice (ElevenLabs “Brian”) generated through vidIQ, per the end card: the vendors' own terms were not reviewed, and vidIQ's terms carry no warranty against third-party claims",
+            "the vidIQ plan or invoice for the generation date is not on file; whether this cut is the 22 Nov 2026 film or a later edit of it was not established",
+            "the source of any music is not recorded; no face was checked for resemblance to a real person",
+            "not entered in the media-rights ledger beyond the note in docs/audit/MEDIA_AND_RIGHTS.md"
           ]
         }
       }

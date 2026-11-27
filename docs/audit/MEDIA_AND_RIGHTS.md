@@ -63,9 +63,12 @@ confirmation before any new use. This is an inventory, not a legal opinion.
 - SIGNAL: the standalone corpus (12 seasons, 133 chapters, about 1,583 scenes) is text; the ledger above states which scenes have
   playable media. Full audio and video playback of the corpus is not claimed.
 - Third-party licences: `provenance/licenses/THIRD_PARTY_LICENSES.md` and `REDISTRIBUTION_RESTRICTIONS.md`.
-- The cinematic film “A World That Understands You” (22 Nov 2026) is not in the repository or on either site. It was delivered to the
-  founder as files. Its footage and voice are AI-generated (the narration voice is a stock synthetic voice, labelled); publishing it
-  needs the founder’s decision and a check of the generating services’ terms.
+- The cinematic film “A World That Understands You” (22 Nov 2026) was delivered to the founder as files. Its footage and voice are
+  AI-generated (the narration voice is a stock synthetic voice, labelled). On 27 Nov 2026 the founder supplied a two-minute cut
+  carrying that title card, “Empathia in our modern world”, for the website’s Experiences page (films.json, MODERN): the founder’s
+  decision. vidIQ’s terms were checked that day (section 14: commercial use of generated content, no warranty against third-party
+  claims); the vendors’ own terms (Veo, ElevenLabs), the plan or invoice for the generation date, the music’s source and whether it is
+  the same cut were not established, and films.json lists them as its caveats.
 
 ## Open items
 

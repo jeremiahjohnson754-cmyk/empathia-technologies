@@ -2,8 +2,9 @@ WEBVTT
 
 NOTE
 Captions of "Empathia in our modern world" (MODERN, 2:00). The cues are the captions burned into the master (sha256 b0821063551b…),
-read from its frames on 2026-11-27 (sampled four times a second) and checked by eye against the picture; on-screen interface text,
-the title card and the end card are not captioned. Timings are to the nearest quarter second.
+read from its frames on 2026-11-27 (sampled four times a second, and eight times a second at the boundaries an independent review
+checked) and checked by eye against the picture; on-screen interface text, the title card and the end card's small print are not
+captioned. Timings are to within a quarter second.
 
 1
 00:00:00.750 --> 00:00:04.000
@@ -22,7 +23,7 @@ and finding our way through them,
 is still harder than it should be.
 
 5
-00:00:12.000 --> 00:00:14.000
+00:00:12.250 --> 00:00:14.000
 Meet Daniel. Forty minutes,
 
 6
@@ -54,11 +55,11 @@ Across the terminal,
 Priya sees the same building through her role:
 
 13
-00:00:32.750 --> 00:00:35.500
+00:00:32.750 --> 00:00:34.875
 signage, systems and service,
 
 14
-00:00:35.500 --> 00:00:36.250
+00:00:35.000 --> 00:00:36.000
 all in context.
 
 15
@@ -102,11 +103,11 @@ For Marcus, the engineer,
 the same room reveals what's behind the walls:
 
 25
-00:01:01.500 --> 00:01:03.500
+00:01:01.500 --> 00:01:03.625
 every device, every connection,
 
 26
-00:01:03.750 --> 00:01:05.250
+00:01:03.625 --> 00:01:05.250
 how it was commissioned.
 
 27
@@ -126,11 +127,11 @@ A hospital should never feel like a maze,
 least of all on the hardest day.
 
 31
-00:01:17.000 --> 00:01:21.500
+00:01:17.250 --> 00:01:19.875
 Elena scans the sign at the entrance.
 
 32
-00:01:21.500 --> 00:01:23.000
+00:01:19.875 --> 00:01:23.000
 Corridors, elevators, the way to the ward.
 
 33
@@ -174,13 +175,17 @@ evidence and learning.
 Different places. Different people.
 
 43
-00:01:52.500 --> 00:01:54.250
+00:01:52.125 --> 00:01:54.375
 One connected world.
 
 44
-00:01:55.000 --> 00:01:58.000
-Technology that understands its environment,
+00:01:54.375 --> 00:01:55.000
+Empathia.
 
 45
-00:01:58.250 --> 00:01:59.750
+00:01:55.000 --> 00:01:58.125
+Technology that understands its environment,
+
+46
+00:01:58.125 --> 00:01:59.750
 and the people within it.
