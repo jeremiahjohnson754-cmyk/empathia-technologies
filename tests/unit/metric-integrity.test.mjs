@@ -8,11 +8,11 @@ import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
-const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts'; export * as XE from './export/estate.ts'; export * as LG from './parity/Ledger.tsx'; export * as ASK from './parity/Ask.tsx'; export * as CN from './campus/canon.ts'; export * as AM from './assurance/model.ts'; export * as U from './search/understand.ts'; export * as V14 from './parity/v14Model.ts'; export * as IM from './intake/model.ts';`;
+const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as T from './service/targets.ts'; export * as DE from './dispatch/engine.ts'; export * as PV from './pages/ProViews.tsx'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts'; export * as XE from './export/estate.ts'; export * as LG from './parity/Ledger.tsx'; export * as ASK from './parity/Ask.tsx'; export * as CN from './campus/canon.ts'; export * as AM from './assurance/model.ts'; export * as U from './search/understand.ts'; export * as V14 from './parity/v14Model.ts'; export * as IM from './intake/model.ts';`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'metric-integrity-')); const out = path.join(dir, 'm.mjs');
 await esbuild.build({ stdin: { contents: entry, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', splitting: false, nodePaths: [path.join(repo, 'node_modules')],
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined); } }] });
-const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR, XE, LG, ASK, CN, AM, U, V14, IM } = await import(pathToFileURL(out).href);
+const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR, XE, LG, ASK, CN, AM, U, V14, IM, T, DE, PV } = await import(pathToFileURL(out).href);
 // the Ask answer's lead is static markup (no hooks), so the repository's renderer can read it
 const { renderToStaticMarkup } = (await import('node:module')).createRequire(path.join(repo, 'package.json'))('react-dom/server');
 process.on('exit', () => fs.rmSync(dir, { recursive: true, force: true }));
@@ -431,5 +431,42 @@ test('MI-24 the sets behind those numbers hold the same rooms: needing attention
     const worst = PS.setOf('as:worst').items(core).map((x) => M.roomHealth(recs.find((r) => r.outline.id === x.id), ws).score);
     const low = rows.map((x) => x.h.score).filter((s) => s != null).sort((a, b) => a - b).slice(0, 10);
     assert.deepEqual(worst, low, `${label}: as:worst is the ten lowest scored rooms, lowest first`);
+  }
+});
+
+// MI-25 to MI-27 (the service-target slice, #320 and the Pro register's PRO-IS-01, 27 Nov): three copies of the restore target existed.
+// service/history.ts SLA_HOURS (8, 48 and 120 h: Service analytics), dispatch/engine.ts RESTORE_HOURS (the same: the dispatch board) and
+// pages/Estate.tsx TARGET_DAYS (1, 2 and 5 days: the Pro command center's "Past their target"), so a Mission critical request open 12 h
+// was breached on the dispatch board and not past target in Pro. One rule now: the dispatch board's slaOf, from SLA_HOURS.
+const H12 = 12 * 3600e3;
+const targetFixtures = () => {
+  // the seed, and the seed with a Mission critical request opened 12 hours ago in Atlas 4.218 (past 8 h, inside 1 day)
+  const mc = structuredClone(w); const src = mc.incidents.find((i) => i.id === 'ISS-0417');
+  mc.incidents.push({ ...structuredClone(src), id: 'ISS-9903', severity: 'Mission critical', state: 'OPEN', openedAt: new Date(Date.now() - H12).toISOString(), restoredAt: null, closedAt: null, history: [{ to: 'OPEN', at: new Date(Date.now() - H12).toISOString(), by: 'requestor' }], apexId: null, recurrenceOf: null, workOrderId: null });
+  return [[w, 'seed'], [mc, 'Mission critical request open 12 h']];
+};
+const breachedOpen = (ws, now) => ws.incidents.filter((i) => ['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'REOPENED'].includes(i.state) && DE.slaOf(i.severity, i.openedAt, i.restoredAt, now).state === 'breached').map((i) => i.id).sort();
+test('MI-25 one restore target: Pro\'s past-target rule is the dispatch board\'s (8, 48 and 120 h)', () => {
+  for (const s of ['Mission critical', 'High', 'Standard']) { assert.equal(DE.RESTORE_HOURS[s], H.SLA_HOURS[s].restore, `${s}: the dispatch board's restore target is Service analytics'`); assert.equal(T.SLA_HOURS[s].restore, H.SLA_HOURS[s].restore, `${s}: one table`); }
+  for (const [ws, label] of targetFixtures()) {
+    const now = Date.now();
+    assert.deepEqual([...T.pastTargetOf(ws.incidents, now)].map((i) => i.id).sort(), breachedOpen(ws, now), `${label}: Pro's past-target requests are the open requests the dispatch board shows breached`);
+  }
+  assert.ok(T.pastTargetOf(targetFixtures()[1][0].incidents, Date.now()).some((i) => i.id === 'ISS-9903'), 'a Mission critical request open 12 h is past its 8 h target');
+});
+test('MI-26 the set behind "Past their target" holds exactly those requests', () => {
+  for (const [ws, label] of targetFixtures()) {
+    const core = PC.buildCore(ws, NODESK); const set = PS.setOf('req:late');
+    assert.ok(set, 'the set req:late exists');
+    assert.deepEqual(set.items(core).map((x) => x.id).sort(), breachedOpen(ws, Date.now()).map((id) => `RQ-${id}`), `${label}: req:late is the breached open requests`);
+  }
+});
+test('MI-27 Issue Intelligence\'s twelve-month service figures are Service analytics\' over the same jobs and months', () => {
+  for (const [ws, label] of targetFixtures()) {
+    const k = PV.issueKpis(ws, Date.now()); const jobs = [...H.syntheticHistory(), ...H.workspaceJobs(ws)]; const ms = AN.months(12);
+    const s = AN.stats(jobs, ms[0].from, ms[ms.length - 1].to);
+    assert.equal(k.mttrH, s.mttrH, `${label}: median time to restore`); assert.equal(k.restoreSla, s.restoreSla, `${label}: restored within target`); assert.equal(k.reopen, s.reopen, `${label}: reopened after closure`);
+    assert.deepEqual(k.late.map((i) => i.id).sort(), breachedOpen(ws, Date.now()), `${label}: past target`);
+    assert.equal(k.escalated, null, 'no record carries an escalation, so "escalated" is not counted');
   }
 });

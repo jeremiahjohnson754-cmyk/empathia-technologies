@@ -186,6 +186,15 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   await t.go('#/home', 1800); const mcH = await ringOf(); const mcA = await attOf();
   await t.go('#/control/tower', 1800); const twH = await ringOf(); const twA = await attOf();
   ok('MC-health-01', 'the Control Tower\'s campus health and rooms needing attention are Mission Control\'s (one health rule)', Number.isFinite(mcH.n) && twH.n === mcH.n && twH.state === mcH.state && Number.isFinite(mcA) && twA === mcA, JSON.stringify({ mcH, twH, mcA, twA }));
+  // MC-target-01 (the service-target slice, 27 Nov): Issue Intelligence shows "Past their target" and it opens its records (the set
+  // req:late), and the Pro command center's "Past their target" is the same number, by the one restore rule (service/targets.ts).
+  const tileVal = async (sel) => parseInt(await t.page.locator(sel).first().textContent().catch(() => '') || '', 10);
+  await t.go('#/pro/issues', 1800); const isLate = await tileVal('[data-testid="pro-late"] .kit-tile__value'); const isMttr = await t.page.locator('[data-testid="pro-mttr"]').count();
+  const esc = (await t.page.locator('[data-testid="pro-escalated"]').textContent().catch(() => '')) || '';
+  await t.page.locator('[data-testid="pro-late"]').first().click().catch(() => {}); await t.page.waitForTimeout(1400);
+  const setHash = await t.page.evaluate(() => location.hash); const setN = parseInt(((await t.page.locator('main').first().innerText().catch(() => '')).match(/(\d+) (?:requests?|records?)\./) || [])[1] || '', 10);
+  await t.go('#/pro', 1800); const ccLate = await tileVal('.kit-tile:has(.kit-tile__label:text-is("Past their target")) .kit-tile__value');
+  ok('MC-target-01', 'Issue Intelligence\'s "Past their target" opens the requests it counts, and the Pro command center counts the same (one restore rule); "escalated" says it is not counted', Number.isFinite(isLate) && isMttr === 1 && setHash === '#/set/req:late' && setN === isLate && ccLate === isLate && /not counted/.test(esc), JSON.stringify({ isLate, isMttr, setHash, setN, ccLate, esc: esc.slice(0, 60) }));
   await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);
