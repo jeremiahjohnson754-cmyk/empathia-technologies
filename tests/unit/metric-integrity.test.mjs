@@ -8,11 +8,13 @@ import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
-const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts';`;
+const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts'; export * as XE from './export/estate.ts'; export * as LG from './parity/Ledger.tsx'; export * as ASK from './parity/Ask.tsx'; export * as CN from './campus/canon.ts';`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'metric-integrity-')); const out = path.join(dir, 'm.mjs');
 await esbuild.build({ stdin: { contents: entry, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', splitting: false, nodePaths: [path.join(repo, 'node_modules')],
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined); } }] });
-const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR } = await import(pathToFileURL(out).href);
+const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR, XE, LG, ASK, CN } = await import(pathToFileURL(out).href);
+// the Ask answer's lead is static markup (no hooks), so the repository's renderer can read it
+const { renderToStaticMarkup } = (await import('node:module')).createRequire(path.join(repo, 'package.json'))('react-dom/server');
 process.on('exit', () => fs.rmSync(dir, { recursive: true, force: true }));
 
 const w = W.seed(); const recs = D.allRecords();
@@ -233,6 +235,8 @@ test('MI-13 open issues are one per id on every page: a record issue that a live
   // the record half: the record's copy is overridden by the live request, open or not
   assert.ok(!M.recordIssues(r, w2.incidents).some((i) => i.id === iss.id), 'the live request wins over the record issue of the same id');
   assert.ok(M.recordIssues(r, w.incidents).some((i) => i.id === iss.id), 'without the live request the record issue is open');
+  const elsewhere = structuredClone(w2); elsewhere.incidents.at(-1).roomId = recs.find((x) => x.outline.id !== r.outline.id).outline.id;
+  assert.ok(M.recordIssues(r, elsewhere.incidents).some((i) => i.id === iss.id), 'a request of the same id in another room leaves this room\u2019s record issue open');
   const closed = structuredClone(w2); closed.incidents.at(-1).state = 'CLOSED';
   assert.ok(!M.recordIssues(r, closed.incidents).some((i) => i.id === iss.id), 'a closed live request still wins: the record copy is not reopened');
   // the two halves add up to the definition, room by room and in total, whatever the workspace
@@ -248,4 +252,44 @@ test('MI-13 open issues are one per id on every page: a record issue that a live
     for (const x of recs) { const want = M.roomIssues(x, ws).length;
       assert.equal(core.get(x.outline.id).facts.find((f) => f[0] === 'Open issues')?.[1], String(want), `${x.outline.id} passport`);
       assert.equal(core.openIssues(x).length, want, `${x.outline.id} comparison`); } }
+});
+
+// MI-14 (27 Nov 2026, review of e7f9930d and d2fdc908): the other counts of open issues those commits did not reach. The portfolio brief's
+// per-room "Open issues", the parity set "Rooms with an open issue", the ledger's assurance conclusions ("differs from its baseline on N
+// open issues") and the Ask answer "Why is Atlas 4.218 degraded?" counted the room record only; the set left out Atlas 4.220, whose only
+// open issue is the request ISS-0421, and the answer said 1 open issue where the room page says 2.
+test('MI-14 the portfolio brief, the parity set and ledger, and the Ask answer count open issues as the room page does', () => {
+  const ids = new Set(w.incidents.map((i) => i.id));
+  const r0 = recs.find((x) => D.openIssues(x).some((i) => !ids.has(i.id))); const iss = D.openIssues(r0).find((i) => !ids.has(i.id));
+  const w2 = structuredClone(w); w2.incidents.push({ ...structuredClone(w.incidents.find((i) => M.isOpenRequest(i))), id: iss.id, roomId: r0.outline.id, state: 'OPEN', history: [], closedAt: null, restoredAt: null, apexId: null, recurrenceOf: null });
+  for (const ws of [w, w2]) {
+    const want = new Map(recs.map((x) => [x.outline.id, M.roomIssues(x, ws)]));
+    const rows = XE.estatePackage(recs, ws.incidents, by).sections.find((x) => x.id === 'rooms').table.rows;
+    for (const row of rows) assert.equal(row.open, want.get(row.id).length, `brief ${row.id}`);
+    const core = PC.buildCore(ws, { projects: [], decisions: [], funding: [] });
+    assert.deepEqual(PS.setOf('room:issues').items(core).map((x) => x.id).sort(), [...want].filter(([, v]) => v.length).map(([k]) => k).sort(), 'Rooms with an open issue');
+    const cs = LG.conclusions(core);
+    for (const x of recs.filter((y) => y.baselines.length)) { const c = cs.find((k) => k.id === `C-A-${x.outline.id.slice(2)}`); const n = want.get(x.outline.id).length;
+      assert.equal(!!c, n > 0, `ledger ${x.outline.id}`); if (c) { assert.match(c.text, new RegExp(`on ${n} open issues?$`), c.text); assert.deepEqual(c.evidence.map((e) => e.id).sort(), want.get(x.outline.id).map((i) => i.id).sort(), `ledger evidence ${x.outline.id}`); } }
+  }
+  const ref = CN.roomById('R-ATL-4-218'); const why = ASK.QUESTIONS.find((q) => q.id === 'why').answer(PC.buildCore(w, { projects: [], decisions: [], funding: [] }), ref);
+  assert.match(renderToStaticMarkup(why.lead), /It has 2 open issues/, 'Atlas 4.218: its sightline finding and ISS-0417');
+  assert.deepEqual(why.cites.filter((x) => x.type === 'Issue').map((x) => x.id).sort(), M.roomIssues(D.allRecords().find((x) => x.outline.id === ref.id), w).map((i) => i.id).sort(), 'the answer cites the open issues it counts');
+});
+
+// MI-15 (27 Nov 2026, review of e7f9930d and d2fdc908, finding 7): the Assurance state reads open issues as the room page does. Its rule
+// says a room "failed a check" when "a recorded test failed, or a high-severity issue is open", but it looked for the High issue on the
+// room record only: Atlas 4.218, whose High request ISS-0417 is open (issues.critical counts it), read "Drifted"; and a High record issue
+// that a resolved request of the same id overrides still read "Failed a check" beside a drill row of no open issue.
+test('MI-15 the Assurance state counts a High open request as a high-severity open issue, and an overridden record issue as none', () => {
+  const high = (x, ws) => M.roomIssues(x, ws).some((i) => i.severity === 'High');
+  const check = (ws, label) => { for (const x of recs) { const s = AR.asState(x, ws.incidents).state; const failed = !!x.counts.failed || high(x, ws);
+    assert.equal(s === 'failed', failed, `${label} ${x.outline.id}: ${s}`);
+    if (!failed && x.baselines.some((b) => b.state === 'CURRENT') && !x.baselines.some((b) => b.state === 'PENDING_ACCEPTANCE')) assert.equal(s, M.roomIssues(x, ws).length ? 'drift' : 'matched', `${label} ${x.outline.id}`); } };
+  check(w, 'seed');
+  assert.equal(AR.asState(recs.find((x) => x.outline.id === 'R-ATL-4-218'), w.incidents).state, 'failed', 'Atlas 4.218: ISS-0417 is High and open');
+  // the reverse: a High record issue whose live request of the same id is resolved
+  const r = recs.find((x) => !x.counts.failed && D.openIssues(x).some((i) => i.severity === 'High')); const iss = D.openIssues(r).find((i) => i.severity === 'High');
+  const w2 = structuredClone(w); w2.incidents.push({ ...structuredClone(w.incidents.find((i) => i.state === 'RESOLVED')), id: iss.id, roomId: r.outline.id, apexId: null, recurrenceOf: null });
+  check(w2, 'overridden');
 });

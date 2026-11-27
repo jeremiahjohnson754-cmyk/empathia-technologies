@@ -146,7 +146,7 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   // counted twice. The seed does not show it, so a live request is opened under the id of Atlas 7.112's open record issue; the unit
   // check of the same rule is MI-13.
   await t.page.evaluate(() => { const k = 'empathia.demo.workspace.v1'; const w = JSON.parse(localStorage.getItem(k)); const src = w.incidents.find((i) => i.id === 'ISS-0417');
-    w.incidents.push({ ...src, id: 'ISS-ATL-7-112', roomId: 'R-ATL-7-112', state: 'OPEN', severity: 'Standard', title: 'Display does not wake from standby on the first try', history: [], closedAt: null, restoredAt: null, workOrderId: null });
+    w.incidents.push({ ...src, id: 'ISS-ATL-7-112', roomId: 'R-ATL-7-112', roomName: 'Atlas 7.112 Strategy Room', state: 'OPEN', severity: 'Standard', title: 'Display does not wake from standby on the first try', summary: 'The display does not wake from standby on the first try.', history: [], closedAt: null, restoredAt: null, workOrderId: null, apexId: null, recurrenceOf: null });
     localStorage.setItem(k, JSON.stringify(w)); }); await t.page.reload(); await t.page.waitForTimeout(900);
   const tileOf = async (hash) => { await t.go(hash, 1800); return parseInt(await t.page.locator('.kit-tile:has(.kit-tile__label:text-is("Open issues")) .kit-tile__value').first().textContent().catch(() => '') || '', 10); };
   const oi = { campus: await tileOf('#/campus'), atl: await tileOf('#/campus/ATL'), pro: await tileOf('#/pro') };
@@ -154,6 +154,18 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   // the assurance drill-down's "Open issues" column counted the room records only: 3 for Atlas on the seed, where the Atlas page says 5
   await t.go('#/assurance', 1800); oi.asAtl = parseInt(await t.page.locator('[data-testid="as-drill"] tr[data-drill="ATL"] td.num').last().textContent().catch(() => '') || '', 10);
   ok('MC-open-03', 'Open issues are one per id: Pro\'s command center and the Pro and Assurance drill-downs count what the campus pages count, also when a live request shares an id with a record issue', Number.isFinite(oi.campus) && oi.pro === oi.campus && oi.proAtl === oi.atl && oi.asAtl === oi.atl, JSON.stringify(oi));
+  // MC-open-04 (review of e7f9930d and d2fdc908): three more pages, with the same shared id. Pro Issue Intelligence's "Open issues by
+  // building" added open requests to the record issues as they stood (Atlas 6 where the map on the same page says 5); the Search Party
+  // map's "Open issues" lens listed the record only; the commissioning room's Service stage counted the record copy beside its request.
+  // The map holds the six campus buildings (campus/canon.ts, BUILDINGS), not the regional sites the campus tile also counts, so the lens
+  // is held to the sum of the six building pages' tiles.
+  await t.go('#/pro/issues', 1800); const ii = parseInt(await t.page.locator('.wk-bars li:has(> span:text-is("Atlas")) > b').first().textContent().catch(() => '') || '', 10);
+  await t.go('#/search/projects', 1200); await t.page.click('[data-testid="sp-map"] .sp__tchip:has-text("Open issues")').catch(() => {}); await t.page.waitForTimeout(300);
+  const sp = parseInt(await t.page.locator('[data-testid="sp-map"] .sp__tchip[aria-pressed="true"] b').first().textContent().catch(() => '') || '', 10);
+  const six = []; for (const k of ['ATL', 'MER', 'FRG', 'BCN', 'HZN', 'NST']) six.push(await tileOf(`#/campus/${k}`)); const map = six.every(Number.isFinite) ? six.reduce((a, b) => a + b, 0) : NaN;
+  // the commissioning record is not open to the Service Manager (access/v253.ts, commissioning.room), so the commissioning engineer reads it
+  await setRole(t, 'cxeng'); await t.page.reload(); await t.page.waitForTimeout(600); await t.go('#/commissioning/room/R-ATL-7-112', 1800); const svc = (await t.page.locator('[data-testid="cx-spine"] li', { hasText: 'Service' }).first().textContent().catch(() => '')) || '';
+  ok('MC-open-04', 'Pro Issue Intelligence\'s buildings, the Search Party "Open issues" lens and a room\'s Service stage count a shared id once, as the campus pages do', ii === oi.atl && sp === map && /1 open request · 0 open issues on the record/.test(svc), JSON.stringify({ ii, sp, map, six, svc: svc.slice(0, 160), atl: oi.atl }));
   await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);

@@ -137,8 +137,8 @@ for (const scheme of ['light', 'dark']) { const s = await t.open('#/control/towe
 // P-open-issues (27 Nov 2026, #320, issues.open): the V1.4 telemetry view's "Open issues" tile counted the room record only, so Atlas
 // 4.218 read 1 there and 2 on its room page (its sightline finding and the open request ISS-0417). The unit check of the parity
 // passport and comparison is MI-13.
-{ const tile = async (hash) => { const s = await t.open(hash); await s.page.waitForSelector('.kit-tile .kit-tile__label', { timeout: 8000 }).catch(() => undefined);
-    const v = parseInt(await s.page.locator('.kit-tile:has(.kit-tile__label:text-is("Open issues")) .kit-tile__value').first().textContent().catch(() => '') || '', 10); await s.close(); return v; };
-  const room = await tile('#/room/R-ATL-4-218'); const tel = await tile('#/v14/telemetry/R-ATL-4-218');
+{ const tile = async (hash, id) => { const s = await t.open(hash); await s.page.waitForSelector(`[data-testid="${id}"] .kit-tile__value`, { timeout: 8000 }).catch(() => undefined);
+    const v = parseInt(await s.page.locator(`[data-testid="${id}"] .kit-tile__value`).first().textContent().catch(() => '') || '', 10); await s.close(); return v; };
+  const room = await tile('#/room/R-ATL-4-218', 'tile-issues'); const tel = await tile('#/v14/telemetry/R-ATL-4-218', 'tel-open-issues');
   t.ok('P-open-issues', 'the telemetry view counts open issues as the room page does: the record’s and the live requests, one per id', Number.isFinite(room) && room >= 1 && tel === room, `room=${room} telemetry=${tel}`); }
 await t.done();
