@@ -17,7 +17,8 @@ import { allRecords, roomRecord, openIssues, type RoomRecord } from '../campus/d
 import { shortName, fullName, roomHref, buildingByKey } from '../campus/canon.js';
 import { useWorkspace, isRefusal } from '../workspace/useWorkspace.js';
 import * as S from '../workspace/store.js';
-import { isOpenRequest } from '../workspace/requests.js';
+import { isOpenRequest, isFixedRequest } from '../workspace/requests.js';
+import { recordIssues } from '../campus/metrics.js';
 import { personaOf, personaLabel, holds } from '../build/store.js';
 import { openable } from './V25Nav.js';
 import { AssuranceTabs, CxTabs } from './AssuranceViews.js';
@@ -76,7 +77,7 @@ const SPINE = (r: RoomRecord, inc: S.Incident[]) => {
     { n: 6, name: 'Installation', state: r.installations.length ? 'DONE' : 'NOT STARTED', note: `${plural(r.installations.filter((i) => !i.removedAt).length, 'unit')} installed` },
     { n: 7, name: 'Commissioning', state: acc ? 'DONE' : r.lifecycle === 'COMMISSIONING' ? (bl.blocked ? 'BLOCKED' : 'IN PROGRESS') : 'NOT STARTED', note: `${passed} of 5 phases pass` },
     { n: 8, name: 'Acceptance', state: acc ? 'DONE' : bl.blocked && r.lifecycle === 'COMMISSIONING' ? 'BLOCKED' : 'NOT STARTED', note: acc ? `accepted ${ymd(r.baselines.find((b) => b.state === 'CURRENT')?.at)}` : bl.blocked ? 'Sign-off blocked' : 'Not yet' },
-    { n: 9, name: 'Service', state: open.length || openIssues(r).length ? 'IN PROGRESS' : acc ? 'DONE' : 'NOT STARTED', note: `${plural(open.length, 'open request')} · ${plural(openIssues(r).length, 'open issue')}` },
+    { n: 9, name: 'Service', state: open.length || recordIssues(r, inc).length ? 'IN PROGRESS' : acc ? 'DONE' : 'NOT STARTED', note: `${plural(open.length, 'open request')} · ${plural(recordIssues(r, inc).length, 'open issue')} on the record` },
   ];
 };
 export function CxRoomPage({ perspective, params, hash }: { perspective: string; params: Record<string, string>; hash: string }) {
@@ -273,7 +274,7 @@ function Recommission({ r }: { r: RoomRecord }) {
 // ------------------------------------------------------------------------------------------------------------ the Known Fix library
 export function KnownFixesPage({ perspective }: { perspective: string }) {
   const { w } = useWorkspace();
-  const closed = w.incidents.filter((i) => ['RESOLVED', 'CLOSED'].includes(i.state));
+  const closed = w.incidents.filter(isFixedRequest);
   const fixOf = (i: S.Incident) => { const t = i.title.toLowerCase(); const k = /firmware/.test(t) ? 0 : /wireless|microphone/.test(t) ? 1 : /cable|projector|blank/.test(t) ? 2 : /drift|config|echo/.test(t) ? 3 : /switch|network|call|drop/.test(t) ? 4 : /power|outlet|storm/.test(t) ? 5 : /restart|warm|heat/.test(t) ? 6 : /booking|schedul/.test(t) ? 9 : /display|standby|camera|video/.test(t) ? 8 : 7; return V.KNOWN_FIXES[Math.min(k, V.KNOWN_FIXES.length - 1)]!; };
   const applied = closed.map((i) => ({ i, f: fixOf(i) }));
   const byFix = V.KNOWN_FIXES.map((f, k) => ({ k, f, n: applied.filter((a) => a.f === f).length, open: w.incidents.filter((i) => isOpenRequest(i) && fixOf(i) === f).length, hours: applied.filter((a) => a.f === f && a.i.restoredAt).map((a) => (Date.parse(a.i.restoredAt!) - Date.parse(a.i.openedAt)) / 36e5) })).sort((a, b) => b.n - a.n);

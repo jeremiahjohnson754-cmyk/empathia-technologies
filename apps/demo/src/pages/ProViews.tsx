@@ -18,7 +18,7 @@ import { openable } from './V25Nav.js';
 import { TrendChart } from './TrendChart.js';
 import { syntheticHistory, monthKey } from '../service/history.js';
 import { months, stats, LAYER_LABEL } from '../service/analytics.js';
-import { campusStats } from '../campus/metrics.js';
+import { campusStats, recordIssues } from '../campus/metrics.js';
 import { CampusMap, Stage } from '../spatial/Spatial.js';
 import { readRegister } from '../campus/registerStore.js';
 import { deviceRegister, retiredRegister } from '../campus/registers.js';
@@ -39,7 +39,7 @@ export const buildingParam = (hash: string | undefined): string | null => { cons
 const OnlyChip = ({ only, base }: { only: string | null; base: string }) => only ? <Chip small tone="accent">{BUILDINGS.find((b) => b.key === only)!.name} only · <a href={base} data-testid="pro-only-all">the whole campus</a></Chip> : null;
 
 export function AssetsPage({ perspective, hash }: { perspective: string; hash?: string }) {
-  const persona = personaOf(perspective); const only = buildingParam(hash); const recs = allRecords().filter((r) => !only || r.outline.building === only);
+  const persona = personaOf(perspective); const { w } = useWorkspace(); const only = buildingParam(hash); const recs = allRecords().filter((r) => !only || r.outline.building === only);
   const pos = recs.flatMap((r) => r.positions.filter((p) => !p.furniture).map((p) => ({ r, p })));
   const ident = (['VERIFIED', 'OBSERVED', 'DECLARED', 'UNKNOWN'] as const).map((k, i) => ({ key: k, label: k.toLowerCase(), value: pos.filter((x) => x.p.identity === k).length, tone: (['ok', 'info', 'warn', 'muted'] as Series[])[i]! }));
   const byCat = topSegs(count(pos, (x) => x.p.catLabel));
@@ -61,7 +61,7 @@ export function AssetsPage({ perspective, hash }: { perspective: string; hash?: 
         const retired = recs.reduce((a, r) => a + retiredRegister(r).length, 0); const hist = syntheticHistory().filter((j) => !only || j.building === only); const ms = months(12);
         const onUnits = hist.filter((j) => j.asset && Date.parse(j.openedAt) >= ms[ms.length - 3]!.from).length;
         const docs = recs.filter((r) => r.coverage.length && r.coverage.every((c) => c.state === 'complete' || c.state === 'recorded')).length;
-        const cs = campusStats(); const units = new Set(hist.filter((j) => j.asset).map((j) => j.asset));
+        const cs = campusStats(w); const units = new Set(hist.filter((j) => j.asset).map((j) => j.asset));
         return <>
           <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles-2">
             <StatTile label="Device register" value={pct(done, reg.length)} unit="%" icon="device" tone="info" hint={`${done} of ${reg.length} registered by installation teams in this browser`} />
@@ -79,7 +79,7 @@ export function AssetsPage({ perspective, hash }: { perspective: string; hash?: 
             </Card>
           </div>
         </>; })()}
-      {(() => { const c = campusStats(); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
+      {(() => { const c = campusStats(w); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
         return <Card icon="map" title="Where units need service" sub="The campus map on the Assets lens: jobs that named a unit in twelve months, per 100 device positions"><div data-testid="pro-asset-map"><Stage label="Asset map" testId="pro-asset-stage"><CampusMap tiles={tiles} lens="assets" current={only || undefined} onOpen={(b) => { location.hash = `#/pro/assets?building=${b.key}`; }} /></Stage></div></Card>; })()}
       <div className="wk-g2">
         <Card icon="layers" title="Positions by kind"><Donut label="Device positions by kind" total="positions" segments={byCat} /></Card>
@@ -104,7 +104,9 @@ export function IssuesPage({ perspective, hash }: { perspective: string; hash?: 
   const persona = personaOf(perspective); const { w } = useWorkspace(); const only = buildingParam(hash); const recs = allRecords().filter((r) => !only || r.outline.building === only);
   const inc = w.incidents.filter((i) => !only || i.buildingKey === only);
   const room = recs.flatMap((r) => r.issues.map((i) => ({ r, i })));
-  const open = room.filter((x) => x.i.state !== 'RESOLVED');
+  // the record half of issues.open: a record issue that a live request of the same id overrides is that request, which the page counts
+  // with the service jobs, so the two halves add up to the campus map's open issues once per id (MI-13)
+  const open = recs.flatMap((r) => recordIssues(r, w.incidents).map((i) => ({ r, i })));
   const rec = inc.filter((i) => i.recurrenceOf);
   const bySource = topSegs(count(room, (x) => /engine/.test(x.i.source) ? 'Design check' : /field|WO-/.test(x.i.source) ? 'Field report' : 'Commissioning'), 4);
   const sev = (['High', 'Medium', 'Low'] as const).map((s, k) => ({ key: s, label: s, value: open.filter((x) => x.i.severity === s).length, tone: (['bad', 'warn', 'info'] as Series[])[k]! }));

@@ -100,7 +100,7 @@ function LiteHome({ role }: PageProps) {
       <PageHero product="lite" plain eyebrow="Empathia Lite" title={SITE.name} lede={LITE_TAGLINE} />
       <LensPicker role={role} lens={lens} onPick={pick} />
       <div className="lt-hero-stage" data-testid="lite-campus-card"><figure className="stage lt-stage lt-stage--hero" data-stage=""><CampusStage buildings={CAMPUS_BLDGS} lens={lens} tone={campusTone} plaza={CAMPUS_PLAZA} visitorPath={VISITOR_PATH} onNav={(to) => { location.hash = to; }} />
-        <figcaption className="stage__cap lt-capchips"><Chip small tone="muted" icon="moon">The same synthetic aerial view in either theme</Chip><Chip small tone="ok">green · healthy</Chip><Chip small tone="warn">amber · monitor</Chip><Chip small tone="bad">red · action</Chip><span>The start page’s campus map · health and open issues computed from the room records</span></figcaption></figure></div>
+        <figcaption className="stage__cap lt-capchips"><Chip small tone="muted" icon="moon">The same synthetic aerial view in either theme</Chip><Chip small tone="ok">green · healthy</Chip><Chip small tone="warn">amber · monitor</Chip><Chip small tone="bad">red · action</Chip><span>The start page’s campus map · health and open issues as the start page counts them: the room records and the live service requests</span></figcaption></figure></div>
       <p className="lt-gnote">Tap a building to go inside: campus, building, floor, room. The same places appear in every lens; the lens decides what is drawn on them.</p>
       <LiteNav here="" role={role} />
       <div className="lt-home">
@@ -113,7 +113,7 @@ function LiteHome({ role }: PageProps) {
             <p className="ui-muted">Each cataloged model checked against the room’s own record — seats, geometry, connections and power — with the source of every figure, before anyone buys it.</p>
             <a className="ui-btn ui-btn--primary lt-cta" href="#/lite/scouter">Ask Scouter</a></Card>}
           <Card title="Buildings" icon="building">
-            <ul className="lt-meters">{ALL_SITES.map((B) => { const b = buildingSummary(B.key); return <li key={B.key}><MeterRow label={B.name} sub={`${b.rooms} rooms${b.atRisk ? ` · ${b.atRisk} with a critical issue` : ''}${b.issues ? ` · ${b.issues} open issue${b.issues === 1 ? '' : 's'}` : ''}${B.source.includes('regional') ? ' · regional site' : ''}`} value={b.score} href={`#/lite/b/${B.key}`} /></li>; })}</ul>
+            <ul className="lt-meters">{ALL_SITES.map((B) => { const b = buildingSummary(B.key); return <li key={B.key}><MeterRow label={B.name} sub={`${b.rooms} rooms${b.atRisk ? ` · ${b.atRisk} with a critical issue on the record` : ''}${b.issues ? ` · ${b.issues} open issue${b.issues === 1 ? '' : 's'} on the record` : ''}${B.source.includes('regional') ? ' · regional site' : ''}`} value={b.score} href={`#/lite/b/${B.key}`} /></li>; })}</ul>
           </Card>
         </div>
       </div>

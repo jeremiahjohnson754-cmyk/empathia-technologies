@@ -8,6 +8,7 @@ import { roomState } from '../lite/model.js';
 import type { CxTone } from './cxRecord.js';
 import type * as S from '../workspace/store.js';
 import { isOpenRequest } from '../workspace/requests.js';
+import { roomIssuesOf } from './metrics.js';
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 export type DimState = 'match' | 'drift' | 'failed' | 'reported';
@@ -51,8 +52,11 @@ export const AS_LABEL: Record<AsState, { label: string; tone: CxTone }> = { matc
 /** The estate's assurance state of a room (pages/Estate.tsx shows it; the assurance report states it). */
 export function asState(r: RoomRecord, incidents: S.Incident[]): { state: AsState; why: string } {
   const current = r.baselines.find((b) => b.state === 'CURRENT'); const pending = r.baselines.find((b) => b.state === 'PENDING_ACCEPTANCE');
-  const open = openIssues(r); const inc = incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i));
-  if (r.counts.failed || open.some((i) => i.severity === 'High')) return { state: 'failed', why: r.counts.failed ? `${plural(r.counts.failed, 'test')} failed` : open.find((i) => i.severity === 'High')!.title };
+  // open issues as the room page counts them (issues.open): a High or mission-critical open request is a high-severity open issue, and a
+  // record issue that a live request of the same id overrides is that request (MI-15)
+  const open = roomIssuesOf(r, incidents).filter((i) => !i.live); const inc = incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i));
+  const high = roomIssuesOf(r, incidents).find((i) => i.severity === 'High');
+  if (r.counts.failed || high) return { state: 'failed', why: r.counts.failed ? `${plural(r.counts.failed, 'test')} failed` : high!.live ? `${high!.id} open: ${high!.title}` : high!.title };
   if (!current) return { state: 'none', why: 'no accepted baseline' };
   if (pending) return { state: 'drift', why: `baseline v${pending.version} recorded, waiting for acceptance (${pending.note})` };
   if (open.length || inc.length) return { state: 'drift', why: inc.length ? `${inc[0]!.id} open: ${inc[0]!.title}` : open[0]!.title };

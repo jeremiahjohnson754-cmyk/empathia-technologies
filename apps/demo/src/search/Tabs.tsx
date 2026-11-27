@@ -16,7 +16,7 @@ import { useMemo, useState } from 'react';
 import { SKILL_NAMES, CERTS } from '@empathia/service-engine';
 import { BUILDINGS, CAMPUS_ROOMS as ROOMS, roomById, roomHref, shortName, fullName } from '../campus/canon.js';
 import { allRecords, PEOPLE, DEMO_NOW } from '../campus/design.js';
-import { campusStats } from '../campus/metrics.js';
+import { campusStats, recordIssues } from '../campus/metrics.js';
 import { programme } from '../campus/programme.js';
 import { load as loadWorkspace, type Workspace } from '../workspace/store.js';
 import { isOpenRequest } from '../workspace/requests.js';
@@ -54,12 +54,12 @@ export function PeopleTab({ opens }: { opens: (h: string) => boolean }) {
 // ------------------------------------------------------------------------------------------------ Support coverage (and ownership)
 export function SupportTab({ opens }: { opens: (h: string) => boolean }) {
   const rows = BUILDINGS.map((b) => { const first = ROOMS.find((r) => r.building === b.key); const s = first ? scenario('S2', first.id) : null; return { b, first, paths: s?.groups.find((g) => g.key === 'paths')?.items || [], orgs: s?.groups.find((g) => g.key === 'agreements')?.items || [] }; });
-  const n = rows.reduce((k, r) => k + r.paths.length, 0);
+  const n = rows.reduce((k, r) => k + r.paths.length, 0); const w = useMemo(ws, []);
   return (
     <div className="stack" data-testid="sp-support">
       <div className="tiles"><StatTile label="Support paths" value={n} sub={`three for each of ${BUILDINGS.length} buildings`} icon="route" /><StatTile label="Backups named" value={0} sub="none is on record, so none is shown" tone="monitor" icon="alert" /><StatTile label="Escalation organizations" value={new Set(rows.flatMap((r) => r.orgs.map((o) => o.label))).size} sub="fictional partners" icon="building" /><StatTile label="Rooms covered" value={ROOMS.length} sub="every room inherits its building’s paths" icon="room" /></div>
       {/* the coverage map (founder 19 Nov 09:09 F): the same campus map on the Coverage lens; a building opens who covers it */}
-      {(() => { const c = campusStats(); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
+      {(() => { const c = campusStats(w); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
         return <div data-testid="sp-coverage-map"><Stage label="Coverage map" testId="sp-coverage-stage"><CampusMap tiles={tiles} lens="coverage" onOpen={(b) => { location.hash = `#/people?site=${b.key}`; }} /></Stage></div>; })()}
       {rows.map((r) => <Section key={r.b.key} title={r.b.name} aside={`${plural(ROOMS.filter((x) => x.building === r.b.key).length, 'room')}`} id={`sp-sup-${r.b.key}`}>
         <List label={`${r.b.name} support paths`}>{r.paths.map((p) => <ListRow key={p.id} href={r.first && opens('#/search/scenarios') ? `#/search/scenarios/S2?room=${r.first.id}` : undefined} leading={<span className="row__ic"><Icon name="route" /></span>} title={p.label} sub={`${p.detail} · ${p.provenance}`} trailing={<Chip tone="warn">No backup on record</Chip>} />)}</List>
@@ -78,7 +78,9 @@ export function MapTab({ opens }: { opens: (h: string) => boolean }) {
     if (lens === 'projects') return P.projects.filter((p) => p.roomIds.some((r) => roomById(r)?.building === b)).map((p) => ({ id: p.id, t: p.id, s: `${p.roomIds.map((r) => shortName(roomById(r)!)).join(', ')} · ${p.governance.toLowerCase()} · ${p.delivery.replace(/_/g, ' ').toLowerCase()}`, href: roomHref(roomById(p.roomIds[0]!)!) }));
     if (lens === 'work') return [...(w?.incidents || []).filter((i) => i.buildingKey === b && isOpenRequest(i)).map((i) => ({ id: i.id, t: `${i.id} · ${i.title}`, s: `${i.roomName} · ${i.state.toLowerCase()}`, href: `#/v25/service?id=${i.id}` })), ...(w?.workOrders || []).filter((x) => x.buildingKey === b && !['DONE', 'CANCELLED'].includes(x.state)).map((x) => ({ id: x.id, t: `${x.id} · ${x.title}`, s: x.state.toLowerCase() }))];
     if (lens === 'commissioning') return recs.filter((r) => r.outline.building === b && (r.lifecycle === 'COMMISSIONING' || r.baselines.some((x) => x.state === 'PENDING_ACCEPTANCE'))).map((r) => ({ id: r.outline.id, t: fullName(r.outline), s: `${r.counts.verified} of ${r.counts.applicable} verified${r.nextStep?.blockers.length ? ` · held: ${r.nextStep.blockers[0]}` : ''}`, href: roomHref(r.outline) }));
-    if (lens === 'issues') return recs.filter((r) => r.outline.building === b).flatMap((r) => r.issues.filter((i) => i.state !== 'RESOLVED').map((i) => ({ id: i.id, t: i.title, s: `${shortName(r.outline)} · ${i.severity} · ${i.source}`, href: roomHref(r.outline) })));
+    // open issues (issues.open): the record's, less any a live request of the same id overrides, and the room's open requests
+    if (lens === 'issues') return recs.filter((r) => r.outline.building === b).flatMap((r) => [...recordIssues(r, w?.incidents || []).map((i) => ({ id: i.id, t: i.title, s: `${shortName(r.outline)} · ${i.severity} · ${i.source}`, href: roomHref(r.outline) })),
+      ...(w?.incidents || []).filter((i) => i.roomId === r.outline.id && isOpenRequest(i)).map((i) => ({ id: i.id, t: `${i.id} · ${i.title}`, s: `${shortName(r.outline)} · ${i.severity} · ServiceHands request`, href: `#/v25/service?id=${i.id}` }))]);
     return recs.filter((r) => r.outline.building === b).map((r) => ({ id: r.outline.id, t: fullName(r.outline), s: `${r.positions.filter((p) => !p.furniture).length} device positions`, href: roomHref(r.outline) }));
   };
   const counts = Object.fromEntries(BUILDINGS.map((b) => [b.key, lens === 'devices' ? c.buildings.find((s) => s.b.key === b.key)!.devices : items(b.key).length]));

@@ -13,6 +13,7 @@ import { cxState, CX_LABEL, type CxState } from '../campus/cxRecord.js';
 import { asState, AS_LABEL, type AsState } from '../campus/asRecord.js';
 import { readyCheckOf, criticalityOf, assuranceTrend, READY_OUT } from '../assurance/model.js';
 import type * as S from '../workspace/store.js';
+import { roomIssuesOf } from '../campus/metrics.js';
 import type { Report } from './model.js';
 import type { MadeBy } from './cx.js';
 
@@ -25,7 +26,7 @@ export interface EstateScope { building?: string; floor?: number }
 export function estatePackage(all: RoomRecord[], incidents: S.Incident[], by: MadeBy, scopeIn?: string | EstateScope): Report {
   const sc: EstateScope = typeof scopeIn === 'string' ? { building: scopeIn } : scopeIn || {}; const building = sc.building; const floor = building ? sc.floor : undefined;
   const recs = all.filter((r) => (!building || r.outline.building === building) && (floor == null || r.outline.floor === floor)); const B = building ? buildingByKey(building) : undefined;
-  const rows = recs.map((r) => { const cx = cxState(r); const as = asState(r, incidents); const rc = readyCheckOf(r, incidents); return { r, cx, as, rc, open: openIssues(r), crit: criticalityOf(r) }; });
+  const rows = recs.map((r) => { const cx = cxState(r); const as = asState(r, incidents); const rc = readyCheckOf(r, incidents); return { r, cx, as, rc, open: openIssues(r), issues: roomIssuesOf(r, incidents), crit: criticalityOf(r) }; });
   const ncx = (k: CxState) => rows.filter((x) => x.cx.state === k).length; const nas = (k: AsState) => rows.filter((x) => x.as.state === k).length;
   const verified = recs.reduce((a, r) => a + r.counts.verified, 0); const applicable = recs.reduce((a, r) => a + r.counts.applicable, 0);
   const defs = rows.flatMap((x) => x.open.map((i) => ({ x, i })));
@@ -77,7 +78,7 @@ export function estatePackage(all: RoomRecord[], incidents: S.Incident[], by: Ma
       { id: 'rooms', heading: 'Every room', text: ['The estate drilled down: one row per room. In the workbook, filter this sheet by building, type or state.'],
         table: { title: 'Rooms', cols: [{ key: 'id', label: 'Room id' }, { key: 'room', label: 'Room' }, { key: 'building', label: 'Building' }, { key: 'floor', label: 'Floor', kind: 'number' }, { key: 'type', label: 'Room type' }, { key: 'crit', label: 'Criticality' }, { key: 'cx', label: 'Commissioning', kind: 'status' }, { key: 'as', label: 'Assurance', kind: 'status' }, { key: 'tests', label: 'Tests verified' }, { key: 'open', label: 'Open issues', kind: 'number' }, { key: 'baseline', label: 'Baseline' }],
           rows: [...rows].sort((a, b) => CX_ORDER.indexOf(a.cx.state) - CX_ORDER.indexOf(b.cx.state) || AS_ORDER.indexOf(a.as.state) - AS_ORDER.indexOf(b.as.state) || a.r.outline.id.localeCompare(b.r.outline.id)).map((x) => { const cur = x.r.baselines.find((b) => b.state === 'CURRENT');
-            return { id: x.r.outline.id, room: `${shortName(x.r.outline)} — ${x.r.outline.name}`, building: buildingByKey(x.r.outline.building)?.name || x.r.outline.building, floor: x.r.outline.floor, type: x.r.archetypeName, crit: x.crit, cx: CX_LABEL[x.cx.state].label, as: AS_LABEL[x.as.state].label, tests: `${x.r.counts.verified} of ${x.r.counts.applicable}`, open: x.open.length, baseline: cur ? `v${cur.version} · ${cur.at.slice(0, 10)}` : '—' }; }) } },
+            return { id: x.r.outline.id, room: `${shortName(x.r.outline)} — ${x.r.outline.name}`, building: buildingByKey(x.r.outline.building)?.name || x.r.outline.building, floor: x.r.outline.floor, type: x.r.archetypeName, crit: x.crit, cx: CX_LABEL[x.cx.state].label, as: AS_LABEL[x.as.state].label, tests: `${x.r.counts.verified} of ${x.r.counts.applicable}`, open: x.issues.length, baseline: cur ? `v${cur.version} · ${cur.at.slice(0, 10)}` : '—' }; }) } },
       { id: 'deficiencies', heading: 'Open deficiencies', table: { title: 'Deficiencies', cols: [{ key: 'room', label: 'Room' }, { key: 'id', label: 'ID' }, { key: 'title', label: 'Deficiency' }, { key: 'sev', label: 'Severity', kind: 'status' }, { key: 'src', label: 'Source' }],
         rows: defs.sort((a, b) => ['High', 'Medium', 'Low'].indexOf(a.i.severity) - ['High', 'Medium', 'Low'].indexOf(b.i.severity)).map((d) => ({ room: shortName(d.x.r.outline), id: d.i.id, title: d.i.title, sev: d.i.severity === 'High' ? 'Open · high' : d.i.severity, src: d.i.source })) } },
       { id: 'trend', heading: 'Assurance over four weeks', text: ['Each week, the rooms with a baseline by then, read as their worst state that week.'],
@@ -86,7 +87,7 @@ export function estatePackage(all: RoomRecord[], incidents: S.Incident[], by: Ma
     dossier: {
       scope: { building: building || null, floor: floor ?? null, rooms: recs.length },
       counts: { commissioning: Object.fromEntries(CX_ORDER.map((k) => [k, ncx(k)])), assurance: Object.fromEntries(AS_ORDER.map((k) => [k, nas(k)])), testsVerified: verified, testsApplicable: applicable, openDeficiencies: defs.length },
-      rooms: rows.map((x) => ({ id: x.r.outline.id, building: x.r.outline.building, archetype: x.r.outline.archetype, criticality: x.crit, commissioning: x.cx.state, assurance: x.as.state, ready: x.rc.out, openIssues: x.open.map((i) => i.id) })),
+      rooms: rows.map((x) => ({ id: x.r.outline.id, building: x.r.outline.building, archetype: x.r.outline.archetype, criticality: x.crit, commissioning: x.cx.state, assurance: x.as.state, ready: x.rc.out, openIssues: x.issues.map((i) => i.id) })),
       trend,
     },
   };

@@ -4,7 +4,7 @@
  * phase plan, Integrations Hub, asset identity) and the room-scoped ones (#/v14/<view>/<room>). Nothing here is live: every V1.4 record
  * is a deterministic fixture built from the demonstration's own room records and labelled with its evidence kind.
  */
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { PageHero, Card, StatTile, Tag, Button, Segmented, EmptyState, ProgressBar } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { ROOMS, BUILDINGS, roomById, shortName, fullName, roomHref } from '../campus/canon.js';
@@ -148,11 +148,11 @@ function Connect({ sub }: { sub?: string }) {
     </Zone></>);
 }
 function Telemetry({ rooms, sub }: { rooms: RoomRecord[]; sub?: string }) {
-  const [r, setR] = useRoom(rooms, sub, 'R-BCN-3-101'); const ind = indicators(r);
+  const [r, setR] = useRoom(rooms, sub, 'R-BCN-3-101'); const ind = indicators(r); const w = useMemo(loadWorkspace, []);
   const pass = ind.filter((i) => i.state === 'pass').length;
   return (<><Head title="Telemetry and Assurance core" sub="Versioned decoders, a deduplicated ledger with raw and normalized views, seven independent indicators, and a room health that nothing can type in." phase={5} /><Banner />
     <RoomPick rooms={rooms} value={r.outline.id} onChange={setR} view="telemetry" />
-    <div className="kit-grid kit-grid--tiles"><StatTile label="Indicators passing" value={pass} unit={` of ${ind.length}`} icon="pulse" /><StatTile label="Not measured" value={ind.filter((i) => i.state === 'not measured').length} icon="eye" hint="no false PASS: unmeasured stays unmeasured" /><StatTile label="Open issues" value={roomIssues(r, loadWorkspace()).length} icon="alert" testId="tel-open-issues" /></div>
+    <div className="kit-grid kit-grid--tiles"><StatTile label="Indicators passing" value={pass} unit={` of ${ind.length}`} icon="pulse" /><StatTile label="Not measured" value={ind.filter((i) => i.state === 'not measured').length} icon="eye" hint="no false PASS: unmeasured stays unmeasured" /><StatTile label="Open issues" value={roomIssues(r, w).length} icon="alert" testId="tel-open-issues" /></div>
     <div className="pa-table-wrap"><table className="pa-table" data-testid="tel-matrix"><thead><tr><th scope="col">Indicator</th><th scope="col">State</th><th scope="col">What it says · what it may not claim</th><th scope="col">Evidence</th></tr></thead>
       <tbody>{ind.map((i) => <tr key={i.key} className={i.state === 'fail' ? 'pa-diff' : undefined}><th scope="row">{i.label}</th><td><Tag tone={i.state === 'pass' ? 'ok' : i.state === 'fail' ? 'bad' : 'muted'}>{i.state}</Tag></td><td>{i.note}<br /><span className="pa-note">{i.what}</span></td><td><EvBadge k={i.ev} /></td></tr>)}</tbody></table></div></>);
 }

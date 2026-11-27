@@ -3,7 +3,6 @@
  * the authority of each family is V2.5.3's own (12-authz.js azArea for #/set: dev → set.devices, iss → set.issues, as → assurance.*, …).
  */
 import type { Authority } from '../registry.types.js';
-import { openIssues } from '../campus/design.js';
 import { healthOf, type Core, type Rec } from './core.js';
 
 export interface SetDef { key: string; title: string; how: string; items: (c: Core) => Rec[] }
@@ -20,7 +19,7 @@ export const FAMILIES: Family[] = [
   ] },
   { key: 'room', label: 'Rooms', blurb: 'Rooms behind a number', sets: [
     { key: 'room:all', title: 'Every room', how: 'The thirty rooms of the campus records.', items: (c) => c.byType.Room },
-    { key: 'room:issues', title: 'Rooms with an open issue', how: 'At least one issue that is not resolved.', items: (c) => room(c, (id) => openIssues(rec(c, id)).length > 0) },
+    { key: 'room:issues', title: 'Rooms with an open issue', how: 'At least one open issue: on the record and not resolved, or a live service request that is open (one per id).', items: (c) => room(c, (id) => c.openIssues(rec(c, id)).length > 0) },
     { key: 'room:monitor', title: 'Rooms below a health of 85', how: 'The health rule of this demonstration (open issues and unverified tests) gives under 85 of 100.', items: (c) => room(c, (id) => healthOf(rec(c, id)) < 85) },
     { key: 'room:commissioning', title: 'Rooms in commissioning', how: 'Lifecycle COMMISSIONING or INSTALLED_UNVERIFIED: installed, not yet accepted.', items: (c) => c.byType.Room.filter((r) => r.state === 'COMMISSIONING' || r.state === 'INSTALLED_UNVERIFIED') },
   ] },
