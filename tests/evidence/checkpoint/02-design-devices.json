@@ -2,7 +2,7 @@
  "step": 2,
  "title": "Design it: add the devices of the Small Conference Room template, including the camera",
  "room": "R-PLN-0004",
- "at": "2026-11-26T20:18:24.253Z",
+ "at": "2026-11-27T01:30:43.378Z",
  "assertions": [
   {
    "id": "C-04",
@@ -44,7 +44,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "ea2cb217-b0a8-4724-9422-87a177ba7fde"
+   "correlationId": "cae31390-11c3-4e3f-968e-ab974ed7fc75"
   },
   {
    "method": "POST",
@@ -64,7 +64,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "06fd63e9-92f3-4c65-ad82-5abb3f7b5292"
+   "correlationId": "22f880fb-4dc0-4f7f-8acf-75f5660c0648"
   },
   {
    "method": "POST",
@@ -84,7 +84,7 @@
     "openIssues": 1,
     "planChanged": true
    },
-   "correlationId": "d0cc6e6e-568e-451d-8c33-f12f6d3dc801"
+   "correlationId": "6ccebbaa-bd2b-4dbc-99eb-6ea6ea6f50bd"
   },
   {
    "method": "GET",
@@ -94,7 +94,7 @@
    "body": {
     "omitted": "large body; see the step that records it in full"
    },
-   "correlationId": "d0133279-404b-4ad8-a4a5-bd2d60753849"
+   "correlationId": "311b5dba-0503-4a35-ae03-62c59322701c"
   },
   {
    "method": "POST",
@@ -114,7 +114,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "823d0b28-c6ff-4cb0-bd57-57c5fd8b93d0"
+   "correlationId": "05c05c28-7808-4ca5-b6bf-c1e333b9e22e"
   },
   {
    "method": "POST",
@@ -134,7 +134,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "5640e16b-b18c-4e73-bb44-34de87def4b5"
+   "correlationId": "5c113398-a214-4920-9067-954f73076dd6"
   },
   {
    "method": "POST",
@@ -154,7 +154,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "cb66944c-c300-48a9-8f9d-38c25943906b"
+   "correlationId": "c5b11bb2-f75c-4116-bce5-5bfa34bde469"
   },
   {
    "method": "POST",
@@ -174,7 +174,7 @@
     "openIssues": 0,
     "planChanged": false
    },
-   "correlationId": "36f85741-f483-4711-9933-e90f5a9f5592"
+   "correlationId": "d454b8eb-c793-418b-a085-2d1e68c2905e"
   },
   {
    "method": "POST",
@@ -194,7 +194,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "58082de5-abb2-4ef2-a7e6-9c5821a9701a"
+   "correlationId": "598c6366-2463-461c-9ed3-0d060e5ad776"
   },
   {
    "method": "POST",
@@ -214,7 +214,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "2f03fa81-4a0e-4b9e-8fb9-0e105dcb9f83"
+   "correlationId": "a2e083b6-7117-4a7c-a547-b29cc4949709"
   },
   {
    "method": "POST",
@@ -234,7 +234,7 @@
     "openIssues": 0,
     "planChanged": true
    },
-   "correlationId": "6a4134a3-4253-4797-bdb9-d835601935fc"
+   "correlationId": "9da303f3-4e7e-4f48-8c31-c2faf54ec7f9"
   },
   {
    "method": "GET",
@@ -245,7 +245,7 @@
     "room": {
      "code": "R-PLN-0004",
      "canonicalRef": null,
-     "id": "de65aae8-6fb6-4dd0-852b-35ed6850513f",
+     "id": "eaa4becb-8088-4ed2-9050-1ee537e9fad7",
      "name": "Checkpoint conference room (synthetic)",
      "lifecycle": "PLANNED",
      "template": "custom",
@@ -893,8 +893,8 @@
       "rev_no": 1,
       "reason": "created",
       "sha256": "22f5c43ec58ad7bcd65c49d11ad73932ad6c04dde8ba813ec51b39b2d67c5afd",
-      "created_by": "605b7ee8-dc9f-421d-b1ca-fabc5f173816",
-      "created_at": "2026-11-26T20:18:18.080Z"
+      "created_by": "01209f32-3e5d-4a67-95a3-09cda7617f87",
+      "created_at": "2026-11-27T01:30:36.193Z"
      }
     ],
     "issues": [
@@ -910,8 +910,8 @@
       "state": "RESOLVED",
       "owner_role": null,
       "resolution": {
-       "at": "2026-11-26T20:18:18.221Z",
-       "by": "605b7ee8-dc9f-421d-b1ca-fabc5f173816",
+       "at": "2026-11-27T01:30:36.377Z",
+       "by": "01209f32-3e5d-4a67-95a3-09cda7617f87",
        "how": "the design check no longer fires after: device added PA-0061",
        "byRole": "designer",
        "revision": 1,
@@ -919,12 +919,12 @@
       },
       "first_seen_rev": 1,
       "last_seen_rev": 1,
-      "created_at": "2026-11-26T20:18:18.168Z",
-      "updated_at": "2026-11-26T20:18:18.209Z"
+      "created_at": "2026-11-27T01:30:36.323Z",
+      "updated_at": "2026-11-27T01:30:36.364Z"
      }
     ],
     "commissioning": {
-     "planId": "788d28c9-3dde-40d8-b1a8-1a6389569fdc",
+     "planId": "9018957b-cf9e-4fd5-9fc4-49ba3d582eaf",
      "engineVersion": "2.5.4-port.1",
      "ruleVersion": "2.5.0",
      "library": 94,
@@ -943,7 +943,7 @@
        "network_switch"
       ]
      },
-     "compiledAt": "2026-11-26T20:18:18.321Z",
+     "compiledAt": "2026-11-27T01:30:36.509Z",
      "counts": {
       "applicable": 75,
       "recorded": 0,
@@ -3115,7 +3115,7 @@
      ]
     }
    },
-   "correlationId": "94da07fb-fd8e-4577-8067-f8ccc1f9e20f"
+   "correlationId": "eea74c8c-c562-4641-b1b6-9c236d6df429"
   }
  ]
 }
