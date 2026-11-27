@@ -263,6 +263,11 @@ export function buildPages(ctx: SiteContext): Page[] {
       <>
         <Hero label="Experiences" title="Walk into the rooms the platform runs" lead="Nine worlds on one Core. Four can be walked in the browser today, Collabora-SING is in development and four more are planned. Every venue is fictional and every figure synthetic; each world says what it is and what it is not."
           action={{ href: demo('#/play/campus'), label: 'Play Campus Life' }} />
+        {/* 27 Nov 2026 (founder 04:19 CT): the film "Empathia in our modern world", supplied by the owner for this page. It is a cinematic
+            depiction, not a recording of a deployment, and its qualifier is printed above the player at all times (films.json, MODERN). */}
+        {film('MODERN') ? <Section id="film" eyebrow="The film" title="One platform, wherever people are" lead="Two minutes in an airport, a school and a hospital: the same building seen by each person through their own role. A depiction of where Empathia is going, with the platform’s own screens.">
+          {film('MODERN')}
+        </Section> : null}
         {/* 25 Nov 2026 (commercial-readiness directive §9): every one of the nine worlds, with what exists today. A planned world shows no
             picture and no detail beyond its purpose: nothing unfinished is shown as built. Venues and places are fictional. */}
         <Section id="nine" eyebrow="Nine worlds" title="One Core, nine places it runs" lead="Each world uses the same record, evidence labels and engineering as the Enterprise campus.">

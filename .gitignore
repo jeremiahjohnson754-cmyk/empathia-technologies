@@ -65,6 +65,8 @@ apps/website/media/*
 !apps/website/media/F-LIFE/
 !apps/website/media/F-FOLLOW/
 !apps/website/media/F-SIGNAL/
+# the Experiences page film "Empathia in our modern world" (owner verified 2026-11-27 04:19 CT, apps/website/films.json MODERN)
+!apps/website/media/MODERN/
 # the guides as printed booklets (scripts/media/make-booklets.mjs; hashes in BOOKLETS.json)
 !apps/website/media/booklets/
 # the founder's keepsake photograph (founder page, 2026-11-13)

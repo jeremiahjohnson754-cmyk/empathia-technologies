@@ -1,0 +1,30 @@
+{
+  "key": "MODERN",
+  "title": "Empathia in our modern world",
+  "master": "b0821063551b86899b6be8dfc43ba9542a0f64a7b3e5b9b8b9d2e971a10c9a47",
+  "source": {
+    "path": "owner upload (1000045715.mp4: the master, captions burned in)",
+    "sha256": "b0821063551b86899b6be8dfc43ba9542a0f64a7b3e5b9b8b9d2e971a10c9a47"
+  },
+  "settings": "H.264 High CRF 24 maxrate 2200k, 720p, AAC 96k stereo, faststart; posters 1600 px",
+  "files": {
+    "720.mp4": {
+      "bytes": 16117497,
+      "sha256": "d36f863112c9fc4a0106442251ce799c9b5f8fb852ba305b01ed226742053b35"
+    },
+    "poster.webp": {
+      "bytes": 96702,
+      "sha256": "fa1ec368de702e05111202f6ca0dd70230ee1be97f404263fd7818692cbc5580"
+    },
+    "poster.jpg": {
+      "bytes": 166118,
+      "sha256": "d764ad10f6ef3b5c43508f84985fd23ed0746b557c477e7c44bdf2ff6909676c"
+    },
+    "captions.vtt": {
+      "bytes": 3429,
+      "sha256": "da59996aec2828ec33945a20f5a851b375415633eb92809d3f8bd8a97ca245f5"
+    }
+  },
+  "at": "2026-11-27T11:28:41.261Z",
+  "rightsWebsite": "VERIFIED"
+}
