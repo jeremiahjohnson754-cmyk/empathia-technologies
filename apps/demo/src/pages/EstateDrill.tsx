@@ -7,7 +7,7 @@
  */
 import { Card, Chip, Icon, Tag, type Series } from '@empathia/ui';
 import type { RoomRecord } from '../campus/design.js';
-import { openIssues } from '../campus/design.js';
+import { recordIssues, roomIssuesOf } from '../campus/metrics.js';
 import { buildingByKey, shortName } from '../campus/canon.js';
 import { cxState } from '../campus/cxRecord.js';
 import { asState } from '../campus/asRecord.js';
@@ -36,7 +36,7 @@ export function EstateDrill({ kind, recs, incidents, hash, base, states, roomBas
   const d = drillOf(hash, recs); const keys = Object.keys(states);
   const stateOf = (r: RoomRecord): { state: string; why: string } => {
     if (kind === 'cx') return cxState(r); if (kind === 'as') return asState(r, incidents);
-    const jobs = incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i)); const iss = openIssues(r); const cx = cxState(r);
+    const jobs = incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i)); const iss = recordIssues(r, incidents); const cx = cxState(r);
     return jobs.length || iss.length || cx.state === 'blocked' ? { state: 'action', why: [jobs[0] ? `${jobs[0].id} open: ${jobs[0].title}` : '', iss[0] ? iss[0].title : '', cx.state === 'blocked' ? `commissioning blocked: ${cx.why}` : ''].filter(Boolean).join(' · ') } : { state: 'good', why: 'no open job or issue' };
   };
   const scope = inScope(recs, d); const s = d.s && keys.includes(d.s) ? d.s : null;
@@ -59,18 +59,18 @@ export function EstateDrill({ kind, recs, incidents, hash, base, states, roomBas
     </nav>
     {level !== 'room' ? <div className="pa-table-wrap"><table className="pa-table dr-table" data-testid="drill-table">
       <caption className="ui-sr">{level === 'building' ? 'Buildings' : 'Floors'} by {kind === 'cx' ? 'commissioning' : kind === 'pro' ? 'standing' : 'assurance'} state</caption>
-      <thead><tr><th scope="col">{level === 'building' ? 'Building' : 'Floor'}</th><th scope="col">Rooms</th><th scope="col" className="dr-bar">State</th>{keys.map((k) => <th key={k} scope="col" className="num">{states[k]!.label}</th>)}<th scope="col" className="num">{kind === 'cx' ? 'Tests verified' : kind === 'pro' ? 'Open jobs and issues' : 'Open issues'}</th></tr></thead>
+      <thead><tr><th scope="col">{level === 'building' ? 'Building' : 'Floor'}</th><th scope="col">Rooms</th><th scope="col" className="dr-bar">State</th>{keys.map((k) => <th key={k} scope="col" className="num">{states[k]!.label}</th>)}<th scope="col" className="num">{kind === 'cx' ? 'Tests verified' : 'Open issues'}</th></tr></thead>
       <tbody>{shown.map((g) => { const v = g.rooms.reduce((a, r) => a + r.counts.verified, 0); const ap = g.rooms.reduce((a, r) => a + r.counts.applicable, 0);
         return <tr key={g.key} data-drill={g.key}>
           <th scope="row"><a href={g.href} data-testid="drill-in">{g.name}</a></th><td className="num">{g.rooms.length}</td>
           <td className="dr-bar"><Stack label={g.name} parts={keys.map((k) => ({ key: k, label: states[k]!.label, value: count(g.rooms, k), tone: states[k]!.tone }))} /></td>
           {keys.map((k) => { const n = count(g.rooms, k); return <td key={k} className="num">{n ? <a href={drillHref(base, level === 'building' ? { b: g.key, s: k } : { b: d.b, f: Number(g.key), s: k })} aria-label={`${n} ${states[k]!.label.toLowerCase()} in ${g.name}`}>{n}</a> : <span className="ui-meta">0</span>}</td>; })}
-          <td className="num">{kind === 'cx' ? `${pct(v, ap)}%` : g.rooms.reduce((a, r) => a + openIssues(r).length + (kind === 'pro' ? incidents.filter((i) => i.roomId === r.outline.id && isOpenRequest(i)).length : 0), 0)}</td>
+          <td className="num">{kind === 'cx' ? `${pct(v, ap)}%` : g.rooms.reduce((a, r) => a + roomIssuesOf(r, incidents).length, 0)}</td>
         </tr>; })}</tbody></table></div>
       : rows.length ? <ul className="dr-rooms" data-testid="drill-rooms">{rows.map((x) => <li key={x.r.outline.id}>
           <a href={`${roomBase}/${x.r.outline.id}`}><Icon name="room" size={16} /> <b>{shortName(x.r.outline)}</b> <span className="ui-meta">{x.r.outline.name}</span></a>
           <Tag tone={states[x.state]!.tone as never}>{states[x.state]!.label}</Tag><span className="ui-meta dr-why">{x.why}</span>
-          <span className="ui-meta">{kind === 'cx' ? `${x.r.counts.verified} of ${x.r.counts.applicable} tests` : plural(openIssues(x.r).length, 'open issue')}</span></li>)}</ul>
+          <span className="ui-meta">{kind === 'cx' ? `${x.r.counts.verified} of ${x.r.counts.applicable} tests` : plural(roomIssuesOf(x.r, incidents).length, 'open issue')}</span></li>)}</ul>
       : <p className="ui-meta">No room on this floor is {states[s!]?.label.toLowerCase()}. <a href={drillHref(base, { b: d.b, f: d.f })}>Show every room on the floor</a></p>}
     {s && level !== 'room' ? <p className="wk-note">Only {level === 'building' ? 'buildings' : 'floors'} with a room that is {states[s]!.label.toLowerCase()} are listed ({shown.length} of {groups.length}); each row still counts every state.</p> : null}
   </Card>;

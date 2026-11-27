@@ -36,15 +36,22 @@ export { isOpenRequest, isUnclosedRequest, isFixedRequest, requestFixedAt, OPEN_
 const SEV: Record<string, Issue['severity']> = { 'Mission critical': 'High', High: 'High', Standard: 'Medium' };
 export interface OpenIssue { id: string; title: string; severity: Issue['severity']; state: string; source: string; positions: string[]; live: boolean; openedAt?: string; href?: string }
 
-/** The room's open issues: record issues not resolved, plus live service incidents (the live record wins on the same id). */
-export function roomIssues(r: RoomRecord, w?: Workspace | null): OpenIssue[] {
-  const live = (w?.incidents || []).filter((i) => i.roomId === r.outline.id);
-  const liveIds = new Set(live.map((i) => i.id));
-  const out: OpenIssue[] = r.issues.filter((i) => i.state !== 'RESOLVED' && !liveIds.has(i.id)).map((i) => ({ id: i.id, title: i.title, severity: i.severity, state: i.state, source: i.source, positions: i.positions, live: false }));
-  for (const i of live) if (isOpenRequest(i)) out.push({ id: i.id, title: i.title, severity: SEV[i.severity] || 'Medium', state: i.state, source: 'ServiceHands request', positions: [], live: true, openedAt: i.openedAt, href: `#/v25/service?id=${i.id}` });
+/** The record half of the room's open issues: record issues not resolved, less any that a live service request of the same id
+ *  overrides, whatever that request's state (the live record wins). A page that lists record issues and service jobs apart reads
+ *  this for the record half and isOpenRequest for the other, so the two add up to roomIssues (issues.open; MI-13). */
+export function recordIssues(r: RoomRecord, incidents: ReadonlyArray<Pick<Incident, 'id' | 'roomId'>>): Issue[] {
+  const liveIds = new Set(incidents.filter((i) => i.roomId === r.outline.id).map((i) => i.id));
+  return r.issues.filter((i) => i.state !== 'RESOLVED' && !liveIds.has(i.id));
+}
+/** The room's open issues (issues.open): record issues not resolved, plus the room's open service requests; one per id, the live
+ *  record wins. */
+export function roomIssuesOf(r: RoomRecord, incidents: ReadonlyArray<Incident>): OpenIssue[] {
+  const out: OpenIssue[] = recordIssues(r, incidents).map((i) => ({ id: i.id, title: i.title, severity: i.severity, state: i.state, source: i.source, positions: i.positions, live: false }));
+  for (const i of incidents) if (i.roomId === r.outline.id && isOpenRequest(i)) out.push({ id: i.id, title: i.title, severity: SEV[i.severity] || 'Medium', state: i.state, source: 'ServiceHands request', positions: [], live: true, openedAt: i.openedAt, href: `#/v25/service?id=${i.id}` });
   const rank = { High: 0, Medium: 1, Low: 2 } as const;
   return out.sort((a, b) => rank[a.severity] - rank[b.severity] || a.id.localeCompare(b.id));
 }
+export function roomIssues(r: RoomRecord, w?: Workspace | null): OpenIssue[] { return roomIssuesOf(r, w?.incidents || []); }
 
 export interface Health { score: number | null; band: Band; parts: Array<{ label: string; points: number }>; why: string }
 export function roomHealth(r: RoomRecord, w?: Workspace | null): Health {

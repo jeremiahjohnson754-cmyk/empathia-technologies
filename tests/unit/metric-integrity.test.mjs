@@ -220,3 +220,26 @@ test('MI-12 a canceled request is not open or fixed anywhere; the room assurance
   assert.ok(jobs.find((j) => j.id === k.id).canceled, 'the history marks a canceled job');
   assert.equal(AN.stats(jobs, 0, t).closed, closedIds.length, 'closed counts closes, not cancels');
 });
+
+// MI-13 (27 Nov 2026, Pro premium enterprise intelligence #320): "Open issues" is one population, one per id (campus/definitions.ts,
+// issues.open: "the live record wins"). Pro's command center and its drill-down took a room's record issues as they stood and added the
+// room's open service requests, so a record issue and the live request of the same id counted twice; Mission Control counted it once.
+// The seed does not show it (ISS-0417's record copy is resolved), so the check builds the case: a live request opened under the id of an
+// open record issue. recordIssues is the record half the pages list; roomIssuesOf is roomIssues for a page that holds the requests only.
+test('MI-13 open issues are one per id on every page: a record issue that a live request of the same id overrides is counted once', () => {
+  const ids = new Set(w.incidents.map((i) => i.id));
+  const r = recs.find((x) => D.openIssues(x).some((i) => !ids.has(i.id))); const iss = D.openIssues(r).find((i) => !ids.has(i.id));
+  const w2 = structuredClone(w); w2.incidents.push({ ...structuredClone(w.incidents.find((i) => M.isOpenRequest(i))), id: iss.id, roomId: r.outline.id, state: 'OPEN', history: [], closedAt: null, restoredAt: null });
+  // the record half: the record's copy is overridden by the live request, open or not
+  assert.ok(!M.recordIssues(r, w2.incidents).some((i) => i.id === iss.id), 'the live request wins over the record issue of the same id');
+  assert.ok(M.recordIssues(r, w.incidents).some((i) => i.id === iss.id), 'without the live request the record issue is open');
+  const closed = structuredClone(w2); closed.incidents.at(-1).state = 'CLOSED';
+  assert.ok(!M.recordIssues(r, closed.incidents).some((i) => i.id === iss.id), 'a closed live request still wins: the record copy is not reopened');
+  // the two halves add up to the definition, room by room and in total, whatever the workspace
+  for (const ws of [w, w2, closed]) for (const x of recs) {
+    const live = ws.incidents.filter((i) => i.roomId === x.outline.id && M.isOpenRequest(i));
+    assert.equal(M.recordIssues(x, ws.incidents).length + live.length, M.roomIssues(x, ws).length, x.outline.id);
+    assert.deepEqual(M.roomIssuesOf(x, ws.incidents), M.roomIssues(x, ws), x.outline.id);
+  }
+  assert.equal(M.roomIssues(r, w2).filter((i) => i.id === iss.id).length, 1, 'counted once');
+});

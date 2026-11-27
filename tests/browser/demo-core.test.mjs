@@ -141,6 +141,19 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
     return { queue: n('tab-queue'), closed: n('tab-closed'), listed: document.querySelectorAll('[data-testid="incidents"] > li').length, tag: parseInt([...document.querySelectorAll('.build__state .ui-tag')].map((x) => x.textContent).find((x) => / open$/.test(x)) || '', 10) }; });
   const q = await tabs(); await t.page.click('#tab-closed'); await t.page.waitForTimeout(400); const c = await tabs();
   ok('MC-open-02', 'Service: the Queue and Closed tabs count the requests they list, together every request once, and the tag says the open count', q.listed === q.queue && c.listed === c.closed && Number.isFinite(n.total) && q.queue + q.closed === n.total && q.tag === n.home, JSON.stringify({ q, c }));
+  // MC-open-03 (27 Nov 2026, #320): "Open issues" is one per id (campus/definitions.ts, issues.open). Pro's command center and its drill
+  // down added a room's open requests to its record issues as they stood, so an issue on the record and the live request of the same id
+  // counted twice. The seed does not show it, so a live request is opened under the id of Atlas 7.112's open record issue; the unit
+  // check of the same rule is MI-13.
+  await t.page.evaluate(() => { const k = 'empathia.demo.workspace.v1'; const w = JSON.parse(localStorage.getItem(k)); const src = w.incidents.find((i) => i.id === 'ISS-0417');
+    w.incidents.push({ ...src, id: 'ISS-ATL-7-112', roomId: 'R-ATL-7-112', state: 'OPEN', severity: 'Standard', title: 'Display does not wake from standby on the first try', history: [], closedAt: null, restoredAt: null, workOrderId: null });
+    localStorage.setItem(k, JSON.stringify(w)); }); await t.page.reload(); await t.page.waitForTimeout(900);
+  const tileOf = async (hash) => { await t.go(hash, 1800); return parseInt(await t.page.locator('.kit-tile:has(.kit-tile__label:text-is("Open issues")) .kit-tile__value').first().textContent().catch(() => '') || '', 10); };
+  const oi = { campus: await tileOf('#/campus'), atl: await tileOf('#/campus/ATL'), pro: await tileOf('#/pro') };
+  oi.proAtl = parseInt(await t.page.locator('[data-testid="pro-drill"] tr[data-drill="ATL"] td.num').last().textContent().catch(() => '') || '', 10);
+  // the assurance drill-down's "Open issues" column counted the room records only: 3 for Atlas on the seed, where the Atlas page says 5
+  await t.go('#/assurance', 1800); oi.asAtl = parseInt(await t.page.locator('[data-testid="as-drill"] tr[data-drill="ATL"] td.num').last().textContent().catch(() => '') || '', 10);
+  ok('MC-open-03', 'Open issues are one per id: Pro\'s command center and the Pro and Assurance drill-downs count what the campus pages count, also when a live request shares an id with a record issue', Number.isFinite(oi.campus) && oi.pro === oi.campus && oi.proAtl === oi.atl && oi.asAtl === oi.atl, JSON.stringify(oi));
   await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);

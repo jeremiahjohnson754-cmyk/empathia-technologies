@@ -18,6 +18,7 @@ import { useWorkspace } from '../workspace/useWorkspace.js';
 import { personaLabel, personaOf } from '../build/store.js';
 import type * as S from '../workspace/store.js';
 import { isOpenRequest, requestFixedAt } from '../workspace/requests.js';
+import { recordIssues } from '../campus/metrics.js';
 import { Foot, Stack, plural, pct, weekCounts, weekBacklog, deltaOf } from './viz.js';
 import { V25Nav } from './V25Nav.js';
 import { ProTabs } from './ProViews.js';
@@ -178,9 +179,10 @@ export function ProPage({ perspective, hash = '' }: { perspective: string; hash?
   const persona = personaOf(perspective); const { w, recs: all } = useEstate(); const drill = drillOf(hash, all); const recs = inScope(all, drill);
   const inScopeRoom = (id: string) => !drill.b || recs.some((r) => r.outline.id === id);
   const now = Date.now();
-  const inc = w.incidents.filter((i) => isOpenRequest(i) && !i.restoredAt && inScopeRoom(i.roomId));
+  const inc = w.incidents.filter((i) => isOpenRequest(i) && inScopeRoom(i.roomId));
   const late = (i: S.Incident) => (now - Date.parse(i.openedAt)) / DAY > (TARGET_DAYS[i.severity] ?? 5);
-  const roomIssues = recs.flatMap((r) => openIssues(r).map((i) => ({ r, i })));
+  // the record half of issues.open: a record issue that a live request of the same id overrides is that request, counted once (MI-13)
+  const roomIssues = recs.flatMap((r) => recordIssues(r, w.incidents).map((i) => ({ r, i })));
   const sevSegs = [['High', 'bad'], ['Medium', 'warn'], ['Low', 'info']].map(([s, t]) => ({ key: s!, label: s!, value: roomIssues.filter((x) => x.i.severity === s).length + inc.filter((i) => (s === 'High' ? i.severity !== 'Standard' : s === 'Medium' ? i.severity === 'Standard' : false)).length, tone: t as Series }));
   const needRooms = new Set([...roomIssues.map((x) => x.r.outline.id), ...inc.map((i) => i.roomId), ...recs.filter((r) => cxState(r).state === 'blocked').map((r) => r.outline.id)]);
   const devices = recs.reduce((a, r) => a + r.positions.filter((p) => !p.furniture).length, 0);
