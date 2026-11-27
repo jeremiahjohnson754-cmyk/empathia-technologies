@@ -8,6 +8,8 @@
 import { find, searchIndex, ALIASES, type Hit } from './find.js';
 import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS as ROOMS, fullName, roomHref, ARCHETYPE_NAME, type RoomOutline } from '../campus/canon.js';
 import { allRecords, openIssues, C, type RoomRecord, type Layer } from '../campus/design.js';
+import { roomIssuesOf } from '../campus/metrics.js';
+import { load as loadWorkspace, type Incident } from '../workspace/store.js';
 
 export type FilterKind = 'state' | 'place' | 'kind' | 'seats' | 'floor' | 'has' | 'lacks' | 'issues' | 'text';
 export interface Filter { kind: FilterKind; label: string; /** the words that produce this filter again when typed */ phrase: string; test: (r: RoomRecord) => boolean; note?: (r: RoomRecord) => string }
@@ -110,7 +112,7 @@ export function correct(word: string): string | null {
 const NUM = '(?<![\\d.])(\\d{1,4})(?![\\d.])';
 interface Parsed { ask: Reading['ask']; filters: Filter[]; rest: string; fit: number | null; deviceWord: { word: string; cats: string[] } | null; wantsIssues: boolean; roomsSaid: boolean }
 
-function parse(text: string, may: (field: string) => boolean): Parsed {
+function parse(text: string, may: (field: string) => boolean, incidents: () => Incident[]): Parsed {
   let t = ` ${text} `; const filters: Filter[] = []; let ask: Reading['ask'] = 'list'; let fit: number | null = null; let wantsIssues = false;
   const take = (re: RegExp, on: (m: RegExpExecArray) => void) => { let m: RegExpExecArray | null; let guard = 0; while ((m = re.exec(t)) && guard++ < 6) { on(m); t = `${t.slice(0, m.index)} ${t.slice(m.index + m[0].length)}`; } };
   const roomsSaid = /\b(rooms?|spaces?)\b/.test(t);
@@ -133,9 +135,12 @@ function parse(text: string, may: (field: string) => boolean): Parsed {
   // open issues, optionally on one layer ("audio problems")
   take(/\b(?:(no|without|with no|zero) )?(?:(audio|sound|video|camera|display|picture|control|network|power) )?(?:open )?(issues?|problems?|faults?|defects?|broken|failing)\b/, (m) => {
     wantsIssues = true; if (!may('ask.engineering')) return; const neg = !!m[1]; const layer = m[2] ? LAYER_WORDS[m[2]]! : null; const what = layer ? `open ${layer} issue` : 'open issue';
-    const has = (r: RoomRecord) => openIssues(r).some((i) => !layer || i.positions.some((p) => r.positions.find((x) => x.code === p)?.layer === layer));
+    // open issues as the room page counts them (issues.open, MI-17): the record's and the live requests, one per id. A layer is read
+    // from the record only: a service request names no device position.
+    const iss = (r: RoomRecord) => (layer ? openIssues(r) : roomIssuesOf(r, incidents()));
+    const has = (r: RoomRecord) => iss(r).some((i) => !layer || i.positions.some((p) => r.positions.find((x) => x.code === p)?.layer === layer));
     filters.push(neg ? { kind: 'issues', label: `no ${what}`, phrase: `no ${layer ? `${layer} ` : 'open '}issues`, test: (r) => !has(r) }
-      : { kind: 'issues', label: `an ${what}`, phrase: layer ? `${layer} issues` : 'open issues', test: has, note: (r) => openIssues(r).map((i) => i.title).slice(0, 1).join('') });
+      : { kind: 'issues', label: `an ${what}`, phrase: layer ? `${layer} issues` : 'open issues', test: has, note: (r) => iss(r).map((i) => i.title).slice(0, 1).join('') });
   });
   for (const [re, label, phrase, test] of STATES) take(re, () => { if (!filters.some((f) => f.kind === 'state')) filters.push({ kind: 'state', label, phrase, test }); });
   // equipment a room has or lacks
@@ -174,14 +179,16 @@ const STARTERS: Suggest[] = [
 ];
 
 /** Read a query. `may` answers whether the viewing role sees a field (open issues are engineering information). */
-export function understand(query: string, opts: { may?: (field: string) => boolean; limit?: number } = {}): Reading {
+/** opts.incidents: the live service requests the open-issue conditions read (issues.open); this browser's workspace when not given. */
+export function understand(query: string, opts: { may?: (field: string) => boolean; limit?: number; incidents?: Incident[] } = {}): Reading {
   const may = opts.may || (() => true); const limit = opts.limit ?? 12; const raw = norm(query).slice(0, 120);
   const base: Reading = { query, corrected: raw, fixes: [], unread: [], mode: 'empty', ask: 'list', subject: 'rooms', filters: [], said: '', lead: '', rows: [], total: 0, outOf: ROOMS.length, hits: [], loose: false, next: STARTERS, withheld: null, question: false };
   if (!raw) return base;
   // 1 · typing mistakes, word by word
   const fixes: Fix[] = []; const corrected = raw.split(' ').map((w) => { if (/[:<>=+]/.test(w)) return w; const c = correct(w); if (c) { fixes.push({ from: w, to: c }); return c; } return w; }).join(' ');
   // 2 · conditions
-  const p = parse(corrected, may); const recs = allRecords(); const filters = [...p.filters]; const unread: string[] = [];
+  let inc: Incident[] | null = opts.incidents ?? null; const incidents = () => (inc ??= loadWorkspace().incidents);
+  const p = parse(corrected, may, incidents); const recs = allRecords(); const filters = [...p.filters]; const unread: string[] = [];
   const structural = filters.length > 0 || p.ask !== 'list' || !!p.deviceWord;
   const words = p.rest.split(' ').filter((w) => w && !STOP.has(w) && !FILTER_WORDS.has(w));
   if (structural) for (const w of words) {

@@ -15,6 +15,7 @@ import { ROLES } from '../access/policy.js';
 import { fullName, roomById, roomHref } from '../campus/canon.js';
 import { roomRecord } from '../campus/design.js';
 import { useWorkspace } from '../workspace/useWorkspace.js';
+import type { Incident } from '../workspace/store.js';
 import { KINDS, CARDS, USES, WHEN, MATTERS, SITES, ADDABLE, GOALS, OTHER_BUILDING, blank, catName, kindOf, cardOf, askGoals, goalLabel, propose, known, problems, handoff, siteName, givenSize, summarise, type Draft, type KindId, type CardId } from './model.js';
 import { send, saveDraft, recordById, draftOf, stateOf, policyFor, photoChecklist, readAttachment, attach, detach, alreadyOpen, standing, MAX_ATTACHMENTS, type Request, type Attachment } from './store.js';
 import { locate, recentRooms, roomsOf, type Place } from './locate.js';
@@ -62,7 +63,7 @@ function start(query: URLSearchParams, params: Record<string, string>): Start {
 /** The room a request is about: search by name, number, QR address or device code; recent rooms; or building and room, as lists. */
 function RoomPicker({ d, set, err, onNotListed, w, id }: { d: Draft; set: (p: Partial<Draft>) => void; err: (f: string) => string | null; onNotListed?: () => void; w: ReturnType<typeof useWorkspace>['w']; id: string | null }) {
   const [q, setQ] = useState(''); const hits = useMemo(() => locate(q), [q]); const recent = useMemo(() => recentRooms(), []);
-  const room = roomById(d.roomId); const facts = known(d); const dupes = useMemo(() => (room ? alreadyOpen(w, room.id, id) : []), [room, w, id]);
+  const room = roomById(d.roomId); const facts = known(d, w.incidents); const dupes = useMemo(() => (room ? alreadyOpen(w, room.id, id) : []), [room, w, id]);
   const choose = (p: Place) => { set({ roomId: p.roomId, building: roomById(p.roomId)!.building, position: p.position && d.kind === 'replace-device' ? p.position : d.position }); setQ(''); };
   return (
     <div className="ik-where" data-testid="ik-where">
@@ -266,7 +267,7 @@ export default function Wizard({ role, query, params }: PageProps) {
             <Field label="Building">{(fid) => <select id={fid} value={d.building} onChange={(e) => set({ building: e.target.value, roomId: '', position: '' })} data-testid="rq-building">{SITES.map((b) => <option key={b.key} value={b.key}>{b.name}</option>)}</select>}</Field>
             <Field label="Room" error={shown('roomId')}>{(fid, by) => <select id={fid} aria-describedby={by} aria-invalid={!!shown('roomId')} value={d.roomId} onChange={(e) => set({ roomId: e.target.value, position: '' })} data-testid="rq-room"><option value="">Choose a room</option>{roomsOf(d.building).map((r) => <option key={r.id} value={r.id}>{fullName(r)}</option>)}</select>}</Field>
           </div>
-          {facts(d)}
+          {facts(d, w.incidents)}
           {needsStep}
         </div>
         <div className="rq-form rq-b">
@@ -323,7 +324,7 @@ export default function Wizard({ role, query, params }: PageProps) {
 }
 
 /** What the records already know about the room (the one-screen request shows it at the top). */
-function facts(d: Draft) { const f = known(d); return f.length ? <div className="rq-known" data-testid="rq-known"><h3 className="rq-h">Already on record, so you are not asked</h3><dl>{f.map(([l, v, src]) => <div key={l}><dt>{l}</dt><dd>{v} <span className="ui-meta">{src}</span></dd></div>)}</dl></div> : null; }
+function facts(d: Draft, incidents: ReadonlyArray<Incident>) { const f = known(d, incidents); return f.length ? <div className="rq-known" data-testid="rq-known"><h3 className="rq-h">Already on record, so you are not asked</h3><dl>{f.map(([l, v, src]) => <div key={l}><dt>{l}</dt><dd>{v} <span className="ui-meta">{src}</span></dd></div>)}</dl></div> : null; }
 
 /** Optional extras stay folded until wanted, so a new room is four answers long; equipment requests show them at once. */
 function Extras({ optional, count, children }: { optional: boolean; count: number; children: ReactNode }) {

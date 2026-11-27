@@ -219,7 +219,8 @@ export function CampusStage(p: { buildings: Parameters<typeof campusScene>[1]; o
     return null; }, [p.lens, p.visitorPath, p.buildings]);
   if (gl) return <CampusMap tiles={tiles} testId="lite-campus-3d" direct bare pinTest={(k) => `lite-bld-${k}`} pinSub={(k) => (k === HERE.bKey ? (p.lens === 'engineer' ? 'campus core' : 'you are here') : undefined)} overlay={overlay}
     onOpen={(b) => p.onNav(`#/lite/b/${b.key}`)} onRoom={(id) => p.onNav(liteRoomHref(id))} />;
-  return <CampusScene {...p} />;
+  // without WebGL2 the drawn map colors each building from the same campusStats(workspace) bands as the pins (re-review of c7bcc0aa, LT-open-02)
+  return <CampusScene {...p} tone={p.tone ? (k) => tiles[k]?.band ?? 'none' : undefined} />;
 }
 function CampusScene({ buildings, onNav, lens, tone, plaza, visitorPath }: Parameters<typeof CampusStage>[0]) {
   const c = useCam({ yaw: -37, pitch: 42, zoom: 1 }); const href = useAerial();

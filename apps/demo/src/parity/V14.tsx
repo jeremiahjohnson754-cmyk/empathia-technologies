@@ -253,7 +253,7 @@ function Optimize({ rooms, sub }: { rooms: RoomRecord[]; sub?: string }) {
       : <Card title="Portfolio: rooms with a candidate" icon="chart" sub="Counted from the planning rules over every room; none is an improvement until a test says so"><Bars label="Candidates by building" rows={BUILDINGS.map((b) => ({ label: b.name, value: rooms.filter((x) => x.outline.building === b.key && (Math.round((x.outline.dims[0] * x.outline.dims[1]) / 30) > x.positions.filter((p) => p.cat === 'micceil').length || (Math.hypot(x.outline.dims[0] / 2, x.outline.dims[1]) > 6 && x.positions.some((p) => p.layer === 'display')))).length, tone: 'field' })).filter((x) => x.value)} /></Card>}</>);
 }
 function Operations({ rooms, sub }: { rooms: RoomRecord[]; sub?: string }) {
-  const [r, setR] = useRoom(rooms, sub, 'R-ATL-4-218'); const R = readiness(r); const fleet = rooms.map((x) => ({ x, s: readiness(x).state }));
+  const [r, setR] = useRoom(rooms, sub, 'R-ATL-4-218'); const w = useMemo(loadWorkspace, []); const R = readiness(r, w); const fleet = rooms.map((x) => ({ x, s: readiness(x, w).state }));
   const by: Record<string, number> = {}; fleet.forEach((f) => { by[f.s] = (by[f.s] || 0) + 1; });
   return (<><Head title="Operations Ready" sub="Criterion-driven handoff: every mandatory criterion satisfied or carrying an approved exception, then signed by a permitted signatory. Nothing here signs on its own." phase={13} /><Banner />
     <RoomPick rooms={rooms} value={r.outline.id} onChange={setR} view="operations" />

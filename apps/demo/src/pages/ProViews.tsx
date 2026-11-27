@@ -119,7 +119,7 @@ export function IssuesPage({ perspective, hash }: { perspective: string; hash?: 
         meta={[<OnlyChip key="o" only={only} base="#/pro/issues" />, <Chip key="m" small tone="muted">Synthetic records</Chip>, <Chip key="p" small tone="muted">Acting as {personaLabel(persona)}</Chip>]} />
       <div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="tiles">
         <StatTile label="Open room issues" value={open.length} unit={`of ${room.length}`} icon="alert" tone="pro" />
-        <StatTile label="High severity open" value={sev[0]!.value} icon="alert" tone="bad" />
+        <StatTile label="High-severity room issues" value={sev[0]!.value} icon="alert" tone="bad" />
         <StatTile label="Service jobs open" testId="pro-jobs-open" value={inc.filter((i) => isOpenRequest(i)).length} icon="ticket" tone="servicehands" href="#/servicehands" />
         <StatTile label="Recurrences" value={rec.length} icon="undo" tone="apex" href="#/v25/apex" hint="Diagnosed by APEX before another visit" />
       </div>
@@ -143,10 +143,12 @@ export function IssuesPage({ perspective, hash }: { perspective: string; hash?: 
             <List label="Rooms with the most service jobs">{repeat.map((r) => <ListRow key={r.id} title={r.name} sub={`${r.layers.map((l) => LAYER_LABEL[l]).join(', ')}`} href={`#/commissioning/room/${r.id}`} trailing={<Tag tone="warn">{r.n}</Tag>} />)}</List>
           </Card>
         </div>; })()}
-      <Card icon="building" title="Open issues by building">
-        <ul className="wk-bars">{BUILDINGS.map((b) => { const xs = open.filter((x) => x.r.outline.building === b.key); const svc = w.incidents.filter((i) => i.buildingKey === b.key && isOpenRequest(i)).length;
-          return <li key={b.key}><span>{b.short}</span><Stack label={b.name} total={Math.max(1, ...BUILDINGS.map((bb) => open.filter((x) => x.r.outline.building === bb.key).length + w.incidents.filter((i) => i.buildingKey === bb.key && isOpenRequest(i)).length))} parts={[{ key: 'h', label: 'high', value: xs.filter((x) => x.i.severity === 'High').length, tone: 'bad' }, { key: 'm', label: 'medium', value: xs.filter((x) => x.i.severity === 'Medium').length, tone: 'warn' }, { key: 'l', label: 'low', value: xs.filter((x) => x.i.severity === 'Low').length, tone: 'info' }, { key: 's', label: 'service jobs', value: svc, tone: 'servicehands' }]} /><b>{xs.length + svc}</b></li>; })}</ul>
-      </Card>
+      {/* the bars follow the page's building filter, with that building's service jobs (re-review of c7bcc0aa, MC-open-05) */}
+      {(() => { const shown = only ? BUILDINGS.filter((b) => b.key === only) : BUILDINGS; const svcOf = (k: string) => inc.filter((i) => i.buildingKey === k && isOpenRequest(i)).length;
+        return <Card icon="building" title="Open issues by building">
+        <ul className="wk-bars">{shown.map((b) => { const xs = open.filter((x) => x.r.outline.building === b.key); const svc = svcOf(b.key);
+          return <li key={b.key}><span>{b.short}</span><Stack label={b.name} total={Math.max(1, ...shown.map((bb) => open.filter((x) => x.r.outline.building === bb.key).length + svcOf(bb.key)))} parts={[{ key: 'h', label: 'high', value: xs.filter((x) => x.i.severity === 'High').length, tone: 'bad' }, { key: 'm', label: 'medium', value: xs.filter((x) => x.i.severity === 'Medium').length, tone: 'warn' }, { key: 'l', label: 'low', value: xs.filter((x) => x.i.severity === 'Low').length, tone: 'info' }, { key: 's', label: 'service jobs', value: svc, tone: 'servicehands' }]} /><b>{xs.length + svc}</b></li>; })}</ul>
+      </Card>; })()}
       <div className="wk-g2">
         <Card icon="inbox" title="Open room issues" sub="Most serious first">
           {open.length ? <List label="Open room issues">{[...open].sort((a, b) => ['High', 'Medium', 'Low'].indexOf(a.i.severity) - ['High', 'Medium', 'Low'].indexOf(b.i.severity)).map((x) => <ListRow key={`${x.r.outline.id}:${x.i.id}`} title={x.i.title} sub={`${roomName(x.r)} · ${x.i.source}`} href={roomHref(x.r.outline)} chevron trailing={<Chip small tone={x.i.severity === 'High' ? 'bad' : x.i.severity === 'Medium' ? 'warn' : 'info'}>{x.i.severity}</Chip>} />)}</List> : <EmptyState title="No room issue is open" icon="check" />}

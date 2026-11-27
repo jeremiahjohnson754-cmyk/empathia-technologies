@@ -6,6 +6,8 @@
  */
 import { ROOMS, BUILDINGS, seeded, shortName, type RoomOutline } from '../campus/canon.js';
 import { allRecords, DEMO_NOW, openIssues, type RoomRecord } from '../campus/design.js';
+import { roomIssuesOf } from '../campus/metrics.js';
+import type { Workspace } from '../workspace/store.js';
 
 export const V14_DEPLOY = { mode: 'DEMONSTRATOR', buildId: 'demo-fixture', policy: 'one policy function asked at every module boundary: fixture seeding, Instant Connect, ITSM poll, every simulator' } as const;
 export type Ev = 'LIVE_VERIFIED' | 'MEASURED' | 'OBSERVED' | 'MODELED' | 'INFERRED' | 'MANUFACTURER_SPEC' | 'SIMULATED' | 'DEMO' | 'PROPOSED' | 'NOT_AUTHORIZED' | 'NOT_MEASURED' | 'NOT_SUPPORTED' | 'BLOCKED' | 'UNVERIFIED' | 'UNKNOWN' | 'PARTIAL';
@@ -102,9 +104,10 @@ export function indicators(r: RoomRecord): Array<{ key: string; label: string; s
     return { key, label, state: r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL' ? 'pass' as const : 'not measured' as const, ev: 'OBSERVED' as Ev, note: r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL' ? `Acceptance recorded (${r.lifecycle.toLowerCase()})` : `Not accepted: ${r.lifecycle.toLowerCase().replace(/_/g, ' ')}`, what };
   });
 }
-/** Operations Ready: the criteria judged from the room record and the state they give. */
-export function readiness(r: RoomRecord) {
-  const hw = r.positions.filter((p) => !p.furniture); const amb = hw.filter((p) => p.identity === 'UNKNOWN' || p.identity === 'DECLARED').length; const issues = openIssues(r);
+/** Operations Ready: the criteria judged from the room record and the state they give. The open-incident gate reads the room's open issues
+ *  as the room page counts them (issues.open, MI-18): the record's and the live service requests in this workspace. */
+export function readiness(r: RoomRecord, w: Pick<Workspace, 'incidents'> | null) {
+  const hw = r.positions.filter((p) => !p.furniture); const amb = hw.filter((p) => p.identity === 'UNKNOWN' || p.identity === 'DECLARED').length; const issues = roomIssuesOf(r, w?.incidents ?? []);
   const built = !(r.lifecycle === 'PLANNED' || r.lifecycle === 'DESIGN_APPROVED' || r.lifecycle === 'INSTALLATION_PENDING');
   const crit: Array<{ id: string; label: string; mandatory: boolean; state: 'PASS' | 'FAIL' | 'OBSERVED_ONLY' | 'FIELD' | 'NOT_APPLICABLE'; why: string }> = [
     { id: 'inventory-identity', label: 'Inventory identity resolved', mandatory: true, state: !built ? 'NOT_APPLICABLE' : amb ? 'OBSERVED_ONLY' : 'PASS', why: !built ? 'not installed' : amb ? `${amb} position(s) not resolved` : `${hw.length} positions with a resolved identity` },

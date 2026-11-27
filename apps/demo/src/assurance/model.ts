@@ -8,6 +8,7 @@ import { allRecords, openIssues, DEMO_NOW, type RoomRecord, type Issue } from '.
 import { BUILDINGS, shortName, seeded } from '../campus/canon.js';
 import type * as S from '../workspace/store.js';
 import { isOpenRequest } from '../workspace/requests.js';
+import { roomIssuesOf } from '../campus/metrics.js';
 
 const DAY = 864e5;
 const accepted = (r: RoomRecord) => r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL';
@@ -128,12 +129,15 @@ export function scopeOf(r: RoomRecord, remedy: Remedy, incidents: S.Incident[]):
 
 // ------------------------------------------------------------------------------------------------------------ the estate
 export type Worst = 'match' | 'drift' | 'fail' | 'none';
-/** The same sort as the command center's rules (Estate.tsx asState), as of a moment: an issue opened later is not yet there. */
+/** The same sort as the Assurance state (campus/asRecord.ts asState), as of a moment: an issue or request opened later is not yet there.
+ *  Open issues are read as the room page reads them (issues.open, MI-16): a record issue that a live request of the same id overrides is
+ *  that request, and a High or mission-critical open request is a high-severity open issue. */
 export function worstAt(r: RoomRecord, incidents: S.Incident[], t: number, nowReal = Date.now()): Worst {
-  const opened = (i: Issue) => { const e = r.events.find((x) => x.type === 'issue.opened' && x.detail === i.title); return e ? Date.parse(e.at) : -Infinity; };
-  const open = openIssues(r).filter((i) => opened(i) <= t);
-  const inc = roomIncidents(r, incidents).filter((i) => DEMO_NOW - (nowReal - Date.parse(i.openedAt)) <= t);
-  if (r.counts.failed || open.some((i) => i.severity === 'High')) return 'fail';
+  const opened = (title: string) => { const e = r.events.find((x) => x.type === 'issue.opened' && x.detail === title); return e ? Date.parse(e.at) : -Infinity; };
+  const then = incidents.filter((i) => i.roomId === r.outline.id && DEMO_NOW - (nowReal - Date.parse(i.openedAt)) <= t);
+  const iss = roomIssuesOf(r, then).filter((i) => i.live || opened(i.title) <= t);
+  const open = iss.filter((i) => !i.live); const inc = iss.filter((i) => i.live);
+  if (r.counts.failed || iss.some((i) => i.severity === 'High')) return 'fail';
   const cur = current(r); if (!cur || Date.parse(cur.at) > t) return 'none';
   const p = pendingB(r); if ((p && Date.parse(p.at) <= t) || open.length || inc.length) return 'drift';
   return 'match';

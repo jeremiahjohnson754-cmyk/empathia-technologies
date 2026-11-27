@@ -11,6 +11,8 @@ import { analyzeRoom, defaultCatalog, outlineFor, templateDevices, newDevice, pr
 import type { RoomDesignInput, PlannedDevice } from '@empathia/domain-types';
 import { BUILDINGS, REGIONAL_SITES, CAMPUS_ROOMS, ARCHETYPE_NAME, fullName, roomById, type RoomOutline } from '../campus/canon.js';
 import { roomRecord, layerOf, LAYERS, type Position, type Layer } from '../campus/design.js';
+import { roomIssuesOf } from '../campus/metrics.js';
+import { load as loadWorkspace, type Incident } from '../workspace/store.js';
 
 const C = defaultCatalog;
 export type KindId = 'new-room' | 'change-room' | 'add-devices' | 'replace-device' | 'event' | 'evaluate-device' | 'improve-room' | 'problem' | 'general';
@@ -171,12 +173,13 @@ export function propose(d: Draft): Proposal | null {
     basis: [`The room as its record holds it: ${plural(rec.positions.filter((p) => !p.furniture).length, 'device')}, ${rec.lifecycle.toLowerCase().replace(/_/g, ' ')}`, ...(marked.length && d.kind !== 'replace-device' ? ['Added equipment is drawn where it can be seen; the designer decides where it goes'] : []), d.kind === 'replace-device' ? 'Tests listed are the ones that depend on that device; they are run again after the swap' : 'Tests listed are the ones the added equipment makes applicable; none has been run'] };
 }
 
-/** What the records already know about the subject of the request, so nobody is asked for it. */
-export function known(d: Draft): Array<[label: string, value: string, source: string]> {
+/** What the records already know about the subject of the request, so nobody is asked for it. The open issues are the room's as the room
+ *  page counts them (issues.open, MI-19): the record's and the live service requests (this browser's workspace when not given). */
+export function known(d: Draft, incidents?: ReadonlyArray<Incident>): Array<[label: string, value: string, source: string]> {
   const o: RoomOutline | undefined = roomById(d.roomId); const rec = o ? roomRecord(o.id) : null; if (!o || !rec) return [];
-  const open = rec.issues.filter((i) => i.state !== 'RESOLVED');
+  const open = roomIssuesOf(rec, incidents ?? loadWorkspace().incidents);
   return [['Room', fullName(o), 'campus record'], ['Kind of room', ARCHETYPE_NAME[o.archetype] || o.archetype, 'campus record'], ['Seats', String(o.capacity), 'campus record'], ['Size', `${o.dims[0]} × ${o.dims[1]} m, ceiling ${o.dims[2]} m`, rec.geometryProvenance === 'DECLARED' ? 'design record' : 'modelled'],
-    ['Equipment', plural(rec.positions.filter((p) => !p.furniture).length, 'device'), 'room record'], ['State', rec.lifecycle.toLowerCase().replace(/_/g, ' '), 'commissioning record'], ['Open issues', open.length ? open.map((i) => i.title).slice(0, 2).join('; ') : 'none', 'room record']];
+    ['Equipment', plural(rec.positions.filter((p) => !p.furniture).length, 'device'), 'room record'], ['State', rec.lifecycle.toLowerCase().replace(/_/g, ' '), 'commissioning record'], ['Open issues', open.length ? `${open.length} open: ${open.map((i) => i.title).slice(0, 2).join('; ')}${open.length > 2 ? '; …' : ''}` : 'none', 'room record and ServiceHands']];
 }
 
 /** What stops the request being sent, by field, in words a person can act on. Empty when it can go. */

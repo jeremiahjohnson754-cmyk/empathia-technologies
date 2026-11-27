@@ -106,7 +106,7 @@ function LiteHome({ role }: PageProps) {
       <div className="lt-home">
         <Card title="The campus in numbers" icon="campus" testId="lite-campus-sum">
           <div className="lt-sum"><ScoreRing value={s.score} size={96} label="Campus readiness" caption="Computed from the room records: verified tests and open issues" />
-            <div><p className="ui-muted">{LITE_TAGLINE} {BUILDINGS.length} buildings on the campus and {REGIONAL_SITES.length} fictional sites beyond it, {s.rooms} rooms — {s.plan} added by the rooms plan and {ESTATE_ROOMS.length} by the 90-room estate — {SPACES.length} workplace spaces and {GUIDES.length} guides of {chapterCount()} chapters. Synthetic, modeled, never surveyed.</p><ul className="lt-sum__chips">{[<Chip key="a" small tone="ok" icon="check">{s.accepted} accepted</Chip>, <Chip key="c" small tone="warn" icon="clock">{s.commissioning} commissioning</Chip>, <Chip key="i" small tone={s.issues ? 'warn' : 'ok'} icon="alert">{s.issues} open issue{s.issues === 1 ? '' : 's'}</Chip>, <Chip key="s" small tone="muted">Synthetic campus · seed 20261020</Chip>].map((c, i) => <li key={i}>{c}</li>)}</ul></div></div>
+            <div><p className="ui-muted">{LITE_TAGLINE} {BUILDINGS.length} buildings on the campus and {REGIONAL_SITES.length} fictional sites beyond it, {s.rooms} rooms — {s.plan} added by the rooms plan and {ESTATE_ROOMS.length} by the 90-room estate — {SPACES.length} workplace spaces and {GUIDES.length} guides of {chapterCount()} chapters. Synthetic, modeled, never surveyed.</p><ul className="lt-sum__chips">{[<Chip key="a" small tone="ok" icon="check">{s.accepted} accepted</Chip>, <Chip key="c" small tone="warn" icon="clock">{s.commissioning} commissioning</Chip>, <Chip key="i" small tone={s.issues ? 'warn' : 'ok'} icon="alert">{s.issues} open issue{s.issues === 1 ? '' : 's'} on the record</Chip>, <Chip key="s" small tone="muted">Synthetic campus · seed 20261020</Chip>].map((c, i) => <li key={i}>{c}</li>)}</ul></div></div>
         </Card>
         <div className="lt-side">
           {scouter && <Card title="Scouter in Lite" sub="Does this device suit this room?" icon="spark" tone="lite" testId="lite-scouter-card">
@@ -168,7 +168,7 @@ function RoomCard({ id, extra }: { id: string; extra?: string }) {
     <a className="lt-room" href={liteRoomHref(id)} data-testid={`lite-room-${id}`}>
       <span className="lt-room__top"><span className="lt-room__name">{o.name}</span><StatusDot state={bandOf(score)} hideLabel /></span>
       <span className="ui-meta">{shortName(o)} · {r.archetypeName} · {o.capacity} seats</span>
-      <span className="lt-room__chips"><Chip small tone={LIFE_TONE[r.lifecycle] || 'muted'}>{r.lifecycle.toLowerCase().replace(/_/g, ' ')}</Chip>{n > 0 && <Chip small tone="warn" icon="alert">{n} open</Chip>}{o.nonOperational && <Chip small tone="muted">non-operational</Chip>}{o.divisible && <Chip small tone="info">divisible</Chip>}</span>
+      <span className="lt-room__chips"><Chip small tone={LIFE_TONE[r.lifecycle] || 'muted'}>{r.lifecycle.toLowerCase().replace(/_/g, ' ')}</Chip>{n > 0 && <Chip small tone="warn" icon="alert">{n} open on the record</Chip>}{o.nonOperational && <Chip small tone="muted">non-operational</Chip>}{o.divisible && <Chip small tone="info">divisible</Chip>}</span>
       {extra && <span className="lt-room__extra">{extra}</span>}
     </a>
   );

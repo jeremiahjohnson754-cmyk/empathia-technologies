@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { PageHero, Card, StatTile, Segmented, Tag, EmptyState } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { shortName, fullName, roomHref } from '../campus/canon.js';
-import { openIssues, type RoomRecord } from '../campus/design.js';
+import { type RoomRecord } from '../campus/design.js';
 import { healthOf, RULES, plural, day, type Core, type Rec } from './core.js';
 import { useCore, honest, Crumbs, Pills, Zone, RecList, FactsTable, canEntity } from './ui.js';
 import { runsOf, runOf, hasAgent } from './agentModel.js';
@@ -34,9 +34,9 @@ export function conclusions(core: Core): Conclusion[] {
   });
   const unc = ev('Device', (d) => d.state === 'In service');
   out.push({ id: 'C-P-SUPPORT', kind: 'Portfolio', text: `${plural(unc.length, 'device')} in service have no active support agreement`, about: 'The estate', strength: 'Inferred', rule: RULES.stage, evidence: unc, href: '#/set/dev:uncovered' });
-  const layers: Record<string, number> = {}; core.rooms.forEach((r) => openIssues(r).forEach((i) => i.positions.forEach((c) => { const l = r.positions.find((p) => p.code === c)?.layer || 'unknown'; layers[l] = (layers[l] || 0) + 1; })));
+  const layers: Record<string, number> = {}; const counted = new Set<string>(); core.rooms.forEach((r) => core.openIssues(r).filter((i) => !i.live).forEach((i) => i.positions.forEach((c) => { const l = r.positions.find((p) => p.code === c)?.layer || 'unknown'; layers[l] = (layers[l] || 0) + 1; counted.add(`${r.outline.id}|${i.id}`); })));
   const top = Object.entries(layers).sort((a, b) => b[1] - a[1])[0];
-  if (top) out.push({ id: 'C-P-LAYER', kind: 'Portfolio', text: `The layer with the most open issues is ${top[0]} (${top[1]} of ${Object.values(layers).reduce((s, n) => s + n, 0)})`, about: 'The estate', strength: 'Recorded', rule: 'Each open issue counted once per device position it names, by the position’s layer.', evidence: ev('Issue', (x) => x.state !== 'RESOLVED'), href: '#/set/iss:open' });
+  if (top) out.push({ id: 'C-P-LAYER', kind: 'Portfolio', text: `The layer with the most open issues is ${top[0]} (${top[1]} of ${Object.values(layers).reduce((s, n) => s + n, 0)})`, about: 'The estate', strength: 'Recorded', rule: 'Each open issue counted once per device position it names, by the position’s layer.', evidence: ev('Issue', (x) => counted.has(`${x.roomId}|${x.id}`)), href: '#/set/iss:open' });
   core.byType.Recommendation.forEach((x) => out.push({ id: `C-R-${x.id.slice(4)}`, kind: 'Recommendation', text: x.name, about: x.sub.split(' · ')[0]!, strength: 'Inferred', rule: RULES.recommendation, evidence: [x, ...x.links.map((l) => core.get(l.id)).filter(Boolean) as Rec[]], href: x.href }));
   return out;
 }

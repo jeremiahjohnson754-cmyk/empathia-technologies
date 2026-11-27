@@ -8,7 +8,8 @@ import { useState } from 'react';
 import { PageHero, Card, StatTile, Segmented, Tag, Donut, ScoreRing, StatusDot, EmptyState, bandOf, type Segment } from '@empathia/ui';
 import type { PageProps } from '../registry.types.js';
 import { BUILDINGS, ROOMS, buildingByKey, shortName, roomById, roomHref } from '../campus/canon.js';
-import { openIssues, type RoomRecord } from '../campus/design.js';
+import { type RoomRecord } from '../campus/design.js';
+import { recordIssues } from '../campus/metrics.js';
 import { load as loadWorkspace, type Incident, type Workspace } from '../workspace/store.js';
 import { healthOf, AGREEMENTS, VENDORS, plural, day, hhmm } from './core.js';
 import { useCore, honest, Zone, FactsTable } from './ui.js';
@@ -21,7 +22,8 @@ const sevTone = (s: Item['sev']) => (s === 'Mission critical' || s === 'High' ? 
 
 export function queueOf(rooms: RoomRecord[], w: Workspace): Item[] {
   const out: Item[] = w.incidents.filter(isOpenRequest).map((i) => ({ id: i.id, title: i.title, roomId: i.roomId, building: i.buildingKey, sev: i.severity, state: i.state, at: i.openedAt, source: 'workspace' as const, inc: i }));
-  rooms.forEach((r) => openIssues(r).forEach((i) => { if (!out.some((x) => x.id === i.id)) out.push({ id: i.id, title: i.title, roomId: r.outline.id, building: r.outline.building, sev: i.severity, state: i.state, at: r.events[0]?.at || '', source: 'room record' }); }));
+  // the record half of issues.open: a record issue that a live request of the same id overrides is that request, open or closed (MI-20)
+  rooms.forEach((r) => recordIssues(r, w.incidents).forEach((i) => { if (!out.some((x) => x.id === i.id)) out.push({ id: i.id, title: i.title, roomId: r.outline.id, building: r.outline.building, sev: i.severity, state: i.state, at: r.events[0]?.at || '', source: 'room record' }); }));
   return out.sort((a, b) => SEV_RANK[a.sev] - SEV_RANK[b.sev] || Date.parse(b.at || '0') - Date.parse(a.at || '0'));
 }
 
