@@ -371,3 +371,65 @@ test('MI-21 the ledger’s "layer with the most open issues" counts the record i
     assert.deepEqual(c.evidence.map((e) => `${e.roomId}|${e.id}`).sort(), counted, `${label}: the evidence is the counted issues`);
   }
 });
+
+// MI-22 to MI-24 (the health slice, found 27 Nov ~03:55 UTC): the parity views (the Control Tower, the ledger, the sets, Ask, Compare and
+// the passport) scored rooms by their own rule (parity/core.ts healthOf: 25, 12 and 5 per open RECORD issue, up to 30 for unverified
+// tests, every room scored) under the labels Mission Control uses for campus/metrics.ts roomHealth (15, 8 and 4 per open issue, record
+// or live; failed and untested tests apart; a room whose record holds no test result is not scored). One rule now: roomHealth.
+const NODESK = { projects: [], decisions: [], funding: [] };
+const healthFixtures = () => {
+  // the seed, and the seed with a High live request opened in a room that is Healthy with nothing open (the record-only rule missed it)
+  const calm = recs.find((x) => { const h = M.roomHealth(x, w); return h.band === 'healthy' && !M.roomIssues(x, w).length && x.outline.building === 'FRG'; });
+  const hot = structuredClone(w); const src = hot.incidents.find((i) => i.id === 'ISS-0417');
+  hot.incidents.push({ ...structuredClone(src), id: 'ISS-9901', roomId: calm.outline.id, buildingKey: calm.outline.building, roomName: calm.outline.name, apexId: null, recurrenceOf: null });
+  // and a canceled request in that room: it is not open, so nothing counts it and nothing cites it (the review of 27 Nov: the ledger cited
+  // every issue record not RESOLVED, so a CANCELLED request stood as evidence of a health it does not lower)
+  const gone = structuredClone(w); gone.incidents.push({ ...structuredClone(src), id: 'ISS-9902', state: 'CANCELLED', roomId: calm.outline.id, buildingKey: calm.outline.building, roomName: calm.outline.name, apexId: null, recurrenceOf: null });
+  return [[w, 'seed'], [hot, `High request in ${calm.outline.id}`], [gone, `canceled request in ${calm.outline.id}`]];
+};
+test('MI-22 the parity core, the ledger and Ask score a room by the campus health rule, and say "not scored" where it does', () => {
+  for (const [ws, label] of healthFixtures()) {
+    const core = PC.buildCore(ws, NODESK); const cs = LG.conclusions(core);
+    for (const r of recs) {
+      const h = M.roomHealth(r, ws);
+      const c = cs.find((k) => k.id === `C-H-${r.outline.id.slice(2)}`); assert.ok(c, `${label}: ledger C-H ${r.outline.id}`);
+      assert.match(c.text, h.score == null ? /: not scored/ : new RegExp(`: ${M.BAND_LABEL[h.band]}, ${h.score} of 100$`), `${label}: ${c.text}`);
+      // the ledger cites the issues it counts: the room's open issues (issues.open), not every issue record that is not RESOLVED
+      const cited = c.evidence.filter((e) => e.type === 'Issue').map((e) => e.id).sort();
+      assert.deepEqual(cited, core.openIssues(r).map((i) => i.id).sort(), `${label}: ledger C-H ${r.outline.id} cites its open issues`);
+      // the room's passport fact says the same health
+      const fact = core.get(r.outline.id).facts.find((f) => f[0] === 'Health')?.[1];
+      assert.equal(fact, h.score == null ? 'not scored' : `${h.score} of 100`, `${label}: passport Health of ${r.outline.id}`);
+    }
+    // Ask: the score in bold is the room's (anchored, so 7 cannot pass on 77); an unscored room is said to be not scored, in a sentence
+    const ask = (id) => renderToStaticMarkup(ASK.QUESTIONS.find((q) => q.id === 'why').answer(core, CN.roomById(id)).lead);
+    const ref = CN.roomById('R-ATL-4-218'); const h = M.roomHealth(recs.find((x) => x.outline.id === ref.id), ws);
+    const why = ask(ref.id);
+    assert.match(why, new RegExp(`<b>${h.score} of 100</b> \\(${M.BAND_LABEL[h.band]}\\)`), `${label}: Ask gives Atlas 4.218 the room's health ${h.score}: ${why.slice(0, 160)}`);
+    const un = recs.find((r) => M.roomHealth(r, ws).score == null);
+    if (un) { const t = ask(un.outline.id); assert.match(t, /is <b>not scored<\/b> by the campus health rule: its record holds no test result/, `${label}: Ask on unscored ${un.outline.id}: ${t.slice(0, 200)}`); assert.doesNotMatch(t, /has a health of <b>not scored/, `${label}: ${t.slice(0, 120)}`); }
+    else assert.fail(`${label}: the seed should hold an unscored room for this check`);
+  }
+});
+// MI-23 checks the figures the Tower is given (towerFigures, a reshaping of campusStats); that the page draws them is MC-health-01 in
+// tests/browser/demo-core.test.mjs, which reads the rendered ring and tile beside Mission Control's (the review of 27 Nov: MI-23 alone
+// would pass if the page drew something else, and on the old code it failed only because towerFigures did not exist).
+test('MI-23 the Control Tower’s campus health, its sites’ health and its rooms needing attention are Mission Control’s', () => {
+  for (const [ws, label] of healthFixtures()) {
+    const core = PC.buildCore(ws, NODESK); const c = M.campusStats(ws); const t = TW.towerFigures(ws);
+    assert.deepEqual([t.campus.score, t.campus.band], [c.score, c.band], `${label}: campus health`);
+    assert.equal(t.attention, c.attention, `${label}: rooms needing attention`);
+    assert.equal(t.sites.length, CN.BUILDINGS.length, `${label}: one site per campus building`);
+    for (const s of t.sites) { const b = c.buildings.find((x) => x.b.key === s.key); assert.deepEqual([s.score, s.band], [b.score, b.band], `${label}: site ${s.key}`); }
+  }
+});
+test('MI-24 the sets behind those numbers hold the same rooms: needing attention, and the ten lowest scored', () => {
+  for (const [ws, label] of healthFixtures()) {
+    const core = PC.buildCore(ws, NODESK); const rows = per(ws);
+    const want = rows.filter((x) => M.needsAttention(x.h, x.iss)).map((x) => x.r.outline.id).sort();
+    assert.deepEqual(PS.setOf('room:monitor').items(core).map((x) => x.id).sort(), want, `${label}: room:monitor is the rooms needing attention`);
+    const worst = PS.setOf('as:worst').items(core).map((x) => M.roomHealth(recs.find((r) => r.outline.id === x.id), ws).score);
+    const low = rows.map((x) => x.h.score).filter((s) => s != null).sort((a, b) => a - b).slice(0, 10);
+    assert.deepEqual(worst, low, `${label}: as:worst is the ten lowest scored rooms, lowest first`);
+  }
+});

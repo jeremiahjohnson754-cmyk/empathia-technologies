@@ -175,6 +175,17 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   const labels = await t.page.locator('[data-testid="pro-issues"] [data-testid="tiles"] .kit-tile__label').allTextContents();
   await t.go('#/search/projects', 1200); const cap = (await t.page.locator('[data-testid="sp-map"] .stage__cap').first().textContent().catch(() => '')) || '';
   ok('MC-open-05', 'Issue Intelligence for one building shows its bar only, with the building page\'s count; the High tile names room issues; the Search Party map names its six buildings', bars.length === 1 && bars[0][0] === 'Meridian' && bars[0][1] === mer && labels.includes('High-severity room issues') && !labels.includes('High severity open') && /six campus buildings/.test(cap), JSON.stringify({ mer, bars, labels, cap: cap.slice(-160) }));
+  // MC-health-01 (the health slice): the Control Tower's "Campus health" and "Rooms needing attention" are Mission Control's. The Tower
+  // used its own rule (parity/core.ts healthOf: 25/12/5 per open record issue, every room scored, "attention" below 85) under the same
+  // labels: on the seed its ring read 97 and its tile 7 (the six campus buildings; its room:monitor set held 8, every room below 85)
+  // where Mission Control reads 99 and 18.
+  const ringOf = async () => { const f = t.page.locator('figure.kit-ring:has(svg[aria-label^="Campus health"])').first(); const a = (await f.locator('svg[aria-label^="Campus health"]').getAttribute('aria-label').catch(() => '')) || ''; return { n: parseInt((a.match(/: (\d+) out of/) || [])[1] || '', 10), state: await f.getAttribute('data-state').catch(() => null) }; };
+  const attOf = async () => parseInt(await t.page.locator('.kit-tile:has(.kit-tile__label:text-is("Rooms needing attention")) .kit-tile__value').first().textContent().catch(() => '') || '', 10);
+  // read as the Product Architect: the service manager's Home is a role page without the campus ring and tiles
+  await setRole(t, 'architect'); await t.page.reload(); await t.page.waitForTimeout(600);
+  await t.go('#/home', 1800); const mcH = await ringOf(); const mcA = await attOf();
+  await t.go('#/control/tower', 1800); const twH = await ringOf(); const twA = await attOf();
+  ok('MC-health-01', 'the Control Tower\'s campus health and rooms needing attention are Mission Control\'s (one health rule)', Number.isFinite(mcH.n) && twH.n === mcH.n && twH.state === mcH.state && Number.isFinite(mcA) && twA === mcA, JSON.stringify({ mcH, twH, mcA, twA }));
   await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);
