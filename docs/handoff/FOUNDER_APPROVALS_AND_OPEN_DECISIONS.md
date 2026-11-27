@@ -10,6 +10,12 @@ Decisions the evidence could not settle, and what the founder decided. Decided i
 | E3-D4 | Staging | Isolated staging previews may be created and updated after a successful exact-commit regression. The canonical Next sites are not updated without approval. Keep pushing commits and PRs | See BUILD_STATUS / the execution board for the day's regression and preview state | DECIDED |
 | E3-D5 | GitHub CI on `main` | Prepare the repair on a controlled branch, keep Founder Studio private, do not merge to `main` without approval | See the execution board | DECIDED, IN PROGRESS |
 
+## Decided 27 Nov 2026 (founder, 17:28 CT)
+
+| Id | Question | Founder's decision | What follows from it | Status |
+|---|---|---|---|---|
+| E3-D6 | When do the canonical Next sites (empathia-website-next, empathia-demo-next, deployed from `phase3/legendary-experience`) get this sprint's work? | "Let's work to commit all the work to the -next websites at the end when everything's done and tested to be good" | At the end of the sprint's work, and only on a commit whose exact-commit regression passed and which the staging previews have shown live: merge `v18/continuation` into `phase3/legendary-experience`, verify the two Next sites serve that commit, live-check them, record it. Production (`main`) is not part of this decision and stays unchanged without separate approval | DECIDED, AT THE END |
+
 ## Decided 26 Nov 2026 (founder, 04:30 and 04:50 CT)
 
 | Id | Question | Founder's decision | What is done on it | Status |
