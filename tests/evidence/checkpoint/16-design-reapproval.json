@@ -2,7 +2,7 @@
  "step": 16,
  "title": "The design change is approved by an engineer who is not its author; the drawings are regenerated and re-approved",
  "room": "R-PLN-0004",
- "at": "2026-11-27T01:30:43.381Z",
+ "at": "2026-11-27T12:41:31.878Z",
  "assertions": [
   {
    "id": "C-63",
@@ -37,9 +37,9 @@
     "status": 403,
     "detail": "designer may not approve a design revision (needs room.design.approve)",
     "code": "forbidden",
-    "correlationId": "900829bb-09dd-4d4d-8efc-6decf77fe70f"
+    "correlationId": "4982ae9a-6694-4c09-99c6-d124bb507812"
    },
-   "correlationId": "900829bb-09dd-4d4d-8efc-6decf77fe70f"
+   "correlationId": "4982ae9a-6694-4c09-99c6-d124bb507812"
   },
   {
    "method": "POST",
@@ -54,7 +54,7 @@
     "openIssues": 2,
     "planChanged": false
    },
-   "correlationId": "d8dae902-f599-4ab6-b4b6-4d4f824d31a8"
+   "correlationId": "962315f0-3a8f-4c38-b89c-af3d20f2ddb0"
   },
   {
    "method": "POST",
@@ -70,9 +70,9 @@
     "reasons": [
      "revision 3 is not newer than the approved revision 3"
     ],
-    "correlationId": "e5d03707-f1e7-4d90-a2cf-6ada15e56757"
+    "correlationId": "31d5757c-cb9c-4e84-8f85-2d8a3f03f193"
    },
-   "correlationId": "e5d03707-f1e7-4d90-a2cf-6ada15e56757"
+   "correlationId": "31d5757c-cb9c-4e84-8f85-2d8a3f03f193"
   },
   {
    "method": "POST",
@@ -118,7 +118,7 @@
      }
     ]
    },
-   "correlationId": "752dea45-a0a0-463a-8369-f2e667c670e3"
+   "correlationId": "70c9ccdc-305a-4035-ac26-e54ac0d81566"
   },
   {
    "method": "POST",
@@ -130,7 +130,7 @@
     "state": "APPROVED",
     "revNo": 2
    },
-   "correlationId": "453ae66d-4cc4-4144-ac84-cb1f7608b56b"
+   "correlationId": "c53f9550-3c9d-4e7f-ad83-a7198e60ee6b"
   },
   {
    "method": "POST",
@@ -142,7 +142,7 @@
     "state": "APPROVED",
     "revNo": 2
    },
-   "correlationId": "7cab80cf-bef1-49e1-aa3f-a5f7854b8812"
+   "correlationId": "7cc9caa3-ca22-43a6-9924-7fc5de30c4b4"
   },
   {
    "method": "POST",
@@ -154,7 +154,7 @@
     "state": "APPROVED",
     "revNo": 2
    },
-   "correlationId": "765681cd-17f9-402f-a42f-3fa625da063a"
+   "correlationId": "37d6ceb4-cb45-4531-b865-cfb764e4c171"
   },
   {
    "method": "POST",
@@ -166,7 +166,7 @@
     "state": "APPROVED",
     "revNo": 2
    },
-   "correlationId": "6cc2c8c3-ff73-472c-bc93-587f994d31d6"
+   "correlationId": "3909a5f2-dce7-4521-8f0d-00343e33a4d2"
   },
   {
    "method": "POST",
@@ -178,7 +178,7 @@
     "state": "APPROVED",
     "revNo": 2
    },
-   "correlationId": "a7256d94-d0bb-4e2d-b8b5-b122ca4a4032"
+   "correlationId": "01df5a19-7d0e-4fdf-83bb-b1aae8d72820"
   },
   {
    "method": "POST",
@@ -190,7 +190,7 @@
     "state": "APPROVED",
     "revNo": 2
    },
-   "correlationId": "a4bf9606-5472-4e13-9399-85245586a4d9"
+   "correlationId": "317f1dc6-0ff7-4fe8-8b52-c4a76d306a76"
   },
   {
    "method": "POST",
@@ -202,7 +202,7 @@
     "state": "APPROVED",
     "revNo": 2
    },
-   "correlationId": "2246a11f-2452-4b03-9ed4-5764b500c586"
+   "correlationId": "8c52832c-0dd8-4345-a300-df3519e76ff2"
   },
   {
    "method": "GET",
@@ -212,7 +212,7 @@
    "body": {
     "omitted": "large body; see the step that records it in full"
    },
-   "correlationId": "17038bab-4cbf-41c2-b7df-9c21ff770635"
+   "correlationId": "e152de5d-4162-48de-9244-d8ff50bb878d"
   }
  ]
 }
