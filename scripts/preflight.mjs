@@ -26,7 +26,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { select, gateErrors, judge, rel } from './lib/impact.mjs';
+import { select, gateErrors, judge, rel, overall } from './lib/impact.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (k) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').slice(k.length + 3);
@@ -79,19 +79,20 @@ const step = (label, args, timeoutMs, mustRun = false) => { const t0 = Date.now(
   const line = `${v.ok ? 'PASS' : 'FAIL'}  ${label}  (${s} s)  ${p.error ? `stopped: ${p.error.message}` : `${v.why ? `${v.why}: ` : ''}${summary.slice(0, 140)}`}`; console.log(line); report.push(`- ${line}`);
   for (const l of [...text.split('\n').filter((x) => /^FAIL\b|^not ok/.test(x)).slice(0, 8), ...v.notRun.map((x) => `${x} (a suite step 2 may not leave unrun)`)]) { console.log(`      ${l.slice(0, 220)}`); report.push(`    - ${l.slice(0, 220)}`); }
   return v.ok; };
-let ok = true;
+let ok = true; const results = [];
 if (!from) {
-  ok = step('step 2: build of every app, the Founder Studio included, with the type checks', ['scripts/build.mjs', '--studio'], 1800000);
-  if (ok) ok = step('step 2: every non-browser suite (unit, security, integration, the dependency boundaries)', ['scripts/test.mjs'], 3600000);
+  ok = step('step 2: build of every app, the Founder Studio included, with the type checks', ['scripts/build.mjs', '--studio'], 1800000); results.push(ok);
+  if (ok) { ok = step('step 2: every non-browser suite (unit, security, integration, the dependency boundaries)', ['scripts/test.mjs'], 3600000); results.push(ok); }
   else console.log('the build failed: nothing else is run');
   if (ok) { state.step2 = true; state.built = demoBuilt(); save(); }
 }
 if (ok && r.chosen.length) { report.push('', `## Step 3: ${r.chosen.length} suites the change reaches`, '');
   for (const c of (from ? r.chosen.slice(r.chosen.findIndex((x) => x.name === from)) : r.chosen)) {
     if (running()) { console.log('a regression has started: the preflight stops (a regression runs alone)'); report.push('- stopped: a regression started'); ok = false; break; }
-    ok = step(`step 3: ${c.name}`, ['scripts/test.mjs', '--browser', '--studio', `--files=${c.file}`], 3600000, true);
-    if (ok) { state.passed.push(c.file); save(); }
-    if (!ok && !has('--keep-going')) { const left = r.chosen.length - r.chosen.indexOf(c) - 1; if (left) { console.log(`stopped at the first failure; ${left} suites not run (--keep-going runs them all)`); report.push(`- stopped at the first failure; ${left} not run`); } break; } } }
+    const passed = step(`step 3: ${c.name}`, ['scripts/test.mjs', '--browser', '--studio', `--files=${c.file}`], 3600000, true); results.push(passed);
+    if (passed) { state.passed.push(c.file); save(); }
+    if (!passed && !has('--keep-going')) { ok = false; const left = r.chosen.length - r.chosen.indexOf(c) - 1; if (left) { console.log(`stopped at the first failure; ${left} suites not run (--keep-going runs them all)`); report.push(`- stopped at the first failure; ${left} not run`); } break; } } }
 const file = path.join(out, `${commit.slice(0, 8)}-${stamp}.md`); fs.writeFileSync(file, report.join('\n') + '\n');
-console.log(`\npreflight ${ok ? 'PASSED' : 'FAILED'} — ${rel(root, file)}${ok ? '\nnext: step 4, an independent review of the change and of its tests; then step 5, the exact-commit regression' : ''}`);
-process.exit(ok ? 0 : 1);
+const verdict = ok && overall(results);
+console.log(`\npreflight ${verdict ? 'PASSED' : 'FAILED'} — ${rel(root, file)}${verdict ? '\nnext: step 4, an independent review of the change and of its tests; then step 5, the exact-commit regression' : ''}`);
+process.exit(verdict ? 0 : 1);

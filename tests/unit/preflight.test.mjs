@@ -14,7 +14,7 @@
 //   node --test tests/unit/preflight.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { matches, addressesIn, select, registered, gateErrors, judge, ACROSS, MAY_NOT_RUN } from '../../scripts/lib/impact.mjs';
+import { matches, addressesIn, select, registered, gateErrors, judge, ACROSS, MAY_NOT_RUN, overall } from '../../scripts/lib/impact.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const scratch = path.join(repo, '.local/preflight/tmp-unit');
@@ -98,4 +98,15 @@ test('PRE-07 the gate, the verdicts, and what the preflight may do', () => {
   assert.match(s, /--files=\$\{c\.file\}`\], 3600000, true\)/, 'step 3 runs each suite by the regression’s runner, and a suite that runs nothing fails');
   for (const why of ['st.commit !== commit', 'st.tree !== treeHash', 'st.base !== base', 'st.list !== listKey', '!st.step2', 'st.built !== demoBuilt()', '!st.passed.includes(f)']) assert.ok(s.includes(why), `--from refuses without that proof: ${why}`);
   assert.match(s, /scripts\\\/release\\\/regression\\\.mjs/, 'it does not run beside either regression runner');
+});
+
+// PRE-08 (27 Nov 2026): with --keep-going, step 3 kept only the LAST suite's result as the verdict, so the preflight of b9eec2a9 printed
+// "preflight PASSED" with demo-campus FAILED in its own report (a later suite passed). The verdict is every step's result together.
+test('PRE-08 the verdict is every step together: a later pass never hides an earlier failure', () => {
+  assert.equal(overall([true, false, true]), false, 'a failure in the middle'); assert.equal(overall([false]), false); assert.equal(overall([true, true]), true);
+  assert.equal(overall([]), false, 'nothing ran is not a pass');
+  const s = fs.readFileSync(path.join(repo, 'scripts/preflight.mjs'), 'utf8').replace(/^\s*(\/\/|\*).*$/gm, '');
+  assert.match(s, /results\.push\(passed\)/, 'each step-3 suite records its own result');
+  assert.match(s, /const verdict = ok && overall\(results\)/, 'the printed verdict and the exit code read every result');
+  assert.match(s, /preflight \$\{verdict \? 'PASSED' : 'FAILED'\}/, 'PASSED is printed only from that verdict'); assert.match(s, /process\.exit\(verdict \? 0 : 1\)/);
 });

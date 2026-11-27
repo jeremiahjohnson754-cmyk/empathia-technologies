@@ -118,6 +118,8 @@ export function gateErrors(root) {
 }
 /** a step's verdict from its exit and output: a run that exited 0 still fails if it left a suite NOT RUN that it may not, or (step 3) ran
  *  nothing at all (the second review: --files matching nothing prints PASS 0 · FAIL 0 and exits 0) */
+/** The preflight's verdict: every step's result together; nothing run is not a pass (PRE-08: a later pass never hides a failure). */
+export const overall = (results) => results.length > 0 && results.every(Boolean);
 export function judge(text, status, { mustRun = false } = {}) {
   const lines = String(text).split('\n'); const notRun = lines.filter((l) => /^NOT_RUN\s/.test(l)).filter((l) => !MAY_NOT_RUN.test(l));
   const counts = [...lines].reverse().map((l) => /PASS (\d+) · FAIL (\d+)/.exec(l)).find(Boolean); const passed = counts ? Number(counts[1]) : 0;
