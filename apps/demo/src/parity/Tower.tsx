@@ -5,13 +5,14 @@
  * live feed; every figure is counted from the room records and the ServiceHands workspace of this browser.
  */
 import { useState } from 'react';
-import { PageHero, Card, StatTile, Segmented, Tag, Donut, ScoreRing, StatusDot, EmptyState, bandOf, type Segment } from '@empathia/ui';
+import { PageHero, Card, StatTile, Segmented, Tag, Donut, StatusDot, EmptyState, type Segment } from '@empathia/ui';
+import { ScoreRing } from '../spatial/parts.js';
 import type { PageProps } from '../registry.types.js';
 import { BUILDINGS, ROOMS, buildingByKey, shortName, roomById, roomHref } from '../campus/canon.js';
 import { type RoomRecord } from '../campus/design.js';
-import { recordIssues } from '../campus/metrics.js';
+import { recordIssues, campusStats, type Band } from '../campus/metrics.js';
 import { load as loadWorkspace, type Incident, type Workspace } from '../workspace/store.js';
-import { healthOf, AGREEMENTS, VENDORS, plural, day, hhmm } from './core.js';
+import { AGREEMENTS, VENDORS, plural, day, hhmm } from './core.js';
 import { useCore, honest, Zone, FactsTable } from './ui.js';
 import { isOpenRequest, isFixedRequest } from '../workspace/requests.js';
 
@@ -27,29 +28,36 @@ export function queueOf(rooms: RoomRecord[], w: Workspace): Item[] {
   return out.sort((a, b) => SEV_RANK[a.sev] - SEV_RANK[b.sev] || Date.parse(b.at || '0') - Date.parse(a.at || '0'));
 }
 
+/** The Control Tower's health figures are Mission Control's (campusStats): the same labels give the same numbers (MI-23, the health slice). */
+export function towerFigures(w: Workspace) {
+  const c = campusStats(w);
+  return { campus: { score: c.score, band: c.band }, attention: c.attention, rooms: c.rooms, scored: c.scored,
+    sites: BUILDINGS.map((b) => { const s = c.buildings.find((x) => x.b.key === b.key); return { key: b.key, score: s ? s.score : null, band: (s ? s.band : 'none') as Band }; }) };
+}
+
 export default function TowerPage({ query }: PageProps) {
   const core = useCore(); const w = loadWorkspace();
   const [view, setView] = useState<View>((['executive', 'incident', 'operations'] as const).find((v) => v === query.get('view')) || 'executive');
   const q = queueOf(core.rooms, w); const [pick, setPick] = useState<string | null>(q[0]?.id || null);
-  const sites = BUILDINGS.map((b) => { const rs = core.rooms.filter((r) => r.outline.building === b.key); const items = q.filter((x) => x.building === b.key); const h = rs.length ? Math.round(rs.reduce((s, r) => s + healthOf(r), 0) / rs.length) : null; return { b, rs, items, h, cx: rs.filter((r) => r.lifecycle === 'COMMISSIONING' || r.lifecycle === 'INSTALLED_UNVERIFIED').length }; });
-  const campusH = Math.round(core.rooms.reduce((s, r) => s + healthOf(r), 0) / core.rooms.length);
+  const fig = towerFigures(w);
+  const sites = BUILDINGS.map((b) => { const rs = core.rooms.filter((r) => r.outline.building === b.key); const items = q.filter((x) => x.building === b.key); const f = fig.sites.find((s) => s.key === b.key)!; return { b, rs, items, h: f.score, band: f.band, cx: rs.filter((r) => r.lifecycle === 'COMMISSIONING' || r.lifecycle === 'INSTALLED_UNVERIFIED').length }; });
   return (
     <div className="pa pa-tower" data-native="" data-testid="parity-tower">
       <PageHero eyebrow="Mission Control · Control Tower" title="Operations Control Tower" product="mission-control" icon="grid"
         lede="One room to watch the campus: where it is healthy, what is open, who has it and how it escalated. Built for the operations-center room archetype; every figure is counted from this demonstration’s records."
         meta={honest(['Non-operational demonstration', 'warn'], ['Synthetic sites and incidents', 'warn'], ['Not a live feed', 'muted'])}
-        aside={<ScoreRing value={campusH} label="Campus health" caption={`${ROOMS.length} rooms, by the demonstration’s rule`} />} />
+        aside={<ScoreRing score={fig.campus.score} band={fig.campus.band} label="Campus health" caption={`average of ${fig.scored} of ${fig.rooms} rooms, by Mission Control’s rule`} />} />
       <p className="pa-tower__banner" role="note"><StatusDot state="modelled" label="Non-operational" /> No live data reaches this page and nothing here dispatches anyone. Sites are the six buildings of the fictional Northstar campus, drawn as tiles — not a map of real places.</p>
       <Segmented label="View" value={view} onChange={setView} options={[{ value: 'executive', label: 'Executive', icon: 'chart' }, { value: 'incident', label: 'Incident', icon: 'alert', count: q.length }, { value: 'operations', label: 'Operations', icon: 'wrench' }]} />
-      {view === 'executive' ? <Executive q={q} sites={sites} w={w} /> : view === 'incident' ? <IncidentView q={q} pick={pick} setPick={setPick} w={w} rooms={core.rooms} /> : <Operations w={w} sites={sites} />}
+      {view === 'executive' ? <Executive q={q} sites={sites} w={w} attention={fig.attention} rooms={fig.rooms} /> : view === 'incident' ? <IncidentView q={q} pick={pick} setPick={setPick} w={w} rooms={core.rooms} /> : <Operations w={w} sites={sites} />}
     </div>
   );
 }
-type Site = { b: typeof BUILDINGS[number]; rs: RoomRecord[]; items: Item[]; h: number | null; cx: number };
+type Site = { b: typeof BUILDINGS[number]; rs: RoomRecord[]; items: Item[]; h: number | null; band: Band; cx: number };
 
 function SiteGrid({ sites }: { sites: Site[] }) {
   return (
-    <ul className="pa-sites" aria-label="Site status">{sites.map(({ b, rs, items, h, cx }) => { const st = items.some((i) => sevTone(i.sev) === 'bad') ? 'action' : items.length || (h !== null && h < 85) ? 'monitor' : rs.length ? 'healthy' : 'offline'; return (
+    <ul className="pa-sites" aria-label="Site status">{sites.map(({ b, rs, items, h, band, cx }) => { const st = band === 'none' ? 'offline' : band; return (
       <li key={b.key}><a className={`pa-site kit-s--${st === 'action' ? 'bad' : st === 'monitor' ? 'warn' : st === 'healthy' ? 'ok' : 'muted'}`} href={`#/campus/${b.key}`} data-testid="tower-site">
         <h3>{b.name}<StatusDot state={st as never} hideLabel /></h3>
         <p className="pa-kv"><span><b>{rs.length}</b> rooms</span><span><b>{items.length}</b> open</span><span><b>{cx}</b> in commissioning</span><span>health <b>{h ?? '—'}</b></span></p>
@@ -58,7 +66,7 @@ function SiteGrid({ sites }: { sites: Site[] }) {
   );
 }
 
-function Executive({ q, sites, w }: { q: Item[]; sites: Site[]; w: Workspace }) {
+function Executive({ q, sites, w, attention, rooms }: { q: Item[]; sites: Site[]; w: Workspace; attention: number; rooms: number }) {
   const seg: Segment[] = (['Mission critical', 'High', 'Medium', 'Standard', 'Low'] as const).map((s) => ({ key: s, label: s, value: q.filter((x) => x.sev === s).length, tone: sevTone(s) as Segment['tone'] })).filter((s) => s.value);
   const resolved = w.incidents.filter(isFixedRequest);
   const ttr = resolved.filter((i) => i.restoredAt).map((i) => (Date.parse(i.restoredAt!) - Date.parse(i.openedAt)) / 36e5);
@@ -69,10 +77,10 @@ function Executive({ q, sites, w }: { q: Item[]; sites: Site[]; w: Workspace }) 
         <StatTile label="Sites watched" value={sites.filter((s) => s.rs.length).length} icon="building" hint="buildings of the fictional campus" />
         <StatTile label="Open incidents and issues" value={q.length} icon="alert" hint={`${q.filter((x) => sevTone(x.sev) === 'bad').length} high or mission critical`} href="#/control/tower?view=incident" />
         <StatTile label="Mean time to restore" value={ttr.length ? Math.round(ttr.reduce((s, n) => s + n, 0) / ttr.length) : null} unit=" h" icon="clock" hint={`${plural(resolved.length, 'resolved incident')} in the workspace`} />
-        <StatTile label="Rooms needing attention" value={sites.reduce((s, x) => s + x.rs.filter((r) => bandOf(healthOf(r)) !== 'healthy').length, 0)} icon="room" hint="below 85 by the health rule" href="#/set/room:monitor" />
+        <StatTile label="Rooms needing attention" value={attention} unit={` of ${rooms}`} icon="room" hint="something open, at risk or below Healthy (88): Mission Control’s count" href="#/set/room:monitor" />
       </div>
       <div className="pa-split">
-        <Card title="Site status" icon="map" sub="Color from the open items and room health of each building">
+        <Card title="Site status" icon="map" sub="Color: each building’s health band, as on the campus map (never Healthy while a room is at risk)">
           <SiteGrid sites={sites} />
         </Card>
         <Card title="Open by severity" icon="chart" sub={worst ? `Most open: ${worst.b.name} (${worst.items.length})` : 'Nothing open'}>

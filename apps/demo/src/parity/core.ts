@@ -11,7 +11,7 @@ import { allRecords, roomRecord, DEMO_NOW, openIssues, type RoomRecord, type Pos
 import type { Workspace } from '../workspace/store.js';
 import type { DecisionState, Project } from '../decisions/store.js';
 import { isOpenRequest } from '../workspace/requests.js';
-import { roomIssuesOf, type OpenIssue } from '../campus/metrics.js';
+import { roomIssuesOf, roomHealth, type OpenIssue, type Health } from '../campus/metrics.js';
 
 export type Prov = 'KNOWN' | 'INFERRED' | 'SIMULATED';
 export const PROV_TEXT: Record<Prov, string> = {
@@ -103,7 +103,7 @@ export type Stage = 'Planned' | 'Commissioning' | 'In service' | 'Support' | 'En
 export const RULES = {
   stage: 'Planned: the room is not yet installed. Commissioning: the room is in commissioning. Support: in service in a building and layer an active support agreement covers. In service: in service with no agreement covering it. End: removed from service (an installation with a removal date).',
   recommendation: 'One recommendation per open issue: drift and layout changes → recommission; a design deficiency → design change; a field fault → repair. Engineer approval required; no cost is invented — a figure appears only where a project record holds one.',
-  health: 'Room health: 100 minus 25 per open high-severity issue, 12 per medium, 5 per low, and the share of applicable tests not yet verified (up to 30). A rule of this demonstration, shown wherever the score is.',
+  health: 'Room health, the rule Mission Control and the campus pages use: 100, less 15 per open High issue (on the record or a live service request), 8 per Medium, 4 per Low, up to 30 for failed tests and up to 20 for tests not yet run. A room whose record holds no test result is not scored. Bands: 88 or more Healthy, 75 to 87 Monitor, below 75 Action required.',
 } as const;
 export const coveredBy = (building: string, layer: string) => AGREEMENTS.find((a) => a.status === 'Active' && a.buildings.includes(building) && a.layers.includes(layer)) || null;
 export function stageOf(r: RoomRecord, p: Position): Stage {
@@ -111,12 +111,8 @@ export function stageOf(r: RoomRecord, p: Position): Stage {
   if (r.lifecycle === 'COMMISSIONING' || r.lifecycle === 'INSTALLED_UNVERIFIED') return 'Commissioning';
   return coveredBy(r.outline.building, p.layer) ? 'Support' : 'In service';
 }
-export function healthOf(r: RoomRecord): number {
-  const w = { High: 25, Medium: 12, Low: 5 } as const;
-  const iss = openIssues(r).reduce((s, i) => s + w[i.severity], 0);
-  const gap = r.counts.applicable ? Math.round((1 - r.counts.verified / r.counts.applicable) * 30) : 30;
-  return Math.max(0, 100 - iss - gap);
-}
+/** A room's health as text: the score and band of the campus rule, or "not scored" (the health slice: one rule, campus/metrics.ts roomHealth). */
+export const healthText = (h: Health) => (h.score == null ? 'not scored' : `${h.score} of 100`);
 
 // ------------------------------------------------------------------ the scheduler's sessions (generated for this demonstration; never a real calendar)
 export interface Session { from: number; to: number; title: string }
@@ -133,7 +129,7 @@ export const hhmm = (t: number) => new Date(t).toISOString().slice(11, 16);
 
 // ------------------------------------------------------------------ the model
 /** openIssues: the room's open issues (issues.open: the record's and the workspace's, one per id), what a parity view counts as "Open issues". */
-export interface Core { all: Rec[]; byType: Record<EntityType, Rec[]>; get: (id: string) => Rec | undefined; rooms: RoomRecord[]; openIssues: (r: RoomRecord) => OpenIssue[] }
+export interface Core { all: Rec[]; byType: Record<EntityType, Rec[]>; get: (id: string) => Rec | undefined; rooms: RoomRecord[]; openIssues: (r: RoomRecord) => OpenIssue[]; health: (r: RoomRecord) => Health }
 const lifeTone = (l: string): Rec['tone'] => (l === 'OPERATIONAL' || l === 'ACCEPTED' ? 'ok' : l === 'COMMISSIONING' ? 'warn' : 'info');
 const sevTone = (s: string): Rec['tone'] => (s === 'High' || s === 'Mission critical' ? 'bad' : s === 'Medium' ? 'warn' : 'info');
 
@@ -144,7 +140,7 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
   for (const r of rooms) {
     const o = r.outline; const hw = r.positions.filter((p) => !p.furniture);
     add({ type: 'Room', id: o.id, name: fullName(o), sub: `${buildingByKey(o.building)?.name} · floor ${o.floor} · ${r.archetypeName} · ${o.capacity} seats`, roomId: o.id, building: o.building, state: r.lifecycle, tone: lifeTone(r.lifecycle),
-      facts: [['Lifecycle', r.lifecycle], ['Archetype', r.archetypeName], ['Seats', String(o.capacity)], ['Devices', String(hw.length)], ['Tests verified', `${r.counts.verified} of ${r.counts.applicable}`], ['Open issues', String(roomIssuesOf(r, w.incidents).length)], ['Health (rule)', `${healthOf(r)} of 100`], ['Geometry', r.geometryProvenance]],
+      facts: [['Lifecycle', r.lifecycle], ['Archetype', r.archetypeName], ['Seats', String(o.capacity)], ['Devices', String(hw.length)], ['Tests verified', `${r.counts.verified} of ${r.counts.applicable}`], ['Open issues', String(roomIssuesOf(r, w.incidents).length)], ['Health', healthText(roomHealth(r, w))], ['Geometry', r.geometryProvenance]],
       prov: 'KNOWN', source: o.source, href: roomHref(o), links: [{ type: 'Design', id: `DS-${o.id.slice(2)}`, rel: 'designed by' }] });
     for (const p of hw) {
       const st = stageOf(r, p); const inst = r.installations.find((i) => i.position === p.code && !i.removedAt);
@@ -221,6 +217,6 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
 
   const byType = Object.fromEntries(TYPE_KEYS.map((t) => [t, [] as Rec[]])) as Record<EntityType, Rec[]>;
   const ix = new Map<string, Rec>(); for (const r of out) { byType[r.type].push(r); if (!ix.has(r.id)) ix.set(r.id, r); }
-  return { all: out, byType, get: (id) => ix.get(id), rooms, openIssues: (r) => roomIssuesOf(r, w.incidents) };
+  return { all: out, byType, get: (id) => ix.get(id), rooms, openIssues: (r) => roomIssuesOf(r, w.incidents), health: (r) => roomHealth(r, w) };
 }
 export { DEMO_NOW, DAY, day, roomRecord, ROOMS, BUILDINGS, roomById, shortName, fullName, roomHref };

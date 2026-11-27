@@ -3,7 +3,8 @@
  * the authority of each family is V2.5.3's own (12-authz.js azArea for #/set: dev → set.devices, iss → set.issues, as → assurance.*, …).
  */
 import type { Authority } from '../registry.types.js';
-import { healthOf, type Core, type Rec } from './core.js';
+import { type Core, type Rec } from './core.js';
+import { needsAttention } from '../campus/metrics.js';
 
 export interface SetDef { key: string; title: string; how: string; items: (c: Core) => Rec[] }
 export interface Family { key: string; label: string; blurb: string; sets: SetDef[] }
@@ -20,7 +21,7 @@ export const FAMILIES: Family[] = [
   { key: 'room', label: 'Rooms', blurb: 'Rooms behind a number', sets: [
     { key: 'room:all', title: 'Every room', how: 'The thirty rooms of the campus records.', items: (c) => c.byType.Room },
     { key: 'room:issues', title: 'Rooms with an open issue', how: 'At least one open issue: on the record and not resolved, or a live service request that is open (one per id).', items: (c) => room(c, (id) => c.openIssues(rec(c, id)).length > 0) },
-    { key: 'room:monitor', title: 'Rooms below a health of 85', how: 'The health rule of this demonstration (open issues and unverified tests) gives under 85 of 100.', items: (c) => room(c, (id) => healthOf(rec(c, id)) < 85) },
+    { key: 'room:monitor', title: 'Rooms needing attention', how: 'Mission Control’s rooms needing attention: rooms at risk, rooms with any open issue (on the record or a live service request) and rooms scoring below 88 by the campus health rule.', items: (c) => room(c, (id) => { const r = rec(c, id); return needsAttention(c.health(r), c.openIssues(r)); }) },
     { key: 'room:commissioning', title: 'Rooms in commissioning', how: 'Lifecycle COMMISSIONING or INSTALLED_UNVERIFIED: installed, not yet accepted.', items: (c) => c.byType.Room.filter((r) => r.state === 'COMMISSIONING' || r.state === 'INSTALLED_UNVERIFIED') },
   ] },
   { key: 'iss', label: 'Issues', blurb: 'Issues behind a number', sets: [
@@ -38,7 +39,7 @@ export const FAMILIES: Family[] = [
   ] },
   { key: 'as', label: 'Assurance', blurb: 'Assurance results behind a number', sets: [
     { key: 'as:ready', title: 'Rooms ready for use', how: 'Lifecycle ACCEPTED or OPERATIONAL.', items: (c) => c.byType.Room.filter((r) => r.state === 'ACCEPTED' || r.state === 'OPERATIONAL') },
-    { key: 'as:worst', title: 'The ten rooms with the lowest health', how: 'The health rule, lowest first.', items: (c) => [...c.byType.Room].sort((a, b) => healthOf(rec(c, a.id)) - healthOf(rec(c, b.id))).slice(0, 10) },
+    { key: 'as:worst', title: 'The ten rooms with the lowest health', how: 'The campus health rule, lowest first; a room the record cannot score is left out.', items: (c) => c.byType.Room.map((r) => ({ r, s: c.health(rec(c, r.id)).score })).filter((x): x is { r: Rec; s: number } => x.s != null).sort((a, b) => a.s - b.s || a.r.id.localeCompare(b.r.id)).slice(0, 10).map((x) => x.r) },
     { key: 'as:baselines', title: 'Rooms with a commissioning baseline', how: 'At least one baseline version on record.', items: (c) => room(c, (id) => rec(c, id).baselines.length > 0) },
   ] },
 ];

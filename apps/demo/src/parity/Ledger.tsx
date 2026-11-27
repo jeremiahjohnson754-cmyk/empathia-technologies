@@ -9,7 +9,8 @@ import { PageHero, Card, StatTile, Segmented, Tag, EmptyState } from '@empathia/
 import type { PageProps } from '../registry.types.js';
 import { shortName, fullName, roomHref } from '../campus/canon.js';
 import { type RoomRecord } from '../campus/design.js';
-import { healthOf, RULES, plural, day, type Core, type Rec } from './core.js';
+import { RULES, plural, day, type Core, type Rec } from './core.js';
+import { BAND_LABEL } from '../campus/metrics.js';
 import { useCore, honest, Crumbs, Pills, Zone, RecList, FactsTable, canEntity } from './ui.js';
 import { runsOf, runOf, hasAgent } from './agentModel.js';
 import { outcomeTag } from './Agent.js';
@@ -17,13 +18,14 @@ import { NotAPlace } from '../shell/trail.js';
 
 type Strength = 'Verified' | 'Recorded' | 'Derived' | 'Inferred';
 export interface Conclusion { id: string; kind: 'Room health' | 'Commissioning' | 'Assurance' | 'Portfolio' | 'Recommendation'; text: string; about: string; strength: Strength; rule: string; evidence: Rec[]; contradiction?: string; signedBy?: string; href?: string }
-const band = (n: number) => (n >= 85 ? 'healthy' : n >= 70 ? 'monitor' : 'action needed');
 
 export function conclusions(core: Core): Conclusion[] {
   const out: Conclusion[] = []; const ev = (type: Rec['type'], pred: (r: Rec) => boolean) => core.byType[type].filter(pred);
   core.rooms.forEach((r: RoomRecord) => {
-    const o = r.outline; const id = o.id.slice(2); const h = healthOf(r); const room = ev('Room', (x) => x.id === o.id);
-    out.push({ id: `C-H-${id}`, kind: 'Room health', text: `Health of ${shortName(o)}: ${band(h)}, ${h} of 100`, about: fullName(o), strength: 'Derived', rule: RULES.health, evidence: [...room, ...ev('Issue', (x) => x.roomId === o.id && x.state !== 'RESOLVED')], href: roomHref(o) });
+    const o = r.outline; const id = o.id.slice(2); const h = core.health(r); const room = ev('Room', (x) => x.id === o.id);
+    // the issues the health counts (issues.open), and only those, stand as its evidence: not a canceled request, not a record issue a closed request overrides
+    const counted = new Set(core.openIssues(r).map((i) => i.id));
+    out.push({ id: `C-H-${id}`, kind: 'Room health', text: h.score == null ? `Health of ${shortName(o)}: not scored, the record holds no test result` : `Health of ${shortName(o)}: ${BAND_LABEL[h.band]}, ${h.score} of 100`, about: fullName(o), strength: 'Derived', rule: RULES.health, evidence: [...room, ...ev('Issue', (x) => x.roomId === o.id && counted.has(x.id))], href: roomHref(o) });
     if (r.lifecycle === 'ACCEPTED' || r.lifecycle === 'OPERATIONAL') {
       const cur = r.baselines.find((b) => b.state === 'CURRENT');
       const contra = r.counts.applicable && r.counts.verified < r.counts.applicable ? `The record says ${r.lifecycle}, yet ${r.counts.applicable - r.counts.verified} of ${r.counts.applicable} applicable tests have no verified result: the two cannot both be right. The engine would not reach ${r.lifecycle} on this evidence.` : undefined;

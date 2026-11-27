@@ -51,10 +51,10 @@ export function roomIssuesOf(r: RoomRecord, incidents: ReadonlyArray<Incident>):
   const rank = { High: 0, Medium: 1, Low: 2 } as const;
   return out.sort((a, b) => rank[a.severity] - rank[b.severity] || a.id.localeCompare(b.id));
 }
-export function roomIssues(r: RoomRecord, w?: Workspace | null): OpenIssue[] { return roomIssuesOf(r, w?.incidents || []); }
+export function roomIssues(r: RoomRecord, w?: Pick<Workspace, 'incidents'> | null): OpenIssue[] { return roomIssuesOf(r, w?.incidents || []); }
 
 export interface Health { score: number | null; band: Band; parts: Array<{ label: string; points: number }>; why: string }
-export function roomHealth(r: RoomRecord, w?: Workspace | null): Health {
+export function roomHealth(r: RoomRecord, w?: Pick<Workspace, 'incidents'> | null): Health {
   const c = r.counts; const recorded = c.applicable - c.notTested;
   if (!c.applicable || recorded <= 0) return { score: null, band: 'none', parts: [], why: 'The record holds no test result, so the room is not scored.' };
   const iss = roomIssues(r, w);

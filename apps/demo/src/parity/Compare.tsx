@@ -12,7 +12,7 @@ import { allows } from '../access/policy.js';
 import { shortName, fullName, roomById } from '../campus/canon.js';
 import { LAYERS, type RoomRecord } from '../campus/design.js';
 import { load as loadDecisions } from '../decisions/store.js';
-import { healthOf, fmtUsd, day, STANDARDS, type Core } from './core.js';
+import { healthText, fmtUsd, day, STANDARDS, type Core } from './core.js';
 import { useCore, honest, Crumbs, Pills } from './ui.js';
 
 type Row = [string, ReactNode, ReactNode, string?];
@@ -72,7 +72,7 @@ function rowsFor(core: Core, k: string, a: string, b: string): Row[] {
   if (k === 'rooms') { const A = rr(core, a), B = rr(core, b); if (!A || !B) return []; const m = (r: RoomRecord): Array<[string, unknown]> => [
     ['Building', roomById(r.outline.id) && shortName(r.outline).split(' ')[0]], ['Archetype', r.archetypeName], ['Seats', r.outline.capacity], ['Width × length × ceiling', `${r.outline.dims.join(' × ')} m`],
     ...LAYERS.filter((l) => l.key !== 'furniture').map((l) => [`${l.label} devices`, r.positions.filter((p) => p.layer === l.key).length] as [string, unknown]),
-    ['Lifecycle', r.lifecycle], ['Applicable tests', r.counts.applicable], ['Verified tests', r.counts.verified], ['Open issues', core.openIssues(r).length], ['Health (rule)', `${healthOf(r)} of 100`], ['Baseline', r.baselines.find((x) => x.state === 'CURRENT') ? `v${r.baselines.find((x) => x.state === 'CURRENT')!.version}` : '—']];
+    ['Lifecycle', r.lifecycle], ['Applicable tests', r.counts.applicable], ['Verified tests', r.counts.verified], ['Open issues', core.openIssues(r).length], ['Health', healthText(core.health(r))], ['Baseline', r.baselines.find((x) => x.state === 'CURRENT') ? `v${r.baselines.find((x) => x.state === 'CURRENT')!.version}` : '—']];
     const ma = m(A), mb = m(B); return ma.map(([l, v], i) => [l, s(v), s(mb[i]![1])]); }
   if (k === 'devices') { const A = core.byType.Device.find((d) => d.id === a), B = core.byType.Device.find((d) => d.id === b); if (!A || !B) return []; const keys = [...new Set([...A.facts.map((f) => f[0]), ...B.facts.map((f) => f[0])])]; return [['Room', s(A.name.split(' · ')[1]), s(B.name.split(' · ')[1])], ...keys.map((key) => [key, s(A.facts.find((f) => f[0] === key)?.[1]), s(B.facts.find((f) => f[0] === key)?.[1])] as Row)]; }
   if (k === 'standards') { const A = core.byType.Standard.find((x) => x.id === a), B = core.byType.Standard.find((x) => x.id === b); if (!A || !B) return []; return A.facts.map(([l, v], i) => [l, v, s(B.facts[i]?.[1])]); }
