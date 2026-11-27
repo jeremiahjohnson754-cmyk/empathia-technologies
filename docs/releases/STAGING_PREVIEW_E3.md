@@ -31,10 +31,47 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 26 Nov 2026 10:29 | `6e0d7877` | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `a173355b`) | dep-dc40jk59el5s73ark5qg, replaced | dep-dc40jk59el5s73ark5n0, replaced |
 | 26 Nov 2026 16:20 | `68ea38ea` (served as `018302f7`) | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `018302f7`) | dep-dc45nk8ae00c73d8moug, replaced by dep-dc45no1aekrs73chenj0, replaced | dep-dc45nk8ae00c73d8mor0, replaced by dep-dc45no28ghsc73fbcn20, replaced |
 | 26 Nov 2026 21:37 | `4231f6a2` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `b915d54a`) | dep-dc4achrbc2fs739id8p0, replaced | dep-dc4achrbc2fs739id8lg, replaced |
-| 27 Nov 2026 02:51 | `e2c9b213` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `fec0ac5e`) | dep-dc4evu3bc2fs739n32lg, live | dep-dc4evu3bc2fs739n32i0, live |
+| 27 Nov 2026 02:51 | `e2c9b213` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `fec0ac5e`) | dep-dc4evu3bc2fs739n32lg, replaced | dep-dc4evu3bc2fs739n32i0, replaced |
+| 27 Nov 2026 14:07 | `6d07d39b` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `414542f3`) | dep-dc4ose3rjlhs7384do80, live | dep-dc4ose3rjlhs7384dobg, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `6d07d39b`, 27 Nov 2026 14:15 UTC
+
+Only the tested commit was pushed to the preview branch; its evidence commit `414542f3` stays on `v18/continuation`. The website deploy
+went live at 14:06:52 UTC and the demo deploy at 14:07:02 UTC; both then served manifests named `6d07d39b…`. None of the 1,596 files
+in the demo manifest was served stale. The live check passed **43 of 43** on the two previews; the six founder portrait files served
+are byte for byte the recorded renditions, as before.
+
+New for this build, over `e2c9b213`:
+- Metric integrity (#320, issues.open): every page that counts a room's open issues counts what the room page and the campus pages
+  count (the record issues not resolved and not overridden by a live request with the same id, plus the open live requests, one per
+  id): the estate export and dossier, the brief, the Search Party set and map lens, Ask, the ledger, Pro Issue Intelligence, the
+  commissioning room's Service stage, the Assurance state and its four-week trend, the search sentences, V1.4's "No open incident"
+  gate, Intake's "Already on record" and the Control Tower queue (commits `e7f9930d`, `d2fdc908`, `c12f0b96`, `c7bcc0aa`, `81c1ac68`,
+  `b9eec2a9`, each round reviewed independently). Lite says "on the record" where it counts the room record only, and its drawn campus
+  map takes the same colors as its 3D pins.
+- The website's Experiences page carries the film "Empathia in our modern world" (supplied by the founder on 27 Nov), with a
+  qualifier always above the player: a depiction of where Empathia is going, not a recording of a deployment (`89002eff`, `6d07d39b`).
+- The preflight's verdict reads every step (`701e5479`, `6d07d39b`).
+
+On this preview: `/experiences` shows the film section ("One platform, wherever people are") at 1440 px and at 390 px, with controls,
+no autoplay, the poster and the 720p rendition served (`video/mp4`, `image/webp`), all 46 caption cues, the qualifier, no sideways
+scroll and no page errors. Read as the service manager, Mission Control, Pro Issue Intelligence, ServiceHands and the V2.5.3 control
+room all say **2** open, and ISS-0417's passport still reads OPEN with the note that the room record says RESOLVED. Atlas 4.218 shows
+**5** open issues on its room page and in the Assurance and Pro drill-downs alike.
+
+Corrections to earlier records:
+- `d2fdc908`'s message said Lite counts open issues from the room records only. Lite's start-page map pins read the workspace too
+  (the founder's direction of 19 Nov); its building list is record-only. Corrected in `c7bcc0aa`.
+- `81c1ac68`'s message listed MI-14 among the tests that fail on `c7bcc0aa`. It passes there (the dossier line was already right);
+  MI-16 to MI-21 and UN-02 fail there.
+- The preflight of `b9eec2a9` printed "PASSED" with `demo-campus` FAILED in its own report (only the last suite's result counted with
+  --keep-going). Its true verdict was FAILED. `demo-campus` then passed 102/102 on the same build with the machine otherwise idle; the
+  failure came while a type check ran in another worktree during the preflight, against the rule that a preflight runs alone.
+- The regression on `6d07d39b` started before the independent review of its last commit (`6d07d39b`, the review's corrections)
+  returned; the review approved it (every fix confirmed) while parts 1 to 3 ran.
 
 ## Live check of `e2c9b213`, 27 Nov 2026 02:53 UTC
 
