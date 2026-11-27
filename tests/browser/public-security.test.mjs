@@ -74,7 +74,10 @@ try {
     const bad = [];
     for (const val of VALUES) {
       const t = await open(demo.base, ROUTES[0], { seed: { ...Object.fromEntries(KEYS.map((k) => [k, val])), 'empathia.demo.perspective': 'architect' }, session: Object.fromEntries(SKEYS.map((k) => [k, val])) });
-      for (const r of ROUTES) { await t.page.evaluate((x) => { location.hash = x; }, r); await t.page.waitForTimeout(350); if (!(await t.page.locator('main h1').count())) bad.push(`${val} ${r}: no page`); }
+      for (const r of ROUTES) { await t.page.evaluate((x) => { location.hash = x; }, r); // a page must still appear. Changed 27 Nov: it used to be counted after a fixed 350 ms, which failed twice on #/tours (preflight of
+        // 613a7a4b, regression part 4 of 00c60a0e) with no page error; a repro put #/tours' heading at 350 ms in 24 of 24 runs on an idle
+        // machine and missing at 350 ms in 3 of 18 under load, each appearing within 4.5 s. The route now has up to 8 s to show its heading.
+        const shown = await t.page.locator('main h1').first().waitFor({ state: 'attached', timeout: 8000 }).then(() => true, () => false); if (!shown) bad.push(`${val} ${r}: no page`); }
       const polluted = await t.page.evaluate(() => ({}).polluted !== undefined);
       if (polluted) bad.push(`${val}: prototype polluted`); const pe = t.errs.filter((e) => /pageerror/.test(e)); if (pe.length) bad.push(`${val}: ${pe[0].slice(0, 100)}`); if (t.dialogs()) bad.push(`${val}: dialog`);
       await t.close();
