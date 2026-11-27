@@ -166,6 +166,15 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   // the commissioning record is not open to the Service Manager (access/v253.ts, commissioning.room), so the commissioning engineer reads it
   await setRole(t, 'cxeng'); await t.page.reload(); await t.page.waitForTimeout(600); await t.go('#/commissioning/room/R-ATL-7-112', 1800); const svc = (await t.page.locator('[data-testid="cx-spine"] li', { hasText: 'Service' }).first().textContent().catch(() => '')) || '';
   ok('MC-open-04', 'Pro Issue Intelligence\'s buildings, the Search Party "Open issues" lens and a room\'s Service stage count a shared id once, as the campus pages do', ii === oi.atl && sp === map && /1 open request · 0 open issues on the record/.test(svc), JSON.stringify({ ii, sp, map, six, svc: svc.slice(0, 160), atl: oi.atl }));
+  // MC-open-05 (re-review of c7bcc0aa, findings 4 and 6): Issue Intelligence filtered to one building shows that building's bar only, and
+  // its count is the building page's (the bars kept every building, with the service jobs of all of them, so ?building=MER read Atlas 2);
+  // the High tile says it counts room issues, which is what its donut counts; the Search Party map says it holds the six campus buildings.
+  await setRole(t, 'svcmgr'); await t.page.reload(); await t.page.waitForTimeout(600);
+  const mer = await tileOf('#/campus/MER'); await t.go('#/pro/issues?building=MER', 1800);
+  const bars = await t.page.locator('[data-testid="pro-issues"] .wk-bars li').evaluateAll((ls) => ls.map((l) => [l.querySelector(':scope > span')?.textContent, parseInt(l.querySelector(':scope > b')?.textContent || '', 10)]));
+  const labels = await t.page.locator('[data-testid="pro-issues"] [data-testid="tiles"] .kit-tile__label').allTextContents();
+  await t.go('#/search/projects', 1200); const cap = (await t.page.locator('[data-testid="sp-map"] .stage__cap').first().textContent().catch(() => '')) || '';
+  ok('MC-open-05', 'Issue Intelligence for one building shows its bar only, with the building page\'s count; the High tile names room issues; the Search Party map names its six buildings', bars.length === 1 && bars[0][0] === 'Meridian' && bars[0][1] === mer && labels.includes('High-severity room issues') && !labels.includes('High severity open') && /six campus buildings/.test(cap), JSON.stringify({ mer, bars, labels, cap: cap.slice(-160) }));
   await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);

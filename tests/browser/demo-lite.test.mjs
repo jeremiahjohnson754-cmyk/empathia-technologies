@@ -297,4 +297,26 @@ for (const scheme of SCHEMES) {
   ok(`LT-${scheme}-M2`, 'no page error, no request left the page', !t.errs.length && !t.ext.length, [...t.errs, ...t.ext].slice(0, 3).join(' | '));
   await t.close();
 }
+// LT-open-issues (27 Nov 2026, re-review of c7bcc0aa, finding 3): Lite counts a room's open issues from its record (its own readiness
+// rule), and says "on the record" wherever it gives that count, since the room page also counts the live service requests (Atlas 4.218:
+// 1 on the record, 2 on the room page). The start page's map colors the buildings as the start page counts them in either renderer: the
+// drawn map (no WebGL2) took Lite's record-only tone while its caption said the start page's rule.
+{ const t = await open([1440, 900], 'light', { hash: '#/lite' }); await t.page.evaluate(() => { localStorage.setItem('empathia.demo.perspective', 'syseng'); localStorage.setItem('empathia.lite.lens', 'engineer'); });
+  await t.page.reload(); await t.page.waitForSelector('[data-testid="lite-campus-3d"]', { timeout: 20000 }).catch(() => {}); await t.page.waitForTimeout(1200);
+  const chips = (await t.page.locator('.lt-sum__chips').first().innerText().catch(() => '')) || '';
+  const pins = await t.page.evaluate(() => Object.fromEntries([...document.querySelectorAll('[data-testid^="lite-bld-"]')].map((b) => [b.getAttribute('data-testid').slice(9), (b.className.match(/emap__pin--(\w+)/) || [])[1] || null]).filter(([, v]) => v)));
+  await t.go('#/lite/room/R-ATL-4-218', 1800); const about = (await t.page.locator('[data-testid="lite-room-about"]').first().innerText().catch(() => '')) || '';
+  await t.page.getByTestId('lite-rtab-records').click().catch(() => {}); await t.page.waitForTimeout(300); const rec = (await t.page.getByTestId('lite-rt-records').innerText().catch(() => '')) || '';
+  ok('LT-open-01', 'Lite says "on the record" wherever it counts open issues from the room record: the campus summary, the room, and its Records tab', /\d+ open issues? on the record/.test(chips) && /1 open issue on the record/.test(about) && /Open issues on the record/.test(rec), JSON.stringify({ chips: chips.slice(0, 120), about: (about.match(/[^\n]*open issue[^\n]*/) || [''])[0].slice(0, 120), rec: (rec.match(/Open issues[^\n]*/) || [''])[0].slice(0, 120) }));
+  await t.close();
+  const d = await open([1440, 900], 'light', { hash: '#/home' }); await d.page.addInitScript(() => { const g = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (k, ...a) { return k === 'webgl2' ? null : g.call(this, k, ...a); }; });
+  await d.page.evaluate(() => { localStorage.setItem('empathia.demo.perspective', 'syseng'); localStorage.setItem('empathia.lite.lens', 'engineer'); location.hash = '#/lite'; });
+  // a reload, so the page starts again with WebGL2 off (a change of the address's hash alone keeps the page, and the 3D map, as they were)
+  await d.page.reload(); await d.page.waitForSelector('[data-testid^="l3-bld-label-"]', { timeout: 20000 }).catch(() => {}); await d.page.waitForTimeout(800);
+  const dots = await d.page.evaluate(() => Object.fromEntries([...document.querySelectorAll('[data-testid^="l3-bld-label-"]')].map((b) => [b.getAttribute('data-testid').slice(13), (b.querySelector('.l3-dot')?.className.match(/l3-dot--(\w+)/) || [])[1] || null])));
+  const keys = Object.keys(pins);
+  ok('LT-open-02', 'the drawn campus map (no WebGL2) colors each building as the 3D map does: the start page\'s health and open issues', keys.length === 6 && keys.every((k) => dots[k] === pins[k]), JSON.stringify({ pins, dots }));
+  ok('LT-open-03', 'no page error, no request left the page', !d.errs.length && !d.ext.length, [...d.errs, ...d.ext].slice(0, 3).join(' | '));
+  await d.close(); }
+
 await done();

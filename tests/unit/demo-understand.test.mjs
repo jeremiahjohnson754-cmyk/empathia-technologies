@@ -6,9 +6,9 @@ import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
 const out = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'demo-understand-')), 'm.mjs');
-await esbuild.build({ stdin: { contents: `export * as U from './search/understand.ts'; export * as D from './campus/design.ts'; export * as K from './campus/canon.ts'; export * as F from './search/find.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
+await esbuild.build({ stdin: { contents: `export * as U from './search/understand.ts'; export * as D from './campus/design.ts'; export * as K from './campus/canon.ts'; export * as F from './search/find.ts'; export * as M from './campus/metrics.ts'; export * as W from './workspace/store.ts';`, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' },
   bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', nodePaths: [path.join(repo, 'node_modules')], alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') } });
-const { U, D, K, F } = await import(pathToFileURL(out).href);
+const { U, D, K, F, M, W } = await import(pathToFileURL(out).href);
 const recs = D.allRecords(); const n = (f) => recs.filter(f).length; const has = (r, cat) => r.positions.some((p) => p.cat === cat);
 const labels = (r) => r.filters.map((f) => f.label);
 
@@ -28,7 +28,9 @@ test('UN-02 each kind of condition, alone, against the records', () => {
     ['20+ seats', (x) => x.outline.capacity >= 20], ['rooms between 10 and 20 seats', (x) => x.outline.capacity >= 10 && x.outline.capacity <= 20], ['rooms for 40 people', (x) => x.outline.capacity >= 40],
     ['rooms with a projector', (x) => has(x, 'projector')], ['rooms without a projector', (x) => !has(x, 'projector')], ['rooms with a tv', (x) => has(x, 'display')], ['rooms with a video wall', (x) => has(x, 'ledwall')],
     ['rooms with microphones', (x) => ['micceil', 'mictable', 'micwireless'].some((c) => has(x, c))], ['rooms with a touch panel and a camera', (x) => has(x, 'touch') && has(x, 'camera')], ['rooms with a tv and speakers without a projector', (x) => has(x, 'display') && has(x, 'speaker') && !has(x, 'projector')],
-    ['rooms with open issues', (x) => D.openIssues(x).length > 0], ['rooms with no issues', (x) => D.openIssues(x).length === 0],
+    // open issues as the room page counts them (issues.open; re-review of c7bcc0aa, 27 Nov 2026): the record's and the live service
+    // requests, one per id, so Atlas 4.220 (ISS-0421) is a room with an open issue. Without a browser the workspace is the seed.
+    ['rooms with open issues', (x) => M.roomIssues(x, W.seed()).length > 0], ['rooms with no issues', (x) => M.roomIssues(x, W.seed()).length === 0],
     ['rooms with audio problems', (x) => D.openIssues(x).some((i) => i.positions.some((p) => x.positions.find((q) => q.code === p)?.layer === 'audio'))],
   ];
   for (const [q, f] of cases) { const r = U.understand(q); assert.equal(r.mode, 'answer', q); assert.equal(r.total, n(f), `${q} → ${labels(r).join(', ')}`); assert.equal(r.unread.length, 0, `${q}: unread ${r.unread}`); }
