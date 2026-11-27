@@ -81,6 +81,10 @@ await press(p, 'c'); const y3r = (await at(p)).yaw; const y3 = ((y3r % (2 * Math
     const wrong = p.locator('[data-testid=cl-circuits] .cl-opt-btn[data-right=false]').first(); if (i === 0) { await wrong.click(); wrongShown = /Not quite/.test(await p.getByTestId('cl-why').innerText()); }
     await p.locator('[data-testid=cl-circuits] .cl-opt-btn[data-right=true]').click(); await p.getByTestId('cl-next').click();
   }
+  // the page publishes the game's state (data-quest, data-xp) every 100 ms from its frame loop, so the solved stage reaches the DOM up to a
+  // publish later than the lit board (changed 27 Nov: read at once, it raced that publish in the regression of b8ce6d71, "bench 25").
+  // Wait for the stage to leave the bench, up to 3 s; the assertions below are unchanged.
+  await p.waitForFunction(() => document.querySelector('[data-testid=campus-life]')?.getAttribute('data-quest') !== 'bench', null, { timeout: 3000 }).catch(() => {});
   const lit = await p.locator('.cl-board').getAttribute('data-lit'); const solvedS = await at(p); await p.getByTestId('cl-close').click(); await p.getByTestId('cl-canvas').focus();
   ok('CL-08', 'the classroom interaction: at the bench in SCI-110, three circuits; a wrong answer explains itself; three right answers light the board and earn XP (+150, +20 for each right first time)', reachB === 'bench' && dark === 'false' && wrongShown && lit === 'true' && solvedS.stage === 'solved' && solvedS.xp === 25 + 150 + 40, `${reachB} · ${dark}→${lit} · ${solvedS.stage} ${solvedS.xp}`);
 
