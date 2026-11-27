@@ -32,10 +32,33 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 26 Nov 2026 16:20 | `68ea38ea` (served as `018302f7`) | PASS 305 · FAIL 0 · NOT_RUN 2 (evidence in `018302f7`) | dep-dc45nk8ae00c73d8moug, replaced by dep-dc45no1aekrs73chenj0, replaced | dep-dc45nk8ae00c73d8mor0, replaced by dep-dc45no28ghsc73fbcn20, replaced |
 | 26 Nov 2026 21:37 | `4231f6a2` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `b915d54a`) | dep-dc4achrbc2fs739id8p0, replaced | dep-dc4achrbc2fs739id8lg, replaced |
 | 27 Nov 2026 02:51 | `e2c9b213` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `fec0ac5e`) | dep-dc4evu3bc2fs739n32lg, replaced | dep-dc4evu3bc2fs739n32i0, replaced |
-| 27 Nov 2026 14:07 | `6d07d39b` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `414542f3`) | dep-dc4ose3rjlhs7384do80, live | dep-dc4ose3rjlhs7384dobg, live |
+| 27 Nov 2026 14:07 | `6d07d39b` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `414542f3`) | dep-dc4ose3rjlhs7384do80, replaced | dep-dc4ose3rjlhs7384dobg, replaced |
+| 27 Nov 2026 23:05 | `f39825ce` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `569554ea`) | dep-dc50pc8jo6nc73ca85j0, live | dep-dc50pc8jo6nc73ca85fg, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `f39825ce`, 27 Nov 2026 23:15 UTC
+
+Only the tested commit was pushed to the preview branch; its evidence commit `569554ea` stays on `v18/continuation`. Both deploys
+were live by 23:07 UTC and both served manifests named `f39825ce…`; none of the 1,596 files in the demo manifest was served stale.
+The live check passed **43 of 43** on the two previews, and the Experiences film plays as before (46 cues, no sideways scroll).
+
+New for this build, over `6d07d39b`:
+- One health rule (#331, the #320 health slice; `7b5117a8` tests, `00c60a0e` fix): the Control Tower, ledger, sets, Ask, Compare and
+  the record passport score rooms by the campus rule Mission Control uses. Live, as the Product Architect: Mission Control and the
+  Control Tower both read "Campus health: 99 out of 100, Monitor" and "Rooms needing attention 18 of 140"; the ledger reads "Health of
+  Atlas 4.218: Monitor, 77 of 100" and "Atlas 4.220: not scored, the record holds no test result"; the room:monitor set is "Rooms
+  needing attention" with 18 rooms. Before, the Tower read 97 (Healthy) and 7.
+- Two test waits, each with its reason in the test and its commit: PS-04 gives a route up to 8 s to show its heading (`b8ce6d71`),
+  CL-08 waits for Campus Life's published stage (`f39825ce`). Both had failed one regression each on a timing read.
+- The Pro parity register (#319), docs only (`e4d84047`).
+
+Corrections:
+- `00c60a0e`'s message says the Tower's tile reads "18 of 30" on the seed. It reads 18 of 140: the denominator is every campus room,
+  as on Mission Control.
+- Two regressions before this one are not of record: `00c60a0e` failed PS-04 in part 4 and was stopped by the two-hour limit in part 5;
+  `b8ce6d71` failed CL-08 in part 2 and was not continued. Their partial evidence was discarded, not committed.
 
 ## Live check of `6d07d39b`, 27 Nov 2026 14:15 UTC
 
