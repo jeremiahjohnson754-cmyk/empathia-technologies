@@ -490,9 +490,26 @@ test('MI-28 Asset Intelligence\'s refresh exposure is the refresh plan\'s: units
     const units = RP.unitsInService(as, jobs).filter((u) => !only || u.building === only);
     const x = RP.refreshExposure(as, jobs, only, 3);
     assert.equal(x.inService, units.length, `${label} ${only || 'campus'}: units in service`);
-    assert.equal(x.past, units.filter((u) => u.overdue).length, `${label} ${only || 'campus'}: past their planned life`);
+    assert.equal(x.past, units.filter((u) => u.overdue).length, `${label} ${only || 'campus'}: due in ${RP.NOW_YEAR} or earlier`);
     assert.equal(x.dueBy, RP.strategy(units, 3, as).reduce((n, r) => n + r.units, 0), `${label} ${only || 'campus'}: due by ${RP.NOW_YEAR + 3}, as the refresh plan's tile`);
     assert.deepEqual(x.years.map((y) => y.units), RP.strategy(units, 3, as).map((r) => r.units), `${label} ${only || 'campus'}: units per year, as the refresh plan's chart`);
   }
   assert.ok(RP.refreshExposure(custom, jobs, null, 3).past > RP.refreshExposure(a, jobs, null, 3).past, 'a shorter planned life puts more units past it');
+});
+
+// MI-29 (the review of 17d52076): the planner's assumptions survive a reload exactly as the page lets them be set, and a damaged entry
+// falls back to the starting value field by field instead of breaking the plan or Asset Intelligence.
+test('MI-29 the refresh assumptions: kept as set, damaged entries ignored field by field, one key', () => {
+  const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
+  try {
+    const d = RP.defaultAssumptions();
+    const set = { ...d, life: { ...d.life, display: 1, camera: 30 }, cost: { display: 2_000_000_000, camera: 0 }, serviceSignal: 20 };
+    RP.saveAssumptions(set); assert.ok(mem.has(RP.ASSUMPTIONS_KEY), 'saved under the one key');
+    assert.deepEqual(RP.loadAssumptions(), set, 'every value the page lets a planner set comes back (life 1 to 30, any cost, signal 1 to 20)');
+    for (const raw of ['{', 'null', '[]', '"x"', '42', '{"life":null}', '{"life":[3]}']) { mem.set(RP.ASSUMPTIONS_KEY, raw); assert.deepEqual(RP.loadAssumptions(), d, `${raw}: the starting assumptions`); }
+    mem.set(RP.ASSUMPTIONS_KEY, JSON.stringify({ life: { display: -1, camera: 'x', speaker: 0, bar: 1e9, projector: 4 }, cost: { display: -5, camera: 'y' }, serviceSignal: 99, currency: 'dollars' }));
+    const x = RP.loadAssumptions();
+    assert.deepEqual(x.life, { ...d.life, projector: 4 }, 'only the sensible life (projector 4) is kept'); assert.deepEqual(x.cost, {}, 'no damaged cost'); assert.equal(x.serviceSignal, d.serviceSignal); assert.equal(x.currency, d.currency);
+    mem.set(RP.ASSUMPTIONS_KEY, '{"__proto__":{"polluted":1},"life":{"__proto__":{"x":1}}}'); RP.loadAssumptions(); assert.equal({}.polluted, undefined, 'no prototype pollution'); assert.equal({}.x, undefined);
+  } finally { delete globalThis.localStorage; }
 });

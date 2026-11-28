@@ -189,7 +189,7 @@
    "currentLocation": "none (firmware appears only as a change kind in assurance/model.ts)",
    "currentRoute": "none",
    "dataDependencies": "a firmware baseline per device standard and an installed version per device",
-   "currentBehavior": "Not shown.",
+   "currentBehavior": "Not shown: no validated firmware baseline exists for any device class; a firmware version an installation team records shows on the unit's asset page.",
    "originalBehavior": "A compliance posture: on baseline, behind baseline, not validated.",
    "navigationHave": "",
    "navigationMissing": "posture to the devices behind",
@@ -201,7 +201,7 @@
    "recommendedAction": "add device standards with baselines and installed versions to the synthetic model, then the posture with its records",
    "acceptance": "three states reconcile with the devices; \"not validated\" never counts as on baseline",
    "tests": "none",
-   "implementationStatus": "not started",
+   "implementationStatus": "blocked by data: needs device standards with firmware baselines (PRO-EN-01)",
    "classification": "Missing"
   },
   {
@@ -210,10 +210,10 @@
    "capability": "Lifecycle status by support end date",
    "source": "V2.5.3 live1 HTML (private reference, never committed), character offset 3,642,743",
    "originalRoute": "#/pro/assets",
-   "currentLocation": "none on this page; RefreshPlan.tsx plans by service life",
-   "currentRoute": "#/pro/refresh",
+   "currentLocation": "pages/ProViews.tsx AssetsPage, \"Refresh exposure\" (refresh/plan.ts refreshExposure)",
+   "currentRoute": "#/pro/assets",
    "dataDependencies": "support end dates per model",
-   "currentBehavior": "Refresh planning works from service life assumptions; no support end date exists.",
+   "currentBehavior": "Units in service and those due in the current year or earlier, by planned service life (a planning assumption), from the refresh plan's figures and the planner's assumptions.",
    "originalBehavior": "Active, support ending, end of support, by support end date.",
    "navigationHave": "",
    "navigationMissing": "status to devices",
@@ -224,9 +224,9 @@
    "performance": "light",
    "recommendedAction": "add support end dates to device standards; show status and link to refresh planning",
    "acceptance": "every device falls in exactly one state",
-   "tests": "none",
-   "implementationStatus": "not started",
-   "classification": "Missing"
+   "tests": "MI-28, MI-29, MC-life-01",
+   "implementationStatus": "built 28 Nov (by planned life; no support end date exists)",
+   "classification": "Simplified"
   },
   {
    "id": "PRO-AS-05",
@@ -234,10 +234,10 @@
    "capability": "Refresh forecast: devices by the year support ends",
    "source": "V2.5.3 live1 HTML (private reference, never committed), character offset 3,643,365",
    "originalRoute": "#/pro/assets",
-   "currentLocation": "RefreshPlan.tsx (waves by planning assumptions)",
-   "currentRoute": "#/pro/refresh",
+   "currentLocation": "pages/ProViews.tsx AssetsPage, \"Refresh exposure\" chart, for the refresh roles; pages/RefreshPlan.tsx",
+   "currentRoute": "#/pro/assets, #/pro/refresh",
    "dataDependencies": "support end dates, planning costs",
-   "currentBehavior": "A refresh plan with first wave, strategy horizon and planning figures.",
+   "currentBehavior": "Units falling due per year to the three-year horizon, equal to the refresh plan's chart, shown to the roles that may open the plan.",
    "originalBehavior": "A forecast chart by year with a ROM label.",
    "navigationHave": "",
    "navigationMissing": "year to devices",
@@ -248,9 +248,9 @@
    "performance": "light",
    "recommendedAction": "fold the forecast into refresh planning once support end dates exist",
    "acceptance": "the chart sums to the device count",
-   "tests": "RefreshPlan tests",
-   "implementationStatus": "built (different basis)",
-   "classification": "Simplified"
+   "tests": "MI-28, MC-life-01",
+   "implementationStatus": "built 28 Nov",
+   "classification": "Preserved"
   },
   {
    "id": "PRO-AS-06",
@@ -357,7 +357,7 @@
    "currentLocation": "IssuesPage tiles",
    "currentRoute": "#/pro/issues",
    "dataDependencies": "record issues, workspace incidents, targets",
-   "currentBehavior": "Open room issues, high severity, service jobs open, recurrences.",
+   "currentBehavior": "Past their target (opens #/set/iss:late), median time to restore, restored within target and reopened after closure (Service analytics' figures for the same twelve months); escalation not counted: no record holds one.",
    "originalBehavior": "Six KPIs, each with \"tap any number for its evidence\".",
    "navigationHave": "tile to ServiceHands, APEX",
    "navigationMissing": "every number to its records",
@@ -368,8 +368,8 @@
    "performance": "light",
    "recommendedAction": "add past target, MTTR, inside target and escalated with an evidence sheet per tile",
    "acceptance": "each tile lists exactly the records it counts",
-   "tests": "MI tests (open only)",
-   "implementationStatus": "partial",
+   "tests": "MI-25..27, MC-target-01",
+   "implementationStatus": "built 27–28 Nov (4 of 6; past-target rule shared with the dispatch board)",
    "classification": "Partially restored"
   },
   {

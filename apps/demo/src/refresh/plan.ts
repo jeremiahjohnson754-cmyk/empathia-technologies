@@ -37,11 +37,11 @@ export const defaultAssumptions = (): Assumptions => ({ life: { ...DEFAULT_LIFE 
  * life or cost that is not a sensible number is ignored for the starting one, so a damaged entry cannot put every unit past due. */
 export const ASSUMPTIONS_KEY = 'empathia.demo.refresh.v1';
 const okNum = (v: unknown, lo: number, hi: number) => typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi;
-const clean = (o: unknown, lo: number, hi: number): Record<string, number> => (o && typeof o === 'object' ? Object.fromEntries(Object.entries(o as Record<string, unknown>).filter(([k, v]) => !k.startsWith('__') && okNum(v, lo, hi)) as Array<[string, number]>) : {});
+const clean = (o: unknown, lo: number, hi: number): Record<string, number> => (o && typeof o === 'object' && !Array.isArray(o) ? Object.fromEntries(Object.entries(o as Record<string, unknown>).filter(([k, v]) => !k.startsWith('__') && okNum(v, lo, hi)) as Array<[string, number]>) : {});
 export function loadAssumptions(): Assumptions {
   const d = defaultAssumptions();
   try { const raw = localStorage.getItem(ASSUMPTIONS_KEY); if (raw) { const x = JSON.parse(raw) as Partial<Assumptions> | null;
-    if (x && typeof x === 'object') return { life: { ...d.life, ...clean(x.life, 1, 50) }, cost: clean(x.cost, 0, 1e9), currency: typeof x.currency === 'string' && /^[A-Z]{3}$/.test(x.currency) ? x.currency : d.currency, serviceSignal: okNum(x.serviceSignal, 1, 20) ? x.serviceSignal! : d.serviceSignal }; } } catch { /* unavailable or damaged: the starting assumptions */ }
+    if (x && typeof x === 'object') return { life: { ...d.life, ...clean(x.life, 1, 50) }, cost: clean(x.cost, 0, Number.MAX_SAFE_INTEGER), currency: typeof x.currency === 'string' && /^[A-Z]{3}$/.test(x.currency) ? x.currency : d.currency, serviceSignal: okNum(x.serviceSignal, 1, 20) ? x.serviceSignal! : d.serviceSignal }; } } catch { /* unavailable or damaged: the starting assumptions */ }
   return d;
 }
 export function saveAssumptions(a: Assumptions): void { try { localStorage.setItem(ASSUMPTIONS_KEY, JSON.stringify(a)); } catch { /* this browser cannot keep it: the plan still shows */ } }

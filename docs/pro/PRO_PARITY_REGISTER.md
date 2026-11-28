@@ -8,13 +8,15 @@ Method: V2.5.3: the strings and routes of its Pro views, read from the file. Cur
 
 The full register, with every field the directive asks for (data dependencies, navigation depth, cross-product links, authorization, evidence, performance, acceptance and tests), is `PRO_PARITY_REGISTER.json` beside this file. The V2.5.3 file is a private reference and is never committed; its locations are character offsets in it.
 
+Updated 28 Nov 2026: PRO-IS-01 (Issue Intelligence's service figures), PRO-AS-04 and PRO-AS-05 (refresh exposure) built; PRO-AS-03 recorded as blocked by data.
+
 ## Summary
 
 | Classification | Capabilities |
 |---|---|
 | Partially restored | 12 |
-| Missing | 9 |
-| Preserved | 5 |
+| Missing | 8 |
+| Preserved | 6 |
 | Improved | 2 |
 | Simplified | 2 |
 | New enhancement | 2 |
@@ -32,8 +34,8 @@ The full register, with every field the directive asks for (data dependencies, n
 | PRO-AS-01 | Asset Intelligence | Population and identity | Improved | #/pro/assets | keep; it goes beyond the original (identity states) |
 | PRO-AS-02 | Asset Intelligence | Health by building | Preserved | #/pro/assets | keep |
 | PRO-AS-03 | Asset Intelligence | Firmware posture: on, behind, not validated | Missing | none | add device standards with baselines and installed versions to the synthetic model, then the posture with its records |
-| PRO-AS-04 | Asset Intelligence | Lifecycle status by support end date | Missing | #/pro/refresh | add support end dates to device standards; show status and link to refresh planning |
-| PRO-AS-05 | Asset Intelligence | Refresh forecast: devices by the year support ends | Simplified | #/pro/refresh | fold the forecast into refresh planning once support end dates exist |
+| PRO-AS-04 | Asset Intelligence | Lifecycle status by support end date | Simplified | #/pro/assets | add support end dates to device standards; show status and link to refresh planning |
+| PRO-AS-05 | Asset Intelligence | Refresh forecast: devices by the year support ends | Preserved | #/pro/assets, #/pro/refresh | fold the forecast into refresh planning once support end dates exist |
 | PRO-AS-06 | Asset Intelligence | Warranty | Missing | none | add warranty ends to installations; show in force, ending, lapsed |
 | PRO-AS-07 | Asset Intelligence | Documentation health and standards alignment | Partially restored | #/pro/assets | add standards alignment once device standards exist (PRO-EN-01) |
 | PRO-AS-08 | Asset Intelligence | Drill: campus, building, floor, room, device | Partially restored | #/pro/assets?building= | add floor and room levels as drill state in the address |
