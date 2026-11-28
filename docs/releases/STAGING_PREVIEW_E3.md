@@ -34,10 +34,25 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 27 Nov 2026 02:51 | `e2c9b213` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `fec0ac5e`) | dep-dc4evu3bc2fs739n32lg, replaced | dep-dc4evu3bc2fs739n32i0, replaced |
 | 27 Nov 2026 14:07 | `6d07d39b` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `414542f3`) | dep-dc4ose3rjlhs7384do80, replaced | dep-dc4ose3rjlhs7384dobg, replaced |
 | 27 Nov 2026 23:05 | `f39825ce` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `569554ea`) | dep-dc50pc8jo6nc73ca85j0, replaced | dep-dc50pc8jo6nc73ca85fg, replaced |
-| 28 Nov 2026 05:27 | `c0dfd7e8` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `4af050bf`) | dep-dc56ch8jo6nc73cfemkg, live | dep-dc56ch8jo6nc73cfemh0, live |
+| 28 Nov 2026 05:27 | `c0dfd7e8` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `4af050bf`) | dep-dc56ch8jo6nc73cfemkg, replaced | dep-dc56ch8jo6nc73cfemh0, replaced |
+| 28 Nov 2026 10:45 | `0af274a8` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `dcc2fc7a`) | dep-dc5b1hdbedkc73eha7b0, live | dep-dc5b1hdbedkc73eha7eg, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `0af274a8`, 28 Nov 2026 10:55 UTC
+
+Only the tested commit was pushed to the preview branch; its evidence commit `dcc2fc7a` stays on `v18/continuation`. Both deploys
+were live at 10:46:57 UTC and both served manifests named `0af274a8…`; no stale file in the demo manifest. The live check passed
+**43 of 43**; the service-target figures read as before (past their target 1 of 2; 61 h, 74 %, 6 %).
+
+New for this build, over `c0dfd7e8` (the Pro register's PRO-AS-04/05; `e891f9c4` tests, `17d52076` change, `0af274a8` review fixes):
+- Asset Intelligence's "Refresh exposure", from the refresh plan's own figures and the planner's assumptions (one shared store, now
+  validated on reading). Live as the Product Architect: units in service 1,511, due in 2026 or earlier 0 of 1,511, due by 2029 129,
+  equal to the refresh plan at h=3 (1,511 and 129), with the chart by year. As the service manager, who may not open the plan: units
+  in service and those due this year, no forecast. The note calls the life a planning assumption and says there is no validated
+  firmware baseline and no warranty date on record.
+- The Pro parity register marks PRO-IS-01, PRO-AS-04 and PRO-AS-05 built and PRO-AS-03 blocked by data.
 
 ## Live check of `c0dfd7e8`, 28 Nov 2026 05:35 UTC
 
