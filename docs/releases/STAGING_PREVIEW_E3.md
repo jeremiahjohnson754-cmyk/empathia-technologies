@@ -33,10 +33,28 @@ a `robots.txt` that disallows everything, so the previews are not indexed. Every
 | 26 Nov 2026 21:37 | `4231f6a2` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `b915d54a`) | dep-dc4achrbc2fs739id8p0, replaced | dep-dc4achrbc2fs739id8lg, replaced |
 | 27 Nov 2026 02:51 | `e2c9b213` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `fec0ac5e`) | dep-dc4evu3bc2fs739n32lg, replaced | dep-dc4evu3bc2fs739n32i0, replaced |
 | 27 Nov 2026 14:07 | `6d07d39b` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `414542f3`) | dep-dc4ose3rjlhs7384do80, replaced | dep-dc4ose3rjlhs7384dobg, replaced |
-| 27 Nov 2026 23:05 | `f39825ce` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `569554ea`) | dep-dc50pc8jo6nc73ca85j0, live | dep-dc50pc8jo6nc73ca85fg, live |
+| 27 Nov 2026 23:05 | `f39825ce` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `569554ea`) | dep-dc50pc8jo6nc73ca85j0, replaced | dep-dc50pc8jo6nc73ca85fg, replaced |
+| 28 Nov 2026 05:27 | `c0dfd7e8` | PASS 319 · FAIL 0 · NOT_RUN 2 (evidence in `4af050bf`) | dep-dc56ch8jo6nc73cfemkg, live | dep-dc56ch8jo6nc73cfemh0, live |
 
 The two NOT_RUN suites are the machine-learning prototype (its dataset is not generated) and the film decode check (needs `--films`).
 NOT RUN is not PASS.
+
+## Live check of `c0dfd7e8`, 28 Nov 2026 05:35 UTC
+
+Only the tested commit was pushed to the preview branch; its evidence commit `4af050bf` stays on `v18/continuation`. Both deploys
+were live at 05:28:42 UTC and both served manifests named `c0dfd7e8…`; none of the 1,597 files in the demo manifest was served
+stale. The live check passed **43 of 43**, and Mission Control and the Control Tower still agree (99, Monitor; 18 of 140).
+
+New for this build, over `f39825ce` (#320, the Pro register's PRO-IS-01; `2b2b901f` tests, `af85e226` fix, `c0dfd7e8` review fixes):
+- One restore target (service/targets.ts): Mission critical 8 h, High 48 h, Standard 120 h, business days counted as 24 h, read by
+  Service analytics, the dispatch board, the Pro command center, Issue Intelligence and the set behind "Past their target". The
+  command center's own table (1, 2 and 5 days) is gone. Live: its note lists the targets in hours, and its "Past their target"
+  reads 1 of 2, as Issue Intelligence's does.
+- Issue Intelligence's service figures, live as the Product Architect: past their target 1 of 2 (opens #/set/iss:late, "Open issues
+  past their target", 1 issue); median time to restore 61 h, restored within target 74 %, reopened after closure 6 % of 233 closed,
+  Nov 2025 through Oct 2026, each opening Service analytics for twelve months, which reads 61 h and 74 %. A note says escalation is
+  not counted, because no record carries one. As the service manager the tile and the set both read 1; as a technician the
+  twelve-month tiles are not links (Service analytics is not open to that role).
 
 ## Live check of `f39825ce`, 27 Nov 2026 23:15 UTC
 
