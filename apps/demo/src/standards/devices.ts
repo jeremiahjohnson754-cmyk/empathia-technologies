@@ -24,10 +24,11 @@ export type BaselineState = 'approved' | 'proposed';
 export interface FirmwareBaseline { version: string; previous: string; state: BaselineState; by: string; at: string }
 export interface DeviceStandard { cat: string; id: string; model: string; firmware: FirmwareBaseline | null; note: string }
 
-export const STANDARDS_BASIS = 'synthetic standards: the model designations and firmware versions are invented for this demonstration and name no real product';
+export const STANDARDS_NOTE = 'the model designations and firmware versions are invented for this demonstration and name no real product';
+export const STANDARDS_BASIS = `synthetic standards: ${STANDARDS_NOTE}`;
 const REVIEW = 'Systems engineering review';
 const fw = (version: string, previous: string, at: string, state: BaselineState = 'approved'): FirmwareBaseline => ({ version, previous, state, by: state === 'approved' ? REVIEW : 'proposed by systems engineering, awaiting the review', at });
-const std = (cat: string, code: string, firmware: FirmwareBaseline | null, note = ''): DeviceStandard => ({ cat, id: `STD-${code}`, model: `Class standard ${code}-S1`, firmware, note });
+const std = (cat: string, code: string, firmware: FirmwareBaseline | null, note = ''): DeviceStandard => ({ cat, id: `STD-${code}`, model: `${code}-S1`, firmware, note });
 
 /** The classes with a standard. Not here, so flagged when installed: the projector (a legacy class, replaced by displays) and the
  * facilities and security classes (lighting, occupancy sensors, security cameras, IoT, HVAC), which other teams' standards govern. */
@@ -104,9 +105,9 @@ export function firmwareOf(d: InstalledDevice, entry?: { firmware?: string } | n
   if (f.state !== 'approved') return { posture: 'unvalidated', installed, source, why: `the baseline ${f.version} is proposed, not approved` };
   if (!installed) return { posture: 'unvalidated', installed: null, source: null, why: 'no installed version is on record' };
   const c = compareVersions(installed, f.version);
-  if (c === 0) return { posture: 'on', installed, source, why: `on the approved baseline ${f.version}` };
-  if (c === -1) return { posture: 'behind', installed, source, why: `behind the approved baseline ${f.version}` };
-  if (c === 1) return { posture: 'unvalidated', installed, source, why: `newer than the approved baseline ${f.version}: nothing approved it` };
+  if (c === 0) return { posture: 'on', installed, source, why: `the installed version is on the approved baseline ${f.version}` };
+  if (c === -1) return { posture: 'behind', installed, source, why: `the installed version is older than the approved baseline ${f.version}` };
+  if (c === 1) return { posture: 'unvalidated', installed, source, why: `the installed version is newer than the approved baseline ${f.version}: nothing approved it` };
   return { posture: 'unvalidated', installed, source, why: `"${installed}" cannot be compared with the baseline ${f.version}` };
 }
 
