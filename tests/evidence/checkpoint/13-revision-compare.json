@@ -2,7 +2,7 @@
  "step": 13,
  "title": "Save the change as a new design revision and compare it with the accepted revision",
  "room": "R-PLN-0004",
- "at": "2026-11-28T04:08:39.480Z",
+ "at": "2026-11-28T09:23:40.814Z",
  "assertions": [
   {
    "id": "C-49",
@@ -31,7 +31,7 @@
     "openIssues": 2,
     "planChanged": false
    },
-   "correlationId": "338c41b8-03a7-48a4-b999-2b501dcab171"
+   "correlationId": "29d49e49-935b-43b7-8b66-d79b51c7b32d"
   },
   {
    "method": "GET",
@@ -55,7 +55,7 @@
     "connectionsAdded": [],
     "connectionsRemoved": []
    },
-   "correlationId": "7683df4e-6710-4dd9-a2cb-2942cc0970ba"
+   "correlationId": "ce747275-fa64-4a13-8f4e-b8fcbba6669e"
   }
  ]
 }
