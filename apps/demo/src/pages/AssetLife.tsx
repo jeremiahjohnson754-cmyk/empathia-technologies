@@ -16,6 +16,7 @@ import { personaOf, personaLabel } from '../build/store.js';
 import { canOpen, isRole } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
 import { callingRoomOf } from '../voice/model.js';
+import { installedDevices, firmwareOf, classLabelOf, STANDARDS_BASIS } from '../standards/devices.js';
 
 const KIND_WORD = { installed: 'Installed', registered: 'Registered', baseline: 'Baseline', issue: 'Issue', service: 'Service', retired: 'Retired', replaced: 'Replaced' } as const;
 
@@ -69,6 +70,14 @@ export function AssetLifePage({ perspective, hash }: { perspective: string; hash
             {issuesAt(hit).length ? <ul className="plain">{issuesAt(hit).map((i) => <li key={i.id}><Tag tone={i.state === 'RESOLVED' ? 'ok' : 'warn'}>{i.state}</Tag> <b>{i.id}</b> {i.title} <span className="ui-meta">({i.severity})</span></li>)}</ul> : <p className="ui-muted">None at this position.</p>}
           </Card>
         </div>
+        {(() => { if (!hit.current) return null; const d = installedDevices([hit.room]).find((x) => x.position === hit.inst.position); if (!d) return null; const f = firmwareOf(d, entry); const s = d.standard;
+          // PRO-AS-03: this unit against its class standard (standards/devices.ts), the same rule Asset Intelligence counts with
+          const tone = f.posture === 'on' ? 'ok' : f.posture === 'behind' ? 'warn' : 'muted'; const word = { on: 'On baseline', behind: 'Behind baseline', unvalidated: 'Not validated', nofirmware: 'No firmware', nostandard: 'No standard' }[f.posture];
+          return <Card icon="shield" title="Against its standard" sub={s ? `${s.id} · ${s.model}` : `no standard covers the ${classLabelOf(d.cat).toLowerCase()} class`} testId="al-standard">
+            <p><Tag tone={tone}>{word}</Tag> {f.why}.</p>
+            {s?.firmware ? <dl className="san__defs"><div><dt>Baseline</dt><dd className="ui-mono">{s.firmware.version} ({s.firmware.state})</dd></div><div><dt>Installed</dt><dd className="ui-mono">{f.installed || '—'}</dd></div><div><dt>From</dt><dd>{f.source || 'no record'}</dd></div></dl> : null}
+            <p className="ui-meta">The standards and the commissioning versions are {STANDARDS_BASIS}.</p>
+          </Card>; })()}
       </> : null}
     </section>
   );

@@ -18,7 +18,8 @@ import { openable } from './V25Nav.js';
 import { TrendChart } from './TrendChart.js';
 import { syntheticHistory, workspaceJobs, monthKey } from '../service/history.js';
 import { pastTargetOf, TARGETS_TEXT } from '../service/targets.js';
-import { loadAssumptions, refreshExposure, LIFE_BASIS, NOW_YEAR } from '../refresh/plan.js';
+import { loadAssumptions, refreshExposure, lifeOf, LIFE_BASIS, NOW_YEAR } from '../refresh/plan.js';
+import { installedDevices, firmwarePosture, standardsCoverage, classLabelOf, STANDARDS_BASIS } from '../standards/devices.js';
 import { months, stats, LAYER_LABEL } from '../service/analytics.js';
 import { campusStats, recordIssues } from '../campus/metrics.js';
 import { CampusMap, Stage } from '../spatial/Spatial.js';
@@ -93,7 +94,19 @@ export function AssetsPage({ perspective, hash }: { perspective: string; hash?: 
             {plans ? <StatTile testId="pro-life-due" label={`Due by ${x.lastYear}`} value={x.dueBy} icon="calendar" tone="pro" href={rp} hint="past due included, as the refresh plan's first year carries it" /> : null}
           </div>
           {plans ? <TrendChart testId="pro-life-years" kind="bar" title={`Units falling due per year, ${x.years[0]!.year}–${x.lastYear} (the first year carries anything already past due)`} labels={x.years.map((y) => String(y.year))} unit="" series={[{ name: 'Units', tone: 'warn', values: x.years.map((y) => y.units) }]} /> : null}
-          <p className="wk-note">The service life is a {LIFE_BASIS}. There is no validated firmware baseline for any device class, so firmware posture is not shown (a firmware version an installation team records appears on that unit's asset page), and no warranty date is on record.</p>
+          <p className="wk-note">The service life is a {LIFE_BASIS}. No warranty date is on record.</p>
+        </Card>; })()}
+      {(() => { const x = firmwarePosture(installedDevices(recs), (room) => readRegister(room).entries);
+        // PRO-AS-03: each unit in service against its class standard's firmware baseline (standards/devices.ts, MI-31); the five parts add up to
+        // the units in service above. The sets are campus-wide, so a one-building view does not link to them (as Issue Intelligence's).
+        const link = (k: string) => !only && openable(perspective, `#/set/${k}`) ? `#/set/${k}` : undefined;
+        return <Card icon="shield" title="Firmware posture" sub="Each unit in service against its class standard's approved firmware baseline" testId="pro-fw">
+          <div className="kit-grid kit-grid--tiles wk-tiles3">
+            <StatTile testId="pro-fw-on" label="On baseline" value={x.on.length} unit={`of ${x.withFirmware.toLocaleString('en-US')}`} icon="check" tone="ok" href={link('fw:on')} hint="the installed version is the approved baseline" />
+            <StatTile testId="pro-fw-behind" label="Behind baseline" value={x.behind.length} icon="clock" tone={x.behind.length ? 'warn' : 'ok'} href={link('fw:behind')} hint="on a version older than the approved baseline" />
+            <StatTile testId="pro-fw-unv" label="Not validated" value={x.unvalidated.length} icon="alert" tone="muted" href={link('fw:unvalidated')} hint="baseline only proposed, no version on record, or a version no baseline approved" />
+          </div>
+          <p className="wk-note">Outside the posture: <b data-testid="pro-fw-nofw">{x.nofirmware.length.toLocaleString('en-US')}</b> units carry no firmware (loudspeakers and racks) and <b data-testid="pro-fw-nostd">{x.nostandard.length.toLocaleString('en-US')}</b> no standard covers, so {x.total.toLocaleString('en-US')} in all. Not validated is never counted as on baseline. The installed version is the one the installation team records on the room's device register in this browser, else the room's commissioning record; the baselines are {STANDARDS_BASIS}.{openable(perspective, '#/pro/eng') ? <> <a href="#/pro/eng" data-testid="pro-fw-standards">The device standards</a>.</> : null}</p>
         </Card>; })()}
       {(() => { const c = campusStats(w); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
         return <Card icon="map" title="Where units need service" sub="The campus map on the Assets lens: jobs that named a unit in twelve months, per 100 device positions"><div data-testid="pro-asset-map"><Stage label="Asset map" testId="pro-asset-stage"><CampusMap tiles={tiles} lens="assets" current={only || undefined} onOpen={(b) => { location.hash = `#/pro/assets?building=${b.key}`; }} /></Stage></div></Card>; })()}
@@ -278,6 +291,21 @@ export function StandardsPage({ perspective }: { perspective: string }) {
           { key: 'f', header: 'Findings', render: (x) => x.findings, sort: (x) => x.findings, align: 'right' },
         ]} />
       </Card>
+      {(() => { const cov = standardsCoverage(installedDevices(recs)); const a = loadAssumptions(); const plans = openable(perspective, '#/pro/refresh'); const sets = openable(perspective, '#/set/std:none');
+        const flaggedBy = count(cov.flagged, (d) => classLabelOf(d.cat));
+        // PRO-EN-01: the device standards, the units each covers (the set std:<class>), the units none covers (flagged, std:none); the service
+        // life is the refresh plan's planning assumption for the class (lifeOf, MI-33), linked to the plan where the role may open it
+        return <Card icon="device" title="Device standards" sub="Per device class: the approved model, the firmware baseline and the service life" pad={false} testId="eng-standards"
+          footer={<p className="wk-note">{cov.flagged.length ? <><b>Flagged:</b> {sets ? <a href="#/set/std:none" data-testid="std-flagged">{plural(cov.flagged.length, 'unit')}</a> : <span data-testid="std-flagged">{plural(cov.flagged.length, 'unit')}</span>} in service {cov.flagged.length === 1 ? 'has' : 'have'} no standard ({flaggedBy.map(([k, n]) => `${k} ${n}`).join(', ')}): a projector is a legacy class, and facilities and security classes follow other teams' standards. </> : <span data-testid="std-flagged">0 units are flagged: every unit in service has a standard. </span>}
+            These are {STANDARDS_BASIS}. The service life is the refresh plan's {LIFE_BASIS}. A proposed baseline validates nothing until it is approved.</p>}>
+          <DataTable responsive dense rows={cov.rows} rowKey={(x) => x.s.id} caption="Device standards" columns={[
+            { key: 'cls', header: 'Class', render: (x) => <b data-std={x.s.cat}>{classLabelOf(x.s.cat)}</b>, sort: (x) => classLabelOf(x.s.cat) },
+            { key: 'model', header: 'Approved model', render: (x) => <>{x.s.model}<span className="wk-r__m">{x.s.id}</span></>, minor: true },
+            { key: 'fw', header: 'Firmware baseline', render: (x) => x.s.firmware ? <>{x.s.firmware.version} <Tag tone={x.s.firmware.state === 'approved' ? 'ok' : 'warn'}>{x.s.firmware.state}</Tag><span className="wk-r__m">{x.s.firmware.state === 'approved' ? `${x.s.firmware.by}, ${x.s.firmware.at}` : `${x.s.firmware.by} (${x.s.firmware.at}); ${x.s.note}`}</span></> : <span className="ui-muted">{x.s.note}</span> },
+            { key: 'life', header: 'Service life', render: (x) => { const t = `${lifeOf(a, x.s.cat)} years`; return plans ? <a href="#/pro/refresh" data-testid={`std-life-${x.s.cat}`}>{t}</a> : <span data-testid={`std-life-${x.s.cat}`}>{t}</span>; }, sort: (x) => lifeOf(a, x.s.cat), align: 'right' },
+            { key: 'n', header: 'Units in service', render: (x) => sets ? <a href={`#/set/std:${x.s.cat}`} data-testid={`std-units-${x.s.cat}`}>{x.devices.length.toLocaleString('en-US')}</a> : <span data-testid={`std-units-${x.s.cat}`}>{x.devices.length.toLocaleString('en-US')}</span>, sort: (x) => x.devices.length, align: 'right' },
+          ]} />
+        </Card>; })()}
       <Card icon="building" title="Conformance by building" sub="Rooms with every applicable test verified">
         <ul className="kit-meters">{BUILDINGS.map((b) => { const rs = recs.filter((r) => r.outline.building === b.key); const c = rs.filter((r) => r.counts.applicable && r.counts.verified === r.counts.applicable).length; return rs.length ? <MeterRow key={b.key} label={b.name} sub={`${c} of ${plural(rs.length, 'room')}`} value={pct(c, rs.length)} /> : null; })}</ul>
       </Card>

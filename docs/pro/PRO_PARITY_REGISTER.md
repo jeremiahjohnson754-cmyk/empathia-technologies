@@ -8,15 +8,15 @@ Method: V2.5.3: the strings and routes of its Pro views, read from the file. Cur
 
 The full register, with every field the directive asks for (data dependencies, navigation depth, cross-product links, authorization, evidence, performance, acceptance and tests), is `PRO_PARITY_REGISTER.json` beside this file. The V2.5.3 file is a private reference and is never committed; its locations are character offsets in it.
 
-Updated 28 Nov 2026: PRO-IS-01 (Issue Intelligence's service figures), PRO-AS-04 and PRO-AS-05 (refresh exposure) built; PRO-AS-03 recorded as blocked by data.
+Updated 28 Nov 2026: PRO-IS-01 (Issue Intelligence's service figures), PRO-AS-04 and PRO-AS-05 (refresh exposure) built; then PRO-EN-01 (device standards) and PRO-AS-03 (firmware posture) built against synthetic standards.
 
 ## Summary
 
 | Classification | Capabilities |
 |---|---|
-| Partially restored | 12 |
-| Missing | 8 |
+| Partially restored | 14 |
 | Preserved | 6 |
+| Missing | 6 |
 | Improved | 2 |
 | Simplified | 2 |
 | New enhancement | 2 |
@@ -33,7 +33,7 @@ Updated 28 Nov 2026: PRO-IS-01 (Issue Intelligence's service figures), PRO-AS-04
 | PRO-CC-05 | Command Center | Go deeper: the six Pro workspaces | Preserved | #/pro/* | keep |
 | PRO-AS-01 | Asset Intelligence | Population and identity | Improved | #/pro/assets | keep; it goes beyond the original (identity states) |
 | PRO-AS-02 | Asset Intelligence | Health by building | Preserved | #/pro/assets | keep |
-| PRO-AS-03 | Asset Intelligence | Firmware posture: on, behind, not validated | Missing | none | add device standards with baselines and installed versions to the synthetic model, then the posture with its records |
+| PRO-AS-03 | Asset Intelligence | Firmware posture: on, behind, not validated | Partially restored | #/pro/assets, #/v25/asset | keep; the baselines and commissioning versions are synthetic and said so |
 | PRO-AS-04 | Asset Intelligence | Lifecycle status by support end date | Simplified | #/pro/assets | add support end dates to device standards; show status and link to refresh planning |
 | PRO-AS-05 | Asset Intelligence | Refresh forecast: devices by the year support ends | Preserved | #/pro/assets, #/pro/refresh | fold the forecast into refresh planning once support end dates exist |
 | PRO-AS-06 | Asset Intelligence | Warranty | Missing | none | add warranty ends to installations; show in force, ending, lapsed |
@@ -51,7 +51,7 @@ Updated 28 Nov 2026: PRO-IS-01 (Issue Intelligence's service figures), PRO-AS-04
 | PRO-IS-09 | Issue Intelligence | Known fixes and root causes as reusable knowledge | Partially restored | none | model KnownFix and RootCause in the core; add the views |
 | PRO-OP-01 | Operations Hub | Knowledge cards: SOPs, known fixes, troubleshooting, lessons, escalation paths, playbooks, ownership, documents; filter by symptom, device or word | Missing | #/pro/ops | add the card library beside the current capacity view (both are kept) |
 | PRO-OP-02 | Operations Hub | Capacity, certifications, stock, work windows, SLA by month | New enhancement | #/pro/ops | keep |
-| PRO-EN-01 | Standards and Engineering | Device standards: approved model, firmware baseline, service life | Missing | none | add device standards (feeds PRO-AS-03, -04, -07) |
+| PRO-EN-01 | Standards and Engineering | Device standards: approved model, firmware baseline, service life | Partially restored | #/pro/eng | add support end dates and a recorded approval workflow next (PRO-AS-04, PRO-IS-04) |
 | PRO-EN-02 | Standards and Engineering | Room archetypes and their templates, conformance | Preserved | #/pro/eng | add the archetype page |
 | PRO-EN-03 | Standards and Engineering | Room packages with planning cost; approved technology stacks | Partially restored | #/forge | surface them on the standards page from the same model |
 | PRO-EN-04 | Standards and Engineering | Signal flows, rack views, network topologies | Partially restored | #/flow, Lite | link from Pro to the existing views with the archetype in context |

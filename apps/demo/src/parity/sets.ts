@@ -6,11 +6,20 @@ import type { Authority } from '../registry.types.js';
 import { type Core, type Rec } from './core.js';
 import { needsAttention } from '../campus/metrics.js';
 import { TARGETS_TEXT } from '../service/targets.js';
+import { installedDevices, firmwarePosture, standardOf, classLabelOf, STANDARDS_BASIS, type Posture } from '../standards/devices.js';
+import { readRegister } from '../campus/registerStore.js';
 
 export interface SetDef { key: string; title: string; how: string; items: (c: Core) => Rec[] }
 export interface Family { key: string; label: string; blurb: string; sets: SetDef[] }
 const room = (c: Core, pred: (id: string) => boolean) => c.byType.Room.filter((r) => pred(r.id));
 const rec = (c: Core, id: string) => c.rooms.find((r) => r.outline.id === id)!;
+// the device standards and the firmware posture (standards/devices.ts, PRO-EN-01 and PRO-AS-03): the Device records of the units counted
+const units = (c: Core, ids: Set<string>) => c.byType.Device.filter((d) => ids.has(d.id));
+const inPosture = (c: Core, p: Posture) => { const x = firmwarePosture(installedDevices(c.rooms), (room) => readRegister(room).entries); return units(c, new Set(x[p].map((d) => d.id))); };
+const POSTURE_HOW = `against its class standard's approved firmware baseline; the installed version is the one this browser's device register records, else the room's commissioning record (${STANDARDS_BASIS})`;
+/** one set per device standard, `std:<class>`: the units the standard covers (named by key, not listed among the family's sets) */
+const standardSet = (key: string): SetDef | undefined => { const cat = key.slice(4); const s = standardOf(cat); if (!s) return undefined;
+  return { key, title: `Units covered by ${s.id}`, how: `Units in service whose class is ${classLabelOf(cat).toLowerCase()}, covered by the standard ${s.id} (${STANDARDS_BASIS}).`, items: (c) => units(c, new Set(installedDevices(c.rooms).filter((d) => d.cat === cat).map((d) => d.id))) }; };
 export const FAMILIES: Family[] = [
   { key: 'dev', label: 'Devices', blurb: 'Devices behind a number', sets: [
     { key: 'dev:all', title: 'Every device position', how: 'Every hardware position of every room design; furniture is left out.', items: (c) => c.byType.Device.filter((d) => d.state !== 'End') },
@@ -18,6 +27,12 @@ export const FAMILIES: Family[] = [
     { key: 'dev:uncovered', title: 'Devices in service with no agreement', how: 'In service, but no active agreement covers their building and layer: who would fix it is not on record.', items: (c) => c.byType.Device.filter((d) => d.state === 'In service') },
     { key: 'dev:planned', title: 'Devices not yet installed', how: 'Positions in a design whose room has no installation for them yet.', items: (c) => c.byType.Device.filter((d) => d.state === 'Planned') },
     { key: 'dev:removed', title: 'Units removed from service', how: 'Installations with a removal date and the reason recorded.', items: (c) => c.byType.Device.filter((d) => d.state === 'End') },
+  ] },
+  { key: 'fw', label: 'Firmware and standards', blurb: 'Units behind a standards or firmware figure', sets: [
+    { key: 'fw:on', title: 'Units on their firmware baseline', how: `Units in service whose installed version is the approved baseline, ${POSTURE_HOW}.`, items: (c) => inPosture(c, 'on') },
+    { key: 'fw:behind', title: 'Units behind their firmware baseline', how: `Units in service on a version older than the approved baseline, ${POSTURE_HOW}.`, items: (c) => inPosture(c, 'behind') },
+    { key: 'fw:unvalidated', title: 'Units whose firmware is not validated', how: `Units in service whose version no approved baseline validates: the baseline is only proposed, no version is on record, or the version is newer than the baseline or cannot be compared with it; ${POSTURE_HOW}. Never counted as on baseline.`, items: (c) => inPosture(c, 'unvalidated') },
+    { key: 'std:none', title: 'Units no standard covers', how: 'Units in service whose class has no device standard: flagged, not dropped (the projector, a legacy class; facilities and security classes follow other teams\' standards).', items: (c) => inPosture(c, 'nostandard') },
   ] },
   { key: 'room', label: 'Rooms', blurb: 'Rooms behind a number', sets: [
     { key: 'room:all', title: 'Every room', how: 'The thirty rooms of the campus records.', items: (c) => c.byType.Room },
@@ -47,8 +62,8 @@ export const FAMILIES: Family[] = [
   ] },
 ];
 export const ALL_SETS = FAMILIES.flatMap((f) => f.sets.map((s) => ({ ...s, family: f })));
-export const setOf = (key: string) => ALL_SETS.find((s) => s.key === key);
-export const familyOf = (key: string) => FAMILIES.find((f) => f.key === key.split(':')[0]);
+export const setOf = (key: string) => ALL_SETS.find((s) => s.key === key) ?? (key.startsWith('std:') ? (() => { const d = standardSet(key); return d ? { ...d, family: FAMILIES.find((f) => f.key === 'fw')! } : undefined; })() : undefined);
+export const familyOf = (key: string) => FAMILIES.find((f) => f.key === (key.split(':')[0] === 'std' ? 'fw' : key.split(':')[0]));
 /** V2.5.3 azArea for #/set/<key> (12-authz.js), verbatim in effect */
 /** V2.5.3's family names (#/set/devices …) are kept as aliases of the short keys, so every legacy address still opens its family —
  * for the roles V2.5.3 gave that family to (the authority reads the same alias the page does). */
@@ -56,6 +71,6 @@ export const LEGACY_FAMILY: Record<string, string> = { devices: 'dev', rooms: 'r
 export function setAuthority(key: string): Authority {
   const k = key.split('@')[0]!.split(':'); k[0] = LEGACY_FAMILY[k[0]!] ?? k[0]!;
   if (k[0] === 'as') return { area: k[1] === 'ready' ? 'assurance.ready' : k[1] === 'worst' || k[1] === 'remedy' ? 'assurance.portfolio' : k[1] === 'baselines' ? 'assurance.history' : k[1] === 'signals' || k[1] === 'maint' ? 'assurance.signals' : 'assurance.room' };
-  const m: Record<string, string> = { pc: 'assurance.change', cm: 'commissioning', dev: 'set.devices', room: 'set.rooms', iss: 'set.issues', pt: 'set.issues', gov: 'search.quality', conf: 'search.quality', doc: 'set.docs', chg: 'set.changes', mw: 'scouter', sc: 'scouter', pf: 'budget', fin: 'budget', eng: 'intake', sh: 'servicehands', svc: 'service', pj: 'projects', ar: 'search.vault', dec: 'decisions', ppl: 'search.people' };
+  const m: Record<string, string> = { pc: 'assurance.change', cm: 'commissioning', dev: 'set.devices', fw: 'set.devices', std: 'set.devices', room: 'set.rooms', iss: 'set.issues', pt: 'set.issues', gov: 'search.quality', conf: 'search.quality', doc: 'set.docs', chg: 'set.changes', mw: 'scouter', sc: 'scouter', pf: 'budget', fin: 'budget', eng: 'intake', sh: 'servicehands', svc: 'service', pj: 'projects', ar: 'search.vault', dec: 'decisions', ppl: 'search.people' };
   return { area: m[k[0]!] || 'none' };
 }

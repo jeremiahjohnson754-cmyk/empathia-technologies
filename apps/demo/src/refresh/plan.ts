@@ -27,6 +27,8 @@ export const DEFAULT_LIFE: Record<string, number> = {
   display: 7, ledwall: 8, projector: 6, camera: 6, bar: 5, micceil: 7, mictable: 7, micwireless: 6, speaker: 10, dsp: 8, amp: 10, compute: 4,
   switch: 6, control: 8, touch: 6, scheduler: 5, switcher: 7, encoder: 6, rack: 15, pdu: 10, lighting: 10, occsensor: 8, seccam: 6, iot: 5, hvac: 15,
 };
+/** The service life the plan gives a class: the planner's assumption, else the starting one, else 7 years. Device standards show this, the one source (MI-33). */
+export const lifeOf = (a: Pick<Assumptions, 'life'>, cat: string): number => a.life[cat] ?? DEFAULT_LIFE[cat] ?? 7;
 export const LIFE_BASIS = 'planning assumption: a service life per device class, set by the planner — not a manufacturer end-of-life or end-of-support date (none is recorded)';
 export const FURNITURE = new Set(['table', 'chairs', 'lectern']);
 export const classLabel = (cat: string) => (C.categories as Record<string, { label?: string }>)[cat]?.label || cat;
@@ -63,7 +65,7 @@ export function unitsInService(a: Assumptions, jobs: readonly ServiceJob[], reco
       if (i.removedAt) continue;
       const p = r.positions.find((x) => x.code === i.position); const cat = p?.cat || 'unknown';
       if (p?.furniture || FURNITURE.has(cat)) continue;
-      const life = a.life[cat] ?? DEFAULT_LIFE[cat] ?? 7; const t = Date.parse(i.installedAt);
+      const life = lifeOf(a, cat); const t = Date.parse(i.installedAt);
       const dueYear = new Date(t + life * YEAR_MS).getUTCFullYear(); const n = bf.get(i.asset) || 0;
       out.push({
         asset: i.asset, position: i.position, label: p?.label || i.position, cat, room: r.outline.id, roomName: r.outline.name, building: r.outline.building, lifecycle: r.lifecycle,

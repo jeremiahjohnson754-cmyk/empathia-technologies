@@ -8,11 +8,11 @@ import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
-const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as T from './service/targets.ts'; export * as RP from './refresh/plan.ts'; export * as DE from './dispatch/engine.ts'; export * as PV from './pages/ProViews.tsx'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts'; export * as XE from './export/estate.ts'; export * as LG from './parity/Ledger.tsx'; export * as ASK from './parity/Ask.tsx'; export * as CN from './campus/canon.ts'; export * as AM from './assurance/model.ts'; export * as U from './search/understand.ts'; export * as V14 from './parity/v14Model.ts'; export * as IM from './intake/model.ts';`;
+const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as T from './service/targets.ts'; export * as RP from './refresh/plan.ts'; export * as DE from './dispatch/engine.ts'; export * as PV from './pages/ProViews.tsx'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts'; export * as XE from './export/estate.ts'; export * as LG from './parity/Ledger.tsx'; export * as ASK from './parity/Ask.tsx'; export * as CN from './campus/canon.ts'; export * as AM from './assurance/model.ts'; export * as U from './search/understand.ts'; export * as V14 from './parity/v14Model.ts'; export * as IM from './intake/model.ts'; export * as SD from './standards/devices.ts';`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'metric-integrity-')); const out = path.join(dir, 'm.mjs');
 await esbuild.build({ stdin: { contents: entry, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', splitting: false, nodePaths: [path.join(repo, 'node_modules')],
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined); } }] });
-const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR, XE, LG, ASK, CN, AM, U, V14, IM, T, DE, PV, RP } = await import(pathToFileURL(out).href);
+const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR, XE, LG, ASK, CN, AM, U, V14, IM, T, DE, PV, RP, SD } = await import(pathToFileURL(out).href);
 // the Ask answer's lead is static markup (no hooks), so the repository's renderer can read it
 const { renderToStaticMarkup } = (await import('node:module')).createRequire(path.join(repo, 'package.json'))('react-dom/server');
 process.on('exit', () => fs.rmSync(dir, { recursive: true, force: true }));
@@ -512,4 +512,64 @@ test('MI-29 the refresh assumptions: kept as set, damaged entries ignored field 
     assert.deepEqual(x.life, { ...d.life, projector: 4 }, 'only the sensible life (projector 4) is kept'); assert.deepEqual(x.cost, {}, 'no damaged cost'); assert.equal(x.serviceSignal, d.serviceSignal); assert.equal(x.currency, d.currency);
     mem.set(RP.ASSUMPTIONS_KEY, '{"__proto__":{"polluted":1},"life":{"__proto__":{"x":1}}}'); RP.loadAssumptions(); assert.equal({}.polluted, undefined, 'no prototype pollution'); assert.equal({}.x, undefined);
   } finally { delete globalThis.localStorage; }
+});
+
+// MI-30 to MI-33 (the Pro register's PRO-EN-01 device standards and PRO-AS-03 firmware posture, 28 Nov 2026). The standards and the
+// versions are synthetic; what is tested is the rule: every installed unit maps to one standard or is flagged, the postures add up to the
+// units in service, "not validated" is never counted as on baseline, a figure opens exactly the units it counts, and the service life is
+// the refresh plan's assumption, not a second copy.
+const noEntries = () => ({});
+test('MI-30 every installed unit maps to exactly one standard or is flagged, and the population is the refresh plan\'s units in service', () => {
+  const devs = SD.installedDevices(); const cov = SD.standardsCoverage(devs);
+  assert.equal(cov.rows.reduce((n, r) => n + r.devices.length, 0) + cov.flagged.length, devs.length, 'standards plus flagged is every unit');
+  assert.ok(devs.every((d) => (d.standard ? 1 : 0) + (cov.flagged.includes(d) ? 1 : 0) === 1), 'each unit once: one standard or flagged');
+  assert.equal(devs.length, RP.refreshExposure(RP.defaultAssumptions(), H.syntheticHistory(), null, 3).inService, 'the same units as the refresh plan');
+  assert.equal(new Set(SD.DEVICE_STANDARDS.map((s) => s.id)).size, SD.DEVICE_STANDARDS.length, 'one id per standard');
+  assert.equal(new Set(SD.DEVICE_STANDARDS.map((s) => s.cat)).size, SD.DEVICE_STANDARDS.length, 'one standard per class');
+  assert.ok(SD.DEVICE_STANDARDS.every((s) => D.C.categories[s.cat] && !D.C.categories[s.cat].furniture), 'every standard is a hardware class of the catalogue');
+  assert.ok(cov.flagged.length > 0 && cov.flagged.every((d) => d.cat === 'projector'), 'the one class in service with no standard is flagged, not dropped');
+  for (const only of ['ATL', 'BAY']) assert.deepEqual(SD.installedDevices(undefined, only).map((d) => d.id), devs.filter((d) => d.building === only).map((d) => d.id), `${only}: one building is the same rule`);
+});
+test('MI-31 the firmware postures add up to the units in service, and "not validated" never counts as on baseline', () => {
+  const devs = SD.installedDevices(); const x = SD.firmwarePosture(devs, noEntries);
+  assert.equal(x.on.length + x.behind.length + x.unvalidated.length + x.nofirmware.length + x.nostandard.length, devs.length, 'five parts, every unit once');
+  assert.equal(x.withFirmware, x.on.length + x.behind.length + x.unvalidated.length);
+  assert.ok(x.on.length > 0 && x.behind.length > 0 && x.unvalidated.length > 0, 'each state is reached by the synthetic records');
+  assert.ok(x.on.every((d) => d.standard.firmware.state === 'approved'), 'a proposed baseline validates nothing');
+  assert.ok(x.on.every((d) => d.lifecycle === 'ACCEPTED' || d.lifecycle === 'OPERATIONAL'), 'a room still in commissioning has no recorded version, so none of its units is on baseline');
+  assert.ok(devs.filter((d) => d.cat === 'compute').every((d) => x.unvalidated.includes(d)), 'the class whose baseline is proposed is wholly not validated');
+  assert.ok(x.nofirmware.every((d) => !d.standard.firmware) && x.nostandard.every((d) => !d.standard), 'outside the posture only for those reasons');
+  // what the installation team records in this browser decides, against the approved baseline
+  const d = x.behind[0]; const base = d.standard.firmware.version; const at = (v) => SD.firmwareOf(d, { firmware: v });
+  assert.equal(at(base).posture, 'on'); assert.equal(at(base).source, 'device register');
+  assert.equal(at(d.standard.firmware.previous).posture, 'behind');
+  assert.equal(at('99.0').posture, 'unvalidated', 'newer than the baseline: nothing approved it');
+  assert.equal(at('build 7').posture, 'unvalidated', 'a version that cannot be compared is not validated');
+  assert.equal(at('  ').posture, 'behind', 'a blank entry leaves the commissioning record');
+  const c = devs.find((y) => y.cat === 'compute'); assert.equal(SD.firmwareOf(c, { firmware: c.standard.firmware.version }).posture, 'unvalidated', 'the proposed version itself is not validated');
+  const moved = SD.firmwarePosture(devs, (room) => (room === d.room ? { [d.position]: { firmware: base } } : {}));
+  assert.equal(moved.on.length, x.on.length + 1); assert.equal(moved.behind.length, x.behind.length - 1);
+  assert.equal(SD.compareVersions('3.10.0', '3.9.9'), 1); assert.equal(SD.compareVersions('3.4', '3.4.0'), 0); assert.equal(SD.compareVersions('v3', '3'), null);
+});
+test('MI-32 the sets behind the standards and the postures hold exactly the units counted, and every role that may open them sees them all', () => {
+  const roles = ['visitor', 'employee', 'exec', 'service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'steward', 'architect'];
+  const core = PC.buildCore(w, NODESK); const devs = SD.installedDevices(); const x = SD.firmwarePosture(devs, noEntries); const cov = SD.standardsCoverage(devs);
+  const want = { 'fw:on': x.on, 'fw:behind': x.behind, 'fw:unvalidated': x.unvalidated, 'std:none': cov.flagged, ...Object.fromEntries(cov.rows.map((r) => [`std:${r.s.cat}`, r.devices])) };
+  for (const [key, units] of Object.entries(want)) {
+    const set = PS.setOf(key); assert.ok(set, `the set ${key} exists`);
+    const items = set.items(core);
+    assert.deepEqual(items.map((i) => i.id).sort(), units.map((u) => u.id).sort(), `${key}: the units it counts`);
+    assert.equal(PS.setAuthority(key).area, 'set.devices', `${key}: the devices family's authority`);
+    for (const role of roles) if (P.allows(PS.setAuthority(key), role)) assert.equal(items.filter((i) => P.allows({ entity: i.type }, role)).length, items.length, `${key}: ${role} sees all ${items.length}`);
+  }
+  assert.equal(PS.setOf('std:nosuchclass'), undefined, 'a class with no standard has no set of its own');
+  for (const role of roles) { if (P.allows({ area: 'pro.eng' }, role)) assert.ok(P.allows(PS.setAuthority('std:camera'), role), `${role} may open the standards page, so the units behind it`);
+    if (P.allows({ area: 'pro.assets' }, role)) assert.ok(P.allows(PS.setAuthority('fw:on'), role), `${role} may open Asset Intelligence, so the units behind its posture`); }
+});
+test('MI-33 a standard\'s service life is the refresh plan\'s planning assumption for the class, not a second copy', () => {
+  const a = RP.defaultAssumptions(); const custom = { ...a, life: { ...a.life, camera: 2 } }; const units = RP.unitsInService(custom, H.syntheticHistory());
+  for (const s of SD.DEVICE_STANDARDS) { assert.equal(RP.lifeOf(a, s.cat), a.life[s.cat] ?? RP.DEFAULT_LIFE[s.cat] ?? 7, `${s.cat}: the starting assumption`);
+    const u = units.find((y) => y.cat === s.cat); if (u) assert.equal(RP.lifeOf(custom, s.cat), u.life, `${s.cat}: the life the refresh plan gives its units`); }
+  assert.equal(RP.lifeOf(custom, 'camera'), 2);
+  assert.equal(RP.lifeOf(a, 'nosuchclass'), 7, 'an unknown class takes the plan\'s fallback');
 });
