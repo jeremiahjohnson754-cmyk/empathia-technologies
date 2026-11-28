@@ -55,24 +55,31 @@ export interface Unit {
   breakFix12: number; signal: string | null;
 }
 
+/** The current installations (no removal date) that are not furniture: the units in service, one loop for the refresh plan and the device
+ * standards (standards/devices.ts). A unit at a position missing from its room's design is kept, with class "unknown". */
+export function currentInstallations(records: readonly RoomRecord[]) {
+  const out: Array<{ r: RoomRecord; i: RoomRecord['installations'][number]; p: RoomRecord['positions'][number] | null; cat: string }> = [];
+  for (const r of records) for (const i of r.installations) {
+    if (i.removedAt) continue;
+    const p = r.positions.find((x) => x.code === i.position) || null; const cat = p?.cat || 'unknown';
+    if (p?.furniture || FURNITURE.has(cat)) continue;
+    out.push({ r, i, p, cat });
+  }
+  return out;
+}
 /** Every unit in service now (current installation, not furniture), with its refresh year under the assumptions. */
 export function unitsInService(a: Assumptions, jobs: readonly ServiceJob[], records: readonly RoomRecord[] = allRecords()): Unit[] {
   const since = DEMO_NOW - YEAR_MS; const bf = new Map<string, number>();
   for (const j of jobs) if (j.asset && j.kind === 'break-fix' && Date.parse(j.openedAt) >= since && Date.parse(j.openedAt) <= DEMO_NOW) bf.set(j.asset, (bf.get(j.asset) || 0) + 1);
   const out: Unit[] = [];
-  for (const r of records) {
-    for (const i of r.installations) {
-      if (i.removedAt) continue;
-      const p = r.positions.find((x) => x.code === i.position); const cat = p?.cat || 'unknown';
-      if (p?.furniture || FURNITURE.has(cat)) continue;
-      const life = lifeOf(a, cat); const t = Date.parse(i.installedAt);
-      const dueYear = new Date(t + life * YEAR_MS).getUTCFullYear(); const n = bf.get(i.asset) || 0;
-      out.push({
-        asset: i.asset, position: i.position, label: p?.label || i.position, cat, room: r.outline.id, roomName: r.outline.name, building: r.outline.building, lifecycle: r.lifecycle,
-        installedAt: i.installedAt, life, dueYear, ageYears: Math.round(((DEMO_NOW - t) / YEAR_MS) * 10) / 10, overdue: dueYear <= NOW_YEAR,
-        breakFix12: n, signal: n >= a.serviceSignal ? `${n} break-fix jobs against this unit in the last 12 months: worth looking at before ${dueYear}` : null,
-      });
-    }
+  for (const { r, i, p, cat } of currentInstallations(records)) {
+    const life = lifeOf(a, cat); const t = Date.parse(i.installedAt);
+    const dueYear = new Date(t + life * YEAR_MS).getUTCFullYear(); const n = bf.get(i.asset) || 0;
+    out.push({
+      asset: i.asset, position: i.position, label: p?.label || i.position, cat, room: r.outline.id, roomName: r.outline.name, building: r.outline.building, lifecycle: r.lifecycle,
+      installedAt: i.installedAt, life, dueYear, ageYears: Math.round(((DEMO_NOW - t) / YEAR_MS) * 10) / 10, overdue: dueYear <= NOW_YEAR,
+      breakFix12: n, signal: n >= a.serviceSignal ? `${n} break-fix jobs against this unit in the last 12 months: worth looking at before ${dueYear}` : null,
+    });
   }
   return out.sort((x, y) => x.dueYear - y.dueYear || x.building.localeCompare(y.building) || x.room.localeCompare(y.room) || x.asset.localeCompare(y.asset));
 }

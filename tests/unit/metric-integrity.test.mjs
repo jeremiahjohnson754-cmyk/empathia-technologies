@@ -528,6 +528,12 @@ test('MI-30 every installed unit maps to exactly one standard or is flagged, and
   assert.equal(new Set(SD.DEVICE_STANDARDS.map((s) => s.cat)).size, SD.DEVICE_STANDARDS.length, 'one standard per class');
   assert.ok(SD.DEVICE_STANDARDS.every((s) => D.C.categories[s.cat] && !D.C.categories[s.cat].furniture), 'every standard is a hardware class of the catalogue');
   assert.ok(cov.flagged.length > 0 && cov.flagged.every((d) => d.cat === 'projector'), 'the one class in service with no standard is flagged, not dropped');
+  // the review of 348cffe0..582db891: the refresh plan counts an installation whose position is missing from the design (class unknown); the
+  // standards must count the same unit (one population, one loop) and flag it, never drop it
+  const r0 = D.allRecords()[0]; const odd = [{ ...r0, installations: [...r0.installations, { ...r0.installations[0], position: 'PA-9999', asset: 'AS-9999', removedAt: null }] }, ...D.allRecords().slice(1)];
+  const oddDevs = SD.installedDevices(odd); const oddUnit = oddDevs.find((d) => d.asset === 'AS-9999');
+  assert.equal(oddDevs.length, RP.unitsInService(RP.defaultAssumptions(), [], odd).length, 'a unit at a position missing from the design is in both');
+  assert.ok(oddUnit && !oddUnit.standard && SD.standardsCoverage(oddDevs).flagged.includes(oddUnit) && SD.firmwarePosture(oddDevs, noEntries).nostandard.includes(oddUnit), 'and it is flagged');
   for (const only of ['ATL', 'BAY']) assert.deepEqual(SD.installedDevices(undefined, only).map((d) => d.id), devs.filter((d) => d.building === only).map((d) => d.id), `${only}: one building is the same rule`);
 });
 test('MI-31 the firmware postures add up to the units in service, and "not validated" never counts as on baseline', () => {
@@ -547,6 +553,9 @@ test('MI-31 the firmware postures add up to the units in service, and "not valid
   assert.equal(at('build 7').posture, 'unvalidated', 'a version that cannot be compared is not validated');
   assert.equal(at('  ').posture, 'behind', 'a blank entry leaves the commissioning record');
   const c = devs.find((y) => y.cat === 'compute'); assert.equal(SD.firmwareOf(c, { firmware: c.standard.firmware.version }).posture, 'unvalidated', 'the proposed version itself is not validated');
+  // the review: register entries are kept by position, so one recorded before this unit was installed describes the unit it replaced
+  assert.equal(SD.firmwareOf(d, { firmware: base, at: new Date(Date.parse(d.installedAt) - 864e5).toISOString() }).posture, 'behind', 'an entry from before this unit was installed is not this unit\'s');
+  assert.equal(SD.firmwareOf(d, { firmware: base, at: new Date(Date.parse(d.installedAt) + 864e5).toISOString() }).posture, 'on', 'an entry after it is');
   const moved = SD.firmwarePosture(devs, (room) => (room === d.room ? { [d.position]: { firmware: base } } : {}));
   assert.equal(moved.on.length, x.on.length + 1); assert.equal(moved.behind.length, x.behind.length - 1);
   assert.equal(SD.compareVersions('3.10.0', '3.9.9'), 1); assert.equal(SD.compareVersions('3.4', '3.4.0'), 0); assert.equal(SD.compareVersions('v3', '3'), null);
@@ -554,7 +563,7 @@ test('MI-31 the firmware postures add up to the units in service, and "not valid
 test('MI-32 the sets behind the standards and the postures hold exactly the units counted, and every role that may open them sees them all', () => {
   const roles = ['visitor', 'employee', 'exec', 'service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'steward', 'architect'];
   const core = PC.buildCore(w, NODESK); const devs = SD.installedDevices(); const x = SD.firmwarePosture(devs, noEntries); const cov = SD.standardsCoverage(devs);
-  const want = { 'fw:on': x.on, 'fw:behind': x.behind, 'fw:unvalidated': x.unvalidated, 'std:none': cov.flagged, ...Object.fromEntries(cov.rows.map((r) => [`std:${r.s.cat}`, r.devices])) };
+  const want = { 'fw:on': x.on, 'fw:behind': x.behind, 'fw:unvalidated': x.unvalidated, 'fw:nofirmware': x.nofirmware, 'std:none': cov.flagged, ...Object.fromEntries(cov.rows.map((r) => [`std:${r.s.cat}`, r.devices])) };
   for (const [key, units] of Object.entries(want)) {
     const set = PS.setOf(key); assert.ok(set, `the set ${key} exists`);
     const items = set.items(core);
@@ -563,6 +572,7 @@ test('MI-32 the sets behind the standards and the postures hold exactly the unit
     for (const role of roles) if (P.allows(PS.setAuthority(key), role)) assert.equal(items.filter((i) => P.allows({ entity: i.type }, role)).length, items.length, `${key}: ${role} sees all ${items.length}`);
   }
   assert.equal(PS.setOf('std:nosuchclass'), undefined, 'a class with no standard has no set of its own');
+  assert.equal(PS.familyOf('std:projector'), undefined, 'nor a family: the address says no set has that name'); assert.equal(PS.familyOf('std:camera')?.key, 'fw');
   for (const role of roles) { if (P.allows({ area: 'pro.eng' }, role)) assert.ok(P.allows(PS.setAuthority('std:camera'), role), `${role} may open the standards page, so the units behind it`);
     if (P.allows({ area: 'pro.assets' }, role)) assert.ok(P.allows(PS.setAuthority('fw:on'), role), `${role} may open Asset Intelligence, so the units behind its posture`); }
 });

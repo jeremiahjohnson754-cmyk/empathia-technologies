@@ -16,6 +16,7 @@ import { personaOf, personaLabel } from '../build/store.js';
 import { canOpen, isRole } from '../access/policy.js';
 import { resolve } from '../registry.pages.js';
 import { callingRoomOf } from '../voice/model.js';
+import { openable } from './V25Nav.js';
 import { installedDevices, firmwareOf, classLabelOf, STANDARDS_NOTE } from '../standards/devices.js';
 
 const KIND_WORD = { installed: 'Installed', registered: 'Registered', baseline: 'Baseline', issue: 'Issue', service: 'Service', retired: 'Retired', replaced: 'Replaced' } as const;
@@ -75,8 +76,8 @@ export function AssetLifePage({ perspective, hash }: { perspective: string; hash
           const tone = f.posture === 'on' ? 'ok' : f.posture === 'behind' ? 'warn' : 'muted'; const word = { on: 'On baseline', behind: 'Behind baseline', unvalidated: 'Not validated', nofirmware: 'No firmware', nostandard: 'No standard' }[f.posture];
           return <Card icon="shield" title="Against its standard" sub={s ? `${s.id} · approved model ${s.model}` : `no standard covers the ${classLabelOf(d.cat).toLowerCase()} class`} testId="al-standard">
             <p><Tag tone={tone}>{word}</Tag> {f.why}.</p>
-            {s?.firmware ? <dl className="san__defs"><div><dt>Baseline</dt><dd className="ui-mono">{s.firmware.version} ({s.firmware.state})</dd></div><div><dt>Installed</dt><dd className="ui-mono">{f.installed || '—'}</dd></div><div><dt>From</dt><dd>{f.source || 'no record'}</dd></div></dl> : null}
-            <p className="ui-meta">Synthetic: {STANDARDS_NOTE}, and so are the versions the commissioning records carry.</p>
+            {s?.firmware ? <dl className="san__defs"><div><dt>Baseline</dt><dd className="ui-mono">{s.firmware.version} ({s.firmware.state})</dd></div><div><dt>Installed</dt><dd className="ui-mono" data-testid="al-std-installed">{f.installed || '—'}</dd></div><div><dt>From</dt><dd data-testid="al-std-from">{f.source || 'no record'}</dd></div></dl> : null}
+            <p className="ui-meta">Synthetic: {STANDARDS_NOTE}, and so are the versions the commissioning records carry.{openable(perspective, '#/pro/eng') ? <> <a href="#/pro/eng" data-testid="al-std-link">The device standards</a>.</> : null}</p>
           </Card>; })()}
       </> : null}
     </section>

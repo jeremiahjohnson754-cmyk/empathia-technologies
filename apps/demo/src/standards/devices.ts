@@ -18,7 +18,8 @@
  * the room's synthetic commissioning record carries (accepted and operational rooms only: a room still in commissioning has none yet).
  * The service life is not kept here: it is the refresh plan's planning assumption for the class (refresh/plan.ts lifeOf), one source.
  */
-import { allRecords, C, type RoomRecord } from '../campus/design.js';
+import { allRecords, type RoomRecord } from '../campus/design.js';
+import { currentInstallations, classLabel } from '../refresh/plan.js';
 
 export type BaselineState = 'approved' | 'proposed';
 export interface FirmwareBaseline { version: string; previous: string; state: BaselineState; by: string; at: string }
@@ -55,24 +56,14 @@ export const DEVICE_STANDARDS: readonly DeviceStandard[] = [
 ];
 const BY_CAT = new Map(DEVICE_STANDARDS.map((s) => [s.cat, s]));
 export const standardOf = (cat: string): DeviceStandard | null => BY_CAT.get(cat) ?? null;
-export const classLabelOf = (cat: string) => (C.categories as Record<string, { label?: string }>)[cat]?.label || cat;
+export const classLabelOf = classLabel;
 
-export interface InstalledDevice { id: string; room: string; building: string; lifecycle: string; position: string; asset: string; cat: string; label: string; standard: DeviceStandard | null }
-const FURNITURE = new Set(['table', 'chairs', 'lectern']);
-/** The units in service: a current installation (no removal date) at a hardware position; the refresh plan's population. `id` is the
- * Device record's id in the Core (room/position). */
+export interface InstalledDevice { id: string; room: string; building: string; lifecycle: string; position: string; asset: string; cat: string; label: string; installedAt: string; standard: DeviceStandard | null }
+/** The units in service: the refresh plan's own population (refresh/plan.ts currentInstallations, one loop). `id` is the Device record's id
+ * in the Core (room/position). A unit at a position missing from its design has class "unknown", so no standard: it is flagged. */
 export function installedDevices(records: ReadonlyArray<RoomRecord> = allRecords(), only: string | null = null): InstalledDevice[] {
-  const out: InstalledDevice[] = [];
-  for (const r of records) {
-    if (only && r.outline.building !== only) continue;
-    for (const i of r.installations) {
-      if (i.removedAt) continue;
-      const p = r.positions.find((x) => x.code === i.position); const cat = p?.cat || '';
-      if (!p || p.furniture || FURNITURE.has(cat)) continue;
-      out.push({ id: `${r.outline.id}/${p.code}`, room: r.outline.id, building: r.outline.building, lifecycle: r.lifecycle, position: p.code, asset: i.asset, cat, label: p.label, standard: standardOf(cat) });
-    }
-  }
-  return out;
+  return currentInstallations(only ? records.filter((r) => r.outline.building === only) : records).map(({ r, i, p, cat }) => ({
+    id: `${r.outline.id}/${i.position}`, room: r.outline.id, building: r.outline.building, lifecycle: r.lifecycle, position: i.position, asset: i.asset, cat, label: p?.label || i.position, installedAt: i.installedAt, standard: standardOf(cat) }));
 }
 
 /** Compares two plain dotted versions ("3.4.2"); null when either is not plain numbers, so it cannot be compared. */
@@ -92,16 +83,19 @@ export function commissionedVersion(d: InstalledDevice): string | null {
 }
 
 export type Posture = 'on' | 'behind' | 'unvalidated' | 'nofirmware' | 'nostandard';
-export interface FirmwareRead { posture: Posture; installed: string | null; source: 'device register' | 'commissioning record' | null; why: string }
-export type EntriesOf = (room: string) => Record<string, { firmware?: string } | undefined>;
+export interface FirmwareRead { posture: Posture; installed: string | null; source: 'device register' | 'synthetic commissioning record' | null; why: string }
+export interface EntryLike { firmware?: string; at?: string }
+export type EntriesOf = (room: string) => Record<string, EntryLike | undefined>;
 
-export function firmwareOf(d: InstalledDevice, entry?: { firmware?: string } | null): FirmwareRead {
+export function firmwareOf(d: InstalledDevice, entry?: EntryLike | null): FirmwareRead {
   const s = d.standard;
   if (!s) return { posture: 'nostandard', installed: null, source: null, why: `no standard covers the ${classLabelOf(d.cat).toLowerCase()} class` };
   const f = s.firmware;
   if (!f) return { posture: 'nofirmware', installed: null, source: null, why: s.note || 'the class carries no firmware' };
-  const typed = entry?.firmware?.trim();
-  const installed = typed || commissionedVersion(d); const source = typed ? 'device register' : installed ? 'commissioning record' : null;
+  // the register keeps entries by position: one recorded before this unit was installed is the replaced unit's, not this one's
+  const mine = entry && !(entry.at && Date.parse(entry.at) < Date.parse(d.installedAt)) ? entry : null;
+  const typed = mine?.firmware?.trim();
+  const installed = typed || commissionedVersion(d); const source = typed ? 'device register' : installed ? 'synthetic commissioning record' : null;
   if (f.state !== 'approved') return { posture: 'unvalidated', installed, source, why: `the baseline ${f.version} is proposed, not approved` };
   if (!installed) return { posture: 'unvalidated', installed: null, source: null, why: 'no installed version is on record' };
   const c = compareVersions(installed, f.version);
