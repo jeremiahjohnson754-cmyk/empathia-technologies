@@ -8,11 +8,11 @@ import test from 'node:test'; import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const esbuild = await import(path.join(repo, 'node_modules/esbuild/lib/main.js'));
-const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as T from './service/targets.ts'; export * as DE from './dispatch/engine.ts'; export * as PV from './pages/ProViews.tsx'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts'; export * as XE from './export/estate.ts'; export * as LG from './parity/Ledger.tsx'; export * as ASK from './parity/Ask.tsx'; export * as CN from './campus/canon.ts'; export * as AM from './assurance/model.ts'; export * as U from './search/understand.ts'; export * as V14 from './parity/v14Model.ts'; export * as IM from './intake/model.ts';`;
+const entry = `export * as M from './campus/metrics.ts'; export * as MI from './campus/mission.ts'; export * as DEF from './campus/definitions.ts'; export * as D from './campus/design.ts'; export * as W from './workspace/store.ts'; export * as P from './access/policy.ts'; export * as R from './registry.pages.ts'; export * as XS from './export/service.ts'; export * as XA from './export/as.ts'; export * as REC from './champion/recognition.ts'; export * as V from './pages/viz.tsx'; export * as TW from './parity/Tower.tsx'; export * as H from './service/history.ts'; export * as AN from './service/analytics.ts'; export * as T from './service/targets.ts'; export * as RP from './refresh/plan.ts'; export * as DE from './dispatch/engine.ts'; export * as PV from './pages/ProViews.tsx'; export * as PC from './parity/core.ts'; export * as PS from './parity/sets.ts'; export * as AR from './campus/asRecord.ts'; export * as XE from './export/estate.ts'; export * as LG from './parity/Ledger.tsx'; export * as ASK from './parity/Ask.tsx'; export * as CN from './campus/canon.ts'; export * as AM from './assurance/model.ts'; export * as U from './search/understand.ts'; export * as V14 from './parity/v14Model.ts'; export * as IM from './intake/model.ts';`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'metric-integrity-')); const out = path.join(dir, 'm.mjs');
 await esbuild.build({ stdin: { contents: entry, resolveDir: path.join(repo, 'apps/demo/src'), loader: 'ts' }, bundle: true, format: 'esm', platform: 'node', outfile: out, jsx: 'automatic', logLevel: 'error', splitting: false, nodePaths: [path.join(repo, 'node_modules')],
   alias: { '@empathia/ui': path.join(repo, 'packages/ui/src/index.ts') }, plugins: [{ name: 'lazy', setup(b) { b.onResolve({ filter: /\.(js)$/ }, (a) => a.kind === 'dynamic-import' ? { path: a.path, external: true } : undefined); } }] });
-const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR, XE, LG, ASK, CN, AM, U, V14, IM, T, DE, PV } = await import(pathToFileURL(out).href);
+const { M, MI, DEF, D, W, P, R, XS, XA, REC, V, TW, H, AN, PC, PS, AR, XE, LG, ASK, CN, AM, U, V14, IM, T, DE, PV, RP } = await import(pathToFileURL(out).href);
 // the Ask answer's lead is static markup (no hooks), so the repository's renderer can read it
 const { renderToStaticMarkup } = (await import('node:module')).createRequire(path.join(repo, 'package.json'))('react-dom/server');
 process.on('exit', () => fs.rmSync(dir, { recursive: true, force: true }));
@@ -478,4 +478,21 @@ test('MI-27 Issue Intelligence\'s twelve-month service figures are Service analy
     assert.deepEqual(k.late.map((i) => i.id).sort(), breachedOpen(ws, Date.now()), `${label}: past target`);
     assert.equal(k.escalated, null, 'no record carries an escalation, so "escalated" is not counted');
   }
+});
+
+// MI-28 (the Pro register's PRO-AS-04/05, 28 Nov): Asset Intelligence's refresh exposure is the refresh plan's own figures, over the same
+// units and the same planning assumptions (a service life per class: a planning assumption, never a manufacturer's end-of-support
+// date, which no record holds). V2.5.3 showed lifecycle status by support end date; the records here can support only the planned life.
+test('MI-28 Asset Intelligence\'s refresh exposure is the refresh plan\'s: units in service, past their planned life, due by the horizon', () => {
+  const a = RP.defaultAssumptions(); const jobs = H.syntheticHistory();
+  const custom = { ...a, life: { ...a.life, display: 1, camera: 2 } };
+  for (const [as, label] of [[a, 'starting assumptions'], [custom, 'displays 1 year, cameras 2']]) for (const only of [null, 'ATL']) {
+    const units = RP.unitsInService(as, jobs).filter((u) => !only || u.building === only);
+    const x = RP.refreshExposure(as, jobs, only, 3);
+    assert.equal(x.inService, units.length, `${label} ${only || 'campus'}: units in service`);
+    assert.equal(x.past, units.filter((u) => u.overdue).length, `${label} ${only || 'campus'}: past their planned life`);
+    assert.equal(x.dueBy, RP.strategy(units, 3, as).reduce((n, r) => n + r.units, 0), `${label} ${only || 'campus'}: due by ${RP.NOW_YEAR + 3}, as the refresh plan's tile`);
+    assert.deepEqual(x.years.map((y) => y.units), RP.strategy(units, 3, as).map((r) => r.units), `${label} ${only || 'campus'}: units per year, as the refresh plan's chart`);
+  }
+  assert.ok(RP.refreshExposure(custom, jobs, null, 3).past > RP.refreshExposure(a, jobs, null, 3).past, 'a shorter planned life puts more units past it');
 });

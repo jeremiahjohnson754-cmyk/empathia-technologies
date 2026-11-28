@@ -190,7 +190,7 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   // iss:late), and the Pro command center counts the same, by the one restore rule (service/targets.ts). A Mission critical request
   // opened 12 h ago is added to this browser's workspace first: past its 8 h target, inside the old command center's 1 day, so the old
   // rule would count one fewer (the review of af85e226: nothing rendered caught that).
-  const tileVal = async (sel) => parseInt(await t.page.locator(sel).first().textContent().catch(() => '') || '', 10);
+  const tileVal = async (sel) => parseInt(((await t.page.locator(sel).first().textContent().catch(() => '')) || '').replace(/,/g, ''), 10);   // "1,076" is 1076
   const setCount = async () => parseInt(((await t.page.locator('main').first().innerText().catch(() => '')).match(/(\d[\d,]*) (?:issues?|requests?|records?)\./) || [])[1]?.replace(/,/g, '') || '', 10);
   await t.page.evaluate(() => { const k = 'empathia.demo.workspace.v1'; const w = JSON.parse(localStorage.getItem(k) || 'null'); if (!w) return; const src = w.incidents.find((i) => i.id === 'ISS-0417'); const at = new Date(Date.now() - 12 * 3600e3).toISOString();
     w.incidents.push({ ...src, id: 'ISS-9903', severity: 'Mission critical', state: 'OPEN', openedAt: at, restoredAt: null, closedAt: null, history: [{ to: 'OPEN', at, by: 'requestor' }], apexId: null, recurrenceOf: null, workOrderId: null }); localStorage.setItem(k, JSON.stringify(w)); });
@@ -210,6 +210,16 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   await t.go('#/pro/issues', 1800); const techMttrHref = await t.page.locator('[data-testid="pro-mttr"]').first().getAttribute('href').catch(() => 'none');
   await setRole(t, 'architect'); await t.page.reload(); await t.page.waitForTimeout(600);
   ok('MC-target-01', 'Issue Intelligence\'s "Past their target" opens the requests it counts (a Mission critical request open 12 h among them), the Pro command center counts the same by the one restore rule, the service manager sees the same set; the twelve-month tiles open Service analytics for twelve months where the role may open it; "escalated" says it is not counted', Number.isFinite(isLate) && isLate >= 1 && isMttr === 1 && setHash === '#/set/iss:late' && setN === isLate && ccLate === isLate && /ISS-9903|8 h target/.test(ccRow) && smLate === isLate && smSet === isLate && mttrHref === '#/v25/service/analytics?m=12' && techMttrHref === null && /not counted/.test(esc), JSON.stringify({ isLate, isMttr, setHash, setN, ccLate, smLate, smSet, mttrHref, techMttrHref, esc: esc.slice(0, 60) }));
+  // MC-life-01 (PRO-AS-04/05, 28 Nov): Asset Intelligence's refresh exposure equals the refresh plan's tiles for the same horizon, and
+  // follows the planner's assumptions when they change (one shared store); it says the service life is a planning assumption and that
+  // no firmware version or warranty date is on record.
+  const lifeOf = async () => { await t.go('#/pro/assets', 1800); return { inS: await tileVal('[data-testid="pro-life-in"] .kit-tile__value'), past: await tileVal('[data-testid="pro-life-past"] .kit-tile__value'), due: await tileVal('[data-testid="pro-life-due"] .kit-tile__value'),
+    note: (await t.page.locator('[data-testid="pro-life"]').first().innerText().catch(() => '')) || '' }; };
+  const rpOf = async () => { await t.go('#/pro/refresh?h=3', 1800); return { inS: await tileVal('[data-testid="rp-kpis"] .kit-tile:has(.kit-tile__label:text-is("Units in service")) .kit-tile__value'), due: await tileVal('[data-testid="rp-kpis"] .kit-tile:has(.kit-tile__label:text-is("Due by 2029")) .kit-tile__value') }; };
+  const life0 = await lifeOf(); const rp0 = await rpOf();
+  await t.page.evaluate(() => localStorage.setItem('empathia.demo.refresh.v1', JSON.stringify({ life: { display: 1 } }))); await t.page.reload(); await t.page.waitForTimeout(600);
+  const life1 = await lifeOf(); const rp1 = await rpOf(); await t.page.evaluate(() => localStorage.removeItem('empathia.demo.refresh.v1'));
+  ok('MC-life-01', 'Asset Intelligence\'s refresh exposure is the refresh plan\'s (units in service, due by 2029) and follows the planner\'s assumptions; it calls the service life a planning assumption and says firmware and warranty are not on record', Number.isFinite(life0.inS) && life0.inS === rp0.inS && life0.due === rp0.due && life1.inS === rp1.inS && life1.due === rp1.due && life1.past > life0.past && /planning assumption/i.test(life0.note) && /firmware/i.test(life0.note) && /warranty/i.test(life0.note), JSON.stringify({ life0: { ...life0, note: undefined }, rp0, life1: { ...life1, note: undefined }, rp1 }));
   await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);
