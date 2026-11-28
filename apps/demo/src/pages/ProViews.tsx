@@ -108,7 +108,8 @@ export function issueKpis(w: S.Workspace, nowMs: number, only: string | null = n
   const inc = w.incidents.filter((i) => !only || i.buildingKey === only);
   const jobs = [...syntheticHistory(), ...workspaceJobs(w)].filter((j) => !only || j.building === only); const ms = months(12);
   const s = stats(jobs, ms[0]!.from, ms[ms.length - 1]!.to);
-  return { open: inc.filter(isOpenRequest), late: pastTargetOf(inc, nowMs), mttrH: s.mttrH, restoreSla: s.restoreSla, reopen: s.reopen, closed: s.closed, escalated: null as number | null, from: ms[0]!.label, to: ms[ms.length - 1]!.label };
+  const mon = (t: number) => new Date(t).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+  return { open: inc.filter(isOpenRequest), late: pastTargetOf(inc, nowMs), mttrH: s.mttrH, restoreSla: s.restoreSla, reopen: s.reopen, closed: s.closed, escalated: null as number | null, from: mon(ms[0]!.from), to: mon(ms[ms.length - 1]!.from) };
 }
 export function IssuesPage({ perspective, hash }: { perspective: string; hash?: string }) {
   const persona = personaOf(perspective); const { w } = useWorkspace(); const only = buildingParam(hash); const recs = allRecords().filter((r) => !only || r.outline.building === only);
@@ -134,11 +135,15 @@ export function IssuesPage({ perspective, hash }: { perspective: string; hash?: 
         <StatTile label="Recurrences" value={rec.length} icon="undo" tone="apex" href="#/v25/apex" hint="Diagnosed by APEX before another visit" />
       </div>
       {(() => { const k = issueKpis(w, Date.now(), only);
+        // each figure opens its records where this role may open them: the set of late issues, and Service analytics for the same twelve
+        // months and building (the review of af85e226: technicians and systems engineers were sent to a page they may not open)
+        const lateHref = !only && openable(perspective, '#/set/iss:late') ? '#/set/iss:late' : undefined;
+        const svcHref = openable(perspective, '#/v25/service/analytics') ? `#/v25/service/analytics?m=12${only ? `&b=${only}` : ''}` : undefined;
         return <><div className="kit-grid kit-grid--tiles wk-tiles4 pro-strip" data-testid="pro-issues-service">
-          <StatTile testId="pro-late" label="Past their target" value={k.late.length} unit={`of ${k.open.length}`} icon="clock" tone="bad" href={only ? undefined : '#/set/req:late'} hint={`open requests not restored within ${TARGETS_TEXT}`} />
-          <StatTile testId="pro-mttr" label="Median time to restore" value={k.mttrH} unit=" h" digits={1} icon="clock" tone="info" href="#/v25/service/analytics" hint={`jobs opened ${k.from} to ${k.to}, as Service analytics counts them`} />
-          <StatTile testId="pro-in-target" label="Restored within target" value={k.restoreSla} unit="%" icon="check" tone="ok" href="#/v25/service/analytics" hint={`of the jobs restored, opened ${k.from} to ${k.to}`} />
-          <StatTile testId="pro-reopened" label="Reopened after closure" value={k.reopen} unit="%" icon="undo" tone="warn" href="#/v25/service/analytics" hint={`of ${plural(k.closed, 'job')} closed, ${k.from} to ${k.to}`} />
+          <StatTile testId="pro-late" label="Past their target" value={k.late.length} unit={`of ${k.open.length}`} icon="clock" tone="bad" href={lateHref} hint={`open requests not restored within their target (${TARGETS_TEXT}), or restored after it`} />
+          <StatTile testId="pro-mttr" label="Median time to restore" value={k.mttrH} unit=" h" icon="clock" tone="info" href={svcHref} hint={`median of the jobs restored, opened ${k.from} through ${k.to}, as Service analytics counts them`} />
+          <StatTile testId="pro-in-target" label="Restored within target" value={k.restoreSla} unit="%" icon="check" tone="ok" href={svcHref} hint={`of the jobs restored, opened ${k.from} through ${k.to}`} />
+          <StatTile testId="pro-reopened" label="Reopened after closure" value={k.reopen} unit="%" icon="undo" tone="warn" href={svcHref} hint={`of ${plural(k.closed, 'job')} closed, ${k.from} through ${k.to}`} />
         </div>
         <p className="wk-note" data-testid="pro-escalated">Escalated and still open: not counted, because no record in this demonstration carries an escalation.</p></>; })()}
       {/* #234 (founder 13:42, 14:00): the failure map — the same campus map with the Issues lens, counts and rates per 10 rooms, the source and
@@ -149,13 +154,13 @@ export function IssuesPage({ perspective, hash }: { perspective: string; hash?: 
         <Card icon="pulse" title="Open by severity"><Donut label="Open room issues by severity" total="open" segments={sev} /></Card>
         <Card icon="filter" title="Where issues come from" sub="Every room issue, by the check that found it"><Donut label="Room issues by source" total="issues" segments={bySource} /></Card>
       </div>
-      {(() => { const hist = syntheticHistory().filter((j) => !only || j.building === only); const ms = months(12); const ser = ms.map((m) => stats(hist, m.from, m.to));
+      {(() => { const hist = syntheticHistory().filter((j) => !only || j.building === only); const ms = months(12);
         const repeat = [...hist.reduce((m, j) => m.set(j.roomId, [...(m.get(j.roomId) || []), j]), new Map<string, typeof hist>()).entries()].map(([id, js]) => ({ id, name: js[0]!.roomName, n: js.length, layers: [...new Set(js.map((j) => j.layer))] })).sort((a, b) => b.n - a.n).slice(0, 6);
         return <div className="wk-g2" data-testid="pro-issues-trends">
           <Card icon="chart" title="Issues by month and layer" sub="Opened in the synthetic service history · click through to Service analytics">
             <TrendChart testId="pro-issues-trend" title="Jobs opened by layer, by month (synthetic history)" labels={ms.map((m) => m.label)} unit=""
               series={(['audio', 'video', 'display', 'control', 'network'] as const).map((l, k) => ({ name: LAYER_LABEL[l], tone: (['info', 'violet', 'warn', 'indigo', 'ok'] as const)[k]!, values: ms.map((m) => hist.filter((j) => j.layer === l && monthKey(j.openedAt) === m.key).length) }))} />
-            <p className="wk-note">Reopened after closure: {ser.reduce((a, x) => a + Math.round(((x.reopen ?? 0) * x.closed) / 100), 0)} jobs in twelve months. <a href="#/v25/service/analytics">Service analytics</a></p>
+            {openable(perspective, '#/v25/service/analytics') ? <p className="wk-note">Response, restore and reopening by vendor and month: <a href={`#/v25/service/analytics?m=12${only ? `&b=${only}` : ''}`}>Service analytics</a></p> : null}
           </Card>
           <Card icon="undo" title="Rooms that keep coming back" sub="Most service jobs in fifteen months · synthetic history">
             <List label="Rooms with the most service jobs">{repeat.map((r) => <ListRow key={r.id} title={r.name} sub={`${r.layers.map((l) => LAYER_LABEL[l]).join(', ')}`} href={`#/commissioning/room/${r.id}`} trailing={<Tag tone="warn">{r.n}</Tag>} />)}</List>

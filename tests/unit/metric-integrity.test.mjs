@@ -443,7 +443,11 @@ const targetFixtures = () => {
   // the seed, and the seed with a Mission critical request opened 12 hours ago in Atlas 4.218 (past 8 h, inside 1 day)
   const mc = structuredClone(w); const src = mc.incidents.find((i) => i.id === 'ISS-0417');
   mc.incidents.push({ ...structuredClone(src), id: 'ISS-9903', severity: 'Mission critical', state: 'OPEN', openedAt: new Date(Date.now() - H12).toISOString(), restoredAt: null, closedAt: null, history: [{ to: 'OPEN', at: new Date(Date.now() - H12).toISOString(), by: 'requestor' }], apexId: null, recurrenceOf: null, workOrderId: null });
-  return [[w, 'seed'], [mc, 'Mission critical request open 12 h']];
+  // and a Mission critical request restored after 20 h and resolved: late, but not open, so no open count holds it (the review of
+  // af85e226: dropping the "open" condition from pastTargetOf passed every test)
+  const done = structuredClone(mc); const at = (h) => new Date(Date.now() - h * 3600e3).toISOString();
+  done.incidents.push({ ...structuredClone(src), id: 'ISS-9904', severity: 'Mission critical', state: 'RESOLVED', openedAt: at(30), restoredAt: at(10), closedAt: null, history: [{ to: 'OPEN', at: at(30), by: 'requestor' }, { to: 'RESOLVED', at: at(10), by: 'tech-ana' }], apexId: null, recurrenceOf: null, workOrderId: null });
+  return [[w, 'seed'], [mc, 'Mission critical request open 12 h'], [done, 'and a resolved one restored late']];
 };
 const breachedOpen = (ws, now) => ws.incidents.filter((i) => ['OPEN', 'TRIAGED', 'ASSIGNED', 'ACCEPTED', 'IN_PROGRESS', 'VERIFYING', 'REOPENED'].includes(i.state) && DE.slaOf(i.severity, i.openedAt, i.restoredAt, now).state === 'breached').map((i) => i.id).sort();
 test('MI-25 one restore target: Pro\'s past-target rule is the dispatch board\'s (8, 48 and 120 h)', () => {
@@ -454,11 +458,16 @@ test('MI-25 one restore target: Pro\'s past-target rule is the dispatch board\'s
   }
   assert.ok(T.pastTargetOf(targetFixtures()[1][0].incidents, Date.now()).some((i) => i.id === 'ISS-9903'), 'a Mission critical request open 12 h is past its 8 h target');
 });
-test('MI-26 the set behind "Past their target" holds exactly those requests', () => {
+test('MI-26 the set behind "Past their target" holds exactly those requests, and every role that may open it sees them all', () => {
+  const roles = ['visitor', 'employee', 'exec', 'service', 'svcmgr', 'syseng', 'designer', 'installer', 'cxeng', 'ipm', 'bpm', 'ops', 'steward', 'architect'];
   for (const [ws, label] of targetFixtures()) {
-    const core = PC.buildCore(ws, NODESK); const set = PS.setOf('req:late');
-    assert.ok(set, 'the set req:late exists');
-    assert.deepEqual(set.items(core).map((x) => x.id).sort(), breachedOpen(ws, Date.now()).map((id) => `RQ-${id}`), `${label}: req:late is the breached open requests`);
+    const core = PC.buildCore(ws, NODESK); const set = PS.setOf('iss:late');
+    assert.ok(set, 'the set iss:late exists');
+    const items = set.items(core);
+    assert.deepEqual(items.map((x) => x.id).sort(), breachedOpen(ws, Date.now()), `${label}: iss:late is the breached open requests (their issues)`);
+    // the review of af85e226: the set listed Request records, which the service manager and the technician may not see, so a tile
+    // reading 1 opened a set reading 0 for them. Every role the set's authority admits must see every record it counts.
+    for (const role of roles) if (P.allows(PS.setAuthority('iss:late'), role)) assert.equal(items.filter((x) => P.allows({ entity: x.type }, role)).length, items.length, `${label}: ${role} may open iss:late and sees all ${items.length}`);
   }
 });
 test('MI-27 Issue Intelligence\'s twelve-month service figures are Service analytics\' over the same jobs and months', () => {

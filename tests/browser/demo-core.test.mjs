@@ -187,14 +187,29 @@ const setRole = (t, r) => t.page.evaluate((x) => localStorage.setItem('empathia.
   await t.go('#/control/tower', 1800); const twH = await ringOf(); const twA = await attOf();
   ok('MC-health-01', 'the Control Tower\'s campus health and rooms needing attention are Mission Control\'s (one health rule)', Number.isFinite(mcH.n) && twH.n === mcH.n && twH.state === mcH.state && Number.isFinite(mcA) && twA === mcA, JSON.stringify({ mcH, twH, mcA, twA }));
   // MC-target-01 (the service-target slice, 27 Nov): Issue Intelligence shows "Past their target" and it opens its records (the set
-  // req:late), and the Pro command center's "Past their target" is the same number, by the one restore rule (service/targets.ts).
+  // iss:late), and the Pro command center counts the same, by the one restore rule (service/targets.ts). A Mission critical request
+  // opened 12 h ago is added to this browser's workspace first: past its 8 h target, inside the old command center's 1 day, so the old
+  // rule would count one fewer (the review of af85e226: nothing rendered caught that).
   const tileVal = async (sel) => parseInt(await t.page.locator(sel).first().textContent().catch(() => '') || '', 10);
+  const setCount = async () => parseInt(((await t.page.locator('main').first().innerText().catch(() => '')).match(/(\d[\d,]*) (?:issues?|requests?|records?)\./) || [])[1]?.replace(/,/g, '') || '', 10);
+  await t.page.evaluate(() => { const k = 'empathia.demo.workspace.v1'; const w = JSON.parse(localStorage.getItem(k) || 'null'); if (!w) return; const src = w.incidents.find((i) => i.id === 'ISS-0417'); const at = new Date(Date.now() - 12 * 3600e3).toISOString();
+    w.incidents.push({ ...src, id: 'ISS-9903', severity: 'Mission critical', state: 'OPEN', openedAt: at, restoredAt: null, closedAt: null, history: [{ to: 'OPEN', at, by: 'requestor' }], apexId: null, recurrenceOf: null, workOrderId: null }); localStorage.setItem(k, JSON.stringify(w)); });
+  await t.page.reload(); await t.page.waitForTimeout(600);
   await t.go('#/pro/issues', 1800); const isLate = await tileVal('[data-testid="pro-late"] .kit-tile__value'); const isMttr = await t.page.locator('[data-testid="pro-mttr"]').count();
+  const mttrHref = await t.page.locator('[data-testid="pro-mttr"]').first().getAttribute('href').catch(() => null);
   const esc = (await t.page.locator('[data-testid="pro-escalated"]').textContent().catch(() => '')) || '';
   await t.page.locator('[data-testid="pro-late"]').first().click().catch(() => {}); await t.page.waitForTimeout(1400);
-  const setHash = await t.page.evaluate(() => location.hash); const setN = parseInt(((await t.page.locator('main').first().innerText().catch(() => '')).match(/(\d+) (?:requests?|records?)\./) || [])[1] || '', 10);
+  const setHash = await t.page.evaluate(() => location.hash); const setN = await setCount();
   await t.go('#/pro', 1800); const ccLate = await tileVal('.kit-tile:has(.kit-tile__label:text-is("Past their target")) .kit-tile__value');
-  ok('MC-target-01', 'Issue Intelligence\'s "Past their target" opens the requests it counts, and the Pro command center counts the same (one restore rule); "escalated" says it is not counted', Number.isFinite(isLate) && isMttr === 1 && setHash === '#/set/req:late' && setN === isLate && ccLate === isLate && /not counted/.test(esc), JSON.stringify({ isLate, isMttr, setHash, setN, ccLate, esc: esc.slice(0, 60) }));
+  const ccRow = await t.page.locator('[data-testid="pro-working"]').first().innerText().catch(() => '');
+  // the service manager opens the same set and sees the same number (it listed Request records, which that role may not see); a
+  // technician's twelve-month tiles do not link to Service analytics, which that role may not open
+  await setRole(t, 'svcmgr'); await t.page.reload(); await t.page.waitForTimeout(600);
+  await t.go('#/pro/issues', 1800); const smLate = await tileVal('[data-testid="pro-late"] .kit-tile__value'); await t.go('#/set/iss:late', 1600); const smSet = await setCount();
+  await setRole(t, 'service'); await t.page.reload(); await t.page.waitForTimeout(600);
+  await t.go('#/pro/issues', 1800); const techMttrHref = await t.page.locator('[data-testid="pro-mttr"]').first().getAttribute('href').catch(() => 'none');
+  await setRole(t, 'architect'); await t.page.reload(); await t.page.waitForTimeout(600);
+  ok('MC-target-01', 'Issue Intelligence\'s "Past their target" opens the requests it counts (a Mission critical request open 12 h among them), the Pro command center counts the same by the one restore rule, the service manager sees the same set; the twelve-month tiles open Service analytics for twelve months where the role may open it; "escalated" says it is not counted', Number.isFinite(isLate) && isLate >= 1 && isMttr === 1 && setHash === '#/set/iss:late' && setN === isLate && ccLate === isLate && /ISS-9903|8 h target/.test(ccRow) && smLate === isLate && smSet === isLate && mttrHref === '#/v25/service/analytics?m=12' && techMttrHref === null && /not counted/.test(esc), JSON.stringify({ isLate, isMttr, setHash, setN, ccLate, smLate, smSet, mttrHref, techMttrHref, esc: esc.slice(0, 60) }));
   await t.close(); }
 for (const scheme of SCHEMES) for (const vp of [[1440, 900, 'desktop'], [390, 844, 'phone']]) {
   const tag = `${scheme}-${vp[2]}`; const t = await open(vp, scheme, { hash: '#/home' }); await t.page.waitForTimeout(700);

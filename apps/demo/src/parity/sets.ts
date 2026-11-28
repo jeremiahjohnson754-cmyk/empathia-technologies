@@ -28,10 +28,9 @@ export const FAMILIES: Family[] = [
   { key: 'iss', label: 'Issues', blurb: 'Issues behind a number', sets: [
     { key: 'iss:open', title: 'Open issues', how: 'Every issue not resolved or canceled: room records and the ServiceHands workspace of this browser.', items: (c) => c.byType.Issue.filter((i) => i.state !== 'RESOLVED' && i.state !== 'CANCELLED') },
     { key: 'iss:high', title: 'Open high-severity issues', how: 'Open, and High or Mission critical.', items: (c) => c.byType.Issue.filter((i) => i.state !== 'RESOLVED' && i.state !== 'CANCELLED' && i.tone === 'bad') },
+    // the issues, not the Request records: every role that may open the issues family may see Issue records (the review of af85e226)
+    { key: 'iss:late', title: 'Open issues past their target', how: `Service requests in the ServiceHands workspace of this browser that are open and were not restored within their severity's restore target (${TARGETS_TEXT}, business days counted as 24 h), or were restored after it: the dispatch board's and Service analytics' rule.`, items: (c) => { const late = new Set(c.lateIssues(Date.now())); return c.byType.Issue.filter((i) => late.has(i.id)); } },
     { key: 'iss:resolved', title: 'Resolved issues', how: 'Issues whose state is RESOLVED.', items: (c) => c.byType.Issue.filter((i) => i.state === 'RESOLVED') },
-  ] },
-  { key: 'req', label: 'Requests', blurb: 'Service requests behind a number', sets: [
-    { key: 'req:late', title: 'Requests past their target', how: `Open service requests in the ServiceHands workspace of this browser that were not restored within their severity's restore target (${TARGETS_TEXT}, business days counted as 24 h), or were restored after it: the dispatch board's and Service analytics' rule.`, items: (c) => { const late = new Set(c.lateRequests(Date.now())); return c.byType.Request.filter((r) => late.has(r.id)); } },
   ] },
   { key: 'doc', label: 'Documents', blurb: 'Documents behind a number', sets: [
     { key: 'doc:all', title: 'Every document on record', how: 'Design summaries, commissioning reports, as-built drawings and room guides the room records hold.', items: (c) => c.byType.Document },
@@ -50,13 +49,13 @@ export const FAMILIES: Family[] = [
 export const ALL_SETS = FAMILIES.flatMap((f) => f.sets.map((s) => ({ ...s, family: f })));
 export const setOf = (key: string) => ALL_SETS.find((s) => s.key === key);
 export const familyOf = (key: string) => FAMILIES.find((f) => f.key === key.split(':')[0]);
-/** V2.5.3 azArea for #/set/<key> (12-authz.js), verbatim in effect; req (service requests past target, 27 Nov) is not V2.5.3's and reads set.issues, the authority of the issues they are. */
+/** V2.5.3 azArea for #/set/<key> (12-authz.js), verbatim in effect */
 /** V2.5.3's family names (#/set/devices …) are kept as aliases of the short keys, so every legacy address still opens its family —
  * for the roles V2.5.3 gave that family to (the authority reads the same alias the page does). */
 export const LEGACY_FAMILY: Record<string, string> = { devices: 'dev', rooms: 'room', issues: 'iss', docs: 'doc', changes: 'chg' };
 export function setAuthority(key: string): Authority {
   const k = key.split('@')[0]!.split(':'); k[0] = LEGACY_FAMILY[k[0]!] ?? k[0]!;
   if (k[0] === 'as') return { area: k[1] === 'ready' ? 'assurance.ready' : k[1] === 'worst' || k[1] === 'remedy' ? 'assurance.portfolio' : k[1] === 'baselines' ? 'assurance.history' : k[1] === 'signals' || k[1] === 'maint' ? 'assurance.signals' : 'assurance.room' };
-  const m: Record<string, string> = { pc: 'assurance.change', cm: 'commissioning', dev: 'set.devices', room: 'set.rooms', iss: 'set.issues', req: 'set.issues', pt: 'set.issues', gov: 'search.quality', conf: 'search.quality', doc: 'set.docs', chg: 'set.changes', mw: 'scouter', sc: 'scouter', pf: 'budget', fin: 'budget', eng: 'intake', sh: 'servicehands', svc: 'service', pj: 'projects', ar: 'search.vault', dec: 'decisions', ppl: 'search.people' };
+  const m: Record<string, string> = { pc: 'assurance.change', cm: 'commissioning', dev: 'set.devices', room: 'set.rooms', iss: 'set.issues', pt: 'set.issues', gov: 'search.quality', conf: 'search.quality', doc: 'set.docs', chg: 'set.changes', mw: 'scouter', sc: 'scouter', pf: 'budget', fin: 'budget', eng: 'intake', sh: 'servicehands', svc: 'service', pj: 'projects', ar: 'search.vault', dec: 'decisions', ppl: 'search.people' };
   return { area: m[k[0]!] || 'none' };
 }
