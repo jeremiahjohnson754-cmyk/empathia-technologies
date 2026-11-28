@@ -1,0 +1,800 @@
+{
+ "step": 10,
+ "title": "Accept the room as the authorized reviewer; baseline v1 is published",
+ "room": "R-PLN-0004",
+ "at": "2026-11-28T15:33:10.819Z",
+ "assertions": [
+  {
+   "id": "C-33b",
+   "name": "the documentation packet: every required document approved and signed by the integrator and the owner, two different people",
+   "result": "PASS"
+  },
+  {
+   "id": "C-34",
+   "name": "the systems engineer cannot accept the room (403: customer.accept)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-35",
+   "name": "the QA reviewer verified results of this room and is refused the acceptance (422, separation of duties)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-36",
+   "name": "the QA reviewer lends customer.accept to the operations lead, scoped and expiring (ADR-0005)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-37",
+   "name": "the operations lead — neither recorder nor verifier — accepts the room through the delegation (200)",
+   "result": "PASS"
+  },
+  {
+   "id": "C-38",
+   "name": "baseline v1 exists and is CURRENT",
+   "result": "PASS"
+  },
+  {
+   "id": "C-39",
+   "name": "v1 binds the approved design revision 2, its hash, the plan, every applicable result PASS_VERIFIED and every evidence object",
+   "result": "PASS"
+  }
+ ],
+ "exchanges": [
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "syseng",
+   "status": 403,
+   "request": {
+    "to": "ACCEPTED"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/forbidden",
+    "title": "Not allowed for your role",
+    "status": 403,
+    "detail": "syseng may not move a room to ACCEPTED (needs customer.accept)",
+    "code": "forbidden",
+    "correlationId": "7306c2c5-e046-4078-a370-52db6a62bed6"
+   },
+   "correlationId": "7306c2c5-e046-4078-a370-52db6a62bed6"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "qa_reviewer",
+   "status": 422,
+   "request": {
+    "to": "ACCEPTED"
+   },
+   "body": {
+    "type": "https://errors.empathia.invalid/rule_refused",
+    "title": "Refused by a business rule",
+    "status": 422,
+    "detail": "separation of duties: the acceptance (its recorded and verified results) cannot be approved by its own author (qa_reviewer)",
+    "code": "rule_refused",
+    "reasons": [
+     "separation of duties: the acceptance (its recorded and verified results) cannot be approved by its own author (qa_reviewer)"
+    ],
+    "correlationId": "8b63bf25-558a-4184-93b6-bd8387b757c0"
+   },
+   "correlationId": "8b63bf25-558a-4184-93b6-bd8387b757c0"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/me",
+   "persona": "opslead",
+   "status": 200,
+   "body": {
+    "person": {
+     "id": "abd839c4-c0b0-418f-b1c2-3197a2a5407d",
+     "name": "Operations Lead (synthetic)"
+    },
+    "tenant": "empathia-demo",
+    "role": "opslead",
+    "authorities": [
+     "pitch.submit",
+     "approver.select",
+     "route.internal",
+     "brief.approve",
+     "handoff.accept",
+     "window.approve",
+     "request.desk_update",
+     "issue.assign"
+    ],
+    "siteScope": null,
+    "delegated": []
+   },
+   "correlationId": "8068affb-f551-430c-9c5b-6149f4cdada0"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/delegations",
+   "persona": "qa_reviewer",
+   "status": 201,
+   "request": {
+    "granteeId": "abd839c4-c0b0-418f-b1c2-3197a2a5407d",
+    "authority": "customer.accept",
+    "reason": "checkpoint (synthetic): QA verified the results and cannot accept; the operations lead accepts",
+    "days": 2
+   },
+   "body": {
+    "id": "75fcca2b-f15f-414e-908d-bd63952aef80",
+    "expiresAt": "2026-11-30T15:33:08.657Z"
+   },
+   "correlationId": "19400316-a195-4424-8158-2a3a719e6fc7"
+  },
+  {
+   "method": "POST",
+   "path": "/v1/rooms/R-PLN-0004/lifecycle",
+   "persona": "opslead",
+   "status": 200,
+   "request": {
+    "to": "ACCEPTED"
+   },
+   "body": {
+    "from": "COMMISSIONING",
+    "to": "ACCEPTED",
+    "applicable": 75,
+    "openIssues": 0,
+    "planChanged": false
+   },
+   "correlationId": "a9ebabc2-c096-4d9e-ad1d-df3f20780b19"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004/baselines",
+   "persona": "syseng",
+   "status": 200,
+   "body": {
+    "room": "R-PLN-0004",
+    "current": {
+     "id": "652a4057-3abf-467f-92ab-60696a40e2dc",
+     "version": 1,
+     "state": "CURRENT",
+     "design_revision": 2,
+     "design_sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
+     "plan_id": "f5da2542-4613-4ff3-b51d-1acc69060f6d",
+     "results": {
+      "uc_media": "PASS_VERIFIED",
+      "audio_aec": "PASS_VERIFIED",
+      "cyber_tls": "PASS_VERIFIED",
+      "integ_bms": "PASS_VERIFIED",
+      "audio_gain": "PASS_VERIFIED",
+      "camera_fov": "PASS_VERIFIED",
+      "control_ui": "PASS_VERIFIED",
+      "integ_itsm": "PASS_VERIFIED",
+      "poe_budget": "PASS_VERIFIED",
+      "control_ups": "PASS_VERIFIED",
+      "network_qos": "PASS_VERIFIED",
+      "uc_calendar": "PASS_VERIFIED",
+      "access_reach": "PASS_VERIFIED",
+      "network_vlan": "PASS_VERIFIED",
+      "power_budget": "PASS_VERIFIED",
+      "video_signal": "PASS_VERIFIED",
+      "camera_preset": "PASS_VERIFIED",
+      "control_audio": "PASS_VERIFIED",
+      "cyber_logging": "PASS_VERIFIED",
+      "user_function": "PASS_VERIFIED",
+      "video_av_sync": "PASS_VERIFIED",
+      "control_camera": "PASS_VERIFIED",
+      "control_macros": "PASS_VERIFIED",
+      "cyber_accounts": "PASS_VERIFIED",
+      "identity_asset": "PASS_VERIFIED",
+      "infra_labeling": "PASS_VERIFIED",
+      "safety_install": "PASS_VERIFIED",
+      "uc_peripherals": "PASS_VERIFIED",
+      "access_captions": "PASS_VERIFIED",
+      "access_contrast": "PASS_VERIFIED",
+      "control_latency": "PASS_VERIFIED",
+      "handover_spares": "PASS_VERIFIED",
+      "video_switching": "PASS_VERIFIED",
+      "audio_mic_pickup": "PASS_VERIFIED",
+      "display_controls": "PASS_VERIFIED",
+      "handover_runbook": "PASS_VERIFIED",
+      "infra_rack_match": "PASS_VERIFIED",
+      "audio_noise_floor": "PASS_VERIFIED",
+      "control_time_sync": "PASS_VERIFIED",
+      "handover_training": "PASS_VERIFIED",
+      "handover_warranty": "PASS_VERIFIED",
+      "power_ups_runtime": "PASS_VERIFIED",
+      "audio_dsp_firmware": "PASS_VERIFIED",
+      "audio_zone_routing": "PASS_VERIFIED",
+      "design_conformance": "PASS_VERIFIED",
+      "network_addressing": "PASS_VERIFIED",
+      "power_circuit_load": "PASS_VERIFIED",
+      "control_third_party": "PASS_VERIFIED",
+      "env_lighting_levels": "PASS_VERIFIED",
+      "network_media_clock": "PASS_VERIFIED",
+      "video_content_share": "PASS_VERIFIED",
+      "audio_limiter_levels": "PASS_VERIFIED",
+      "control_error_states": "PASS_VERIFIED",
+      "interop_mixed_vendor": "PASS_VERIFIED",
+      "network_port_profile": "PASS_VERIFIED",
+      "network_reachability": "PASS_VERIFIED",
+      "video_edid_handshake": "PASS_VERIFIED",
+      "cyber_firmware_signed": "PASS_VERIFIED",
+      "handover_support_path": "PASS_VERIFIED",
+      "network_config_backup": "PASS_VERIFIED",
+      "video_camera_exposure": "PASS_VERIFIED",
+      "video_camera_tracking": "PASS_VERIFIED",
+      "compute_patch_baseline": "PASS_VERIFIED",
+      "integ_monitoring_enrol": "PASS_VERIFIED",
+      "control_program_version": "PASS_VERIFIED",
+      "interop_firmware_matrix": "PASS_VERIFIED",
+      "compute_certified_config": "PASS_VERIFIED",
+      "control_source_switching": "PASS_VERIFIED",
+      "network_management_reach": "PASS_VERIFIED",
+      "cyber_default_credentials": "PASS_VERIFIED",
+      "infra_cable_certification": "PASS_VERIFIED",
+      "network_firmware_baseline": "PASS_VERIFIED",
+      "video_display_calibration": "PASS_VERIFIED",
+      "compute_display_capability": "PASS_VERIFIED",
+      "cyber_management_isolation": "PASS_VERIFIED"
+     },
+     "evidence_ids": [
+      "02034357-b5a8-43bb-97f9-75bc29910a9e",
+      "35be1572-7c71-4998-a06c-e14b9f5aa37e",
+      "0777f53f-5fc2-4f03-880d-bdf1fc69ae45",
+      "f3ab5885-62fe-4074-addc-5a30581edff6",
+      "75c4083f-d01e-453e-b6b6-9b74c9f12538",
+      "5808dbca-1558-443b-83c6-3c098da1221e",
+      "c5555cb8-8a89-40dc-ba15-d6a017aba383",
+      "f5edbda3-101c-4334-8c8a-e9526cb6a263",
+      "744f6078-1407-4961-8cfa-61f5f2fa9b93",
+      "eda0363a-080f-4014-855a-b49869b70e31",
+      "af3ccfac-8854-47ae-bbd4-f20d42dce6d5",
+      "52f4c6aa-d6ea-4a2a-8f4a-13010dffba90",
+      "948291c9-c73c-456f-8e9f-768179142bf1",
+      "164b0aee-9ac6-4cd2-a28c-03cdecb75e91",
+      "60ce98de-281e-41c7-a58c-be73781a550c",
+      "71695dfe-1a8d-4d74-b057-5107068c76e4",
+      "92ac6f52-6608-4d37-880b-2ff0d9314c43",
+      "f00f92ec-2d24-46da-aebe-665d4d869261",
+      "7c5d1b0d-dc41-4b0d-962e-9df266c5154a",
+      "a28a7302-1e43-46ed-b1fe-6dce2ece1e6d",
+      "fb49110d-c9b1-4e36-a698-721ed1debfdc",
+      "da38b41c-f00d-450a-a8b0-9bf21f5984c4",
+      "41e81c9f-6e4e-447f-999f-564101e66934",
+      "d0615544-602e-4453-8a27-2c4613d6e259",
+      "4f889234-b003-498f-9c07-dc0bac93bc11",
+      "a5c4016d-cc38-4d28-bae1-fef4bcdded3a",
+      "55c3d6e9-1df6-42a5-b299-cd940218a318",
+      "57ca93c2-66fc-4f5e-804d-fdd9fd2b8536",
+      "98835f4e-735c-4133-a2f0-a56a8b7c1d6e",
+      "b22c55c8-cb99-44cf-8ecf-172504079713",
+      "9582f9fe-993f-4404-bf32-725801505896",
+      "e362b628-55f9-4733-8782-25e8bb6c4ab9",
+      "f4811519-8705-4539-8514-3b10ddca5d6d",
+      "22fff350-05cb-420e-a2e0-e747c2596613",
+      "8fe438c0-6aba-4794-9542-a680041946db",
+      "f761b21d-e6bf-4b2b-9cca-b0453f5d14d6",
+      "4ce72d39-8a48-44ab-a7fd-ebbf7805b8d7",
+      "2be6c924-99e5-447e-9e03-026df0b64f16",
+      "b96c1dac-0226-4a72-9bf0-b6831b9c7b8f",
+      "8a570581-aa33-4646-b567-a31bacc2f5e2",
+      "f9b21ea9-222e-46fc-a52b-99c97ea73d08",
+      "01535d35-4838-4294-b4b5-9df14c05f303",
+      "0838ae9e-8173-4a33-bb4c-a4903a727d62",
+      "9a65030d-1c40-4a50-96be-493d72419767",
+      "6fb37efa-b5a0-4938-8cee-490b495e8eda",
+      "bfa4e38c-12ac-4a3b-8e46-fe99487d5d68",
+      "eb7c06e1-294a-4ce2-9bb3-81835520453f",
+      "bbbb6144-8577-48a6-a3d0-dc4259b46a63",
+      "2b54caae-164d-4e40-91f6-9f7ecdaeba72",
+      "b5b6e4e7-69db-494d-821e-bdca6444e1b9",
+      "aaa05748-a87d-41e0-9462-743dc826a4b2",
+      "ac1be549-82d9-4ca8-9ba2-4c48f72cdd42",
+      "dac510f4-7f5e-459c-8a41-ad11d697140b",
+      "6aa9b84f-d39d-4681-8fe0-7d22e8ca9d03",
+      "0de5e175-7ece-490f-b135-4ea4a89b2d6e",
+      "eafa5c68-a82c-4270-946c-54f8b3be8080",
+      "bb6136ec-e057-42c6-9932-b9bad391dc13",
+      "46c74f91-9b3b-4368-8cf8-90e45c1191ac",
+      "375f8458-0536-4783-b962-604fa7db8afe",
+      "91923827-9abe-4b0a-b542-bd870792b30e",
+      "2ff55c1d-b20f-4dde-b560-0034f9ec9ea5",
+      "6eb9d58d-bd02-4864-9734-b346a9b17254",
+      "2a8680d4-a6d7-4b0b-b379-0d490ae2add5",
+      "4f763769-8753-4c53-a99b-d98b075e1af2",
+      "a6c3da45-fbd2-4809-9b9a-ea55a68fb3fa",
+      "987b4339-a374-42bc-8c8b-efa590a2c813",
+      "0b4a0ec6-cf9b-449b-b0ad-878c6ba361d9",
+      "cf05717d-98ec-4e14-a142-af77e2e4117e",
+      "73633b25-de4d-46d1-b254-f0d59fa83b5f",
+      "94763dfc-603c-49db-b61c-687dcf60a30a",
+      "46fa6726-95a4-4761-9e72-c8ffe8a71beb",
+      "8125cb3d-64da-4c71-824c-5f9d4daa6923",
+      "b0745e4a-2012-4dee-a762-ccc94b233bb7",
+      "8cb7e166-1b52-487a-814e-114556a03a3e",
+      "1d4d6f11-7ac5-41d8-b32a-0131cefc07f7"
+     ],
+     "devices": [
+      {
+       "id": "PA-0060",
+       "label": "Display 1",
+       "category": "display",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 0.1
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 0.1,
+         "mount": "wall"
+        }
+       }
+      },
+      {
+       "id": "PA-0061",
+       "label": "Camera 1",
+       "category": "camera",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 0.15
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 0.15,
+         "mount": "wall"
+        }
+       }
+      },
+      {
+       "id": "PA-0062",
+       "label": "Ceiling microphone 1",
+       "category": "micceil",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 2.8
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 2.8,
+         "mount": "ceiling"
+        }
+       }
+      },
+      {
+       "id": "PA-0063",
+       "label": "Loudspeaker 1",
+       "category": "speaker",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 1.5
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 1.5,
+         "mount": "ceiling"
+        }
+       }
+      },
+      {
+       "id": "PA-0064",
+       "label": "Audio processor (DSP) 1",
+       "category": "dsp",
+       "placement": {
+        "at": {
+         "x": 0.3,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.3,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
+      },
+      {
+       "id": "PA-0065",
+       "label": "UC room compute 1",
+       "category": "compute",
+       "placement": {
+        "at": {
+         "x": 0.4,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.4,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
+      },
+      {
+       "id": "PA-0066",
+       "label": "Touch panel 1",
+       "category": "touch",
+       "placement": {
+        "at": {
+         "x": 2.1,
+         "y": 2.6
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 2.1,
+         "y": 2.6,
+         "mount": "table"
+        }
+       }
+      },
+      {
+       "id": "PA-0067",
+       "label": "Network switch 1",
+       "category": "switch",
+       "placement": {
+        "at": {
+         "x": 0.5,
+         "y": 0.3
+        },
+        "basis": "DESIGNED",
+        "asBuilt": null,
+        "designed": {
+         "x": 0.5,
+         "y": 0.3,
+         "mount": "rack"
+        }
+       }
+      }
+     ],
+     "measurements": [],
+     "reason": "accepted: first baseline (ADR-0003)",
+     "published_by": "abd839c4-c0b0-418f-b1c2-3197a2a5407d",
+     "published_by_name": "Operations Lead (synthetic)",
+     "published_at": "2026-11-28T15:33:08.701Z",
+     "supersedes": null,
+     "superseded_at": null,
+     "superseded_by": null
+    },
+    "items": [
+     {
+      "id": "652a4057-3abf-467f-92ab-60696a40e2dc",
+      "version": 1,
+      "state": "CURRENT",
+      "design_revision": 2,
+      "design_sha256": "31f686c119f2eba0322ebdf2752317f73cde93194c010734ca82d304fbe3f53c",
+      "plan_id": "f5da2542-4613-4ff3-b51d-1acc69060f6d",
+      "results": {
+       "uc_media": "PASS_VERIFIED",
+       "audio_aec": "PASS_VERIFIED",
+       "cyber_tls": "PASS_VERIFIED",
+       "integ_bms": "PASS_VERIFIED",
+       "audio_gain": "PASS_VERIFIED",
+       "camera_fov": "PASS_VERIFIED",
+       "control_ui": "PASS_VERIFIED",
+       "integ_itsm": "PASS_VERIFIED",
+       "poe_budget": "PASS_VERIFIED",
+       "control_ups": "PASS_VERIFIED",
+       "network_qos": "PASS_VERIFIED",
+       "uc_calendar": "PASS_VERIFIED",
+       "access_reach": "PASS_VERIFIED",
+       "network_vlan": "PASS_VERIFIED",
+       "power_budget": "PASS_VERIFIED",
+       "video_signal": "PASS_VERIFIED",
+       "camera_preset": "PASS_VERIFIED",
+       "control_audio": "PASS_VERIFIED",
+       "cyber_logging": "PASS_VERIFIED",
+       "user_function": "PASS_VERIFIED",
+       "video_av_sync": "PASS_VERIFIED",
+       "control_camera": "PASS_VERIFIED",
+       "control_macros": "PASS_VERIFIED",
+       "cyber_accounts": "PASS_VERIFIED",
+       "identity_asset": "PASS_VERIFIED",
+       "infra_labeling": "PASS_VERIFIED",
+       "safety_install": "PASS_VERIFIED",
+       "uc_peripherals": "PASS_VERIFIED",
+       "access_captions": "PASS_VERIFIED",
+       "access_contrast": "PASS_VERIFIED",
+       "control_latency": "PASS_VERIFIED",
+       "handover_spares": "PASS_VERIFIED",
+       "video_switching": "PASS_VERIFIED",
+       "audio_mic_pickup": "PASS_VERIFIED",
+       "display_controls": "PASS_VERIFIED",
+       "handover_runbook": "PASS_VERIFIED",
+       "infra_rack_match": "PASS_VERIFIED",
+       "audio_noise_floor": "PASS_VERIFIED",
+       "control_time_sync": "PASS_VERIFIED",
+       "handover_training": "PASS_VERIFIED",
+       "handover_warranty": "PASS_VERIFIED",
+       "power_ups_runtime": "PASS_VERIFIED",
+       "audio_dsp_firmware": "PASS_VERIFIED",
+       "audio_zone_routing": "PASS_VERIFIED",
+       "design_conformance": "PASS_VERIFIED",
+       "network_addressing": "PASS_VERIFIED",
+       "power_circuit_load": "PASS_VERIFIED",
+       "control_third_party": "PASS_VERIFIED",
+       "env_lighting_levels": "PASS_VERIFIED",
+       "network_media_clock": "PASS_VERIFIED",
+       "video_content_share": "PASS_VERIFIED",
+       "audio_limiter_levels": "PASS_VERIFIED",
+       "control_error_states": "PASS_VERIFIED",
+       "interop_mixed_vendor": "PASS_VERIFIED",
+       "network_port_profile": "PASS_VERIFIED",
+       "network_reachability": "PASS_VERIFIED",
+       "video_edid_handshake": "PASS_VERIFIED",
+       "cyber_firmware_signed": "PASS_VERIFIED",
+       "handover_support_path": "PASS_VERIFIED",
+       "network_config_backup": "PASS_VERIFIED",
+       "video_camera_exposure": "PASS_VERIFIED",
+       "video_camera_tracking": "PASS_VERIFIED",
+       "compute_patch_baseline": "PASS_VERIFIED",
+       "integ_monitoring_enrol": "PASS_VERIFIED",
+       "control_program_version": "PASS_VERIFIED",
+       "interop_firmware_matrix": "PASS_VERIFIED",
+       "compute_certified_config": "PASS_VERIFIED",
+       "control_source_switching": "PASS_VERIFIED",
+       "network_management_reach": "PASS_VERIFIED",
+       "cyber_default_credentials": "PASS_VERIFIED",
+       "infra_cable_certification": "PASS_VERIFIED",
+       "network_firmware_baseline": "PASS_VERIFIED",
+       "video_display_calibration": "PASS_VERIFIED",
+       "compute_display_capability": "PASS_VERIFIED",
+       "cyber_management_isolation": "PASS_VERIFIED"
+      },
+      "evidence_ids": [
+       "02034357-b5a8-43bb-97f9-75bc29910a9e",
+       "35be1572-7c71-4998-a06c-e14b9f5aa37e",
+       "0777f53f-5fc2-4f03-880d-bdf1fc69ae45",
+       "f3ab5885-62fe-4074-addc-5a30581edff6",
+       "75c4083f-d01e-453e-b6b6-9b74c9f12538",
+       "5808dbca-1558-443b-83c6-3c098da1221e",
+       "c5555cb8-8a89-40dc-ba15-d6a017aba383",
+       "f5edbda3-101c-4334-8c8a-e9526cb6a263",
+       "744f6078-1407-4961-8cfa-61f5f2fa9b93",
+       "eda0363a-080f-4014-855a-b49869b70e31",
+       "af3ccfac-8854-47ae-bbd4-f20d42dce6d5",
+       "52f4c6aa-d6ea-4a2a-8f4a-13010dffba90",
+       "948291c9-c73c-456f-8e9f-768179142bf1",
+       "164b0aee-9ac6-4cd2-a28c-03cdecb75e91",
+       "60ce98de-281e-41c7-a58c-be73781a550c",
+       "71695dfe-1a8d-4d74-b057-5107068c76e4",
+       "92ac6f52-6608-4d37-880b-2ff0d9314c43",
+       "f00f92ec-2d24-46da-aebe-665d4d869261",
+       "7c5d1b0d-dc41-4b0d-962e-9df266c5154a",
+       "a28a7302-1e43-46ed-b1fe-6dce2ece1e6d",
+       "fb49110d-c9b1-4e36-a698-721ed1debfdc",
+       "da38b41c-f00d-450a-a8b0-9bf21f5984c4",
+       "41e81c9f-6e4e-447f-999f-564101e66934",
+       "d0615544-602e-4453-8a27-2c4613d6e259",
+       "4f889234-b003-498f-9c07-dc0bac93bc11",
+       "a5c4016d-cc38-4d28-bae1-fef4bcdded3a",
+       "55c3d6e9-1df6-42a5-b299-cd940218a318",
+       "57ca93c2-66fc-4f5e-804d-fdd9fd2b8536",
+       "98835f4e-735c-4133-a2f0-a56a8b7c1d6e",
+       "b22c55c8-cb99-44cf-8ecf-172504079713",
+       "9582f9fe-993f-4404-bf32-725801505896",
+       "e362b628-55f9-4733-8782-25e8bb6c4ab9",
+       "f4811519-8705-4539-8514-3b10ddca5d6d",
+       "22fff350-05cb-420e-a2e0-e747c2596613",
+       "8fe438c0-6aba-4794-9542-a680041946db",
+       "f761b21d-e6bf-4b2b-9cca-b0453f5d14d6",
+       "4ce72d39-8a48-44ab-a7fd-ebbf7805b8d7",
+       "2be6c924-99e5-447e-9e03-026df0b64f16",
+       "b96c1dac-0226-4a72-9bf0-b6831b9c7b8f",
+       "8a570581-aa33-4646-b567-a31bacc2f5e2",
+       "f9b21ea9-222e-46fc-a52b-99c97ea73d08",
+       "01535d35-4838-4294-b4b5-9df14c05f303",
+       "0838ae9e-8173-4a33-bb4c-a4903a727d62",
+       "9a65030d-1c40-4a50-96be-493d72419767",
+       "6fb37efa-b5a0-4938-8cee-490b495e8eda",
+       "bfa4e38c-12ac-4a3b-8e46-fe99487d5d68",
+       "eb7c06e1-294a-4ce2-9bb3-81835520453f",
+       "bbbb6144-8577-48a6-a3d0-dc4259b46a63",
+       "2b54caae-164d-4e40-91f6-9f7ecdaeba72",
+       "b5b6e4e7-69db-494d-821e-bdca6444e1b9",
+       "aaa05748-a87d-41e0-9462-743dc826a4b2",
+       "ac1be549-82d9-4ca8-9ba2-4c48f72cdd42",
+       "dac510f4-7f5e-459c-8a41-ad11d697140b",
+       "6aa9b84f-d39d-4681-8fe0-7d22e8ca9d03",
+       "0de5e175-7ece-490f-b135-4ea4a89b2d6e",
+       "eafa5c68-a82c-4270-946c-54f8b3be8080",
+       "bb6136ec-e057-42c6-9932-b9bad391dc13",
+       "46c74f91-9b3b-4368-8cf8-90e45c1191ac",
+       "375f8458-0536-4783-b962-604fa7db8afe",
+       "91923827-9abe-4b0a-b542-bd870792b30e",
+       "2ff55c1d-b20f-4dde-b560-0034f9ec9ea5",
+       "6eb9d58d-bd02-4864-9734-b346a9b17254",
+       "2a8680d4-a6d7-4b0b-b379-0d490ae2add5",
+       "4f763769-8753-4c53-a99b-d98b075e1af2",
+       "a6c3da45-fbd2-4809-9b9a-ea55a68fb3fa",
+       "987b4339-a374-42bc-8c8b-efa590a2c813",
+       "0b4a0ec6-cf9b-449b-b0ad-878c6ba361d9",
+       "cf05717d-98ec-4e14-a142-af77e2e4117e",
+       "73633b25-de4d-46d1-b254-f0d59fa83b5f",
+       "94763dfc-603c-49db-b61c-687dcf60a30a",
+       "46fa6726-95a4-4761-9e72-c8ffe8a71beb",
+       "8125cb3d-64da-4c71-824c-5f9d4daa6923",
+       "b0745e4a-2012-4dee-a762-ccc94b233bb7",
+       "8cb7e166-1b52-487a-814e-114556a03a3e",
+       "1d4d6f11-7ac5-41d8-b32a-0131cefc07f7"
+      ],
+      "devices": [
+       {
+        "id": "PA-0060",
+        "label": "Display 1",
+        "category": "display",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 0.1
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 0.1,
+          "mount": "wall"
+         }
+        }
+       },
+       {
+        "id": "PA-0061",
+        "label": "Camera 1",
+        "category": "camera",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 0.15
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 0.15,
+          "mount": "wall"
+         }
+        }
+       },
+       {
+        "id": "PA-0062",
+        "label": "Ceiling microphone 1",
+        "category": "micceil",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 2.8
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 2.8,
+          "mount": "ceiling"
+         }
+        }
+       },
+       {
+        "id": "PA-0063",
+        "label": "Loudspeaker 1",
+        "category": "speaker",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 1.5
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 1.5,
+          "mount": "ceiling"
+         }
+        }
+       },
+       {
+        "id": "PA-0064",
+        "label": "Audio processor (DSP) 1",
+        "category": "dsp",
+        "placement": {
+         "at": {
+          "x": 0.3,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.3,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
+       },
+       {
+        "id": "PA-0065",
+        "label": "UC room compute 1",
+        "category": "compute",
+        "placement": {
+         "at": {
+          "x": 0.4,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.4,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
+       },
+       {
+        "id": "PA-0066",
+        "label": "Touch panel 1",
+        "category": "touch",
+        "placement": {
+         "at": {
+          "x": 2.1,
+          "y": 2.6
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 2.1,
+          "y": 2.6,
+          "mount": "table"
+         }
+        }
+       },
+       {
+        "id": "PA-0067",
+        "label": "Network switch 1",
+        "category": "switch",
+        "placement": {
+         "at": {
+          "x": 0.5,
+          "y": 0.3
+         },
+         "basis": "DESIGNED",
+         "asBuilt": null,
+         "designed": {
+          "x": 0.5,
+          "y": 0.3,
+          "mount": "rack"
+         }
+        }
+       }
+      ],
+      "measurements": [],
+      "reason": "accepted: first baseline (ADR-0003)",
+      "published_by": "abd839c4-c0b0-418f-b1c2-3197a2a5407d",
+      "published_by_name": "Operations Lead (synthetic)",
+      "published_at": "2026-11-28T15:33:08.701Z",
+      "supersedes": null,
+      "superseded_at": null,
+      "superseded_by": null
+     }
+    ],
+    "exceptions": []
+   },
+   "correlationId": "2ab86e8a-3f71-4b8e-86c1-25e901e1382c"
+  },
+  {
+   "method": "GET",
+   "path": "/v1/rooms/R-PLN-0004",
+   "persona": "designer",
+   "status": 200,
+   "body": {
+    "omitted": "large body; see the step that records it in full"
+   },
+   "correlationId": "c8a8a951-aeb7-4ee9-a1c8-71c2ae634ac8"
+  }
+ ]
+}
