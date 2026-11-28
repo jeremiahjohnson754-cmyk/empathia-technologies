@@ -33,6 +33,18 @@ export const classLabel = (cat: string) => (C.categories as Record<string, { lab
 
 export interface Assumptions { life: Record<string, number>; cost: Record<string, number>; currency: string; serviceSignal: number }
 export const defaultAssumptions = (): Assumptions => ({ life: { ...DEFAULT_LIFE }, cost: {}, currency: 'USD', serviceSignal: 3 });
+/** The planner's assumptions, kept in this browser: the refresh plan writes them, and Asset Intelligence reads the same (MI-28). A stored
+ * life or cost that is not a sensible number is ignored for the starting one, so a damaged entry cannot put every unit past due. */
+export const ASSUMPTIONS_KEY = 'empathia.demo.refresh.v1';
+const okNum = (v: unknown, lo: number, hi: number) => typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi;
+const clean = (o: unknown, lo: number, hi: number): Record<string, number> => (o && typeof o === 'object' ? Object.fromEntries(Object.entries(o as Record<string, unknown>).filter(([k, v]) => !k.startsWith('__') && okNum(v, lo, hi)) as Array<[string, number]>) : {});
+export function loadAssumptions(): Assumptions {
+  const d = defaultAssumptions();
+  try { const raw = localStorage.getItem(ASSUMPTIONS_KEY); if (raw) { const x = JSON.parse(raw) as Partial<Assumptions> | null;
+    if (x && typeof x === 'object') return { life: { ...d.life, ...clean(x.life, 1, 50) }, cost: clean(x.cost, 0, 1e9), currency: typeof x.currency === 'string' && /^[A-Z]{3}$/.test(x.currency) ? x.currency : d.currency, serviceSignal: okNum(x.serviceSignal, 1, 20) ? x.serviceSignal! : d.serviceSignal }; } } catch { /* unavailable or damaged: the starting assumptions */ }
+  return d;
+}
+export function saveAssumptions(a: Assumptions): void { try { localStorage.setItem(ASSUMPTIONS_KEY, JSON.stringify(a)); } catch { /* this browser cannot keep it: the plan still shows */ } }
 
 export interface Unit {
   asset: string; position: string; label: string; cat: string; room: string; roomName: string; building: string; lifecycle: string;
@@ -109,4 +121,11 @@ export function planCsv(units: readonly Unit[], a: Assumptions): string {
   const head = ['asset', 'position', 'device', 'class', 'room', 'room name', 'building', 'installed', 'service life (years, assumption)', 'refresh year', 'past due', 'break-fix jobs (12 months)', `planning figure (${a.currency}, declared)`];
   const lines = units.map((u) => [u.asset, u.position, u.label, classLabel(u.cat), u.room, u.roomName, u.building, u.installedAt.slice(0, 10), u.life, u.dueYear, u.overdue ? 'yes' : 'no', u.breakFix12, Number.isFinite(a.cost[u.cat]) ? a.cost[u.cat] : ''].map(esc).join(','));
   return [`# ${LIFE_BASIS}; synthetic records`, head.map(esc).join(','), ...lines].join('\n');
+}
+
+/** Refresh exposure for Asset Intelligence (the Pro register's PRO-AS-04/05): the refresh plan's own figures for the same units, the same
+ * assumptions and the same horizon (MI-28). By planned service life: a planning assumption, not a manufacturer's end-of-support date. */
+export function refreshExposure(a: Assumptions, jobs: readonly ServiceJob[], only: string | null, horizon: number, records: readonly RoomRecord[] = allRecords()) {
+  const units = unitsInService(a, jobs, records).filter((u) => !only || u.building === only); const years = strategy(units, horizon, a);
+  return { inService: units.length, past: units.filter((u) => u.overdue).length, dueBy: years.reduce((n, r) => n + r.units, 0), years, horizon, lastYear: NOW_YEAR + horizon };
 }

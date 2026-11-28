@@ -18,13 +18,7 @@ import { ExportMenu } from '../export/ExportMenu.js';
 import type { Report } from '../export/model.js';
 import * as R from '../refresh/plan.js';
 
-const KEY = 'empathia.demo.refresh.v1';
-function load(): R.Assumptions {
-  const d = R.defaultAssumptions();
-  try { const s = localStorage.getItem(KEY); if (s) { const x = JSON.parse(s) as Partial<R.Assumptions>; return { ...d, ...x, life: { ...d.life, ...(x.life || {}) }, cost: { ...(x.cost || {}) } }; } } catch { /* unavailable: the starting assumptions */ }
-  return d;
-}
-function keep(a: R.Assumptions) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch { /* this browser cannot keep it: the plan still shows */ } }
+const load = R.loadAssumptions; const keep = R.saveAssumptions;   // one store, shared with Asset Intelligence (refresh/plan.ts)
 const money = (n: number | null, cur: string) => (n === null ? 'no planning figure declared' : new Intl.NumberFormat('en-US', { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(n));
 const assetHref = (a: string) => `#/v25/asset?a=${a}`;
 

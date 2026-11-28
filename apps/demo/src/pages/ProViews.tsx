@@ -18,6 +18,7 @@ import { openable } from './V25Nav.js';
 import { TrendChart } from './TrendChart.js';
 import { syntheticHistory, workspaceJobs, monthKey } from '../service/history.js';
 import { pastTargetOf, TARGETS_TEXT } from '../service/targets.js';
+import { loadAssumptions, refreshExposure, LIFE_BASIS } from '../refresh/plan.js';
 import { months, stats, LAYER_LABEL } from '../service/analytics.js';
 import { campusStats, recordIssues } from '../campus/metrics.js';
 import { CampusMap, Stage } from '../spatial/Spatial.js';
@@ -80,6 +81,18 @@ export function AssetsPage({ perspective, hash }: { perspective: string; hash?: 
             </Card>
           </div>
         </>; })()}
+      {(() => { const x = refreshExposure(loadAssumptions(), syntheticHistory(), only, 3);
+        // the refresh plan's own figures and assumptions (MI-28); its page opens on the same horizon and building where the role may open it
+        const rp = openable(perspective, '#/pro/refresh') ? `#/pro/refresh?h=3${only ? `&b=${only}` : ''}` : undefined;
+        return <Card icon="calendar" title="Refresh exposure" sub="By planned service life, as the refresh plan counts it" testId="pro-life">
+          <div className="kit-grid kit-grid--tiles wk-tiles4">
+            <StatTile testId="pro-life-in" label="Units in service" value={x.inService} icon="device" tone="info" href={rp} hint="current installations, by asset ID" />
+            <StatTile testId="pro-life-past" label="Past their planned life" value={x.past} unit={`of ${x.inService}`} icon="clock" tone={x.past ? 'warn' : 'ok'} href={rp} />
+            <StatTile testId="pro-life-due" label={`Due by ${x.lastYear}`} value={x.dueBy} icon="calendar" tone="pro" href={rp} hint="past due included, as the refresh plan's first year carries it" />
+          </div>
+          <TrendChart testId="pro-life-years" kind="bar" title={`Units falling due per year, ${x.years[0]!.year}–${x.lastYear} (the first year carries anything already past due)`} labels={x.years.map((y) => String(y.year))} unit="" series={[{ name: 'Units', tone: 'warn', values: x.years.map((y) => y.units) }]} />
+          <p className="wk-note">The service life is a {LIFE_BASIS}. No unit's firmware version or warranty date is on record, so neither firmware posture nor warranty is shown.</p>
+        </Card>; })()}
       {(() => { const c = campusStats(w); const tiles = Object.fromEntries(c.buildings.map((b) => [b.b.key, { score: b.score, band: b.band, issues: b.open, rooms: b.rooms }]));
         return <Card icon="map" title="Where units need service" sub="The campus map on the Assets lens: jobs that named a unit in twelve months, per 100 device positions"><div data-testid="pro-asset-map"><Stage label="Asset map" testId="pro-asset-stage"><CampusMap tiles={tiles} lens="assets" current={only || undefined} onOpen={(b) => { location.hash = `#/pro/assets?building=${b.key}`; }} /></Stage></div></Card>; })()}
       <div className="wk-g2">
