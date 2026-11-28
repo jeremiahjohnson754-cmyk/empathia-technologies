@@ -92,7 +92,9 @@ export function firmwareOf(d: InstalledDevice, entry?: EntryLike | null): Firmwa
   if (!s) return { posture: 'nostandard', installed: null, source: null, why: `no standard covers the ${classLabelOf(d.cat).toLowerCase()} class` };
   const f = s.firmware;
   if (!f) return { posture: 'nofirmware', installed: null, source: null, why: s.note || 'the class carries no firmware' };
-  // the register keeps entries by position: one recorded before this unit was installed is the replaced unit's, not this one's
+  // the register keeps entries by position and stamps each with its last write: an entry last written before this unit was installed is
+  // the replaced unit's, not this one's. (An entry written after a replacement still reads as the new unit's: the register does not record
+  // which unit an entry was for. Replacements here are seeded, so no replacement made in this browser can follow a typed entry.)
   const mine = entry && !(entry.at && Date.parse(entry.at) < Date.parse(d.installedAt)) ? entry : null;
   const typed = mine?.firmware?.trim();
   const installed = typed || commissionedVersion(d); const source = typed ? 'device register' : installed ? 'synthetic commissioning record' : null;

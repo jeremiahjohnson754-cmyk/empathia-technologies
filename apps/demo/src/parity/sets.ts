@@ -16,7 +16,7 @@ const rec = (c: Core, id: string) => c.rooms.find((r) => r.outline.id === id)!;
 // the device standards and the firmware posture (standards/devices.ts, PRO-EN-01 and PRO-AS-03): the Device records of the units counted
 const units = (c: Core, ids: Set<string>) => c.byType.Device.filter((d) => ids.has(d.id));
 const inPosture = (c: Core, p: Posture) => { const x = firmwarePosture(installedDevices(c.rooms), (room) => readRegister(room).entries); return units(c, new Set(x[p].map((d) => d.id))); };
-const POSTURE_HOW = `against its class standard's approved firmware baseline; the installed version is the one this browser's device register records, else the room's synthetic commissioning record, which leaves one unit in eleven one version behind (${STANDARDS_BASIS})`;
+const POSTURE_HOW = `against its class standard's approved firmware baseline; the installed version is the one this browser's device register records, else the room's synthetic commissioning record, which leaves about one unit in eleven one version behind (${STANDARDS_BASIS})`;
 /** one set per device standard, `std:<class>`: the units the standard covers (named by key, not listed among the family's sets) */
 const standardSet = (key: string): SetDef | undefined => { const cat = key.slice(4); const s = standardOf(cat); if (!s) return undefined;
   return { key, title: `Units covered by ${s.id}`, how: `Units in service whose class is ${classLabelOf(cat).toLowerCase()}, covered by the standard ${s.id} (${STANDARDS_BASIS}).`, items: (c) => units(c, new Set(installedDevices(c.rooms).filter((d) => d.cat === cat).map((d) => d.id))) }; };

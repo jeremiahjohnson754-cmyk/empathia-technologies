@@ -571,6 +571,12 @@ test('MI-32 the sets behind the standards and the postures hold exactly the unit
     assert.equal(PS.setAuthority(key).area, 'set.devices', `${key}: the devices family's authority`);
     for (const role of roles) if (P.allows(PS.setAuthority(key), role)) assert.equal(items.filter((i) => P.allows({ entity: i.type }, role)).length, items.length, `${key}: ${role} sees all ${items.length}`);
   }
+  // the re-review of 582db891..c461122e: a unit at a position missing from its design was counted and flagged but missing from the rows
+  // std:none opens (the Core made Device records only from the design's positions); the count and its set must agree on such a unit too
+  const r0 = D.allRecords()[0]; const odd = [{ ...r0, installations: [...r0.installations, { ...r0.installations[0], position: 'PA-9999', asset: 'AS-9999', removedAt: null }] }, ...D.allRecords().slice(1)];
+  const oddCore = PC.buildCore(w, NODESK, odd); const oddFlagged = SD.standardsCoverage(SD.installedDevices(odd)).flagged;
+  assert.deepEqual(PS.setOf('std:none').items(oddCore).map((i) => i.id).sort(), oddFlagged.map((u) => u.id).sort(), 'std:none opens the unit at a position not in the design');
+  assert.ok(oddCore.byType.Device.some((d) => d.id === `${r0.outline.id}/PA-9999`), 'the Core has a Device record for it');
   assert.equal(PS.setOf('std:nosuchclass'), undefined, 'a class with no standard has no set of its own');
   assert.equal(PS.familyOf('std:projector'), undefined, 'nor a family: the address says no set has that name'); assert.equal(PS.familyOf('std:camera')?.key, 'fw');
   for (const role of roles) { if (P.allows({ area: 'pro.eng' }, role)) assert.ok(P.allows(PS.setAuthority('std:camera'), role), `${role} may open the standards page, so the units behind it`);

@@ -136,8 +136,8 @@ export interface Core { all: Rec[]; byType: Record<EntityType, Rec[]>; get: (id:
 const lifeTone = (l: string): Rec['tone'] => (l === 'OPERATIONAL' || l === 'ACCEPTED' ? 'ok' : l === 'COMMISSIONING' ? 'warn' : 'info');
 const sevTone = (s: string): Rec['tone'] => (s === 'High' || s === 'Mission critical' ? 'bad' : s === 'Medium' ? 'warn' : 'info');
 
-export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pick<DecisionState, 'projects' | 'decisions' | 'funding'>): Core {
-  const rooms = allRecords(); const out: Rec[] = [];
+export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pick<DecisionState, 'projects' | 'decisions' | 'funding'>, records?: RoomRecord[]): Core {
+  const rooms = records ?? allRecords(); const out: Rec[] = [];
   const add = (r: Rec) => { out.push(r); return r; };
   const nameOf = (o: RoomOutline) => shortName(o);
   for (const r of rooms) {
@@ -153,6 +153,10 @@ export function buildCore(w: Pick<Workspace, 'incidents' | 'workOrders'>, d: Pic
       if (p.layer === 'network' || p.layer === 'power') add({ type: p.layer === 'network' ? 'NetworkNode' : 'PowerNode', id: `${p.layer === 'network' ? 'NN' : 'PN'}-${o.id.slice(2)}-${p.code}`, name: `${p.label} · ${nameOf(o)}`, sub: `${p.catLabel} in the room design · ${r.connections.filter((c) => c.from === p.code || c.to === p.code).length} connections`, roomId: o.id, building: o.building, state: st, tone: 'info',
         facts: [['Position', p.code], ['Connections', String(r.connections.filter((c) => c.from === p.code || c.to === p.code).length)], ['Connection state', 'PROPOSED by the engine’s rules (modeled, not traced)']], prov: 'INFERRED', source: p.provenance, href: roomHref(o), links: [{ type: 'Room', id: o.id, rel: 'serves' }] });
     }
+    // a current installation at a position its design does not list is still a unit in service (refresh/plan.ts currentInstallations): it
+    // gets a Device record, so a figure that counts it (no standard covers it) opens it (MI-32)
+    for (const i of r.installations.filter((x) => !x.removedAt && !r.positions.some((p) => p.code === x.position))) add({ type: 'Device', id: `${o.id}/${i.position}`, name: `Unit ${i.asset} · ${nameOf(o)}`, sub: `position ${i.position}, not in the room's design`, roomId: o.id, building: o.building, state: 'In service', tone: 'warn',
+      facts: [['Position', `${i.position} (not in the design)`], ['Unit', i.asset], ['Installed', day(i.installedAt)], ['Stage', 'In service: installed at a position the design does not list']], prov: 'KNOWN', source: i.basis, href: roomHref(o), links: [{ type: 'Room', id: o.id, rel: 'in' }] });
     for (const i of r.installations.filter((x) => x.removedAt)) add({ type: 'Device', id: `${o.id}/${i.position}@${i.asset}`, name: `Removed unit ${i.asset} · ${nameOf(o)}`, sub: `position ${i.position} · removed ${day(i.removedAt!)}`, roomId: o.id, building: o.building, state: 'End', tone: 'muted',
       facts: [['Position', i.position], ['Unit', i.asset], ['Removed', day(i.removedAt!)], ['Why', i.removalReason || i.reason], ['Stage', 'End: removed from service']], prov: 'KNOWN', source: i.basis, href: roomHref(o), links: [{ type: 'Room', id: o.id, rel: 'was in' }] });
     for (const i of r.issues) add({ type: 'Issue', id: i.id, name: i.title, sub: `${i.severity} · ${i.state} · ${nameOf(o)}`, roomId: o.id, building: o.building, state: i.state, tone: i.state === 'RESOLVED' ? 'ok' : sevTone(i.severity),
